@@ -310,7 +310,7 @@ These parameters can be used in any `Value` for any Effect, as long as it's of a
 
 ### List of currently-available functions with effects
 
-##### DealDamage
+#### DealDamage
 
 **Description**:
 
@@ -330,7 +330,7 @@ These parameters can be used in any `Value` for any Effect, as long as it's of a
 
 Returns `true` (Success) when the attack hits and `Damage - Mitigation > 0`. Returns `false` (Failure) if the attack misses, or if it hits but `Damage - Mitigation <= 0`.
 
-##### ReplaceConsoleRepresentation
+#### ReplaceConsoleRepresentation
 
 **Description**:
 
@@ -348,7 +348,7 @@ Returns `true` (Success) when the attack hits and `Damage - Mitigation > 0`. Ret
 
 Always returns `true` (Success).
 
-##### PrintText
+#### PrintText
 
 **Description**:
 
@@ -365,7 +365,7 @@ If the Player can see either `Source` or `Target`, `Text` will be printed into t
 
 Always returns `true` (Success).
 
-##### MessageBox
+#### MessageBox
 
 **Description**:
 
@@ -384,7 +384,7 @@ Before the player's next turn, a Message Box will pop up in their Client.
 
 Always returns `true` (Success).
 
-##### GiveExperience
+#### GiveExperience
 
 **Description**:
 
@@ -423,7 +423,7 @@ Returns `true` (Success) if `Target` got any experience points. Returns `false` 
 
 Returns `true` (Success) if the Altered Status is applied. Returns `false` (Failure) otherwise.
 
-##### CleanseAlteredStatus
+#### CleanseAlteredStatus
 
 **Description**:
 
@@ -442,7 +442,7 @@ Returns `true` (Success) if the Altered Status is applied. Returns `false` (Fail
 
 Returns `true` (Success) if the Altered Status is removed. Returns `false` (Failure) otherwise.
 
-##### CleanseAllAlteredStatuses
+#### CleanseAllAlteredStatuses
 
 **Description**:
 
@@ -460,7 +460,7 @@ Returns `true` (Success) if the Altered Status is removed. Returns `false` (Fail
 
 Returns `true` (Success) if all Altered Statuses are removed. Returns `false` (Failure) otherwise.
 
-##### ApplyStatAlteration
+#### ApplyStatAlteration
 
 **Description**:
 
@@ -483,7 +483,7 @@ Returns `true` (Success) if all Altered Statuses are removed. Returns `false` (F
 
 Returns `true` (Success) if the Stat Alteration is applied. Returns `false` (Failure) otherwise.
 
-##### CleanseStatAlteration
+#### CleanseStatAlteration
 
 **Description**:
 
@@ -501,7 +501,7 @@ Returns `true` (Success) if the Stat Alteration is applied. Returns `false` (Fai
 
 Returns `true` (Success) if `Stat`'s Alterations are removed. Returns `false` (Failure) otherwise.
 
-##### CleanseStatAlterations
+#### CleanseStatAlterations
 
 **Description**:
 
@@ -518,7 +518,7 @@ Returns `true` (Success) if `Stat`'s Alterations are removed. Returns `false` (F
 
 Returns `true` (Success) if all Stat Alterations are removed. Returns `false` (Failure) otherwise.
 
-##### GenerateStairs
+#### GenerateStairs
 
 **Description**:
 
@@ -534,7 +534,7 @@ If the Floor's Stairs weren't present, they will be generated on a valid locatio
 
 Returns `true` (Success) if there weren't any Stairs before calling this function. Returns `false` (Failure) otherwise.
 
-##### HealDamage
+#### HealDamage
 
 **Description**:
 
@@ -553,7 +553,7 @@ Returns `true` (Success) if there weren't any Stairs before calling this functio
 
 Returns `true` (Success) when `Target`'s `HP` was lower than their `MaxHP` upon trying to heal. Returns `false` (Failure) otherwise.
 
-##### Equip
+#### Equip
 
 **Description**:
 
@@ -571,7 +571,7 @@ Returns `true` (Success) when `Target`'s `HP` was lower than their `MaxHP` upon 
 
 Always returns `true` (Success).
 
-##### Remove
+#### Remove
 
 **Description**:
 
