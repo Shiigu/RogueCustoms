@@ -1,0 +1,606 @@
+{
+  "Name": "Name",
+  "Author": "Author",
+  "WelcomeMessage": "Text to be shown before the dungeon starts",
+  "EndingMessage": "Text to be shown when the dungeon ends",
+  "AmountOfFloors": 1,
+  "FloorInfos": [
+    {
+      "MinFloorLevel": 1,
+      "MaxFloorLevel": 1,
+      "Width": 64,
+      "Height": 32,
+      "GenerateStairsOnStart": true,
+      "PossibleMonsters": [
+        { "ClassId": "Enemy" , "MinLevel": 1, "MaxLevel": 1, "SimultaneousMaxForKindInFloor": 1, "OverallMaxForKindInFloor": 1, "ChanceToPick": 100, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  }
+      ],
+	    "SimultaneousMinMonstersAtStart": 1,
+      "SimultaneousMaxMonstersInFloor": 1,
+      "TurnsPerMonsterGeneration": 100,
+      "PossibleItems": [
+        { "ClassId": "HealingPotion"           , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 50 },
+        { "ClassId": "Sword"                   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 50 }
+      ],
+      "MinItemsInFloor": 0,
+      "MaxItemsInFloor": 2,
+      "PossibleTraps": [
+        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 100 }
+      ],
+	    "MinTrapsInFloor": 1,
+      "MaxTrapsInFloor": 5,
+      "MaxConnectionsBetweenRooms": 1,
+      "OddsForExtraConnections": 0,
+      "RoomFusionOdds": 5,
+      "PossibleGeneratorAlgorithms": [
+        { "Name": "Standard"      , "Rows": 3, "Columns": 3 },
+        { "Name": "Standard"      , "Rows": 4, "Columns": 4 },
+        { "Name": "Standard"      , "Rows": 2, "Columns": 3 },
+        { "Name": "Standard"      , "Rows": 4, "Columns": 3 },
+        { "Name": "OuterDummyRing", "Rows": 4, "Columns": 4 },
+        { "Name": "InnerDummyRing", "Rows": 4, "Columns": 4 }
+      ],
+      "OnFloorStartActions": [{
+        "Name": "DungeonStartMessage",
+        "Effect": {
+          "EffectName": "MessageBox",
+          "Params": [
+            { "ParamName": "title", "Value": "Den of the Betas" },
+            { "ParamName": "text" , "Value": "Sample welcome." },
+            { "ParamName": "color", "Value": "255,255,0,255"    }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    }
+  ],
+  "FactionInfos": [
+    {
+      "Id": "Player",
+      "Name": "Player",
+      "Description": "Description. Currently unused.",
+      "AlliedWith": [ "Player", "AlliedNPCs" ],
+      "NeutralWith": [],
+      "EnemiesWith": [ "Enemies" ]
+    },
+    {
+      "Id": "AlliedNPCs",
+      "Name": "Good NPCs",
+      "Description": "Description. Currently unused.",
+      "AlliedWith": [ "Player", "AlliedNPCs" ],
+      "NeutralWith": [],
+      "EnemiesWith": [ "Enemies" ]
+    },
+    {
+      "Id": "Enemies",
+      "Name": "Enemies",
+      "Description": "Description. Currently unused.",
+      "AlliedWith": [ "MeleeEnemies" ],
+      "NeutralWith": [ ],
+      "EnemiesWith": [ "Player", "AlliedNPCs" ]
+    }
+  ],
+  "Characters": [
+    {
+      "Id": "Player",
+      "Name": "Player",
+      "Description": "Description. Currently unused.",
+      "ConsoleRepresentation": {
+        "Character": "☺",
+        "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
+      },
+      "EntityType": "Player",
+      "Faction": "Player",
+      "StartsVisible": true,
+      "BaseHP": 12,
+      "BaseAttack": 2,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0.075,
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 3,
+      "StartingWeapon": "StartingWeapon",
+      "StartingArmor": "ClothArmor",
+      "CanGainExperience": true,
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            { "ParamName": "color", "Value": "255,0,0,255" }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text", "Value": "{this} has died!" }
+            ],
+            "Then": {
+              "EffectName": "MessageBox",
+              "Params": [
+                { "ParamName": "title", "Value": "OH NO!"         },
+                { "ParamName": "text" , "Value": "YOU HAVE DIED!" },
+                { "ParamName": "color", "Value": "255,0,0,255"    }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "(1/4) * (level ^ 3) + 2 * level + 8",
+      "MaxHPIncreasePerLevel": 2,
+      "AttackIncreasePerLevel": 1,
+      "DefenseIncreasePerLevel": 0.34,
+      "MovementIncreasePerLevel": 0,
+      "HPRegenerationIncreasePerLevel": 0.025
+    },
+    {
+      "Id": "Enemy",
+      "Name": "Enemy",
+      "Description": "Description. Currently unused.",
+      "ConsoleRepresentation": {
+        "Character": "e",
+        "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "NPC",
+      "Faction": "Enemies",
+      "StartsVisible": true,
+      "BaseHP": 4,
+      "BaseAttack": 1,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0,
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 0,
+      "StartingWeapon": "StartingWeapon",
+      "StartingArmor": "Skirt",
+      "CanGainExperience": false,
+      "OnAttackActions": [{
+        "Name": "StickTongue",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 3,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{this} sticks his tongue at {target}." }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "The evil {this} has died." }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              { "ParamName": "character", "Value": "±" }
+            ],
+            "Then": {
+              "EffectName": "GiveExperience",
+              "Params": [
+                { "ParamName": "target", "Value": "target"                  },
+                { "ParamName": "amount", "Value": "{this.experiencepayout}" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "1 * Level",
+      "ExperienceToLevelUpFormula": "500",
+      "MaxHPIncreasePerLevel": 1,
+      "AttackIncreasePerLevel": 0.5,
+      "DefenseIncreasePerLevel": 0.25,
+      "MovementIncreasePerLevel": 0,
+      "HpRegenerationIncreasePerLevel": 0.125
+    }
+  ],
+  "Items": [    
+    {
+      "Id": "StartingWeapon",
+      "Name": "Unarmed",
+      "Description": "Without a weapon.",
+      "ConsoleRepresentation": {
+        "Character": "-",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": false,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "Melee Weapon Attack",
+        "Description": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 95%",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{source} tries to punch {target}." }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "95"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "But it failed!" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "Power": "0"
+    },
+    {
+      "Id": "ClothArmor",
+      "Name": "Cloth",
+      "Description": "Very basic and lightweight armor.\n\nArmor Mitigation: 0",
+      "ConsoleRepresentation": {
+        "Character": "♠",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": false,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "0"
+    },    
+    {
+      "Id": "Skirt",
+      "Name": "Skirt",
+      "Description": "Not readable by the player",
+      "ConsoleRepresentation": {
+        "Character": "♠",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": false,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "Power": "0"
+    },
+    {
+      "Id": "HealingPotion",
+      "Name": "Healing Potion",
+      "Description": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears.",
+      "ConsoleRepresentation": {
+        "Character": "§",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Consumable",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "2d4",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{target} stepped over {this}." }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [
+        {
+          "Name": "Heal",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text", "Value": "{target} drinks the {this}." }
+            ],
+            "Then": {
+              "EffectName": "HealDamage",
+              "Params": [
+                { "ParamName": "source", "Value": "source"       },
+                { "ParamName": "target", "Value": "target"       },
+                { "ParamName": "power" , "Value": "{this.Power}" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  { "ParamName": "chance", "Value": "100"  },
+                  { "ParamName": "target", "Value": "this" }
+                ],
+                "Then": null,
+                "OnSuccess": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    { "ParamName": "text", "Value": "{this} disappeared." }
+                  ],
+                  "Then": null,
+                  "OnSuccess": null,
+                  "OnFailure": null
+                },
+                "OnFailure": null
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "Or not. It would have no effect..." }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              }
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    },
+    {
+      "Id": "Sword",
+      "Name": "Sword",
+      "Description": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3",
+      "ConsoleRepresentation": {
+        "Character": "↑",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "Melee Weapon Attack",
+        "Description": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 90%",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{source} swings the {this} at {target}." }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "90"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "But it failed!" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }
+    ],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "1d3",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{target} stepped over {this}." }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{target} equips the {this}." }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    }
+  ],
+  "Traps": [
+    {
+      "Id": "SpikeTrap",
+      "Name": "Spike Trap",
+      "ConsoleRepresentation": {
+        "Character": "^",
+        "BackgroundColor": { "R": 255, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 255, "B": 0  , "A": 255 }
+      },
+      "EntityType": "Trap",
+      "StartsVisible": false,
+      "CanBePickedUp": false,
+      "Power": "1",      
+      "OnItemSteppedActions": [{
+        "Name": "TrapActivate",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "{target} stepped on the {this}!" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "80"           },
+              { "ParamName": "attacker", "Value": "source"       },
+              { "ParamName": "target"  , "Value": "target"       },
+              { "ParamName": "attack"  , "Value": "{this.Power}" },
+              { "ParamName": "defense" , "Value": "0"            }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                { "ParamName": "chance", "Value": "40"   },
+                { "ParamName": "target", "Value": "this" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "{this} disappeared." }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              },
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "{this} has failed to activate." }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    }
+  ],
+  "AlteredStatuses": [
+    {
+      "Id": "Poisoned",
+      "Name": "Poisoned",
+      "Description": "Taking damage every 28 turns",
+      "ConsoleRepresentation": {
+        "Character": "‼",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnTurnStartActions": [{
+        "Name": "Poison",
+        "StartingCooldown": 28,
+        "CooldownBetweenUses": 28,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "Poison is coursing through {target}'s body." }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "100"          },
+              { "ParamName": "attacker", "Value": "source"       },
+              { "ParamName": "target"  , "Value": "target"       },
+              { "ParamName": "attack"  , "Value": "{this.Power}" },
+              { "ParamName": "defense" , "Value": "0"            }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnStatusApplyActions": []
+    }
+  ]
+}
