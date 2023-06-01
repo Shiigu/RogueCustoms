@@ -1,0 +1,55 @@
+﻿using SadConsole;
+using SadConsole.UI.Controls;
+using SadRogue.Primitives;
+using Console = SadConsole.Console;
+
+namespace RoguelikeConsoleClient.UI.Consoles.Utils
+{
+    public class ScrollableMessageSubConsole : Console
+    {
+        private readonly Console ControlsContainer;
+        private readonly ScrollBar ScrollBar;
+
+        public ScrollableMessageSubConsole(int width, int height, int bufferHeight) : base(width - 1, height, width - 1, bufferHeight)
+        {
+            ControlsContainer = new Console(1, height);
+
+            ScrollBar = new ScrollBar(Orientation.Vertical, height);
+            ScrollBar.IsVisible = true;
+            ScrollBar.IsEnabled = false;
+            ScrollBar.ValueChanged += ScrollBar_ValueChanged;
+
+            var controlHost = new SadConsole.UI.ControlHost();
+            controlHost.Add(ScrollBar);
+            ControlsContainer.SadComponents.Add(controlHost);
+            ControlsContainer.Position = new Point(Position.X + width, Position.Y);
+            ControlsContainer.IsVisible = true;
+            ControlsContainer.FocusOnMouseClick = false;
+
+            UseMouse = true;
+
+            Children.Add(ControlsContainer);
+        }
+
+        private void ScrollBar_ValueChanged(object? sender, EventArgs e)
+        {
+            //Display viewable content based on our scroll offset.
+            View = new Rectangle(0, ScrollBar.Value, Width, ViewHeight);
+        }
+
+        public void PrintList(List<string> textList)
+        {
+            this.Clear();
+            Cursor.Position = new Point(0, 0);
+            for (int i = 0; i < textList.Count; i++)
+            {
+                Cursor.Print(textList[i]);
+                if (i < textList.Count - 1)
+                    Cursor.NewLine();
+            }
+            ScrollBar.Maximum = Math.Max(0, textList.Count - ViewHeight);
+            ScrollBar.IsEnabled = textList.Count > ViewHeight;
+            ScrollBar.Value = textList.Count > ViewHeight ? ScrollBar.Maximum : 0;
+        }
+    }
+}

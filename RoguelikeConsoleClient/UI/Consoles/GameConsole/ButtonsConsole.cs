@@ -1,0 +1,46 @@
+﻿using SadConsole;
+using SadRogue.Primitives;
+using SadConsole.UI.Controls;
+using RoguelikeConsoleClient.UI.Consoles.Containers;
+
+namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
+{
+    public class ButtonsConsole : GameSubConsole
+    {
+        private const string ExitButtonText = "EXIT";
+        private readonly Button ExitButton;
+
+        public ButtonsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ButtonsCellWidth, GameConsoleConstants.ButtonsCellHeight)
+        {
+            DefaultBackground = Color.Black;
+            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            UseMouse = true;
+            RefreshOnlyOnStatusUpdate = false;
+
+            ExitButton = new Button(ExitButtonText.Length + 2)
+            {
+                Text = ExitButtonText
+            };
+            ExitButton.Click += ExitButton_Click;
+            ExitButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - ExitButton.Surface.Width) / 2, 7);
+
+            Controls.Add(ExitButton);
+        }
+
+        public override void Render(TimeSpan delta)
+        {
+            this.Clear();
+
+            var square = new Rectangle(0, 0, Width, Height);
+
+            this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Black, 178)));
+
+            base.Render(delta);
+        }
+
+        private void ExitButton_Click(object? sender, EventArgs args)
+        {
+            ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Main);
+        }
+    }
+}

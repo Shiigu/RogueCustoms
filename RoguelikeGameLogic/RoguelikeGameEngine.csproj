@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="D20Tek.DiceNotation.Standard" Version="3.3.2" />
+    <PackageReference Include="matheval" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="JSON\PUT JSON FILES HERE!.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
