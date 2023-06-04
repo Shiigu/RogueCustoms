@@ -6,24 +6,33 @@ using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows;
 using SadRogue.Primitives;
 using Console = SadConsole.Console;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 {
     public class MainMenuConsole : MenuSubConsole
     {
-        private const string GameNameText = "ROGUE CUSTOMS";
-        private const string SelectFileText = "START A DUNGEON";
-        private const string OptionsText = "OPTIONS";
-        private const string ExitText = "EXIT";
+        private string GameNameText, SelectFileText, OptionsText, ExitText;
 
-        private readonly Label GameName;
-        private readonly Button SelectFileButton, OptionsButton, ExitButton;
-        private readonly ControlsConsole LogoConsole;
+        private Label GameName;
+        private Button SelectFileButton, OptionsButton, ExitButton;
+        private ControlsConsole LogoConsole;
 
         public MainMenuConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
+            GameNameText = LocalizationManager.GetString("GameTitle").ToUpperInvariant().ToAscii();
+            SelectFileText = LocalizationManager.GetString("SelectFileText").ToAscii();
+            OptionsText = LocalizationManager.GetString("OptionsText").ToAscii();
+            ExitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
-            var oldFontSize = FontSize;
+            var oldFontSize = Font.GetFontSize(IFont.Sizes.One);
             var newFontSize = Font.GetFontSize(IFont.Sizes.Two);
             FontSize = newFontSize;
 
@@ -66,18 +75,18 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
             Controls.Add(SelectFileButton);
             Controls.Add(OptionsButton);
             Controls.Add(ExitButton);
-
         }
+
         private void SelectFileButton_Click(object sender, EventArgs args)
         {
             try
             {
-                ParentContainer.PossibleDungeons = BackendHandler.Instance.GetPickableDungeonList();
+                ParentContainer.PossibleDungeons = BackendHandler.Instance.GetPickableDungeonList(LocalizationManager.CurrentLocale);
                 ParentContainer.MoveToConsole(MenuConsoles.PickDungeon);
             }
             catch (Exception)
             {
-                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
         }
         private void OptionsButton_Click(object sender, EventArgs args)

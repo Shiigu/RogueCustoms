@@ -7,6 +7,8 @@ using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using Console = SadConsole.Console;
 using RoguelikeConsoleClient.UI.Consoles;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Windows
 {
@@ -22,9 +24,9 @@ namespace RoguelikeConsoleClient.UI.Windows
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if(info.IsKeyPressed(Keys.Enter))
+            if(info.IsKeyPressed(Keys.Enter) || info.IsKeyPressed(Keys.Y) || info.IsKeyPressed(Keys.S))
                 AffirmativeButton.InvokeClick();
-            if (info.IsKeyPressed(Keys.Escape))
+            if(info.IsKeyPressed(Keys.Escape) || info.IsKeyPressed(Keys.N))
                 NegativeButton.InvokeClick();
 
             return true;
@@ -52,17 +54,17 @@ namespace RoguelikeConsoleClient.UI.Windows
 
             var affirmativeButton = new Button(buttonWidth, 1)
             {
-                Text = affirmativeButtonText,
+                Text = affirmativeButtonText.ToAscii(),
             };
 
             var negativeButton = new Button(buttonWidth, 1)
             {
-                Text = negativeButtonText,
+                Text = negativeButtonText.ToAscii(),
             };
 
             var window = new PromptBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + affirmativeButton.Surface.Height);
             window.MessageLines = linesInMessage;
-            window.TitleCaption = titleText;
+            window.TitleCaption = titleText.ToAscii();
             window.AffirmativeButton = affirmativeButton;
             window.NegativeButton = negativeButton;
             window.WindowColor = windowColor;
@@ -115,7 +117,7 @@ namespace RoguelikeConsoleClient.UI.Windows
             ds.Surface.Print((square.Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.Black, WindowColor);
             for (int i = 0; i < MessageLines.Length; i++)
             {
-                ds.Surface.Print(2, 2 + i, MessageLines[i].Replace("\r\n", "").Replace("\n", ""));
+                ds.Surface.Print(2, 2 + i, MessageLines[i].Replace("\r\n", "").Replace("\n", "").ToAscii());
             }
             ds.IsDirty = true;
             ds.IsFocused = true;

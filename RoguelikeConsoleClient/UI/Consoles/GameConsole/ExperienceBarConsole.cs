@@ -3,19 +3,28 @@ using SadRogue.Primitives;
 using SadConsole.UI.Controls;
 using SadConsole.UI;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
+using RoguelikeConsoleClient.Resources.Localization;
+using RoguelikeConsoleClient.Helpers;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
 {
     public class ExperienceBarConsole : GameSubConsole
     {
-        private readonly ProgressBar experienceBar;
+        private ProgressBar ExperienceBar;
 
         public ExperienceBarConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ExperienceBarWidth, GameConsoleConstants.ExperienceBarHeight)
         {
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
-            experienceBar = new ProgressBar(Width, Height, HorizontalAlignment.Left)
+            ExperienceBar = new ProgressBar(Width, Height, HorizontalAlignment.Left)
             {
                 Position = new Point(0, 0),
                 DisplayTextAlignment = HorizontalAlignment.Center,
@@ -31,9 +40,9 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
             themeColors.Appearance_ControlNormal.Foreground = Color.Blue;
             themeColors.Appearance_ControlSelected.Foreground = Color.Blue;
 
-            experienceBar.SetThemeColors(themeColors);
+            ExperienceBar.SetThemeColors(themeColors);
 
-            Controls.Add(experienceBar);
+            Controls.Add(ExperienceBar);
         }
 
         public override void Render(TimeSpan delta)
@@ -46,9 +55,13 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
             {
                 this.Clear();
 
-                experienceBar.Progress = (float)playerEntity.CurrentExperiencePercentage / 100;
-                experienceBar.DisplayText = $"Experience: {playerEntity.Experience}/{playerEntity.ExperienceToLevelUp} ({playerEntity.CurrentExperiencePercentage}% of current level)";
-
+                ExperienceBar.Progress = (float)playerEntity.CurrentExperiencePercentage / 100;
+                ExperienceBar.DisplayText = LocalizationManager.GetString("ExperienceBarDisplayText").Format(new
+                {
+                    CurrentExperience = playerEntity.Experience.ToString(),
+                    ExperienceToLevelUp = playerEntity.ExperienceToLevelUp.ToString(),
+                    Percentage = playerEntity.CurrentExperiencePercentage.ToString()
+                }).ToAscii();
             }
 
             base.Render(delta);

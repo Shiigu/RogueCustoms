@@ -8,6 +8,10 @@ using System.Drawing;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
 using RoguelikeGameEngine.Utils.Representation;
 using System.Xml.Linq;
+using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace RoguelikeGameEngine.Game.DungeonStructure
 {
@@ -30,6 +34,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
         private int Seed { get; }
 
         private readonly Dungeon Dungeon;
+        public Locale Locale => Dungeon.LocaleToUse;
         public DungeonStatus DungeonStatus
         {
             get { return Dungeon.DungeonStatus; }
@@ -42,7 +47,12 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
 
         private readonly GeneratorAlgorithm GeneratorAlgorithmToUse;
 
-        public string FloorName => $"{Dungeon.Name.ToUpperInvariant()} - FLOOR {FloorLevel}";
+
+
+        public string FloorName => Locale["FloorName"].Format(new {
+                                                                DungeonName = Dungeon.Name.ToUpperInvariant(),
+                                                                FloorLevel = FloorLevel.ToString()
+                                                                });
 
         private int RoomCountRows => GeneratorAlgorithmToUse.Rows;
         private int RoomCountColumns => GeneratorAlgorithmToUse.Columns;
@@ -108,6 +118,8 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
             ItemActions.Map = this;
             GenericActions.Rng = Rng;
             GenericActions.Map = this;
+
+            ActionHelpers.Map = this;
         }
 
         public void Generate()
@@ -136,7 +148,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
             if (string.IsNullOrWhiteSpace(message)) return;
             if (!_displayedTurnMessage && TurnCount > 0)
             {
-                Dungeon.Messages.Add($"----------TURN {TurnCount}----------");
+                Dungeon.Messages.Add(Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }));
                 _displayedTurnMessage = true;
             }
             Dungeon.Messages.Add(message);
@@ -393,7 +405,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
                     PlacePlayer();
                     if (FloorConfigurationToUse.GenerateStairsOnStart)
                         SetStairs();
-                    AppendMessage($"Entering Floor {FloorLevel}...");
+                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }));
                 }
             }
             return success;
@@ -616,9 +628,9 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
                 #endregion
 
                 #region Perform On Floor Start Actions
-                
+
+                AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
                 FloorConfigurationToUse.OnFloorStartActions.ForEach(ofsa => ofsa.Do(Player, Player));
-                AddMessageBox(Dungeon.Name, $"Entering Floor {FloorLevel}", "OK", new GameColor(Color.Yellow));
 
                 #endregion
             }
@@ -693,7 +705,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
 
         public PlayerInfoDto GetPlayerDetailInfo()
         {
-            return new PlayerInfoDto(Player);
+            return new PlayerInfoDto(Player, this);
         }
 
         public void PlayerMove(int x, int y)
@@ -764,7 +776,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
             var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
             if (Player.ContainingTile != stairsTile)
                 throw new Exception($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
-            AppendMessage($"Leaving Floor {FloorLevel}...");
+            AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }));
             Dungeon.TakeStairs();
         }
 
@@ -792,7 +804,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
                 return;
             if (Player.Inventory.Count == Player.InventorySize)
             {
-                AppendMessage($"{Player.Name} can't pick {itemThatCanBePickedUp.Name}. Inventory is full.");
+                AppendMessage(Locale["InventoryIsFull"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBePickedUp.Name }));
             }
             else
             {
@@ -810,16 +822,16 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
 
         public void PlayerDropItemFromInventory(int itemId)
         {
-            var item = Items.Find(i => i.Id == itemId)
+            var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new Exception("Player attempted to use an item that does not exist!");
             var entitiesInTile = GetEntitiesFromCoordinates(Player.Position);
             if (entitiesInTile.Any(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
             {
-                AppendMessage($"Cannot drop {item.Name}. Tile is occupied.");
+                AppendMessage(Locale["TilesIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
             }
             else
             {
-                Player.DropItem(item);
+                Player.DropItem(itemThatCanBeDropped);
                 Player.RemainingMovement = 0;
                 ProcessTurn();
             }
@@ -848,16 +860,16 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
             var itemsOnTile = Items.Where(i => i.Position?.Equals(Player.Position) == true).ToList();
             inventory.TileIsOccupied = itemsOnTile.Any();
             if (Player.EquippedWeapon != null)
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedWeapon, Player));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedWeapon, Player, this));
             if (Player.EquippedArmor != null)
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedArmor, Player));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedArmor, Player, this));
             for (int i = 0; i < Player.Inventory.Count; i++)
             {
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.Inventory[i], Player));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.Inventory[i], Player, this));
             }
             for (int i = 0; i < itemsOnTile.Count; i++)
             {
-                inventory.InventoryItems.Add(new InventoryItemDto(itemsOnTile[i], Player));
+                inventory.InventoryItems.Add(new InventoryItemDto(itemsOnTile[i], Player, this));
             }
             return inventory;
         }
@@ -873,7 +885,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
             if (characterInTile != null)
                 Player.AttackCharacter(characterInTile, action);
             else
-                AddMessageBox(Dungeon.Name, "But there was no target!", "Ooops!", new GameColor(Color.LightGoldenrodYellow));
+                AddMessageBox(Dungeon.Name, Locale["NoTarget"], "Ooops!", new GameColor(Color.LightGoldenrodYellow));
 
             ProcessTurn();
         }
@@ -903,7 +915,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
         private Point PickEmptyPosition(bool allowPlayerRoom)
         {
             int rngRoom, rngX, rngY;
-            var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).ToList();
+            var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).Distinct().ToList();
             var nonDummyRoomCount = nonDummyRooms.Count;
             Room possibleNonDummyRoom, playerRoom;
             Tile tileToCheck;

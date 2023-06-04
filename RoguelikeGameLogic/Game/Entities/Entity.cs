@@ -1,5 +1,7 @@
 ﻿using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Game.Entities
 {
@@ -57,6 +59,8 @@ namespace RoguelikeGameEngine.Game.Entities
             classActions.ForEach(a =>
             {
                 var actionInstance = a.Clone();
+                actionInstance.Map = Map;
+                actionInstance.Name = Map.Locale[actionInstance.Name];
                 actionInstance.User = this;
                 entityActions.Add(actionInstance);
             });

@@ -1,7 +1,9 @@
 ﻿using D20Tek.DiceNotation;
 using D20Tek.DiceNotation.DieRoller;
 using org.matheval;
+using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Game.Entities;
+using System;
 using System.Dynamic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -10,6 +12,7 @@ namespace RoguelikeGameEngine.Utils.Helpers
 {
     public static class ActionHelpers
     {
+        public static Map Map;
 
         public static ExpandoObject ParseParams(Entity This, Entity Source, Entity Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
         {
@@ -17,7 +20,7 @@ namespace RoguelikeGameEngine.Utils.Helpers
             foreach (var (ParamName, Value) in args)
             {
                 var paramName = ParamName.ToLower();
-                var value = ParseArgForAction(Value, This, Source, Target);
+                var value = ParseArgForAction(Map.Locale[Value], This, Source, Target);
                 switch (paramName)
                 {
                     case "attacker":
@@ -122,7 +125,7 @@ namespace RoguelikeGameEngine.Utils.Helpers
 
         private static string ParseValueForTextDisplay(string value)
         {
-            const string functionMatchRegex = @"(?i)(?:LEFT|RIGHT|MID|REVERSE|LOWER|UPPER|PROPER|TRIM|TEXT|REPLACE|SUBSTITUTE|CONCAT)";
+            const string functionMatchRegex = @"(?:LEFT|RIGHT|MID|REVERSE|LOWER|UPPER|PROPER|TRIM|TEXT|REPLACE|SUBSTITUTE|CONCAT)";
             if (Regex.Match(value, functionMatchRegex).Success)
                 return new Expression($"TEXT({value})").Eval<string>();
             return value;

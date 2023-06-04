@@ -1,4 +1,5 @@
-﻿using Console = SadConsole.Console;
+﻿using System.Collections.Generic;
+using Console = SadConsole.Console;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Containers
 {

@@ -1,6 +1,10 @@
 ﻿using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
 using RoguelikeGameEngine.Utils.JsonImports;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace RoguelikeGameEngine.Management
@@ -20,7 +24,7 @@ namespace RoguelikeGameEngine.Management
             DungeonListForDisplay = new List<DungeonListDto>();
         }
 
-        private void GetDungeonList()
+        private void GetDungeonList(string locale)
         {
             var dungeonsSinceLastRetrieval = AvailableDungeonInfos.Select(adi => adi.Key).ToList();
             var dungeonsInNewRetrieval = new List<string>();
@@ -30,7 +34,7 @@ namespace RoguelikeGameEngine.Management
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 dungeonsInNewRetrieval.Add(fileName);
                 AvailableDungeonInfos[fileName] = dungeonInfo;
-                DungeonListForDisplay.Add(new DungeonListDto(fileName, dungeonInfo));
+                DungeonListForDisplay.Add(new DungeonListDto(fileName, dungeonInfo, locale));
             }
             foreach(var removedDungeon in dungeonsSinceLastRetrieval.Except(dungeonsInNewRetrieval))
             {
@@ -47,18 +51,18 @@ namespace RoguelikeGameEngine.Management
             });
         }
 
-        public List<DungeonListDto> GetPickableDungeonList()
+        public List<DungeonListDto> GetPickableDungeonList(string locale)
         {
             DungeonListForDisplay.Clear();
-            GetDungeonList();
+            GetDungeonList(locale);
             return DungeonListForDisplay;
         }
 
-        public int CreateDungeon(string dungeonName)
+        public int CreateDungeon(string dungeonName, string locale)
         {
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
-            var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo);
+            var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo, locale);
             Dungeons.Add(dungeon);
             CurrentDungeonId++;
             return dungeon.Id;
@@ -83,7 +87,8 @@ namespace RoguelikeGameEngine.Management
 
         public DungeonDto GetDungeonStatus(int dungeonId)
         {
-            return new DungeonDto(GetDungeonById(dungeonId));
+            var dungeon = GetDungeonById(dungeonId);
+            return new DungeonDto(dungeon, dungeon.CurrentFloor);
         }
 
         public void MovePlayer(int dungeonId, CoordinateInput input)

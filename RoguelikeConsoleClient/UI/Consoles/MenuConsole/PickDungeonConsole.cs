@@ -5,23 +5,36 @@ using RoguelikeConsoleClient.EngineHandling;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.Utils;
 using SadRogue.Primitives;
+using RoguelikeConsoleClient.Resources.Localization;
+using RoguelikeConsoleClient.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 {
     public class PickDungeonConsole : MenuSubConsole
     {
-        private const string WindowHeaderText = "PICK A DUNGEON";
-        private const string PickButtonText = "PLAY SELECTED DUNGEON";
-        private const string ReturnButtonText = "RETURN TO MAIN MENU";
+        private string WindowHeaderText, PickButtonText, ReturnButtonText;
 
-        private readonly Label WindowHeader;
-        private readonly ListBox DungeonListBox;
-        private readonly Button PickButton, ReturnButton;
-        private readonly ControlsConsole WindowHeaderConsole;
+        private Label WindowHeader;
+        private ListBox DungeonListBox;
+        private Button PickButton, ReturnButton;
+        private ControlsConsole WindowHeaderConsole;
 
         public PickDungeonConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
-            var oldFontSize = FontSize;
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
+            WindowHeaderText = LocalizationManager.GetString("PickDungeonHeaderText").ToAscii();
+            PickButtonText = LocalizationManager.GetString("PickButtonText").ToAscii();
+            ReturnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
+            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            var oldFontSize = Font.GetFontSize(IFont.Sizes.One);
             var newFontSize = Font.GetFontSize(IFont.Sizes.Two);
             FontSize = newFontSize;
             WindowHeaderConsole = new ControlsConsole(Width, 1)
@@ -50,7 +63,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 
             PickButton = new Button(PickButtonText.Length + 2)
             {
-                Position = new Point(Width / 2 - 24, Height - 6).TranslateFont(oldFontSize, newFontSize),
+                Position = new Point(Width / 2 - 3 - PickButtonText.Length, Height - 6).TranslateFont(oldFontSize, newFontSize),
                 Text = PickButtonText,
                 IsEnabled = false
             };
@@ -59,7 +72,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 
             ReturnButton = new Button(ReturnButtonText.Length + 2)
             {
-                Position = new Point(Width / 2 - 22, Height - 2).TranslateFont(oldFontSize, newFontSize),
+                Position = new Point(Width / 2 - 3 - ReturnButtonText.Length, Height - 2).TranslateFont(oldFontSize, newFontSize),
                 Text = ReturnButtonText,
                 IsEnabled = true
             };
@@ -69,7 +82,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 
         public void FillList()
         {
-            Dictionary<string, int> RepeatedNameCount = new Dictionary<string, int>();
+            var RepeatedNameCount = new Dictionary<string, int>();
             DungeonListBox.Items.Clear();
             if(ParentContainer.PossibleDungeons.Any())
             {
@@ -77,15 +90,20 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
                 this.Clear();
                 foreach (var dungeon in ParentContainer.PossibleDungeons)
                 {
-                    if (!RepeatedNameCount.ContainsKey(dungeon.ToString()))
+                    var dungeonDisplayName = LocalizationManager.GetString("DungeonDisplayNameText").Format(new
                     {
-                        DungeonListBox.Items.Add(dungeon.ToString());
-                        RepeatedNameCount[dungeon.ToString()] = 1;
+                        DungeonName = dungeon.Name,
+                        Author = dungeon.Author
+                    }).ToAscii();
+                    if (!RepeatedNameCount.ContainsKey(dungeonDisplayName))
+                    {
+                        DungeonListBox.Items.Add(dungeonDisplayName);
+                        RepeatedNameCount[dungeonDisplayName] = 1;
                     }
                     else
                     {
-                        DungeonListBox.Items.Add($"{dungeon} ({RepeatedNameCount[dungeon.ToString()]})");
-                        RepeatedNameCount[dungeon.ToString()]++;
+                        DungeonListBox.Items.Add($"{dungeonDisplayName} ({RepeatedNameCount[dungeonDisplayName]})");
+                        RepeatedNameCount[dungeonDisplayName]++;
                     }
                 }
                 DungeonListBox.ScrollBar.IsVisible = true;
@@ -95,11 +113,11 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
             {
                 PickButton.IsEnabled = false;
                 DungeonListBox.IsVisible = false;
-                this.Print(1, 6, "There are no dungeons to show.");
+                this.Print(1, 6, LocalizationManager.GetString("NoDungeonsText"));
                 if (BackendHandler.Instance.IsLocal)
-                    this.Print(1, 7, "Put dungeons in the JSON folder first.");
+                    this.Print(1, 7, LocalizationManager.GetString("NoLocalDungeonsSubtext"));
                 else
-                    this.Print(1, 7, "Server has no dungeons installed.");
+                    this.Print(1, 7, LocalizationManager.GetString("NoServerDungeonsSubtext"));
             }
         }
 
@@ -119,15 +137,15 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
             {
                 var selectedItem = ParentContainer.PossibleDungeons[DungeonListBox.SelectedIndex];
 
-                BackendHandler.Instance.CreateDungeon(selectedItem.InternalName);
+                BackendHandler.Instance.CreateDungeon(selectedItem.InternalName, LocalizationManager.CurrentLocale);
 
                 var message = BackendHandler.Instance.GetDungeonWelcomeMessage();
 
-                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Game, "BRIEFING", message);
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Game, LocalizationManager.GetString("BriefingMessageHeader"), message);
             }
             catch (Exception)
             {
-                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
         }
     }

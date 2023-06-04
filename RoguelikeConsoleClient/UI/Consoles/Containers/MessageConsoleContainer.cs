@@ -1,6 +1,7 @@
 ﻿using SadConsole;
 using SadConsole.Input;
 using RoguelikeConsoleClient.UI.Consoles.Error;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Containers
 {

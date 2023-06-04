@@ -1,4 +1,7 @@
-﻿namespace RoguelikeGameEngine.Utils.JsonImports
+﻿using System;
+using System.Collections.Generic;
+
+namespace RoguelikeGameEngine.Utils.JsonImports
 {
     [Serializable]
     public class FloorInfo

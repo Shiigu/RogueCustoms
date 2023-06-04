@@ -1,4 +1,8 @@
-﻿namespace RoguelikeGameEngine.Utils.Helpers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace RoguelikeGameEngine.Utils.Helpers
 {
     public static class EnumerableHelpers
     {

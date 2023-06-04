@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RoguelikeConsoleClient.EngineHandling
 {
@@ -17,15 +21,15 @@ namespace RoguelikeConsoleClient.EngineHandling
             };
             Address = address;
         }
-        public async Task<List<DungeonListDto>> GetPickableDungeonList()
+        public async Task<List<DungeonListDto>> GetPickableDungeonList(string locale)
         {
-            var json = await client.GetStringAsync($"{Address}/api/GetPickableDungeonList/");
+            var json = await client.GetStringAsync($"{Address}/api/GetPickableDungeonList/{locale}");
             return JsonConvert.DeserializeObject<List<DungeonListDto>>(json);
         }
 
-        public async Task<int> CreateDungeon(string dungeonName)
+        public async Task<int> CreateDungeon(string dungeonName, string locale)
         {
-            var response = await client.PostAsync($"{Address}/api/CreateDungeon/{dungeonName}", null);
+            var response = await client.PostAsync($"{Address}/api/CreateDungeon/{dungeonName}/{locale}", null);
             var contents = await response.Content.ReadAsStringAsync();
             return int.Parse(contents);
         }

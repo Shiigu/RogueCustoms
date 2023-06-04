@@ -1,0 +1,100 @@
+﻿; Settings
+LanguageName = Español
+LanguageLocale = es
+
+; Used in multiple consoles
+PlayerLevelText = NIVEL {CurrentLevel}
+PlayerNoStatusesText = ¡NINGUNO!
+CancelButtonText = CANCELAR
+ExitButtonText = SALIR
+ReturnToMainMenuText = IR AL MENU PRINCIPAL
+
+; MainMenuConsole
+GameTitle = Rogue Customs
+SelectFileText = INICIAR MAZMORRA
+OptionsText = OPCIONES
+
+; OptionsConsole
+OptionsHeaderText = ELEGIR OPCIONES
+RadioButtonHeaderText = UBICACIÓN DEL HOST
+LocalRadioButtonText = LOCAL
+ServerRadioButtonText = EN SERVIDOR
+ServerAddressTextBoxHeaderText = DIRECCIÓN DE SERVIDOR
+LanguageListHeaderText = IDIOMA
+SaveButtonText = GUARDAR OPCIONES
+
+; PickDungeonConsole
+PickDungeonHeaderText = ELEGIR MAZMORRA
+DungeonDisplayNameText = {DungeonName} - por {Author}
+NoDungeonsText = No hay Mazmorras para elegir.
+NoLocalDungeonsSubtext = Pon Mazmorras en la carpeta JSON.
+NoServerDungeonsSubtext = El Servidor no tiene Mazmorras.
+PickButtonText = JUGAR MAZMORRA
+
+; MessageConsole
+BriefingMessageHeader = RESUMEN
+TheEndMessageHeader = FIN
+ErrorMessageHeader = ERROR
+ErrorText = ¡OH NO!\n\n¡Ha habido un error!\n\nPrepárate para volver al menú\nprincipal...
+PressEnterText = Presiona Enter para Continuar...
+
+; DungeonConsole
+StairsPromptText = ¿Quieres usar las escaleras?
+
+; ExperienceBarConsole
+ExperienceBarDisplayText = Experiencia: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% del nivel actual)
+
+; GameControlsConsole
+MoveModeControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno
+MoveModeOnStairsControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno
+ActionModeControlsText = <ARROWS> Mover <A> Elegir Acción <ESC> Cancelar
+
+; MessageLogConsole
+MessageHeaderText = MENSAJES
+
+; PlayerInfoConsole
+PlayerInfoConsoleTitle = TÚ
+PlayerInfoWeaponHeader = ARMA
+PlayerInfoArmorHeader = ARMADURA
+PlayerInfoStatusesHeader = Estados:
+PlayerInfoTooManyStatusesText = ¡Y HAY MÁS!
+DetailsButtonText = DETALLES
+
+; ActionWindow
+ActionWindowTitleText = Acción
+DoButtonText = REALIZAR
+
+; InventoryWindow
+InventoryWindowTitleText = Inventario
+UseButtonText = USAR
+EquipButtonText = EQUIPAR
+DropButtonText = SOLTAR
+SwapButtonText = CAMBIAR
+EquippedItemNamePrefix = (E)
+EquippedItemDescriptionText = (Este objeto está equipado)
+FloorItemNamePrefix = (P)
+FloorItemDescriptionText = (Este objeto está en el piso)
+OccupiedTileDescriptionText = (No se puede soltar aquí;\nla baldosa está ocupada)
+
+; PlayerCharacterDetailWindow
+PlayerCharacterDetailWindowTitleText = DATOS DE {PlayerName}
+PlayerCharacterDetailCurrentExperienceText = Experiencia Actual: {CurrentExperience}
+PlayerCharacterDetailExperienceToLevelUpText = Experiencia para llegar al Nivel {NextLevel}: {RequiredExperience}
+PlayerCharacterDetailAtMaxLevelText = ¡AL MÁXIMO NIVEL!
+PlayerCharacterDetailStatsHeader = ESTADÍSTICAS:
+PlayerCharacterDetailBaseText = Base
+PlayerCharacterDetailMaxBaseText = Máx. Base
+PlayerCharacterDetailStatAlterationText = {Alteration} por {Source}
+PlayerCharacterDetailAlteredStatusesHeaderText = ESTADOS ALTERADOS:
+PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns = - {StatusName}: {StatusDescription} [QUEDA(N) {RemainingTurns} TURNO(S)]
+PlayerCharacterDetailAlteredStatusDescriptionText = - {StatusName}: {StatusDescription}
+PlayerCharacterDetailEquippedWeaponHeader = ARMA ACTUAL
+PlayerCharacterDetailEquippedArmorHeader = ARMADURA ACTUAL
+CloseButtonText = CERRAR
+
+; MessageBox
+OKButtonText = OK
+
+; PromptBox
+YesButtonText = SÍ
+NoButtonText = NO

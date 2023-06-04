@@ -5,6 +5,9 @@ using System.Text;
 using RoguelikeGameEngine.Utils.Representation;
 using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Enums;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Game.Entities
 {
@@ -13,6 +16,8 @@ namespace RoguelikeGameEngine.Game.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public Entity User { get; set; }
+
+        public Map Map { get; set; }
 
         #region Exclusive use for Characters
         public int MinimumRange { get; set; }
@@ -28,6 +33,8 @@ namespace RoguelikeGameEngine.Game.Entities
         #endregion
 
         private Effect Effect { get; set; }                       // What is going to be executed when the action is called
+
+        private Locale Locale => Map.Locale;
 
         private ActionWithEffects() { }
 
@@ -77,9 +84,9 @@ namespace RoguelikeGameEngine.Game.Entities
 
         public string GetDescriptionWithUsageNotes(Character target)
         {
-            var descriptionWithUsageNotes = new StringBuilder(Description);
+            var descriptionWithUsageNotes = new StringBuilder(Map.Locale[Description]);
             var character = User is Character ? User as Character : User is Item i ? i.Owner : null;
-            var cannotBeUsedString = "CANNOT BE USED";
+            var cannotBeUsedString = Locale["CannotBeUsed"];
 
             if (character == null) return "";
 
@@ -88,8 +95,8 @@ namespace RoguelikeGameEngine.Game.Entities
             if (CurrentCooldown > 0)
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                    descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                descriptionWithUsageNotes.AppendLine($"ON COOLDOWN: {CurrentCooldown} TURNS LEFT");
+                    descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                descriptionWithUsageNotes.AppendLine(Locale["OnCooldown"].Format(new { CurrentCooldown = CurrentCooldown.ToString() }));
             }
 
             if (MaximumUses > 0)
@@ -97,12 +104,13 @@ namespace RoguelikeGameEngine.Game.Entities
                 if (CurrentUses == MaximumUses)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                    descriptionWithUsageNotes.AppendLine("REACHED MAXIMUM USES");
+                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.AppendLine(Locale["MaximumUses"]);
                 }
                 else
                 {
-                    descriptionWithUsageNotes.AppendLine($"\n\n{MaximumUses - CurrentUses} USES LEFT");
+                    var remainingUses = MaximumUses - CurrentUses;
+                    descriptionWithUsageNotes.AppendLine($"\n\n{Locale["RemainingUseCount"].Format(new { RemainingUses = remainingUses.ToString() })}");
                 }
             }
 
@@ -111,37 +119,38 @@ namespace RoguelikeGameEngine.Game.Entities
                 if (distance < MinimumRange)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                    descriptionWithUsageNotes.AppendLine("TARGET IS TOO CLOSE");
+                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooClose"]);
                 }
                 else if (distance > MaximumRange)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                    descriptionWithUsageNotes.AppendLine("TARGET IS TOO FAR AWAY");
+                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
                 }
 
                 var targetType = character.CalculateTargetTypeFor(target);
                 if (!TargetTypes.Contains(targetType))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                    var usableTargetTypes = TargetTypes.Select(tt => tt.ToString().ToUpperInvariant());
-                    descriptionWithUsageNotes.AppendLine($"TARGET MUST BE {string.Join('/', usableTargetTypes)}");
+                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
+                    var usableTargetTypesString = string.Join('/', usableTargetTypes);
+                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
                 }
             }
             else
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                    descriptionWithUsageNotes.AppendLine("\n\nCANNOT BE USED\n");
-                descriptionWithUsageNotes.AppendLine("REQUIRES A TARGET");
+                    descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                descriptionWithUsageNotes.AppendLine(Locale["RequiresATarget"]);
             }
 
             if (User != null)
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                     descriptionWithUsageNotes.AppendLine();
-                descriptionWithUsageNotes.AppendLine($"\n(From {User.Name})");
+                descriptionWithUsageNotes.AppendLine($"\n{Locale["FromSource"].Format(new { SourceName = User.Name })}");
             }
 
             return descriptionWithUsageNotes.ToString();

@@ -2,21 +2,29 @@
 using SadRogue.Primitives;
 using SadConsole.UI.Controls;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
 {
     public class ButtonsConsole : GameSubConsole
     {
-        private const string ExitButtonText = "EXIT";
-        private readonly Button ExitButton;
+        private string ExitButtonText;
+        private Button ExitButton;
 
         public ButtonsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ButtonsCellWidth, GameConsoleConstants.ButtonsCellHeight)
         {
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             UseMouse = true;
             RefreshOnlyOnStatusUpdate = false;
-
+            ExitButtonText = LocalizationManager.GetString("ExitButtonText").ToAscii();
             ExitButton = new Button(ExitButtonText.Length + 2)
             {
                 Text = ExitButtonText

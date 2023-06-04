@@ -1,6 +1,8 @@
 ﻿using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Game.Entities.Interfaces;
 using RoguelikeGameEngine.Utils.Helpers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Game.Entities
 {

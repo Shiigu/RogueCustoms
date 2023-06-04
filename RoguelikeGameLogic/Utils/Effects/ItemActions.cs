@@ -1,6 +1,7 @@
 ﻿using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Helpers;
+using System;
 
 namespace RoguelikeGameEngine.Utils.Effects
 {
@@ -23,9 +24,9 @@ namespace RoguelikeGameEngine.Utils.Effects
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
                 if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
-                    Map.AppendMessage($"{paramsObject.Target.Name} is now at maximum HP!");
+                    Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }));
                 else
-                    Map.AppendMessage($"{paramsObject.Target.Name} healed {healAmount} HP!");
+                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }));
             }
             return true;
         }

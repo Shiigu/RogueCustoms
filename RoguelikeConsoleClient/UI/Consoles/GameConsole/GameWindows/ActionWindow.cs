@@ -12,12 +12,17 @@ using Keyboard = SadConsole.Input.Keyboard;
 using Console = SadConsole.Console;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.EngineHandling;
-using RoguelikeGameEngine.Game.Entities;
+using RoguelikeConsoleClient.Resources.Localization;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
     public class ActionWindow : Window
     {
+        private readonly string DoButtonText = LocalizationManager.GetString("DoButtonText").ToAscii();
+        private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
         private Button DoButton, CancelButton;
         private string TitleCaption { get; set; }
         private List<ActionItemDto> ActionItems;
@@ -37,19 +42,17 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             var width = 65;
             var height = 30;
 
-            var doButtonText = "DO";
-            var doButton = new Button(doButtonText.Length + 4, 1)
-            {
-                Text = doButtonText,
-            };
-
-            var cancelButtonText = "CANCEL";
-            var cancelButton = new Button(cancelButtonText.Length + 2, 1)
-            {
-                Text = cancelButtonText,
-            };
-
             var window = new ActionWindow(width, height);
+
+            var doButton = new Button(window.DoButtonText.Length + 4, 1)
+            {
+                Text = window.DoButtonText,
+            };
+
+            var cancelButton = new Button(window.CancelButtonText.Length + 2, 1)
+            {
+                Text = window.CancelButtonText,
+            };
 
             window.UseKeyboard = true;
             window.IsFocused = true;
@@ -57,7 +60,8 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.ActionSelectedIndex = 0;
             window.IsDirty = true;
             window.ParentConsole = parent;
-            window.TitleCaption = "Action";
+            window.Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            window.TitleCaption = LocalizationManager.GetString("ActionWindowTitleText");
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
             drawingArea.OnDraw += window.DrawWindow;
@@ -82,7 +86,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                 }
                 catch (Exception)
                 {
-                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
                 }
                 finally
                 {
@@ -124,7 +128,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.DrawLine(new Point(Width - 1, 0), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.DrawLine(new Point(0, window.Height - 3), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.ConnectLines(ICellSurface.ConnectedLineThick);
-            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.White, Color.DarkRed);
+            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption.ToAscii()} ", Color.White, Color.DarkRed);
 
             var action = ActionItems.ElementAtOrDefault(ActionSelectedIndex);
             var initialIndexToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, ActionItems.IndexOf(action));
@@ -136,9 +140,9 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 var actionName = ActionItems[initialIndexToShow + i].Name.PadRight(29);
                 if (ActionItems[initialIndexToShow + i] == action)
-                    ds.Surface.Print(2, 2 + i, actionName, Color.Black, Color.White);
+                    ds.Surface.Print(2, 2 + i, actionName.ToAscii(), Color.Black, Color.White);
                 else
-                    ds.Surface.Print(2, 2 + i, actionName, Color.White, Color.Black);
+                    ds.Surface.Print(2, 2 + i, actionName.ToAscii(), Color.White, Color.Black);
             }
 
             DoButton.IsEnabled = action.CanBeUsed;
@@ -147,7 +151,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 DoButton.IsEnabled = action.CanBeUsed;
 
-                ds.Surface.Print(34, 2, action.Name, Color.White, Color.Black);
+                ds.Surface.Print(34, 2, action.Name.ToAscii(), Color.White, Color.Black);
 
                 var descriptionAsString = action.Description.Wrap(30);
                 var linesInDescription = action.Description.Split(
@@ -164,7 +168,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
 
                 for (int i = 0; i < splitWrappedDescription.Count; i++)
                 {
-                    ds.Surface.Print(34, 4 + i, splitWrappedDescription[i].Trim(), Color.White, Color.Black);
+                    ds.Surface.Print(34, 4 + i, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
                 }
             }
             ds.IsDirty = true;

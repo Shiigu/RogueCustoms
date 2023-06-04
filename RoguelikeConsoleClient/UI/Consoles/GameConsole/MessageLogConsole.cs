@@ -2,14 +2,24 @@
 using SadRogue.Primitives;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.UI.Consoles.Utils;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
 {
     public class MessageLogConsole : GameSubConsole
     {
-        private readonly ScrollableMessageSubConsole ScrollableMessageLogSubConsole;
+        private ScrollableMessageSubConsole ScrollableMessageLogSubConsole;
+        private string TitleCaption;
         public MessageLogConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MessageLogCellWidth, GameConsoleConstants.MessageLogCellHeight)
         {
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
+            TitleCaption = LocalizationManager.GetString("MessageHeaderText").ToAscii();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
@@ -27,7 +37,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
 
             var square = new Rectangle(0, 0, Width, Height);
-            var title = " MESSAGES ";
+            var title = $" {TitleCaption} ";
 
             this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Violet, Color.Black, 178)));
             this.Print((square.Width - title.Length) / 2, 0, title);

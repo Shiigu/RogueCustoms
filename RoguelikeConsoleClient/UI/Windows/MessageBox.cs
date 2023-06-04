@@ -7,6 +7,8 @@ using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using Console = SadConsole.Console;
 using RoguelikeConsoleClient.UI.Consoles;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Windows
 {
@@ -49,12 +51,12 @@ namespace RoguelikeConsoleClient.UI.Windows
 
             var closeButton = new Button(buttonWidth, 1)
             {
-                Text = closeButtonText,
+                Text = closeButtonText.ToAscii(),
             };
 
             var window = new MessageBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + closeButton.Surface.Height);
             window.MessageLines = linesInMessage;
-            window.TitleCaption = titleText;
+            window.TitleCaption = titleText.ToAscii();
             window.CloseButton = closeButton;
             window.WindowColor = windowColor;
 
@@ -96,7 +98,7 @@ namespace RoguelikeConsoleClient.UI.Windows
             ds.Surface.Print((square.Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.Black, WindowColor);
             for (int i = 0; i < MessageLines.Length; i++)
             {
-                ds.Surface.Print(2, 2 + i, MessageLines[i].Replace("\r\n", "").Replace("\n", ""));
+                ds.Surface.Print(2, 2 + i, MessageLines[i].Replace("\r\n", "").Replace("\n", "").ToAscii());
             }
             ds.IsDirty = true;
             ds.IsFocused = true;

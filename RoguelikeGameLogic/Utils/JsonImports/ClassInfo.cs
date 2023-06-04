@@ -1,4 +1,6 @@
 ﻿using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Utils.JsonImports
 {

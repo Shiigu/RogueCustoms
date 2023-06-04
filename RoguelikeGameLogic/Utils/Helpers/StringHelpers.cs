@@ -1,4 +1,7 @@
 ﻿using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RoguelikeGameEngine.Utils.Helpers
@@ -28,6 +31,14 @@ namespace RoguelikeGameEngine.Utils.Helpers
         public static bool Contains(this string source, string toCheck, StringComparison comp)
         {
             return source?.IndexOf(toCheck, comp) >= 0;
+        }
+
+        public static string Format(this string input, object p)
+        {
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(p))
+                input = input.Replace("{" + prop.Name + "}", (prop.GetValue(p) ?? "(null)").ToString());
+
+            return input;
         }
     }
 }

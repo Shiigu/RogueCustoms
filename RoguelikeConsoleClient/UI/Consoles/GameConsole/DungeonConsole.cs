@@ -6,6 +6,8 @@ using SadRogue.Primitives;
 using RoguelikeGameEngine.Utils.Enums;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.EngineHandling;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
 {
@@ -16,12 +18,18 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
         private (int X, int Y) LatestCursorLocation;
         public DungeonConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MapCellWidth, GameConsoleConstants.MapCellHeight)
         {
+            SelectionBlink = new BicolorBlink() { BlinkSpeed = TimeSpan.FromSeconds(0.1d), BlinkOutBackgroundColor = Color.White, BlinkOutForegroundColor = Color.White }; ;
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = false;
             CursorLocation = default;
             LatestCursorLocation = default;
-            SelectionBlink = new BicolorBlink() { BlinkSpeed = TimeSpan.FromSeconds(0.1d), BlinkOutBackgroundColor = Color.White, BlinkOutForegroundColor = Color.White }; ;
         }
 
         public void AddCursor()
@@ -75,7 +83,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
             {
                 var message = BackendHandler.Instance.GetDungeonEndingMessage();
 
-                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "THE END", message);
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("TheEndMessageHeader"), message);
 
                 ParentContainer.LatestDungeonStatus = null;
                 base.Render(delta);
