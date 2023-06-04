@@ -27,9 +27,21 @@ Present at the root of the JSON file, this contains all the information pertaini
 Its fields are:
 - `Name`: The dungeon name, which will be used in the **Pick a Dungeon** screen and all Message Boxes created by it in-game.
 - `Author`: The dungeon's author, which will be used in the **Pick a Dungeon** screen.
-- `WelcomeMessage`: Before the dungeon begins, a **BRIEFING** screen will show up with this field's contents.
-- `EndingMessage`: After getting through the stairs of the dungeon's last floor, a **THE END** screen will show up with this field's contents.
+- `WelcomeMessage`: Before the dungeon begins, a **BRIEFING** screen will show up with this field's contents. This is expected to be an entry in the `LocaleInfos` section, but it can be put separately (not recommended, though).
+- `EndingMessage`: After getting through the stairs of the dungeon's last floor, a **THE END** screen will show up with this field's contents. This is expected to be an entry in the `LocaleInfos` section, but it can be put separately (not recommended, though).
 - `AmountOfFloors`: The amount of floors in a dungeon. In a more practical way, the amount of stairs the player will have to cross before meeting the **THE END** screen.
+- `DefaultLocale`: If the Client contains a Locale that is not recognized by the dungeon, it will use the entries contained in the Locale whose `Language` matches this field.
+- `LocaleInfos`:
+
+## LocaleInfos
+
+This contains all the Localizable strings the Dungeon has. It is expected to contain an entry for every single customizable String, but it is possible to have a String that is not present in the Locale dictionaries. This will mean the Locale will be the same in all languages.
+
+This is an array of Locales, whose fields are:
+- `Language`: A **two-letter** String that will be used to identify the Locale. It will have to match a `Locale` value in any of the Localization files in the Game Engine. As of writing this, the Game Engine only supports English and Spanish, so it will only understand the `en` and `es` values.
+- `LocaleStrings`: An array of Key-Value pairs. The Keys can be accessed by pretty much any text-reading function mentioned below. You can define as many as you want; that being said, there is a group of LocaleStrings that are used in the Game Engine itself, so *they have to be defined* in every Locale, including the mentioned, presumably self-explanatory, parameters, to avoid undesired behaviours. Those required Locales are in the `RequiredLocaleStrings.json` file at the Repository's root folder.
+
+**NOTE IN CASE YOU WANT TO CREATE A NEW LANGUAGE:** The Console Client uses IBM437 encoding to display text, so most non-English characters will display incorrectly, if not at all (e.g. Spanish uppercase vowels with tildes).
 
 ## FloorInfos
 
@@ -141,8 +153,8 @@ Factions can interact with each other in the following way:
 
 Its fields are:
 - `Id`: The faction's Id.
-- `Name`: The faction's name. Currently unused in the Console Client.
-- `Description`: Currently unused in the Console Client.
+- `Name`: The faction's name. Currently unused in the Console Client. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Description`: Currently unused in the Console Client. Can be the name of a Key in the `Locales` Key-Pair section.
 - `AlliedWith`: An array of Ids of the Factions this is allied with.
 - `NeutralWith`: An array of Ids of the Factions this is neutral with.
 - `EnemyWith`: An array of Ids of the Factions this is enemies with.
@@ -153,8 +165,8 @@ This contains all the characters in the Dungeon - in more technical descriptions
 
 Its fields are:
 - `Id`: The Character's Id.
-- `Name`: The Character's name.
-- `Description`: Currently unused in the Console Client.
+- `Name`: The Character's name. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Description`: Currently unused in the Console Client. Can be the name of a Key in the `Locales` Key-Pair section.
 - `ConsoleRepresentation`: Indicates how it will be shown in the Console Client. Console Representation will be explained in a further section.
 - `EntityType`: For a Character, it will either be `Player` or `NPC`. **There can only be one Character with the `Player` EntityType per Dungeon!**
 - `Faction`: The Id belonging to the Player's faction.
@@ -192,8 +204,8 @@ This contains all the items in the Dungeon - in more technical descriptions, any
 
 Its fields are:
 - `Id`: The Item's Id.
-- `Name`: The Item's name.
-- `Description`: Indicates the Item's description in the Console Client's Inventory Screen. Can be used to explain what it does.
+- `Name`: The Item's name. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Description`: Indicates the Item's description in the Console Client's Inventory Screen. Can be used to explain what it does. Can be the name of a Key in the `Locales` Key-Pair section.
 - `ConsoleRepresentation`: Indicates how it will be shown in the Console Client. Console Representation will be explained in a further section.
 - `EntityType`: For an Item, it can be `Weapon`, `Armor`, or `Consumable`.
 - `StartsVisible`: If `false`, the Item will be invisible until an action involving them is performed.
@@ -210,8 +222,8 @@ This contains all the traps in the Dungeon - in more technical descriptions, any
 
 Its fields are:
 - `Id`: The Trap's Id.
-- `Name`: The Trap's name.
-- `Description`: Indicates the Trap's description in the Console Client's Inventory Screen. Can be used to explain what it does.
+- `Name`: The Trap's name. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Description`: Currently unused in the Console Client. Can be the name of a Key in the `Locales` Key-Pair section.
 - `ConsoleRepresentation`: Indicates how it will be shown in the Console Client. Console Representation will be explained in a further section.
 - `EntityType`: For a Trap, it is always `Trap`.
 - `StartsVisible`: If `false`, the Trap will be invisible until an action involving them is performed.
@@ -224,8 +236,8 @@ This contains all the Altered Statuses in the Dungeon - in more technical descri
 
 Its fields are:
 - `Id`: The Status's Id. Two instances of an Altered Status, for considerations of `CanStack` and `CanOverwrite`, will be considered to be the same if the have the same Id.
-- `Name`: The Status's name.
-- `Description`: Indicates the Status's description in the Console Client's Player Info Screen. Can be used to explain what it does.
+- `Name`: The Status's name. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Description`: Indicates the Status's description in the Console Client's Player Info Screen. Can be used to explain what it does. Can be the name of a Key in the `Locales` Key-Pair section.
 - `ConsoleRepresentation`: Indicates how it will be shown in the Console Client. Console Representation will be explained in a further section.
 - `EntityType`: For an Altered Status, it is always `AlteredStatus`.
 - `CanStack`: If `true`, it will be possible to have multiple copies of the same Altered Status on the same Character.
@@ -310,7 +322,7 @@ These parameters can be used in any `Value` for any Effect, as long as it's of a
 
 ### List of currently-available functions with effects
 
-##### DealDamage
+#### DealDamage
 
 **Description**:
 
@@ -330,7 +342,7 @@ These parameters can be used in any `Value` for any Effect, as long as it's of a
 
 Returns `true` (Success) when the attack hits and `Damage - Mitigation > 0`. Returns `false` (Failure) if the attack misses, or if it hits but `Damage - Mitigation <= 0`.
 
-##### ReplaceConsoleRepresentation
+#### ReplaceConsoleRepresentation
 
 **Description**:
 
@@ -348,14 +360,14 @@ Returns `true` (Success) when the attack hits and `Damage - Mitigation > 0`. Ret
 
 Always returns `true` (Success).
 
-##### PrintText
+#### PrintText
 
 **Description**:
 
 Will print some text into the Message Log.
 
 **Required Parameters**:
-- `Text`: The text to print into the Message Log.
+- `Text`: The text to print into the Message Log. Can be the name of a Key in the `Locales` Key-Pair section.
 
 **Optional Parameters**: None
 
@@ -365,15 +377,15 @@ If the Player can see either `Source` or `Target`, `Text` will be printed into t
 
 Always returns `true` (Success).
 
-##### MessageBox
+#### MessageBox
 
 **Description**:
 
 Produce a Message Box for the game Client.
 
 **Required Parameters**:
-- `Title`: The Message Box's title.
-- `Text`: The Message Box's inner text:
+- `Title`: The Message Box's title. Can be the name of a Key in the `Locales` Key-Pair section.
+- `Text`: The Message Box's inner text. Can be the name of a Key in the `Locales` Key-Pair section.
 - `Color`: The Message Box's border and title box color. It's written in this order: `{Red,Green,Blue,Alpha}`.
 
 **Optional Parameters**: None
@@ -384,7 +396,7 @@ Before the player's next turn, a Message Box will pop up in their Client.
 
 Always returns `true` (Success).
 
-##### GiveExperience
+#### GiveExperience
 
 **Description**:
 
@@ -423,7 +435,7 @@ Returns `true` (Success) if `Target` got any experience points. Returns `false` 
 
 Returns `true` (Success) if the Altered Status is applied. Returns `false` (Failure) otherwise.
 
-##### CleanseAlteredStatus
+#### CleanseAlteredStatus
 
 **Description**:
 
@@ -442,7 +454,7 @@ Returns `true` (Success) if the Altered Status is applied. Returns `false` (Fail
 
 Returns `true` (Success) if the Altered Status is removed. Returns `false` (Failure) otherwise.
 
-##### CleanseAllAlteredStatuses
+#### CleanseAllAlteredStatuses
 
 **Description**:
 
@@ -460,7 +472,7 @@ Returns `true` (Success) if the Altered Status is removed. Returns `false` (Fail
 
 Returns `true` (Success) if all Altered Statuses are removed. Returns `false` (Failure) otherwise.
 
-##### ApplyStatAlteration
+#### ApplyStatAlteration
 
 **Description**:
 
@@ -483,7 +495,7 @@ Returns `true` (Success) if all Altered Statuses are removed. Returns `false` (F
 
 Returns `true` (Success) if the Stat Alteration is applied. Returns `false` (Failure) otherwise.
 
-##### CleanseStatAlteration
+#### CleanseStatAlteration
 
 **Description**:
 
@@ -501,7 +513,7 @@ Returns `true` (Success) if the Stat Alteration is applied. Returns `false` (Fai
 
 Returns `true` (Success) if `Stat`'s Alterations are removed. Returns `false` (Failure) otherwise.
 
-##### CleanseStatAlterations
+#### CleanseStatAlterations
 
 **Description**:
 
@@ -518,7 +530,7 @@ Returns `true` (Success) if `Stat`'s Alterations are removed. Returns `false` (F
 
 Returns `true` (Success) if all Stat Alterations are removed. Returns `false` (Failure) otherwise.
 
-##### GenerateStairs
+#### GenerateStairs
 
 **Description**:
 
@@ -534,7 +546,7 @@ If the Floor's Stairs weren't present, they will be generated on a valid locatio
 
 Returns `true` (Success) if there weren't any Stairs before calling this function. Returns `false` (Failure) otherwise.
 
-##### HealDamage
+#### HealDamage
 
 **Description**:
 
@@ -553,7 +565,7 @@ Returns `true` (Success) if there weren't any Stairs before calling this functio
 
 Returns `true` (Success) when `Target`'s `HP` was lower than their `MaxHP` upon trying to heal. Returns `false` (Failure) otherwise.
 
-##### Equip
+#### Equip
 
 **Description**:
 
@@ -571,7 +583,7 @@ Returns `true` (Success) when `Target`'s `HP` was lower than their `MaxHP` upon 
 
 Always returns `true` (Success).
 
-##### Remove
+#### Remove
 
 **Description**:
 
