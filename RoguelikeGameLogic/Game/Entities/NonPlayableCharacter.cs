@@ -3,6 +3,9 @@ using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Helpers;
 using RoguelikeGameEngine.Utils.Representation;
 using RoguelikeGameEngine.Utils.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace RoguelikeGameEngine.Game.Entities
 {
@@ -56,7 +59,8 @@ namespace RoguelikeGameEngine.Game.Entities
                         var possibleDestinations = Map.Tiles.GetElementsWithinDistance(Position.Y, Position.X, minimumMaximumRange, true)
                                         .Where(t => t.IsWalkable && !t.IsOccupied && Point.Distance(t.Position, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange));
                         var paths = possibleDestinations.Select(pd => Map.GetPathBetweenTiles(Position, pd.Position)).Where(p => p.Any()).ToList();
-                        destination = paths.MinBy(p => p.Count).Last().Position;
+                        var minLength = paths.Min(p => p.Count);
+                        destination = paths.First(p => p.Count == minLength).Last().Position;
                     }
                 }
 
@@ -171,7 +175,7 @@ namespace RoguelikeGameEngine.Game.Entities
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
-            Map.AppendMessage($"{Name} picked up {item.Name}.");
+            Map.AppendMessage(Map.Locale["NPCPickitem"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 
         public override void DropItem(Item item)
@@ -184,14 +188,14 @@ namespace RoguelikeGameEngine.Game.Entities
                 item.Position = pickedEmptyTile.Position;
                 item.Owner = null!;
                 item.ExistenceStatus = EntityExistenceStatus.Alive;
-                Map.AppendMessage($"{Name} dropped {item.Name} on the floor.");
+                Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
             }
             else
             {
                 item.Position = null;
                 item.Owner = null!;
                 item.ExistenceStatus = EntityExistenceStatus.Gone;
-                Map.AppendMessage($"{item.Name} was destroyed!");
+                Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = item.Name }));
                 Map.Items.Remove(item);
             }
         }

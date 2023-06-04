@@ -2,17 +2,26 @@
 using SadRogue.Primitives;
 using RoguelikeConsoleClient.Helpers;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole
 {
     public class GameControlsConsole : GameSubConsole
     {
-        private readonly string MoveModeControlsString = "<ARROWS> Move <A> Action Menu <I> Inventory Menu <S> Skip Turn";
-        private readonly string MoveModeOnStairsControlsString = "<ARROWS> Move <A> Action Menu <I> Inventory Menu <U> Take Stairs <S> Skip Turn";
-        private readonly string ActionModeControlsString = "<ARROWS> Move <A> Open Action Window <ESC> Cancel";
+        private string MoveModeControlsString, MoveModeOnStairsControlsString, ActionModeControlsString;
 
-        public GameControlsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ControlsWidth, GameConsoleConstants.ControlsWidth)
+        public GameControlsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ControlsWidth, GameConsoleConstants.ControlsHeight)
         {
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
+            MoveModeControlsString = LocalizationManager.GetString("MoveModeControlsText").ToAscii();
+            MoveModeOnStairsControlsString = LocalizationManager.GetString("MoveModeOnStairsControlsText").ToAscii();
+            ActionModeControlsString = LocalizationManager.GetString("ActionModeControlsText").ToAscii();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = false;

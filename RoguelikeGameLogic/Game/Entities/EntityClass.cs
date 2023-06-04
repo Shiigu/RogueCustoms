@@ -2,6 +2,8 @@
 using RoguelikeGameEngine.Utils;
 using RoguelikeGameEngine.Utils.JsonImports;
 using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Game.Entities
 {
@@ -61,11 +63,11 @@ namespace RoguelikeGameEngine.Game.Entities
         public readonly bool CleansedByCleanseActions;
         public List<ActionWithEffects> OnStatusApplyActions { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo)
+        public EntityClass(ClassInfo classInfo, Locale Locale)
         {
             Id = classInfo.Id;
-            Name = classInfo.Name;
-            Description = classInfo.Description;
+            Name = Locale[classInfo.Name];
+            Description = (classInfo.Description != null) ? Locale[classInfo.Description] : null;
             FactionId = classInfo.Faction;
             ConsoleRepresentation = classInfo.ConsoleRepresentation;
             EntityType = (EntityType)Enum.Parse(typeof(EntityType), classInfo.EntityType);

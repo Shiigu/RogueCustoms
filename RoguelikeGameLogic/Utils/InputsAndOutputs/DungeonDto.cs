@@ -4,6 +4,9 @@ using RoguelikeGameEngine.Utils.Helpers;
 using RoguelikeGameEngine.Utils.Representation;
 using System.Collections.Concurrent;
 using RoguelikeGameEngine.Utils.Enums;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 {
@@ -28,25 +31,25 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 
         public DungeonDto() { }
 
-        public DungeonDto(Dungeon dungeon)
+        public DungeonDto(Dungeon dungeon, Map map)
         {
             DungeonId = dungeon.Id;
-            Name = dungeon.CurrentFloor.FloorName;
+            Name = map.FloorName;
             DungeonStatus = dungeon.DungeonStatus;
-            Width = dungeon.CurrentFloor.Width;
-            Height = dungeon.CurrentFloor.Height;
-            TurnCount = dungeon.CurrentFloor.TurnCount;
+            Width = map.Width;
+            Height = map.Height;
+            TurnCount = map.TurnCount;
             Entities = new List<EntityDto>();
             var _tiles = new ConcurrentBag<TileDto>();
             AlteredStatuses = new List<AlteredStatusDto>();
             if(DungeonStatus != DungeonStatus.Completed)
             {
-                Parallel.For(0, dungeon.CurrentFloor.Tiles.GetLength(0), y =>
+                Parallel.For(0, map.Tiles.GetLength(0), y =>
                 {
-                    Parallel.For(0, dungeon.CurrentFloor.Tiles.GetLength(1), x =>
+                    Parallel.For(0, map.Tiles.GetLength(1), x =>
                     {
-                        var tile = dungeon.CurrentFloor.Tiles[y, x];
-                        _tiles.Add(new TileDto(tile, dungeon.CurrentFloor));
+                        var tile = map.Tiles[y, x];
+                        _tiles.Add(new TileDto(tile, map));
                     });
                 });
                 Tiles = _tiles.ToList();
@@ -55,13 +58,13 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
             {
                 Tiles = new List<TileDto>();
             }
-            var playerEntity = dungeon.CurrentFloor.Player;
-            var tileIsOccupied = dungeon.CurrentFloor.GetEntitiesFromCoordinates(playerEntity.Position).Any(e => e.Passable
+            var playerEntity = map.Player;
+            var tileIsOccupied = map.GetEntitiesFromCoordinates(playerEntity.Position).Any(e => e.Passable
                     && (e.EntityType == EntityType.Weapon || e.EntityType == EntityType.Armor || e.EntityType == EntityType.Consumable)
                     && e.ExistenceStatus != EntityExistenceStatus.Gone);
-            dungeon.CurrentFloor.Entities
+            map.Entities
                 .Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone && playerEntity?.CanSee(e) == true)
-                .ForEach(e => Entities.Add(new EntityDto(e)));
+                .ForEach(e => Entities.Add(new EntityDto(e, map)));
             playerEntity.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDto(als)));
             LogMessages = dungeon.Messages.TakeLast(Constants.LogMessagesToSend).ToList();
             MessageBoxes = new List<MessageBoxDto>(dungeon.MessageBoxes);
@@ -132,18 +135,22 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
             var experienceBetweenLevels = entity.ExperienceToLevelUp - entity.LastLevelUpExperience;
             return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
         }
+        public string HPStatName { get; set; }
         public int HP { get; set; }
         public int MaxHP { get; set; }
         public string Weapon { get; set; }
+        public string DamageStatName { get; set; }
         public string Damage { get; set; }
         public string Armor { get; set; }
+        public string MitigationStatName { get; set; }
         public string Mitigation { get; set; }
+        public string MovementStatName { get; set; }
         public int Movement { get; set; }
         #endregion
 
         public EntityDto() { }
 
-        public EntityDto(Entity entity)
+        public EntityDto(Entity entity, Map map)
         {
             X = entity.Position.X;
             Y = entity.Position.Y;
@@ -173,12 +180,16 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
                 Experience = pc.Experience;
                 ExperienceToLevelUp = pc.ExperienceToLevelUp;
                 CurrentExperiencePercentage = CalculateExperienceBarPercentage(pc);
+                HPStatName = map.Locale["CharacterHPStat"];
                 HP = pc.HP;
                 MaxHP = pc.MaxHP;
                 Weapon = pc.Weapon.Name;
+                DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;
                 Armor = pc.Armor.Name;
+                MitigationStatName = map.Locale["CharacterMitigationStat"];
                 Mitigation = pc.Mitigation;
+                MovementStatName = map.Locale["CharacterMovementStat"];
                 Movement = pc.Movement;
             }
         }

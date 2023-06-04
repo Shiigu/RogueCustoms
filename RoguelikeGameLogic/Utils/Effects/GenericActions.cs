@@ -1,6 +1,10 @@
 ﻿using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Helpers;
+using System.Xml.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Utils.Effects
 {
@@ -42,7 +46,7 @@ namespace RoguelikeGameEngine.Utils.Effects
             if (Target.EntityType == EntityType.Player
                 || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
             {
-                Map.AppendMessage($"{paramsObject.Target.Name} gained {(int) paramsObject.Amount} experience points.");
+                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }));
                 paramsObject.Target.GainExperience((int) paramsObject.Amount);
                 output = (int) paramsObject.Amount;
             }
@@ -63,7 +67,7 @@ namespace RoguelikeGameEngine.Utils.Effects
                 if (success && statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget)))
                 {
-                    Map.AppendMessage($"{statusTarget.Name} is now {statusToApply.Name}!");
+                    Map.AppendMessage(Map.Locale["CharacterGotStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }));
                 }
                 return success;
             }
@@ -83,13 +87,15 @@ namespace RoguelikeGameEngine.Utils.Effects
                     Amount = paramsObject.Amount,
                     RemainingTurns = (int) paramsObject.TurnLength
                 });
-                var verb = paramsObject.Amount > 0 ? "increased" : "decreased";
                 output = (int) paramsObject.Amount;
-                var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HP Regeneration" : paramsObject.StatName;
+                var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
                 if (paramsObject.Target.EntityType == EntityType.Player
                     || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
                 {
-                    Map.AppendMessage($"{paramsObject.Target.Name}'s {statName} has {verb} by {Math.Abs(paramsObject.Amount)}!");
+                    if(paramsObject.Amount > 0)
+                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
+                    else
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
                 }
                 return true;
             }
@@ -114,7 +120,7 @@ namespace RoguelikeGameEngine.Utils.Effects
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
                 {
-                    Map.AppendMessage($"{c.Name} is no longer {statusToRemove.Name}!");
+                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToRemove.Name }));
                 }
                 return true;
             }
@@ -135,7 +141,8 @@ namespace RoguelikeGameEngine.Utils.Effects
                 if (Target.EntityType == EntityType.Player
                     || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
                 {
-                    Map.AppendMessage($"{Target.Name}'s {paramsObject.StatName} returned to normal.");
+                    var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }));
                 }
                 return true;
             }
@@ -153,10 +160,15 @@ namespace RoguelikeGameEngine.Utils.Effects
                 || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 c.MaxHPModifications.Clear();
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterMaxHPStat"] }));
                 c.AttackModifications.Clear();
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterAttackStat"] }));
                 c.DefenseModifications.Clear();
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterDefenseStat"] }));
                 c.MovementModifications.Clear();
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterMovementStat"] }));
                 c.HPRegenerationModifications.Clear();
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterHPRegenerationStat"] }));
 
                 return true;
             }
@@ -175,12 +187,13 @@ namespace RoguelikeGameEngine.Utils.Effects
                     if (c.EntityType == EntityType.Player
                         || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
                     {
-                        Map.AppendMessage($"{c.Name} is no longer {als.Name}!");
+                        Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = als.Name }));
                     }
                     c.MaxHPModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                     c.AttackModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                     c.DefenseModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                     c.MovementModifications?.RemoveAll(a => a.Id.Equals(als.Id));
+                    c.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                 });
                 c.AlteredStatuses.Clear();
                 return true;
@@ -194,7 +207,7 @@ namespace RoguelikeGameEngine.Utils.Effects
             if (!Map.StairsAreSet)
             {
                 Map.SetStairs();
-                Map.AppendMessage($"The stairs have been revealed!");
+                Map.AppendMessage(Map.Locale["StairsGotRevealed"]);
                 return true;
             }
             return false;

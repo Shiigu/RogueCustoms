@@ -1,0 +1,100 @@
+﻿; Settings
+LanguageName = English
+LanguageLocale = en
+
+; Used in multiple consoles
+PlayerLevelText = LEVEL {CurrentLevel}
+PlayerNoStatusesText = NONE!
+CancelButtonText = CANCEL
+ExitButtonText = EXIT
+ReturnToMainMenuText = RETURN TO MAIN MENU
+
+; MainMenuConsole
+GameTitle = Rogue Customs
+SelectFileText = START A DUNGEON
+OptionsText = OPTIONS
+
+; OptionsConsole
+OptionsHeaderText = SELECT OPTIONS
+RadioButtonHeaderText = GAME HOST LOCATION
+LocalRadioButtonText = LOCAL
+ServerRadioButtonText = IN A SERVER
+ServerAddressTextBoxHeaderText = SERVER ADDRESS
+LanguageListHeaderText = LANGUAGE
+SaveButtonText = SAVE SETTINGS
+
+; PickDungeonConsole
+PickDungeonHeaderText = PICK A DUNGEON
+DungeonDisplayNameText = {DungeonName} - by {Author}
+NoDungeonsText = There are no Dungeons to show.
+NoLocalDungeonsSubtext = Put Dungeons in the JSON folder first.
+NoServerDungeonsSubtext = Server has no Dungeons installed.
+PickButtonText = PLAY SELECTED DUNGEON
+
+; MessageConsole
+BriefingMessageHeader = BRIEFING
+TheEndMessageHeader = THE END
+ErrorMessageHeader = ERROR
+ErrorText = OH NO!\n\nAn error has occured!\n\nGet ready to return to the main menu...
+PressEnterText = Press Enter to Continue...
+
+; DungeonConsole
+StairsPromptText = Do you want to use the stairs?
+
+; ExperienceBarConsole
+ExperienceBarDisplayText = Experience: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% of current level)
+
+; GameControlsConsole
+MoveModeControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeOnStairsControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
+ActionModeControlsText = <ARROWS> Move <A> Open Action Window <ESC> Cancel
+
+; MessageLogConsole
+MessageHeaderText = MESSAGES
+
+; PlayerInfoConsole
+PlayerInfoConsoleTitle = YOU
+PlayerInfoWeaponHeader = WEAPON
+PlayerInfoArmorHeader = ARMOR
+PlayerInfoStatusesHeader = Statuses:
+PlayerInfoTooManyStatusesText = AND MORE!
+DetailsButtonText = DETAILS
+
+; ActionWindow
+ActionWindowTitleText = Action
+DoButtonText = DO
+
+; InventoryWindow
+InventoryWindowTitleText = Inventory
+UseButtonText = USE
+EquipButtonText = EQUIP
+DropButtonText = DROP
+SwapButtonText = SWAP
+EquippedItemNamePrefix = (E)
+EquippedItemDescriptionText = (This item is currently\nequipped)
+FloorItemNamePrefix = (F)
+FloorItemDescriptionText = (This item is in the floor)
+OccupiedTileDescriptionText = (Tile is occupied,\ncan't drop)
+
+; PlayerCharacterDetailWindow
+PlayerCharacterDetailWindowTitleText = {PlayerName} INFO
+PlayerCharacterDetailCurrentExperienceText = Current Experience: {CurrentExperience}
+PlayerCharacterDetailExperienceToLevelUpText = Experience to Level {NextLevel}: {RequiredExperience}
+PlayerCharacterDetailAtMaxLevelText = AT MAX LEVEL!
+PlayerCharacterDetailStatsHeader = STATS:
+PlayerCharacterDetailBaseText = Base
+PlayerCharacterDetailMaxBaseText = Max Base
+PlayerCharacterDetailStatAlterationText = {Alteration} from {Source}
+PlayerCharacterDetailAlteredStatusesHeaderText = ALTERED STATUSES:
+PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns = - {StatusName}: {StatusDescription} [{RemainingTurns} TURNS LEFT]
+PlayerCharacterDetailAlteredStatusDescriptionText = - {StatusName}: {StatusDescription}
+PlayerCharacterDetailEquippedWeaponHeader = CURRENT WEAPON
+PlayerCharacterDetailEquippedArmorHeader = CURRENT ARMOR
+CloseButtonText = CLOSE
+
+; MessageBox
+OKButtonText = OK
+
+; PromptBox
+YesButtonText = YES
+NoButtonText = NO

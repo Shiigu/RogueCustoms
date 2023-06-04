@@ -3,6 +3,8 @@ using RoguelikeGameEngine.Utils.Enums;
 using RoguelikeGameEngine.Utils.Helpers;
 using RoguelikeGameEngine.Utils.Representation;
 using System.Drawing;
+using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace RoguelikeGameEngine.Game.Entities
@@ -24,20 +26,20 @@ namespace RoguelikeGameEngine.Game.Entities
             base.GainExperience(pointsToAdd);
             if (Level > oldLevel)
             {
-                var levelUpMessage = new StringBuilder($"{Name} has reached Level {Level}!");
+                var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
                 levelUpMessage.AppendLine();
                 levelUpMessage.AppendLine();
                 if (MaxHP != oldMaxHP)
-                    levelUpMessage.Append("HP increased by ").Append(MaxHP - oldMaxHP).AppendLine(".");
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMaxHPStat"], Amount = (MaxHP - oldMaxHP).ToString() }));
                 if (Attack != oldAttack)
-                    levelUpMessage.Append("Attack increased by ").Append(Attack - oldAttack).AppendLine(".");
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"], Amount = (Attack - oldAttack).ToString() }));
                 if (Defense != oldDefense)
-                    levelUpMessage.Append("Defense increased by ").Append(Defense - oldDefense).AppendLine(".");
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"], Amount = (Defense - oldDefense).ToString() }));
                 if (Movement != oldMovement)
-                    levelUpMessage.Append("Movement increased by ").Append(Movement - oldMovement).AppendLine(".");
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"], Amount = (Movement - oldMovement).ToString() }));
                 if (HPRegeneration != oldHPRegeneration)
-                    levelUpMessage.Append("HP Regeneration increased by ").Append(HPRegeneration - oldHPRegeneration).Append('.');
-                Map.AddMessageBox("CONGRATULATIONS!", levelUpMessage.ToString(), "OK", new GameColor(Color.Green));
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"], Amount = (HPRegeneration - oldHPRegeneration).ToString() }));
+                Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Green));
             }
         }
 
@@ -55,11 +57,12 @@ namespace RoguelikeGameEngine.Game.Entities
 
         public new void RefreshCooldowns()
         {
-            MaxHPModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(a => Map.AppendMessage($"The effect from {a.Id} has vanished..."));
-            AttackModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(a => Map.AppendMessage($"The effect from {a.Id} has vanished..."));
-            DefenseModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(a => Map.AppendMessage($"The effect from {a.Id} has vanished..."));
-            MovementModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(a => Map.AppendMessage($"The effect from {a.Id} has vanished..."));
-            base.RefreshCooldownsAndUpdateTurnLength();
+            MaxHPModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPStat"] })));
+            AttackModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"] })));
+            DefenseModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"] })));
+            MovementModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"] })));
+            HPRegenerationModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"] })));
+            RefreshCooldownsAndUpdateTurnLength();
         }
 
         public override void Die(Entity? attacker = null)
@@ -91,7 +94,7 @@ namespace RoguelikeGameEngine.Game.Entities
             item.Position = Position;
             item.Owner = null!;
             item.ExistenceStatus = EntityExistenceStatus.Alive;
-            Map.AppendMessage($"{Name} put {item.Name} on the floor.");
+            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 
         public override void PickItem(Item item)
@@ -100,7 +103,7 @@ namespace RoguelikeGameEngine.Game.Entities
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
-            Map.AppendMessage($"{Name} put up {item.Name} on the bag.");
+            Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
     }
 }

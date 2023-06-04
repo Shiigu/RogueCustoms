@@ -4,6 +4,9 @@ using RoguelikeGameEngine.Utils.JsonImports;
 using RoguelikeGameEngine.Game.Entities;
 using System.Drawing;
 using RoguelikeGameEngine.Utils.Enums;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Game.DungeonStructure
 {
@@ -17,6 +20,7 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
         private int CurrentFloorLevel;
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
+
         public List<string> Messages { get; set; }
 
         public List<MessageBoxDto> MessageBoxes { get; set; }
@@ -25,30 +29,35 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
         public string Name { get; set; }
         public string Author { get; set; }
         public int AmountOfFloors { get; set; }
+        public Locale LocaleToUse { get; set; }
         public List<FloorType> FloorTypes { get; set; }
         public List<EntityClass> Classes { get; set; }
 
         public readonly List<Faction> Factions;
         #endregion
 
-        public Dungeon(int id, DungeonInfo dungeonInfo)
+        public Dungeon(int id, DungeonInfo dungeonInfo, string localeLanguage)
         {
             Id = id;
-            Name = dungeonInfo.Name;
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
-            WelcomeMessage = dungeonInfo.WelcomeMessage;
-            EndingMessage = dungeonInfo.EndingMessage;
             Classes = new List<EntityClass>();
-            dungeonInfo.Characters.ForEach(ci => Classes.Add(new EntityClass(ci)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci)));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci)));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci)));
+            var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
+                ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
+                ?? throw new Exception($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
+            LocaleToUse = new Locale(localeInfoToUse);
+            Name = LocaleToUse[dungeonInfo.Name];
+            WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
+            EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
+            dungeonInfo.Characters.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi)));
             FloorTypes.ForEach(ft => ft.FillPossibleClassLists(Classes));
             Factions = new List<Faction>();
-            dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi)));
+            dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
             Messages = new List<string>();
             MessageBoxes = new List<MessageBoxDto>();

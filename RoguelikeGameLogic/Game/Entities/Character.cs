@@ -5,6 +5,9 @@ using RoguelikeGameEngine.Utils;
 using RoguelikeGameEngine.Utils.Helpers;
 using System.Data;
 using RoguelikeGameEngine.Utils.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace RoguelikeGameEngine.Game.Entities
 {
@@ -245,7 +248,7 @@ namespace RoguelikeGameEngine.Game.Entities
             MovementModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AlteredStatuses?.Where(a => a.RemainingTurns == 0
                                         && (this == Map.Player || Map.Player.CanSee(this)))
-                            .ForEach(als => Map.AppendMessage($"{Name} is no longer {als.Name}!"));
+                            .ForEach(als => Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = als.Name })));
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             OnAttackActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
@@ -302,7 +305,7 @@ namespace RoguelikeGameEngine.Game.Entities
             {
                 LastLevelUpExperience = ExperienceToLevelUp;
                 Level++;
-                Map.AppendMessage($"{Name} has reached Level {Level}!");
+                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}));
                 HP = MaxHP;
             }
         }
@@ -337,12 +340,12 @@ namespace RoguelikeGameEngine.Game.Entities
                     equippedItem.Position = itemToEquip.Position;
                     equippedItem.Owner = null!;
                     equippedItem.ExistenceStatus = EntityExistenceStatus.Alive;
-                    Map.AppendMessage($"{Name} put {equippedItem.Name} on the floor.");
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
                 }
                 else
                 {
                     Inventory.Add(equippedItem);
-                    Map.AppendMessage($"{Name} put {equippedItem.Name} on the bag.");
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
                 }
             }
             if (!itemToEquipWasInTheBag)

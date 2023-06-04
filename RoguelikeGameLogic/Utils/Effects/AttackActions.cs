@@ -1,6 +1,7 @@
 ﻿using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Helpers;
+using System;
 
 namespace RoguelikeGameEngine.Utils.Effects
 {
@@ -19,7 +20,7 @@ namespace RoguelikeGameEngine.Utils.Effects
             if (paramsObject.Target.EntityType == EntityType.Player
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
-                Map.AppendMessage($"{paramsObject.Target.Name} took {damageDealt} damage.");
+                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = paramsObject.Target.Name, DamageDealt = damageDealt }));
             }
             paramsObject.Target.HP = Math.Max(0, paramsObject.Target.HP - damageDealt);
             if (paramsObject.Target.HP == 0)

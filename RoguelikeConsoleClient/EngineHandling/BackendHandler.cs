@@ -1,6 +1,10 @@
 ﻿using RoguelikeGameEngine.Management;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
 using RoguelikeConsoleClient.UI.Consoles.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace RoguelikeConsoleClient.EngineHandling
 {
@@ -46,26 +50,27 @@ namespace RoguelikeConsoleClient.EngineHandling
             using var sw = new StreamWriter(fs);
             sw.WriteLine($"AT {DateTime.Now:s}:");
             sw.WriteLine();
+            sw.WriteLine(ex.GetType().Name);
             sw.WriteLine(ex.Message);
             sw.WriteLine("-------------");
             sw.WriteLine("Inner exception:");
-            sw.WriteLine(ex.InnerException.Message);
-            sw.WriteLine(ex.InnerException.StackTrace);
+            sw.WriteLine(ex.InnerException?.Message);
+            sw.WriteLine(ex.InnerException?.StackTrace);
             sw.WriteLine("-------------");
             sw.WriteLine(ex.StackTrace);
             sw.WriteLine();
             sw.WriteLine("------------------------------------");
         }
 
-        public List<DungeonListDto> GetPickableDungeonList()
+        public List<DungeonListDto> GetPickableDungeonList(string locale)
         {
             try
             {
                 List<DungeonListDto> DungeonList = null;
                 if (IsLocal)
-                    DungeonList = LocalHandler.GetPickableDungeonList();
+                    DungeonList = LocalHandler.GetPickableDungeonList(locale);
                 else
-                    Task.Run(async () => DungeonList = await ServerHandler.GetPickableDungeonList()).Wait();
+                    Task.Run(async () => DungeonList = await ServerHandler.GetPickableDungeonList(locale)).Wait();
                 return DungeonList;
             }
             catch (Exception ex)
@@ -75,14 +80,14 @@ namespace RoguelikeConsoleClient.EngineHandling
             }
         }
 
-        public void CreateDungeon(string dungeonInternalName)
+        public void CreateDungeon(string dungeonInternalName, string locale)
         {
             try
             {
                 if (IsLocal)
-                    DungeonId = LocalHandler.CreateDungeon(dungeonInternalName);
+                    DungeonId = LocalHandler.CreateDungeon(dungeonInternalName, locale);
                 else
-                    Task.Run(async () => DungeonId = await ServerHandler.CreateDungeon(dungeonInternalName)).Wait();
+                    Task.Run(async () => DungeonId = await ServerHandler.CreateDungeon(dungeonInternalName, locale)).Wait();
             }
             catch (Exception ex)
             {

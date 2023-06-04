@@ -3,6 +3,8 @@ using System.Text;
 using RoguelikeConsoleClient.UI.Consoles;
 using RoguelikeConsoleClient.EngineHandling;
 using RoguelikeConsoleClient.Utils;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
 
 namespace RoguelikeConsoleClient
 {
@@ -10,13 +12,14 @@ namespace RoguelikeConsoleClient
     {
         public static void Main(string[] args)
         {
-            SadConsole.Settings.WindowTitle = "Rogue Customs";
             SadConsole.Settings.AllowWindowResize = false;
             SadConsole.Settings.ResizeMode = SadConsole.Settings.WindowResizeOptions.Fit;
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             BackendHandler.CreateInstance(Settings.Default.IsLocal, Settings.Default.ServerAddress);
+            LocalizationManager.Build();
+            SadConsole.Settings.WindowTitle = LocalizationManager.GetString("GameTitle").ToAscii();
 
             Game.Create(GlobalConstants.ScreenCellWidth, GlobalConstants.ScreenCellHeight, "fonts/IBMCGA.font");
 

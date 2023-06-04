@@ -1,4 +1,8 @@
 ﻿using SadConsole;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace RoguelikeConsoleClient.Helpers
@@ -23,6 +27,13 @@ namespace RoguelikeConsoleClient.Helpers
 
             for (int i = 0; i < str.Length; i += chunkSize)
                 yield return str.Substring(i, Math.Min(chunkSize, str.Length - i));
+        }
+        public static string Format(this string input, object p)
+        {
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(p))
+                input = input.Replace("{" + prop.Name + "}", (prop.GetValue(p) ?? "(null)").ToString());
+
+            return input;
         }
     }
 }

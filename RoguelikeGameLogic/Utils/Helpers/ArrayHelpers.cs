@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RoguelikeGameEngine.Utils.Helpers
 {
@@ -30,7 +34,8 @@ namespace RoguelikeGameEngine.Utils.Helpers
             openList.Add(grid.GetAStarNodeData(source.Y, source.X, sourceT, targetT, null, XDataFunction, YDataFunction, GFunction, HFunction));
             while (openList.Any(n => n != null))
             {
-                var currentCell = openList.Where(n => n != null).MinBy(n => n.F);
+                var minOpenF = openList.Min(n => n.F);
+                var currentCell = openList.First(n => n != null && n.F == minOpenF);
                 var indexOfCell = grid.IndexOf(currentCell.Node);
                 var adjacentValidCells = grid.GetAdjacentElementsWhere(indexOfCell.i, indexOfCell.j, includeDiagonals, validCellPredicate);
                 Parallel.ForEach(adjacentValidCells, c => {
@@ -54,7 +59,8 @@ namespace RoguelikeGameEngine.Utils.Helpers
                 if (currentCell.Node.Equals(targetT)) break;
             }
             var path = new List<T>();
-            var cellInPath = (closedList.Any(l => l.Node.Equals(targetT))) ? closedList.Last() : closedList.MinBy(l => l.F);
+            var minClosedF = closedList.Min(l => l.F);
+            var cellInPath = (closedList.Any(l => l.Node.Equals(targetT))) ? closedList.Last() : closedList.First(l => l.F == minClosedF);
             while(cellInPath?.Node != null)
             {
                 path.Add(cellInPath.Node);

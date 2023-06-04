@@ -1,4 +1,5 @@
 ﻿using RoguelikeGameEngine.Utils.JsonImports;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Utils.Helpers
 {

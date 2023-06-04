@@ -1,9 +1,200 @@
 {
-  "Name": "Name",
+  "Name": "DungeonName",
   "Author": "Author",
-  "WelcomeMessage": "Text to be shown before the dungeon starts",
-  "EndingMessage": "Text to be shown when the dungeon ends",
+  "WelcomeMessage": "WelcomeMessage",
+  "EndingMessage": "EndingMessage",
   "AmountOfFloors": 1,
+  "DefaultLocale": "en",
+  "Locales": [
+    {
+        "Language": "en",
+        "LocaleStrings": [
+            { "Key": "DungeonName", "Value": "Den of the Betas" },
+            { "Key": "WelcomeMessage", "Value": "Text to be shown before the dungeon starts" },
+            { "Key": "EndingMessage", "Value": "Text to be shown when the dungeon ends" },
+            { "Key": "FloorName", "Value": "{DungeonName} - FLOOR {FloorLevel}" },
+            { "Key": "NewTurn", "Value": "----------TURN {TurnCount}----------" },
+            { "Key": "FloorEnter", "Value": "Entering Floor {FloorLevel}..." },
+            { "Key": "FloorLeave", "Value": "Leaving Floor {FloorLevel}..." },
+            { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} put {ItemName} on the bag."},
+            { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} put {ItemName} on the floor."},
+            { "Key": "NPCPickItem", "Value": "{CharacterName} picked up {ItemName}."},
+            { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} dropped {ItemName} on the floor."},
+            { "Key": "NPCItemCannotBePutOnFloor", "Value": "{ItemName} was destroyed!"},
+            { "Key": "InventoryIsFull", "Value": "{CharacterName} cannot pick up {ItemName}. Inventory is full."},
+            { "Key": "TileIsOccupied", "Value": "{CharacterName} cannot drop {ItemName}. Tile is occupied."},
+            { "Key": "NoTarget", "Value": "But there was no target!"},
+            { "Key": "CannotBeUsed", "Value": "CANNOT BE USED" },
+            { "Key": "OnCooldown", "Value": "ON COOLDOWN:\n{CurrentCooldown} TURNS LEFT"},
+            { "Key": "MaximumUses", "Value": "REACHED MAXIMUM USES"},
+            { "Key": "RemainingUseCount", "Value": "{RemainingUses} USES LEFT"},
+            { "Key": "TargetIsTooClose", "Value": "TARGET IS TOO CLOSE"},
+            { "Key": "TargetIsTooFarAway", "Value": "TARGET IS TOO FAR AWAY"},
+            { "Key": "TargetIsOfWrongFaction", "Value": "TARGET MUST BE {FactionTargets}"},
+            { "Key": "TargetTypeSelf", "Value": "SELF"},
+            { "Key": "TargetTypeAlly", "Value": "ALLY"},
+            { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
+            { "Key": "TargetTypeEnemy", "Value": "ENEMY"},
+            { "Key": "RequiresATarget", "Value": "REQUIRES A TARGET"},
+            { "Key": "FromSource", "Value": "(From {SourceName})"},
+            { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} has reached Level {Level}!"},
+            { "Key": "CharacterLevelsUpHeader", "Value": "CONGRATULATIONS!" },
+            { "Key": "CharacterHPStat", "Value": "HP" },
+            { "Key": "CharacterMaxHPStat", "Value": "Max HP" },
+            { "Key": "CharacterAttackStat", "Value": "Attack" },
+            { "Key": "CharacterDefenseStat", "Value": "Defense" },
+            { "Key": "CharacterMovementStat", "Value": "Movement" },
+            { "Key": "CharacterSightRangeStat", "Value": "Sight Range" },
+            { "Key": "CharacterHPRegenerationStat", "Value": "HP Regeneration" },
+            { "Key": "CharacterDamageStat", "Value": "Damage" },
+            { "Key": "CharacterMitigationStat", "Value": "Mitigation" },
+            { "Key": "CharacterTakesDamage", "Value": "{CharacterName} took {DamageDealt} damage." },
+            { "Key": "CharacterHealsSomeHP", "Value": "{CharacterName} healed {HealAmount} HP!" },
+            { "Key": "CharacterHealsAllHP", "Value": "{CharacterName} is now at maximum HP!" },
+            { "Key": "CharacterGainsExperience", "Value": "{CharacterName} gained {Amount} experience points." },
+            { "Key": "CharacterGotStatused", "Value": "{CharacterName} is now {StatusName}!" },
+            { "Key": "CharacterIsNoLongerStatused", "Value": "{CharacterName} is no longer {StatusName}!" },
+            { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
+            { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
+            { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
+            { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
+            { "Key": "PlayerFactionName", "Value": "Player" },
+            { "Key": "PlayerFactionDescription", "Value": "Description. Currently unused." },
+            { "Key": "AlliesFactionName", "Value": "Allies" },
+            { "Key": "AlliesFactionDescription", "Value": "Description. Currently unused." },
+            { "Key": "EnemiesFactionName", "Value": "Enemies" },
+            { "Key": "EnemiesFactionDescription", "Value": "Description. Currently unused." },
+            { "Key": "PlayerName", "Value": "Player" },
+            { "Key": "PlayerDescription", "Value": "Description. Currently unused." },
+            { "Key": "PlayerDeathText", "Value": "{this} has died!" },
+            { "Key": "PlayerDeathMessageBoxHeader", "Value": "OH NO!" },
+            { "Key": "PlayerDeathMessageBoxText", "Value": "YOU HAVE DIED!" },
+            { "Key": "EnemyName", "Value": "Enemy" },
+            { "Key": "EnemyDescription", "Value": "Description. Currently unused." },
+            { "Key": "EnemyStickTongueText", "Value": "{this} sticks his tongue at {target}." },
+            { "Key": "EnemyDeathText", "Value": "The evil {this} has died." },
+            { "Key": "UnarmedName", "Value": "Unarmed" },
+            { "Key": "UnarmedDescription", "Value": "Without a weapon." },
+            { "Key": "MeleeWeaponAttackName", "Value": "Melee Weapon Attack" },
+            { "Key": "UnarmedAttackDescription", "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 95%" },
+            { "Key": "UnarmedAttackText", "Value": "{source} tries to punch {target}." },
+            { "Key": "FailedAttackText", "Value": "But it failed!" },
+            { "Key": "ClothArmorName", "Value": "Cloth" },
+            { "Key": "ClothArmorDescription", "Value": "Very basic and lightweight armor.\n\nArmor Mitigation: 0" },
+            { "Key": "SkirtName", "Value": "Skirt" },
+            { "Key": "SkirtDescription", "Value": "How are you reading this?" },
+            { "Key": "HealingPotionName", "Value": "Healing Potion" },
+            { "Key": "HealingPotionDescription", "Value": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears." },
+            { "Key": "ObjectSteppedText", "Value": "{target} stepped over {this}." },
+            { "Key": "ObjectEquippedText", "Value": "{target} equips the {this}." },
+            { "Key": "ObjectDrunkText", "Value": "{target} drinks the {this}." },
+            { "Key": "ObjectDisappearedText", "Value": "{this} disappeared." },
+            { "Key": "ObjectNotUsedText", "Value": "Or not. It would have no effect..." },
+            { "Key": "ObjectNotActivatedText", "Value": "{this} failed to activate!" },
+            { "Key": "SwordName", "Value": "Sword" },
+            { "Key": "SwordDescription", "Value": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3"},
+            { "Key": "SwordAttackDescription", "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 90%"},
+            { "Key": "SwordAttackText", "Value": "{source} swings the {this} at {target}." },
+            { "Key": "PoisonedName", "Value": "Poisoned" },
+            { "Key": "PoisonedDescription", "Value": "Taking damage every 28 turns" },
+            { "Key": "PoisonedText", "Value": "Poison is coursing through {target}'s body." }
+        ]
+    },
+    {
+      "Language": "es",
+      "Strings": [
+            { "Key": "DungeonName", "Value": "Cueva de los Betas" },
+            { "Key": "WelcomeMessage", "Value": "Texto a mostrar cuando inicia la mazmorra" },
+            { "Key": "EndingMessage", "Value": "Texto a mostrar cuando termina la mazmorra" },
+            { "Key": "FloorName", "Value": "{DungeonName} - PISO {FloorLevel}" },
+            { "Key": "NewTurn", "Value": "----------TURNO {TurnCount}----------" },
+            { "Key": "FloorEnter", "Value": "Ingresando al piso {FloorLevel}..." },
+            { "Key": "FloorLeave", "Value": "Abandonando el piso {FloorLevel}..." },
+            { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} colocó {ItemName} en la bolsa."},
+            { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} dejó {ItemName} en el piso."},
+            { "Key": "NPCPickItem", "Value": "{CharacterName} tomó {ItemName}."},
+            { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} soltó {ItemName} al piso."},
+            { "Key": "NPCItemCannotBePutOnFloor", "Value": "¡{ItemName} se ha destruido!"},
+            { "Key": "InventoryIsFull", "Value": "No se puede tomar {ItemName}. El inventario está lleno."},
+            { "Key": "TileIsOccupied", "Value": "No se puede soltar {ItemName}. La casilla está ocupada."},
+            { "Key": "NoTarget", "Value": "¡Pero no había un objetivo!"},
+            { "Key": "CannotBeUsed", "Value": "NO SE PUEDE USAR" },
+            { "Key": "OnCooldown", "Value": "EN RECUPERACIÓN:\nQUEDA(N) {CurrentCooldown} TURNO(S)"},
+            { "Key": "MaximumUses", "Value": "ALCANZADO MÁXIMO DE USOS"},
+            { "Key": "RemainingUseCount", "Value": "QUEDA(N) {RemainingUses} USO(S)"},
+            { "Key": "TargetIsTooClose", "Value": "EL OBJETIVO ESTÁ DEMASIADO CERCA"},
+            { "Key": "TargetIsTooFarAway", "Value": "EL OBJETIVO ESTÁ DEMASIADO LEJOS"},
+            { "Key": "TargetIsOfWrongFaction", "Value": "EL OBJETIVO DEBE SER {FactionTargets}"},
+            { "Key": "TargetTypeSelf", "Value": "UNO MISMO"},
+            { "Key": "TargetTypeAlly", "Value": "ALIADO"},
+            { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
+            { "Key": "TargetTypeEnemy", "Value": "ENEMIGO"},
+            { "Key": "RequiresATarget", "Value": "REQUIERE UN OBJETIVO"},
+            { "Key": "FromSource", "Value": "(Origen: {SourceName})"},
+            { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"},
+            { "Key": "CharacterLevelsUpHeader", "Value": "¡FELICIDADES!" },
+            { "Key": "CharacterHPStat", "Value": "PS" },
+            { "Key": "CharacterMaxHPStat", "Value": "PS Máximos" },
+            { "Key": "CharacterAttackStat", "Value": "Ataque" },
+            { "Key": "CharacterDefenseStat", "Value": "Defensa" },
+            { "Key": "CharacterMovementStat", "Value": "Movimiento" },
+            { "Key": "CharacterSightRangeStat", "Value": "Visión" },
+            { "Key": "CharacterHPRegenerationStat", "Value": "Regeneración de PS" },
+            { "Key": "CharacterDamageStat", "Value": "Daño" },
+            { "Key": "CharacterMitigationStat", "Value": "Mitigación" },
+            { "Key": "CharacterTakesDamage", "Value": "{CharacterName} recibió {DamageDealt} puntos de daño." },
+            { "Key": "CharacterHealsSomeHP", "Value": "¡{CharacterName} ha recuperado {HealAmount} PS!" },
+            { "Key": "CharacterHealsAllHP", "Value": "¡{CharacterName} ha recuperado todos los PS!" },
+            { "Key": "CharacterGainsExperience", "Value": "{CharacterName} ha obtenido {Amount} puntos de experiencia." },
+            { "Key": "CharacterGotStatused", "Value": "¡{CharacterName} ahora está {StatusName}!" },
+            { "Key": "CharacterIsNoLongerStatused", "Value": "¡{CharacterName} ya no está {StatusName}!" },
+            { "Key": "CharacterStatGotBuffed", "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}." },
+            { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
+            { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
+            { "Key": "StairsGotRevealed", "Value": "¡Se han revelado las escaleras!" },
+            { "Key": "PlayerFactionName", "Value": "Jugador" },
+            { "Key": "PlayerFactionDescription", "Value": "Descripción. Aún no se usa." },
+            { "Key": "AlliesFactionName", "Value": "Aliados" },
+            { "Key": "AlliesFactionDescription", "Value": "Descripción. Aún no se usa." },
+            { "Key": "EnemiesFactionName", "Value": "Enemigos" },
+            { "Key": "EnemiesFactionDescription", "Value": "Descripción. Aún no se usa." },
+            { "Key": "PlayerName", "Value": "Jugador" },
+            { "Key": "PlayerDescription", "Value": "Descripción. Aún no se usa." },
+            { "Key": "PlayerDeathText", "Value": "¡{this} ha muerto!" },
+            { "Key": "PlayerDeathMessageBoxHeader", "Value": "¡OH, NO!" },
+            { "Key": "PlayerDeathMessageBoxText", "Value": "¡HAS MUERTO!" },
+            { "Key": "EnemyName", "Value": "Enemigo" },
+            { "Key": "EnemyDescription", "Value": "Descripción. Aún no se usa." },
+            { "Key": "EnemyStickTongueText", "Value": "{this} le saca la lengua {target}." },
+            { "Key": "EnemyDeathText", "Value": "El malvado {this} acaba de morir." },
+            { "Key": "UnarmedName", "Value": "Desarmado" },
+            { "Key": "UnarmedDescription", "Value": "Sin un arma.\n\nDaño de arma: 0" },
+            { "Key": "MeleeWeaponAttackName", "Value": "Ataque Melé de Arma" },
+            { "Key": "UnarmedAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 95%" },
+            { "Key": "UnarmedAttackText", "Value": "{source} intenta darle un puñetazo a {target}." },
+            { "Key": "FailedAttackText", "Value": "¡Pero falló!" },
+            { "Key": "ClothArmorName", "Value": "Tela" },
+            { "Key": "ClothArmorDescription", "Value": "Armadura básica y ligera.\n\nMitigación: 0" },
+            { "Key": "SkirtName", "Value": "Falda" },
+            { "Key": "SkirtDescription", "Value": "¿Cómo es que estás leyendo esto?" },
+            { "Key": "HealingPotionName", "Value": "Poción de curación" },
+            { "Key": "HealingPotionDescription", "Value": "El objeto de curación más elemental.\n\nCura hasta 2d4 puntos de vida antes de desaparecer." },
+            { "Key": "ObjectSteppedText", "Value": "{target} pasó por encima de {this}." },
+            { "Key": "ObjectEquippedText", "Value": "{target} equipa {this}." },
+            { "Key": "ObjectDrunkText", "Value": "{target} bebe {this}." },
+            { "Key": "ObjectDisappearedText", "Value": "{this} acaba de desaparecer." },
+            { "Key": "ObjectNotUsedText", "Value": "... o mejor no, porque no tendría efecto." },
+            { "Key": "ObjectNotActivatedText", "Value": "¡{this} no se activó!" },
+            { "Key": "SwordName", "Value": "Espada" },
+            { "Key": "SwordDescription", "Value": "Herramienta confiable para cortar enemigos.\n\nDaño de arma: 1d3"},
+            { "Key": "SwordAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 90%"},
+            { "Key": "SwordAttackText", "Value": "{source} blande la {this} hacia {target}." },
+            { "Key": "PoisonedName", "Value": "Envenenado" },
+            { "Key": "PoisonedDescription", "Value": "Recibiendo daño cada 28 turnos" },
+            { "Key": "PoisonedText", "Value": "El veneno recorre el cuerpo de {target}." }
+        ]
+    }
+  ],
   "FloorInfos": [
     {
       "MinFloorLevel": 1,
@@ -44,8 +235,8 @@
         "Effect": {
           "EffectName": "MessageBox",
           "Params": [
-            { "ParamName": "title", "Value": "Den of the Betas" },
-            { "ParamName": "text" , "Value": "Sample welcome." },
+            { "ParamName": "title", "Value": "DungeonName" },
+            { "ParamName": "text" , "Value": "WelcomeMessage" },
             { "ParamName": "color", "Value": "255,255,0,255"    }
           ],
           "Then": null,
@@ -58,25 +249,25 @@
   "FactionInfos": [
     {
       "Id": "Player",
-      "Name": "Player",
-      "Description": "Description. Currently unused.",
+      "Name": "PlayerFactionName",
+      "Description": "PlayerFactionDescription",
       "AlliedWith": [ "Player", "AlliedNPCs" ],
       "NeutralWith": [],
       "EnemiesWith": [ "Enemies" ]
     },
     {
       "Id": "AlliedNPCs",
-      "Name": "Good NPCs",
-      "Description": "Description. Currently unused.",
+      "Name": "AlliesFactionName",
+      "Description": "AlliesFactionDescription",
       "AlliedWith": [ "Player", "AlliedNPCs" ],
       "NeutralWith": [],
       "EnemiesWith": [ "Enemies" ]
     },
     {
       "Id": "Enemies",
-      "Name": "Enemies",
-      "Description": "Description. Currently unused.",
-      "AlliedWith": [ "MeleeEnemies" ],
+      "Name": "EnemiesFactionName",
+      "Description": "EnemiesFactionDescription",
+      "AlliedWith": [ ],
       "NeutralWith": [ ],
       "EnemiesWith": [ "Player", "AlliedNPCs" ]
     }
@@ -84,8 +275,8 @@
   "Characters": [
     {
       "Id": "Player",
-      "Name": "Player",
-      "Description": "Description. Currently unused.",
+      "Name": "PlayerName",
+      "Description": "PlayerDescription",
       "ConsoleRepresentation": {
         "Character": "☺",
         "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
@@ -101,7 +292,7 @@
       "BaseHPRegeneration": 0.075,
       "BaseSightRange": "FullRoom",
       "InventorySize": 3,
-      "StartingWeapon": "StartingWeapon",
+      "StartingWeapon": "Unarmed",
       "StartingArmor": "ClothArmor",
       "CanGainExperience": true,
       "OnAttackActions": [],
@@ -120,13 +311,13 @@
           "Then": {
             "EffectName": "PrintText",
             "Params": [
-              { "ParamName": "text", "Value": "{this} has died!" }
+              { "ParamName": "text", "Value": "PlayerDeathText" }
             ],
             "Then": {
               "EffectName": "MessageBox",
               "Params": [
-                { "ParamName": "title", "Value": "OH NO!"         },
-                { "ParamName": "text" , "Value": "YOU HAVE DIED!" },
+                { "ParamName": "title", "Value": "PlayerDeathMessageBoxHeader" },
+                { "ParamName": "text" , "Value": "PlayerDeathMessageBoxText" },
                 { "ParamName": "color", "Value": "255,0,0,255"    }
               ],
               "Then": null,
@@ -151,8 +342,8 @@
     },
     {
       "Id": "Enemy",
-      "Name": "Enemy",
-      "Description": "Description. Currently unused.",
+      "Name": "EnemyName",
+      "Description": "EnemyDescription",
       "ConsoleRepresentation": {
         "Character": "e",
         "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
@@ -168,7 +359,7 @@
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullRoom",
       "InventorySize": 0,
-      "StartingWeapon": "StartingWeapon",
+      "StartingWeapon": "Unarmed",
       "StartingArmor": "Skirt",
       "CanGainExperience": false,
       "OnAttackActions": [{
@@ -181,7 +372,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{this} sticks his tongue at {target}." }
+            { "ParamName": "text", "Value": "EnemyStickTongueText" }
           ],
           "Then": null,
           "OnSuccess": null,
@@ -198,7 +389,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "The evil {this} has died." }
+            { "ParamName": "text", "Value": "EnemyDeathText" }
           ],
           "Then": {
             "EffectName": "ReplaceConsoleRepresentation",
@@ -234,9 +425,9 @@
   ],
   "Items": [    
     {
-      "Id": "StartingWeapon",
-      "Name": "Unarmed",
-      "Description": "Without a weapon.",
+      "Id": "Unarmed",
+      "Name": "UnarmedName",
+      "Description": "UnarmedDescription",
       "ConsoleRepresentation": {
         "Character": "-",
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
@@ -247,8 +438,8 @@
       "StartsVisible": true,
       "OnTurnStartActions": [],
       "OnAttackActions": [{
-        "Name": "Melee Weapon Attack",
-        "Description": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 95%",
+        "Name": "MeleeWeaponAttackName",
+        "Description": "UnarmedAttackDescription",
         "TargetTypes": [ "enemy" ],
         "MinimumRange": 1,
         "MaximumRange": 1,
@@ -286,8 +477,8 @@
     },
     {
       "Id": "ClothArmor",
-      "Name": "Cloth",
-      "Description": "Very basic and lightweight armor.\n\nArmor Mitigation: 0",
+      "Name": "ClothArmorName",
+      "Description": "ClothArmorDescription",
       "ConsoleRepresentation": {
         "Character": "♠",
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
@@ -303,8 +494,8 @@
     },    
     {
       "Id": "Skirt",
-      "Name": "Skirt",
-      "Description": "Not readable by the player",
+      "Name": "SkirtName",
+      "Description": "SkirtDescription",
       "ConsoleRepresentation": {
         "Character": "♠",
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
@@ -319,8 +510,8 @@
     },
     {
       "Id": "HealingPotion",
-      "Name": "Healing Potion",
-      "Description": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears.",
+      "Name": "HealingPotionName",
+      "Description": "HealingPotionDescription",
       "ConsoleRepresentation": {
         "Character": "§",
         "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
@@ -339,7 +530,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{target} stepped over {this}." }
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
           ],
           "Then": null,
           "OnSuccess": null,
@@ -356,7 +547,7 @@
           "Effect": {
             "EffectName": "PrintText",
             "Params": [
-              { "ParamName": "text", "Value": "{target} drinks the {this}." }
+              { "ParamName": "text", "Value": "ObjectDrunkText" }
             ],
             "Then": {
               "EffectName": "HealDamage",
@@ -376,7 +567,7 @@
                 "OnSuccess": {
                   "EffectName": "PrintText",
                   "Params": [
-                    { "ParamName": "text", "Value": "{this} disappeared." }
+                    { "ParamName": "text", "Value": "ObjectDisappearedText" }
                   ],
                   "Then": null,
                   "OnSuccess": null,
@@ -387,7 +578,7 @@
               "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
-                  { "ParamName": "text", "Value": "Or not. It would have no effect..." }
+                  { "ParamName": "text", "Value": "ObjectNotUsedText" }
                 ],
                 "Then": null,
                 "OnSuccess": null,
@@ -401,8 +592,8 @@
     },
     {
       "Id": "Sword",
-      "Name": "Sword",
-      "Description": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3",
+      "Name": "SwordName",
+      "Description": "SwordDescription",
       "ConsoleRepresentation": {
         "Character": "↑",
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
@@ -413,8 +604,8 @@
       "StartsVisible": true,
       "OnTurnStartActions": [],
       "OnAttackActions": [{
-        "Name": "Melee Weapon Attack",
-        "Description": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 90%",
+        "Name": "MeleeWeaponAttackName",
+        "Description": "SwordAttackDescription",
         "TargetTypes": [ "enemy" ],
         "MinimumRange": 1,
         "MaximumRange": 1,
@@ -423,7 +614,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{source} swings the {this} at {target}." }
+            { "ParamName": "text", "Value": "SwordAttackText" }
           ],
           "Then": {
             "EffectName": "DealDamage",
@@ -439,7 +630,7 @@
             "OnFailure": {
               "EffectName": "PrintText",
               "Params": [
-                { "ParamName": "text", "Value": "But it failed!" }
+                { "ParamName": "text", "Value": "FailedAttackText" }
               ]
             }
           },
@@ -460,7 +651,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{target} stepped over {this}." }
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
           ],
           "Then": null,
           "OnSuccess": null,
@@ -476,7 +667,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{target} equips the {this}." }
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
           ],
           "Then": 
           {
@@ -512,7 +703,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "{target} stepped on the {this}!" }
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
           ],
           "Then": {
             "EffectName": "DealDamage",
@@ -534,7 +725,7 @@
               "OnSuccess": {
                 "EffectName": "PrintText",
                 "Params": [
-                  { "ParamName": "text", "Value": "{this} disappeared." }
+                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
                 ],
                 "Then": null,
                 "OnSuccess": null,
@@ -545,7 +736,7 @@
             "OnFailure": {
               "EffectName": "PrintText",
               "Params": [
-                { "ParamName": "text", "Value": "{this} has failed to activate." }
+                { "ParamName": "text", "Value": "ObjectNotActivatedText" }
               ],
               "Then": null,
               "OnSuccess": null,
@@ -562,8 +753,8 @@
   "AlteredStatuses": [
     {
       "Id": "Poisoned",
-      "Name": "Poisoned",
-      "Description": "Taking damage every 28 turns",
+      "Name": "PoisonedName",
+      "Description": "PoisonedDescription",
       "ConsoleRepresentation": {
         "Character": "‼",
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
@@ -581,7 +772,7 @@
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "Poison is coursing through {target}'s body." }
+            { "ParamName": "text", "Value": "PoisonedText" }
           ],
           "Then": {
             "EffectName": "DealDamage",

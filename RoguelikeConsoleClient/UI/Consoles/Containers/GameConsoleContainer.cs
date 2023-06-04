@@ -9,6 +9,10 @@ using RoguelikeGameEngine.Utils.Enums;
 using RoguelikeConsoleClient.UI.Consoles.GameConsole;
 using RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows;
 using RoguelikeConsoleClient.EngineHandling;
+using RoguelikeConsoleClient.Resources.Localization;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Containers
 {
@@ -89,6 +93,12 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
 
         public override void Start()
         {
+            DungeonConsole.Build();
+            MessageLogConsole.Build();
+            PlayerInfoConsole.Build();
+            ButtonsConsole.Build();
+            ExperienceBarConsole.Build();
+            GameControlsConsole.Build();
             ControlMode = ControlMode.Move;
             LastTurnCount = -1;
             RequiresRefreshingDungeonState = true;
@@ -119,14 +129,14 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
                 {
                     var message = BackendHandler.Instance.GetDungeonEndingMessage();
                     LatestDungeonStatus = null;
-                    ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "THE END", message);
+                    ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("TheEndMessageHeader"), message);
                     base.Render(delta);
                     return;
                 }
             }
             catch (Exception)
             {
-                ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
 
             Consoles.ForEach(console =>
@@ -150,7 +160,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
             var messageBox = LatestDungeonStatus.MessageBoxes.ElementAtOrDefault(index);
             if (messageBox != null)
             {
-                ActiveWindow = MessageBox.Show(new ColoredString(messageBox.Message.ToGlyphString()), messageBox.ButtonCaption, messageBox.Title, messageBox.WindowColor.ToSadRogueColor(), () => ShowMessagesIfNeeded(index + 1));
+                ActiveWindow = MessageBox.Show(new ColoredString(messageBox.Message), messageBox.ButtonCaption, messageBox.Title, messageBox.WindowColor.ToSadRogueColor(), () => ShowMessagesIfNeeded(index + 1));
             }
         }
 
@@ -166,7 +176,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
             }
             catch (Exception)
             {
-                ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
             return true;
         }
@@ -212,7 +222,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
 
             if (keyboard.IsKeyPressed(Keys.U) && LatestDungeonStatus.IsPlayerOnStairs())
             {
-                ActiveWindow = PromptBox.Show(new ColoredString("Do you want to use the stairs?"), "YES", "NO", LatestDungeonStatus.Name, Color.Green,
+                ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("StairsPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LatestDungeonStatus.Name, Color.Green,
                                                 () =>
                                                 {
                                                     BackendHandler.Instance.PlayerTakeStairs();

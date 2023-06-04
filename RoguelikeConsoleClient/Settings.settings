@@ -1,15 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SadConsoleRoguelike" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RoguelikeConsoleClient" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="IsLocal" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ServerAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://localhost:7096</Value>
+      <Value Profile="(Default)">https://localhost:5001</Value>
     </Setting>
     <Setting Name="LocalLogFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">./logs</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">English</Value>
     </Setting>
   </Settings>
 </SettingsFile>

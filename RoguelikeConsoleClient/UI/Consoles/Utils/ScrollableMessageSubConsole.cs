@@ -1,6 +1,8 @@
 ﻿using SadConsole;
 using SadConsole.UI.Controls;
 using SadRogue.Primitives;
+using System;
+using System.Collections.Generic;
 using Console = SadConsole.Console;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Utils
@@ -41,15 +43,16 @@ namespace RoguelikeConsoleClient.UI.Consoles.Utils
         {
             this.Clear();
             Cursor.Position = new Point(0, 0);
+            
             for (int i = 0; i < textList.Count; i++)
             {
-                Cursor.Print(textList[i]);
+                Cursor.Print(textList[i].ToAscii());
                 if (i < textList.Count - 1)
                     Cursor.NewLine();
             }
-            ScrollBar.Maximum = Math.Max(0, textList.Count - ViewHeight);
-            ScrollBar.IsEnabled = textList.Count > ViewHeight;
-            ScrollBar.Value = textList.Count > ViewHeight ? ScrollBar.Maximum : 0;
+            ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y + 1 - ViewHeight);
+            ScrollBar.IsEnabled = Cursor.Position.Y > ViewHeight;
+            ScrollBar.Value = Cursor.Position.Y > ViewHeight ? ScrollBar.Maximum : 0;
         }
     }
 }

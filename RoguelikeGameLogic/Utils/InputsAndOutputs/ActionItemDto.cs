@@ -14,7 +14,7 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 
         public ActionItemDto(ActionWithEffects action, Character target, Map map)
         {
-            Name = action.Name;
+            Name = map.Locale[action.Name];
             Description = action.GetDescriptionWithUsageNotes(target);
             CanBeUsed = action.CanBeUsedOn(target, map);
         }

@@ -1,5 +1,7 @@
-﻿using RoguelikeGameEngine.Game.Entities;
+﻿using RoguelikeGameEngine.Game.DungeonStructure;
+using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Utils.Representation;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 {
@@ -12,32 +14,7 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
         public int CurrentExperience { get; set; }
         public int ExperienceToNextLevel { get; set; }
 
-        public int CurrentHP { get; set; }
-        public int MaxHP { get; set; }
-
-        public int BaseMaxHP { get; set; }
-
-        public List<StatModificationDto> MaxHPModifications { get; set; }
-
-        public int CurrentAttack { get; set; }
-        public int BaseAttack { get; set; }
-
-        public List<StatModificationDto> AttackModifications { get; set; }
-
-        public int CurrentDefense { get; set; }
-        public int BaseDefense { get; set; }
-
-        public List<StatModificationDto> DefenseModifications { get; set; }
-
-        public int CurrentMovement { get; set; }
-        public int BaseMovement { get; set; }
-
-        public List<StatModificationDto> MovementModifications { get; set; }
-
-        public decimal CurrentHPRegeneration { get; set; }
-        public decimal BaseHPRegeneration { get; set; }
-
-        public List<StatModificationDto> HPRegenerationModifications { get; set; }
+        public List<StatDto> Stats { get; set; }
 
         public List<AlteredStatusDetailDto> AlteredStatuses { get; set; }
 
@@ -46,7 +23,7 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 
         public PlayerInfoDto() { } 
 
-        public PlayerInfoDto(PlayerCharacter character)
+        public PlayerInfoDto(PlayerCharacter character, Map map)
         {
             Name = character.Name;
             Level = character.Level;
@@ -56,32 +33,83 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
                 CurrentExperience = character.Experience;
                 ExperienceToNextLevel = character.ExperienceToLevelUpDifference;
             }
-            CurrentHP = character.HP;
-            MaxHP = character.MaxHP;
-            BaseMaxHP = character.BaseMaxHP + (int)(character.MaxHPIncreasePerLevel * (character.Level - 1));
-            MaxHPModifications = new List<StatModificationDto>();
-            character.MaxHPModifications.ForEach(mhm => MaxHPModifications.Add(new StatModificationDto(mhm, true)));
-            CurrentAttack = character.Attack;
-            BaseAttack = character.BaseAttack + (int)(character.AttackIncreasePerLevel * (character.Level - 1));
-            AttackModifications = new List<StatModificationDto>();
-            character.AttackModifications.ForEach(am => AttackModifications.Add(new StatModificationDto(am, true)));
-            CurrentDefense = character.Defense;
-            BaseDefense = character.BaseDefense + (int)(character.DefenseIncreasePerLevel * (character.Level - 1));
-            DefenseModifications = new List<StatModificationDto>();
-            character.DefenseModifications.ForEach(dm => DefenseModifications.Add(new StatModificationDto(dm, true)));
-            CurrentMovement = character.Movement;
-            BaseMovement = character.BaseMovement + (int)(character.MovementIncreasePerLevel * (character.Level - 1));
-            MovementModifications = new List<StatModificationDto>();
-            character.MovementModifications.ForEach(mm => MovementModifications.Add(new StatModificationDto(mm, true)));
-            CurrentHPRegeneration = character.HPRegeneration;
-            BaseHPRegeneration = character.BaseHPRegeneration + (character.HPRegenerationIncreasePerLevel * (character.Level - 1));
-            HPRegenerationModifications = new List<StatModificationDto>();
-            character.HPRegenerationModifications.ForEach(hm => HPRegenerationModifications.Add(new StatModificationDto(hm, false)));
+            var hpStat = new StatDto()
+            {
+                Name = map.Locale["CharacterHPStat"],
+                MaxName = map.Locale["CharacterMaxHPStat"],
+                Current = character.HP,
+                Max = character.MaxHP,
+                Base = character.BaseMaxHP + (int)(character.MaxHPIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = true,
+                HasMaxStat = true,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.MaxHPModifications.ForEach(hpm => hpStat.Modifications.Add(new StatModificationDto(hpm, hpStat)));
+            var attackStat = new StatDto()
+            {
+                Name = map.Locale["CharacterAttackStat"],
+                Current = character.Attack,
+                Base = character.BaseAttack + (int)(character.AttackIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = true,
+                HasMaxStat = false,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.AttackModifications.ForEach(am => attackStat.Modifications.Add(new StatModificationDto(am, attackStat)));
+            var defenseStat = new StatDto()
+            {
+                Name = map.Locale["CharacterDefenseStat"],
+                Current = character.Defense,
+                Base = character.BaseDefense + (int)(character.DefenseIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = true,
+                HasMaxStat = false,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.DefenseModifications.ForEach(dm => defenseStat.Modifications.Add(new StatModificationDto(dm, defenseStat)));
+            var movementStat = new StatDto()
+            {
+                Name = map.Locale["CharacterMovementStat"],
+                Current = character.Movement,
+                Base = character.BaseMovement + (int)(character.MovementIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = true,
+                HasMaxStat = false,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.MovementModifications.ForEach(mm => movementStat.Modifications.Add(new StatModificationDto(mm, movementStat)));
+            var hpRegenerationStat = new StatDto()
+            {
+                Name = map.Locale["CharacterHPRegenerationStat"],
+                Current = character.HPRegeneration,
+                Base = character.BaseHPRegeneration + (character.HPRegenerationIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = false,
+                HasMaxStat = false,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.HPRegenerationModifications.ForEach(hpm => hpRegenerationStat.Modifications.Add(new StatModificationDto(hpm, hpRegenerationStat)));
+            Stats = new List<StatDto>
+            {
+                hpStat,
+                attackStat,
+                defenseStat,
+                movementStat,
+                hpRegenerationStat,
+            };
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
             WeaponInfo = new EquippedItemDetailDto(character.Weapon);
             ArmorInfo = new EquippedItemDetailDto(character.Armor);
         }
+    }
+
+    public class StatDto
+    {
+        public string Name { get; set; }
+        public string MaxName { get; set; }
+        public decimal Current { get; set; }
+        public decimal? Max { get; set; }
+        public decimal Base { get; set; }
+        public bool IsIntegerStat { get; set; }
+        public bool HasMaxStat { get; set; }
+        public List<StatModificationDto> Modifications { get; set; }
     }
 
     public class StatModificationDto
@@ -91,10 +119,10 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 
         public StatModificationDto() { }
 
-        public StatModificationDto(StatModification source, bool truncate)
+        public StatModificationDto(StatModification source, StatDto stat)
         {
             Source = source.Id;
-            if(truncate)
+            if(stat.IsIntegerStat)
                 Amount = (int) source.Amount;
             else
                 Amount = source.Amount;

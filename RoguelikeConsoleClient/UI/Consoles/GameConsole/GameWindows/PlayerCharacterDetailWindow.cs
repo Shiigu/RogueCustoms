@@ -10,6 +10,10 @@ using RoguelikeConsoleClient.Helpers;
 using Keyboard = SadConsole.Input.Keyboard;
 using Console = SadConsole.Console;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
@@ -17,6 +21,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
     {
         private Button CloseButton;
         private string TitleCaption { get; set; }
+        private readonly string CloseButtonText = LocalizationManager.GetString("CloseButtonText").ToAscii();
 
         private ScrollBar ScrollBar;
         private Console TextAreaSubConsole;
@@ -31,18 +36,18 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             var width = 65;
             var height = 30;
 
-            var closeButtonText = "CLOSE";
-            var closeButton = new Button(closeButtonText.Length + 2, 1)
-            {
-                Text = closeButtonText
-            };
-
             var window = new PlayerCharacterDetailWindow(width, height);
+
+            var closeButton = new Button(window.CloseButtonText.Length + 2, 1)
+            {
+                Text = window.CloseButtonText
+            };
 
             window.UseKeyboard = true;
             window.IsDirty = true;
             window.UseMouse = true;
-            window.TitleCaption = $"{playerInfo.Name.ToUpperInvariant()} INFO";
+            window.Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            window.TitleCaption = LocalizationManager.GetString("PlayerCharacterDetailWindowTitleText").ToAscii().Format(new { PlayerName = playerInfo.Name.ToUpperInvariant() });
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
             drawingArea.OnDraw += window.DrawWindow;
@@ -57,15 +62,11 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             };
 
             PrintPlayerLevelInfo(textAreaSubConsole, playerInfo.Level, playerInfo.IsAtMaxLevel, playerInfo.CurrentExperience, playerInfo.ExperienceToNextLevel);
-            textAreaSubConsole.Cursor.Print("STATS:");
-            PrintPlayerStatsInfo(textAreaSubConsole, "HP", playerInfo.CurrentHP, playerInfo.MaxHP, playerInfo.BaseMaxHP, playerInfo.MaxHPModifications);
-            PrintPlayerStatsInfo(textAreaSubConsole, "Attack", playerInfo.CurrentAttack, 0, playerInfo.BaseAttack, playerInfo.AttackModifications);
-            PrintPlayerStatsInfo(textAreaSubConsole, "Defense", playerInfo.CurrentDefense, 0, playerInfo.CurrentDefense, playerInfo.DefenseModifications);
-            PrintPlayerStatsInfo(textAreaSubConsole, "Movement", playerInfo.CurrentMovement, 0, playerInfo.CurrentMovement, playerInfo.MovementModifications);
-            PrintPlayerStatsInfo(textAreaSubConsole, "HP Regeneration", playerInfo.CurrentHPRegeneration, 0, playerInfo.BaseHPRegeneration, playerInfo.HPRegenerationModifications);
+            textAreaSubConsole.Cursor.Print(LocalizationManager.GetString("PlayerCharacterDetailStatsHeader").ToAscii());
+            playerInfo.Stats.ForEach(stat => PrintPlayerStatsInfo(textAreaSubConsole, stat));
             PrintPlayerAlteredStatusesInfo(textAreaSubConsole, playerInfo.AlteredStatuses);
-            PrintPlayerEquippedItemInfo(textAreaSubConsole, "WEAPON", playerInfo.WeaponInfo);
-            PrintPlayerEquippedItemInfo(textAreaSubConsole, "ARMOR", playerInfo.ArmorInfo);
+            PrintPlayerEquippedItemInfo(textAreaSubConsole, LocalizationManager.GetString("PlayerCharacterDetailEquippedWeaponHeader").ToAscii(), playerInfo.WeaponInfo);
+            PrintPlayerEquippedItemInfo(textAreaSubConsole, LocalizationManager.GetString("PlayerCharacterDetailEquippedArmorHeader").ToAscii(), playerInfo.ArmorInfo);
             textAreaSubConsole.Cursor.NewLine();
 
             window.TextAreaSubConsole = textAreaSubConsole;
@@ -117,7 +118,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.DrawLine(new Point(Width - 1, 0), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.WhiteSmoke);
             ds.Surface.DrawLine(new Point(0, window.Height - 3), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.WhiteSmoke);
             ds.Surface.ConnectLines(ICellSurface.ConnectedLineThick);
-            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.Black, Color.WhiteSmoke);
+            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption.ToAscii()} ", Color.Black, Color.WhiteSmoke);
 
             ds.IsDirty = true;
             ds.IsFocused = true;
@@ -126,67 +127,67 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
         private static void PrintPlayerLevelInfo(Console subConsole, int currentLevel, bool isAtMaxLevel, int currentExperience, int experienceToNextLevel)
         {
             subConsole.Cursor.Position = new Point(0, 0);
-            subConsole.Cursor.Print($"LEVEL {currentLevel}");
+            subConsole.Cursor.Print(LocalizationManager.GetString("PlayerLevelText").Format(new { CurrentLevel = currentLevel.ToString() }).ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            subConsole.Cursor.Print($"Current Experience: {currentExperience}");
+            subConsole.Cursor.Print(LocalizationManager.GetString("PlayerCharacterDetailCurrentExperienceText").Format(new { CurrentExperience = currentExperience.ToString() }).ToAscii());
             subConsole.Cursor.NewLine();
             if (!isAtMaxLevel)
-                subConsole.Cursor.Print($"Experience to Level {currentLevel + 1}: {experienceToNextLevel}");
+                subConsole.Cursor.Print(LocalizationManager.GetString("PlayerCharacterDetailExperienceToLevelUpText").Format(new {
+                    NextLevel = currentLevel + 1,
+                    RequiredExperience = experienceToNextLevel.ToString()
+                }).ToAscii());
             else
-                subConsole.Cursor.Print("AT MAX LEVEL!");
+                subConsole.Cursor.Print(LocalizationManager.GetString("PlayerCharacterDetailAtMaxLevelText").ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
         }
 
-        private static void PrintPlayerStatsInfo(Console subConsole, string statName, decimal currentStat, decimal maxStat, decimal baseStat, List<StatModificationDto> modifications)
+        private static void PrintPlayerStatsInfo(Console subConsole, StatDto stat)
         {
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            switch (statName)
-            {
-                case "HP":
-                        subConsole.Cursor.Print($"{statName}: {(int)currentStat}/{(int)maxStat}");
-                        break;
-                case "HP Regeneration":
-                        subConsole.Cursor.Print($"{statName}: {currentStat}");
-                        break;
-                default:
-                        subConsole.Cursor.Print($"{statName}: {(int)currentStat}");
-                        break;
-            }
+            if (stat.HasMaxStat && stat.Max != null && stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}/{(int) stat.Max}".ToAscii());
+            else if (stat.HasMaxStat && stat.Max != null && !stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.000}/{stat.Max:0.000}".ToAscii());
+            else if (!stat.HasMaxStat && !stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.000}".ToAscii());
+            else if (!stat.HasMaxStat && stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}".ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
-            switch (statName)
-            {
-                case "HP":
-                    subConsole.Cursor.Print($"Max Base: {baseStat}");
-                    break;
-                case "HP Regeneration":
-                    subConsole.Cursor.Print($"Base: {baseStat}");
-                    break;
-                default:
-                    subConsole.Cursor.Print($"Base: {(int)baseStat}");
-                    break;
-            }
-            modifications.ForEach(mhm =>
+            if (stat.HasMaxStat && stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText")}: {(int)stat.Base}".ToAscii());
+            else if (stat.HasMaxStat && !stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText")}: {stat.Base:0.000}".ToAscii());
+            else if (!stat.HasMaxStat && !stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailBaseText")}: {stat.Base:0.000}".ToAscii());
+            else if (!stat.HasMaxStat && stat.IsIntegerStat)
+                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailBaseText")}: {(int)stat.Base}".ToAscii());
+            stat.Modifications.ForEach(mhm =>
             {
                 subConsole.Cursor.NewLine();
                 subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
-                if (statName == "HP Regeneration")
-                {
-                    if (mhm.Amount > 0)
-                        subConsole.Cursor.Print(new ColoredString($"{mhm.Amount:+0.###;-0.###;0} from {mhm.Source}", Color.AnsiGreenBright, Color.Black));
-                    else if (mhm.Amount < 0)
-                        subConsole.Cursor.Print(new ColoredString($"{mhm.Amount:+0.###;-0.###;0} from {mhm.Source}", Color.Red, Color.Black));
-                }
+                string modificationAmountText, sourceDisplayText;
+                Color modificationDisplayForegroundColor = Color.White;
+                sourceDisplayText = mhm.Source;
+
+                if(stat.IsIntegerStat)
+                    modificationAmountText = $"{mhm.Amount:+0;-0;0}";
                 else
+                    modificationAmountText = $"{mhm.Amount:+0.000;-0.000;0}";
+
+                if (mhm.Amount > 0)
+                    modificationDisplayForegroundColor = Color.AnsiGreenBright;
+                else if (mhm.Amount < 0)
+                    modificationDisplayForegroundColor = Color.Red;
+
+                subConsole.Cursor.Print(new ColoredString(LocalizationManager.GetString("PlayerCharacterDetailStatAlterationText").Format(new
                 {
-                    if (mhm.Amount > 0)
-                        subConsole.Cursor.Print(new ColoredString($"{mhm.Amount.ToString("+0;-0;0")} from {mhm.Source}", Color.AnsiGreenBright, Color.Black));
-                    else if (mhm.Amount < 0)
-                        subConsole.Cursor.Print(new ColoredString($"{mhm.Amount.ToString("+0;-0;0")} from {mhm.Source}", Color.Red, Color.Black));
-                }
+                    Alteration = modificationAmountText,
+                    Source = sourceDisplayText
+                }).ToAscii(), modificationDisplayForegroundColor, Color.Black));
             });
         }
 
@@ -194,12 +195,12 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            subConsole.Cursor.Print("ALTERED STATUSES:");
+            subConsole.Cursor.Print(LocalizationManager.GetString("PlayerCharacterDetailAlteredStatusesHeaderText").ToAscii());
             subConsole.Cursor.NewLine();
             if (!alteredStatuses.Any())
             {
                 subConsole.Cursor.NewLine();
-                subConsole.Cursor.Print("NONE!");
+                subConsole.Cursor.Print(LocalizationManager.GetString("PlayerNoStatusesText").ToAscii());
             }
             else
             {
@@ -209,22 +210,31 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                     var statusGlyph = new ColoredGlyph(als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), als.ConsoleRepresentation.Character.ToGlyph());
                     subConsole.Surface.SetGlyph(subConsole.Cursor.Position.X, subConsole.Cursor.Position.Y, statusGlyph);
                     subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 1, subConsole.Cursor.Position.Y);
-                    if (als.RemainingTurns > 0)
-                        subConsole.Cursor.Print(new ColoredString($" - {als.Name}: {als.Description} [{als.RemainingTurns} TURNS LEFT]", als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor()));
-                    else
-                        subConsole.Cursor.Print(new ColoredString($" - {als.Name}: {als.Description}", als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor()));
+                    string statusDescriptionText = als.RemainingTurns > 0
+                        ? LocalizationManager.GetString("PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns").Format(new
+                        {
+                            StatusName = als.Name,
+                            StatusDescription = als.Description,
+                            RemainingTurns = als.RemainingTurns
+                        })
+                        : LocalizationManager.GetString("PlayerCharacterDetailAlteredStatusDescriptionText").Format(new
+                        {
+                            StatusName = als.Name,
+                            StatusDescription = als.Description
+                        });
+                    subConsole.Cursor.Print(new ColoredString($" {statusDescriptionText}".ToAscii(), als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor()));
                 });
             }
         }
 
-        private static void PrintPlayerEquippedItemInfo(Console subConsole, string itemTypeName, EquippedItemDetailDto item)
+        private static void PrintPlayerEquippedItemInfo(Console subConsole, string itemTypeHeader, EquippedItemDetailDto item)
         {
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            subConsole.Cursor.Print($"CURRENT {itemTypeName}:");
+            subConsole.Cursor.Print(itemTypeHeader.ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            subConsole.Cursor.Print(item.Name);
+            subConsole.Cursor.Print(item.Name.ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
             var itemGlyph = new ColoredGlyph(item.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), item.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), item.ConsoleRepresentation.Character.ToGlyph());
@@ -237,7 +247,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             foreach (var line in linesInItemInfoDescription)
             {
                 subConsole.Cursor.NewLine();
-                subConsole.Cursor.Print(line);
+                subConsole.Cursor.Print(line.ToAscii());
             }
         }
 

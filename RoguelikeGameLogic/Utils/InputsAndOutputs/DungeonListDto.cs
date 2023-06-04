@@ -1,4 +1,5 @@
-﻿using RoguelikeGameEngine.Utils.JsonImports;
+﻿using RoguelikeGameEngine.Game.DungeonStructure;
+using RoguelikeGameEngine.Utils.JsonImports;
 
 namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 {
@@ -8,13 +9,11 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
         public string Name { get; set; }
         public string Author { get; set; }
 
-        public override string ToString() => $"{Name} - by {Author}";
-
         public DungeonListDto() { }
 
-        public DungeonListDto(string internalName, DungeonInfo info) {
+        public DungeonListDto(string internalName, DungeonInfo info, string locale) {
             InternalName = internalName;
-            Name = info.Name;
+            Name = info.GetLocalizedName(locale);
             Author = info.Author;
         }
     }

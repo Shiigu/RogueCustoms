@@ -5,28 +5,44 @@ using RoguelikeConsoleClient.EngineHandling;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.Utils;
 using SadRogue.Primitives;
+using RoguelikeConsoleClient.Resources.Localization;
+using RoguelikeGameEngine.Utils.Helpers;
+using System.Collections.Generic;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
 {
     public class OptionsConsole : MenuSubConsole
     {
-        private const string WindowHeaderText = "SELECT OPTIONS";
-        private const string RadioButtonHeaderText = "GAME HOST LOCATION";
-        private const string LocalRadioButtonText = "LOCAL";
-        private const string ServerRadioButtonText = "IN A SERVER";
-        private const string ServerAddressTextBoxHeaderText = "SERVER ADDRESS";
-        private const string SaveButtonText = "SAVE SETTINGS";
-        private const string ReturnButtonText = "RETURN TO MAIN MENU";
+        private string WindowHeaderText, RadioButtonHeaderText, LocalRadioButtonText, ServerRadioButtonText, LanguageListHeaderText, ServerAddressTextBoxHeaderText, SaveButtonText, ReturnButtonText;
 
-        private readonly Label WindowHeader, RadioButtonHeader, ServerAddressTextBoxHeader;
-        private readonly RadioButton LocalRadioButton, ServerRadioButton;
-        private readonly TextBox ServerAddressTextBox;
-        private readonly Button SaveButton, ReturnButton;
-        private readonly ControlsConsole WindowHeaderConsole;
+        private Label WindowHeader, RadioButtonHeader, ServerAddressTextBoxHeader, LanguageTextBoxHeader;
+        private RadioButton LocalRadioButton, ServerRadioButton;
+        private TextBox ServerAddressTextBox;
+        private Button SaveButton, ReturnButton;
+        private ControlsConsole WindowHeaderConsole;
+        private ListBox LanguageListBox;
+
+        private List<string> LanguageList;
 
         public OptionsConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
-            var oldFontSize = FontSize;
+            Build();
+        }
+
+        public void Build()
+        {
+            base.Build();
+            WindowHeaderText = LocalizationManager.GetString("OptionsHeaderText").ToAscii();
+            RadioButtonHeaderText = LocalizationManager.GetString("RadioButtonHeaderText").ToAscii();
+            LocalRadioButtonText = LocalizationManager.GetString("LocalRadioButtonText").ToAscii();
+            ServerRadioButtonText = LocalizationManager.GetString("ServerRadioButtonText").ToAscii();
+            LanguageListHeaderText = LocalizationManager.GetString("LanguageListHeaderText").ToAscii();
+            ServerAddressTextBoxHeaderText = LocalizationManager.GetString("ServerAddressTextBoxHeaderText").ToAscii();
+            SaveButtonText = LocalizationManager.GetString("SaveButtonText").ToAscii();
+            ReturnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
+            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            var oldFontSize = Font.GetFontSize(IFont.Sizes.One);
             var newFontSize = Font.GetFontSize(IFont.Sizes.Two);
             FontSize = newFontSize;
 
@@ -44,20 +60,13 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
             WindowHeaderConsole.Controls.Add(WindowHeader);
             Children.Add(WindowHeaderConsole);
 
-            RadioButtonHeader = new Label(GlobalConstants.ScreenCellWidth / 2)
-            {
-                DisplayText = RadioButtonHeaderText
-            };
-            RadioButtonHeader.Position = new Point(Width / 2 - RadioButtonHeader.Width / 2 + 4, 30).TranslateFont(oldFontSize, newFontSize);
-            Controls.Add(RadioButtonHeader);
-
             ServerRadioButton = new RadioButton(ServerRadioButtonText.Length + 5, 1)
             {
                 Text = ServerRadioButtonText,
                 GroupName = "ServerOptions"
             };
             ServerRadioButton.IsSelectedChanged += LocalOrServerRadioButton_IsSelectedChanged;
-            ServerRadioButton.Position = new Point(Width / 2 - ServerRadioButton.Width, 36).TranslateFont(oldFontSize, newFontSize);
+            ServerRadioButton.Position = new Point(Width / 4 - ServerRadioButton.Width, 36).TranslateFont(oldFontSize, newFontSize);
             Controls.Add(ServerRadioButton);
 
             LocalRadioButton = new RadioButton(LocalRadioButtonText.Length + 5, 1)
@@ -66,19 +75,51 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
                 GroupName = "ServerOptions"
             };
             LocalRadioButton.IsSelectedChanged += LocalOrServerRadioButton_IsSelectedChanged;
-            LocalRadioButton.Position = new Point(Width / 2 - ServerRadioButton.Width, 34).TranslateFont(oldFontSize, newFontSize);
+            LocalRadioButton.Position = new Point(Width / 4 - ServerRadioButton.Width, 34).TranslateFont(oldFontSize, newFontSize);
             Controls.Add(LocalRadioButton);
 
-            ServerAddressTextBoxHeader = new Label(GlobalConstants.ScreenCellWidth / 2)
+            RadioButtonHeader = new Label(RadioButtonHeaderText.Length)
+            {
+                DisplayText = RadioButtonHeaderText
+            };
+            RadioButtonHeader.Position = new Point(Width / 4 - ServerRadioButton.Width, 30).TranslateFont(oldFontSize, newFontSize);
+            Controls.Add(RadioButtonHeader);
+
+            LanguageTextBoxHeader = new Label(LanguageListHeaderText.Length)
+            {
+                DisplayText = LanguageListHeaderText
+            };
+            LanguageTextBoxHeader.Position = new Point(Width - LanguageTextBoxHeader.Width * 3 - 5, 30).TranslateFont(oldFontSize, newFontSize);
+            Controls.Add(LanguageTextBoxHeader);
+
+            LanguageListBox = new ListBox(15, 5)
+            {
+                VisibleItemsMax = 5,
+                IsScrollBarVisible = true,
+                FocusOnClick = false
+            };
+            LanguageListBox.Position = new Point(Width - LanguageListBox.Width * 2, 34).TranslateFont(oldFontSize, newFontSize);
+
+            LanguageList = new List<string>();
+            foreach (var language in LocalizationManager.GetLocalizationDisplayData())
+            {
+                LanguageListBox.Items.Add(language.Value.ToAscii());
+                if(LocalizationManager.CurrentLocale.Equals(language.Key))
+                    LanguageListBox.SelectedItem = language.Value.ToAscii();
+                LanguageList.Add(language.Value);
+            }
+            Controls.Add(LanguageListBox);
+
+            ServerAddressTextBoxHeader = new Label(ServerAddressTextBoxHeaderText.Length)
             {
                 DisplayText = ServerAddressTextBoxHeaderText
             };
-            ServerAddressTextBoxHeader.Position = new Point(Width / 2 - ServerAddressTextBoxHeader.Width / 3, 44).TranslateFont(oldFontSize, newFontSize);
+            ServerAddressTextBoxHeader.Position = new Point(Width / 3 - ServerAddressTextBoxHeader.Width, 44).TranslateFont(oldFontSize, newFontSize);
             Controls.Add(ServerAddressTextBoxHeader);
 
-            ServerAddressTextBox = new TextBox(27);
+            ServerAddressTextBox = new TextBox(25);
             ServerAddressTextBox.EditingTextChanged += ServerAddressTextBox_EditingTextChanged;
-            ServerAddressTextBox.Position = new Point(Width / 2 - ServerAddressTextBox.Width, 46).TranslateFont(oldFontSize, newFontSize);
+            ServerAddressTextBox.Position = new Point(Width / 3 - ServerAddressTextBoxHeader.Width, 46).TranslateFont(oldFontSize, newFontSize);
             Controls.Add(ServerAddressTextBox);
 
             SaveButton = new Button(SaveButtonText.Length + 2)
@@ -135,6 +176,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.MenuConsole
         {
             Settings.Default.IsLocal = LocalRadioButton.IsSelected;
             Settings.Default.ServerAddress = ServerAddressTextBox.Text;
+            Settings.Default.Language = LanguageList[LanguageListBox.SelectedIndex];
 
             BackendHandler.Instance.ServerAddress = ServerAddressTextBox.Text;
 

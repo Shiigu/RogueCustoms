@@ -1,5 +1,8 @@
-﻿using RoguelikeGameEngine.Game.Entities;
+﻿using RoguelikeGameEngine.Game.DungeonStructure;
+using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Utils.Representation;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 {
@@ -27,9 +30,9 @@ namespace RoguelikeGameEngine.Utils.InputsAndOutputs
 
         public InventoryItemDto() { }
 
-        public InventoryItemDto(Item item, PlayerCharacter player)
+        public InventoryItemDto(Item item, PlayerCharacter player, Map map)
         {
-            Name = item.Name;
+            Name = map.Locale[item.Name];
             Description = item.Description;
             ConsoleRepresentation = item.ConsoleRepresentation;
             CanBeUsed = item.OnItemUseActions.Any(oiua => oiua.CanBeUsed);

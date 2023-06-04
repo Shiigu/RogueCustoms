@@ -2,6 +2,9 @@
 using SadConsole;
 using RoguelikeConsoleClient.EngineHandling;
 using RoguelikeConsoleClient.UI.Consoles.MenuConsole;
+using RoguelikeConsoleClient.Resources.Localization;
+using System.Collections.Generic;
+using System;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Containers
 {
@@ -39,6 +42,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
         public override void Start()
         {
             ActiveConsole = MainMenuConsole;
+            MainMenuConsole.Build();
             Children.Clear();
             Children.Add(ActiveConsole);
         }
@@ -49,22 +53,34 @@ namespace RoguelikeConsoleClient.UI.Consoles.Containers
             {
                 case MenuConsoles.Main:
                     ActiveConsole = MainMenuConsole;
-                    BackendHandler.Instance.IsLocal = Settings.Default.IsLocal;
-                    BackendHandler.Instance.ServerAddress = Settings.Default.ServerAddress;
+                    MainMenuConsole.Build();
                     break;
                 case MenuConsoles.PickDungeon:
                     ActiveConsole = PickDungeonConsole;
-                    PickDungeonConsole.FillList();
+                    PickDungeonConsole.Build();
                     break;
                 case MenuConsoles.Options:
                     ActiveConsole = OptionsConsole;
-                    OptionsConsole.LoadSettingDisplayData();
+                    OptionsConsole.Build();
                     break;
             }
             ActiveConsole.IsFocused = true;
             foreach (var control in ActiveConsole.Controls)
             {
                 control.IsFocused = false;
+            }
+            switch (console)
+            {
+                case MenuConsoles.Main:
+                    BackendHandler.Instance.IsLocal = Settings.Default.IsLocal;
+                    BackendHandler.Instance.ServerAddress = Settings.Default.ServerAddress;
+                    break;
+                case MenuConsoles.PickDungeon:
+                    PickDungeonConsole.FillList();
+                    break;
+                case MenuConsoles.Options:
+                    OptionsConsole.LoadSettingDisplayData();
+                    break;
             }
         }
     }

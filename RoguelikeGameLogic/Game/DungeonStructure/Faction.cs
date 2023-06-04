@@ -1,4 +1,5 @@
 ﻿using RoguelikeGameEngine.Utils.JsonImports;
+using System.Collections.Generic;
 
 namespace RoguelikeGameEngine.Game.DungeonStructure
 {
@@ -16,11 +17,11 @@ namespace RoguelikeGameEngine.Game.DungeonStructure
         public readonly List<Faction> NeutralWith;
         public readonly List<Faction> EnemiesWith;
 
-        public Faction(FactionInfo factionInfo)
+        public Faction(FactionInfo factionInfo, Locale Locale)
         {
             Id = factionInfo.Id;
-            Name = factionInfo.Name;
-            Description = factionInfo.Description;
+            Name = Locale[factionInfo.Name];
+            Description = Locale[factionInfo.Description];
             AlliedWithIds = factionInfo.AlliedWith;
             NeutralWithIds = factionInfo.NeutralWith;
             EnemiesWithIds = factionInfo.EnemiesWith;

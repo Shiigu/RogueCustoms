@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Roguelike.Services;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
 using RoguelikeGameEngine.Utils.JsonImports;
 using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,12 +33,12 @@ namespace Roguelike.Controllers
             Cache.Remove("DungeonManager");
         }
 
-        [HttpGet("GetPickableDungeonList")]
-        public List<DungeonListDto> GetPickableDungeonList()
+        [HttpGet("GetPickableDungeonList/{locale}")]
+        public List<DungeonListDto> GetPickableDungeonList(string locale)
         {
             try
             {
-                return DungeonService.GetPickableDungeonList();
+                return DungeonService.GetPickableDungeonList(locale);
             }
             catch (Exception ex)
             {
@@ -44,12 +47,12 @@ namespace Roguelike.Controllers
             }
         }
 
-        [HttpPost("CreateDungeon/{dungeonName}")]
-        public int CreateDungeon(string dungeonName)
+        [HttpPost("CreateDungeon/{dungeonName}/{locale}")]
+        public int CreateDungeon(string dungeonName, string locale)
         {
             try
             {
-                return DungeonService.CreateDungeon(dungeonName);
+                return DungeonService.CreateDungeon(dungeonName, locale);
             }
             catch (Exception ex)
             {

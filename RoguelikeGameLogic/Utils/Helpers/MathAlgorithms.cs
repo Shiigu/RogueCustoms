@@ -1,4 +1,7 @@
-﻿namespace RoguelikeGameEngine.Utils.Helpers
+﻿using System;
+using System.Collections.Generic;
+
+namespace RoguelikeGameEngine.Utils.Helpers
 {
     public static class MathAlgorithms
     {

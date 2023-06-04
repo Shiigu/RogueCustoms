@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using RoguelikeGameEngine.Management;
 using RoguelikeGameEngine.Utils.InputsAndOutputs;
+using System.Collections.Generic;
 
 namespace Roguelike.Services
 {
@@ -18,14 +19,14 @@ namespace Roguelike.Services
                 Cache.Set("DungeonManager", DungeonManager);
             }
         }
-        public List<DungeonListDto> GetPickableDungeonList()
+        public List<DungeonListDto> GetPickableDungeonList(string locale)
         {
-            return DungeonManager.GetPickableDungeonList();
+            return DungeonManager.GetPickableDungeonList(locale);
         }
 
-        public int CreateDungeon(string dungeonName)
+        public int CreateDungeon(string dungeonName, string locale)
         {
-            return DungeonManager.CreateDungeon(dungeonName);
+            return DungeonManager.CreateDungeon(dungeonName, locale);
         }
 
         public DungeonDto GetDungeonStatus(int dungeonId)

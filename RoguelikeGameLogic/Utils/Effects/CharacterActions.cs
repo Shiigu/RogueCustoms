@@ -1,6 +1,7 @@
 ﻿using RoguelikeGameEngine.Game.Entities;
 using RoguelikeGameEngine.Game.DungeonStructure;
 using RoguelikeGameEngine.Utils.Helpers;
+using System;
 
 namespace RoguelikeGameEngine.Utils.Effects
 {

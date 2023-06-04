@@ -7,6 +7,9 @@ using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.UI.Consoles.Utils;
 using SadRogue.Primitives;
 using Console = SadConsole.Console;
+using RoguelikeConsoleClient.Resources.Localization;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Consoles.Error
 {
@@ -14,7 +17,12 @@ namespace RoguelikeConsoleClient.UI.Consoles.Error
     {
         public string Message { get; set; }
         public string Title { get; set; }
-        private const string PressEnterToContinue = "Press Enter to Continue...";
+
+        private string BriefingMessageHeader;
+        private string TheEndMessageHeader;
+        private string ErrorMessageHeader;
+
+        private string PressEnterToContinue;
         private readonly ScrollableMessageSubConsole MessageSubConsole;
         private readonly ControlsConsole TitleConsole;
 
@@ -39,24 +47,22 @@ namespace RoguelikeConsoleClient.UI.Consoles.Error
         {
             TitleConsole.Controls.Clear();
             TitleConsole.Clear();
+            BriefingMessageHeader = LocalizationManager.GetString("BriefingMessageHeader").ToAscii();
+            TheEndMessageHeader = LocalizationManager.GetString("TheEndMessageHeader").ToAscii();
+            ErrorMessageHeader = LocalizationManager.GetString("ErrorMessageHeader").ToAscii();
+            PressEnterToContinue = LocalizationManager.GetString("PressEnterText").ToAscii();
 
             var titleLabel = new Label(Title.Length)
             {
                 DisplayText = Title
             };
-            
-            switch(Title)
-            {
-                case "BRIEFING":
-                    titleLabel.TextColor = null;
-                    break;
-                case "THE END":
-                    titleLabel.TextColor = new Color(0, 255, 0, 255);
-                    break;
-                case "ERROR":
-                    titleLabel.TextColor = Color.Red;
-                    break;
-            }
+
+            if(Title.Equals(BriefingMessageHeader))
+                titleLabel.TextColor = null;
+            else if(Title.Equals(TheEndMessageHeader))
+                titleLabel.TextColor = new Color(0, 255, 0, 255);
+            else if(Title.Equals(ErrorMessageHeader))
+                titleLabel.TextColor = Color.Red;
 
             titleLabel.Position = new Point(((Width / 2) - (titleLabel.Width / 2)) - Title.Length - 1, 1).TranslateFont(Font.GetFontSize(IFont.Sizes.One), Font.GetFontSize(IFont.Sizes.Four));
             TitleConsole.Controls.Add(titleLabel);

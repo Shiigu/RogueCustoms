@@ -1,4 +1,5 @@
 ﻿using RoguelikeGameEngine.Utils.Helpers;
+using System;
 
 namespace RoguelikeGameEngine.Utils.Representation
 {

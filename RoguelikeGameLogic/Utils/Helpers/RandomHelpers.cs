@@ -1,4 +1,6 @@
-﻿namespace RoguelikeGameEngine.Utils.Helpers
+﻿using System;
+
+namespace RoguelikeGameEngine.Utils.Helpers
 {
     public static class RandomHelpers
     {

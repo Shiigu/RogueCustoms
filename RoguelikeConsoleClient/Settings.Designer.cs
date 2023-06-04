@@ -37,7 +37,7 @@ namespace RoguelikeConsoleClient {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:7096")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:5001")]
         public string ServerAddress {
             get {
                 return ((string)(this["ServerAddress"]));
@@ -56,6 +56,18 @@ namespace RoguelikeConsoleClient {
             }
             set {
                 this["LocalLogFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("English")]
+        public string Language {
+            get {
+                return ((string)(this["Language"]));
+            }
+            set {
+                this["Language"] = value;
             }
         }
     }

@@ -12,12 +12,23 @@ using Keyboard = SadConsole.Input.Keyboard;
 using Console = SadConsole.Console;
 using RoguelikeConsoleClient.UI.Consoles.Containers;
 using RoguelikeConsoleClient.EngineHandling;
+using RoguelikeConsoleClient.Resources.Localization;
+using System.Text;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
     public class InventoryWindow : Window
     {
-        private Button UseButton, DropOrSwapButton, CancelButton;
+        private readonly string UseButtonText = LocalizationManager.GetString("UseButtonText").ToAscii();
+        private readonly string EquipButtonText = LocalizationManager.GetString("EquipButtonText").ToAscii();
+        private readonly string DropButtonText = LocalizationManager.GetString("DropButtonText").ToAscii();
+        private readonly string SwapButtonText = LocalizationManager.GetString("SwapButtonText").ToAscii();
+        private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
+
+        private Button UseOrEquipButton, DropOrSwapButton, CancelButton;
         private string TitleCaption { get; set; }
         private InventoryDto Inventory;
         private List<InventoryItemDto> CurrentlyShownInventoryItems;
@@ -37,25 +48,22 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             var width = 65;
             var height = 30;
 
-            var useButtonText = "USE";
-            var useButton = new Button(useButtonText.Length + 4, 1)
-            {
-                Text = useButtonText,
-            };
-
-            var dropButtonText = "DROP";
-            var dropOrSwapButton = new Button(dropButtonText.Length + 2, 1)
-            {
-                Text = dropButtonText,
-            };
-
-            var cancelButtonText = "CANCEL";
-            var cancelButton = new Button(cancelButtonText.Length + 2, 1)
-            {
-                Text = cancelButtonText,
-            };
-
             var window = new InventoryWindow(width, height);
+
+            var useButton = new Button(Math.Max(window.UseButtonText.Length, window.EquipButtonText.Length) + 2, 1)
+            {
+                Text = window.UseButtonText,
+            };
+
+            var dropOrSwapButton = new Button(Math.Max(window.DropButtonText.Length, window.SwapButtonText.Length) + 2, 1)
+            {
+                Text = window.DropButtonText,
+            };
+
+            var cancelButton = new Button(window.CancelButtonText.Length + 2, 1)
+            {
+                Text = window.CancelButtonText,
+            };
 
             window.UseKeyboard = true;
             window.IsFocused = true;
@@ -63,7 +71,8 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.InventorySelectedIndex = 0;
             window.IsDirty = true;
             window.ParentConsole = parent;
-            window.TitleCaption = "INVENTORY";
+            window.Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
+            window.TitleCaption = LocalizationManager.GetString("InventoryWindowTitleText").ToAscii();
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
             drawingArea.OnDraw += window.DrawWindow;
@@ -80,7 +89,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                 }
                 catch (Exception)
                 {
-                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
                 }
                 finally
                 {
@@ -100,7 +109,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                 }
                 catch (Exception)
                 {
-                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, "ERROR", "OH NO!\nAn error has occured!\nGet ready to return to the main menu...");
+                    parent.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
                 }
                 finally
                 {
@@ -113,7 +122,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             cancelButton.Click += (o, e) => window.Hide();
             cancelButton.Theme = null;
 
-            window.UseButton = useButton;
+            window.UseOrEquipButton = useButton;
             window.Controls.Add(useButton);
             window.DropOrSwapButton = dropOrSwapButton;
             window.Controls.Add(dropOrSwapButton);
@@ -144,7 +153,7 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.DrawLine(new Point(Width - 1, 0), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.DrawLine(new Point(0, window.Height - 3), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.ConnectLines(ICellSurface.ConnectedLineThick);
-            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.Black, Color.Yellow);
+            ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption.ToAscii()} ", Color.Black, Color.Yellow);
 
             var item = Inventory.InventoryItems.ElementAtOrDefault(InventorySelectedIndex);
 
@@ -157,11 +166,11 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 string nameToDisplay;
                 if (Inventory.InventoryItems[initialIndexToShow + i].IsInFloor)
-                    nameToDisplay = $"(F) {Inventory.InventoryItems[initialIndexToShow + i].Name}";
+                    nameToDisplay = $"{LocalizationManager.GetString("FloorItemNamePrefix").ToAscii()} {Inventory.InventoryItems[initialIndexToShow + i].Name.ToAscii()}";
                 else if (Inventory.InventoryItems[initialIndexToShow + i].IsEquipped)
-                    nameToDisplay = $"(E) {Inventory.InventoryItems[initialIndexToShow + i].Name}";
+                    nameToDisplay = $"{LocalizationManager.GetString("EquippedItemNamePrefix").ToAscii()} {Inventory.InventoryItems[initialIndexToShow + i].Name.ToAscii()}";
                 else
-                    nameToDisplay = Inventory.InventoryItems[initialIndexToShow + i].Name;
+                    nameToDisplay = Inventory.InventoryItems[initialIndexToShow + i].Name.ToAscii();
                 var itemName = nameToDisplay.PadRight(29);
                 if (Inventory.InventoryItems[initialIndexToShow + i] == item)
                     ds.Surface.Print(2, 2 + i, itemName, Color.Black, Color.White);
@@ -170,17 +179,17 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             }
             TileIsOccupied = Inventory.TileIsOccupied;
             ItemIsEquippable = item.IsEquippable;
-            UseButton.Text = ItemIsEquippable ? "EQUIP" : "USE";
+            
             if(item.IsEquipped)
             {
-                UseButton.IsEnabled = false;
-                UseButton.IsVisible = false;
+                UseOrEquipButton.IsEnabled = false;
+                UseOrEquipButton.IsVisible = false;
             }
             else
             {
-                UseButton.IsEnabled = true;
-                UseButton.IsVisible = true;
-                UseButton.Text = ItemIsEquippable ? "EQUIP" : "USE";
+                UseOrEquipButton.IsEnabled = true;
+                UseOrEquipButton.IsVisible = true;
+                UseOrEquipButton.Text = ItemIsEquippable ? EquipButtonText : UseButtonText;
             }
             if (item.IsInFloor || (item.IsEquipped && TileIsOccupied))
             {
@@ -191,19 +200,31 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 DropOrSwapButton.IsEnabled = true;
                 DropOrSwapButton.IsVisible = true;
-                DropOrSwapButton.Text = TileIsOccupied ? "SWAP" : "DROP";
+                DropOrSwapButton.Text = TileIsOccupied ? SwapButtonText : DropButtonText;
             }
             DropOrSwapButton.Position = new Point(ds.Surface.Area.Center.X - DropOrSwapButton.Text.Length / 2, Height - DropOrSwapButton.Surface.Height);
             if (item != null)
             {
-                UseButton.IsEnabled = item.CanBeUsed;
+                UseOrEquipButton.IsEnabled = item.CanBeUsed;
 
-                ds.Surface.Print(34, 2, item.Name, Color.White, Color.Black);
+                ds.Surface.Print(34, 2, item.Name.ToAscii(), Color.White, Color.Black);
 
                 ds.Surface.SetGlyph(34, 4, item.ConsoleRepresentation.Character.ToGlyph(), item.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), item.ConsoleRepresentation.BackgroundColor.ToSadRogueColor());
 
-                var descriptionAsString = item.Description.Wrap(30);
-                var linesInDescription = item.Description.Split(
+                var descriptionToDisplay = new StringBuilder(item.Description);
+
+                if (item.IsInFloor)
+                {
+                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("FloorItemDescriptionText")}".ToAscii());
+                }
+                else if (item.IsEquipped)
+                {
+                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("EquippedItemDescriptionText")}".ToAscii());
+                    if (TileIsOccupied)
+                        descriptionToDisplay.Append(LocalizationManager.GetString("OccupiedTileDescriptionText").ToAscii());
+                }
+
+                var linesInDescription = descriptionToDisplay.ToString().Split(
                     new[] { "\r\n", "\n" }, StringSplitOptions.None
                     );
                 var splitWrappedDescription = new List<string>();
@@ -220,17 +241,9 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                 for (int i = 0; i < splitWrappedDescription.Count; i++)
                 {
                     lastPrintedLine++;
-                    ds.Surface.Print(34, lastPrintedLine, splitWrappedDescription[i].Trim(), Color.White, Color.Black);
+                    ds.Surface.Print(34, lastPrintedLine, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
                 }
 
-                if (item.IsInFloor)
-                    ds.Surface.Print(34, lastPrintedLine + 2, "(This item is in the floor)", Color.White, Color.Black);
-                else if (item.IsEquipped)
-                {
-                    ds.Surface.Print(34, lastPrintedLine + 2, "(This item is equipped)", Color.White, Color.Black);
-                    if(TileIsOccupied)
-                        ds.Surface.Print(34, lastPrintedLine + 3, "(Tile is occupied, can't drop)", Color.White, Color.Black);
-                }
             }
             ds.IsDirty = true;
             ds.IsFocused = true;
@@ -248,12 +261,12 @@ namespace RoguelikeConsoleClient.UI.Consoles.GameConsole.GameWindows
                 InventorySelectedIndex = Math.Min(Inventory.InventoryItems.Count - 1, InventorySelectedIndex + 1);
                 DrawingArea.IsDirty = true;
             }
-            else if (UseButton.IsEnabled
+            else if (UseOrEquipButton.IsEnabled
                 && (info.IsKeyPressed(Keys.Enter)
                 || (info.IsKeyPressed(Keys.E) && ItemIsEquippable)
                 || (info.IsKeyPressed(Keys.U) && !ItemIsEquippable)))
             {
-                UseButton.InvokeClick();
+                UseOrEquipButton.InvokeClick();
             }
             else if ((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
                 || (info.IsKeyPressed(Keys.S) && TileIsOccupied))

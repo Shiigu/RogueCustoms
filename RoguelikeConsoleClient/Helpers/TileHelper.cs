@@ -1,5 +1,7 @@
 ﻿using RoguelikeGameEngine.Utils.InputsAndOutputs;
 using RoguelikeGameEngine.Utils.Representation;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleClient.Helpers
 {
