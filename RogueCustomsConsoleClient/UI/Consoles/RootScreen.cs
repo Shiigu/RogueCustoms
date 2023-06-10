@@ -2,6 +2,7 @@
 using RogueCustomsConsoleClient.UI.Consoles.Containers;
 using System;
 using System.Collections.Generic;
+using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles
 {
@@ -53,7 +54,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles
         {
             ActiveContainer.IsEnabled = false;
             ActiveContainer.IsVisible = false;
-            switch(console)
+            ActiveContainer.IsFocused = false;
+            switch (console)
             {
                 case ConsoleContainers.Main:
                     ActiveContainer = MenuConsoleContainer;

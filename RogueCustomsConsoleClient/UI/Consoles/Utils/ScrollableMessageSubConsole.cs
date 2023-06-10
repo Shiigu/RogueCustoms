@@ -10,7 +10,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
     public class ScrollableMessageSubConsole : Console
     {
         private readonly Console ControlsContainer;
-        private readonly ScrollBar ScrollBar;
+        public readonly ScrollBar ScrollBar;
 
         public ScrollableMessageSubConsole(int width, int height, int bufferHeight) : base(width - 1, height, width - 1, bufferHeight)
         {
@@ -52,7 +52,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
             }
             ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y + 1 - ViewHeight);
             ScrollBar.IsEnabled = Cursor.Position.Y > ViewHeight;
-            ScrollBar.Value = Cursor.Position.Y > ViewHeight ? ScrollBar.Maximum : 0;
+            ScrollBar.Value = ScrollBar.IsEnabled ? ScrollBar.Maximum : 0;
         }
     }
 }

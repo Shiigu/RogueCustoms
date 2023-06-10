@@ -5,6 +5,7 @@ using RogueCustomsConsoleClient.UI.Consoles.MenuConsole;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System;
+using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
@@ -21,9 +22,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         public MenuConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
             MainMenuConsole = new MainMenuConsole(this, Width, Height);
+            MainMenuConsole.IsVisible = false;
+            MainMenuConsole.IsEnabled = false;
             PickDungeonConsole = new PickDungeonConsole(this, Width, Height);
+            PickDungeonConsole.IsVisible = false;
+            PickDungeonConsole.IsEnabled = false;
             OptionsConsole = new OptionsConsole(this, Width, Height);
+            OptionsConsole.IsVisible = false;
+            OptionsConsole.IsEnabled = false;
 
+            UseKeyboard = false;
+            UseMouse = false;
+            IsFocused = false;
             Start();
         }
 
@@ -41,14 +51,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
         public override void Start()
         {
-            ActiveConsole = MainMenuConsole;
-            MainMenuConsole.Build();
+            MoveToConsole(MenuConsoles.Main);
             Children.Clear();
             Children.Add(ActiveConsole);
         }
 
         public void MoveToConsole(MenuConsoles console)
         {
+            if(ActiveConsole != null)
+            {
+                ActiveConsole.IsVisible = false;
+                ActiveConsole.IsEnabled = false;
+            }
             switch (console)
             {
                 case MenuConsoles.Main:
@@ -64,11 +78,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     OptionsConsole.Build();
                     break;
             }
-            ActiveConsole.IsFocused = true;
-            foreach (var control in ActiveConsole.Controls)
-            {
-                control.IsFocused = false;
-            }
+            ActiveConsole.IsVisible = true;
+            ActiveConsole.IsEnabled = true;
             switch (console)
             {
                 case MenuConsoles.Main:

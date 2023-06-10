@@ -9,7 +9,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class GameControlsConsole : GameSubConsole
     {
-        private string MoveModeControlsString, MoveModeOnStairsControlsString, ActionModeControlsString;
+        private string MoveModeControlsString, MoveModeOnStairsControlsString, MoveModeControlsSubString, ActionModeControlsString;
 
         public GameControlsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ControlsWidth, GameConsoleConstants.ControlsHeight)
         {
@@ -21,16 +21,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Build();
             MoveModeControlsString = LocalizationManager.GetString("MoveModeControlsText").ToAscii();
             MoveModeOnStairsControlsString = LocalizationManager.GetString("MoveModeOnStairsControlsText").ToAscii();
+            MoveModeControlsSubString = LocalizationManager.GetString("MoveModeControlsSubText").ToAscii();
             ActionModeControlsString = LocalizationManager.GetString("ActionModeControlsText").ToAscii();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = false;
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             this.Clear();
             string textToRender = null;
+            string subtextToRender = null;
             switch (ParentContainer.ControlMode)
             {
                 case ControlMode.Move:
@@ -38,17 +40,21 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                         textToRender = MoveModeOnStairsControlsString;
                     else
                         textToRender = MoveModeControlsString;
+                    subtextToRender = MoveModeControlsSubString;
                     break;
                 case ControlMode.ActionTargeting:
                     textToRender = ActionModeControlsString;
+                    subtextToRender = "";
                     break;
                 case ControlMode.None:
                     textToRender = "";
+                    subtextToRender = MoveModeControlsSubString;
                     break;
             }
 
             this.Print((GameConsoleConstants.ControlsWidth - textToRender.Length) / 2, 0, textToRender);
-            base.Render(delta);
+            this.Print((GameConsoleConstants.ControlsWidth - subtextToRender.Length) / 2, 2, subtextToRender);
+            base.Update(delta);
         }
     }
 }

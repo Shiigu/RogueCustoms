@@ -45,7 +45,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             Controls.Add(ExperienceBar);
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
 
@@ -64,7 +64,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 }).ToAscii();
             }
 
-            base.Render(delta);
+            base.Update(delta);
         }
     }
 }

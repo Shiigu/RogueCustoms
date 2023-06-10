@@ -254,7 +254,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if (info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape))
+            if (info.IsKeyPressed(Keys.Up) && !info.IsKeyPressed(Keys.Down))
+            {
+                ScrollBar.Value--;
+            }
+            else if (info.IsKeyPressed(Keys.Down) && !info.IsKeyPressed(Keys.Up))
+            {
+                ScrollBar.Value++;
+            }
+            else if (info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape))
             {
                 CloseButton.InvokeClick();
             }

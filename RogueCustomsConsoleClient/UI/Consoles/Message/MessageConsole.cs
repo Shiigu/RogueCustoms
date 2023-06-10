@@ -47,6 +47,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Error
         {
             TitleConsole.Controls.Clear();
             TitleConsole.Clear();
+            this.Clear();
             BriefingMessageHeader = LocalizationManager.GetString("BriefingMessageHeader").ToAscii();
             TheEndMessageHeader = LocalizationManager.GetString("TheEndMessageHeader").ToAscii();
             ErrorMessageHeader = LocalizationManager.GetString("ErrorMessageHeader").ToAscii();

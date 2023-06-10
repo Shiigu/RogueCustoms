@@ -12,7 +12,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
     public class DungeonDto
     {
-        public string Name { get; set; }
+        public string DungeonName { get; set; }
+        public string FloorName { get; set; }
         public int DungeonId { get; set; }
         public DungeonStatus DungeonStatus { get; set; }
         public int Width { get; set; }
@@ -34,7 +35,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public DungeonDto(Dungeon dungeon, Map map)
         {
             DungeonId = dungeon.Id;
-            Name = map.FloorName;
+            DungeonName = dungeon.Name;
+            FloorName = map.FloorName;
             DungeonStatus = dungeon.DungeonStatus;
             Width = map.Width;
             Height = map.Height;

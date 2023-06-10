@@ -10,6 +10,7 @@ using RogueCustomsConsoleClient.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -76,6 +77,43 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ReturnButton.Position = new Point(Width / 4 - ReturnButton.Width / 2, Height / 2 - 2);
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
+        }
+        public override void Update(TimeSpan delta)
+        {
+            this.IsFocused = true;
+            base.Update(delta);
+        }
+
+        public override bool ProcessKeyboard(Keyboard keyboard)
+        {
+            bool handled = false;
+            if (keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+            {
+                if (DungeonListBox.SelectedIndex == 0)
+                    DungeonListBox.SelectedIndex = DungeonListBox.Items.Count - 1;
+                else
+                    DungeonListBox.SelectedIndex--;
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
+            {
+                if (DungeonListBox.SelectedIndex == DungeonListBox.Items.Count - 1)
+                    DungeonListBox.SelectedIndex = 0;
+                else
+                    DungeonListBox.SelectedIndex++;
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Enter))
+            {
+                PickButton.InvokeClick();
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Escape))
+            {
+                ReturnButton.InvokeClick();
+                handled = true;
+            }
+            return handled;
         }
 
         public void FillList()

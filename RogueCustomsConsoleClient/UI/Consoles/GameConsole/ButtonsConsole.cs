@@ -4,13 +4,14 @@ using SadConsole.UI.Controls;
 using RogueCustomsConsoleClient.UI.Consoles.Containers;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System;
+using RogueCustomsConsoleClient.UI.Windows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class ButtonsConsole : GameSubConsole
     {
         private string ExitButtonText;
-        private Button ExitButton;
+        public Button ExitButton;
 
         public ButtonsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ButtonsCellWidth, GameConsoleConstants.ButtonsCellHeight)
         {
@@ -35,7 +36,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             Controls.Add(ExitButton);
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             this.Clear();
 
@@ -43,12 +44,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 
             this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Black, 178)));
 
-            base.Render(delta);
+            base.Update(delta);
         }
 
         private void ExitButton_Click(object? sender, EventArgs args)
         {
-            ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Main);
+            ParentContainer.ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("ExitPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), ParentContainer.LatestDungeonStatus.DungeonName, Color.Red,
+                                                () => ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Main));
         }
     }
 }

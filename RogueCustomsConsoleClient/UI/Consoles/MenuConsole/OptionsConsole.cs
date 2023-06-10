@@ -9,6 +9,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using RogueCustomsGameEngine.Utils.Helpers;
 using System.Collections.Generic;
 using System;
+using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -60,7 +61,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
             RadioButtonHeader = new Label(RadioButtonHeaderText.Length)
             {
-                DisplayText = RadioButtonHeaderText
+                DisplayText = RadioButtonHeaderText,
+                TextColor = Color.Yellow
             };
             RadioButtonHeader.Position = new Point(3, 15);
             Controls.Add(RadioButtonHeader);
@@ -68,7 +70,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             LocalRadioButton = new RadioButton(LocalRadioButtonText.Length + 5, 1)
             {
                 Text = LocalRadioButtonText,
-                GroupName = "ServerOptions"
+                GroupName = "ServerOptions",
+                TabIndex = 0
             };
             LocalRadioButton.IsSelectedChanged += LocalOrServerRadioButton_IsSelectedChanged;
             LocalRadioButton.Position = new Point(3, 17);
@@ -77,7 +80,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerRadioButton = new RadioButton(ServerRadioButtonText.Length + 5, 1)
             {
                 Text = ServerRadioButtonText,
-                GroupName = "ServerOptions"
+                GroupName = "ServerOptions",
+                TabIndex = 1
             };
             ServerRadioButton.IsSelectedChanged += LocalOrServerRadioButton_IsSelectedChanged;
             ServerRadioButton.Position = new Point(3, 18);
@@ -85,7 +89,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
             LanguageTextBoxHeader = new Label(LanguageListHeaderText.Length)
             {
-                DisplayText = LanguageListHeaderText
+                DisplayText = LanguageListHeaderText,
+                TextColor = Color.Yellow
             };
             LanguageTextBoxHeader.Position = new Point(Width / 2 - LanguageTextBoxHeader.Width / 2 - 13, 15);
             Controls.Add(LanguageTextBoxHeader);
@@ -94,7 +99,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 VisibleItemsMax = 5,
                 IsScrollBarVisible = true,
-                FocusOnClick = false
+                FocusOnClick = false,
+                TabIndex = 2
             };
             LanguageListBox.Position = new Point(Width / 2 - LanguageTextBoxHeader.Width / 2 - 18, 17);
 
@@ -110,7 +116,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
             ServerAddressTextBoxHeader = new Label(ServerAddressTextBoxHeaderText.Length)
             {
-                DisplayText = ServerAddressTextBoxHeaderText
+                DisplayText = ServerAddressTextBoxHeaderText,
+                TextColor = Color.Yellow
             };
             ServerAddressTextBoxHeader.Position = new Point(Width / 4 - ServerAddressTextBoxHeader.Width / 2 - 8, 26);
             Controls.Add(ServerAddressTextBoxHeader);
@@ -118,11 +125,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerAddressTextBox = new TextBox(30);
             ServerAddressTextBox.EditingTextChanged += ServerAddressTextBox_EditingTextChanged;
             ServerAddressTextBox.Position = new Point(ServerAddressTextBoxHeader.Position.X, 28);
+            ServerAddressTextBox.TabIndex = 3;
             Controls.Add(ServerAddressTextBox);
 
             SaveButton = new Button(SaveButtonText.Length + 2)
             {
-                Text = SaveButtonText
+                Text = SaveButtonText,
+                TabIndex = 4
             };
             SaveButton.Position = new Point(Width / 4 - SaveButton.Width / 2, Height / 2 - 4);
             SaveButton.Click += PickButton_Click;
@@ -131,11 +140,73 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ReturnButton = new Button(ReturnButtonText.Length + 2)
             {
                 Text = ReturnButtonText,
-                IsEnabled = true
+                IsEnabled = true,
+                TabIndex = 5
             };
             ReturnButton.Position = new Point(Width / 4 - ReturnButton.Width / 2, Height / 2 - 2);
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
+        }
+        public override void Update(TimeSpan delta)
+        {
+            this.IsFocused = true;
+
+            if (Controls.FocusedControl == LocalRadioButton || Controls.FocusedControl == ServerRadioButton)
+            {
+                RadioButtonHeader.TextColor = Color.White;
+            }
+            else
+            {
+                RadioButtonHeader.TextColor = Color.Yellow;
+            }
+            
+            if (Controls.FocusedControl == LanguageListBox)
+            {
+                LanguageTextBoxHeader.TextColor = Color.White;
+            }
+            else
+            {
+                LanguageTextBoxHeader.TextColor = Color.Yellow;
+            }
+
+            if (Controls.FocusedControl == ServerAddressTextBox)
+            {
+                ServerAddressTextBoxHeader.TextColor = Color.White;
+            }
+            else
+            {
+                ServerAddressTextBoxHeader.TextColor = Color.Yellow;
+            }
+
+            RadioButtonHeader.IsDirty = true;
+            LanguageTextBoxHeader.IsDirty = true;
+            ServerAddressTextBoxHeader.IsDirty = true;
+
+            base.Update(delta);
+        }
+
+        public override bool ProcessKeyboard(Keyboard keyboard)
+        {
+            bool handled = false;
+            if (Controls.FocusedControl != ServerAddressTextBox)
+            {
+                if (keyboard.IsKeyPressed(Keys.Up) || keyboard.IsKeyPressed(Keys.Down))
+                {
+                    if (Controls.FocusedControl == LocalRadioButton)
+                    {
+                        ServerRadioButton.IsFocused = true;
+                        ServerRadioButton.Focused();
+                        handled = true;
+                    }
+                    else if (Controls.FocusedControl == ServerRadioButton)
+                    {
+                        LocalRadioButton.IsFocused = true;
+                        LocalRadioButton.Focused();
+                        handled = true;
+                    }
+                }
+            }
+            return handled || base.ProcessKeyboard(keyboard);
         }
 
         public void LoadSettingDisplayData()
@@ -146,6 +217,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerAddressTextBoxHeader.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsEnabled = ServerRadioButton.IsSelected;
+            ServerAddressTextBox.TabStop = ServerRadioButton.IsSelected;
             SaveButton.IsEnabled = LocalRadioButton.IsSelected || (ServerRadioButton.IsSelected && !string.IsNullOrWhiteSpace(ServerAddressTextBox.Text));
         }
 
@@ -154,6 +226,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerAddressTextBoxHeader.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsEnabled = ServerRadioButton.IsSelected;
+            ServerAddressTextBox.TabStop = ServerRadioButton.IsSelected;
             SaveButton.IsEnabled = LocalRadioButton.IsSelected || (ServerRadioButton.IsSelected && !string.IsNullOrWhiteSpace(ServerAddressTextBox.Text));
         }
 
@@ -162,6 +235,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerAddressTextBoxHeader.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsVisible = ServerRadioButton.IsSelected;
             ServerAddressTextBox.IsEnabled = ServerRadioButton.IsSelected;
+            ServerAddressTextBox.TabStop = ServerRadioButton.IsSelected;
             SaveButton.IsEnabled = LocalRadioButton.IsSelected || (ServerRadioButton.IsSelected && !string.IsNullOrWhiteSpace(ServerAddressTextBox.Text));
         }
 

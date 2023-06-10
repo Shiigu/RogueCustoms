@@ -7,6 +7,7 @@ PlayerLevelText = NIVEL {CurrentLevel}
 PlayerNoStatusesText = ¡NINGUNO!
 CancelButtonText = CANCELAR
 ExitButtonText = SALIR
+CloseButtonText = CERRAR
 ReturnToMainMenuText = IR AL MENU PRINCIPAL
 
 ; MainMenuConsole
@@ -47,10 +48,12 @@ ExperienceBarDisplayText = Experiencia: {CurrentExperience}/{ExperienceToLevelUp
 ; GameControlsConsole
 MoveModeControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno
 MoveModeOnStairsControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno
+MoveModeControlsSubText = <M> Abrir Registro de Mensajes <D> Ver Detalles de Jugador <ESC> Salir
 ActionModeControlsText = <ARROWS> Mover <A> Elegir Acción <ESC> Cancelar
 
 ; MessageLogConsole
 MessageHeaderText = MENSAJES
+MessageLogButtonText = REGISTRO DE MENSAJES
 
 ; PlayerInfoConsole
 PlayerInfoConsoleTitle = TÚ
@@ -59,6 +62,9 @@ PlayerInfoArmorHeader = ARMADURA
 PlayerInfoStatusesHeader = Estados:
 PlayerInfoTooManyStatusesText = ¡Y HAY MÁS!
 DetailsButtonText = DETALLES
+
+; ButtonsConsole
+ExitPromptText = ¿Quieres dejar de jugar y\nregresar al menú principal?
 
 ; ActionWindow
 ActionWindowTitleText = Acción
@@ -90,7 +96,9 @@ PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns = - {StatusName}: {St
 PlayerCharacterDetailAlteredStatusDescriptionText = - {StatusName}: {StatusDescription}
 PlayerCharacterDetailEquippedWeaponHeader = ARMA ACTUAL
 PlayerCharacterDetailEquippedArmorHeader = ARMADURA ACTUAL
-CloseButtonText = CERRAR
+
+; MessageLogWindow
+MessageWindowTitleText = REGISTRO DE MENSAJES
 
 ; MessageBox
 OKButtonText = OK
