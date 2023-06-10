@@ -64,7 +64,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             LatestCursorLocation = CursorLocation = default;
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
 
@@ -75,7 +75,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             }
             else
             {
-                base.Render(delta);
+                base.Update(delta);
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("TheEndMessageHeader"), message);
 
                 ParentContainer.LatestDungeonStatus = null;
-                base.Render(delta);
+                base.Update(delta);
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             var square = new Rectangle(0, 0, Width, Height);
 
             this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Violet, Color.Black, 178)));
-            var title = $" {dungeonStatus.Name} ";
+            var title = $" {dungeonStatus.FloorName} ";
             this.Print((square.Width - title.Length) / 2, 0, title);
 
             var playerEntity = dungeonStatus.PlayerEntity;
@@ -168,7 +168,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 }
             }
 
-            base.Render(delta);
+            base.Update(delta);
         }
     }
 }

@@ -4,13 +4,17 @@ using RogueCustomsConsoleClient.UI.Consoles.Containers;
 using RogueCustomsConsoleClient.UI.Consoles.Utils;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System;
+using SadConsole.UI.Controls;
+using RogueCustomsConsoleClient.EngineHandling;
+using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class MessageLogConsole : GameSubConsole
     {
         private ScrollableMessageSubConsole ScrollableMessageLogSubConsole;
-        private string TitleCaption;
+        private string TitleCaption, MessageLogWindowButtonText;
+        public Button MessageLogWindowButton;
         public MessageLogConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MessageLogCellWidth, GameConsoleConstants.MessageLogCellHeight)
         {
             Build();
@@ -28,9 +32,29 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 Position = new Point(1, 1)
             };
             Children.Add(ScrollableMessageLogSubConsole);
+            MessageLogWindowButtonText = $" {LocalizationManager.GetString("MessageLogButtonText")} ".ToAscii();
+            MessageLogWindowButton = new Button(MessageLogWindowButtonText.Length, 1)
+            {
+                Position = new Point((Width - MessageLogWindowButtonText.Length) / 2, Height - 1),
+                Text = MessageLogWindowButtonText
+            };
+            MessageLogWindowButton.Click += MessageLogWindowButton_Click;
+            Controls.Add(MessageLogWindowButton);
         }
 
-        public override void Render(TimeSpan delta)
+        private void MessageLogWindowButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                ParentContainer.ActiveWindow = MessageLogWindow.Show(ParentContainer, ParentContainer.LatestDungeonStatus.LogMessages);
+            }
+            catch (Exception)
+            {
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
+            }
+        }
+
+        public override void Update(TimeSpan delta)
         {
             this.Clear();
 
@@ -47,7 +71,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 ScrollableMessageLogSubConsole.PrintList(dungeonStatus.LogMessages);
             }
 
-            base.Render(delta);
+            base.Update(delta);
         }
     }
 }

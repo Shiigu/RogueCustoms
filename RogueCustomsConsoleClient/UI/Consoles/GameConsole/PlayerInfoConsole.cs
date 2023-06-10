@@ -14,7 +14,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
     public class PlayerInfoConsole : GameSubConsole
     {
         private string DetailsButtonText;
-        private Button DetailsButton;
+        public Button DetailsButton;
 
         public PlayerInfoConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.PlayerInfoCellWidth, GameConsoleConstants.PlayerInfoCellHeight)
         {
@@ -50,7 +50,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             }
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
 
@@ -104,7 +104,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                     this.Print(4, 29, LocalizationManager.GetString("PlayerNoStatusesText"), true);
                 }
             }
-            base.Render(delta);
+            base.Update(delta);
         }
     }
 }

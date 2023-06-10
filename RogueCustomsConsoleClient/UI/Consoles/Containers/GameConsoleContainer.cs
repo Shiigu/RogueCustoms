@@ -107,7 +107,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             RequiresRefreshingDungeonState = true;
         }
 
-        public override void Render(TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             IsFocused = !Children.Any(c => c is Window);
 
@@ -125,7 +125,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     LastTurnCount = LatestDungeonStatus.TurnCount;
                 }
 
-                if (LatestDungeonStatus.DungeonStatus != DungeonStatus.Running)
+                if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
 
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.Completed)
@@ -145,17 +145,17 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             Consoles.ForEach(console =>
             {
                 if (RequiresRefreshingDungeonState || !console.RefreshOnlyOnStatusUpdate)
-                    console.Render(delta);
+                    console.Update(delta);
             });
 
             Children.ToList().ForEach(c =>
             {
                 if (!Consoles.Contains(c))
-                    c.Render(delta);
+                    c.Update(delta);
             });
 
             RequiresRefreshingDungeonState = false;
-            base.Render(delta);
+            base.Update(delta);
         }
 
         private void ShowMessagesIfNeeded(int index)
@@ -171,17 +171,19 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         {
             try
             {
-                if (!LatestDungeonStatus.IsAlive) return true;
+                if (LatestDungeonStatus == null) return true;
                 if (ControlMode == ControlMode.Move)
                     return ProcessMoveModeKeyboard(keyboard);
                 if (ControlMode == ControlMode.ActionTargeting)
+                    return ProcessActionTargetingModeKeyboard(keyboard);
+                if (ControlMode == ControlMode.None)
                     return ProcessActionTargetingModeKeyboard(keyboard);
             }
             catch (Exception)
             {
                 ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
-            return true;
+            return false;
         }
 
         private bool ProcessMoveModeKeyboard(Keyboard keyboard)
@@ -225,27 +227,27 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             if (keyboard.IsKeyPressed(Keys.U) && LatestDungeonStatus.IsPlayerOnStairs())
             {
-                ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("StairsPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LatestDungeonStatus.Name, Color.Green,
+                ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("StairsPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LatestDungeonStatus.DungeonName, Color.Green,
                                                 () =>
                                                 {
                                                     BackendHandler.Instance.PlayerTakeStairs();
                                                     RequiresRefreshingDungeonState = true;
                                                 });
-                return handled;
+                handled = true;
             }
 
             if (keyboard.IsKeyPressed(Keys.A))
             {
                 ControlMode = ControlMode.ActionTargeting;
                 DungeonConsole.AddCursor();
-                return handled;
+                handled = true;
             }
 
             if (keyboard.IsKeyPressed(Keys.S))
             {
                 BackendHandler.Instance.PlayerSkipTurn();
                 RequiresRefreshingDungeonState = true;
-                return handled;
+                handled = true;
             }
 
             if (keyboard.IsKeyPressed(Keys.I))
@@ -253,7 +255,50 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 var inventory = BackendHandler.Instance.GetPlayerInventory();
                 if (inventory != null && inventory.InventoryItems.Any())
                     ActiveWindow = InventoryWindow.Show(this, inventory);
+                handled = true;
                 return handled;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.M))
+            {
+                MessageLogConsole.MessageLogWindowButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.D))
+            {
+                PlayerInfoConsole.DetailsButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.Escape))
+            {
+                ButtonsConsole.ExitButton.InvokeClick();
+                handled = true;
+            }
+
+            return handled;
+        }
+        private bool ProcessNoneModeKeyboard(Keyboard keyboard)
+        {
+            bool handled = false;
+
+            if (keyboard.IsKeyPressed(Keys.M))
+            {
+                MessageLogConsole.MessageLogWindowButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.D))
+            {
+                PlayerInfoConsole.DetailsButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.Escape))
+            {
+                ButtonsConsole.ExitButton.InvokeClick();
+                handled = true;
             }
 
             return handled;

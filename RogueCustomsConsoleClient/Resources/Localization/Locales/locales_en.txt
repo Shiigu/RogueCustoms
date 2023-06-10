@@ -5,6 +5,7 @@ LanguageLocale = en
 ; Used in multiple consoles
 PlayerLevelText = LEVEL {CurrentLevel}
 PlayerNoStatusesText = NONE!
+CloseButtonText = CLOSE
 CancelButtonText = CANCEL
 ExitButtonText = EXIT
 ReturnToMainMenuText = RETURN TO MAIN MENU
@@ -47,10 +48,12 @@ ExperienceBarDisplayText = Experience: {CurrentExperience}/{ExperienceToLevelUp}
 ; GameControlsConsole
 MoveModeControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn
 MoveModeOnStairsControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
+MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <ESC> Exit
 ActionModeControlsText = <ARROWS> Move <A> Open Action Window <ESC> Cancel
 
 ; MessageLogConsole
 MessageHeaderText = MESSAGES
+MessageLogButtonText = MESSAGE LOG
 
 ; PlayerInfoConsole
 PlayerInfoConsoleTitle = YOU
@@ -59,6 +62,9 @@ PlayerInfoArmorHeader = ARMOR
 PlayerInfoStatusesHeader = Statuses:
 PlayerInfoTooManyStatusesText = AND MORE!
 DetailsButtonText = DETAILS
+
+; ButtonsConsole
+ExitPromptText = Do you want to stop playing\nand return to the main menu?
 
 ; ActionWindow
 ActionWindowTitleText = Action
@@ -90,7 +96,9 @@ PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns = - {StatusName}: {St
 PlayerCharacterDetailAlteredStatusDescriptionText = - {StatusName}: {StatusDescription}
 PlayerCharacterDetailEquippedWeaponHeader = CURRENT WEAPON
 PlayerCharacterDetailEquippedArmorHeader = CURRENT ARMOR
-CloseButtonText = CLOSE
+
+; MessageLogWindow
+MessageWindowTitleText = MESSAGE LOG
 
 ; MessageBox
 OKButtonText = OK

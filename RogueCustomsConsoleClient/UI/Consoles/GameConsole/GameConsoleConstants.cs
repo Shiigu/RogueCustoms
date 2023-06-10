@@ -21,6 +21,6 @@
         public const int ExperienceBarHeight = 1;
 
         public const int ControlsWidth = 115;
-        public const int ControlsHeight = 1;
+        public const int ControlsHeight = 3;
     }
 }

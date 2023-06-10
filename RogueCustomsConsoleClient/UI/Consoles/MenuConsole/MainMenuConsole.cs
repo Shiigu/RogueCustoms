@@ -8,6 +8,8 @@ using SadRogue.Primitives;
 using Console = SadConsole.Console;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System;
+using System.Collections.Generic;
+using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -17,6 +19,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
         private Label GameName;
         private Button SelectFileButton, OptionsButton, ExitButton;
+        private List<Button> Buttons;
+        private int CurrentFocusedIndex;
         private ControlsConsole LogoConsole;
 
         public MainMenuConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
@@ -37,29 +41,40 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             LogoConsole = new ControlsConsole(Width, 8)
             {
                 Position = new Point(0, 0),
-                FontSize = Font.GetFontSize(IFont.Sizes.Four)
+                FontSize = Font.GetFontSize(IFont.Sizes.Four),
+                FocusedMode = FocusBehavior.None,
+                UseMouse = false,
+                UseKeyboard = false
             };
+            LogoConsole.IsFocused = false;
+            LogoConsole.Controls.DisableControlFocusing = true;
 
             GameName = new Label(GameNameText.Length)
             {
-                DisplayText = GameNameText
+                DisplayText = GameNameText,
+                IsEnabled = false
             };
             GameName.Position = new Point(GameName.Width / 2 + 2, 4);
 
             LogoConsole.Controls.Add(GameName);
+
+            GameName.IsFocused = false;
 
             SelectFileButton = new Button(SelectFileText.Length + 2)
             {
                 Text = SelectFileText
             };
             SelectFileButton.Position = new Point(Width / 4 - SelectFileButton.Width / 2, 20);
+            SelectFileButton.MouseMove += (_, _) => ChangeFocusTo(0);
             SelectFileButton.Click += SelectFileButton_Click;
+            SelectFileButton.IsFocused = true;
 
             OptionsButton = new Button(OptionsText.Length + 2)
             {
                 Text = OptionsText
             };
             OptionsButton.Position = new Point(Width / 4 - OptionsButton.Width / 2, 25);
+            OptionsButton.MouseEnter += (_, _) => ChangeFocusTo(1);
             OptionsButton.Click += OptionsButton_Click;
 
             ExitButton = new Button(ExitText.Length + 2)
@@ -67,12 +82,81 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 Text = ExitText
             };
             ExitButton.Position = new Point(Width / 4 - ExitButton.Width / 2, 30);
+            ExitButton.MouseEnter += (_, _) => ChangeFocusTo(2);
             ExitButton.Click += ExitButton_Click;
 
             Children.Add(LogoConsole);
             Controls.Add(SelectFileButton);
             Controls.Add(OptionsButton);
             Controls.Add(ExitButton);
+
+            Buttons = new List<Button> { SelectFileButton, OptionsButton, ExitButton };
+
+            CurrentFocusedIndex = 0;
+            SelectFileButton.IsFocused = true;
+            this.IsFocused = true;
+        }
+
+        public override void Update(TimeSpan delta)
+        {
+            this.IsFocused = true;
+            base.Update(delta);
+        }
+
+        public override bool ProcessKeyboard(Keyboard keyboard)
+        {
+            bool handled = false;
+            var changeFocus = false;
+            int index = CurrentFocusedIndex;
+            if(keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+            {
+                Buttons[CurrentFocusedIndex].FocusLost();
+                Buttons[CurrentFocusedIndex].IsFocused = false;
+                if (index == 0)
+                    index = 2;
+                else
+                    index--;
+                changeFocus = true;
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
+            {
+                Buttons[CurrentFocusedIndex].FocusLost();
+                Buttons[CurrentFocusedIndex].IsFocused = false;
+                if (index == 2)
+                    index = 0;
+                else
+                    index++;
+                changeFocus = true;
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Enter))
+            {
+                Buttons[CurrentFocusedIndex].InvokeClick();
+                handled = true;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Escape))
+            {
+                ExitButton.InvokeClick();
+                handled = true;
+            }
+
+            if (changeFocus)
+            {
+                ChangeFocusTo(index);
+            }
+
+            return handled;
+        }
+
+        private void ChangeFocusTo(int index)
+        {
+            if (CurrentFocusedIndex == index) return;
+            Buttons[CurrentFocusedIndex].IsFocused = false;
+            Buttons[CurrentFocusedIndex].FocusLost();
+            CurrentFocusedIndex = index;
+            Buttons[CurrentFocusedIndex].IsFocused = true;
+            Buttons[CurrentFocusedIndex].Focused();
         }
 
         private void SelectFileButton_Click(object sender, EventArgs args)
