@@ -8,7 +8,7 @@ The gameplay itself might be extremely simplistic, but the appeal is that you do
 
 Head to the Releases section and, at the very least, download the Client file.
 
-Unzip the contents in a new folder, and open the `RoguelikeConsoleClient.exe` file.
+Unzip the contents in a new folder, and open the `RogueCustomsConsoleClient.exe` file.
 
 You will be presented with two options:
 - **Pick a Dungeon**: The game will retrieve all the dungeons you have saved in the `JSON` folder (if you are playing locally), or the ones stored in the server's own `JSON` folder (if playing against a server). Pick one, select "Play Selected Dungeon" and play! Follow the instructions given by the game to continue.

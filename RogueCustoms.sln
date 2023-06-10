@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoguelikeServer", "RoguelikeServer\RoguelikeServer.csproj", "{8413ACBE-01B2-4E52-90DE-FB33814C6253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RogueCustomsServer", "RogueCustomsServer\RogueCustomsServer.csproj", "{8413ACBE-01B2-4E52-90DE-FB33814C6253}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8D898D69-9E63-46A2-86A2-6E835F53EE30}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoguelikeGameEngine", "RoguelikeGameLogic\RoguelikeGameEngine.csproj", "{5F9C21C8-ABE0-406D-B1BE-9F526FEBCB49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RogueCustomsGameEngine", "RogueCustomsGameLogic\RogueCustomsGameEngine.csproj", "{5F9C21C8-ABE0-406D-B1BE-9F526FEBCB49}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoguelikeConsoleClient", "RoguelikeConsoleClient\RoguelikeConsoleClient.csproj", "{AEE271B0-DE60-4A6E-8EC7-B73CEEC2B431}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RogueCustomsConsoleClient", "RogueCustomsConsoleClient\RogueCustomsConsoleClient.csproj", "{AEE271B0-DE60-4A6E-8EC7-B73CEEC2B431}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
