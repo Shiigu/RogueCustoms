@@ -92,7 +92,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             IsStairs = tile.Type == TileType.Stairs;
             Discovered = tile.Discovered;
             Visible = tile.Visible;
-            Targetable = tile.IsWalkable;
+            Targetable = tile.IsWalkable && tile.Visible;
             ConsoleRepresentation = map.GetConsoleRepresentationForCoordinates(tile.Position.X, tile.Position.Y);
         }
     }
@@ -148,6 +148,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Mitigation { get; set; }
         public string MovementStatName { get; set; }
         public int Movement { get; set; }
+        public bool CanMove { get; set; }
+        public bool CanTakeAction { get; set; }
         #endregion
 
         public EntityDto() { }
@@ -193,6 +195,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Mitigation = pc.Mitigation;
                 MovementStatName = map.Locale["CharacterMovementStat"];
                 Movement = pc.Movement;
+                CanMove = pc.Movement > 0;
+                CanTakeAction = pc.CanTakeAction;
             }
         }
     }

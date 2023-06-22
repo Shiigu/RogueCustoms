@@ -37,6 +37,27 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
+        public static bool HealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
+                return false;
+            var healAmount = Math.Min(Math.Max(paramsObject.Target.MaxHP - (int)paramsObject.Power, 1), (int)paramsObject.Power);
+            output = healAmount;
+            paramsObject.Target.HP = Math.Min(paramsObject.Target.MaxHP, paramsObject.Target.HP + healAmount);
+
+            if (paramsObject.Target.EntityType == EntityType.Player
+                || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
+            {
+                if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
+                    Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }));
+                else
+                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }));
+            }
+            return true;
+        }
+
         public static bool GiveExperience(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
@@ -60,9 +81,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusToApply = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase))
                                    ?? throw new Exception($"Altered status {paramsObject.Id} does not exist!");
             _ = 0;
-            if (Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            var statusTarget = paramsObject.Target as Character;
+            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
-                var statusTarget = paramsObject.Target as Character;
                 var success = statusToApply.ApplyTo(statusTarget, (int) paramsObject.Power, (int) paramsObject.TurnLength);
                 if (success && statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget)))
@@ -79,8 +100,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target is not Character) throw new Exception($"Attempted to alter one of {Target.Name}'s stats when it's not a Character.");
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            var statAlterationTarget = paramsObject.Target as Character;
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
-            if ((paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 statAlterations.Add(new StatModification {
                     Id = paramsObject.Id,
@@ -89,13 +111,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 });
                 output = (int) paramsObject.Amount;
                 var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
-                if (paramsObject.Target.EntityType == EntityType.Player
-                    || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
+                if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
+                    || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
                     if(paramsObject.Amount > 0)
-                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
+                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
                     else
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
                 }
                 return true;
             }
@@ -196,6 +218,19 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     c.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                 });
                 c.AlteredStatuses.Clear();
+                return true;
+            }
+            return false;
+        }
+
+        public static bool ForceSkipTurn(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            if (Target is not Character c) throw new Exception($"Attempted to force {Target.Name} to skip its turn when it's not a Character.");
+            _ = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.CanTakeAction)
+            {
+                c.CanTakeAction = false;
                 return true;
             }
             return false;

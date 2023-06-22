@@ -81,7 +81,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 try
                 {
                     BackendHandler.Instance.PlayerAttackTargetWith(attackInput);
-                    parent.ControlMode = ControlMode.Move;
+                    parent.ControlMode = ControlMode.NormalMove;
                     window.ParentConsole.RequiresRefreshingDungeonState = true;
                 }
                 catch (Exception)
@@ -96,7 +96,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             doButton.Theme = null;
 
             cancelButton.Position = new Point((window.Width - cancelButton.Surface.Width) - 2, window.Height - cancelButton.Surface.Height);
-            cancelButton.Click += (o, e) => { parent.ControlMode = ControlMode.Move; window.Hide(); };
+            cancelButton.Click += (o, e) => { parent.ControlMode = ControlMode.NormalMove; window.Hide(); };
             cancelButton.Theme = null;
 
             window.DoButton = doButton;

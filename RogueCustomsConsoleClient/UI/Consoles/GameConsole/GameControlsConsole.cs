@@ -9,7 +9,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class GameControlsConsole : GameSubConsole
     {
-        private string MoveModeControlsString, MoveModeOnStairsControlsString, MoveModeControlsSubString, ActionModeControlsString;
+        private string MoveModeNormalControlsString, MoveModeOnStairsControlsString, MoveModeImmobilizedControlsString, MoveModeCannotActControlsString, MoveModeControlsSubString, ActionModeControlsString;
 
         public GameControlsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ControlsWidth, GameConsoleConstants.ControlsHeight)
         {
@@ -19,8 +19,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public void Build()
         {
             base.Build();
-            MoveModeControlsString = LocalizationManager.GetString("MoveModeControlsText").ToAscii();
+            MoveModeNormalControlsString = LocalizationManager.GetString("MoveModeNormalControlsText").ToAscii();
             MoveModeOnStairsControlsString = LocalizationManager.GetString("MoveModeOnStairsControlsText").ToAscii();
+            MoveModeImmobilizedControlsString = LocalizationManager.GetString("MoveModeImmobilizedControlsText").ToAscii();
+            MoveModeCannotActControlsString = LocalizationManager.GetString("MoveModeCannotActControlsText").ToAscii();
             MoveModeControlsSubString = LocalizationManager.GetString("MoveModeControlsSubText").ToAscii();
             ActionModeControlsString = LocalizationManager.GetString("ActionModeControlsText").ToAscii();
             DefaultBackground = Color.Black;
@@ -35,11 +37,20 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             string subtextToRender = null;
             switch (ParentContainer.ControlMode)
             {
-                case ControlMode.Move:
-                    if (ParentContainer.LatestDungeonStatus.IsPlayerOnStairs())
-                        textToRender = MoveModeOnStairsControlsString;
-                    else
-                        textToRender = MoveModeControlsString;
+                case ControlMode.NormalMove:
+                    textToRender = MoveModeNormalControlsString;
+                    subtextToRender = MoveModeControlsSubString;
+                    break;
+                case ControlMode.OnStairs:
+                    textToRender = MoveModeOnStairsControlsString;
+                    subtextToRender = MoveModeControlsSubString;
+                    break;
+                case ControlMode.Immobilized:
+                    textToRender = MoveModeImmobilizedControlsString;
+                    subtextToRender = MoveModeControlsSubString;
+                    break;
+                case ControlMode.CannotAct:
+                    textToRender = MoveModeCannotActControlsString;
                     subtextToRender = MoveModeControlsSubString;
                     break;
                 case ControlMode.ActionTargeting:

@@ -18,6 +18,8 @@ You will be presented with two options:
 
 In this game, Dungeons take the form of `.json` files following a certain template. In this repository's root folder, you will find a `DungeonBasicTemplate.json` file that has all the basic elements to start building.
 
+When you have your Dungeon in what you presume is a ready-to-play state, you can run the `RogueCustomsDungeonValidator.exe` application so that it can validate if you're missing something potentially game-crashing.
+
 For more details... from here on you will see an explanation for each element in order.
 
 ## The root
@@ -486,12 +488,15 @@ Returns `true` (Success) if all Altered Statuses are removed. Returns `false` (F
 - `Amount`: Sets how much of the Stat will be modified.
 - `TurnLength`: The amount of turns the Stat Alteration will last. If lower than 0, it will last forever until Cleansed.
 - `CanBeStacked`: If `true`, multiple copies of the same Stat Alteration can be present.
+- `DisplayOnLog`: If `true`, the player will be informed, through the Message Log, that the stat has been altered. Setting it on `false` can be useful for some permanent "On Equip" effects to avoid redundant prints.
 
 **Optional Parameters**: None
 
 **Result**:
 
 `Target` will be inflicted the Stat Alteration, if it succeeds. It can fail if `Target` already has a Stat Alteration with the same `Id` and `CanBeStacked` is `false`.
+
+If `DisplayOnLog` is true, the player will be informed, via the Message Log, about the stat alteration.
 
 Returns `true` (Success) if the Stat Alteration is applied. Returns `false` (Failure) otherwise.
 
@@ -529,6 +534,25 @@ Returns `true` (Success) if `Stat`'s Alterations are removed. Returns `false` (F
 `Target` will lose all the alterations on their stats, if it succeeds. If any of the stat alterations are tied to an Altered Status, the Altered Status will be removed as well.
 
 Returns `true` (Success) if all Stat Alterations are removed. Returns `false` (Failure) otherwise.
+
+#### ForceSkipTurn
+
+**Description**:
+
+`Source` attempts to make `Target` end the next turn prematurely, without making an action.
+
+**Required Parameters**:
+- `Chance`: The odds (1 to 100) for `Target` to skip the next turn. If 100 or higher, it will be guaranteed to be skipped.
+- `Target`: The one whose turn will be skipped. Normally the same object as in `Target`.
+
+**Optional Parameters**: None
+
+**Result**:
+
+`Target` will be unable to do anything the next turn, if it succeeds. It may fail, either because the `Chance` check failed, or because `Target` was already going to miss their next turn.
+
+Returns `true` (Success) if `Target`'s turn is going to be skipped. Returns `false` (Failure) otherwise.
+
 
 #### GenerateStairs
 

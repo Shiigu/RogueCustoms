@@ -13,7 +13,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 {
     public class ActionWithEffects
     {
+        public string NameLocaleKey { get; set; }
         public string Name { get; set; }
+        public string DescriptionLocaleKey { get; set; }
         public string Description { get; set; }
         public Entity User { get; set; }
 
@@ -32,7 +34,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
         #endregion
 
-        private Effect Effect { get; set; }                       // What is going to be executed when the action is called
+        public Effect Effect { get; set; }                       // What is going to be executed when the action is called
 
         private Locale Locale => Map.Locale;
 
@@ -41,7 +43,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionWithEffects(ActionWithEffectsInfo info)
         {
             Name = info.Name;
+            NameLocaleKey = info.Name;
             Description = info.Description;
+            DescriptionLocaleKey = info.Description;
             MinimumRange = info.MinimumRange;
             MaximumRange = info.MaximumRange;
             CooldownBetweenUses = info.CooldownBetweenUses;
@@ -161,7 +165,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             return new ActionWithEffects
             {
                 Name = Name,
+                NameLocaleKey = NameLocaleKey,
                 Description = Description,
+                DescriptionLocaleKey = DescriptionLocaleKey,
                 MinimumRange = MinimumRange,
                 MaximumRange = MaximumRange,
                 CooldownBetweenUses = CooldownBetweenUses,
@@ -185,9 +191,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionMethod Function { get; set; }
 
         public (string ParamName, string Value)[] Params { get; set; }
-        private Effect Then { get; set; }                     // "Then" is always executed, regardless of success or failure
-        private Effect OnSuccess { get; set; }                // "OnSuccess" is executed only if the last effect was successful
-        private Effect OnFailure { get; set; }                // "OnFailure" is executed only if the last effect was not successful
+        public Effect Then { get; set; }                     // "Then" is always executed, regardless of success or failure
+        public Effect OnSuccess { get; set; }                // "OnSuccess" is executed only if the last effect was successful
+        public Effect OnFailure { get; set; }                // "OnFailure" is executed only if the last effect was not successful
 
         /* 
          * IMPORTANT: The game will expect only a Then, or only an OnSuccess and/or an OnFailure

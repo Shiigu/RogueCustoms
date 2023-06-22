@@ -31,5 +31,12 @@ namespace RogueCustomsGameEngine.Utils.Representation
                 A = A
             };
         }
+
+        public override bool Equals(object? obj)
+        {
+            if(obj is GameColor gc)
+                return R == gc.R && G == gc.G && B == gc.B && A == gc.A;
+            return false;
+        }
     }
 }

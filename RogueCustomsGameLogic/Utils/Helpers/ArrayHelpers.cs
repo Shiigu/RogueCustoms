@@ -34,7 +34,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             openList.Add(grid.GetAStarNodeData(source.Y, source.X, sourceT, targetT, null, XDataFunction, YDataFunction, GFunction, HFunction));
             while (openList.Any(n => n != null))
             {
-                var minOpenF = openList.Min(n => n.F);
+                var minOpenF = openList.Where(n => n != null).Min(n => n.F);
                 var currentCell = openList.First(n => n != null && n.F == minOpenF);
                 var indexOfCell = grid.IndexOf(currentCell.Node);
                 var adjacentValidCells = grid.GetAdjacentElementsWhere(indexOfCell.i, indexOfCell.j, includeDiagonals, validCellPredicate);

@@ -11,7 +11,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanBePickedUp { get; set; }
         public string Power { get; set; }
         public Character Owner { get; set; }
-        private List<ActionWithEffects> OnItemSteppedActions { get; set; }
+        public List<ActionWithEffects> OnItemSteppedActions { get; set; }
         public List<ActionWithEffects> OnItemUseActions { get; set; }
 
         public Item(EntityClass entityClass, Map map) : base(entityClass, map)

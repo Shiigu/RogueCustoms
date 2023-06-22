@@ -23,8 +23,6 @@ namespace RogueCustomsConsoleClient
 
             Game.Create(GlobalConstants.ScreenCellWidth, GlobalConstants.ScreenCellHeight, "fonts/IBMCGA.font");
 
-            Game.Instance.Keyboard.InitialRepeatDelay = 0.4F;
-
             Game.Instance.OnStart = Init;
             Game.Instance.Run();
             Game.Instance.Dispose();

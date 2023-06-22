@@ -46,7 +46,9 @@ StairsPromptText = Do you want to use the stairs?
 ExperienceBarDisplayText = Experience: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% of current level)
 
 ; GameControlsConsole
-MoveModeControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeNormalControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeImmobilizedControlsText = <A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeCannotActControlsText = <I> Inventory Menu <S> Skip Turn
 MoveModeOnStairsControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
 MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <ESC> Exit
 ActionModeControlsText = <ARROWS> Move <A> Open Action Window <ESC> Cancel

@@ -10,27 +10,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static Random Rng;
         public static Map Map;
 
-        public static bool HealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
-        {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
-                return false;
-            var healAmount = Math.Min(paramsObject.Target.MaxHP - (int) paramsObject.Power, (int) paramsObject.Power);
-            output = healAmount;
-            paramsObject.Target.HP = Math.Min(paramsObject.Target.MaxHP, paramsObject.Target.HP + healAmount);
-
-            if (paramsObject.Target.EntityType == EntityType.Player
-                || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
-            {
-                if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
-                    Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }));
-                else
-                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }));
-            }
-            return true;
-        }
-
         public static bool Equip(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;

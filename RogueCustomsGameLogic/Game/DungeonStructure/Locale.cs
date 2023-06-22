@@ -14,10 +14,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private string Language { get; set; }
         private List<LocaleString> LocaleStrings { get; set; }
 
+        public bool ContainsKey(string key) => LocaleStrings.Any(ls => ls.Key == key);
+
+        public bool IsValueInAKey(string value) => LocaleStrings.Any(ls => ls.Value == value);
+
         public string this[string key]
         {
             get {
-                var localeString = LocaleStrings.Find(ls => ls.Key.Equals(key));
+                var localeString = LocaleStrings.Find(ls => ls.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
                 // Don't break the game just because it can't find a certain locale key. Just return the key itself for a weird display.
                 if (localeString == null)
                     return key;
