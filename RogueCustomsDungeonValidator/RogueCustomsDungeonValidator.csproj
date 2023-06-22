@@ -5,10 +5,16 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\RequiredLocaleKeys.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
