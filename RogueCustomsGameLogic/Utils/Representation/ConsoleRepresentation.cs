@@ -18,5 +18,16 @@ namespace RogueCustomsGameEngine.Utils.Representation
             ForegroundColor = new GameColor(Color.Black),
             Character = ' '
         };
+
+        public override bool Equals(object? obj)
+        {
+            if(obj is ConsoleRepresentation cr)
+            {
+                return Character == cr.Character
+                    && BackgroundColor.Equals(cr.BackgroundColor)
+                    && ForegroundColor.Equals(cr.ForegroundColor);
+            }
+            return false;
+        }
     }
 }

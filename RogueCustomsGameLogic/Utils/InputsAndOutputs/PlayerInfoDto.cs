@@ -1,7 +1,9 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -44,7 +46,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HasMaxStat = true,
                 Modifications = new List<StatModificationDto>()
             };
-            character.MaxHPModifications.ForEach(hpm => hpStat.Modifications.Add(new StatModificationDto(hpm, hpStat)));
+            character.MaxHPModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpStat.Modifications.Add(new StatModificationDto(hpm, hpStat)));
             var attackStat = new StatDto()
             {
                 Name = map.Locale["CharacterAttackStat"],
@@ -54,7 +56,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HasMaxStat = false,
                 Modifications = new List<StatModificationDto>()
             };
-            character.AttackModifications.ForEach(am => attackStat.Modifications.Add(new StatModificationDto(am, attackStat)));
+            character.AttackModifications.Where(m => m.RemainingTurns != 0).ForEach(am => attackStat.Modifications.Add(new StatModificationDto(am, attackStat)));
             var defenseStat = new StatDto()
             {
                 Name = map.Locale["CharacterDefenseStat"],
@@ -64,7 +66,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HasMaxStat = false,
                 Modifications = new List<StatModificationDto>()
             };
-            character.DefenseModifications.ForEach(dm => defenseStat.Modifications.Add(new StatModificationDto(dm, defenseStat)));
+            character.DefenseModifications.Where(m => m.RemainingTurns != 0).ForEach(dm => defenseStat.Modifications.Add(new StatModificationDto(dm, defenseStat)));
             var movementStat = new StatDto()
             {
                 Name = map.Locale["CharacterMovementStat"],
@@ -74,7 +76,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HasMaxStat = false,
                 Modifications = new List<StatModificationDto>()
             };
-            character.MovementModifications.ForEach(mm => movementStat.Modifications.Add(new StatModificationDto(mm, movementStat)));
+            character.MovementModifications.Where(m => m.RemainingTurns != 0).ForEach(mm => movementStat.Modifications.Add(new StatModificationDto(mm, movementStat)));
             var hpRegenerationStat = new StatDto()
             {
                 Name = map.Locale["CharacterHPRegenerationStat"],
@@ -84,7 +86,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HasMaxStat = false,
                 Modifications = new List<StatModificationDto>()
             };
-            character.HPRegenerationModifications.ForEach(hpm => hpRegenerationStat.Modifications.Add(new StatModificationDto(hpm, hpRegenerationStat)));
+            character.HPRegenerationModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpRegenerationStat.Modifications.Add(new StatModificationDto(hpm, hpRegenerationStat)));
             Stats = new List<StatDto>
             {
                 hpStat,

@@ -157,11 +157,6 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void Die(Entity? attacker = null)
         {
-            AlteredStatuses?.Clear();
-            MaxHPModifications?.Clear();
-            AttackModifications?.Clear();
-            DefenseModifications?.Clear();
-            MovementModifications?.Clear();
             ExistenceStatus = EntityExistenceStatus.Dead;
             Passable = true;
             if (attacker is Character c)

@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int Level { get; set; }
         public int MaxLevel { get; set; }
         public bool CanGainExperience { get; set; }
+        public bool CanTakeAction { get; set; }
         public int HP { get; set; }
 
         public readonly int BaseMaxHP;
@@ -95,7 +96,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.AddRange(Armor.OwnOnTurnStartActions);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnTurnStartActions != null)
+                    if (i?.OwnOnAttackActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
                         actionList.AddRange(i.OwnOnTurnStartActions);
                 });
                 return actionList;
@@ -152,7 +153,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.AddRange(Armor.OwnOnDeathActions);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnDeathActions != null)
+                    if (i?.OwnOnAttackActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
                         actionList.AddRange(i.OwnOnDeathActions);
                 });
                 return actionList;
@@ -242,6 +243,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void RefreshCooldownsAndUpdateTurnLength()
         {
+            OnAttackActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            MaxHPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            AttackModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            DefenseModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            MovementModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             MaxHPModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AttackModifications?.RemoveAll(a => a.RemainingTurns == 0);
             DefenseModifications?.RemoveAll(a => a.RemainingTurns == 0);
@@ -250,13 +258,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                                         && (this == Map.Player || Map.Player.CanSee(this)))
                             .ForEach(als => Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = als.Name })));
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
-            OnAttackActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            MaxHPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            AttackModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            DefenseModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            MovementModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
@@ -265,15 +266,17 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             FOVTiles = ComputeFOVTiles();
-            TryRegenerateHP();
+            CanTakeAction = true;
             RefreshCooldownsAndUpdateTurnLength();
             OnTurnStartActions.Where(otsa => otsa.CanBeUsed).ForEach(otsa => otsa.Do(otsa.User, this));
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
+            TryRegenerateHP();
         }
 
         public void TryRegenerateHP()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (HP > MaxHP) HP = MaxHP;
             if (HP == MaxHP || HPRegeneration == 0)
             {
                 CarriedHPRegeneration = 0;

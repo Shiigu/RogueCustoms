@@ -29,7 +29,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
 
         private Button UseOrEquipButton, DropOrSwapButton, CancelButton;
-        private string TitleCaption { get; set; }
+        private bool IsReadOnly;
+        private string TitleCaption;
         private InventoryDto Inventory;
         private List<InventoryItemDto> CurrentlyShownInventoryItems;
         private int CurrentlyShownFirstIndex;
@@ -42,7 +43,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, InventoryDto inventory)
+        public static Window Show(GameConsoleContainer parent, InventoryDto inventory, bool readOnly)
         {
             if (inventory == null || !inventory.InventoryItems.Any()) return null;
             var width = 65;
@@ -67,6 +68,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             window.UseKeyboard = true;
             window.IsFocused = true;
+            window.IsReadOnly = readOnly;
             window.Inventory = inventory;
             window.InventorySelectedIndex = 0;
             window.IsDirty = true;
@@ -187,7 +189,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             }
             else
             {
-                UseOrEquipButton.IsEnabled = true;
+                UseOrEquipButton.IsEnabled = !IsReadOnly;
                 UseOrEquipButton.IsVisible = true;
                 UseOrEquipButton.Text = ItemIsEquippable ? EquipButtonText : UseButtonText;
             }
@@ -198,7 +200,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             }
             else
             {
-                DropOrSwapButton.IsEnabled = true;
+                DropOrSwapButton.IsEnabled = !IsReadOnly;
                 DropOrSwapButton.IsVisible = true;
                 DropOrSwapButton.Text = TileIsOccupied ? SwapButtonText : DropButtonText;
             }
@@ -268,8 +270,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 UseOrEquipButton.InvokeClick();
             }
-            else if ((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
-                || (info.IsKeyPressed(Keys.S) && TileIsOccupied))
+            else if (DropOrSwapButton.IsEnabled
+                && ((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
+                || (info.IsKeyPressed(Keys.S) && TileIsOccupied)))
             {
                 DropOrSwapButton.InvokeClick();
             }

@@ -46,7 +46,9 @@ StairsPromptText = ¿Quieres usar las escaleras?
 ExperienceBarDisplayText = Experiencia: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% del nivel actual)
 
 ; GameControlsConsole
-MoveModeControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno
+MoveModeNormalControls = <FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno
+MoveModeImmobilizedControlsText = <A> Apuntar <I> Inventario <S> Saltar Turno
+MoveModeCannotActControlsText = <I> Inventario <S> Saltar Turno
 MoveModeOnStairsControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno
 MoveModeControlsSubText = <M> Abrir Registro de Mensajes <D> Ver Detalles de Jugador <ESC> Salir
 ActionModeControlsText = <ARROWS> Mover <A> Elegir Acción <ESC> Cancelar

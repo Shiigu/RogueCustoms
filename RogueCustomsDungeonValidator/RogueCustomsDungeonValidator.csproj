@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\RequiredLocaleKeys.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="matheval" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\RequiredLocaleKeys.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RogueCustomsGameLogic\RogueCustomsGameEngine.csproj" />
+  </ItemGroup>
+
+</Project>

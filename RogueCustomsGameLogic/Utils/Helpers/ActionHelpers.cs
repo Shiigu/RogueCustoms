@@ -90,6 +90,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     case "turnlength":
                         paramsObject.TurnLength = CalculateDiceNotationIfNeeded(value);
                         break;
+                    case "displayonlog":
+                        paramsObject.DisplayOnLog = new Expression(value).Eval<bool>();
+                        break;
                     case "canbestacked":
                         paramsObject.CanBeStacked = new Expression(value).Eval<bool>();
                         break;

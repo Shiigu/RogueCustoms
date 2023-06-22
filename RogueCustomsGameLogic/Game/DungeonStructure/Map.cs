@@ -697,9 +697,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void ProcessTurn()
         {
             Player.UpdateVisibility();
-            if (Player.RemainingMovement > 0) return;
-            Parallel.ForEach(AICharacters, aice => aice.PickTargetAndPath());
-            AICharacters.ForEach(aice => aice.AttackOrMove());
+            if (Player.RemainingMovement > 0 && Player.CanTakeAction) return;
+            var aiCharactersThatCanAct = AICharacters.Where(c => c.CanTakeAction);
+            Parallel.ForEach(aiCharactersThatCanAct, aictca => aictca.PickTargetAndPath());
+            aiCharactersThatCanAct.ForEach(aictca => aictca.AttackOrMove());
             NewTurn();
         }
 
@@ -1049,9 +1050,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 return solidEntityInCoordinates.ConsoleRepresentation;
             if (tile.ConsoleRepresentation.Character == (char)TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            var passableEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => e.Passable);
+            var passableEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive);
             if (passableEntityInCoordinates != null)
                 return passableEntityInCoordinates.ConsoleRepresentation;
+            var deadEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
+            if (deadEntityInCoordinates != null)
+                return deadEntityInCoordinates.ConsoleRepresentation;
             return tileBaseConsoleRepresentation;
         }
 

@@ -102,7 +102,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             ButtonsConsole.Build();
             ExperienceBarConsole.Build();
             GameControlsConsole.Build();
-            ControlMode = ControlMode.Move;
+            ControlMode = ControlMode.NormalMove;
             LastTurnCount = -1;
             RequiresRefreshingDungeonState = true;
         }
@@ -111,7 +111,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         {
             IsFocused = !Children.Any(c => c is Window);
 
-            if (ControlMode == ControlMode.Move)
+            if (ControlMode == ControlMode.NormalMove)
                 DungeonConsole.RemoveCursor();
 
             try
@@ -127,6 +127,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
+
+                if(ControlMode != ControlMode.ActionTargeting && ControlMode != ControlMode.None)
+                {
+                    if (!LatestDungeonStatus.PlayerEntity.CanTakeAction)
+                        ControlMode = ControlMode.CannotAct;
+                    else if (LatestDungeonStatus.PlayerEntity.Movement == 0 && LatestDungeonStatus.PlayerEntity.CanTakeAction)
+                        ControlMode = ControlMode.Immobilized;
+                    else if (LatestDungeonStatus.IsPlayerOnStairs())
+                        ControlMode = ControlMode.OnStairs;
+                    else
+                        ControlMode = ControlMode.NormalMove;
+                }
 
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.Completed)
                 {
@@ -172,12 +184,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             try
             {
                 if (LatestDungeonStatus == null) return true;
-                if (ControlMode == ControlMode.Move)
+                if (ControlMode == ControlMode.NormalMove || ControlMode == ControlMode.OnStairs || ControlMode == ControlMode.Immobilized || ControlMode == ControlMode.CannotAct)
                     return ProcessMoveModeKeyboard(keyboard);
                 if (ControlMode == ControlMode.ActionTargeting)
                     return ProcessActionTargetingModeKeyboard(keyboard);
                 if (ControlMode == ControlMode.None)
-                    return ProcessActionTargetingModeKeyboard(keyboard);
+                    return ProcessNoneModeKeyboard(keyboard);
             }
             catch (Exception)
             {
@@ -195,53 +207,56 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 Y = 0
             };
 
-            if (keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+            if(ControlMode == ControlMode.NormalMove || ControlMode == ControlMode.OnStairs)
             {
-                input.Y = -1;
-                handled = true;
-            }
-            else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
-            {
-                input.Y = 1;
-                handled = true;
+                if (keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+                {
+                    input.Y = -1;
+                    handled = true;
+                }
+                else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
+                {
+                    input.Y = 1;
+                    handled = true;
+                }
+
+                if (keyboard.IsKeyPressed(Keys.Left) && !keyboard.IsKeyPressed(Keys.Right))
+                {
+                    input.X = -1;
+                    handled = true;
+                }
+                else if (keyboard.IsKeyPressed(Keys.Right) && !keyboard.IsKeyPressed(Keys.Left))
+                {
+                    input.X = 1;
+                    handled = true;
+                }
+
+                if (input.X != 0 || input.Y != 0)
+                {
+                    BackendHandler.Instance.MovePlayer(input);
+                    RequiresRefreshingDungeonState = true;
+                    return handled;
+                }
+
+                if (keyboard.IsKeyPressed(Keys.U) && ControlMode == ControlMode.OnStairs)
+                {
+                    ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("StairsPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LatestDungeonStatus.DungeonName, Color.Green,
+                                                    () =>
+                                                    {
+                                                        BackendHandler.Instance.PlayerTakeStairs();
+                                                        RequiresRefreshingDungeonState = true;
+                                                    });
+                    handled = true;
+                }
+
+                if (keyboard.IsKeyPressed(Keys.A))
+                {
+                    ControlMode = ControlMode.ActionTargeting;
+                    DungeonConsole.AddCursor();
+                    handled = true;
+                }
             }
 
-            if (keyboard.IsKeyPressed(Keys.Left) && !keyboard.IsKeyPressed(Keys.Right))
-            {
-
-                input.X = -1;
-                handled = true;
-            }
-            else if (keyboard.IsKeyPressed(Keys.Right) && !keyboard.IsKeyPressed(Keys.Left))
-            {
-                input.X = 1;
-                handled = true;
-            }
-
-            if (input.X != 0 || input.Y != 0)
-            {
-                BackendHandler.Instance.MovePlayer(input);
-                RequiresRefreshingDungeonState = true;
-                return handled;
-            }
-
-            if (keyboard.IsKeyPressed(Keys.U) && LatestDungeonStatus.IsPlayerOnStairs())
-            {
-                ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("StairsPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LatestDungeonStatus.DungeonName, Color.Green,
-                                                () =>
-                                                {
-                                                    BackendHandler.Instance.PlayerTakeStairs();
-                                                    RequiresRefreshingDungeonState = true;
-                                                });
-                handled = true;
-            }
-
-            if (keyboard.IsKeyPressed(Keys.A))
-            {
-                ControlMode = ControlMode.ActionTargeting;
-                DungeonConsole.AddCursor();
-                handled = true;
-            }
 
             if (keyboard.IsKeyPressed(Keys.S))
             {
@@ -254,7 +269,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             {
                 var inventory = BackendHandler.Instance.GetPlayerInventory();
                 if (inventory != null && inventory.InventoryItems.Any())
-                    ActiveWindow = InventoryWindow.Show(this, inventory);
+                    ActiveWindow = InventoryWindow.Show(this, inventory, !LatestDungeonStatus.PlayerEntity.CanTakeAction);
                 handled = true;
                 return handled;
             }
@@ -351,7 +366,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             if (keyboard.IsKeyPressed(Keys.Escape))
             {
-                ControlMode = ControlMode.Move;
+                ControlMode = ControlMode.NormalMove;
                 return handled;
             }
 
@@ -362,7 +377,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
     public enum ControlMode
     {
-        Move,
+        NormalMove,
+        Immobilized,
+        CannotAct,
+        OnStairs,
         ActionTargeting,
         None
     }
