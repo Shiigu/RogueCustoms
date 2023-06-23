@@ -207,7 +207,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             DropOrSwapButton.Position = new Point(ds.Surface.Area.Center.X - DropOrSwapButton.Text.Length / 2, Height - DropOrSwapButton.Surface.Height);
             if (item != null)
             {
-                UseOrEquipButton.IsEnabled = item.CanBeUsed;
+                UseOrEquipButton.IsEnabled = !item.IsEquipped && item.CanBeUsed;
 
                 ds.Surface.Print(34, 2, item.Name.ToAscii(), Color.White, Color.Black);
 
