@@ -156,7 +156,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             Consoles.ForEach(console =>
             {
-                if (RequiresRefreshingDungeonState || !console.RefreshOnlyOnStatusUpdate)
+                if (LatestDungeonStatus != null && (RequiresRefreshingDungeonState || !console.RefreshOnlyOnStatusUpdate))
                     console.Update(delta);
             });
 
