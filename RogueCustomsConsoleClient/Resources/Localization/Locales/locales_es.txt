@@ -69,7 +69,7 @@ DetailsButtonText = DETALLES
 ExitPromptText = ¿Quieres dejar de jugar y\nregresar al menú principal?
 
 ; ActionWindow
-ActionWindowTitleText = Acción
+ActionWindowTitleText = Acciones hacia {TargetName}
 DoButtonText = REALIZAR
 
 ; InventoryWindow

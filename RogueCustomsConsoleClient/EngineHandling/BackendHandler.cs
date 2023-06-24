@@ -275,11 +275,11 @@ namespace RogueCustomsConsoleClient.EngineHandling
             }
         }
 
-        public List<ActionItemDto> GetPlayerAttackActions(int x, int y)
+        public ActionListDto GetPlayerAttackActions(int x, int y)
         {
             try
             {
-                List<ActionItemDto> actions = null;
+                ActionListDto actions = null;
                 if (IsLocal)
                     actions = LocalHandler.GetPlayerAttackActions(DungeonId, x, y);
                 else

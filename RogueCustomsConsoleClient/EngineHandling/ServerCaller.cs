@@ -88,10 +88,10 @@ namespace RogueCustomsConsoleClient.EngineHandling
             await client.PostAsync($"{Address}/api/PlayerTakeStairs/{dungeonId}", null);
         }
 
-        public async Task<List<ActionItemDto>> GetPlayerAttackActions(int dungeonId, int x, int y)
+        public async Task<ActionListDto> GetPlayerAttackActions(int dungeonId, int x, int y)
         {
             var json = await client.GetStringAsync($"{Address}/api/GetPlayerAttackActions/{dungeonId}/{x}/{y}");
-            return JsonConvert.DeserializeObject<List<ActionItemDto>>(json);
+            return JsonConvert.DeserializeObject<ActionListDto>(json);
         }
         public async Task<InventoryDto> GetPlayerInventory(int dungeonId)
         {

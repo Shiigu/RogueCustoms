@@ -141,7 +141,7 @@ namespace RogueCustomsGameEngine.Management
             return dungeon.GetPlayerInventory();
         }
 
-        public List<ActionItemDto> GetPlayerAttackActions(int dungeonId, int x, int y)
+        public ActionListDto GetPlayerAttackActions(int dungeonId, int x, int y)
         {
             var dungeon = GetDungeonById(dungeonId);
             return dungeon.GetPlayerAttackActions(x, y);

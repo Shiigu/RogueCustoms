@@ -227,7 +227,7 @@ namespace Roguelike.Controllers
         }
 
         [HttpGet("GetPlayerAttackActions/{dungeonId}/{x}/{y}")]
-        public List<ActionItemDto> GetPlayerAttackActions(int dungeonId, int x, int y)
+        public ActionListDto GetPlayerAttackActions(int dungeonId, int x, int y)
         {
             try
             {

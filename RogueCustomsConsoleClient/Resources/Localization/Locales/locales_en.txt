@@ -69,7 +69,7 @@ DetailsButtonText = DETAILS
 ExitPromptText = Do you want to stop playing\nand return to the main menu?
 
 ; ActionWindow
-ActionWindowTitleText = Action
+ActionWindowTitleText = Actions on {TargetName}
 DoButtonText = DO
 
 ; InventoryWindow

@@ -359,7 +359,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             if (keyboard.IsKeyPressed(Keys.A) || keyboard.IsKeyPressed(Keys.Enter))
             {
                 var actionList = BackendHandler.Instance.GetPlayerAttackActions(CursorLocation.X, CursorLocation.Y);
-                if (actionList.Any())
+                if (actionList.Actions.Any())
                     ActiveWindow = ActionWindow.Show(this, actionList);
                 return handled;
             }

@@ -1,8 +1,14 @@
 ﻿using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+    public class ActionListDto
+    {
+        public string TargetName { get; set; }
+        public List<ActionItemDto> Actions { get; set; }
+    }
 
     public class ActionItemDto
     {

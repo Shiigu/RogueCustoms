@@ -36,9 +36,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, List<ActionItemDto> items)
+        public static Window Show(GameConsoleContainer parent, ActionListDto actionListData)
         {
-            if (!items.Any()) return null;
+            if (!actionListData.Actions.Any()) return null;
             var width = 65;
             var height = 30;
 
@@ -56,12 +56,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             window.UseKeyboard = true;
             window.IsFocused = true;
-            window.ActionItems = items;
+            window.ActionItems = actionListData.Actions;
             window.ActionSelectedIndex = 0;
             window.IsDirty = true;
             window.ParentConsole = parent;
             window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
-            window.TitleCaption = LocalizationManager.GetString("ActionWindowTitleText");
+            window.TitleCaption = LocalizationManager.GetString("ActionWindowTitleText").Format(new { TargetName = actionListData.TargetName });
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
             drawingArea.OnDraw += window.DrawWindow;
