@@ -41,9 +41,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
+            if (paramsObject.Target.HP >= paramsObject.Target.MaxHP)
                 return false;
-            var healAmount = Math.Min(Math.Max(paramsObject.Target.MaxHP - (int)paramsObject.Power, 1), (int)paramsObject.Power);
+            var healAmount = (int) Math.Min(paramsObject.Target.MaxHP - paramsObject.Target.HP, paramsObject.Power);
             output = healAmount;
             paramsObject.Target.HP = Math.Min(paramsObject.Target.MaxHP, paramsObject.Target.HP + healAmount);
 
