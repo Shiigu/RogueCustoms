@@ -175,7 +175,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return CurrentFloor.GetPlayerDetailInfo();
         }
 
-        public List<ActionItemDto> GetPlayerAttackActions(int x, int y)
+        public ActionListDto GetPlayerAttackActions(int x, int y)
         {
             return CurrentFloor.GetPlayerAttackActions(x, y);
         }

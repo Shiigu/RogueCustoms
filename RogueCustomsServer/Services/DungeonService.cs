@@ -87,7 +87,7 @@ namespace Roguelike.Services
             return DungeonManager.GetPlayerInventory(dungeonId);
         }
 
-        public List<ActionItemDto> GetPlayerAttackActions(int dungeonId, int x, int y)
+        public ActionListDto GetPlayerAttackActions(int dungeonId, int x, int y)
         {
             return DungeonManager.GetPlayerAttackActions(dungeonId, x, y);
         }

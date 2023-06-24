@@ -891,14 +891,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ProcessTurn();
         }
 
-        public List<ActionItemDto> GetPlayerAttackActions(int x, int y)
+        public ActionListDto GetPlayerAttackActions(int x, int y)
         {
             var characterInTile = GetTileFromCoordinates(x, y).Character;
             var onAttackActionDtos = new List<ActionItemDto>();
 
             Player.OnAttackActions.ForEach(oaa => onAttackActionDtos.Add(new ActionItemDto(oaa, characterInTile, this)));
 
-            return onAttackActionDtos;
+            return new ActionListDto
+            {
+                TargetName = (characterInTile != null) ? characterInTile.Name : "<?????>",
+                Actions = onAttackActionDtos
+            };
         }
 
         private void SetStairs(Point p)
