@@ -36,7 +36,7 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
             return messages;
         }
 
-        public static DungeonValidationMessages Validate(FloorInfo floorJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static DungeonValidationMessages ValidateFloorType(FloorInfo floorJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
@@ -48,8 +48,12 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 messages.AddError("MaxFloorLevel cannot be lower than MinFloorLevel.");
             if (floorJson.Width <= 0)
                 messages.AddError("Width must be an integer number higher than 0.");
+            else if (floorJson.Width > 64)
+                messages.AddWarning($"With a Floor Width of {floorJson.Width}, only a portion of the floor will be visible in the Console Client at the same time. If you want the entire Width to be visible, set it between 5 and 64.");
             if (floorJson.Height <= 0)
                 messages.AddError("Height must be an integer number higher than 0.");
+            else if (floorJson.Height > 32)
+                messages.AddWarning($"With a Floor Height of {floorJson.Height}, only a portion of the floor will be visible in the Console Client at the same time. If you want the entire Height to be visible, set it between 5 and 32.");
             if (!floorJson.GenerateStairsOnStart)
                 messages.AddWarning("GenerateStairsOnStart is false. Make sure at least one Character/Item/Trap calls GenerateStairs, or the Dungeon won't be able to be completed.");
 
@@ -188,6 +192,20 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                     messages.AddError($"{possibleGeneratorAlgorithm.Name}'s Columns must be an integer number higher than 0.");
                 else if (possibleGeneratorAlgorithm.Columns > 1 && possibleGeneratorAlgorithm.Name == "OneBigRoom")
                     messages.AddWarning($"{possibleGeneratorAlgorithm.Name}'s Columns is higher than 1. It will be ignored.");
+                if (possibleGeneratorAlgorithm.Name != "OneBigRoom")
+                {
+                    if (5 * possibleGeneratorAlgorithm.Rows > floorJson.Height)
+                        messages.AddError($"With a Floor Height of {floorJson.Height}, it's not possible to create {possibleGeneratorAlgorithm.Rows} non-Dummy rooms with the minimum 5 Height. Change Height or Rows.");
+                    if (5 * possibleGeneratorAlgorithm.Columns > floorJson.Width)
+                        messages.AddError($"With a Floor Width of {floorJson.Width}, it's not possible to create {possibleGeneratorAlgorithm.Columns} non-Dummy rooms with the minimum 5 Width. Change Width or Columns.");
+                }
+                else
+                {
+                    if (floorJson.Height < 5)
+                        messages.AddError($"With a Floor Height of {floorJson.Height}, it's not possible to create a {possibleGeneratorAlgorithm.Name} floor. Height must be at least 5.");
+                    if (floorJson.Width < 5)
+                        messages.AddError($"With a Floor Width of {floorJson.Width}, it's not possible to create a {possibleGeneratorAlgorithm.Name} floor. Width must be at least 5.");
+                }
             }
 
             foreach (var onFloorStartAction in floorJson.OnFloorStartActions.ConvertAll(ofsa => new ActionWithEffects(ofsa)))

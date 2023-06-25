@@ -71,7 +71,7 @@ namespace RogueCustomsDungeonValidator.Validators
             FloorPlanValidationMessages = DungeonFloorValidator.ValidateGeneralFloorPlan(DungeonJson);
 
             foreach (var floorInfo in DungeonJson.FloorInfos)
-                FloorTypeValidationMessages.Add((floorInfo.MinFloorLevel, floorInfo.MaxFloorLevel, DungeonFloorValidator.Validate(floorInfo, DungeonJson, sampleDungeon)));
+                FloorTypeValidationMessages.Add((floorInfo.MinFloorLevel, floorInfo.MaxFloorLevel, DungeonFloorValidator.ValidateFloorType(floorInfo, DungeonJson, sampleDungeon)));
 
             foreach (var factionInfo in DungeonJson.FactionInfos)
                 FactionValidationMessages.Add((factionInfo.Id, DungeonFactionValidator.Validate(factionInfo, DungeonJson)));
