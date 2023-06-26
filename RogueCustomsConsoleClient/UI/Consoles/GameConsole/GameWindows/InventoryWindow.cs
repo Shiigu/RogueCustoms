@@ -217,13 +217,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
                 if (item.IsInFloor)
                 {
-                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("FloorItemDescriptionText")}".ToAscii());
+                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("FloorItemDescriptionText")}");
                 }
                 else if (item.IsEquipped)
                 {
-                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("EquippedItemDescriptionText")}".ToAscii());
+                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("EquippedItemDescriptionText")}");
                     if (TileIsOccupied)
-                        descriptionToDisplay.Append(LocalizationManager.GetString("OccupiedTileDescriptionText").ToAscii());
+                        descriptionToDisplay.Append(LocalizationManager.GetString("OccupiedTileDescriptionText"));
                 }
 
                 var linesInDescription = descriptionToDisplay.ToString().Split(
