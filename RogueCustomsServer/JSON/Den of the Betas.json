@@ -713,6 +713,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -797,6 +798,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
@@ -865,6 +867,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullMap",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -2261,7 +2264,8 @@
           "Then": {
             "EffectName": "CleanseStatAlterations",
             "Params": [
-              { "ParamName": "chance", "Value": "100" }
+              { "ParamName": "chance", "Value": "100"    },
+              { "ParamName": "target", "Value": "target" }
             ],
             "Then": null,
             "OnSuccess": null,
@@ -2307,7 +2311,7 @@
             "Params": [
               { "ParamName": "id"           , "Value": "frozen" },
               { "ParamName": "target"       , "Value": "target" },
-              { "ParamName": "chance"       , "Value": "30"     },
+              { "ParamName": "chance"       , "Value": "40"     },
               { "ParamName": "power"        , "Value": "0"      },
               { "ParamName": "turnlength"   , "Value": "4"      }
             ],
@@ -2377,7 +2381,7 @@
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
-                { "ParamName": "chance", "Value": "30"   },
+                { "ParamName": "chance", "Value": "15"   },
                 { "ParamName": "target", "Value": "this" }
               ],
               "Then": null,

@@ -25,12 +25,6 @@
     <Content Update="JSON\Den of the Betas.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="JSON\TestingDungeon - copia.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-    <Content Update="JSON\TestingDungeon.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

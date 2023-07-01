@@ -6,6 +6,7 @@ using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,6 +74,41 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 messages.AddError("Base HP Regeneration must be 0 or higher.");
             else if (characterJson.BaseHPRegeneration == 0)
                 messages.AddWarning("Base HP Regeneration is 0. Under normal circumnstances, it won't be able to regenerate HP at all.");
+            var seesWholeMap = false;
+            if(int.TryParse(characterJson.BaseSightRange, out int sightRange))
+            {
+                if (sightRange < 0)
+                    messages.AddError("Sight Range must be 0 or higher, fullmap, wholemap, fullroom or wholeroom (case insensitive, space between words allowed).");
+                else if (sightRange == 0)
+                    messages.AddError("Sight Range is 0. Under normal circumnstances, it won't be able to see anything.");
+            }
+            else
+            {
+                switch (characterJson.BaseSightRange.ToLower())
+                {
+                    case "full map":
+                    case "fullmap":
+                    case "whole map":
+                    case "wholemap":
+                        seesWholeMap = true;
+                        break;
+                    case "full room":
+                    case "fullroom":
+                    case "whole room":
+                    case "wholeroom":
+                        break;
+                    default:
+                        messages.AddError("Sight Range must be 0 or higher, fullmap, wholemap, fullroom or wholeroom (case insensitive, space between words allowed).");
+                        break;
+                }
+            }
+            if(characterJson.KnowsAllCharacterPositions)
+            {
+                if(seesWholeMap)
+                    messages.AddWarning("KnowsAllCharacterPositions is set to true but Sight Range covers the entire map. KnowsAllCharacterPositions will have no effect.");
+                else if (characterJson.EntityType == "Player")
+                    messages.AddWarning("KnowsAllCharacterPositions is set to true but Character is a Player. KnowsAllCharacterPositions will have no effect.");
+            }
             if (characterJson.HPRegenerationIncreasePerLevel < 0)
                 messages.AddError("HP Regeneration Gained per level must be 0 or higher.");
             else if (characterJson.HPRegenerationIncreasePerLevel == 0)

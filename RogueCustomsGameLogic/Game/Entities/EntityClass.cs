@@ -28,6 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseMovement;
         public readonly decimal BaseHPRegeneration;
         public readonly int BaseSightRange;
+        public readonly bool KnowsAllCharacterPositions;
         public readonly int InventorySize;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
@@ -43,10 +44,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         #endregion
 
+        public readonly string Power;
+
         #region Item-only data
 
         public readonly bool CanBePickedUp;
-        public readonly string Power;
         public List<ActionWithEffects> OnItemSteppedActions { get; set; }
         public List<ActionWithEffects> OnItemUseActions { get; set; }
 
@@ -102,6 +104,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             DefenseIncreasePerLevel = classInfo.DefenseIncreasePerLevel;
             MovementIncreasePerLevel = classInfo.MovementIncreasePerLevel;
             HPRegenerationIncreasePerLevel = classInfo.HPRegenerationIncreasePerLevel;
+            KnowsAllCharacterPositions = classInfo.KnowsAllCharacterPositions;
             BaseSightRange = 0;
             if (!string.IsNullOrWhiteSpace(classInfo.BaseSightRange))
             {
@@ -120,7 +123,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                         BaseSightRange = Constants.FullRoomSightRange;
                         break;
                     default:
-                        if (!int.TryParse(classInfo.BaseSightRange, out int sightRange))
+                        if (!int.TryParse(classInfo.BaseSightRange, out int sightRange) || sightRange < 0)
                             throw new InvalidDataException($"Sight Range of {classInfo.BaseSightRange} is not valid.");
                         BaseSightRange = sightRange;
                         break;

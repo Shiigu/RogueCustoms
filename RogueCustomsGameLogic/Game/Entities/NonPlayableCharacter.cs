@@ -13,6 +13,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
         private Character CurrentTarget;
+        private bool KnowsAllCharacterPositions;
         private (Point Destination, List<Tile> Route) PathToUse;
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
@@ -20,6 +21,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnownCharacters.Add((this, TargetType.Self));
             PathToUse = (null, null);
             CurrentTarget = null;
+            KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
         }
 
         public void PickTargetAndPath()
@@ -106,15 +108,26 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void UpdateKnownCharacterList()
         {
             KnownCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
-            FOVTiles.ForEach(t =>
+            if(KnowsAllCharacterPositions)
             {
-                if (Map.GetEntitiesFromCoordinates(t.Position).Find(e => !e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive) is Character characterInTile
-                    && CanSee(characterInTile)
-                    && !KnownCharacters.Select(kc => kc.Character).Contains(characterInTile))
+                foreach (var characterInMap in Map.Characters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive))
                 {
-                    KnownCharacters.Add((characterInTile, CalculateTargetTypeFor(characterInTile)));
+                    if(!KnownCharacters.Select(kc => kc.Character).Contains(characterInMap))
+                        KnownCharacters.Add((characterInMap, CalculateTargetTypeFor(characterInMap)));
                 }
-            });
+            }
+            else
+            {
+                FOVTiles.ForEach(t =>
+                {
+                    if (Map.GetEntitiesFromCoordinates(t.Position).Find(e => !e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive) is Character characterInTile
+                        && CanSee(characterInTile)
+                        && !KnownCharacters.Select(kc => kc.Character).Contains(characterInTile))
+                    {
+                        KnownCharacters.Add((characterInTile, CalculateTargetTypeFor(characterInTile)));
+                    }
+                });
+            }
         }
 
         private IEnumerable<(ActionWithEffects Action, List<(Character Character, int Distance)> PossibleTargets)> LookForAttackActionsWithValidTargets()

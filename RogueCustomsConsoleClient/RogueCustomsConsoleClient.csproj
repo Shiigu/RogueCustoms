@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="JSON\Den of the Betas.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="JSON\Den of the Betas.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
   </ItemGroup>
 
@@ -79,9 +89,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Fonts\Vintl.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="JSON\Den of the Betas.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="JSON\PUT JSON FILES HERE!.txt">
