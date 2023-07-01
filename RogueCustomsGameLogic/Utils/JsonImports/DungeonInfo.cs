@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace RogueCustomsGameEngine.Utils.JsonImports
 {
@@ -25,7 +26,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         {
             var localeInfoToUse = Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? Locales.Find(l => l.Language.Equals(DefaultLocale))
-                ?? throw new Exception($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
+                ?? throw new InvalidDataException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
             var localeString = localeInfoToUse.LocaleStrings.Find(ls => ls.Key.Equals(Name));
             if (localeString != null)
                 return localeString.Value;

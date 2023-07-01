@@ -3,6 +3,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
@@ -69,7 +70,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MapActions(OnFloorStartActions, floorInfo.OnFloorStartActions);
 
             if (!PossibleGeneratorAlgorithms.Any())
-                throw new Exception("There's no valid generator algorithms for the current floor");
+                throw new InvalidDataException("There's no valid generator algorithms for the current floor");
         }
 
         public void FillPossibleClassLists(List<EntityClass> classList)
@@ -79,7 +80,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 var classForMonster = classList.Find(c => c.Id.Equals(pmi.ClassId) && c.EntityType == EntityType.NPC);
                 if (classForMonster == null)
-                    throw new Exception($"There's no class matching for {pmi.ClassId}!");
+                    throw new InvalidDataException($"There's no class matching for {pmi.ClassId}!");
                 PossibleMonsters.Add(new ClassInFloor
                 {
                     Class = classForMonster,
@@ -97,7 +98,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 var classForItem = classList.Find(c => c.Id.Equals(pii.ClassId) && (c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable));
                 if (classForItem == null)
-                    throw new Exception($"There's no class matching for {pii.ClassId}!");
+                    throw new InvalidDataException($"There's no class matching for {pii.ClassId}!");
                 PossibleItems.Add(new ClassInFloor
                 {
                     Class = classForItem,
@@ -110,7 +111,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 var classForTrap = classList.Find(c => c.Id.Equals(pti.ClassId) && c.EntityType == EntityType.Trap);
                 if (classForTrap == null)
-                    throw new Exception($"There's no class matching for {pti.ClassId}!");
+                    throw new InvalidDataException($"There's no class matching for {pti.ClassId}!");
                 PossibleTraps.Add(new ClassInFloor
                 {
                     Class = classForTrap,

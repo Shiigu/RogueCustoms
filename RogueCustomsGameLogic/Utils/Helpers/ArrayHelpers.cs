@@ -24,8 +24,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static List<T> GetShortestPathBetween<T>(this T[,] grid, (int X, int Y) source, (int X, int Y) target, bool includeDiagonals, Func<T, int> XDataFunction, Func<T, int> YDataFunction, Func<int, int, int, int, double> GFunction, Func<int, int, int, int, double> HFunction, Func<T, bool> validCellPredicate) where T : class
         {
-            if (!validCellPredicate(grid[source.Y, source.X])) throw new Exception("Cannot find a path from an invalid node!");
-            if (!validCellPredicate(grid[target.Y, target.X])) throw new Exception("Cannot find a path towards an invalid node!");
+            if (!validCellPredicate(grid[source.Y, source.X])) throw new ArgumentException("Cannot find a path from an invalid node!");
+            if (!validCellPredicate(grid[target.Y, target.X])) throw new ArgumentException("Cannot find a path towards an invalid node!");
             if (source.X == target.X && source.Y == target.Y) return new List<T> { grid[target.Y, target.X] };
             var sourceT = grid[source.Y, source.X];
             var targetT = grid[target.Y, target.X];

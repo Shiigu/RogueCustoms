@@ -15,6 +15,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to damage {paramsObject.Target.Name} when it's not a Character.");
             var damageDealt = Math.Max(0, (int) paramsObject.Damage - (int) paramsObject.Mitigation);
             output = damageDealt;
             if(damageDealt <= 0 || Rng.NextInclusive(1, 100) > paramsObject.Accuracy)

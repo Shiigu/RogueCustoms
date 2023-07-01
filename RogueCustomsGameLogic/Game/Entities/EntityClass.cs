@@ -120,7 +120,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                         break;
                     default:
                         if (!int.TryParse(classInfo.BaseSightRange, out int sightRange))
-                            throw new Exception($"Sight Range of {classInfo.BaseSightRange} is not valid.");
+                            throw new InvalidDataException($"Sight Range of {classInfo.BaseSightRange} is not valid.");
                         BaseSightRange = sightRange;
                         break;
                 }
