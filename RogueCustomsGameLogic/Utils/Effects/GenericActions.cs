@@ -5,6 +5,8 @@ using System.Xml.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RogueCustomsGameEngine.Utils.Representation;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -23,7 +25,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source)
                 || entityTypesForVisibilityCheck.Contains(Target.EntityType) && Map.Player.CanSee(Target))
             {
-                Map.AppendMessage(paramsObject.Text);
+                if(ExpandoObjectHelper.HasProperty(paramsObject, "Color"))
+                    Map.AppendMessage(paramsObject.Text, paramsObject.Color);
+                else
+                    Map.AppendMessage(paramsObject.Text);
             }
 
             return true;
@@ -51,9 +56,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
                 if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
-                    Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }));
+                    Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }), Color.DeepSkyBlue);
                 else
-                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }));
+                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }), Color.DeepSkyBlue);
             }
             return true;
         }
@@ -67,7 +72,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target.EntityType == EntityType.Player
                 || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
             {
-                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }));
+                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
                 paramsObject.Target.GainExperience((int) paramsObject.Amount);
                 output = (int) paramsObject.Amount;
             }
@@ -88,7 +93,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (success && statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget)))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterGotStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }));
+                    Map.AppendMessage(Map.Locale["CharacterGotStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
                 }
                 return success;
             }
@@ -115,9 +120,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
                     if(paramsObject.Amount > 0)
-                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
+                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }), Color.DeepSkyBlue);
                     else
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }));
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -142,7 +147,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToRemove.Name }));
+                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -164,7 +169,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
                 {
                     var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
-                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }));
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -182,15 +187,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 c.MaxHPModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterMaxHPStat"] }));
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterMaxHPStat"] }), Color.DeepSkyBlue);
                 c.AttackModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterAttackStat"] }));
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue);
                 c.DefenseModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterDefenseStat"] }));
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue);
                 c.MovementModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterMovementStat"] }));
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue);
                 c.HPRegenerationModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"CharacterHPRegenerationStat"] }));
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue);
 
                 return true;
             }
@@ -209,7 +214,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if (c.EntityType == EntityType.Player
                         || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
                     {
-                        Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = als.Name }));
+                        Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = als.Name }), Color.DeepSkyBlue);
                     }
                     c.MaxHPModifications?.RemoveAll(a => a.Id.Equals(als.Id));
                     c.AttackModifications?.RemoveAll(a => a.Id.Equals(als.Id));
@@ -242,7 +247,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (!Map.StairsAreSet)
             {
                 Map.SetStairs();
-                Map.AppendMessage(Map.Locale["StairsGotRevealed"]);
+                Map.AppendMessage(Map.Locale["StairsGotRevealed"], Color.Lime);
                 return true;
             }
             return false;

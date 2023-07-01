@@ -143,15 +143,28 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             NewTurn();
         }
 
-        public void AppendMessage(string message)
+        public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent));
+        public void AppendMessage(string message, Color foregroundColor) => AppendMessage(message, new GameColor(foregroundColor));
+        public void AppendMessage(string message, GameColor foregroundColor) => AppendMessage(message, foregroundColor, new GameColor(Color.Transparent));
+        public void AppendMessage(string message, Color foregroundColor, Color backgroundColor) => AppendMessage(message, new GameColor(foregroundColor), new GameColor(backgroundColor));
+        public void AppendMessage(string message, GameColor foregroundColor, GameColor backgroundColor)
         {
             if (string.IsNullOrWhiteSpace(message)) return;
             if (!_displayedTurnMessage && TurnCount > 0)
             {
-                Dungeon.Messages.Add(Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }));
+                Dungeon.Messages.Add(new MessageDto
+                {
+                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
+                    ForegroundColor = new GameColor(Color.Yellow)
+                });
                 _displayedTurnMessage = true;
             }
-            Dungeon.Messages.Add(message);
+            Dungeon.Messages.Add(new MessageDto
+            {
+                Message = message,
+                ForegroundColor = foregroundColor,
+                BackgroundColor = backgroundColor
+            });
         }
         public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)
         {
@@ -405,7 +418,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     PlacePlayer();
                     if (FloorConfigurationToUse.GenerateStairsOnStart)
                         SetStairs();
-                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }));
+                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                 }
             }
             return success;
@@ -777,7 +790,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
             if (Player.ContainingTile != stairsTile)
                 throw new Exception($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
-            AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }));
+            AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }), Color.Yellow);
             Dungeon.TakeStairs();
         }
 
@@ -919,24 +932,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private Point PickEmptyPosition(bool allowPlayerRoom)
         {
-            int rngRoom, rngX, rngY;
+            int rngX, rngY;
             var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).Distinct().ToList();
-            var nonDummyRoomCount = nonDummyRooms.Count;
-            Room possibleNonDummyRoom, playerRoom;
             Tile tileToCheck;
             bool hasLaterallyAdjacentHallways;
-            if (allowPlayerRoom || nonDummyRoomCount == 1)
-                playerRoom = null;
-            else
-                playerRoom = GetRoomInCoordinates(Player.Position.X, Player.Position.Y);
+            var playerRoom = Player?.Position != null ? GetRoomInCoordinates(Player.Position.X, Player.Position.Y) : null;
+            if(nonDummyRooms.Count > 1 && !allowPlayerRoom)
+                nonDummyRooms.Remove(playerRoom);
             do
             {
-                do
-                {
-                    rngRoom = Rng.NextInclusive(0, nonDummyRoomCount - 1);
-                    possibleNonDummyRoom = nonDummyRooms[rngRoom];
-                }
-                while (possibleNonDummyRoom.Width <= 1 || possibleNonDummyRoom.Height <= 1 || (playerRoom != null && playerRoom == possibleNonDummyRoom));
+                var possibleNonDummyRoom = nonDummyRooms.TakeRandomElement(Rng);
                 rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
                 rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
                 tileToCheck = GetTileFromCoordinates(rngX, rngY);

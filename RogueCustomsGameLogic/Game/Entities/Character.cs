@@ -8,6 +8,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -256,7 +257,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AlteredStatuses?.Where(a => a.RemainingTurns == 0
                                         && (this == Map.Player || Map.Player.CanSee(this)))
-                            .ForEach(als => Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = als.Name })));
+                            .ForEach(als => Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = als.Name }), Color.DeepSkyBlue));
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
@@ -308,7 +309,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 LastLevelUpExperience = ExperienceToLevelUp;
                 Level++;
-                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}));
+                Color forecolorToUse;
+                if (this == Map.Player || Faction.AlliedWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Red;
+                else if (Faction.EnemiesWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Lime;
+                else
+                    forecolorToUse = Color.DeepSkyBlue;
+                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}), forecolorToUse);
                 HP = MaxHP;
             }
         }

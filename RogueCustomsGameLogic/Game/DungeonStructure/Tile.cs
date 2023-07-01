@@ -51,7 +51,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             break;
                         case TileType.Stairs:
                             _consoleRepresentation.BackgroundColor = new GameColor(Color.Yellow);
-                            _consoleRepresentation.ForegroundColor = new GameColor(Color.Green);
+                            _consoleRepresentation.ForegroundColor = new GameColor(Color.DarkGreen);
                             break;
                     }
                 }

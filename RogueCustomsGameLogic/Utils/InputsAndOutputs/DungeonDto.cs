@@ -24,7 +24,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public List<TileDto> Tiles { get; set; }
         public List<AlteredStatusDto> AlteredStatuses { get; set; }
         public List<EntityDto> Entities { get; set; }
-        public List<string> LogMessages { get; set; }
+        public List<MessageDto> LogMessages { get; set; }
         public List<MessageBoxDto> MessageBoxes { get; set; }
 
         public EntityDto PlayerEntity => Entities.Find(e => e.Type == EntityDtoType.Player);
