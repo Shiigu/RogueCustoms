@@ -81,6 +81,9 @@
     <None Update="Fonts\Vintl.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="JSON\Den of the Betas.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="JSON\PUT JSON FILES HERE!.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

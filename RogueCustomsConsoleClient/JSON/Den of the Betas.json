@@ -1,0 +1,2571 @@
+{
+  "Name": "DungeonName",
+  "Author": "Shiigu",
+  "WelcomeMessage": "WelcomeMessage",
+  "EndingMessage": "EndingMessage",
+  "AmountOfFloors": 5,
+  "DefaultLocale": "en",
+  "Locales": [
+    {
+      "Language": "en",
+      "LocaleStrings": [
+        { "Key": "DungeonName", "Value": "Den of the Betas" },
+        { "Key": "WelcomeMessage", "Value": "Welcome to this test roguelike!\n\nThis is a very early release, so\ngameplay is very basic.\n\nHave fun, and provide feedback at the\nend!" },
+        { "Key": "EndingMessage", "Value": "WELL DONE\n\nYOU'VE BEATEN THE DEN OF THE BETAS!\n\n\nIf you wish to support this\nproject, you can help here:\n\nhttps://github.com/Shiigu/RogueCustoms" },
+        { "Key": "FloorName", "Value": "{DungeonName} - FLOOR {FloorLevel}" },
+        { "Key": "NewTurn", "Value": "----------TURN {TurnCount}----------" },
+        { "Key": "FloorEnter", "Value": "Entering Floor {FloorLevel}..." },
+        { "Key": "FloorLeave", "Value": "Leaving Floor {FloorLevel}..." },
+        { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} put {ItemName} on the bag."},
+        { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} put {ItemName} on the floor."},
+        { "Key": "NPCPickItem", "Value": "{CharacterName} picked up {ItemName}."},
+        { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} dropped {ItemName} on the floor."},
+        { "Key": "NPCItemCannotBePutOnFloor", "Value": "{ItemName} was destroyed!"},
+        { "Key": "InventoryIsFull", "Value": "{CharacterName} cannot pick up {ItemName}. Inventory is full."},
+        { "Key": "TileIsOccupied", "Value": "{CharacterName} cannot drop {ItemName}. Tile is occupied."},
+        { "Key": "NoTarget", "Value": "But there was no target!"},
+        { "Key": "CannotBeUsed", "Value": "CANNOT BE USED" },
+        { "Key": "OnCooldown", "Value": "ON COOLDOWN:\n{CurrentCooldown} TURNS LEFT"},
+        { "Key": "MaximumUses", "Value": "REACHED MAXIMUM USES"},
+        { "Key": "RemainingUseCount", "Value": "{RemainingUses} USES LEFT"},
+        { "Key": "TargetIsTooClose", "Value": "TARGET IS TOO CLOSE"},
+        { "Key": "TargetIsTooFarAway", "Value": "TARGET IS TOO FAR AWAY"},
+        { "Key": "TargetIsOfWrongFaction", "Value": "TARGET MUST BE {FactionTargets}"},
+        { "Key": "TargetTypeSelf", "Value": "SELF"},
+        { "Key": "TargetTypeAlly", "Value": "ALLY"},
+        { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
+        { "Key": "TargetTypeEnemy", "Value": "ENEMY"},
+        { "Key": "RequiresATarget", "Value": "REQUIRES A TARGET"},
+        { "Key": "FromSource", "Value": "(From {SourceName})"},
+        { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} has reached Level {Level}!"},
+        { "Key": "CharacterLevelsUpHeader", "Value": "CONGRATULATIONS!" },
+        { "Key": "CharacterHPStat", "Value": "HP" },
+        { "Key": "CharacterMaxHPStat", "Value": "Max HP" },
+        { "Key": "CharacterAttackStat", "Value": "Attack" },
+        { "Key": "CharacterDefenseStat", "Value": "Defense" },
+        { "Key": "CharacterMovementStat", "Value": "Movement" },
+        { "Key": "CharacterSightRangeStat", "Value": "Sight Range" },
+        { "Key": "CharacterHPRegenerationStat", "Value": "HP Regeneration" },
+        { "Key": "CharacterDamageStat", "Value": "Damage" },
+        { "Key": "CharacterMitigationStat", "Value": "Mitigation" },
+        { "Key": "CharacterTakesDamage", "Value": "{CharacterName} took {DamageDealt} damage." },
+        { "Key": "CharacterHealsSomeHP", "Value": "{CharacterName} healed {HealAmount} HP!" },
+        { "Key": "CharacterHealsAllHP", "Value": "{CharacterName} is now at maximum HP!" },
+        { "Key": "CharacterGainsExperience", "Value": "{CharacterName} gained {Amount} experience points." },
+        { "Key": "CharacterGotStatused", "Value": "{CharacterName} is now {StatusName}!" },
+        { "Key": "CharacterIsNoLongerStatused", "Value": "{CharacterName} is no longer {StatusName}!" },
+        { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
+        { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
+        { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
+        { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
+        { "Key": "Floor1WelcomeText", "Value": "Welcome to this game!\n\nFind the stairs to reach the next floor."},
+        { "Key": "Floor2WelcomeText", "Value": "This is what I'd call a \"Rest floor\"\n\nNo enemies will appear here.\n\nRestock all you want until you go to the stairs."},
+        { "Key": "Floor2WarningText", "Value": "WARNING: You CANNOT regenerate HP while in this floor."},
+        { "Key": "Floor5WelcomeText", "Value": "You encountered the Boss!\n\nThis one's extra tough, so be wary!"},
+        { "Key": "Floor5WelcomeText2", "Value": "Defeat the boss to reveal the stairs, and end the game!"},
+        { "Key": "PlayerFactionName", "Value": "Player" },
+        { "Key": "PlayerFactionDescription", "Value": "The faction representing you. Your objective? Beat the dungeon." },
+        { "Key": "AlliedNPCsFactionName", "Value": "Allied NPCs" },
+        { "Key": "AlliesNPCsFactionDescription", "Value": "A group of 'helpful' NPCs that might give you useful information." },
+        { "Key": "MeleeEnemiesFactionName", "Value": "Melee Enemies" },
+        { "Key": "MeleeEnemiesFactionDescription", "Value": "The enemies that wield melee weapons.\n\nMay retaliate against their ranged brethren if they attack them." },
+        { "Key": "RangedEnemiesFactionName", "Value": "Ranged Enemies" },
+        { "Key": "RangedEnemiesFactionDescription", "Value": "The enemies that wield ranges weapons.\n\nMay retaliate against their melee brethren if they attack them." },
+        { "Key": "PlayerName", "Value": "Player" },
+        { "Key": "PlayerDescription", "Value": "This is you, the player.\n\nYour goal is to reach the end of the dungeon alive.\n\nBase Attack: 2\nBase Defense:0" },
+        { "Key": "PlayerDeathText", "Value": "{this} has died!" },
+        { "Key": "PlayerDeathMessageBoxHeader", "Value": "OH NO!" },
+        { "Key": "PlayerDeathMessageBoxText", "Value": "YOU HAVE DIED!" },
+        { "Key": "MeleeEnemyName", "Value": "Melee Enemy" },
+        { "Key": "MeleeEnemyDescription", "Value": "A bad guy that can punch you. Sometimes he instead mocks you by sticking his tongue." },
+        { "Key": "MeleeEnemyStickTongueText", "Value": "{this} sticks his tongue at {target}." },
+        { "Key": "RangedEnemyName", "Value": "Ranged Enemy" },
+        { "Key": "RangedEnemyDescription", "Value": "A bad guy that can throw javelins at you. Sometimes they are envenomed." },
+        { "Key": "EnemyDeathText", "Value": "The evil {this} has died." },
+        { "Key": "MeleeAllyName", "Value": "Melee Ally" },
+        { "Key": "MeleeAllyDescription", "Value": "A good guy that can throw punches." },
+        { "Key": "MeleeAllyDeclareText", "Value": "{this} declares that {target}'s days are counted." },
+        { "Key": "AllyDeathText", "Value": "The well-natured {this} has died." },
+        { "Key": "BossName", "Value": "Boss" },
+        { "Key": "BossDescription", "Value": "The big bad guy of the dungeon. Kill him to get out of here!" },
+        { "Key": "BossAwaitText", "Value": "The {this} waits for {target} to get closer." },
+        { "Key": "BossDeathText", "Value": "CONCAT(\"THE NEFARIOUS \", UPPER(\"{this}\"), \" NO LONGER EXISTS!\")" },
+        { "Key": "BareFistsName", "Value": "Bare Fists" },
+        { "Key": "BareFistsDescription", "Value": "Good 'ol fistcuffs when nothing else works.\n\nWeapon damage: 1d2" },
+        { "Key": "MeleeWeaponAttackName", "Value": "Melee Weapon Attack" },
+        { "Key": "RangedWeaponAttackName", "Value": "Ranged Weapon Attack" },
+        { "Key": "BareFistsAttackDescription", "Value": "Deals normal damage with no secondary effect.\n\nAccuracy: 95%" },
+        { "Key": "BareFistsAttackText", "Value": "{source} tries to punch {target}." },
+        { "Key": "FailedAttackText", "Value": "But it failed!" },
+        { "Key": "ClothArmorName", "Value": "Cloth" },
+        { "Key": "ClothArmorDescription", "Value": "Very basic and lightweight armor.\n\nArmor Mitigation: 0" },
+        { "Key": "SkirtName", "Value": "Skirt" },
+        { "Key": "SkirtDescription", "Value": "How are you reading this?" },
+        { "Key": "HealingPotionName", "Value": "Healing Potion" },
+        { "Key": "HealingPotionDescription", "Value": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears." },
+        { "Key": "PotionOfStrengthName", "Value": "Potion of Strength" },
+        { "Key": "PotionOfStrengthDescription", "Value": "Exactly like the Healing Potion but completely different.\n\nWhen used, it applies Invigorated (+10% Attack) for 75 turns, then it disappears." },
+        { "Key": "AntidoteName", "Value": "Antidote" },
+        { "Key": "AntidoteDescription", "Value": "For when you're feeling bad.\n\nWhen used, it cures Poisoning and then it disappears." },
+        { "Key": "ObjectSteppedText", "Value": "{target} stepped over {this}." },
+        { "Key": "ObjectEquippedText", "Value": "{target} equips the {this}." },
+        { "Key": "ObjectDrunkText", "Value": "{target} drinks the {this}." },
+        { "Key": "ObjectDisappearedText", "Value": "{this} disappeared." },
+        { "Key": "ObjectNotUsedText", "Value": "Or not. It would have no effect..." },
+        { "Key": "ObjectNotActivatedText", "Value": "{this} failed to activate!" },
+        { "Key": "SwordName", "Value": "Sword" },
+        { "Key": "SwordDescription", "Value": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3"},
+        { "Key": "SwordAttackDescription", "Value": "Deals normal damage with no secondary effect.\n\nAccuracy: 90%"},
+        { "Key": "SwordAttackText", "Value": "{source} swings the {this} at {target}." },
+        { "Key": "SwordAllInAttackName", "Value": "All In" },
+        { "Key": "SwordAllInAttackDescription", "Value": "Deals double damage with no secondary effect.\n\nTotally not ripped from Divinity: Original Sin II\n\nAccuracy: 60%" },
+        { "Key": "SwordAllInAttackText", "Value": "{source} goes full-might with the {this} at {target}!" },
+        { "Key": "PistolName", "Value": "Pistol" },
+        { "Key": "PistolDescription", "Value": "The strongest weapon you can find in this dungeon.\n\nWeapon damage: 2d3" },
+        { "Key": "PistolMeleeAttackDescription", "Value": "Deals very weak damage with no secondary effect.\n\nAccuracy: 95%" },
+        { "Key": "PistolMeleeAttackText", "Value": "{source} hits {target} with the {this}'s stock." },
+        { "Key": "PistolRangedAttackDescription", "Value": "Deals normal damage with no secondary effect.\n\nRange:2-4 tiles\nAccuracy: 85%" },
+        { "Key": "PistolRangedAttackText", "Value": "{source} shoots at {target} with the {this}." },
+        { "Key": "LeatherName", "Value": "Leather" },
+        { "Key": "LeatherDescription", "Value": "Comfortable but fairly effective protection.\n\nArmor mitigation: 1" },
+        { "Key": "PlateName", "Value": "Plate" },
+        { "Key": "PlateDescription", "Value": "The strongest source of protection in this dungeon.\n\nArmor mitigation: 2" },
+        { "Key": "JavelinName", "Value": "Javelin" },
+        { "Key": "JavelinDescription", "Value": "Ranged Enemies love it. Players and Melee Allies hate it." },
+        { "Key": "JavelinMeleeAttackDescription", "Value": "Deals half of damage with no secondary effect.\n\nAccuracy: 70%" },
+        { "Key": "JavelinMeleeAttackText", "Value": "{source} tries to stab {target} with the {this}." },
+        { "Key": "JavelinNormalRangedAttackDescription", "Value": "Deals normal damage with no secondary effect.\n\nAccuracy: 85%" },
+        { "Key": "JavelinNormalRangedAttackText", "Value": "{source} throws a {this} at {target}." },
+        { "Key": "JavelinEnvenomedRangedAttackName", "Value": "Envenomed Ranged Weapon Attack" },
+        { "Key": "JavelinEnvenomedRangedAttackDescription", "Value": "Deals half of damage with a 50% chance to Poison the target.\n\nAccuracy: 70%" },
+        { "Key": "JavelinEnvenomedRangedAttackText", "Value": "{source} envenoms a {this} and throws it at {target}." },
+        { "Key": "ScrollOfDestructionName", "Value": "Scroll of Destruction" },
+        { "Key": "ScrollOfDestructionDescription", "Value": "A single-use scroll that instantly kills the target.\n\n(Must be used from the list of Actions)" },
+        { "Key": "ScrollOfDestructionAttackDescription", "Value": "A single-use scroll that instantly kills the target." },
+        { "Key": "ScrollOfDestructionAttackText", "Value": "{source} looks at {target} and reads the {this}." },
+        { "Key": "ScrollOfDestructionAttackDescription", "Value": "A single-use scroll that instantly kills the target." },
+        { "Key": "MagicStaffName", "Value": "Magic Staff" },
+        { "Key": "MagicStaffDescription", "Value": "A mystical staff with very versatile spells.\n\nReduces Max HP by 5 when equipped.\n\nPower: 1d3." },
+        { "Key": "StaffOfMagusName", "Value": "Staff Of Magus" },
+        { "Key": "StaffOfMagusDescription", "Value": "Deals normal damage with no secondary effect.\n\nTotally not ripped from Divinity: Original Sin II\n\nRange: 1-2 tiles\nAccuracy: 90%" },
+        { "Key": "StaffOfMagusAttackText", "Value": "{source} uses Staff of Magus on {target}." },
+        { "Key": "FireballName", "Value": "Fireball" },
+        { "Key": "FireballDescription", "Value": "Hurls a ball of fire at the target. Has a 50% chance to Burn for 40 turns.\n\nRange: 1-3 tiles\nAccuracy: 90%" },
+        { "Key": "FireballAttackText", "Value": "{source} uses Fireball on {target}." },
+        { "Key": "IceballName", "Value": "Iceball" },
+        { "Key": "IceballDescription", "Value": "Hurls a ball of ice at the target. Has a 25% chance to Freeze for 3 turns, preventing enemy movement.\n\nRange: 1-3 tiles\nAccuracy: 90%" },
+        { "Key": "IceballAttackText", "Value": "{source} uses Iceball on {target}." },
+        { "Key": "HealName", "Value": "Heal" },
+        { "Key": "HealDescription", "Value": "Heals up to 2d6 damage to the target.\nCan be used on self.\n\nRange: 0-2 tiles" },
+        { "Key": "HealAttackText", "Value": "{source} uses Heal on {target}." },
+        { "Key": "SpikeTrapName", "Value": "Spike Trap" },
+        { "Key": "SpikeTrapDescription", "Value": "May deal 1 damage, regardless of Armor, when stepped on. May break afterwards." },
+        { "Key": "WonderTileName", "Value": "Wonder Tile" },
+        { "Key": "WonderTileDescription", "Value": "Removes all stat alterations, both positive and negative, when stepped on." },
+        { "Key": "WonderTileFailedText", "Value": "But nothing happened." },
+        { "Key": "IceTrapName", "Value": "Ice Trap" },
+        { "Key": "IceTrapDescription", "Value": "Has a 30% chance to Freeze the target, when stepped on, and breaks if it does." },
+        { "Key": "InvigoratedName", "Value": "Invigorated" },
+        { "Key": "InvigoratedDescription", "Value": "Attack increased!" },
+        { "Key": "PoisonedName", "Value": "Poisoned" },
+        { "Key": "PoisonedDescription", "Value": "Taking damage every 28 turns" },
+        { "Key": "PoisonedText", "Value": "Poison is coursing through {target}'s body." },
+        { "Key": "BurningName", "Value": "Burning" },
+        { "Key": "BurningDescription", "Value": "Taking damage every 5 turns" },
+        { "Key": "BurnedText", "Value": "{target} is affected by the burn." },
+        { "Key": "FrozenName", "Value": "Frozen" },
+        { "Key": "FrozenDescription", "Value": "Cannot do anything" },
+        { "Key": "FrozenText", "Value": "{target} cannot move due to the freezing." },
+        { "Key": "RegenBlockName", "Value": "Lacking Regeneration" },
+        { "Key": "RegenBlockDescription", "Value": "Lost all natural HP regeneration" }
+      ]
+    },
+    {
+      "Language": "es",
+      "LocaleStrings": [
+        { "Key": "DungeonName", "Value": "Cueva de los Betas" },
+        { "Key": "WelcomeMessage", "Value": "¡Bienvenido a este Roguelike de prueba!\n\nEsta es una versión temprana,\nasí que la jugabilidad es muy básica.\n\n¡Diviértete, y por favor\ndeja comentarios al terminar!" },
+        { "Key": "EndingMessage", "Value": "¡BIEN HECHO!\n\n¡HAS COMPLETADO LA CUEVA DE LOS BETAS!\n\n\nSi quieres apoyar este proyecto,\npuedes ayudar aquí:\n\nhttps://github.com/Shiigu/RogueCustoms" },
+        { "Key": "FloorName", "Value": "{DungeonName} - PISO {FloorLevel}" },
+        { "Key": "NewTurn", "Value": "----------TURNO {TurnCount}----------" },
+        { "Key": "FloorEnter", "Value": "Ingresando al Piso {FloorLevel}..." },
+        { "Key": "FloorLeave", "Value": "Abandonando el Piso {FloorLevel}..." },
+        { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} colocó {ItemName} en la bolsa."},
+        { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} dejó {ItemName} en el piso."},
+        { "Key": "NPCPickItem", "Value": "{CharacterName} tomó {ItemName}."},
+        { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} soltó {ItemName} al piso."},
+        { "Key": "NPCItemCannotBePutOnFloor", "Value": "¡{ItemName} se ha destruido!"},
+        { "Key": "InventoryIsFull", "Value": "No se puede tomar {ItemName}. El inventario está lleno."},
+        { "Key": "TileIsOccupied", "Value": "No se puede soltar {ItemName}. La baldosa está ocupada."},
+        { "Key": "NoTarget", "Value": "¡Pero no había un objetivo!"},
+        { "Key": "CannotBeUsed", "Value": "NO SE PUEDE USAR" },
+        { "Key": "OnCooldown", "Value": "EN RECUPERACIÓN:\nQUEDA(N) {CurrentCooldown} TURNO(S)"},
+        { "Key": "MaximumUses", "Value": "ALCANZADO MÁXIMO DE USOS"},
+        { "Key": "RemainingUseCount", "Value": "QUEDA(N) {RemainingUses} USO(S)"},
+        { "Key": "TargetIsTooClose", "Value": "EL OBJETIVO ESTÁ DEMASIADO CERCA"},
+        { "Key": "TargetIsTooFarAway", "Value": "EL OBJETIVO ESTÁ DEMASIADO LEJOS"},
+        { "Key": "TargetIsOfWrongFaction", "Value": "EL OBJETIVO DEBE SER {FactionTargets}"},
+        { "Key": "TargetTypeSelf", "Value": "UNO MISMO"},
+        { "Key": "TargetTypeAlly", "Value": "ALIADO"},
+        { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
+        { "Key": "TargetTypeEnemy", "Value": "ENEMIGO"},
+        { "Key": "RequiresATarget", "Value": "REQUIERE UN OBJETIVO"},
+        { "Key": "FromSource", "Value": "(Origen: {SourceName})"},
+        { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"},
+        { "Key": "CharacterLevelsUpHeader", "Value": "¡FELICIDADES!" },
+        { "Key": "CharacterHPStat", "Value": "PS" },
+        { "Key": "CharacterMaxHPStat", "Value": "PS Máximos" },
+        { "Key": "CharacterAttackStat", "Value": "Ataque" },
+        { "Key": "CharacterDefenseStat", "Value": "Defensa" },
+        { "Key": "CharacterMovementStat", "Value": "Mov." },
+        { "Key": "CharacterSightRangeStat", "Value": "Visión" },
+        { "Key": "CharacterHPRegenerationStat", "Value": "Regeneración de PS" },
+        { "Key": "CharacterDamageStat", "Value": "Daño" },
+        { "Key": "CharacterMitigationStat", "Value": "Mitigación" },
+        { "Key": "CharacterTakesDamage", "Value": "{CharacterName} recibió {DamageDealt} puntos de daño." },
+        { "Key": "CharacterHealsSomeHP", "Value": "¡{CharacterName} ha recuperado {HealAmount} PS!" },
+        { "Key": "CharacterHealsAllHP", "Value": "¡{CharacterName} ha recuperado todos los PS!" },
+        { "Key": "CharacterGainsExperience", "Value": "{CharacterName} ha obtenido {Amount} puntos de experiencia." },
+        { "Key": "CharacterGotStatused", "Value": "¡{CharacterName} ahora está {StatusName}!" },
+        { "Key": "CharacterStatusGotRefreshed", "Value": "¡{StatusName} de {CharacterName} se ha vuelto a aplicar!" },
+        { "Key": "CharacterIsNoLongerStatused", "Value": "¡{CharacterName} ya no está {StatusName}!" },
+        { "Key": "CharacterStatGotBuffed", "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}." },
+        { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
+        { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
+        { "Key": "Floor1WelcomeText", "Value": "¡Bienvenido al juego!\n\nBusca las escaleras para acceder al próximo piso."},
+        { "Key": "Floor2WelcomeText", "Value": "Esto es lo que se llama \"Piso de descanso\".\n\nNo hay enemigos aquí.\n\nObtén los objetos que quieras antes de ir por las escaleras."},
+        { "Key": "Floor2WarningText", "Value": "ADVERTENCIA: En este piso no regenerarás PS."},
+        { "Key": "Floor5WelcomeText", "Value": "¡Has encontrado al Jefe!\n\n¡Este es muy duro, así que ten cuidado!"},
+        { "Key": "Floor5WelcomeText2", "Value": "¡Derrota al Jefe para revelar las escaleras, y así acabar el juego!"},
+        { "Key": "StairsGotRevealed", "Value": "¡Se han revelado las escaleras!" },
+        { "Key": "PlayerFactionName", "Value": "Jugador" },
+        { "Key": "PlayerFactionDescription", "Value": "La facción que te representa. ¿Tu objetivo? Huir de la mazmorra." },
+        { "Key": "AlliedNPCsFactionName", "Value": "NPCs Aliados" },
+        { "Key": "AlliesNPCsFactionDescription", "Value": "Un grupo de NPCs que te 'ayudan', y a lo mejor te enseñan algo." },
+        { "Key": "MeleeEnemiesFactionName", "Value": "Enemigos de Melé" },
+        { "Key": "MeleeEnemiesFactionDescription", "Value": "Los enemigos con armas de melé.\n\nPodrían atacar a sus compadres de rango si estos les golpean." },
+        { "Key": "RangedEnemiesFactionName", "Value": "Enemies de Rango" },
+        { "Key": "RangedEnemiesFactionDescription", "Value": "Los enemigos con armas de rango.\n\nPodrían atacar a sus compadres de melé si estos les golpean." },
+        { "Key": "PlayerName", "Value": "Jugador" },
+        { "Key": "PlayerDescription", "Value": "Este eres tú, el Jugador.\n\nTu objetivo es llegar con vida al final de la mazmorra.\n\nAtaque Base: 2\nDefensa Base:0" },
+        { "Key": "PlayerDeathText", "Value": "¡{this} ha muerto!" },
+        { "Key": "PlayerDeathMessageBoxHeader", "Value": "¡OH, NO!" },
+        { "Key": "PlayerDeathMessageBoxText", "Value": "¡HAS MUERTO!" },
+        { "Key": "MeleeEnemyName", "Value": "Enemigo Melé" },
+        { "Key": "MeleeEnemyDescription", "Value": "Un tipo malo que te golpea. A veces, en cambio, se burla de ti sacando la lengua." },
+        { "Key": "MeleeEnemyStickTongueText", "Value": "{this} le saca la lengua a {target}." },
+        { "Key": "RangedEnemyName", "Value": "Enemigo a Distancia" },
+        { "Key": "RangedEnemyDescription", "Value": "Un tipo malo que te lanza javalinas. A veces están envenenadas." },
+        { "Key": "EnemyDeathText", "Value": "El malvado {this} ha muerto." },            
+        { "Key": "MeleeAllyName", "Value": "Aliado Melé" },
+        { "Key": "MeleeAllyDescription", "Value": "Un tipo bueno que puede dar puñetazos." },
+        { "Key": "MeleeAllyDeclareText", "Value": "{this} declara que los días de {target} están contados." },
+        { "Key": "AllyDeathText", "Value": "El bienintencionado {this} ha muerto." },
+        { "Key": "BossName", "Value": "Jefe" },
+        { "Key": "BossDescription", "Value": "El gran tipo malo de la mazmorra. ¡Mátalo para salir de aquí!" },
+        { "Key": "BossAwaitText", "Value": "El {this} espera a que {target} se acerque." },
+        { "Key": "BossDeathText", "Value": "CONCAT(\"¡EL INFAME \", UPPER(\"{this}\"), \" YA NO EXISTE!\")" },
+        { "Key": "BareFistsName", "Value": "Puños" },
+        { "Key": "BareFistsDescription", "Value": "Para dar unos buenos golpes cuando nada más sirve.\n\nDaño de arma: 1d2" },
+        { "Key": "MeleeWeaponAttackName", "Value": "Ataque Melé del arma" },
+        { "Key": "RangedWeaponAttackName", "Value": "Ataque de Rango del arma" },
+        { "Key": "BareFistsAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 95%" },
+        { "Key": "BareFistsAttackText", "Value": "{source} intenta darle un puñetazo a {target}." },
+        { "Key": "FailedAttackText", "Value": "¡Pero falló!" },
+        { "Key": "ClothArmorName", "Value": "Tela" },
+        { "Key": "ClothArmorDescription", "Value": "Armadura básica y ligera.\n\nMitigación: 0" },
+        { "Key": "SkirtName", "Value": "Falda" },
+        { "Key": "SkirtDescription", "Value": "¿Cómo es que estás leyendo esto?" },
+        { "Key": "HealingPotionName", "Value": "Poción Curativa" },
+        { "Key": "HealingPotionDescription", "Value": "El objeto de curación más elemental.\n\nCura hasta 2d4 puntos de vida antes de desaparecer." },
+        { "Key": "PotionOfStrengthName", "Value": "Poción de Vigor" },
+        { "Key": "PotionOfStrengthDescription", "Value": "Exactamente lo mismo que la Poción Curativa pero todo lo contrario.\n\nAl usarse, aplica Envalentonado (+10% al Ataque) por 75 turnos antes de desaparecer." },
+        { "Key": "AntidoteName", "Value": "Antídoto" },
+        { "Key": "AntidoteDescription", "Value": "Cuando estás malito.\n\nAl usarse, elimina el estado Envenenado antes de desaparecer." },
+        { "Key": "ObjectSteppedText", "Value": "{target} pasó por encima de {this}." },
+        { "Key": "ObjectEquippedText", "Value": "{target} equipa {this}." },
+        { "Key": "ObjectDrunkText", "Value": "{target} bebe {this}." },
+        { "Key": "ObjectDisappearedText", "Value": "{this} acaba de desaparecer." },
+        { "Key": "ObjectNotUsedText", "Value": "... o mejor no, porque no tendría efecto." },
+        { "Key": "ObjectNotActivatedText", "Value": "¡{this} no se activó!" },
+        { "Key": "SwordName", "Value": "Espada" },
+        { "Key": "SwordDescription", "Value": "Herramienta confiable para cortar enemigos.\n\nDaño de arma: 1d3"},
+        { "Key": "SwordAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 90%"},
+        { "Key": "SwordAttackText", "Value": "{source} blande la {this} hacia {target}." },
+        { "Key": "SwordAllInAttackName", "Value": "Con Todo" },
+        { "Key": "SwordAllInAttackDescription", "Value": "Causa doble daño sin efecto secundario.\n\nTe juro que no lo robé de Divinity: Original Sin II\n\nPrecisión: 60%" },
+        { "Key": "SwordAllInAttackText", "Value": "¡{source} va con todo hacia {target} con la {this}!" },
+        { "Key": "PistolName", "Value": "Pistola" },
+        { "Key": "PistolDescription", "Value": "El arma más poderosa que encontrarás en la mazmorra.\n\nDaño de arma: 2d3" },
+        { "Key": "PistolMeleeAttackDescription", "Value": "Causa poco daño sin efecto secundario.\n\nPrecisión: 95%" },
+        { "Key": "PistolMeleeAttackText", "Value": "{source} le da a {target} con la culata de la {this}." },
+        { "Key": "PistolRangedAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nAlcance: 2 a 4 casillas\nPrecisión: 85%" },
+        { "Key": "PistolRangedAttackText", "Value": "{source} dispara a {target} con la {this}." },
+        { "Key": "LeatherName", "Value": "Cuero" },
+        { "Key": "LeatherDescription", "Value": "Protección cómoda pero algo efectiva.\n\nMitigación: 1" },
+        { "Key": "PlateName", "Value": "Placas" },
+        { "Key": "PlateDescription", "Value": "La mejor fuente de protección de la mazmorra.\n\nMitigación: 2" },
+        { "Key": "JavelinName", "Value": "Javalina" },
+        { "Key": "JavelinDescription", "Value": "Los Enemigos de Rango le adoran. Los Jugadores y los Aliados Melé le odian." },
+        { "Key": "JavelinMeleeAttackDescription", "Value": "Causa la mitad de daño sin efecto secundario.\n\nPrecisión: 70%" },
+        { "Key": "JavelinMeleeAttackText", "Value": "{source} intenta apuñalar a {target} con la {this}." },
+        { "Key": "JavelinNormalRangedAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 85%" },
+        { "Key": "JavelinNormalRangedAttackText", "Value": "{source} le lanza una {this} a {target}." },
+        { "Key": "JavelinEnvenomedRangedAttackName", "Value": "Ataque de Rango de Arma Envenenado" },
+        { "Key": "JavelinEnvenomedRangedAttackDescription", "Value": "Causa la mitad de daño normal con un 50% de posibilidades de envenenar al objetivo.\n\nPrecisión: 70%" },
+        { "Key": "JavelinEnvenomedRangedAttackText", "Value": "{source} le pone veneno a una {this} y se la lanza a {target}." },
+        { "Key": "ScrollOfDestructionName", "Value": "Pergamino de Destrucción" },
+        { "Key": "ScrollOfDestructionDescription", "Value": "Un pergamino de uso único que mata instantáneamente al objetivo.\n\n(Debe usarse desde la lista de Acciones)" },
+        { "Key": "ScrollOfDestructionAttackDescription", "Value": "Un pergamino de uso único que mata instantáneamente al objetivo." },
+        { "Key": "ScrollOfDestructionAttackText", "Value": "{source} mira a {target} y lee el {this}." },
+        { "Key": "MagicStaffName", "Value": "Bastón Mágico" },
+        { "Key": "MagicStaffDescription", "Value": "Un bastón místico, versátil en cuanto a hechizos.\n\nReduce los PS Máximos en 5 al equiparse.\n\nDaño de arma: 1d3." },
+        { "Key": "StaffOfMagusName", "Value": "Bastón de Mago" },
+        { "Key": "StaffOfMagusDescription", "Value": "Causa daño normal sin efecto secundario.\n\nTe juro que no lo robé de Divinity: Original Sin II\n\nAlcance: 1 a 2 casillas\nPrecisión: 90%" },
+        { "Key": "StaffOfMagusAttackText", "Value": "{source} usa Bastón de Mago en {target}." },
+        { "Key": "FireballName", "Value": "Bola de Fuego" },
+        { "Key": "FireballDescription", "Value": "Lanza una esfera ardiente al objetivo. 50% de posibilidades de Quemar por 40 turnos.\n\nAlcance: 1 a 3 casillas\nPrecisión: 90%" },
+        { "Key": "FireballAttackText", "Value": "{source} usa Bola de Fuego en {target}." },
+        { "Key": "IceballName", "Value": "Bola de Hielo" },
+        { "Key": "IceballDescription", "Value": "Lanza una esfera de frío al objetivo. 25% de posibilidades de Congelar por 3 turnos, impidiendo el movimiento.\n\nAlcance: 1 a 3 casillas\nPrecisión: 90%" },
+        { "Key": "IceballAttackText", "Value": "{source} usa Bola de Hielo en {target}." },
+        { "Key": "HealName", "Value": "Curar" },
+        { "Key": "HealDescription", "Value": "Cura hasta 2d6 damage en el objetivo.\nSe puede usar en sí mismo.\n\nAlcance: 0 a 2 casillas" },
+        { "Key": "HealAttackText", "Value": "{source} usa Curar en {target}." },
+        { "Key": "SpikeTrapName", "Value": "Trampa de Púas" },
+        { "Key": "SpikeTrapDescription", "Value": "Puede causar 1 de daño, sin importar la armadura, al pisarse. Puede romperse después." },
+        { "Key": "WonderTileName", "Value": "Baldosa Mágica" },
+        { "Key": "WonderTileDescription", "Value": "Quita todas las alteraciones de estadísticas, sean positivas o negativas, al pisarse." },
+        { "Key": "IceTrapName", "Value": "Trampa de Hielo" },
+        { "Key": "IceTrapDescription", "Value": "Tiene una probabilidad del 30% de Congelar al objetivo al ser pisada. Si lo hace, luego se rompe." },
+        { "Key": "WonderTileFailedText", "Value": "Pero no pasó nada." },
+        { "Key": "InvigoratedName", "Value": "Envalentonado" },
+        { "Key": "InvigoratedDescription", "Value": "¡Tienes más Ataque!" },
+        { "Key": "PoisonedName", "Value": "Envenenado" },
+        { "Key": "PoisonedDescription", "Value": "Recibiendo daño cada 28 turnos" },
+        { "Key": "PoisonedText", "Value": "El Veneno recorre el cuerpo de {target}." },
+        { "Key": "BurningName", "Value": "Quemado" },
+        { "Key": "BurningDescription", "Value": "Recibiendo daño cada 5 turnos" },
+        { "Key": "BurnedText", "Value": "{target} siente las quemaduras." },
+        { "Key": "FrozenName", "Value": "Congelado" },
+        { "Key": "FrozenDescription", "Value": "No puede hacer nada" },
+        { "Key": "FrozenText", "Value": "{target} no se puede mover por el congelamiento." },
+        { "Key": "RegenBlockName", "Value": "Falto de Regeneración" },
+        { "Key": "RegenBlockDescription", "Value": "Perdida toda la Regeneración de PS base" }
+      ]
+    }
+  ],
+  "FloorInfos": [
+    {
+      "MinFloorLevel": 1,
+      "MaxFloorLevel": 1,
+      "Width": 64,
+      "Height": 32,
+      "GenerateStairsOnStart": true,
+      "PossibleMonsters": [
+        { "ClassId": "MeleeEnemy" , "MinLevel": 1, "MaxLevel": 2, "SimultaneousMaxForKindInFloor": 6, "OverallMaxForKindInFloor": 10, "ChanceToPick": 50, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  },
+        { "ClassId": "RangedEnemy", "MinLevel": 1, "MaxLevel": 2, "SimultaneousMaxForKindInFloor": 3, "OverallMaxForKindInFloor": 10, "ChanceToPick": 30, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  },
+        { "ClassId": "MeleeAlly"  , "MinLevel": 1, "MaxLevel": 2, "SimultaneousMaxForKindInFloor": 2, "OverallMaxForKindInFloor": 2 , "ChanceToPick": 20, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": false }
+      ],
+	    "SimultaneousMinMonstersAtStart": 2,
+      "SimultaneousMaxMonstersInFloor": 6,
+      "TurnsPerMonsterGeneration": 25,
+      "PossibleItems": [
+        { "ClassId": "HealingPotion"           , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 25 },
+        { "ClassId": "Sword"                   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 20 },
+        { "ClassId": "LeatherArmor"            , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 20 },
+        { "ClassId": "Antidote"                , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 10 },
+        { "ClassId": "PotionOfStrength"        , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 5  },
+        { "ClassId": "Pistol"                  , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 5  },
+        { "ClassId": "MagicStaff"              , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 5  },
+        { "ClassId": "PlateArmor"              , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 5  },
+        { "ClassId": "ScrollOfDestruction"     , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 5  }
+      ],
+      "MinItemsInFloor": 3,
+      "MaxItemsInFloor": 7,
+      "PossibleTraps": [
+        { "ClassId": "WonderTile", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 55 },
+        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 35 },
+        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 }
+      ],
+	    "MinTrapsInFloor": 1,
+      "MaxTrapsInFloor": 5,
+      "MaxConnectionsBetweenRooms": 1,
+      "OddsForExtraConnections": 0,
+      "RoomFusionOdds": 25,
+      "PossibleGeneratorAlgorithms": [
+        { "Name": "Standard"      , "Rows": 3, "Columns": 3 },
+        { "Name": "Standard"      , "Rows": 4, "Columns": 4 },
+        { "Name": "Standard"      , "Rows": 2, "Columns": 3 },
+        { "Name": "Standard"      , "Rows": 4, "Columns": 3 },
+        { "Name": "OuterDummyRing", "Rows": 4, "Columns": 4 },
+        { "Name": "InnerDummyRing", "Rows": 4, "Columns": 4 }
+      ],
+      "OnFloorStartActions": [{
+        "Name": "DungeonStartMessage",
+        "Effect": {
+          "EffectName": "MessageBox",
+          "Params": [
+            { "ParamName": "title", "Value": "DungeonName" },
+            { "ParamName": "text" , "Value": "Floor1WelcomeText" },
+            { "ParamName": "color", "Value": "255,255,0,255"    }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "MinFloorLevel": 2,
+      "MaxFloorLevel": 2,
+      "Width": 48,
+      "Height": 24,
+      "GenerateStairsOnStart": true,
+      "PossibleMonsters": [],
+	    "SimultaneousMinMonstersAtStart": 0,
+      "SimultaneousMaxMonstersInFloor": 0,
+      "TurnsPerMonsterGeneration": 0,
+      "PossibleItems": [
+        { "ClassId": "HealingPotion"   , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 50 },
+        { "ClassId": "PotionOfStrength", "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 20 },
+        { "ClassId": "Antidote"        , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 20 },
+        { "ClassId": "MagicStaff"      , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 }
+      ],
+      "MinItemsInFloor": 0,
+      "MaxItemsInFloor": 4,
+      "PossibleTraps": [],
+	    "MinTrapsInFloor": 0,
+      "MaxTrapsInFloor": 0,
+      "MaxConnectionsBetweenRooms": 0,
+      "OddsForExtraConnections": 0,
+      "RoomFusionOdds": 0,
+      "PossibleGeneratorAlgorithms": [
+        { "Name": "OneBigRoom", "Rows": 1, "Columns": 1 }
+      ],
+      "OnFloorStartActions": [{
+        "Name": "FloorStartMessage",
+        "Effect": {
+          "EffectName": "ApplyAlteredStatus",
+          "Params": [
+            { "ParamName": "id"           , "Value": "RegenBlock" },
+            { "ParamName": "target"       , "Value": "target"     },
+            { "ParamName": "chance"       , "Value": "100"        },
+            { "ParamName": "power"        , "Value": "0"          },
+            { "ParamName": "turnlength"   , "Value": "-1"         }
+          ],
+          "Then": {
+            "EffectName": "MessageBox",
+            "Params": [
+              { "ParamName": "title", "Value": "DungeonName" },
+              { "ParamName": "text" , "Value": "Floor2WelcomeText" },
+              { "ParamName": "color", "Value": "255,255,0,255"    }
+            ],
+            "Then": {
+              "EffectName": "MessageBox",
+              "Params": [
+                { "ParamName": "title", "Value": "DungeonName" },
+                { "ParamName": "text" , "Value": "Floor2WarningText" },
+                { "ParamName": "color", "Value": "255,0,0,255"    }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "MinFloorLevel": 3,
+      "MaxFloorLevel": 4,
+      "Width": 64,
+      "Height": 32,
+      "GenerateStairsOnStart": true,
+      "PossibleMonsters": [
+        { "ClassId": "MeleeEnemy" , "MinLevel": 1, "MaxLevel": 3, "SimultaneousMaxForKindInFloor": 7, "OverallMaxForKindInFloor": 20, "ChanceToPick": 60, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  },
+        { "ClassId": "RangedEnemy", "MinLevel": 1, "MaxLevel": 3, "SimultaneousMaxForKindInFloor": 3, "OverallMaxForKindInFloor": 10, "ChanceToPick": 40, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  }
+      ],
+	    "SimultaneousMinMonstersAtStart": 4,
+      "SimultaneousMaxMonstersInFloor": 8,
+      "TurnsPerMonsterGeneration": 20,
+      "PossibleItems": [
+        { "ClassId": "HealingPotion"           , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 20 },
+        { "ClassId": "Sword"                   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 15 },
+        { "ClassId": "LeatherArmor"            , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 15 },
+        { "ClassId": "PotionOfStrength"        , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 10 },
+        { "ClassId": "Antidote"                , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 5  },
+        { "ClassId": "Pistol"                  , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 5  },
+        { "ClassId": "PlateArmor"              , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 },
+        { "ClassId": "ScrollOfDestruction"     , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 },
+        { "ClassId": "MagicStaff"              , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 }
+      ],
+      "MinItemsInFloor": 3,
+      "MaxItemsInFloor": 7,
+      "PossibleTraps": [
+        { "ClassId": "WonderTile", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 50 },
+        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 9, "ChanceToPick": 30 },
+        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 20 }
+      ],
+	    "MinTrapsInFloor": 1,
+      "MaxTrapsInFloor": 9,
+      "MaxConnectionsBetweenRooms": 1,
+      "OddsForExtraConnections": 0,
+      "RoomFusionOdds": 25,
+      "PossibleGeneratorAlgorithms": [
+        { "Name": "Standard"      , "Rows": 4, "Columns": 4 },
+        { "Name": "Standard"      , "Rows": 5, "Columns": 5 },
+        { "Name": "Standard"      , "Rows": 3, "Columns": 4 },
+        { "Name": "Standard"      , "Rows": 4, "Columns": 3 },
+        { "Name": "OuterDummyRing", "Rows": 5, "Columns": 5 },
+        { "Name": "InnerDummyRing", "Rows": 5, "Columns": 5 }
+      ]
+    },
+    {
+      "MinFloorLevel": 5,
+      "MaxFloorLevel": 5,
+      "Width": 32,
+      "Height": 16,
+      "GenerateStairsOnStart": false,
+      "PossibleMonsters": [
+        { "ClassId": "Boss" , "MinLevel": 5, "MaxLevel": 5, "SimultaneousMaxForKindInFloor": 1, "OverallMaxForKindInFloor": 1, "ChanceToPick": 100, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": false  }
+      ],
+	    "SimultaneousMinMonstersAtStart": 1,
+      "SimultaneousMaxMonstersInFloor": 1,
+      "TurnsPerMonsterGeneration": 1,
+      "PossibleItems": [
+        { "ClassId": "HealingPotion"   , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 50 },
+        { "ClassId": "PotionOfStrength", "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 50 }
+      ],
+      "MinItemsInFloor": 0,
+      "MaxItemsInFloor": 2,
+      "PossibleTraps": [
+        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 15, "ChanceToPick": 80 },
+        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 15, "ChanceToPick": 20  }
+      ],
+	    "MinTrapsInFloor": 1,
+      "MaxTrapsInFloor": 10,
+      "MaxConnectionsBetweenRooms": 0,
+      "OddsForExtraConnections": 0,
+      "RoomFusionOdds": 0,
+      "PossibleGeneratorAlgorithms": [
+        { "Name": "OneBigRoom", "Rows": 1, "Columns": 1 }
+      ],
+      "OnFloorStartActions": [{
+        "Name": "DungeonStartMessage",
+        "Effect": {
+          "EffectName": "MessageBox",
+          "Params": [
+            { "ParamName": "title", "Value": "DungeonName" },
+            { "ParamName": "text" , "Value": "Floor5WelcomeText" },
+            { "ParamName": "color", "Value": "255,0,0,255"    }
+          ],
+          "Then": {
+            "EffectName": "MessageBox",
+            "Params": [
+              { "ParamName": "title", "Value": "DungeonName" },
+              { "ParamName": "text" , "Value": "Floor5WelcomeText2" },
+              { "ParamName": "color", "Value": "255,255,0,255"    }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    }
+  ],
+  "FactionInfos": [
+    {
+      "Id": "PlayerFaction",
+      "Name": "PlayerFactionName",
+      "Description": "PlayerFactionDescription",
+      "AlliedWith": [ "PlayerFaction", "AlliedNPCs" ],
+      "NeutralWith": [],
+      "EnemiesWith": [ "MeleeEnemies", "RangedEnemies" ]
+    },
+    {
+      "Id": "AlliedNPCs",
+      "Name": "AlliedNPCsFactionName",
+      "Description": "AlliesNPCsFactionDescription",
+      "AlliedWith": [ "PlayerFaction", "AlliedNPCs" ],
+      "NeutralWith": [],
+      "EnemiesWith": [ "MeleeEnemies", "RangedEnemies" ]
+    },
+    {
+      "Id": "MeleeEnemies",
+      "Name": "MeleeEnemiesFactionName",
+      "Description": "MeleeEnemiesFactionDescription",
+      "AlliedWith": [ "MeleeEnemies" ],
+      "NeutralWith": [ "RangedEnemies" ],
+      "EnemiesWith": [ "PlayerFaction", "AlliedNPCs" ]
+    },
+    {
+      "Id": "RangedEnemies",
+      "Name": "RangedEnemiesFactionName",
+      "Description": "RangedEnemiesFactionDescription",
+      "AlliedWith": [ "RangedEnemies" ],
+      "NeutralWith": [ "MeleeEnemies" ],
+      "EnemiesWith": [ "PlayerFaction", "AlliedNPCs" ]
+    }
+  ],
+  "Characters": [
+    {
+      "Id": "Player",
+      "Name": "PlayerName",
+      "Description": "PlayerDescription",
+      "ConsoleRepresentation": {
+        "Character": "☺",
+        "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
+      },
+      "EntityType": "Player",
+      "Faction": "PlayerFaction",
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "BaseHP": 12,
+      "BaseAttack": 2,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0.075,
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 3,
+      "StartingWeapon": "BareFists",
+      "StartingArmor": "ClothArmor",
+      "CanGainExperience": true,
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            { "ParamName": "color", "Value": "255,0,0,255" }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text" , "Value": "PlayerDeathText" },
+              { "ParamName": "color", "Value": "255,0,0,255"     }
+            ],
+            "Then": {
+              "EffectName": "MessageBox",
+              "Params": [
+                { "ParamName": "title", "Value": "PlayerDeathMessageBoxHeader" },
+                { "ParamName": "text" , "Value": "PlayerDeathMessageBoxText" },
+                { "ParamName": "color", "Value": "255,0,0,255"    }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "(1/4) * (level ^ 3) + 2 * level + 8",
+      "MaxHPIncreasePerLevel": 2,
+      "AttackIncreasePerLevel": 1,
+      "DefenseIncreasePerLevel": 0.34,
+      "MovementIncreasePerLevel": 0,
+      "HPRegenerationIncreasePerLevel": 0.025
+    },
+    {
+      "Id": "MeleeEnemy",
+      "Name": "MeleeEnemyName",
+      "Description": "MeleeEnemyDescription",
+      "ConsoleRepresentation": {
+        "Character": "m",
+        "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "NPC",
+      "Faction": "MeleeEnemies",
+      "OnTurnStartActions": [],
+      "StartsVisible": true,
+      "BaseHP": 4,
+      "BaseAttack": 1,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0,
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 0,
+      "StartingWeapon": "BareFists",
+      "StartingArmor": "Skirt",
+      "CanGainExperience": false,
+      "OnAttackActions": [{
+        "Name": "StickTongue",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 3,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "MeleeEnemyStickTongueText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text" , "Value": "EnemyDeathText" },
+            { "ParamName": "color", "Value": "0,180,0,255"    }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              { "ParamName": "character", "Value": "±" }
+            ],
+            "Then": {
+              "EffectName": "GiveExperience",
+              "Params": [
+                { "ParamName": "target", "Value": "target"                  },
+                { "ParamName": "amount", "Value": "{this.experiencepayout}" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "1 * Level",
+      "ExperienceToLevelUpFormula": "500",
+      "MaxHPIncreasePerLevel": 1,
+      "AttackIncreasePerLevel": 0.5,
+      "DefenseIncreasePerLevel": 0.25,
+      "MovementIncreasePerLevel": 0,
+      "HpRegenerationIncreasePerLevel": 0.125
+    },
+    {
+      "Id": "RangedEnemy",
+      "Name": "RangedEnemyName",
+      "Description": "RangedEnemyDescription",
+      "ConsoleRepresentation": {
+        "Character": "r",
+        "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "NPC",
+      "Faction": "RangedEnemies",
+      "OnTurnStartActions": [],
+      "StartsVisible": true,
+      "BaseHP": 4,
+      "BaseAttack": 1,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0,
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 0,
+      "StartingWeapon": "Javelin",
+      "StartingArmor": "Skirt",
+      "CanGainExperience": false,
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text" , "Value": "EnemyDeathText" },
+            { "ParamName": "color", "Value": "0,180,0,255"    }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              { "ParamName": "character", "Value": "±" }
+            ],
+            "Then": {
+              "EffectName": "GiveExperience",
+              "Params": [
+                { "ParamName": "target", "Value": "target"                  },
+                { "ParamName": "amount", "Value": "{this.experiencepayout}" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "1 + Level",
+      "ExperienceToLevelUpFormula": "500",
+      "MaxHPIncreasePerLevel": 2,
+      "AttackIncreasePerLevel": 0.5,
+      "DefenseIncreasePerLevel": 0.25,
+      "MovementIncreasePerLevel": 0,
+      "HpRegenerationIncreasePerLevel": 0.125
+    },
+    {
+      "Id": "MeleeAlly",
+      "Name": "MeleeAllyName",
+      "Description": "MeleeAllyDescription",
+      "ConsoleRepresentation": {
+        "Character": "m",
+        "BackgroundColor": { "R": 0,   "G": 0  , "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
+      },
+      "EntityType": "NPC",
+      "Faction": "AlliedNPCs",
+      "OnTurnStartActions": [],
+      "StartsVisible": true,
+      "BaseHP": 4,
+      "BaseAttack": 1,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0,
+      "BaseSightRange": "FullMap",
+      "InventorySize": 0,
+      "StartingWeapon": "BareFists",
+      "StartingArmor": "Skirt",
+      "CanGainExperience": false,
+      "OnAttackActions": [{
+        "Name": "DoNothing",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 7,
+        "MaximumUses": 1,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "MeleeAllyDeclareText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text" , "Value": "AllyDeathText" },
+            { "ParamName": "color", "Value": "255,30,30,255" }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              { "ParamName": "character", "Value": "±" }
+            ],
+            "Then": {
+              "EffectName": "GiveExperience",
+              "Params": [
+                { "ParamName": "target", "Value": "target"                  },
+                { "ParamName": "amount", "Value": "{this.experiencepayout}" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "1 * Level",
+      "ExperienceToLevelUpFormula": "500",
+      "MaxHPIncreasePerLevel": 1,
+      "AttackIncreasePerLevel": 0.5,
+      "DefenseIncreasePerLevel": 0.25,
+      "MovementIncreasePerLevel": 0,
+      "HpRegenerationIncreasePerLevel": 0.125
+    },
+    {
+      "Id": "Boss",
+      "Name": "BossName",
+      "Description": "BossDescription",
+      "ConsoleRepresentation": {
+        "Character": "B",
+        "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "NPC",
+      "Faction": "MeleeEnemies",
+      "OnTurnStartActions": [],
+      "StartsVisible": true,
+      "BaseHP": 10,
+      "BaseAttack": 2,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0.025,
+      "BaseSightRange": "FullMap",
+      "InventorySize": 0,
+      "StartingWeapon": "Pistol",
+      "StartingArmor": "LeatherArmor",
+      "CanGainExperience": false,
+      "OnAttackActions": [{
+        "Name": "DoNothing",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 3,
+        "MaximumRange": 15,
+        "CooldownBetweenUses": 4,
+        "MaximumUses": 1,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "BossAwaitText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text" , "Value": "BossDeathText" },
+            { "ParamName": "color", "Value": "0,255,0,255"   }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              { "ParamName": "character", "Value": "±" }
+            ],
+            "Then": {
+              "EffectName": "GenerateStairs",
+              "Params": [],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 5,
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "0",
+      "MaxHPIncreasePerLevel": 2,
+      "AttackIncreasePerLevel": 0.5,
+      "DefenseIncreasePerLevel": 0.25,
+      "MovementIncreasePerLevel": 0,
+      "HpRegenerationIncreasePerLevel": 0.125
+    }
+  ],
+  "Items": [    
+    {
+      "Id": "BareFists",
+      "Name": "BareFistsName",
+      "Description": "BareFistsDescription",
+      "ConsoleRepresentation": {
+        "Character": "#",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": false,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "MeleeWeaponAttackName",
+        "Description": "BareFistsAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "BareFistsAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "95"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "Power": "1d2"
+    },
+    {
+      "Id": "ClothArmor",
+      "Name": "ClothArmorName",
+      "Description": "ClothArmorDescription",
+      "ConsoleRepresentation": {
+        "Character": "♠",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": false,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "0"
+    },    
+    {
+      "Id": "Skirt",
+      "Name": "SkirtName",
+      "Description": "SkirtDescription",
+      "ConsoleRepresentation": {
+        "Character": "♠",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": false,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "Power": "0"
+    },
+    {
+      "Id": "HealingPotion",
+      "Name": "HealingPotionName",
+      "Description": "HealingPotionDescription",
+      "ConsoleRepresentation": {
+        "Character": "V",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Consumable",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "2d4",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [
+        {
+          "Name": "Heal",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text", "Value": "ObjectDrunkText" }
+            ],
+            "Then": {
+              "EffectName": "HealDamage",
+              "Params": [
+                { "ParamName": "source", "Value": "source"       },
+                { "ParamName": "target", "Value": "target"       },
+                { "ParamName": "power" , "Value": "{this.Power}" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  { "ParamName": "chance", "Value": "100"  },
+                  { "ParamName": "target", "Value": "this" }
+                ],
+                "Then": null,
+                "OnSuccess": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                  ],
+                  "Then": null,
+                  "OnSuccess": null,
+                  "OnFailure": null
+                },
+                "OnFailure": null
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectNotUsedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              }
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    },
+    {
+      "Id": "PotionOfStrength",
+      "Name": "PotionOfStrengthName",
+      "Description": "PotionOfStrengthDescription",
+      "ConsoleRepresentation": {
+        "Character": "S",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Consumable",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "1",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [
+        {
+          "Name": "ApplyInvigorated",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text", "Value": "ObjectDrunkText" }
+            ],
+            "Then": {
+              "EffectName": "ApplyAlteredStatus",
+              "Params": [
+                { "ParamName": "id"           , "Value": "invigorated"                      },
+                { "ParamName": "target"       , "Value": "target"                           },
+                { "ParamName": "chance"       , "Value": "100"                              },
+                { "ParamName": "power"        , "Value": "Ceiling({target.Attack} / 10, 1)" },
+                { "ParamName": "turnlength"   , "Value": "75"                               }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  { "ParamName": "chance", "Value": "100"  },
+                  { "ParamName": "target", "Value": "this" }
+                ],
+                "Then": null,
+                "OnSuccess": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                  ],
+                  "Then": null,
+                  "OnSuccess": null,
+                  "OnFailure": null
+                },
+                "OnFailure": null
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectNotUsedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              }
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    },
+    {
+      "Id": "Antidote",
+      "Name": "AntidoteName",
+      "Description": "AntidoteDescription",
+      "ConsoleRepresentation": {
+        "Character": "A",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Consumable",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [
+        {
+          "Name": "CurePoison",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text", "Value": "ObjectDrunkText" }
+            ],
+            "Then": {
+              "EffectName": "CleanseAlteredStatus",
+              "Params": [
+                { "ParamName": "id"           , "Value": "poisoned" },
+                { "ParamName": "target"       , "Value": "target"   },
+                { "ParamName": "chance"       , "Value": "100"      }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  { "ParamName": "chance", "Value": "100"  },
+                  { "ParamName": "target", "Value": "this" }
+                ],
+                "Then": null,
+                "OnSuccess": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                  ],
+                  "Then": null,
+                  "OnSuccess": null,
+                  "OnFailure": null
+                },
+                "OnFailure": null
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectNotUsedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              }
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    },    
+    {
+      "Id": "Sword",
+      "Name": "SwordName",
+      "Description": "SwordDescription",
+      "ConsoleRepresentation": {
+        "Character": "↑",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "MeleeWeaponAttackName",
+        "Description": "SwordAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "SwordAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "90"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "SwordAllInAttackName",
+        "Description": "SwordAllInAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 4,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "SwordAllInAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "60"                   },
+              { "ParamName": "attacker", "Value": "source"               },
+              { "ParamName": "target"  , "Value": "target"               },
+              { "ParamName": "attack"  , "Value": "2x({source.Damage})"  },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}"  }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }
+    ],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "1d3",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "Pistol",
+      "Name": "PistolName",
+      "Description": "PistolDescription",
+      "ConsoleRepresentation": {
+        "Character": "¬",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "MeleeWeaponAttackName",
+        "Description": "PistolMeleeAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "PistolMeleeAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "95"                    },
+              { "ParamName": "attacker", "Value": "source"                },
+              { "ParamName": "target"  , "Value": "target"                },
+              { "ParamName": "attack"  , "Value": "({source.Damage}) / 2" },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}"   }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "RangedWeaponAttackName",
+        "Description": "PistolRangedAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 2,
+        "MaximumRange": 4,
+        "CooldownBetweenUses": 5,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "PistolRangedAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "85"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "2d3",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "LeatherArmor",
+      "Name": "LeatherName",
+      "Description": "LeatherDescription",
+      "ConsoleRepresentation": {
+        "Character": "◙",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "1",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "PlateArmor",
+      "Name": "PlateName",
+      "Description": "PlateDescription",
+      "ConsoleRepresentation": {
+        "Character": "♦",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Armor",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+	    "OnDeathActions": [],
+      "Power": "2",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "Javelin",
+      "Name": "JavelinName",
+      "Description": "JavelinDescription",
+      "ConsoleRepresentation": {
+        "Character": " ",
+        "BackgroundColor": { "R": 0, "G": 0, "B": 0, "A": 0 },
+        "ForegroundColor": { "R": 0, "G": 0, "B": 0, "A": 0 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": false,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "MeleeWeaponAttackName",
+        "Description": "JavelinMeleeAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 2,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "JavelinMeleeAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "70"                    },
+              { "ParamName": "attacker", "Value": "source"                },
+              { "ParamName": "target"  , "Value": "target"                },
+              { "ParamName": "attack"  , "Value": "({source.Damage}) / 2" },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}"   }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "RangedWeaponAttackName",
+        "Description": "JavelinNormalRangedAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 2,
+        "MaximumRange": 3,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "JavelinNormalRangedAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "85"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "JavelinEnvenomedRangedAttackName",
+        "Description": "JavelinEnvenomedRangedAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 2,
+        "MaximumRange": 3,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "JavelinEnvenomedRangedAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "85"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage} / 2" },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "ApplyAlteredStatus",
+              "Params": [
+                { "ParamName": "id"           , "Value": "poisoned"                         },
+                { "ParamName": "target"       , "Value": "target"                           },
+                { "ParamName": "chance"       , "Value": "50"                               },
+                { "ParamName": "power"        , "Value": "Ceiling({target.MaxHP} / 10, 1)"  },
+                { "ParamName": "turnlength"   , "Value": "-1"                               }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [],
+      "Power": "1d2",
+      "OnItemSteppedActions": [],
+      "OnItemUseActions": []
+    },
+    {
+      "Id": "MagicStaff",
+      "Name": "MagicStaffName",
+      "Description": "MagicStaffDescription",
+      "ConsoleRepresentation": {
+        "Character": "⌠",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "Weapon",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [{
+        "Name": "HPNerf",
+        "Effect": {
+          "EffectName": "ApplyStatAlteration",
+          "Params": [
+            { "ParamName": "id"           , "Value": "{this}" },
+            { "ParamName": "target"       , "Value": "target" },
+            { "ParamName": "stat"         , "Value": "maxhp"  },
+            { "ParamName": "chance"       , "Value": "100"    },
+            { "ParamName": "amount"       , "Value": "-5"     },
+            { "ParamName": "turnlength"   , "Value": "1"      },
+            { "ParamName": "displayonlog" , "Value": "false"  },
+            { "ParamName": "canbestacked" , "Value": "false"  }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackActions": [{
+        "Name": "StaffOfMagusName",
+        "Description": "StaffOfMagusDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 2,
+        "CooldownBetweenUses": 1,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "StaffOfMagusAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "90"                    },
+              { "ParamName": "attacker", "Value": "source"                },
+              { "ParamName": "target"  , "Value": "target"                },
+              { "ParamName": "attack"  , "Value": "{source.Damage} / 2"   },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}"   }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "FireballName",
+        "Description": "FireballDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 2,
+        "CooldownBetweenUses": 3,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "FireballAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "90"                    },
+              { "ParamName": "attacker", "Value": "source"                },
+              { "ParamName": "target"  , "Value": "target"                },
+              { "ParamName": "attack"  , "Value": "{source.Damage} + 1"   },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}"   }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "ApplyAlteredStatus",
+              "Params": [
+                { "ParamName": "id"           , "Value": "burning"                         },
+                { "ParamName": "target"       , "Value": "target"                          },
+                { "ParamName": "chance"       , "Value": "50"                              },
+                { "ParamName": "power"        , "Value": "Ceiling({target.MaxHP} / 10, 1)" },
+                { "ParamName": "turnlength"   , "Value": "40"                              }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "IceballName",
+        "Description": "IceballDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 3,
+        "CooldownBetweenUses": 5,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "IceballAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "90"                  },
+              { "ParamName": "attacker", "Value": "source"              },
+              { "ParamName": "target"  , "Value": "target"              },
+              { "ParamName": "attack"  , "Value": "{source.Damage} - 1" },
+              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "ApplyAlteredStatus",
+              "Params": [
+                { "ParamName": "id"           , "Value": "frozen" },
+                { "ParamName": "target"       , "Value": "target" },
+                { "ParamName": "chance"       , "Value": "25"     },
+                { "ParamName": "power"        , "Value": "0"      },
+                { "ParamName": "turnlength"   , "Value": "3"      }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      },
+      {
+        "Name": "HealName",
+        "Description": "HealDescription",
+        "TargetTypes": [ "self", "ally" ],
+        "MinimumRange": 0,
+        "MaximumRange": 3,
+        "CooldownBetweenUses": 5,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "HealAttackText" }
+          ],
+          "Then": {
+            "EffectName": "HealDamage",
+            "Params": [
+              { "ParamName": "source", "Value": "source" },
+              { "ParamName": "target", "Value": "target" },
+              { "ParamName": "power" , "Value": "2d6"    }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [],
+      "Power": "1d3",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": [{
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectEquippedText" }
+          ],
+          "Then": 
+          {
+            "EffectName": "Equip",
+            "Params": [],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "ScrollOfDestruction",
+      "Name": "ScrollOfDestructionName",
+      "Description": "ScrollOfDestructionDescription",
+      "ConsoleRepresentation": {
+        "Character": "≡",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Consumable",
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "OnAttackActions": [{
+        "Name": "ScrollOfDestructionName",
+        "Description": "ScrollOfDestructionAttackDescription",
+        "TargetTypes": [ "enemy" ],
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ScrollOfDestructionAttackText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "100"            },
+              { "ParamName": "attacker", "Value": "source"         },
+              { "ParamName": "target"  , "Value": "target"         },
+              { "ParamName": "attack"  , "Value": "{target.MaxHP}" },
+              { "ParamName": "defense" , "Value": "0"              }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                { "ParamName": "chance", "Value": "100"  },
+                { "ParamName": "target", "Value": "this" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              },
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "FailedAttackText" }
+              ]
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnAttackedActions": [],
+      "OnDeathActions": [],
+      "Power": "0",
+      "OnItemSteppedActions": [{
+        "Name": "PrintStepped",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    }
+  ],
+  "Traps": [
+    {
+      "Id": "SpikeTrap",
+      "Name": "SpikeTrapName",
+      "Description": "SpikeTrapDescription",
+      "ConsoleRepresentation": {
+        "Character": "^",
+        "BackgroundColor": { "R": 255, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 255, "B": 0  , "A": 255 }
+      },
+      "EntityType": "Trap",
+      "StartsVisible": false,
+      "CanBePickedUp": false,
+      "Power": "1",      
+      "OnItemSteppedActions": [{
+        "Name": "TrapActivate",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "80"           },
+              { "ParamName": "attacker", "Value": "source"       },
+              { "ParamName": "target"  , "Value": "target"       },
+              { "ParamName": "attack"  , "Value": "{this.Power}" },
+              { "ParamName": "defense" , "Value": "0"            }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                { "ParamName": "chance", "Value": "40"   },
+                { "ParamName": "target", "Value": "this" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              },
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "ObjectNotActivatedText" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    },
+    {
+      "Id": "WonderTile",
+      "Name": "WonderTileName",
+      "Description": "WonderTileDescription",
+      "ConsoleRepresentation": {
+        "Character": "↑",
+        "BackgroundColor": { "R": 54 , "G": 54 , "B": 54 , "A": 255 },
+        "ForegroundColor": { "R": 40 , "G": 184, "B": 0  , "A": 255 }
+      },
+      "EntityType": "Trap",
+      "StartsVisible": true,
+      "CanBePickedUp": false,
+      "Power": "",
+      "OnItemSteppedActions": [{
+        "Name": "TrapActivate",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": {
+            "EffectName": "CleanseStatAlterations",
+            "Params": [
+              { "ParamName": "chance", "Value": "100" }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "WonderTileFailedText" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    },
+    {
+      "Id": "IceTrap",
+      "Name": "IceTrapName",
+      "Description": "IceTrapDescription",
+      "ConsoleRepresentation": {
+        "Character": "☼",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 128, "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "Trap",
+      "StartsVisible": false,
+      "CanBePickedUp": false,
+      "OnItemSteppedActions": [{
+        "Name": "TrapActivate",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": {
+            "EffectName": "ApplyAlteredStatus",
+            "Params": [
+              { "ParamName": "id"           , "Value": "frozen" },
+              { "ParamName": "target"       , "Value": "target" },
+              { "ParamName": "chance"       , "Value": "30"     },
+              { "ParamName": "power"        , "Value": "0"      },
+              { "ParamName": "turnlength"   , "Value": "4"      }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                { "ParamName": "chance", "Value": "100"  },
+                { "ParamName": "target", "Value": "this" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              },
+              "OnFailure": null
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                { "ParamName": "text", "Value": "ObjectNotActivatedText" }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    }
+  ],
+  "AlteredStatuses": [
+    {
+      "Id": "Invigorated",
+      "Name": "InvigoratedName",
+      "Description": "InvigoratedDescription",
+      "ConsoleRepresentation": {
+        "Character": "↑",
+        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": false,
+      "CleanseOnFloorChange": false,
+      "CleansedByCleanseActions": true,
+      "OnTurnStartActions": [],
+      "OnStatusApplyActions": [
+        {
+          "Name": "Buff",
+          "Effect": {
+            "EffectName": "ApplyStatAlteration",
+            "Params": [
+              { "ParamName": "id"           , "Value": "{this}"            },
+              { "ParamName": "target"       , "Value": "target"            },
+              { "ParamName": "stat"         , "Value": "attack"            },
+              { "ParamName": "chance"       , "Value": "100"               },
+              { "ParamName": "amount"       , "Value": "{this.Power}"      },
+              { "ParamName": "turnlength"   , "Value": "{this.TurnLength}" },
+              { "ParamName": "displayonlog" , "Value": "true"              },
+              { "ParamName": "canbestacked" , "Value": "true"              }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    },
+    {
+      "Id": "Poisoned",
+      "Name": "PoisonedName",
+      "Description": "PoisonedDescription",
+      "ConsoleRepresentation": {
+        "Character": "‼",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnTurnStartActions": [{
+        "Name": "Poison",
+        "StartingCooldown": 28,
+        "CooldownBetweenUses": 28,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "PoisonedText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "100"          },
+              { "ParamName": "attacker", "Value": "source"       },
+              { "ParamName": "target"  , "Value": "target"       },
+              { "ParamName": "attack"  , "Value": "{this.Power}" },
+              { "ParamName": "defense" , "Value": "0"            }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnStatusApplyActions": []
+    },
+    {
+      "Id": "Burning",
+      "Name": "BurningName",
+      "Description": "BurningDescription",
+      "ConsoleRepresentation": {
+        "Character": "F",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnTurnStartActions": [{
+        "Name": "Burn",
+        "StartingCooldown": 5,
+        "CooldownBetweenUses": 5,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "BurnedText" }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              { "ParamName": "accuracy", "Value": "100"          },
+              { "ParamName": "attacker", "Value": "source"       },
+              { "ParamName": "target"  , "Value": "target"       },
+              { "ParamName": "attack"  , "Value": "{this.Power}" },
+              { "ParamName": "defense" , "Value": "0"            }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnStatusApplyActions": [{
+        "Name": "RemoveFreeze",
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            { "ParamName": "id"           , "Value": "frozen"   },
+            { "ParamName": "target"       , "Value": "target"   },
+            { "ParamName": "chance"       , "Value": "100"      }
+          ],
+          "Then": null,
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "Frozen",
+      "Name": "FrozenName",
+      "Description": "FrozenDescription",
+      "ConsoleRepresentation": {
+        "Character": "☼",
+        "BackgroundColor": { "R": 0, "G": 0, "B": 0  , "A": 255 },
+        "ForegroundColor": { "R": 0, "G": 0, "B": 255, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnTurnStartActions": [{
+        "Name": "Freeze",
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "FrozenText" }
+          ],
+          "Then": {
+            "EffectName": "ForceSkipTurn",
+            "Params": [
+              { "ParamName": "chance", "Value": "100"          },
+              { "ParamName": "target", "Value": "target"       }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnStatusApplyActions": [{
+        "Name": "RemoveBurn",
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            { "ParamName": "id"           , "Value": "burning" },
+            { "ParamName": "target"       , "Value": "target"   },
+            { "ParamName": "chance"       , "Value": "100"      }
+          ],
+          "Then": {
+            "EffectName": "ForceSkipTurn",
+            "Params": [
+              { "ParamName": "chance", "Value": "100"          },
+              { "ParamName": "target", "Value": "target"       }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }]
+    },
+    {
+      "Id": "RegenBlock",
+      "Name": "RegenBlockName",
+      "Description": "RegenBlockDescription",
+      "ConsoleRepresentation": {
+        "Character": "X",
+        "BackgroundColor": { "R": 0  , "G": 0, "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
+      },
+      "EntityType": "AlteredStatus",
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": false,
+      "OnTurnStartActions": [],
+      "OnStatusApplyActions": [
+        {
+          "Name": "Nerf",
+          "Effect": {
+            "EffectName": "ApplyStatAlteration",
+            "Params": [
+              { "ParamName": "id"           , "Value": "{this}"                   },
+              { "ParamName": "target"       , "Value": "target"                   },
+              { "ParamName": "stat"         , "Value": "hpregeneration"           },
+              { "ParamName": "chance"       , "Value": "100"                      },
+              { "ParamName": "amount"       , "Value": "-{target.hpregeneration}" },
+              { "ParamName": "turnlength"   , "Value": "-1"                       },
+              { "ParamName": "displayonlog" , "Value": "false"                    },
+              { "ParamName": "canbestacked" , "Value": "true"                     }
+            ],
+            "Then": null,
+            "OnSuccess": null,
+            "OnFailure": null
+          }
+        }]
+    }
+  ]
+}

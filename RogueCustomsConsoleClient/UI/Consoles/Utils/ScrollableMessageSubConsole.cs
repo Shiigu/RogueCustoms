@@ -1,4 +1,6 @@
-﻿using SadConsole;
+﻿using RogueCustomsConsoleClient.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using SadConsole;
 using SadConsole.UI.Controls;
 using SadRogue.Primitives;
 using System;
@@ -48,6 +50,22 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
             {
                 Cursor.Print(textList[i].ToAscii());
                 if (i < textList.Count - 1)
+                    Cursor.NewLine();
+            }
+            ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y + 1 - ViewHeight);
+            ScrollBar.IsEnabled = Cursor.Position.Y > ViewHeight;
+            ScrollBar.Value = ScrollBar.IsEnabled ? ScrollBar.Maximum : 0;
+        }
+        public void PrintColoredList(List<MessageDto> messageList)
+        {
+            this.Clear();
+            Cursor.Position = new Point(0, 0);
+
+            for (int i = 0; i < messageList.Count; i++)
+            {
+                var logMessage = messageList[i];
+                Cursor.Print(new ColoredString(logMessage.Message.ToAscii(), logMessage.ForegroundColor.ToSadRogueColor(), logMessage.BackgroundColor.ToSadRogueColor()));
+                if (i < messageList.Count - 1)
                     Cursor.NewLine();
             }
             ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y + 1 - ViewHeight);

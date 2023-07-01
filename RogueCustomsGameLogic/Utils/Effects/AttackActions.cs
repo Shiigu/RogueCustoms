@@ -2,6 +2,8 @@
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Helpers;
 using System;
+using RogueCustomsGameEngine.Utils.Representation;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -20,7 +22,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target.EntityType == EntityType.Player
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
-                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = paramsObject.Target.Name, DamageDealt = damageDealt }));
+                Faction targetFaction = paramsObject.Target.Faction;
+                Color forecolorToUse;
+                if (paramsObject.Target.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Red;
+                else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Lime;
+                else
+                    forecolorToUse = Color.DeepSkyBlue;
+                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = paramsObject.Target.Name, DamageDealt = damageDealt }), forecolorToUse);
             }
             paramsObject.Target.HP = Math.Max(0, paramsObject.Target.HP - damageDealt);
             if (paramsObject.Target.HP == 0)

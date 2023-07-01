@@ -39,7 +39,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"], Amount = (Movement - oldMovement).ToString() }));
                 if (HPRegeneration != oldHPRegeneration)
                     levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"], Amount = (HPRegeneration - oldHPRegeneration).ToString() }));
-                Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Green));
+                Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Lime));
             }
         }
 
@@ -57,11 +57,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public new void RefreshCooldowns()
         {
-            MaxHPModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPStat"] })));
-            AttackModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"] })));
-            DefenseModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"] })));
-            MovementModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"] })));
-            HPRegenerationModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"] })));
+            MaxHPModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue));
+            AttackModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue));
+            DefenseModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue));
+            MovementModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue));
+            HPRegenerationModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue));
             RefreshCooldownsAndUpdateTurnLength();
         }
 

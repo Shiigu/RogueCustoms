@@ -68,7 +68,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 
             if (ParentContainer.RequiresRefreshingDungeonState)
             {
-                ScrollableMessageLogSubConsole.PrintList(dungeonStatus.LogMessages);
+                ScrollableMessageLogSubConsole.PrintColoredList(dungeonStatus.LogMessages);
             }
 
             base.Update(delta);

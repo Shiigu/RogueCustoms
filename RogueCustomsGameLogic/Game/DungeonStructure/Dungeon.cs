@@ -21,7 +21,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
 
-        public List<string> Messages { get; set; }
+        public List<MessageDto> Messages { get; set; }
 
         public List<MessageBoxDto> MessageBoxes { get; set; }
 
@@ -59,7 +59,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Factions = new List<Faction>();
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
-            Messages = new List<string>();
+            Messages = new List<MessageDto>();
             MessageBoxes = new List<MessageBoxDto>();
             CurrentFloorLevel = 1;
             PlayerCharacter = null;

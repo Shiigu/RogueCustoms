@@ -30,7 +30,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, List<string> messages)
+        public static Window Show(GameConsoleContainer parent, List<MessageDto> messages)
         {
             if (messages?.Any() == false) return null;
             var width = 65;
@@ -62,9 +62,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Font = Game.Instance.LoadFont("fonts/Cheepicus12.font")
             };
 
-            foreach (var message in messages)
+            foreach (var logMessage in messages)
             {
-                textAreaSubConsole.Cursor.Print(message.ToAscii());
+                textAreaSubConsole.Cursor.Print(new ColoredString(logMessage.Message.ToAscii(), logMessage.ForegroundColor.ToSadRogueColor(), logMessage.BackgroundColor.ToSadRogueColor()));
                 textAreaSubConsole.Cursor.NewLine();
             }
 
