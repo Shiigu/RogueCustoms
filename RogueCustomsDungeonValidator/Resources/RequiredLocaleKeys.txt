@@ -42,6 +42,7 @@ CharacterHealsSomeHP
 CharacterHealsAllHP
 CharacterGainsExperience
 CharacterGotStatused
+CharacterStatusGotRefreshed
 CharacterIsNoLongerStatused
 CharacterStatGotBuffed
 CharacterStatGotNerfed

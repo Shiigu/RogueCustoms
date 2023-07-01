@@ -53,6 +53,7 @@
         { "Key": "CharacterHealsAllHP", "Value": "{CharacterName} is now at maximum HP!" },
         { "Key": "CharacterGainsExperience", "Value": "{CharacterName} gained {Amount} experience points." },
         { "Key": "CharacterGotStatused", "Value": "{CharacterName} is now {StatusName}!" },
+        { "Key": "CharacterStatusGotRefreshed", "Value": "{CharacterName}'s {StatusName} has been reapplied!" },
         { "Key": "CharacterIsNoLongerStatused", "Value": "{CharacterName} is no longer {StatusName}!" },
         { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
         { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
