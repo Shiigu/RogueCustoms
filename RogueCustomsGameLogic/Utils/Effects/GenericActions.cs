@@ -150,9 +150,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.MovementModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 c.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
+                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
+                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -170,11 +170,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 statAlterations.Clear();
 
-                if (Target.EntityType == EntityType.Player
-                    || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
+                if (paramsObject.Target.EntityType == EntityType.Player
+                    || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
                 {
                     var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
-                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -192,15 +192,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 c.MaxHPModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterMaxHPStat"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMaxHPStat"] }), Color.DeepSkyBlue);
                 c.AttackModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue);
                 c.DefenseModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue);
                 c.MovementModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue);
                 c.HPRegenerationModifications.Clear();
-                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Target.Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue);
 
                 return true;
             }
@@ -241,6 +241,23 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.CanTakeAction)
             {
                 c.CanTakeAction = false;
+                return true;
+            }
+            return false;
+        }
+        public static bool Teleport(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            _ = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to teleport {paramsObject.Target.Name} when it's not a Character.");
+            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            {
+                if (c.EntityType == EntityType.Player
+                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                {
+                    Map.AppendMessage(Map.Locale["CharacterWasTeleported"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue);
+                }
+                c.Position = Map.PickEmptyPosition(true);
                 return true;
             }
             return false;
