@@ -96,12 +96,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     case "canbestacked":
                         paramsObject.CanBeStacked = new Expression(value).Eval<bool>();
                         break;
-                    case "allowsameroom":
-                        paramsObject.AllowSameRoom = new Expression(value).Eval<bool>();
-                        break;
-                    case "allowdifferentroom":
-                        paramsObject.AllowDifferentRoom = new Expression(value).Eval<bool>();
-                        break;
                     case "character":
                         paramsObject.Character = value[0];
                         break;
