@@ -931,7 +931,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             SetStairs(PickEmptyPosition(true));
         }
 
-        private Point PickEmptyPosition(bool allowPlayerRoom)
+        public Point PickEmptyPosition(bool allowPlayerRoom)
         {
             int rngX, rngY;
             var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).Distinct().ToList();

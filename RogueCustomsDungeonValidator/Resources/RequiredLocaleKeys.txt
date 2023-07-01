@@ -47,4 +47,5 @@ CharacterIsNoLongerStatused
 CharacterStatGotBuffed
 CharacterStatGotNerfed
 CharacterStatGotNeutralized
+CharacterWasTeleported
 StairsGotRevealed

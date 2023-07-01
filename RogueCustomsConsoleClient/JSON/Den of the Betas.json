@@ -58,6 +58,7 @@
         { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
         { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
         { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
+        { "Key": "CharacterWasTeleported", "Value": "{CharacterName} has teleported somewhere else." },
         { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
         { "Key": "Floor1WelcomeText", "Value": "Welcome to this game!\n\nFind the stairs to reach the next floor."},
         { "Key": "Floor2WelcomeText", "Value": "This is what I'd call a \"Rest floor\"\n\nNo enemies will appear here.\n\nRestock all you want until you go to the stairs."},
@@ -166,6 +167,8 @@
         { "Key": "WonderTileFailedText", "Value": "But nothing happened." },
         { "Key": "IceTrapName", "Value": "Ice Trap" },
         { "Key": "IceTrapDescription", "Value": "Has a 30% chance to Freeze the target, when stepped on, and breaks if it does." },
+        { "Key": "TeleportTrapName", "Value": "Teleport Trap" },
+        { "Key": "TeleportTrapDescription", "Value": "Teleports characters that step on it. May break afterwards." },
         { "Key": "InvigoratedName", "Value": "Invigorated" },
         { "Key": "InvigoratedDescription", "Value": "Attack increased!" },
         { "Key": "PoisonedName", "Value": "Poisoned" },
@@ -233,6 +236,7 @@
         { "Key": "CharacterStatGotBuffed", "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}." },
         { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
         { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
+        { "Key": "CharacterWasTeleported", "Value": "{CharacterName} se ha teletransportado a otro sitio." },
         { "Key": "Floor1WelcomeText", "Value": "¡Bienvenido al juego!\n\nBusca las escaleras para acceder al próximo piso."},
         { "Key": "Floor2WelcomeText", "Value": "Esto es lo que se llama \"Piso de descanso\".\n\nNo hay enemigos aquí.\n\nObtén los objetos que quieras antes de ir por las escaleras."},
         { "Key": "Floor2WarningText", "Value": "ADVERTENCIA: En este piso no regenerarás PS."},
@@ -319,7 +323,7 @@
         { "Key": "ScrollOfDestructionDescription", "Value": "Un pergamino de uso único que mata instantáneamente al objetivo.\n\n(Debe usarse desde la lista de Acciones)" },
         { "Key": "ScrollOfDestructionAttackDescription", "Value": "Un pergamino de uso único que mata instantáneamente al objetivo." },
         { "Key": "ScrollOfDestructionAttackText", "Value": "{source} mira a {target} y lee el {this}." },
-        { "Key": "MagicStaffName", "Value": "Bastón Mágico" },
+        { "Key": "MagicStaffName", "Value": "B. Mágico" },
         { "Key": "MagicStaffDescription", "Value": "Un bastón místico, versátil en cuanto a hechizos.\n\nReduce los PS Máximos en 5 al equiparse.\n\nDaño de arma: 1d3." },
         { "Key": "StaffOfMagusName", "Value": "Bastón de Mago" },
         { "Key": "StaffOfMagusDescription", "Value": "Causa daño normal sin efecto secundario.\n\nTe juro que no lo robé de Divinity: Original Sin II\n\nAlcance: 1 a 2 casillas\nPrecisión: 90%" },
@@ -339,6 +343,8 @@
         { "Key": "WonderTileDescription", "Value": "Quita todas las alteraciones de estadísticas, sean positivas o negativas, al pisarse." },
         { "Key": "IceTrapName", "Value": "Trampa de Hielo" },
         { "Key": "IceTrapDescription", "Value": "Tiene una probabilidad del 30% de Congelar al objetivo al ser pisada. Si lo hace, luego se rompe." },
+        { "Key": "TeleportTrapName", "Value": "Trampa de Teletransporte" },
+        { "Key": "TeleportTrapDescription", "Value": "Teleporta a los personajes que la pisan. Puede romperse después." },
         { "Key": "WonderTileFailedText", "Value": "Pero no pasó nada." },
         { "Key": "InvigoratedName", "Value": "Envalentonado" },
         { "Key": "InvigoratedDescription", "Value": "¡Tienes más Ataque!" },
@@ -385,9 +391,10 @@
       "MinItemsInFloor": 3,
       "MaxItemsInFloor": 7,
       "PossibleTraps": [
-        { "ClassId": "WonderTile", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 55 },
-        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 35 },
-        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 }
+        { "ClassId": "WonderTile"  , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 45 },
+        { "ClassId": "SpikeTrap"   , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 25 },
+        { "ClassId": "TeleportTrap", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 20 },
+        { "ClassId": "IceTrap"     , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 10 }
       ],
 	    "MinTrapsInFloor": 1,
       "MaxTrapsInFloor": 5,
@@ -508,9 +515,10 @@
       "MinItemsInFloor": 3,
       "MaxItemsInFloor": 7,
       "PossibleTraps": [
-        { "ClassId": "WonderTile", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 50 },
-        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 9, "ChanceToPick": 30 },
-        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 20 }
+        { "ClassId": "WonderTile"  , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 30 },
+        { "ClassId": "SpikeTrap"   , "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 25 },
+        { "ClassId": "TeleportTrap", "SimultaneousMaxForKindInFloor": 3, "ChanceToPick": 25 },
+        { "ClassId": "IceTrap"     , "SimultaneousMaxForKindInFloor": 2, "ChanceToPick": 20 }
       ],
 	    "MinTrapsInFloor": 1,
       "MaxTrapsInFloor": 9,
@@ -546,7 +554,7 @@
       "MaxItemsInFloor": 2,
       "PossibleTraps": [
         { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 15, "ChanceToPick": 80 },
-        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 15, "ChanceToPick": 20  }
+        { "ClassId": "IceTrap"   , "SimultaneousMaxForKindInFloor": 15, "ChanceToPick": 20 }
       ],
 	    "MinTrapsInFloor": 1,
       "MaxTrapsInFloor": 10,
@@ -2253,7 +2261,8 @@
           "Then": {
             "EffectName": "CleanseStatAlterations",
             "Params": [
-              { "ParamName": "chance", "Value": "100" }
+              { "ParamName": "chance", "Value": "100"    },
+              { "ParamName": "target", "Value": "target" }
             ],
             "Then": null,
             "OnSuccess": null,
@@ -2331,6 +2340,60 @@
               "OnSuccess": null,
               "OnFailure": null
             }
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "OnItemUseActions": []
+    },
+    {
+      "Id": "TeleportTrap",
+      "Name": "TeleportTrapName",
+      "Description": "TeleportTrapDescription",
+      "ConsoleRepresentation": {
+        "Character": "▲",
+        "BackgroundColor": { "R": 54 , "G": 54, "B": 54, "A": 255 },
+        "ForegroundColor": { "R": 180, "G": 0 , "B": 0 , "A": 255 }
+      },
+      "EntityType": "Trap",
+      "StartsVisible": true,
+      "CanBePickedUp": false,
+      "OnItemSteppedActions": [{
+        "Name": "TrapActivate",
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            { "ParamName": "text", "Value": "ObjectSteppedText" }
+          ],
+          "Then": {
+            "EffectName": "Teleport",
+            "Params": [
+              { "ParamName": "target"       , "Value": "target" },
+              { "ParamName": "chance"       , "Value": "100"     }
+            ],
+            "Then": null,
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                { "ParamName": "chance", "Value": "30"   },
+                { "ParamName": "target", "Value": "this" }
+              ],
+              "Then": null,
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
+                ],
+                "Then": null,
+                "OnSuccess": null,
+                "OnFailure": null
+              },
+              "OnFailure": null
+            },
+            "OnFailure": null
           },
           "OnSuccess": null,
           "OnFailure": null
