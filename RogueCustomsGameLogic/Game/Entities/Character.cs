@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Drawing;
+using System.IO;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -403,7 +404,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (Faction.EnemiesWith.Contains(target.Faction))
                 return TargetType.Enemy;
 
-            throw new Exception($"Cannot identify target relationship between {Name} and {target.Name}!");
+            throw new InvalidDataException($"Cannot identify target relationship between {Name} and {target.Name}!");
         }
 
         public abstract void Die(Entity? attacker = null);

@@ -71,7 +71,7 @@ namespace RogueCustomsGameEngine.Management
         private Dungeon GetDungeonById(int id)
         {
             var dungeon = Dungeons.Find(d => d.Id == id);
-            return dungeon == null ? throw new Exception("Dungeon does not exist") : dungeon;
+            return dungeon == null ? throw new ArgumentException("Dungeon does not exist") : dungeon;
         }
 
         public string GetDungeonWelcomeMessage(int dungeonId)

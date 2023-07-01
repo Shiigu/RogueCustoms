@@ -7,6 +7,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.IO;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -44,7 +45,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Classes = new List<EntityClass>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
-                ?? throw new Exception($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
+                ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
             LocaleToUse = new Locale(localeInfoToUse);
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
@@ -74,24 +75,24 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 faction.AlliedWithIds.ForEach(awi =>
                 {
                     faction.AlliedWith.Add(Factions.Find(f => f.Id.Equals(awi))
-                                ?? throw new Exception($"There's no faction with id {awi}"));
+                                ?? throw new InvalidDataException($"There's no faction with id {awi}"));
                 });
                 faction.NeutralWithIds.ForEach(nwi =>
                 {
                     faction.NeutralWith.Add(Factions.Find(f => f.Id.Equals(nwi))
-                                ?? throw new Exception($"There's no faction with id {nwi}"));
+                                ?? throw new InvalidDataException($"There's no faction with id {nwi}"));
                 });
                 faction.EnemiesWithIds.ForEach(ewi =>
                 {
                     faction.EnemiesWith.Add(Factions.Find(f => f.Id.Equals(ewi))
-                                ?? throw new Exception($"There's no faction with id {ewi}"));
+                                ?? throw new InvalidDataException($"There's no faction with id {ewi}"));
                 });
             }
             foreach (var entityClass in Classes)
             {
                 if (!string.IsNullOrWhiteSpace(entityClass.FactionId))
                     entityClass.Faction = Factions.Find(f => f.Id.Equals(entityClass.FactionId))
-                                ?? throw new Exception($"There's no faction with id {entityClass.FactionId}");
+                                ?? throw new InvalidDataException($"There's no faction with id {entityClass.FactionId}");
             }
         }
 

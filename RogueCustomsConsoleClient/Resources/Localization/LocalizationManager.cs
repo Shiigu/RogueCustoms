@@ -50,9 +50,9 @@ namespace RogueCustomsConsoleClient.Resources.Localization
                         localization.LocaleStrings.Add(new Locale { Key = key, Value = value });
                 }
                 if(string.IsNullOrWhiteSpace(localization.Name))
-                    throw new Exception($"{Path.GetFileName(filePath)} is not a valid Localization file because it lacks a valid LanguageName");
+                    throw new InvalidDataException($"{Path.GetFileName(filePath)} is not a valid Localization file because it lacks a valid LanguageName");
                 if(string.IsNullOrWhiteSpace(localization.Locale))
-                    throw new Exception($"{Path.GetFileName(filePath)} is not a valid Localization file because it lacks a valid LanguageLocale");
+                    throw new InvalidDataException($"{Path.GetFileName(filePath)} is not a valid Localization file because it lacks a valid LanguageLocale");
                 Localizations.Add(localization);
             }
         }
