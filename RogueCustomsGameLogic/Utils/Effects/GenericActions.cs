@@ -46,6 +46,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to heal {paramsObject.Target.Name} when it's not a Character.");
             if (paramsObject.Target.HP >= paramsObject.Target.MaxHP)
                 return false;
             var healAmount = (int) Math.Min(paramsObject.Target.MaxHP - paramsObject.Target.HP, paramsObject.Power);
@@ -66,7 +67,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static bool GiveExperience(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);            
             if (paramsObject.Target is not Character || !paramsObject.Target.CanGainExperience) return false;
             if (paramsObject.Target.Level == paramsObject.Target.MaxLevel) return false;
             if (Target.EntityType == EntityType.Player
@@ -81,10 +82,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool ApplyAlteredStatus(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character) throw new Exception($"Attempted to apply an Altered Status on {Target.Name} when it's not a Character.");
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to apply an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
             var statusToApply = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase))
-                                   ?? throw new Exception($"Altered status {paramsObject.Id} does not exist!");
+                                   ?? throw new ArgumentException($"Altered status {paramsObject.Id} does not exist!");
             _ = 0;
             var statusTarget = paramsObject.Target as Character;
             if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
@@ -106,9 +107,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool ApplyStatAlteration(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character) throw new Exception($"Attempted to alter one of {Target.Name}'s stats when it's not a Character.");
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var statAlterationTarget = paramsObject.Target as Character;
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
             if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
@@ -135,11 +136,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool CleanseAlteredStatus(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character c) throw new Exception($"Attempted to remove an Altered Status on {Target.Name} when it's not a Character.");
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to remove an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
             var statusToRemove = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase));
-            if (!statusToRemove.CleansedByCleanseActions) throw new Exception($"Attempted to remove {statusToRemove.Name} with a Cleanse action when it can't be cleansed that way.");
+            if (!statusToRemove.CleansedByCleanseActions) throw new InvalidOperationException($"Attempted to remove {statusToRemove.Name} with a Cleanse action when it can't be cleansed that way.");
             if (c.AlteredStatuses.Any(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 c.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(statusToRemove.ClassId));
@@ -160,9 +161,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool CleanseStatAlteration(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character) throw new Exception($"Attempted to alter one of {Target.Name}'s stats when it's not a Character.");
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
 
             if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
@@ -183,9 +184,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool CleanseStatAlterations(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character c) throw new Exception($"Attempted to alter one of {Target.Name}'s stats when it's not a Character.");
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
 
             if ((c.MaxHPModifications?.Any() == true || c.AttackModifications?.Any() == true
                 || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
@@ -209,9 +210,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool CleanseAllAlteredStatuses(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character c) throw new Exception($"Attempted to remove an Altered Status on {Target.Name} when it's not a Character.");
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to remove an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
             if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.AlteredStatuses?.Any() == true)
             {
                 c.AlteredStatuses.ForEach(als => {
@@ -234,9 +235,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool ForceSkipTurn(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
-            if (Target is not Character c) throw new Exception($"Attempted to force {Target.Name} to skip its turn when it's not a Character.");
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to force {paramsObject.Target.Name} to skip its turn when it's not a Character.");
             if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.CanTakeAction)
             {
                 c.CanTakeAction = false;

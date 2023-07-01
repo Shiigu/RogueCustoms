@@ -14,9 +14,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             _ = 0;
             if (This is not Item i || Target is not Character c)
-                throw new Exception($"Attempted to equip {This.Name} on {Target.Name}, which is not valid");
+                throw new InvalidOperationException($"Attempted to equip {This.Name} on {Target.Name}, which is not valid");
             if (This.EntityType != EntityType.Weapon && This.EntityType != EntityType.Armor)
-                throw new Exception("Attempted to equip an unequippable item!");
+                throw new InvalidOperationException("Attempted to equip an unequippable item!");
 
             var currentEquippedWeapon = c.EquippedWeapon;
             var currentEquippedArmor = c.EquippedArmor;
@@ -30,7 +30,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
 
             if (paramsObject.Target is not Item i)
-                throw new Exception($"Attempted to remove {paramsObject.Target.Name} as if it were an item, which it isn't.");
+                throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name} as if it were an item, which it isn't.");
 
             _ = 0;
 

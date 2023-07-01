@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -99,11 +100,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Traps = new List<Item>();
             FloorConfigurationToUse = Dungeon.FloorTypes.Find(ft => floorLevel.Between(ft.MinFloorLevel, ft.MaxFloorLevel));
             if (FloorConfigurationToUse == null)
-                throw new Exception("There's no valid configuration for the current floor");
+                throw new InvalidDataException("There's no valid configuration for the current floor");
             Seed = Environment.TickCount;
             Rng = new Random(Seed);
             if (!FloorConfigurationToUse.PossibleGeneratorAlgorithms.Any())
-                throw new Exception("There's no valid generation algorithm for the current floor");
+                throw new InvalidDataException("There's no valid generation algorithm for the current floor");
 
             GeneratorAlgorithmToUse = FloorConfigurationToUse.PossibleGeneratorAlgorithms[Rng.NextInclusive(FloorConfigurationToUse.PossibleGeneratorAlgorithms.Count - 1)];
 
@@ -365,7 +366,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void CreateRoomsWithSpecificLayout(List<(int Row, int Column)> normalRooms, List<(int Row, int Column)> dummyRooms)
         {
-            if (normalRooms.Intersect(dummyRooms).Any()) throw new Exception("At least one room is set as Normal and Dummy");
+            if (normalRooms.Intersect(dummyRooms).Any()) throw new InvalidDataException("At least one room is set as Normal and Dummy");
             var normalRoomsCount = 0;
             GetPossibleRoomData();
             Rooms = new Room[RoomCountRows, RoomCountColumns];
@@ -451,7 +452,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void AddEntity(string classId, int level = 1)
         {
             var entityClass = Dungeon.Classes.Find(c => c.Id.Equals(classId))
-                ?? throw new Exception("Class does not exist!");
+                ?? throw new InvalidDataException("Class does not exist!");
             Entity entity = null;
             switch (entityClass.EntityType)
             {
@@ -480,7 +481,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     };
                     break;
                 default:
-                    throw new Exception("Entity lacks a valid type!");
+                    throw new InvalidDataException("Entity lacks a valid type!");
             }
             CurrentEntityId++;
             if (entity is Item i)
@@ -497,7 +498,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 else if (entity is NonPlayableCharacter npc)
                     AICharacters.Add(npc);
                 var weaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingWeaponId))
-                    ?? throw new Exception("Class does not have a valid starting weapon!");
+                    ?? throw new InvalidDataException("Class does not have a valid starting weapon!");
                 c.StartingWeapon = new Item(weaponEntityClass, this)
                 {
                     Id = CurrentEntityId,
@@ -505,7 +506,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 };
                 CurrentEntityId++;
                 var armorEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingArmorId))
-                    ?? throw new Exception("Class does not have a valid starting armor!");
+                    ?? throw new InvalidDataException("Class does not have a valid starting armor!");
                 c.StartingArmor = new Item(armorEntityClass, this)
                 {
                     Id = CurrentEntityId,
@@ -519,7 +520,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var playerClass = Dungeon.Classes.Find(c => c.EntityType == EntityType.Player);
             if (playerClass == null)
-                throw new Exception("There is no Player class!");
+                throw new InvalidDataException("There is no Player class!");
             if (Player == null)
             {
                 AddEntity(playerClass.Id);
@@ -564,7 +565,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if(FloorConfigurationToUse.PossibleMonsters.Any())
                 {
                     var totalMonsterGeneratorChance = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.ChanceToPick);
-                    if (!totalMonsterGeneratorChance.Between(1, 100)) throw new Exception("Monster generation odds are not 1-100%");
+                    if (!totalMonsterGeneratorChance.Between(1, 100)) throw new InvalidDataException("Monster generation odds are not 1-100%");
                     List<ClassInFloor> usableMonsterGenerators = new();
                     FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
                     {
@@ -593,7 +594,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if(FloorConfigurationToUse.PossibleItems.Any())
                 {
                     var totalItemGeneratorChance = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.ChanceToPick);
-                    if (!totalItemGeneratorChance.Between(1, 100)) throw new Exception("Item generation odds are not 1-100%");
+                    if (!totalItemGeneratorChance.Between(1, 100)) throw new InvalidDataException("Item generation odds are not 1-100%");
                     List<ClassInFloor> usableItemGenerators = new();
                     FloorConfigurationToUse.PossibleItems.ForEach(pi =>
                     {
@@ -619,7 +620,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if(FloorConfigurationToUse.PossibleTraps.Any())
                 {
                     var totalTrapGeneratorChance = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.ChanceToPick);
-                    if (!totalTrapGeneratorChance.Between(1, 100)) throw new Exception("Trap generation odds are not 1-100%");
+                    if (!totalTrapGeneratorChance.Between(1, 100)) throw new InvalidDataException("Trap generation odds are not 1-100%");
                     List<ClassInFloor> usableTrapGenerators = new();
                     FloorConfigurationToUse.PossibleTraps.ForEach(pt =>
                     {
@@ -729,9 +730,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (Player.RemainingMovement != 0)
             {
                 var currentTile = GetTileFromCoordinates(Player.Position)
-                    ?? throw new Exception("PlayerEntity is on a nonexistent Tile");
+                    ?? throw new ArgumentException("PlayerEntity is on a nonexistent Tile");
                 var targetTile = GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y + y)
-                    ?? throw new Exception("PlayerEntity is about to move to a nonexistent Tile");
+                    ?? throw new ArgumentException("PlayerEntity is about to move to a nonexistent Tile");
                 if (currentTile == targetTile) // This is only possible if the player chooses to Skip Turn.
                 {
                     Player.RemainingMovement = 0;
@@ -789,7 +790,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
             if (Player.ContainingTile != stairsTile)
-                throw new Exception($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
+                throw new ArgumentException($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
             AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }), Color.Yellow);
             Dungeon.TakeStairs();
         }
@@ -830,14 +831,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void PlayerUseItemFromInventory(int itemId)
         {
             var item = Items.Find(i => i.Id == itemId)
-                ?? throw new Exception("Player attempted to use an item that does not exist!");
+                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
             PlayerUseItem(item);
         }
 
         public void PlayerDropItemFromInventory(int itemId)
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
-                ?? throw new Exception("Player attempted to use an item that does not exist!");
+                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
             var entitiesInTile = GetEntitiesFromCoordinates(Player.Position);
             if (entitiesInTile.Any(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
             {
@@ -854,7 +855,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
             var itemInInventory = Items.Find(i => i.Id == itemId)
-                ?? throw new Exception("Player attempted to use an item that does not exist!");
+                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
             var itemInTile = Items.Find(i => i.Position?.Equals(Player.Position) == true && i.ExistenceStatus != EntityExistenceStatus.Gone);
             if (itemInTile != null)
             {
@@ -865,7 +866,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else
             {
-                throw new Exception("Player attempted to pick an item from a tile without item!");
+                throw new InvalidOperationException("Player attempted to pick an item from a tile without item!");
             }
         }
         public InventoryDto GetPlayerInventory()
@@ -892,7 +893,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var action = Player.OnAttackActions.Find(oaa => oaa.Name.Equals(name));
 
-            if (action == null) throw new Exception("Player attempted use a non-existent action.");
+            if (action == null) throw new ArgumentException("Player attempted use a non-existent action.");
 
             var characterInTile = GetTileFromCoordinates(x, y).Character;
 
@@ -962,11 +963,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             MaxRoomWidth = Width / RoomCountColumns;
             if (MaxRoomWidth < Constants.MinRoomWidthOrHeight)
-                throw new Exception("Combination of floor Width and Columns prevents generating 5x5 rooms (the bare minimum)");
+                throw new InvalidDataException("Combination of floor Width and Columns prevents generating 5x5 rooms (the bare minimum)");
             MinRoomWidth = Math.Max(MaxRoomWidth / 4, Constants.MinRoomWidthOrHeight);
             MaxRoomHeight = Height / RoomCountRows;
             if (MaxRoomHeight < Constants.MinRoomWidthOrHeight)
-                throw new Exception("Combination of floor Height and Rows prevents generating 5x5 rooms (the bare minimum)");
+                throw new InvalidDataException("Combination of floor Height and Rows prevents generating 5x5 rooms (the bare minimum)");
             MinRoomHeight = Math.Max(MaxRoomHeight / 4, Constants.MinRoomWidthOrHeight);
             var widthGap = (Width - MaxRoomWidth * RoomCountColumns) / 2;
             var heightGap = (Height - MaxRoomHeight * RoomCountRows) / 2;
@@ -1038,7 +1039,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public ConsoleRepresentation GetConsoleRepresentationForCoordinates(int x, int y)
         {
             var tile = GetTileFromCoordinates(x, y);
-            if (tile == null) throw new Exception("Tile does not exist");
+            if (tile == null) throw new ArgumentException("Tile does not exist");
             if (!tile.Discovered)
                 return ConsoleRepresentation.EmptyTile;
             var tileBaseConsoleRepresentation = new ConsoleRepresentation
