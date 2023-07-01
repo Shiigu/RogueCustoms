@@ -89,11 +89,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusTarget = paramsObject.Target as Character;
             if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
+                var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Any(als => als.RemainingTurns != 0 && als.ClassId.Equals(statusTarget.ClassId));
                 var success = statusToApply.ApplyTo(statusTarget, (int) paramsObject.Power, (int) paramsObject.TurnLength);
                 if (success && statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget)))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterGotStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
+                    if(!targetAlreadyHadStatus)
+                        Map.AppendMessage(Map.Locale["CharacterGotStatused"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
+                    else
+                        Map.AppendMessage(Map.Locale["CharacterStatusGotRefreshed"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
                 }
                 return success;
             }
