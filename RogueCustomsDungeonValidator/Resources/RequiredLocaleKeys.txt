@@ -5,6 +5,7 @@ FloorName
 NewTurn
 FloorEnter
 FloorLeave
+CharacterSwitchedPlacesWithPlayer
 PlayerPutItemOnBag
 PlayerPutItemOnFloor
 NPCPickItem
