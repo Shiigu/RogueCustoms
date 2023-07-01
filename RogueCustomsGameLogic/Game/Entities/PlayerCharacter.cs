@@ -55,16 +55,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             FOVTiles = tiles;
         }
 
-        public new void RefreshCooldowns()
-        {
-            MaxHPModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue));
-            AttackModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue));
-            DefenseModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue));
-            MovementModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue));
-            HPRegenerationModifications?.Where(a => a.RemainingTurns == 0 && a.RemainingTurns > 1).ForEach(_ => Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue));
-            RefreshCooldownsAndUpdateTurnLength();
-        }
-
         public override void Die(Entity? attacker = null)
         {
             ExistenceStatus = EntityExistenceStatus.Dead;
