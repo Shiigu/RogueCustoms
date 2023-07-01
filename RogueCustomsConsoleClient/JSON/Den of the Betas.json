@@ -713,6 +713,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -797,6 +798,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
@@ -865,6 +867,7 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
       "BaseSightRange": "FullMap",
+      "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -2308,7 +2311,7 @@
             "Params": [
               { "ParamName": "id"           , "Value": "frozen" },
               { "ParamName": "target"       , "Value": "target" },
-              { "ParamName": "chance"       , "Value": "30"     },
+              { "ParamName": "chance"       , "Value": "40"     },
               { "ParamName": "power"        , "Value": "0"      },
               { "ParamName": "turnlength"   , "Value": "4"      }
             ],
@@ -2357,7 +2360,7 @@
         "ForegroundColor": { "R": 180, "G": 0 , "B": 0 , "A": 255 }
       },
       "EntityType": "Trap",
-      "StartsVisible": true,
+      "StartsVisible": false,
       "CanBePickedUp": false,
       "OnItemSteppedActions": [{
         "Name": "TrapActivate",
@@ -2378,7 +2381,7 @@
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
-                { "ParamName": "chance", "Value": "30"   },
+                { "ParamName": "chance", "Value": "15"   },
                 { "ParamName": "target", "Value": "this" }
               ],
               "Then": null,

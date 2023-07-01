@@ -17,13 +17,14 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanBePickedUp { get; set; }
         public bool StartsVisible { get; set; }
 
-        #region Only for NPCs
+        #region Only for Characters
         public int BaseHP { get; set; }
         public int BaseAttack { get; set; }
         public int BaseDefense { get; set; }
         public int BaseMovement { get; set; }
         public decimal BaseHPRegeneration { get; set; }
         public string BaseSightRange { get; set; }
+        public bool KnowsAllCharacterPositions { get; set; }
         public int InventorySize { get; set; }
         public string StartingWeapon { get; set; }
         public string StartingArmor { get; set; }
