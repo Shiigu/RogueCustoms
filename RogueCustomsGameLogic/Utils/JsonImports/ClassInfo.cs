@@ -26,6 +26,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string BaseSightRange { get; set; }
         public bool KnowsAllCharacterPositions { get; set; }
         public int InventorySize { get; set; }
+        public int AIOddsToUseActionsOnSelf { get; set; }
         public string StartingWeapon { get; set; }
         public string StartingArmor { get; set; }
         public List<ActionWithEffectsInfo> OnAttackActions { get; set; } = new List<ActionWithEffectsInfo>();

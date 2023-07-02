@@ -135,6 +135,22 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
             }
             target.CanTakeAction = true;
 
+            var sampleWeaponClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon);
+            if(sampleWeaponClass != null)
+            {
+                target.Inventory.Add(new Item(sampleWeaponClass, sampleDungeon.CurrentFloor));
+            }
+            var sampleArmorClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor);
+            if (sampleArmorClass != null)
+            {
+                target.Inventory.Add(new Item(sampleArmorClass, sampleDungeon.CurrentFloor));
+            }
+            var sampleConsumableClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Consumable);
+            if (sampleConsumableClass != null)
+            {
+                target.Inventory.Add(new Item(sampleConsumableClass, sampleDungeon.CurrentFloor));
+            }
+
             bool errorOnActionChain = false;
             var currentEffect = action.Effect;
             var pendingEffects = new List<Effect>();

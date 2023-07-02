@@ -12,8 +12,13 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class NonPlayableCharacter : Character, IAIControlled
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
+        
+        // This is used to prevent continuous paying attention to themselves rather than on others
+        private ActionWithEffects LastUsedActionOnSelf;
+
         private Character CurrentTarget;
         private bool KnowsAllCharacterPositions;
+        private int AIOddsToUseActionsOnSelf;
         private (Point Destination, List<Tile> Route) PathToUse;
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
@@ -21,7 +26,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnownCharacters.Add((this, TargetType.Self));
             PathToUse = (null, null);
             CurrentTarget = null;
+            LastUsedActionOnSelf = null;
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
+            AIOddsToUseActionsOnSelf = entityClass.AIOddsToUseActionsOnSelf;
         }
 
         public void PickTargetAndPath()
@@ -31,11 +38,25 @@ namespace RogueCustomsGameEngine.Game.Entities
             var attackActionsWithValidTargets = LookForAttackActionsWithValidTargets().Where(a => a.PossibleTargets.Any());
             if (attackActionsWithValidTargets.Any())
             {
-                var actionToUse = attackActionsWithValidTargets.TakeRandomElement(Rng);
-                var targetToUse = actionToUse.PossibleTargets.TakeRandomElement(Rng).Character;
+                CurrentTarget = null;
+                if (Rng.NextInclusive(1, 100) <= AIOddsToUseActionsOnSelf)
+                {
+                    var hasUsableAttacksOnSelf = OnAttackActions.Any(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
+                    var hasUsableItemsOnSelf = Inventory?.Any(i => i.EntityType == EntityType.Consumable && i.OnItemUseActions.Any(oiua => oiua != LastUsedActionOnSelf && oiua.CanBeUsed)) == true;
+                    if(hasUsableAttacksOnSelf || hasUsableItemsOnSelf)
+                    {
+                        CurrentTarget = this;
+                        PathToUse = (null, null);
+                    }
+                }
+                if (CurrentTarget == null)
+                {
+                    var actionToUse = attackActionsWithValidTargets.TakeRandomElement(Rng);
+                    var targetToUse = actionToUse.PossibleTargets.TakeRandomElement(Rng).Character;
 
-                CurrentTarget = targetToUse;
-                PathToUse = (Destination: targetToUse.Position, Route: Map.GetPathBetweenTiles(Position, targetToUse.Position));
+                    CurrentTarget = targetToUse;
+                    PathToUse = (Destination: targetToUse.Position, Route: Map.GetPathBetweenTiles(Position, targetToUse.Position));
+                }
             }
             else
             {
@@ -73,14 +94,43 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void AttackOrMove()
         {
-            while (RemainingMovement > 0 && ExistenceStatus == EntityExistenceStatus.Alive && CurrentTarget != null && CurrentTarget.ExistenceStatus == EntityExistenceStatus.Alive)
+            if(CurrentTarget != this)
             {
-                var validActions = OnAttackActions.Where(oaa => oaa.CanBeUsedOn(CurrentTarget, Map));
-                if (validActions.Any())
-                    AttackCharacter(CurrentTarget, validActions.TakeRandomElement(Rng));
-                else
-                    MoveTo(PathToUse.Destination);
+                while (RemainingMovement > 0 && ExistenceStatus == EntityExistenceStatus.Alive && CurrentTarget != null && CurrentTarget.ExistenceStatus == EntityExistenceStatus.Alive)
+                {
+                    var validActions = OnAttackActions.Where(oaa => oaa.CanBeUsedOn(CurrentTarget, Map));
+                    if (validActions.Any())
+                        AttackCharacter(CurrentTarget, validActions.TakeRandomElement(Rng));
+                    else
+                        MoveTo(PathToUse.Destination);
+                }
             }
+            else
+            {
+                var possibleActionsOnSelf = new List<(ActionWithEffects action, Item item)>();
+                ActionWithEffects possibleAttackAction = null;
+                foreach (var onAttackAction in OnAttackActions.Where(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map)))
+                {
+                    possibleActionsOnSelf.Add((onAttackAction, null));
+                }
+                foreach (var item in Inventory.Where(i => i.EntityType == EntityType.Consumable))
+                {
+                    foreach (var action in item.OnItemUseActions.Where(oiua => oiua != LastUsedActionOnSelf && oiua.CanBeUsed))
+                    {
+                        possibleActionsOnSelf.Add((action, item));
+                    }
+                }
+                if(possibleActionsOnSelf.Any())
+                {
+                    var (action, item) = possibleActionsOnSelf.TakeRandomElement(Rng);
+                    if (item == null)
+                        AttackCharacter(this, action);
+                    else
+                        action.Do(item, this);
+                    LastUsedActionOnSelf = action;
+                }
+            }
+            LastUsedActionOnSelf = null;
         }
 
         public void MoveTo(Point p)
@@ -136,7 +186,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (action.CanBeUsed)
                 {
-                    var possibleTargets = KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType))
+                    var possibleTargets = KnownCharacters.Where(kc => kc.TargetType != TargetType.Self && action.TargetTypes.Contains(kc.TargetType))
                         .Select(kc => (kc.Character, Distance: (int)Point.Distance(kc.Character.Position, Position)));
                     if (possibleTargets.Any())
                         yield return (action, possibleTargets.Where(kc => kc.Distance.Between(action.MinimumRange, action.MaximumRange)).ToList());

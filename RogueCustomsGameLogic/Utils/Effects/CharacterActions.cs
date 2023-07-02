@@ -14,7 +14,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static Random Rng;
         public static Map Map;
 
-
         public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -25,6 +24,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             _ = 0;
             return true;
         }
+
         public static bool StealItem(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;

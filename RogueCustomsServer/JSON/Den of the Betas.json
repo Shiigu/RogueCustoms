@@ -60,7 +60,7 @@
         { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
         { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
         { "Key": "CharacterWasTeleported", "Value": "{CharacterName} has teleported somewhere else." },
-        { "Key": "CharacterStealsItem", "Value": "{SourceName} has stolen {ItemName} from {Target}!" },
+        { "Key": "CharacterStealsItem", "Value": "{SourceName} has stolen {ItemName} from {TargetName}!" },
         { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
         { "Key": "Floor1WelcomeText", "Value": "Welcome to this game!\n\nFind the stairs to reach the next floor."},
         { "Key": "Floor2WelcomeText", "Value": "This is what I'd call a \"Rest floor\"\n\nNo enemies will appear here.\n\nRestock all you want until you go to the stairs."},
@@ -89,6 +89,7 @@
         { "Key": "ThiefDescription", "Value": "A bad guy that can punch you. Likes to steal an item, but can only carry one at a time." },
         { "Key": "ThiefStealAttackText", "Value": "{this} tries to do a five-finger discount to {target}." },
         { "Key": "ThiefStealSuccessText", "Value": "{this} laughs at {target}'s predicament." },
+        { "Key": "ThiefStealFailureText", "Value": "But {this} couldn't take anything!" },
         { "Key": "EnemyDeathText", "Value": "The evil {this} has died." },
         { "Key": "MeleeAllyName", "Value": "Melee Ally" },
         { "Key": "MeleeAllyDescription", "Value": "A good guy that can throw punches." },
@@ -244,7 +245,7 @@
         { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
         { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
         { "Key": "CharacterWasTeleported", "Value": "{CharacterName} se ha teletransportado a otro sitio." },
-        { "Key": "CharacterStealsItem", "Value": "¡{SourceName} le ha quitado {ItemName} a {Target}!" },
+        { "Key": "CharacterStealsItem", "Value": "¡{SourceName} le ha quitado {ItemName} a {TargetName}!" },
         { "Key": "Floor1WelcomeText", "Value": "¡Bienvenido al juego!\n\nBusca las escaleras para acceder al próximo piso."},
         { "Key": "Floor2WelcomeText", "Value": "Esto es lo que se llama \"Piso de descanso\".\n\nNo hay enemigos aquí.\n\nObtén los objetos que quieras antes de ir por las escaleras."},
         { "Key": "Floor2WarningText", "Value": "ADVERTENCIA: En este piso no regenerarás PS."},
@@ -273,6 +274,7 @@
         { "Key": "ThiefDescription", "Value": "Un tipo malo que te golpea. Le gusta robar objetos, pero solo puede llevar uno a la vez." },
         { "Key": "ThiefStealAttackText", "Value": "{this} quiere hacerle el descuento de los cinco dedos a {target}." },
         { "Key": "ThiefStealSuccessText", "Value": "{this} se ríe de la desgracia de {target}." },
+        { "Key": "ThiefStealFailureText", "Value": "¡Pero {this} no pudo tomar nada!" },
         { "Key": "EnemyDeathText", "Value": "El malvado {this} ha muerto." },            
         { "Key": "MeleeAllyName", "Value": "Aliado Melé" },
         { "Key": "MeleeAllyDescription", "Value": "Un tipo bueno que puede dar puñetazos." },
@@ -729,6 +731,7 @@
       "BaseSightRange": "FullRoom",
       "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
+      "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "CanGainExperience": false,
@@ -814,6 +817,7 @@
       "BaseSightRange": "FullRoom",
       "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
+      "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
       "CanGainExperience": false,
@@ -883,6 +887,7 @@
       "BaseSightRange": "FullRoom",
       "KnowsAllCharacterPositions": false,
       "InventorySize": 1,
+      "AIOddsToUseActionsOnSelf": 50,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "CanGainExperience": false,
@@ -917,7 +922,7 @@
             "OnFailure": {
               "EffectName": "PrintText",
               "Params": [
-                { "ParamName": "text", "Value": "FailedAttackText" }
+                { "ParamName": "text", "Value": "ThiefStealFailureText" }
               ]
             }
           },
@@ -990,6 +995,7 @@
       "BaseSightRange": "FullMap",
       "KnowsAllCharacterPositions": true,
       "InventorySize": 0,
+      "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "CanGainExperience": false,
@@ -1074,6 +1080,7 @@
       "BaseHPRegeneration": 0.025,
       "BaseSightRange": "FullMap",
       "InventorySize": 0,
+      "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "Pistol",
       "StartingArmor": "LeatherArmor",
       "CanGainExperience": false,
