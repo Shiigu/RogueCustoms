@@ -49,4 +49,5 @@ CharacterStatGotBuffed
 CharacterStatGotNerfed
 CharacterStatGotNeutralized
 CharacterWasTeleported
+CharacterStealsItem
 StairsGotRevealed

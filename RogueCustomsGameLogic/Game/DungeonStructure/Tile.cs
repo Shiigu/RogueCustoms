@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
 using Point = RogueCustomsGameEngine.Utils.Representation.Point;
@@ -65,6 +67,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Map Map { get; set; }
         public Character Character => Map.Characters.Find(e => e != null && e.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public List<Item> Items => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
+        public Item Trap => Map.Traps.Find(t => t != null && t.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
     }

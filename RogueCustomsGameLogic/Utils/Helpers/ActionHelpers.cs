@@ -96,6 +96,12 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     case "canbestacked":
                         paramsObject.CanBeStacked = new Expression(value).Eval<bool>();
                         break;
+                    case "canstealequippables":
+                        paramsObject.CanStealEquippables = new Expression(value).Eval<bool>();
+                        break;
+                    case "canstealconsumables":
+                        paramsObject.CanStealConsumables = new Expression(value).Eval<bool>();
+                        break;
                     case "character":
                         paramsObject.Character = value[0];
                         break;

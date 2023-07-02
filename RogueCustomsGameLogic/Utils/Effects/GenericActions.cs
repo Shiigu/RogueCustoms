@@ -250,6 +250,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
+
         public static bool Teleport(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
