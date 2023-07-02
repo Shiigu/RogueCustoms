@@ -30,6 +30,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseSightRange;
         public readonly bool KnowsAllCharacterPositions;
         public readonly int InventorySize;
+        public readonly int AIOddsToUseActionsOnSelf;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
         public readonly int MaxLevel;
@@ -130,6 +131,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
             InventorySize = classInfo.InventorySize;
+            AIOddsToUseActionsOnSelf = classInfo.AIOddsToUseActionsOnSelf;
 
             #endregion
 

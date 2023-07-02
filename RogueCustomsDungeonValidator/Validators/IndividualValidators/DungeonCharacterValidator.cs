@@ -117,6 +117,20 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)
                 messages.AddWarning("Inventory Size is 0. It won't be able to carry any items.");
+            if (characterJson.EntityType == "NPC")
+            {
+                if (characterJson.AIOddsToUseActionsOnSelf < 0)
+                    messages.AddError("AIOddsToUseActionsOnSelf must be 0 or higher.");
+                else if (characterJson.AIOddsToUseActionsOnSelf == 0 && characterJson.InventorySize > 0)
+                    messages.AddWarning("AIOddsToUseActionsOnSelf is 0 but Inventory Size is above 0. It won't be able to use any items it carries.");
+                else if (characterJson.AIOddsToUseActionsOnSelf > 0 && characterJson.InventorySize == 0)
+                    messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Inventory Size is 0. Unable to carry any items, AIOddsToUseActionsOnSelf won't have any effect.");
+            }
+            else if (characterJson.EntityType == "Player")
+            {
+                if (characterJson.AIOddsToUseActionsOnSelf > 0)
+                    messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Character is a player. AIOddsToUseActionsOnSelf won't have any effect.");
+            }
             if (string.IsNullOrWhiteSpace(characterJson.StartingWeapon) || !dungeonJson.Items.Any(c => c.EntityType == "Weapon" && c.Id.Equals(characterJson.StartingWeapon)))
                 messages.AddError($"Starting Weapon, {characterJson.StartingWeapon}, is not valid.");
             if (string.IsNullOrWhiteSpace(characterJson.StartingArmor) || !dungeonJson.Items.Any(c => c.EntityType == "Armor" && c.Id.Equals(characterJson.StartingArmor)))
