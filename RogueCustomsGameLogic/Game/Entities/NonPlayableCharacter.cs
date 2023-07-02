@@ -175,6 +175,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (attacker is Character c)
                 OnDeathActions?.ForEach(oda => oda.Do(this, c));
             Inventory?.ForEach(i => DropItem(i));
+            Inventory?.Clear();
         }
 
         public override void PickItem(Item item)
@@ -183,28 +184,38 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
-            Map.AppendMessage(Map.Locale["NPCPickitem"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 
         public override void DropItem(Item item)
         {
-            var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => !Map.GetEntitiesFromCoordinates(t.Position).Any(e => e.ExistenceStatus != EntityExistenceStatus.Gone)).ToList();
-            Inventory.Remove(item);
-            if (closeEmptyTiles.Any())
+            Tile pickedEmptyTile = null;
+            if (!ContainingTile.Items.Any(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+                pickedEmptyTile = ContainingTile;
+            if(pickedEmptyTile == null)
             {
-                var pickedEmptyTile = closeEmptyTiles.TakeRandomElement(Rng);
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.Items.Any(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => Point.Distance(t.Position, Position)) : -1;
+                var closestEmptyTiles = closeEmptyTiles.Where(t => Point.Distance(t.Position, Position) <= closestDistance);
+                if (closestEmptyTiles.Any())
+                {
+                    pickedEmptyTile = closestEmptyTiles.TakeRandomElement(Rng);
+                }
+                else
+                {
+                    item.Position = null;
+                    item.Owner = null!;
+                    item.ExistenceStatus = EntityExistenceStatus.Gone;
+                    Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = item.Name }));
+                    Map.Items.Remove(item);
+                }
+            }
+            if (pickedEmptyTile != null)
+            {
                 item.Position = pickedEmptyTile.Position;
                 item.Owner = null!;
                 item.ExistenceStatus = EntityExistenceStatus.Alive;
                 Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
-            }
-            else
-            {
-                item.Position = null;
-                item.Owner = null!;
-                item.ExistenceStatus = EntityExistenceStatus.Gone;
-                Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = item.Name }));
-                Map.Items.Remove(item);
             }
         }
     }
