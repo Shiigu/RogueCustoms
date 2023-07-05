@@ -59,6 +59,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             this.Clear();
 
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
+            if (dungeonStatus == null) return;
 
             var square = new Rectangle(0, 0, Width, Height);
             var title = $" {TitleCaption} ";

@@ -462,6 +462,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         Id = CurrentEntityId,
                         Position = PickEmptyPosition(TurnCount == 0)
                     };
+                    if (Dungeon.PlayerClass.RequiresNamePrompt && !string.IsNullOrWhiteSpace(Dungeon.PlayerName))
+                        entity.Name = Dungeon.PlayerName;
                     break;
                 case EntityType.NPC:
                     entity = new NonPlayableCharacter(entityClass, level, this)
@@ -513,31 +515,40 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     Owner = c
                 };
                 CurrentEntityId++;
+                foreach (var itemId in entityClass.StartingInventoryIds)
+                {
+                    var itemEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(itemId))
+                        ?? throw new InvalidDataException("Class does has an invalid starting inventory item!");
+                    var inventoryItem = new Item(itemEntityClass, this)
+                    {
+                        Id = CurrentEntityId,
+                        Owner = c
+                    };
+                    c.Inventory.Add(inventoryItem);
+                    CurrentEntityId++;
+                }
             }
         }
 
         private void PlacePlayer()
         {
-            var playerClass = Dungeon.Classes.Find(c => c.EntityType == EntityType.Player);
-            if (playerClass == null)
-                throw new InvalidDataException("There is no Player class!");
             if (Player == null)
             {
-                AddEntity(playerClass.Id);
+                AddEntity(Dungeon.PlayerClass.Id);
             }
             else
             {
                 Player.Map = this;
                 Player.Id = CurrentEntityId;
                 CurrentEntityId++;
-                if (Player.EquippedWeapon != null && !Player.EquippedWeapon.ClassId.Equals(playerClass.StartingWeaponId))
+                if (Player.EquippedWeapon?.ClassId.Equals(Dungeon.PlayerClass.StartingWeaponId) == false)
                 {
                     Player.EquippedWeapon.Id = CurrentEntityId;
                     Player.EquippedWeapon.Map = this;
                     AddEntity(Player.EquippedWeapon, true);
                     CurrentEntityId++;
                 }
-                if (Player.EquippedArmor != null && !Player.EquippedArmor.ClassId.Equals(playerClass.StartingArmorId))
+                if (Player.EquippedArmor?.ClassId.Equals(Dungeon.PlayerClass.StartingArmorId) == false)
                 {
                     Player.EquippedArmor.Id = CurrentEntityId;
                     Player.EquippedArmor.Map = this;
@@ -740,28 +751,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 else if (Tiles.GetAdjacentElements(currentTile, true).Contains(targetTile))
                 {
                     if (!targetTile.IsWalkable) return;
-                    if (x != 0 && y != 0)
+                    if (x != 0 && y != 0 && (!GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y).IsWalkable
+                            || !GetTileFromCoordinates(Player.Position.X, Player.Position.Y + y).IsWalkable))
                     {
-                        if (!GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y).IsWalkable
-                            || !GetTileFromCoordinates(Player.Position.X, Player.Position.Y + y).IsWalkable)
-                        {
-                            return;
-                        }
-                    }
-                    var characterInTargetTile = Characters.Find(c => c.ContainingTile == targetTile && c != Player && c.ExistenceStatus == EntityExistenceStatus.Alive);
-                    if (characterInTargetTile != null)
-                    {
-                        if(!characterInTargetTile.Faction.EnemiesWith.Contains(Player.Faction) && characterInTargetTile.Movement > 0)
-                        {
-                            // Swap positions with allies or neutrals
-                            characterInTargetTile.Position = Player.Position;
-                            characterInTargetTile.RemainingMovement--;
-                            AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        return;
                     }
                     TryMoveCharacter(Player, targetTile);
                 }
@@ -771,16 +764,25 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool TryMoveCharacter(Character character, Tile targetTile)
         {
-            var solidEntityInTile = GetEntitiesFromCoordinates(targetTile.Position.X, targetTile.Position.Y).Find(e => !e.Passable);
-            if (solidEntityInTile != null) return false;
-            character.Position = targetTile.Position;
-            var passableAliveEntities = GetEntitiesFromCoordinates(targetTile.Position.X, targetTile.Position.Y).Where(e => e.ExistenceStatus == EntityExistenceStatus.Alive && e.Passable);
-
-            passableAliveEntities.ForEach(pae =>
+            var characterInTargetTile = Characters.Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
+            if (characterInTargetTile != null)
             {
-                if (pae is Item i)
-                    character.TryToPickItem(i);
-            });
+                if ((!characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction) || !characterInTargetTile.Visible) && characterInTargetTile.Movement > 0)
+                {
+                    // Swap positions with allies, neutrals or invisibles
+                    characterInTargetTile.Position = character.Position;
+                    characterInTargetTile.RemainingMovement--;
+                    if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
+                        AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            character.Position = targetTile.Position;
+
+            targetTile.Items?.ForEach(i => character.TryToPickItem(i));
 
             character.RemainingMovement--;
 
@@ -952,7 +954,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             || GetTileFromCoordinates(rngX, rngY - 1).Type == TileType.Hallway
                                             || GetTileFromCoordinates(rngX, rngY + 1).Type == TileType.Hallway;
             }
-            while (!tileToCheck.IsWalkable || tileToCheck.Character != null || hasLaterallyAdjacentHallways);
+            while (!tileToCheck.IsWalkable || tileToCheck.Character != null || tileToCheck.Items?.Any() == true || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
             return new Point(rngX, rngY);
         }
 
@@ -1055,16 +1057,30 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 tileBaseConsoleRepresentation.ForegroundColor.A /= 2;
                 return tileBaseConsoleRepresentation;
             }
-            var visibleEntitiesInCoordinates = GetEntitiesFromCoordinates(x, y).Where(e => Player.CanSee(e)).ToList();
-            var solidEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => !e.Passable);
-            if (solidEntityInCoordinates?.ExistenceStatus == EntityExistenceStatus.Alive)
-                return solidEntityInCoordinates.ConsoleRepresentation;
+            if (tile.Character != null)
+            {
+                var characterBaseConsoleRepresentation = new ConsoleRepresentation
+                {
+                    ForegroundColor = tile.Character.ConsoleRepresentation.ForegroundColor.Clone(),
+                    BackgroundColor = tile.Character.ConsoleRepresentation.BackgroundColor.Clone(),
+                    Character = tile.Character.ConsoleRepresentation.Character
+                };
+                if ((tile.Character == Player || tile.Character.Faction.AlliedWith.Contains(Player.Faction)) && !tile.Character.Visible)
+                {
+                    characterBaseConsoleRepresentation.BackgroundColor.A /= 2;
+                    characterBaseConsoleRepresentation.ForegroundColor.A /= 2;
+                    return characterBaseConsoleRepresentation;
+                }
+                else if (tile.Character.Visible)
+                    return characterBaseConsoleRepresentation;
+            }
             if (tile.ConsoleRepresentation.Character == (char)TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            var passableEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive);
-            if (passableEntityInCoordinates != null)
-                return passableEntityInCoordinates.ConsoleRepresentation;
-            var deadEntityInCoordinates = visibleEntitiesInCoordinates.Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
+            if (tile.Items.Any(i => i.Visible))
+                return tile.Items.Find(i => i.Visible).ConsoleRepresentation;
+            if (tile.Trap != null && tile.Trap.Visible)
+                return tile.Trap.ConsoleRepresentation;
+            var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
             if (deadEntityInCoordinates != null)
                 return deadEntityInCoordinates.ConsoleRepresentation;
             return tileBaseConsoleRepresentation;

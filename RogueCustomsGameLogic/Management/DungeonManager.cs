@@ -71,7 +71,20 @@ namespace RogueCustomsGameEngine.Management
         private Dungeon GetDungeonById(int id)
         {
             var dungeon = Dungeons.Find(d => d.Id == id);
-            return dungeon == null ? throw new ArgumentException("Dungeon does not exist") : dungeon;
+            return dungeon ?? throw new ArgumentException("Dungeon does not exist");
+        }
+
+        public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
+        {
+            var dungeon = GetDungeonById(dungeonId);
+            return new PlayerClassSelectionOutput(dungeon);
+        }
+
+        public void SetPlayerClassSelection(int dungeonId, PlayerClassSelectionInput input)
+        {
+            var dungeon = GetDungeonById(dungeonId);
+            dungeon.SetPlayerClass(input.ClassId);
+            dungeon.SetPlayerName(input.Name);
         }
 
         public string GetDungeonWelcomeMessage(int dungeonId)
@@ -79,6 +92,7 @@ namespace RogueCustomsGameEngine.Management
             var dungeon = GetDungeonById(dungeonId);
             return dungeon.WelcomeMessage;
         }
+
         public string GetDungeonEndingMessage(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
@@ -88,7 +102,7 @@ namespace RogueCustomsGameEngine.Management
         public DungeonDto GetDungeonStatus(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
-            return new DungeonDto(dungeon, dungeon.CurrentFloor);
+            return dungeon.GetStatus();
         }
 
         public void MovePlayer(int dungeonId, CoordinateInput input)

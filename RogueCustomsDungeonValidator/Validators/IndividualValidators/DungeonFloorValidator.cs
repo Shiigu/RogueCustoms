@@ -62,7 +62,7 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 var totalChanceForPossibleMonsters = 0;
                 foreach (var possibleMonster in floorJson.PossibleMonsters)
                 {
-                    if(!dungeonJson.Characters.Any(c => c.EntityType == "NPC" && c.Id.Equals(possibleMonster.ClassId)))
+                    if(!dungeonJson.NPCs.Any(c => c.Id.Equals(possibleMonster.ClassId)))
                         messages.AddError($"{possibleMonster.ClassId} is in the PossibleMonsters list but it's not an NPC.");
                     if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId)) > 1)
                         messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate PossibleMonster in the current Floor Type.");

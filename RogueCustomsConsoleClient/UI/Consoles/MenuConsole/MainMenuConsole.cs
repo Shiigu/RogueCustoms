@@ -10,6 +10,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using SadConsole.Input;
+using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -108,7 +109,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             bool handled = false;
             var changeFocus = false;
             int index = CurrentFocusedIndex;
-            if(keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+            if(keyboard.IsKeyPressed(Keys.Up) && keyboard.KeysPressed.Count == 1)
             {
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
@@ -119,7 +120,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 changeFocus = true;
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
+            else if (keyboard.IsKeyPressed(Keys.Down) && keyboard.KeysPressed.Count == 1)
             {
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
@@ -130,12 +131,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 changeFocus = true;
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Enter))
+            else if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
             {
                 Buttons[CurrentFocusedIndex].InvokeClick();
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Escape))
+            else if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
             {
                 ExitButton.InvokeClick();
                 handled = true;

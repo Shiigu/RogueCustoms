@@ -27,6 +27,10 @@ TargetTypeNeutral
 TargetTypeEnemy
 RequiresATarget
 FromSource
+SightRangeStatFullMap
+SightRangeStatFullRoom
+SightRangeStatFlatNumber
+InventorySizeStatFlatNumber
 CharacterLevelsUpMessage
 CharacterLevelsUpHeader
 CharacterHPStat
@@ -35,6 +39,7 @@ CharacterAttackStat
 CharacterDefenseStat
 CharacterMovementStat
 CharacterSightRangeStat
+CharacterInventorySizeStat
 CharacterHPRegenerationStat
 CharacterDamageStat
 CharacterMitigationStat

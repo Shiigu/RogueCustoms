@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SadConsole.Input;
+using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -87,7 +88,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         public override bool ProcessKeyboard(Keyboard keyboard)
         {
             bool handled = false;
-            if (keyboard.IsKeyPressed(Keys.Up) && !keyboard.IsKeyPressed(Keys.Down))
+            if (keyboard.IsKeyPressed(Keys.Up) && keyboard.KeysPressed.Count == 1)
             {
                 if (DungeonListBox.SelectedIndex == 0)
                     DungeonListBox.SelectedIndex = DungeonListBox.Items.Count - 1;
@@ -95,7 +96,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                     DungeonListBox.SelectedIndex--;
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Down) && !keyboard.IsKeyPressed(Keys.Up))
+            else if (keyboard.IsKeyPressed(Keys.Down) && keyboard.KeysPressed.Count == 1)
             {
                 if (DungeonListBox.SelectedIndex == DungeonListBox.Items.Count - 1)
                     DungeonListBox.SelectedIndex = 0;
@@ -103,12 +104,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                     DungeonListBox.SelectedIndex++;
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Enter))
+            else if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
             {
                 PickButton.InvokeClick();
                 handled = true;
             }
-            else if (keyboard.IsKeyPressed(Keys.Escape))
+            else if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
             {
                 ReturnButton.InvokeClick();
                 handled = true;

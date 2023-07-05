@@ -12,6 +12,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public readonly string Id;
         public readonly string Name;
+        public readonly bool RequiresNamePrompt;
         public readonly string Description;
         public readonly string FactionId;
         public Faction Faction { get; set; }
@@ -33,6 +34,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int AIOddsToUseActionsOnSelf;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
+        public readonly List<string> StartingInventoryIds;
         public readonly int MaxLevel;
         public readonly bool CanGainExperience;
         public readonly string ExperiencePayoutFormula;
@@ -67,18 +69,21 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool CleansedByCleanseActions;
         public List<ActionWithEffects> OnStatusApplyActions { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, Locale Locale)
+        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType)
         {
             Id = classInfo.Id;
             Name = Locale[classInfo.Name];
             Description = (classInfo.Description != null) ? Locale[classInfo.Description] : null;
             FactionId = classInfo.Faction;
             ConsoleRepresentation = classInfo.ConsoleRepresentation;
-            EntityType = (EntityType)Enum.Parse(typeof(EntityType), classInfo.EntityType);
+            EntityType = entityType ?? (EntityType)Enum.Parse(typeof(EntityType), classInfo.EntityType);
             StartsVisible = classInfo.StartsVisible;
             if (EntityType == EntityType.Player || EntityType == EntityType.NPC)
             {
                 Passable = false;
+                StartingInventoryIds = new List<string>(classInfo.StartingInventory);
+                if (EntityType == EntityType.Player)
+                    RequiresNamePrompt = classInfo.RequiresNamePrompt;
             }
             else if (EntityType == EntityType.Consumable || EntityType == EntityType.Weapon || EntityType == EntityType.Armor || EntityType == EntityType.Trap)
             {

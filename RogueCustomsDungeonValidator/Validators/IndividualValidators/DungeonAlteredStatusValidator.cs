@@ -15,13 +15,13 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
     {
         public static DungeonValidationMessages Validate(ClassInfo alteredStatus, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var alteredStatusAsInstance = new AlteredStatus(new EntityClass(alteredStatus, sampleDungeon.LocaleToUse), sampleDungeon.CurrentFloor);
+            var alteredStatusAsInstance = new AlteredStatus(new EntityClass(alteredStatus, sampleDungeon.LocaleToUse, EntityType.AlteredStatus), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(alteredStatus.Name, "Trap", "Name", true));
             messages.AddRange(dungeonJson.ValidateString(alteredStatus.Description, "Trap", "Description", false));
 
-            messages.AddRange(alteredStatus.ConsoleRepresentation.Validate(alteredStatus.Id, dungeonJson));
+            messages.AddRange(alteredStatus.ConsoleRepresentation.Validate(alteredStatus.Id, false, dungeonJson));
 
             if (alteredStatus.CanStack && alteredStatus.CanOverwrite)
                 messages.AddWarning("Altered Status has both CanStack and CanOverwrite set to True, making the latter be ignored by the game. Consider making one of them false.");

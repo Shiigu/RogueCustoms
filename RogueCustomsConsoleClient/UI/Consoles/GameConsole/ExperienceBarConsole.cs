@@ -48,6 +48,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public override void Update(TimeSpan delta)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
+            if (dungeonStatus == null) return;
 
             var playerEntity = dungeonStatus.Entities.Find(e => e.IsPlayer);
 

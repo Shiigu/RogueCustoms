@@ -96,6 +96,41 @@ namespace RogueCustomsConsoleClient.EngineHandling
             }
         }
 
+        public PlayerClassSelectionOutput GetPlayerClassSelection()
+        {
+            try
+            {
+                PlayerClassSelectionOutput output = null;
+                if (IsLocal)
+                    output = LocalHandler.GetPlayerClassSelection(DungeonId);
+                else
+                    Task.Run(async () => output = await ServerHandler.GetPlayerClassSelection(DungeonId)).Wait();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                throw;
+            }
+        }
+
+        public void SetPlayerClassSelection(PlayerClassSelectionInput input)
+        {
+            try
+            {
+                if (IsLocal)
+                    LocalHandler.SetPlayerClassSelection(DungeonId, input);
+                else
+                    Task.Run(async () => await ServerHandler.SetPlayerClassSelection(DungeonId, input)).Wait();
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                throw;
+            }
+        }
+
         public string GetDungeonWelcomeMessage()
         {
             try

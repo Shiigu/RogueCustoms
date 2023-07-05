@@ -10,6 +10,7 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using System.Collections.Generic;
 using System;
 using SadConsole.Input;
+using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -190,7 +191,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             bool handled = false;
             if (Controls.FocusedControl != ServerAddressTextBox)
             {
-                if (keyboard.IsKeyPressed(Keys.Up) || keyboard.IsKeyPressed(Keys.Down))
+                if ((keyboard.IsKeyPressed(Keys.Up) || keyboard.IsKeyPressed(Keys.Down)) && keyboard.KeysPressed.Count == 1)
                 {
                     if (Controls.FocusedControl == LocalRadioButton)
                     {
@@ -204,6 +205,16 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                         LocalRadioButton.Focused();
                         handled = true;
                     }
+                }
+                else if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
+                {
+                    SaveButton.InvokeClick();
+                    handled = true;
+                }
+                else if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
+                {
+                    ReturnButton.InvokeClick();
+                    handled = true;
                 }
             }
             return handled || base.ProcessKeyboard(keyboard);

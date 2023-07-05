@@ -253,30 +253,30 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if(info.IsKeyPressed(Keys.Up))
+            if(info.IsKeyPressed(Keys.Up) && info.KeysPressed.Count == 1)
             {
                 InventorySelectedIndex = Math.Max(0, InventorySelectedIndex - 1);
                 DrawingArea.IsDirty = true;
             }
-            else if (info.IsKeyPressed(Keys.Down))
+            else if (info.IsKeyPressed(Keys.Down) && info.KeysPressed.Count == 1)
             {
                 InventorySelectedIndex = Math.Min(Inventory.InventoryItems.Count - 1, InventorySelectedIndex + 1);
                 DrawingArea.IsDirty = true;
             }
             else if (UseOrEquipButton.IsEnabled
-                && (info.IsKeyPressed(Keys.Enter)
+                && ((info.IsKeyPressed(Keys.Enter)
                 || (info.IsKeyPressed(Keys.E) && ItemIsEquippable)
-                || (info.IsKeyPressed(Keys.U) && !ItemIsEquippable)))
+                || (info.IsKeyPressed(Keys.U) && !ItemIsEquippable))) && info.KeysPressed.Count == 1)
             {
                 UseOrEquipButton.InvokeClick();
             }
             else if (DropOrSwapButton.IsEnabled
-                && ((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
-                || (info.IsKeyPressed(Keys.S) && TileIsOccupied)))
+                && (((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
+                || (info.IsKeyPressed(Keys.S) && TileIsOccupied))) && info.KeysPressed.Count == 1)
             {
                 DropOrSwapButton.InvokeClick();
             }
-            else if (info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape))
+            else if ((info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape)) && info.KeysPressed.Count == 1)
             {
                 CancelButton.InvokeClick();
             }

@@ -15,6 +15,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     {
         public int Id { get; set; }
         public PlayerCharacter? PlayerCharacter { get; set; }
+        public EntityClass? PlayerClass { get; set; }
+        public string? PlayerName { get; set; }
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 
@@ -50,10 +52,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
-            dungeonInfo.Characters.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse)));
+            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player)));
+            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null)));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap)));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus)));
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi)));
             FloorTypes.ForEach(ft => ft.FillPossibleClassLists(Classes));
@@ -65,7 +68,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloorLevel = 1;
             PlayerCharacter = null;
             DungeonStatus = DungeonStatus.Running;
-            NewMap();
         }
 
         private void MapFactions()
@@ -96,9 +98,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        private void NewMap()
+        public void NewMap()
         {
-            if (PlayerCharacter != null)
+            if (CurrentFloorLevel > 1)
             {
                 Messages.Clear();
                 foreach (var status in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
@@ -113,6 +115,26 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             CurrentFloor = new Map(this, CurrentFloorLevel);
             CurrentFloor.Generate();
+        }
+
+        public void SetPlayerName(string name)
+        {
+            PlayerName = name;
+        }
+
+        public void SetPlayerClass(string classId)
+        {
+            var playerClass = Classes.Find(c => c.Id == classId);
+            if (playerClass == null || playerClass.EntityType != EntityType.Player)
+                throw new ArgumentException($"{classId} is not a Player Class");
+            PlayerClass = playerClass;
+        }
+
+        public DungeonDto GetStatus()
+        {
+            if (CurrentFloor == null)
+                NewMap();
+            return new DungeonDto(this, CurrentFloor);
         }
 
         public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)

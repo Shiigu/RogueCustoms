@@ -16,6 +16,7 @@
             { "Key": "NewTurn", "Value": "----------TURN {TurnCount}----------" },
             { "Key": "FloorEnter", "Value": "Entering Floor {FloorLevel}..." },
             { "Key": "FloorLeave", "Value": "Leaving Floor {FloorLevel}..." },
+            { "Key": "CharacterSwitchedPlacesWithPlayer", "Value": "{CharacterName} let {PlayerName} pass."},
             { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} put {ItemName} on the bag."},
             { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} put {ItemName} on the floor."},
             { "Key": "NPCPickItem", "Value": "{CharacterName} picked up {ItemName}."},
@@ -37,6 +38,10 @@
             { "Key": "TargetTypeEnemy", "Value": "ENEMY"},
             { "Key": "RequiresATarget", "Value": "REQUIRES A TARGET"},
             { "Key": "FromSource", "Value": "(From {SourceName})"},
+            { "Key": "SightRangeStatFullMap", "Value": "Full map" },
+            { "Key": "SightRangeStatFullRoom", "Value": "Full room" },
+            { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} tiles" },
+            { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} items" },
             { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} has reached Level {Level}!"},
             { "Key": "CharacterLevelsUpHeader", "Value": "CONGRATULATIONS!" },
             { "Key": "CharacterHPStat", "Value": "HP" },
@@ -46,6 +51,7 @@
             { "Key": "CharacterMovementStat", "Value": "Movement" },
             { "Key": "CharacterSightRangeStat", "Value": "Sight Range" },
             { "Key": "CharacterHPRegenerationStat", "Value": "HP Regeneration" },
+            { "Key": "CharacterInventorySizeStat", "Value": "Inventory size" },
             { "Key": "CharacterDamageStat", "Value": "Damage" },
             { "Key": "CharacterMitigationStat", "Value": "Mitigation" },
             { "Key": "CharacterTakesDamage", "Value": "{CharacterName} took {DamageDealt} damage." },
@@ -53,10 +59,13 @@
             { "Key": "CharacterHealsAllHP", "Value": "{CharacterName} is now at maximum HP!" },
             { "Key": "CharacterGainsExperience", "Value": "{CharacterName} gained {Amount} experience points." },
             { "Key": "CharacterGotStatused", "Value": "{CharacterName} is now {StatusName}!" },
+            { "Key": "CharacterStatusGotRefreshed", "Value": "{CharacterName}'s {StatusName} has been reapplied!" },
             { "Key": "CharacterIsNoLongerStatused", "Value": "{CharacterName} is no longer {StatusName}!" },
             { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
             { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
             { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
+            { "Key": "CharacterWasTeleported", "Value": "{CharacterName} has teleported somewhere else." },
+            { "Key": "CharacterStealsItem", "Value": "{SourceName} has stolen {ItemName} from {TargetName}!" },
             { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
             { "Key": "PlayerFactionName", "Value": "Player" },
             { "Key": "PlayerFactionDescription", "Value": "Description. Currently unused." },
@@ -102,7 +111,7 @@
     },
     {
       "Language": "es",
-      "Strings": [
+      "LocaleStrings": [
             { "Key": "DungeonName", "Value": "Cueva de los Betas" },
             { "Key": "WelcomeMessage", "Value": "Texto a mostrar cuando inicia la mazmorra" },
             { "Key": "EndingMessage", "Value": "Texto a mostrar cuando termina la mazmorra" },
@@ -110,6 +119,7 @@
             { "Key": "NewTurn", "Value": "----------TURNO {TurnCount}----------" },
             { "Key": "FloorEnter", "Value": "Ingresando al piso {FloorLevel}..." },
             { "Key": "FloorLeave", "Value": "Abandonando el piso {FloorLevel}..." },
+            { "Key": "CharacterSwitchedPlacesWithPlayer", "Value": "{CharacterName} dejó pasar a {PlayerName}."},
             { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} colocó {ItemName} en la bolsa."},
             { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} dejó {ItemName} en el piso."},
             { "Key": "NPCPickItem", "Value": "{CharacterName} tomó {ItemName}."},
@@ -131,6 +141,10 @@
             { "Key": "TargetTypeEnemy", "Value": "ENEMIGO"},
             { "Key": "RequiresATarget", "Value": "REQUIERE UN OBJETIVO"},
             { "Key": "FromSource", "Value": "(Origen: {SourceName})"},
+            { "Key": "SightRangeStatFullMap", "Value": "Mapa entero" },
+            { "Key": "SightRangeStatFullRoom", "Value": "Habitación entera" },
+            { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} casillas" },
+            { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} objetos" },
             { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"},
             { "Key": "CharacterLevelsUpHeader", "Value": "¡FELICIDADES!" },
             { "Key": "CharacterHPStat", "Value": "PS" },
@@ -140,6 +154,7 @@
             { "Key": "CharacterMovementStat", "Value": "Movimiento" },
             { "Key": "CharacterSightRangeStat", "Value": "Visión" },
             { "Key": "CharacterHPRegenerationStat", "Value": "Regeneración de PS" },
+            { "Key": "CharacterInventorySizeStat", "Value": "Capacidad de inventario" },
             { "Key": "CharacterDamageStat", "Value": "Daño" },
             { "Key": "CharacterMitigationStat", "Value": "Mitigación" },
             { "Key": "CharacterTakesDamage", "Value": "{CharacterName} recibió {DamageDealt} puntos de daño." },
@@ -147,10 +162,13 @@
             { "Key": "CharacterHealsAllHP", "Value": "¡{CharacterName} ha recuperado todos los PS!" },
             { "Key": "CharacterGainsExperience", "Value": "{CharacterName} ha obtenido {Amount} puntos de experiencia." },
             { "Key": "CharacterGotStatused", "Value": "¡{CharacterName} ahora está {StatusName}!" },
+            { "Key": "CharacterStatusGotRefreshed", "Value": "¡{StatusName} de {CharacterName} se ha vuelto a aplicar!" },
             { "Key": "CharacterIsNoLongerStatused", "Value": "¡{CharacterName} ya no está {StatusName}!" },
             { "Key": "CharacterStatGotBuffed", "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}." },
             { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
             { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
+            { "Key": "CharacterWasTeleported", "Value": "{CharacterName} se ha teletransportado a otro sitio." },
+            { "Key": "CharacterStealsItem", "Value": "¡{SourceName} le ha quitado {ItemName} a {TargetName}!" },
             { "Key": "StairsGotRevealed", "Value": "¡Se han revelado las escaleras!" },
             { "Key": "PlayerFactionName", "Value": "Jugador" },
             { "Key": "PlayerFactionDescription", "Value": "Descripción. Aún no se usa." },
@@ -272,7 +290,7 @@
       "EnemiesWith": [ "Player", "AlliedNPCs" ]
     }
   ],
-  "Characters": [
+  "PlayerClasses": [
     {
       "Id": "Player",
       "Name": "PlayerName",
@@ -282,7 +300,7 @@
         "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
         "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
       },
-      "EntityType": "Player",
+      "RequiresNamePrompt": true,
       "Faction": "Player",
       "StartsVisible": true,
       "BaseHP": 12,
@@ -294,6 +312,7 @@
       "InventorySize": 3,
       "StartingWeapon": "Unarmed",
       "StartingArmor": "ClothArmor",
+      "StartingInventory": [ ],
       "CanGainExperience": true,
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -339,7 +358,9 @@
       "DefenseIncreasePerLevel": 0.34,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.025
-    },
+    }
+  ],
+  "NPCs": [
     {
       "Id": "Enemy",
       "Name": "EnemyName",
@@ -363,6 +384,7 @@
       "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "Unarmed",
       "StartingArmor": "Skirt",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [{
         "Name": "StickTongue",

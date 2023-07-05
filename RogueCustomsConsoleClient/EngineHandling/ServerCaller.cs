@@ -34,6 +34,18 @@ namespace RogueCustomsConsoleClient.EngineHandling
             return int.Parse(contents);
         }
 
+        public async Task<PlayerClassSelectionOutput> GetPlayerClassSelection(int dungeonId)
+        {
+            var json = await client.GetStringAsync($"{Address}/api/GetPlayerClassSelection/{dungeonId}");
+            return JsonConvert.DeserializeObject<PlayerClassSelectionOutput>(json);
+        }
+
+        public async Task SetPlayerClassSelection(int dungeonId, PlayerClassSelectionInput input)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+            await client.PostAsync($"{Address}/api/SetPlayerClassSelection/{dungeonId}", content);
+        }
+
         public async Task<string> GetDungeonWelcomeMessage(int dungeonId)
         {
             var response = await client.GetStringAsync($"{Address}/api/GetDungeonWelcomeMessage/{dungeonId}");
