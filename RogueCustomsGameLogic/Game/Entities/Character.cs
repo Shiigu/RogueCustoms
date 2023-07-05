@@ -326,6 +326,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanSee(Entity entity)
         {
             return entity.Visible
+                && entity.Position != null
+                && entity.ContainingTile != null
                 && entity.ContainingTile.Discovered
                 && entity.ContainingTile.Visible
                 && ComputeFOVTiles().Contains(entity.ContainingTile);

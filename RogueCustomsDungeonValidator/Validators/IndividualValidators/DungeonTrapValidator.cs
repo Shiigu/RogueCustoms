@@ -15,13 +15,13 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
     {
         public static DungeonValidationMessages Validate(ClassInfo trapJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var trapAsInstance = new Item(new EntityClass(trapJson, sampleDungeon.LocaleToUse), sampleDungeon.CurrentFloor);
+            var trapAsInstance = new Item(new EntityClass(trapJson, sampleDungeon.LocaleToUse, EntityType.Trap), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(trapJson.Name, "Trap", "Name", true));
             messages.AddRange(dungeonJson.ValidateString(trapJson.Description, "Trap", "Description", false));
 
-            messages.AddRange(trapJson.ConsoleRepresentation.Validate(trapJson.Id, dungeonJson));
+            messages.AddRange(trapJson.ConsoleRepresentation.Validate(trapJson.Id, false, dungeonJson));
 
             if (string.IsNullOrWhiteSpace(trapJson.Power))
                 messages.AddWarning("Trap does not have a set Power. Remember to hardcode Action Power parameters, or the game may crash.");

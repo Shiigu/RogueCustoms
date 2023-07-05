@@ -38,7 +38,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if (info.IsKeyPressed(Keys.Enter))
+            if (info.IsKeyPressed(Keys.Enter) && info.KeysPressed.Count == 1)
             {
                 ChangeConsoleContainerTo(ContainerToShiftTo);
             }

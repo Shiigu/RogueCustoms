@@ -179,21 +179,21 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             var action = ActionItems.ElementAtOrDefault(ActionSelectedIndex);
 
-            if (info.IsKeyPressed(Keys.Up))
+            if (info.IsKeyPressed(Keys.Up) && info.KeysPressed.Count == 1)
             {
                 ActionSelectedIndex = Math.Max(0, ActionSelectedIndex - 1);
                 DrawingArea.IsDirty = true;
             }
-            else if (info.IsKeyPressed(Keys.Down))
+            else if (info.IsKeyPressed(Keys.Down) && info.KeysPressed.Count == 1)
             {
                 ActionSelectedIndex = Math.Min(ActionItems.Count - 1, ActionSelectedIndex + 1);
                 DrawingArea.IsDirty = true;
             }
-            else if ((info.IsKeyPressed(Keys.A) || info.IsKeyPressed(Keys.D) || info.IsKeyPressed(Keys.Enter)) && action.CanBeUsed)
+            else if (((info.IsKeyPressed(Keys.A) || info.IsKeyPressed(Keys.D) || info.IsKeyPressed(Keys.Enter)) && action.CanBeUsed) && info.KeysPressed.Count == 1)
             {
                 DoButton.InvokeClick();
             }
-            else if (info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape))
+            else if ((info.IsKeyPressed(Keys.C) || info.IsKeyPressed(Keys.Escape)) && info.KeysPressed.Count == 1)
             {
                 CancelButton.InvokeClick();
             }

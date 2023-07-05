@@ -29,6 +29,16 @@ namespace Roguelike.Services
             return DungeonManager.CreateDungeon(dungeonName, locale);
         }
 
+        public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
+        {
+            return DungeonManager.GetPlayerClassSelection(dungeonId);
+        }
+
+        public void SetPlayerClassSelection(int dungeonId, PlayerClassSelectionInput input)
+        {
+            DungeonManager.SetPlayerClassSelection(dungeonId, input);
+        }
+
         public DungeonDto GetDungeonStatus(int dungeonId)
         {
             return DungeonManager.GetDungeonStatus(dungeonId);

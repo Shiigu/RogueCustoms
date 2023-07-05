@@ -53,6 +53,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public override void Update(TimeSpan delta)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
+            if (dungeonStatus == null) return;
 
             var playerEntity = dungeonStatus.Entities.Find(e => e.IsPlayer);
 
@@ -66,7 +67,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Violet, Color.Black, 178)));
                 this.Print((square.Width - title.Length) / 2, 0, title, true);
 
-                this.Print((square.Width - playerEntity.Name.Length) / 2, 2, playerEntity.Name);
+                this.Print((square.Width - playerEntity.Name.Length) / 2, 2, playerEntity.Name.ToAscii());
 
                 var levelString = LocalizationManager.GetString("PlayerLevelText").Format(new { CurrentLevel = playerEntity.Level });
 

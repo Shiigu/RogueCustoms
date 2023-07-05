@@ -12,27 +12,45 @@ using System.Linq;
 
 namespace RogueCustomsConsoleClient.UI.Windows
 {
-    public class PromptBox : Window
+    public class InputBox : Window
     {
         private Button AffirmativeButton { get; set; }
         private Button NegativeButton { get; set; }
+        private TextBox InputTextBox { get; set; }
         private string TitleCaption { get; set; }
         private string[] MessageLines { get; set; }
         private Color WindowColor { get; set; }
 
-        private PromptBox(int width, int height) : base(width, height) { }
+        private InputBox(int width, int height) : base(width, height) { }
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if((info.IsKeyPressed(Keys.Enter) || info.IsKeyPressed(Keys.Y) || info.IsKeyPressed(Keys.S)) && info.KeysPressed.Count == 1)
-                AffirmativeButton.InvokeClick();
-            if((info.IsKeyPressed(Keys.Escape) || info.IsKeyPressed(Keys.N)) && info.KeysPressed.Count == 1)
-                NegativeButton.InvokeClick();
+            if(!InputTextBox.IsFocused)
+            {
+                if ((info.IsKeyPressed(Keys.Enter) || info.IsKeyPressed(Keys.Y) || info.IsKeyPressed(Keys.S)) && info.KeysPressed.Count == 1)
+                    AffirmativeButton.InvokeClick();
+                if ((info.IsKeyPressed(Keys.Escape) || info.IsKeyPressed(Keys.N)) && info.KeysPressed.Count == 1)
+                    NegativeButton.InvokeClick();
 
-            return true;
+                return true;
+            }
+            else
+            {
+                if (info.IsKeyPressed(Keys.Enter) && info.KeysPressed.Count == 1)
+                {
+                    InputTextBox.FocusLost();
+                    AffirmativeButton.InvokeClick();
+                }
+                if (info.IsKeyPressed(Keys.Escape) && info.KeysPressed.Count == 1)
+                {
+                    InputTextBox.FocusLost();
+                    NegativeButton.InvokeClick();
+                }
+                return base.ProcessKeyboard(info);
+            }
         }
 
-        public static Window Show(ColoredString message, string affirmativeButtonText, string negativeButtonText, string titleText, Color windowColor, Action affirmativeCallback = null, Action negativeCallback = null)
+        public static Window Show(ColoredString message, string affirmativeButtonText, string negativeButtonText, string titleText, string defaultInputText, Color windowColor, Action<string> affirmativeCallback = null, Action negativeCallback = null)
         {
             var messageAsString = message.ToString();
             string[] linesInMessage;
@@ -62,9 +80,17 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 Text = negativeButtonText.ToAscii(),
             };
 
-            var window = new PromptBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + affirmativeButton.Surface.Height);
+            var inputTextBox = new TextBox(width - 4)
+            {
+                Text = defaultInputText[..Math.Min(13, defaultInputText.Length)].ToAscii(),
+                MaxLength = 13,
+                IsEnabled = true
+            };
+
+            var window = new InputBox(Math.Max(width, titleText.Length), 6 + linesInMessage.Length + affirmativeButton.Surface.Height);
             window.MessageLines = linesInMessage;
             window.TitleCaption = titleText.ToAscii();
+            window.InputTextBox = inputTextBox;
             window.AffirmativeButton = affirmativeButton;
             window.NegativeButton = negativeButton;
             window.WindowColor = windowColor;
@@ -77,11 +103,17 @@ namespace RogueCustomsConsoleClient.UI.Windows
 
             window.Controls.Add(printArea);
 
+            inputTextBox.Position = new Point(2, window.Height - affirmativeButton.Surface.Height - 3);
+            window.Controls.Add(inputTextBox);
+
+            window.InputTextBox.IsFocused = true;
+            window.InputTextBox.DisableKeyboard = false;
+
             affirmativeButton.Position = new Point(2, window.Height - affirmativeButton.Surface.Height);
             affirmativeButton.Click += (o, e) => {
                 window.DialogResult = true;
                 window.Hide();
-                affirmativeCallback?.Invoke();
+                affirmativeCallback?.Invoke(inputTextBox.Text);
             };
             affirmativeButton.Theme = null;
 
@@ -96,7 +128,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             negativeButton.Theme = null;
 
             window.Controls.Add(negativeButton);
-            affirmativeButton.IsFocused = true;
+
             window.Show(true);
             window.Parent = (window.Parent as RootScreen).ActiveContainer;
             window.Center();
@@ -121,7 +153,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 ds.Surface.Print(2, 2 + i, MessageLines[i].Replace("\r\n", "").Replace("\n", "").ToAscii());
             }
             ds.IsDirty = true;
-            ds.IsFocused = true;
+            //ds.IsFocused = true;
         }
     }
 }

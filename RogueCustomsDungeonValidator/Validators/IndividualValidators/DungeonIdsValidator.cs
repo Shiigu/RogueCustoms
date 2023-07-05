@@ -29,7 +29,7 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 }
             }
 
-            UpdateIdDictionaryWith(idDictionary, dungeonJson.Characters);
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.NPCs);
             UpdateIdDictionaryWith(idDictionary, dungeonJson.Items);
             UpdateIdDictionaryWith(idDictionary, dungeonJson.Traps);
             UpdateIdDictionaryWith(idDictionary, dungeonJson.AlteredStatuses);
@@ -42,12 +42,8 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                 }
             }
 
-            var playerClasses = dungeonJson.Characters.Where(c => c.EntityType == "Player").Select(p => p.Id).ToList();
-
-            if (!playerClasses.Any())
-                messages.AddError($"Dungeon does not have any Player classes.");
-            else if (playerClasses.Count > 1)
-                messages.AddError($"There are too many Player classes in the Dungeon: {playerClasses.JoinAnd()}. It must only be one.");
+            if (!dungeonJson.PlayerClasses.Any())
+                messages.AddError("Dungeon does not have any Player classes.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 

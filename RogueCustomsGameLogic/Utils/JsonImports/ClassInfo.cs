@@ -10,9 +10,9 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool RequiresNamePrompt { get; set; }
         public string Faction { get; set; }
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
-        public string EntityType { get; set; }
         public List<ActionWithEffectsInfo> OnTurnStartActions { get; set; } = new List<ActionWithEffectsInfo>();
         public bool CanBePickedUp { get; set; }
         public bool StartsVisible { get; set; }
@@ -29,6 +29,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int AIOddsToUseActionsOnSelf { get; set; }
         public string StartingWeapon { get; set; }
         public string StartingArmor { get; set; }
+        public List<string> StartingInventory { get; set; }
         public List<ActionWithEffectsInfo> OnAttackActions { get; set; } = new List<ActionWithEffectsInfo>();
         public List<ActionWithEffectsInfo> OnAttackedActions { get; set; } = new List<ActionWithEffectsInfo>();
         public int MaxLevel { get; set; }
@@ -46,6 +47,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string Power { get; set; }
 
         #region Only for Items
+        public string EntityType { get; set; }
         public List<ActionWithEffectsInfo> OnItemSteppedActions { get; set; } = new List<ActionWithEffectsInfo>();
         public List<ActionWithEffectsInfo> OnItemUseActions { get; set; } = new List<ActionWithEffectsInfo>();
         #endregion

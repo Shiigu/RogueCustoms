@@ -11,7 +11,7 @@ namespace RogueCustomsDungeonValidator.Utils
 {
     public static class ConsoleRepresentationHelpers
     {
-        public static DungeonValidationMessages Validate(this ConsoleRepresentation representation, string ownerClassId, DungeonInfo dungeonJson)
+        public static DungeonValidationMessages Validate(this ConsoleRepresentation representation, string ownerClassId, bool ownerIsPlayerClass, DungeonInfo dungeonJson)
         {
             var messages = new DungeonValidationMessages();
 
@@ -22,7 +22,9 @@ namespace RogueCustomsDungeonValidator.Utils
             if (!representation.Character.ToString().CanBeEncodedToIBM437())
                 messages.AddWarning("Console Representation cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
 
-            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Characters));
+            if(!ownerIsPlayerClass)
+                messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.PlayerClasses));
+            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.NPCs));
             messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Items));
             messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Traps));
             messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.AlteredStatuses));

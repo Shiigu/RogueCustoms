@@ -20,8 +20,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public List<AlteredStatusDetailDto> AlteredStatuses { get; set; }
 
-        public EquippedItemDetailDto WeaponInfo { get; set; }
-        public EquippedItemDetailDto ArmorInfo { get; set; }
+        public ItemDetailDto WeaponInfo { get; set; }
+        public ItemDetailDto ArmorInfo { get; set; }
 
         public PlayerInfoDto() { } 
 
@@ -97,8 +97,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             };
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
-            WeaponInfo = new EquippedItemDetailDto(character.Weapon);
-            ArmorInfo = new EquippedItemDetailDto(character.Armor);
+            WeaponInfo = new ItemDetailDto(character.Weapon);
+            ArmorInfo = new ItemDetailDto(character.Armor);
         }
     }
 
@@ -146,21 +146,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Description = als.Description;
             RemainingTurns = als.RemainingTurns;
             ConsoleRepresentation = als.ConsoleRepresentation;
-        }
-    }
-
-    public class EquippedItemDetailDto
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; set; }
-        public EquippedItemDetailDto() { }
-
-        public EquippedItemDetailDto(Item i)
-        {
-            Name = i.Name;
-            Description = i.Description;
-            ConsoleRepresentation = i.ConsoleRepresentation;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using RogueCustomsDungeonValidator.Validators.IndividualValidators;
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,8 @@ namespace RogueCustomsDungeonValidator.Validators
                 }
             }
             var sampleDungeon = new Dungeon(0, DungeonJson, DungeonJson.DefaultLocale);
+            sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
+            sampleDungeon.NewMap();
 
             NameValidationMessages = DungeonNameValidator.Validate(DungeonJson);
             AuthorValidationMessages = DungeonAuthorValidator.Validate(DungeonJson);
@@ -76,8 +79,10 @@ namespace RogueCustomsDungeonValidator.Validators
             foreach (var factionInfo in DungeonJson.FactionInfos)
                 FactionValidationMessages.Add((factionInfo.Id, DungeonFactionValidator.Validate(factionInfo, DungeonJson)));
 
-            foreach (var characterInfo in DungeonJson.Characters)
-                CharacterValidationMessages.Add((characterInfo.Id, DungeonCharacterValidator.Validate(characterInfo, DungeonJson, sampleDungeon)));
+            foreach (var playerInfo in DungeonJson.PlayerClasses)
+                CharacterValidationMessages.Add((playerInfo.Id, DungeonCharacterValidator.Validate(playerInfo, true, DungeonJson, sampleDungeon)));
+            foreach (var npcInfo in DungeonJson.NPCs)
+                CharacterValidationMessages.Add((npcInfo.Id, DungeonCharacterValidator.Validate(npcInfo, false, DungeonJson, sampleDungeon)));
             foreach (var itemInfo in DungeonJson.Items)
                 ItemValidationMessages.Add((itemInfo.Id, DungeonItemValidator.Validate(itemInfo, DungeonJson, sampleDungeon)));
             foreach (var trapInfo in DungeonJson.Traps)

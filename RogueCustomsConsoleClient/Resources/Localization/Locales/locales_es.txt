@@ -68,6 +68,23 @@ DetailsButtonText = DETALLES
 ; ButtonsConsole
 ExitPromptText = ¿Quieres dejar de jugar y\nregresar al menú principal?
 
+; PlayerClassWindow
+PlayerClassWindowTitleText = Elija una Clase
+DetailsSubconsoleTitleText = DETALLES
+LeftButtonText = <-
+RightButtonText = ->
+SelectButtonText = ELEGIR
+PlayerClassStatsHeader = ESTADÍSTICAS:
+PlayerClassIncreasePerLevelText = {Increase} por nivel
+PlayerClassStartingWeaponHeader = ARMA INICIAL
+PlayerClassStartingArmorHeader = ARMADURA INICIAL
+PlayerClassStartingInventoryHeader = INVENTARIO INICIAL
+PlayerClassNoStartingInventoryText = NADA
+InputBoxTitleText = Nombre
+InputBoxSingleClassPromptText = Elige el nombre para {ClassName}\n\nPresiona ESC para regresar al menú principal
+InputBoxPromptText = Elige el nombre para {ClassName}
+InputBoxAffirmativeButtonText = ELEGIR
+
 ; ActionWindow
 ActionWindowTitleText = Acciones hacia {TargetName}
 DoButtonText = REALIZAR

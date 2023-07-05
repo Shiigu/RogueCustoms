@@ -61,6 +61,34 @@ namespace Roguelike.Controllers
             }
         }
 
+        [HttpGet("GetPlayerClassSelection/{dungeonId}")]
+        public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
+        {
+            try
+            {
+                return DungeonService.GetPlayerClassSelection(dungeonId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost("SetPlayerClassSelection/{dungeonId}")]
+        public void SetPlayerClassSelection(int dungeonId, [FromBody] PlayerClassSelectionInput input)
+        {
+            try
+            {
+                DungeonService.SetPlayerClassSelection(dungeonId, input);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         [HttpGet("GetDungeonWelcomeMessage/{dungeonId}")]
         public string GetDungeonWelcomeMessage(int dungeonId)
         {

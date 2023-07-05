@@ -17,7 +17,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int AmountOfFloors { get; set; }
         public List<FloorInfo> FloorInfos { get; set; }
         public List<FactionInfo> FactionInfos { get; set; }
-        public List<ClassInfo> Characters { get; set; }
+        public List<ClassInfo> PlayerClasses { get; set; }
+        public List<ClassInfo> NPCs { get; set; }
         public List<ClassInfo> Items { get; set; }
         public List<ClassInfo> Traps { get; set; }
         public List<ClassInfo> AlteredStatuses { get; set; }

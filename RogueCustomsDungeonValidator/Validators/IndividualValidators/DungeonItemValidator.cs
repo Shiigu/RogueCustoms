@@ -16,13 +16,13 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
     {
         public static DungeonValidationMessages Validate(ClassInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse), sampleDungeon.CurrentFloor);
+            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(itemJson.Name, "Item", "Name", true));
             messages.AddRange(dungeonJson.ValidateString(itemJson.Description, "Item", "Description", true));
 
-            messages.AddRange(itemJson.ConsoleRepresentation.Validate(itemJson.Id, dungeonJson));
+            messages.AddRange(itemJson.ConsoleRepresentation.Validate(itemJson.Id, false, dungeonJson));
 
             if(string.IsNullOrWhiteSpace(itemJson.Power))
                 messages.AddWarning("Item does not have a set Power. Remember to hardcode Action Power parameters if needed, or the game may crash.");
@@ -109,7 +109,7 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
 
             if (!dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pm => pm.ClassId.Equals(itemJson.Id))))
             {
-                if(itemJson.EntityType == "Consumable" || !dungeonJson.Characters.Any(c => c.StartingWeapon.Equals(itemJson.Id) || c.StartingArmor.Equals(itemJson.Id)))
+                if(itemJson.EntityType == "Consumable" || !dungeonJson.NPCs.Any(c => c.StartingWeapon.Equals(itemJson.Id) || c.StartingArmor.Equals(itemJson.Id)))
                 {
                     messages.AddWarning("Item does not show up in any list of PossibleItems. It will never be spawned. Consider adding it to a PossibleItems list.");
                 }

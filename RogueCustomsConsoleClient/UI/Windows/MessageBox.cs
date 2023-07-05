@@ -23,7 +23,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
 
         public override bool ProcessKeyboard(Keyboard info)
         {
-            if(info.IsKeyPressed(Keys.Escape) || info.IsKeyPressed(Keys.Enter))
+            if((info.IsKeyPressed(Keys.Escape) || info.IsKeyPressed(Keys.Enter)) && info.KeysPressed.Count == 1)
                 CloseButton.InvokeClick();
 
             return true;

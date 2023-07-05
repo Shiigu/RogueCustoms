@@ -38,6 +38,10 @@
         { "Key": "TargetTypeEnemy", "Value": "ENEMY"},
         { "Key": "RequiresATarget", "Value": "REQUIRES A TARGET"},
         { "Key": "FromSource", "Value": "(From {SourceName})"},
+        { "Key": "SightRangeStatFullMap", "Value": "Full map" },
+        { "Key": "SightRangeStatFullRoom", "Value": "Full room" },
+        { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} tiles" },
+        { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} items" },
         { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} has reached Level {Level}!"},
         { "Key": "CharacterLevelsUpHeader", "Value": "CONGRATULATIONS!" },
         { "Key": "CharacterHPStat", "Value": "HP" },
@@ -47,6 +51,7 @@
         { "Key": "CharacterMovementStat", "Value": "Movement" },
         { "Key": "CharacterSightRangeStat", "Value": "Sight Range" },
         { "Key": "CharacterHPRegenerationStat", "Value": "HP Regeneration" },
+        { "Key": "CharacterInventorySizeStat", "Value": "Inventory Size" },
         { "Key": "CharacterDamageStat", "Value": "Damage" },
         { "Key": "CharacterMitigationStat", "Value": "Mitigation" },
         { "Key": "CharacterTakesDamage", "Value": "{CharacterName} took {DamageDealt} damage." },
@@ -75,8 +80,12 @@
         { "Key": "MeleeEnemiesFactionDescription", "Value": "The enemies that wield melee weapons.\n\nMay retaliate against their ranged brethren if they attack them." },
         { "Key": "RangedEnemiesFactionName", "Value": "Ranged Enemies" },
         { "Key": "RangedEnemiesFactionDescription", "Value": "The enemies that wield ranges weapons.\n\nMay retaliate against their melee brethren if they attack them." },
-        { "Key": "PlayerName", "Value": "Player" },
-        { "Key": "PlayerDescription", "Value": "This is you, the player.\n\nYour goal is to reach the end of the dungeon alive.\n\nBase Attack: 2\nBase Defense:0" },
+        { "Key": "EasyPlayerName", "Value": "Easy Player" },
+        { "Key": "EasyPlayerDescription", "Value": "This is you, the player.\n\nYou have it easier than others.\nYour goal is to reach the end of the dungeon alive." },
+        { "Key": "NormalPlayerName", "Value": "Normal Player" },
+        { "Key": "NormalPlayerDescription", "Value": "This is you, the player.\n\nYour goal is to reach the end of the dungeon alive." },
+        { "Key": "HardPlayerName", "Value": "Hard Player" },
+        { "Key": "HardPlayerDescription", "Value": "This is you, the player.\n\nYou have it harder than others.\nYour goal is to reach the end of the dungeon alive." },
         { "Key": "PlayerDeathText", "Value": "{this} has died!" },
         { "Key": "PlayerDeathMessageBoxHeader", "Value": "OH NO!" },
         { "Key": "PlayerDeathMessageBoxText", "Value": "YOU HAVE DIED!" },
@@ -222,7 +231,11 @@
         { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
         { "Key": "TargetTypeEnemy", "Value": "ENEMIGO"},
         { "Key": "RequiresATarget", "Value": "REQUIERE UN OBJETIVO"},
-        { "Key": "FromSource", "Value": "(Origen: {SourceName})"},
+        { "Key": "FromSource", "Value": "(Origen: {SourceName})"},        
+        { "Key": "SightRangeStatFullMap", "Value": "Mapa entero" },
+        { "Key": "SightRangeStatFullRoom", "Value": "Habitación entera" },
+        { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} casillas" },
+        { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} objetos" },
         { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"},
         { "Key": "CharacterLevelsUpHeader", "Value": "¡FELICIDADES!" },
         { "Key": "CharacterHPStat", "Value": "PS" },
@@ -232,6 +245,7 @@
         { "Key": "CharacterMovementStat", "Value": "Mov." },
         { "Key": "CharacterSightRangeStat", "Value": "Visión" },
         { "Key": "CharacterHPRegenerationStat", "Value": "Regeneración de PS" },
+        { "Key": "CharacterInventorySizeStat", "Value": "Capacidad de Inventario" },
         { "Key": "CharacterDamageStat", "Value": "Daño" },
         { "Key": "CharacterMitigationStat", "Value": "Mitigación" },
         { "Key": "CharacterTakesDamage", "Value": "{CharacterName} recibió {DamageDealt} puntos de daño." },
@@ -260,8 +274,12 @@
         { "Key": "MeleeEnemiesFactionDescription", "Value": "Los enemigos con armas de melé.\n\nPodrían atacar a sus compadres de rango si estos les golpean." },
         { "Key": "RangedEnemiesFactionName", "Value": "Enemies de Rango" },
         { "Key": "RangedEnemiesFactionDescription", "Value": "Los enemigos con armas de rango.\n\nPodrían atacar a sus compadres de melé si estos les golpean." },
-        { "Key": "PlayerName", "Value": "Jugador" },
-        { "Key": "PlayerDescription", "Value": "Este eres tú, el Jugador.\n\nTu objetivo es llegar con vida al final de la mazmorra.\n\nAtaque Base: 2\nDefensa Base:0" },
+        { "Key": "EasyPlayerName", "Value": "J. Fácil" },
+        { "Key": "EasyPlayerDescription", "Value": "Este eres tú, el Jugador.\n\nLo tienes fácil.\nTu objetivo es llegar con vida al final de la mazmorra." },
+        { "Key": "NormalPlayerName", "Value": "J. Normal" },
+        { "Key": "NormalPlayerDescription", "Value": "Este eres tú, el Jugador.\n\nTu objetivo es llegar con vida al final de la mazmorra." },
+        { "Key": "HardPlayerName", "Value": "J. Difícil" },
+        { "Key": "HardPlayerDescription", "Value": "Este eres tú, el Jugador.\n\nLo tienes difícil.\nTu objetivo es llegar con vida al final de la mazmorra." },
         { "Key": "PlayerDeathText", "Value": "¡{this} ha muerto!" },
         { "Key": "PlayerDeathMessageBoxHeader", "Value": "¡OH, NO!" },
         { "Key": "PlayerDeathMessageBoxText", "Value": "¡HAS MUERTO!" },
@@ -640,17 +658,87 @@
       "EnemiesWith": [ "PlayerFaction", "AlliedNPCs" ]
     }
   ],
-  "Characters": [
+  "PlayerClasses": [
     {
-      "Id": "Player",
-      "Name": "PlayerName",
-      "Description": "PlayerDescription",
+      "Id": "EasyPlayer",
+      "Name": "EasyPlayerName",
+      "Description": "EasyPlayerDescription",
       "ConsoleRepresentation": {
         "Character": "☺",
         "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
         "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
       },
-      "EntityType": "Player",
+      "RequiresNamePrompt": true,
+      "Faction": "PlayerFaction",
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "BaseHP": 18,
+      "BaseAttack": 4,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0.125,
+      "BaseSightRange": "FullMap",
+      "InventorySize": 6,
+      "StartingWeapon": "Pistol",
+      "StartingArmor": "LeatherArmor",
+      "StartingInventory": [ "Antidote" ],
+      "CanGainExperience": true,
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            { "ParamName": "color", "Value": "255,0,0,255" }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text" , "Value": "PlayerDeathText" },
+              { "ParamName": "color", "Value": "255,0,0,255"     }
+            ],
+            "Then": {
+              "EffectName": "MessageBox",
+              "Params": [
+                { "ParamName": "title", "Value": "PlayerDeathMessageBoxHeader" },
+                { "ParamName": "text" , "Value": "PlayerDeathMessageBoxText" },
+                { "ParamName": "color", "Value": "255,0,0,255"    }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 10,
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "2 * level + 8",
+      "MaxHPIncreasePerLevel": 2.5,
+      "AttackIncreasePerLevel": 1.25,
+      "DefenseIncreasePerLevel": 0.5,
+      "MovementIncreasePerLevel": 0,
+      "HPRegenerationIncreasePerLevel": 0.05
+    },
+    {
+      "Id": "NormalPlayer",
+      "Name": "NormalPlayerName",
+      "Description": "NormalPlayerDescription",
+      "ConsoleRepresentation": {
+        "Character": "☺",
+        "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
+      },
+      "RequiresNamePrompt": true,
       "Faction": "PlayerFaction",
       "StartsVisible": true,
       "OnTurnStartActions": [],
@@ -660,9 +748,10 @@
       "BaseMovement": 1,
       "BaseHPRegeneration": 0.075,
       "BaseSightRange": "FullRoom",
-      "InventorySize": 3,
-      "StartingWeapon": "BareFists",
+      "InventorySize": 4,
+      "StartingWeapon": "Sword",
       "StartingArmor": "ClothArmor",
+      "StartingInventory": [ ],
       "CanGainExperience": true,
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -711,6 +800,78 @@
       "HPRegenerationIncreasePerLevel": 0.025
     },
     {
+      "Id": "HardPlayer",
+      "Name": "HardPlayerName",
+      "Description": "HardPlayerDescription",
+      "ConsoleRepresentation": {
+        "Character": "☺",
+        "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
+        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
+      },
+      "RequiresNamePrompt": true,
+      "Faction": "PlayerFaction",
+      "StartsVisible": true,
+      "OnTurnStartActions": [],
+      "BaseHP": 8,
+      "BaseAttack": 1,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseHPRegeneration": 0.025,
+      "BaseSightRange": "6",
+      "InventorySize": 2,
+      "StartingWeapon": "BareFists",
+      "StartingArmor": "ClothArmor",
+      "StartingInventory": [ ],
+      "CanGainExperience": true,
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnDeathActions": [{
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            { "ParamName": "color", "Value": "255,0,0,255" }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
+            "Params": [
+              { "ParamName": "text" , "Value": "PlayerDeathText" },
+              { "ParamName": "color", "Value": "255,0,0,255"     }
+            ],
+            "Then": {
+              "EffectName": "MessageBox",
+              "Params": [
+                { "ParamName": "title", "Value": "PlayerDeathMessageBoxHeader" },
+                { "ParamName": "text" , "Value": "PlayerDeathMessageBoxText" },
+                { "ParamName": "color", "Value": "255,0,0,255"    }
+              ],
+              "Then": null,
+              "OnSuccess": null,
+              "OnFailure": null
+            },
+            "OnSuccess": null,
+            "OnFailure": null
+          },
+          "OnSuccess": null,
+          "OnFailure": null
+        }
+      }],
+      "MaxLevel": 8,
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "(1/2) * (level ^ 3) + (2/5) * (level ^ 2) + 2 * level + 8",
+      "MaxHPIncreasePerLevel": 1.5,
+      "AttackIncreasePerLevel": 0.75,
+      "DefenseIncreasePerLevel": 0.26,
+      "MovementIncreasePerLevel": 0,
+      "HPRegenerationIncreasePerLevel": 0.0075
+    }
+  ],
+  "NPCs": [    
+    {
       "Id": "MeleeEnemy",
       "Name": "MeleeEnemyName",
       "Description": "MeleeEnemyDescription",
@@ -719,7 +880,6 @@
         "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "NPC",
       "Faction": "MeleeEnemies",
       "OnTurnStartActions": [],
       "StartsVisible": true,
@@ -734,6 +894,7 @@
       "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [{
         "Name": "StickTongue",
@@ -805,7 +966,6 @@
         "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "NPC",
       "Faction": "RangedEnemies",
       "OnTurnStartActions": [],
       "StartsVisible": true,
@@ -820,6 +980,7 @@
       "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -875,11 +1036,10 @@
         "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "NPC",
       "Faction": "MeleeEnemies",
       "OnTurnStartActions": [],
-      "StartsVisible": true,
-      "BaseHP": 6,
+      "StartsVisible": false,
+      "BaseHP": 4,
       "BaseAttack": 0,
       "BaseDefense": 0,
       "BaseMovement": 2,
@@ -890,6 +1050,7 @@
       "AIOddsToUseActionsOnSelf": 50,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [{
         "Name": "Steal",
@@ -983,7 +1144,6 @@
         "BackgroundColor": { "R": 0,   "G": 0  , "B": 0, "A": 255 },
         "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
       },
-      "EntityType": "NPC",
       "Faction": "AlliedNPCs",
       "OnTurnStartActions": [],
       "StartsVisible": true,
@@ -998,6 +1158,7 @@
       "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [{
         "Name": "DoNothing",
@@ -1069,7 +1230,6 @@
         "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "NPC",
       "Faction": "MeleeEnemies",
       "OnTurnStartActions": [],
       "StartsVisible": true,
@@ -1083,6 +1243,7 @@
       "AIOddsToUseActionsOnSelf": 0,
       "StartingWeapon": "Pistol",
       "StartingArmor": "LeatherArmor",
+      "StartingInventory": [ ],
       "CanGainExperience": false,
       "OnAttackActions": [{
         "Name": "DoNothing",
@@ -2310,7 +2471,6 @@
         "BackgroundColor": { "R": 255, "G": 0  , "B": 0  , "A": 255 },
         "ForegroundColor": { "R": 255, "G": 255, "B": 0  , "A": 255 }
       },
-      "EntityType": "Trap",
       "StartsVisible": false,
       "CanBePickedUp": false,
       "Power": "1",      
@@ -2376,7 +2536,6 @@
         "BackgroundColor": { "R": 54 , "G": 54 , "B": 54 , "A": 255 },
         "ForegroundColor": { "R": 40 , "G": 184, "B": 0  , "A": 255 }
       },
-      "EntityType": "Trap",
       "StartsVisible": true,
       "CanBePickedUp": false,
       "Power": "",
@@ -2422,7 +2581,6 @@
         "BackgroundColor": { "R": 0, "G": 0  , "B": 128, "A": 255 },
         "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
       },
-      "EntityType": "Trap",
       "StartsVisible": false,
       "CanBePickedUp": false,
       "OnItemSteppedActions": [{
@@ -2487,7 +2645,6 @@
         "BackgroundColor": { "R": 54 , "G": 54, "B": 54, "A": 255 },
         "ForegroundColor": { "R": 180, "G": 0 , "B": 0 , "A": 255 }
       },
-      "EntityType": "Trap",
       "StartsVisible": false,
       "CanBePickedUp": false,
       "OnItemSteppedActions": [{
@@ -2543,7 +2700,6 @@
         "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
         "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
       },
-      "EntityType": "AlteredStatus",
       "CanStack": false,
       "CanOverwrite": false,
       "CleanseOnFloorChange": false,
@@ -2579,7 +2735,6 @@
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
       },
-      "EntityType": "AlteredStatus",
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
@@ -2621,7 +2776,6 @@
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "AlteredStatus",
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
@@ -2676,7 +2830,6 @@
         "BackgroundColor": { "R": 0, "G": 0, "B": 0  , "A": 255 },
         "ForegroundColor": { "R": 0, "G": 0, "B": 255, "A": 255 }
       },
-      "EntityType": "AlteredStatus",
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
@@ -2735,7 +2888,6 @@
         "BackgroundColor": { "R": 0  , "G": 0, "B": 0, "A": 255 },
         "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
       },
-      "EntityType": "AlteredStatus",
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
