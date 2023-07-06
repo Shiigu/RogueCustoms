@@ -15,7 +15,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 {
     public abstract class Character : Entity, IHasActions, IKillable
     {
-        public readonly Faction Faction;
+        public Faction Faction { get; set; }
 
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
@@ -53,14 +53,30 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<StatModification> AttackModifications { get; set; }
         public int TotalAttackIncrements => AttackModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
         public int Attack => BaseAttack + (int)(AttackIncreasePerLevel * (Level - 1)) + TotalAttackIncrements;
-        public string Damage => $"{Weapon.Power}+{Attack}";
+        public string Damage
+        {
+            get
+            {
+                if(Attack >= 0)
+                    return $"{Weapon.Power}+{Attack}";
+                return $"{Weapon.Power}-{Math.Abs(Attack)}";
+            }
+        }
 
         public readonly int BaseDefense;
         public readonly decimal DefenseIncreasePerLevel;
         public List<StatModification> DefenseModifications { get; set; }
         public int TotalDefenseIncrements => DefenseModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
         public int Defense => BaseDefense + (int)(DefenseIncreasePerLevel * (Level - 1)) + TotalDefenseIncrements;
-        public string Mitigation => $"{Armor.Power}+{Defense}";
+        public string Mitigation
+        {
+            get
+            {
+                if (Defense >= 0)
+                    return $"{Armor.Power}+{Defense}";
+                return $"{Armor.Power}-{Math.Abs(Defense)}";
+            }
+        }
 
         public readonly int BaseMovement;
         public readonly decimal MovementIncreasePerLevel;
@@ -343,9 +359,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Level++;
                 Color forecolorToUse;
                 if (this == Map.Player || Faction.AlliedWith.Contains(Map.Player.Faction))
-                    forecolorToUse = Color.Red;
-                else if (Faction.EnemiesWith.Contains(Map.Player.Faction))
                     forecolorToUse = Color.Lime;
+                else if (Faction.EnemiesWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Red;
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}), forecolorToUse);
