@@ -767,7 +767,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTargetTile = Characters.Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
             if (characterInTargetTile != null)
             {
-                if ((!characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction) || !characterInTargetTile.Visible) && characterInTargetTile.Movement > 0)
+                if (((characterInTargetTile.Visible && character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) || !characterInTargetTile.Visible) && characterInTargetTile.CanTakeAction && characterInTargetTile.Movement > 0)
                 {
                     // Swap positions with allies, neutrals or invisibles
                     characterInTargetTile.Position = character.Position;
