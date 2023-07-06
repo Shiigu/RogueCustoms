@@ -331,7 +331,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                                                     });
                     handled = true;
                 }
+            }
 
+            if(ControlMode != ControlMode.CannotAct)
+            {
                 if (keyboard.IsKeyPressed(Keys.A) && keyboard.KeysPressed.Count == 1)
                 {
                     ControlMode = ControlMode.ActionTargeting;
@@ -339,7 +342,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     handled = true;
                 }
             }
-
 
             if (keyboard.IsKeyPressed(Keys.S) && keyboard.KeysPressed.Count == 1)
             {
