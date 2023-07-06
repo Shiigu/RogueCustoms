@@ -103,7 +103,19 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
             }
 
             if (owner != null && owner is Character c)
+            {
                 source = c;
+                if(source.OwnOnAttackActions.Contains(action))
+                {
+                    (source as Character).Faction = sampleDungeon.Factions.First();
+                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor);
+                    fillerWeapon.Owner = source as Character;
+                    (source as Character).EquippedWeapon = fillerWeapon;
+                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor);
+                    fillerArmor.Owner = source as Character;
+                    (source as Character).EquippedArmor = fillerArmor;
+                }
+            }
             else if (owner != null && (owner.EntityType == EntityType.Weapon || owner.EntityType == EntityType.Armor))
             {
                 source = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
@@ -182,15 +194,39 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                         messages.AddError($"Action {action.Name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
                     }
 
-                    if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target))
+                    try
+                    {
+                        if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target))
+                        {
+                            errorOnActionChain = true;
+                            messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has parameters that haven't been parsed.");
+                        }
+                    }
+                    catch (Exception ex)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has parameters that haven't been parsed.");
+                        messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
                     }
 
                     if (!errorOnActionChain)
                     {
                         int amountOfSuccesses = 0, amountOfFailures = 0;
+
+                        var excessiveTargetHPWarning = false;
+                        var excessiveTargetAttackWarning = false;
+                        var excessiveTargetDefenseWarning = false;
+                        var excessiveTargetMovementWarning = false;
+                        var excessiveTargetHPRegenerationWarning = false;
+                        var excessiveSourceHPWarning = false;
+                        var excessiveSourceAttackWarning = false;
+                        var excessiveSourceDefenseWarning = false;
+                        var excessiveSourceMovementWarning = false;
+                        var excessiveSourceHPRegenerationWarning = false;
+                        var excessiveThisHPWarning = false;
+                        var excessiveThisAttackWarning = false;
+                        var excessiveThisDefenseWarning = false;
+                        var excessiveThisMovementWarning = false;
+                        var excessiveThisHPRegenerationWarning = false;
 
                         try
                         {
@@ -227,6 +263,79 @@ namespace RogueCustomsDungeonValidator.Validators.IndividualValidators
                                 if (defenseTestModification != null)
                                     defenseTestModification.Amount++;
                                 if (target.HP <= 0) target.HP = target.MaxHP - 1;
+                                if(target.TotalMaxHPIncrements > 1000000)
+                                {
+                                    if(!excessiveTargetHPWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.MaxHPModifications.Clear();
+                                    excessiveTargetHPWarning = true;
+                                }
+                                if (target.TotalAttackIncrements > 1000000)
+                                {
+                                    if(!excessiveTargetAttackWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.AttackModifications.Clear();
+                                    excessiveTargetAttackWarning = true;
+                                }
+                                if (target.TotalDefenseIncrements > 1000000)
+                                {
+                                    if(!excessiveTargetDefenseWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.DefenseModifications.Clear();
+                                    excessiveTargetDefenseWarning = true;
+                                }
+                                if (target.TotalMovementIncrements > 1000000)
+                                {
+                                    if(!excessiveTargetMovementWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.MovementModifications.Clear();
+                                    excessiveTargetMovementWarning = true;
+                                }
+                                if (target.TotalHPRegenerationIncrements > 1000000)
+                                {
+                                    if(!excessiveTargetHPRegenerationWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.HPRegenerationModifications.Clear();
+                                    excessiveTargetHPRegenerationWarning = true;
+                                }
+                                if(source is Character s)
+                                {
+                                    if (s.TotalMaxHPIncrements > 1000000)
+                                    {
+                                        if(!excessiveSourceHPWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.MaxHPModifications.Clear();
+                                        excessiveSourceHPWarning = true;
+                                    }
+                                    if (s.TotalAttackIncrements > 1000000)
+                                    {
+                                        if(!excessiveSourceAttackWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.AttackModifications.Clear();
+                                        excessiveSourceAttackWarning = true;
+                                    }
+                                    if (s.TotalDefenseIncrements > 1000000)
+                                    {
+                                        if(!excessiveSourceDefenseWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.DefenseModifications.Clear();
+                                        excessiveSourceDefenseWarning = true;
+                                    }
+                                    if (s.TotalMovementIncrements > 1000000)
+                                    {
+                                        if(!excessiveSourceMovementWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.MovementModifications.Clear();
+                                        excessiveSourceMovementWarning = true;
+                                    }
+                                    if (s.TotalHPRegenerationIncrements > 1000000)
+                                    {
+                                        if(!excessiveSourceHPRegenerationWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.HPRegenerationModifications.Clear();
+                                        excessiveSourceHPRegenerationWarning = true;
+                                    }
+                                }
                             }
                         }
                         catch (Exception ex)
