@@ -327,6 +327,25 @@ namespace RogueCustomsConsoleClient.EngineHandling
                 throw;
             }
         }
+
+        public EntityDetailDto GetDetailsOfEntity(int x, int y)
+        {
+            try
+            {
+                EntityDetailDto details = null;
+                if (IsLocal)
+                    details = LocalHandler.GetDetailsOfEntity(DungeonId, x, y);
+                else
+                    Task.Run(async () => details = await ServerHandler.GetDetailsOfEntity(DungeonId, x, y)).Wait();
+                return details;
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                throw;
+            }
+        }
+
         public PlayerInfoDto GetPlayerDetailInfo()
         {
             try

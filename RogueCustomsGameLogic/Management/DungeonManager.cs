@@ -160,6 +160,11 @@ namespace RogueCustomsGameEngine.Management
             var dungeon = GetDungeonById(dungeonId);
             return dungeon.GetPlayerAttackActions(x, y);
         }
+        public EntityDetailDto GetDetailsOfEntity(int dungeonId, int x, int y)
+        {
+            var dungeon = GetDungeonById(dungeonId);
+            return dungeon.GetDetailsOfEntity(x, y);
+        }
         public void PlayerAttackTargetWith(int dungeonId, AttackInput input)
         {
             var dungeon = GetDungeonById(dungeonId);

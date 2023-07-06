@@ -102,6 +102,11 @@ namespace Roguelike.Services
             return DungeonManager.GetPlayerAttackActions(dungeonId, x, y);
         }
 
+        public EntityDetailDto GetDetailsOfEntity(int dungeonId, int x, int y)
+        {
+            return DungeonManager.GetDetailsOfEntity(dungeonId, x, y);
+        }
+
         public void PlayerAttackTargetWith(int dungeonId, AttackInput input)
         {
             DungeonManager.PlayerAttackTargetWith(dungeonId, input);

@@ -50,8 +50,9 @@ MoveModeNormalControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <S> Salt
 MoveModeImmobilizedControlsText = <A> Apuntar <I> Inventario <S> Saltar Turno
 MoveModeCannotActControlsText = <I> Inventario <S> Saltar Turno
 MoveModeOnStairsControlsText = <FLECHAS> Mover <A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno
-MoveModeControlsSubText = <M> Abrir Registro de Mensajes <D> Ver Detalles de Jugador <ESC> Salir
+MoveModeControlsSubText = <M> Abrir Registro de Mensajes <D> Ver Detalles de Jugador <V> Apuntar para Ver detalles <ESC> Salir
 ActionModeControlsText = <ARROWS> Mover <A> Elegir Acción <ESC> Cancelar
+ViewModeControlsText = <ARROWS> Mover <V> Ver detalles <ESC> Cancelar
 
 ; MessageLogConsole
 MessageHeaderText = MENSAJES
@@ -84,6 +85,9 @@ InputBoxTitleText = Nombre
 InputBoxSingleClassPromptText = Elige el nombre para {ClassName}\n\nPresiona ESC para regresar al menú principal
 InputBoxPromptText = Elige el nombre para {ClassName}
 InputBoxAffirmativeButtonText = ELEGIR
+
+; EntityDetailWindow
+EntityDetailTitleText = EXAMINAR
 
 ; ActionWindow
 ActionWindowTitleText = Acciones hacia {TargetName}

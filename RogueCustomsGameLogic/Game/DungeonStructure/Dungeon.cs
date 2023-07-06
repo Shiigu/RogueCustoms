@@ -202,10 +202,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return CurrentFloor.GetPlayerAttackActions(x, y);
         }
+
+        public EntityDetailDto GetDetailsOfEntity(int x, int y)
+        {
+            return CurrentFloor.GetDetailsOfEntity(x, y);
+        }
+
         public InventoryDto GetPlayerInventory()
         {
             return CurrentFloor.GetPlayerInventory();
         }
+
         public void PlayerAttackTargetWith(string name, int x, int y)
         {
             MessageBoxes.Clear();
