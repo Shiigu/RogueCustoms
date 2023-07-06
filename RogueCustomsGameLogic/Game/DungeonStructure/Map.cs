@@ -922,6 +922,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             };
         }
 
+        public EntityDetailDto GetDetailsOfEntity(int x, int y)
+        {
+            var tile = GetTileFromCoordinates(x, y);
+            var characterInTile = tile.Character;
+            if (characterInTile != null && characterInTile.Visible)
+                return new EntityDetailDto(characterInTile);
+            var itemInTile = tile.Items.FirstOrDefault();
+            if(itemInTile != null && itemInTile.Visible)
+                return new EntityDetailDto(itemInTile);
+            var trapInTile = tile.Trap;
+            if (trapInTile != null && trapInTile.Visible)
+                return new EntityDetailDto(trapInTile);
+            return null;
+        }
+
         private void SetStairs(Point p)
         {
             var tile = GetTileFromCoordinates(p.X, p.Y);

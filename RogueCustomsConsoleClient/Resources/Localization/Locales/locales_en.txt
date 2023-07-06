@@ -50,8 +50,9 @@ MoveModeNormalControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S>
 MoveModeImmobilizedControlsText = <A> Aim Target <I> Inventory Menu <S> Skip Turn
 MoveModeCannotActControlsText = <I> Inventory Menu <S> Skip Turn
 MoveModeOnStairsControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
-MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <ESC> Exit
+MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <V> Aim Object For Details <ESC> Exit
 ActionModeControlsText = <ARROWS> Move <A> Open Action Window <ESC> Cancel
+ViewModeControlsText = <ARROWS> Move <V> View Details <ESC> Cancel
 
 ; MessageLogConsole
 MessageHeaderText = MESSAGES
@@ -84,6 +85,9 @@ InputBoxTitleText = Name
 InputBoxSingleClassPromptText = Choose the name for {ClassName}\n\nPress ESC to return to the main menu
 InputBoxPromptText = Choose the name for {ClassName}
 InputBoxAffirmativeButtonText = CHOOSE
+
+; EntityDetailWindow
+EntityDetailTitleText = EXAMINE
 
 ; ActionWindow
 ActionWindowTitleText = Actions on {TargetName}

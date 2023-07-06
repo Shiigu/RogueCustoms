@@ -9,7 +9,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class GameControlsConsole : GameSubConsole
     {
-        private string MoveModeNormalControlsString, MoveModeOnStairsControlsString, MoveModeImmobilizedControlsString, MoveModeCannotActControlsString, MoveModeControlsSubString, ActionModeControlsString;
+        private string MoveModeNormalControlsString, MoveModeOnStairsControlsString, MoveModeImmobilizedControlsString, MoveModeCannotActControlsString, MoveModeControlsSubString, ActionModeControlsString, ViewModeControlsString;
 
         public GameControlsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ControlsWidth, GameConsoleConstants.ControlsHeight)
         {
@@ -25,6 +25,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             MoveModeCannotActControlsString = LocalizationManager.GetString("MoveModeCannotActControlsText").ToAscii();
             MoveModeControlsSubString = LocalizationManager.GetString("MoveModeControlsSubText").ToAscii();
             ActionModeControlsString = LocalizationManager.GetString("ActionModeControlsText").ToAscii();
+            ViewModeControlsString = LocalizationManager.GetString("ViewModeControlsText").ToAscii();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = false;
@@ -55,6 +56,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                     break;
                 case ControlMode.ActionTargeting:
                     textToRender = ActionModeControlsString;
+                    subtextToRender = "";
+                    break;
+                case ControlMode.ViewTargeting:
+                    textToRender = ViewModeControlsString;
                     subtextToRender = "";
                     break;
                 case ControlMode.None:

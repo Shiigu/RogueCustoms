@@ -105,6 +105,12 @@ namespace RogueCustomsConsoleClient.EngineHandling
             var json = await client.GetStringAsync($"{Address}/api/GetPlayerAttackActions/{dungeonId}/{x}/{y}");
             return JsonConvert.DeserializeObject<ActionListDto>(json);
         }
+        public async Task<EntityDetailDto> GetDetailsOfEntity(int dungeonId, int x, int y)
+        {
+            var json = await client.GetStringAsync($"{Address}/api/GetPlayerAttackActions/{dungeonId}/{x}/{y}");
+            return JsonConvert.DeserializeObject<EntityDetailDto>(json);
+        }
+
         public async Task<InventoryDto> GetPlayerInventory(int dungeonId)
         {
             var json = await client.GetStringAsync($"{Address}/api/GetPlayerInventory/{dungeonId}");

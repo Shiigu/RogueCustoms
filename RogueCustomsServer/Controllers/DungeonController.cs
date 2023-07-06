@@ -268,6 +268,20 @@ namespace Roguelike.Controllers
             }
         }
 
+        [HttpGet("GetDetailsOfEntity/{dungeonId}/{x}/{y}")]
+        public EntityDetailDto GetDetailsOfEntity(int dungeonId, int x, int y)
+        {
+            try
+            {
+                return DungeonService.GetDetailsOfEntity(dungeonId, x, y);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         [HttpPost("PlayerAttackTargetWith/{dungeonId}")]
         public void PlayerAttackTargetWith(int dungeonId, [FromBody] AttackInput input)
         {

@@ -198,7 +198,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
 
-                if (ControlMode != ControlMode.ActionTargeting && ControlMode != ControlMode.None)
+                if (ControlMode != ControlMode.ActionTargeting && ControlMode != ControlMode.ViewTargeting && ControlMode != ControlMode.None)
                 {
                     if (!LatestDungeonStatus.PlayerEntity.CanTakeAction)
                         ControlMode = ControlMode.CannotAct;
@@ -269,8 +269,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 if (LatestDungeonStatus == null) return true;
                 if (ControlMode == ControlMode.NormalMove || ControlMode == ControlMode.OnStairs || ControlMode == ControlMode.Immobilized || ControlMode == ControlMode.CannotAct)
                     return ProcessMoveModeKeyboard(keyboard);
-                if (ControlMode == ControlMode.ActionTargeting)
-                    return ProcessActionTargetingModeKeyboard(keyboard);
+                if (ControlMode == ControlMode.ActionTargeting || ControlMode == ControlMode.ViewTargeting)
+                    return ProcessTargetingModeKeyboard(keyboard);
                 if (ControlMode == ControlMode.None)
                     return ProcessNoneModeKeyboard(keyboard);
             }
@@ -341,6 +341,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     DungeonConsole.AddCursor();
                     handled = true;
                 }
+
+                if (keyboard.IsKeyPressed(Keys.V) && keyboard.KeysPressed.Count == 1)
+                {
+                    ControlMode = ControlMode.ViewTargeting;
+                    DungeonConsole.AddCursor();
+                    handled = true;
+                }
             }
 
             if (keyboard.IsKeyPressed(Keys.S) && keyboard.KeysPressed.Count == 1)
@@ -404,7 +411,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             return handled;
         }
 
-        private bool ProcessActionTargetingModeKeyboard(Keyboard keyboard)
+        private bool ProcessTargetingModeKeyboard(Keyboard keyboard)
         {
             bool handled = false;
             var input = new CoordinateInput
@@ -441,12 +448,25 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 return handled;
             }
 
-            if ((keyboard.IsKeyPressed(Keys.A) || keyboard.IsKeyPressed(Keys.Enter)) && keyboard.KeysPressed.Count == 1)
+            if(ControlMode == ControlMode.ActionTargeting)
             {
-                var actionList = BackendHandler.Instance.GetPlayerAttackActions(CursorLocation.X, CursorLocation.Y);
-                if (actionList.Actions.Any())
-                    ActiveWindow = ActionWindow.Show(this, actionList);
-                return handled;
+                if ((keyboard.IsKeyPressed(Keys.A) || keyboard.IsKeyPressed(Keys.Enter)) && keyboard.KeysPressed.Count == 1)
+                {
+                    var actionList = BackendHandler.Instance.GetPlayerAttackActions(CursorLocation.X, CursorLocation.Y);
+                    if (actionList.Actions.Any())
+                        ActiveWindow = ActionWindow.Show(this, actionList);
+                    return handled;
+                }
+            }
+            else if (ControlMode == ControlMode.ViewTargeting)
+            {
+                if ((keyboard.IsKeyPressed(Keys.V) || keyboard.IsKeyPressed(Keys.Enter)) && keyboard.KeysPressed.Count == 1)
+                {
+                    var entityDetails = BackendHandler.Instance.GetDetailsOfEntity(CursorLocation.X, CursorLocation.Y);
+                    if (entityDetails != null)
+                        ActiveWindow = EntityDetailWindow.Show(entityDetails);
+                    return handled;
+                }
             }
 
             if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
@@ -467,6 +487,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         CannotAct,
         OnStairs,
         ActionTargeting,
+        ViewTargeting,
         None
     }
 }
