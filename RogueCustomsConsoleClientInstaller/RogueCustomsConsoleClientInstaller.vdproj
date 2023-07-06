@@ -101,6 +101,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -208,15 +224,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Rogue Customs Console Client"
-        "ProductCode" = "8:{BC09902B-7F6C-4A18-8055-E2923D6A39AC}"
-        "PackageCode" = "8:{9FA5E339-7233-4865-A27B-B184705554E0}"
+        "ProductCode" = "8:{FD84C143-6360-45BF-BE89-137E2EE02926}"
+        "PackageCode" = "8:{E3CE33E4-4690-42BD-8C87-17E083E96869}"
         "UpgradeCode" = "8:{88B7461B-3C13-4534-A929-34784308EF57}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.3.1"
         "Manufacturer" = "8:Rogue Customs"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/Shiigu"
@@ -730,7 +746,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4663EA1201514EA985E9FEA5AC06BE02"
             {
-            "SourcePath" = "8:..\\RogueCustomsConsoleClient\\obj\\Debug\\net6.0\\apphost.exe"
+            "SourcePath" = "8:..\\RogueCustomsConsoleClient\\obj\\Release\\net6.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_941457CFFBED403CBA3E47ABF9036539"
@@ -758,7 +774,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CA2AA05B9DB3436C9AB3DD9B19DF5BC5"
             {
-            "SourcePath" = "8:..\\RogueCustomsDungeonValidator\\obj\\Debug\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\RogueCustomsDungeonValidator\\obj\\Release\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_941457CFFBED403CBA3E47ABF9036539"
