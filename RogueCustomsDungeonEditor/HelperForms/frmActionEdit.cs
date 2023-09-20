@@ -47,6 +47,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             btnSaveAs.Enabled = !string.IsNullOrWhiteSpace(classId);
             ClassId = classId;
             RequiresDescription = requiresDescription;
+            RequiresActionName = requiresActionName;
 
             if (RequiresDescription)
             {
