@@ -4430,7 +4430,6 @@
         private global::System.Windows.Forms.Label label113;
         private global::System.Windows.Forms.Button btnAlteredStatusOnApplyAction;
         private global::System.Windows.Forms.Label label97;
-        private global::System.Windows.Forms.TextBox textBox1;
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCanStack;
         private global::System.Windows.Forms.Button btnChangeAlteredStatusConsoleCharacterBackColor;
         private global::System.Windows.Forms.Button btnChangeAlteredStatusConsoleCharacterForeColor;
