@@ -37,23 +37,8 @@ namespace RogueCustomsDungeonEditor.Validators
             DungeonJson = dungeonJson;
         }
 
-        public bool Validate()
+        public bool Validate(List<string> requiredLocaleStrings)
         {
-            var requiredLocaleStrings = new List<string>();
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RogueCustomsDungeonEditor.Resources.RequiredLocaleKeys.txt"))
-            {
-                if (stream != null)
-                {
-                    using StreamReader reader = new StreamReader(stream);
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        requiredLocaleStrings.Add(line);
-                    }
-                }
-            }
-
             var dungeonSpecificLocaleStringsToExpect = new List<string>();
 
             foreach (var locale in DungeonJson.Locales)

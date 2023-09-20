@@ -3425,7 +3425,7 @@ namespace RogueCustomsDungeonEditor
 
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!cmbItemType.Text.Equals(PreviousItemType))
+            if (!string.IsNullOrEmpty(PreviousItemType) && !cmbItemType.Text.Equals(PreviousItemType))
             {
                 var changeItemTypePrompt = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
                     ? "Changing an Item Type from Consumable to Equippable will delete some saved Actions.\n\nNOTE: This is NOT reversible."
@@ -4117,7 +4117,7 @@ namespace RogueCustomsDungeonEditor
             {
                 PassedValidation = false;
                 var dungeonValidator = new DungeonValidator(ActiveDungeon);
-                PassedValidation = dungeonValidator.Validate();
+                PassedValidation = dungeonValidator.Validate(MandatoryLocaleKeys);
 
                 tvValidationResults.Visible = true;
                 tvValidationResults.Nodes.Clear();
@@ -4184,6 +4184,8 @@ namespace RogueCustomsDungeonEditor
                 MessageBox.Show($"Attempting to Validate this Dungeon threw an error:\n\n{ex.Message}\n\nPlease fix it.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 PassedValidation = true;
                 tvValidationResults.Visible = false;
+                if (tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Validator]))
+                    tbTabs.TabPages.Remove(TabsForNodeTypes[TabTypes.Validator]);
             }
         }
 

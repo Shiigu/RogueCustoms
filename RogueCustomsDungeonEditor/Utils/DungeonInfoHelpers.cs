@@ -34,6 +34,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 templateDungeon.Locales.Add(newLocale);
             }
 
+            templateDungeon.Name = "DungeonName";
+            templateDungeon.Author = "Author";
+            templateDungeon.WelcomeMessage = "WelcomeMessage";
+            templateDungeon.EndingMessage = "EndingMessage";
+
             templateDungeon.FloorInfos.Add(CreateFloorGroupTemplate());
 
             templateDungeon.FactionInfos.Add(CreateFactionTemplate());
@@ -90,7 +95,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new FactionInfo()
             {
-                Id = "",
+                Id = "DummyFaction",
                 Name = "Faction",
                 Description = "Description",
                 AlliedWith = new(),
@@ -103,7 +108,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ClassInfo
             {
-                Id = "",
+                Id = "DummyPlayer",
                 Name = "Player",
                 Description = "Description",
                 ConsoleRepresentation = new ConsoleRepresentation
@@ -143,7 +148,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ClassInfo
             {
-                Id = "",
+                Id = "DummyNPC",
                 Name = "NPC",
                 Description = "Description",
                 ConsoleRepresentation = new ConsoleRepresentation
@@ -185,7 +190,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ClassInfo
             {
-                Id = "",
+                Id = "DummyItem",
                 Name = "Item",
                 Description = "Description",
                 ConsoleRepresentation = new ConsoleRepresentation
@@ -210,7 +215,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ClassInfo
             {
-                Id = "",
+                Id = "DummyTrap",
                 Name = "Trap",
                 Description = "Description",
                 ConsoleRepresentation = new ConsoleRepresentation
@@ -229,7 +234,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ClassInfo
             {
-                Id = "",
+                Id = "DummyStatus",
                 Name = "AlteredStatus",
                 Description = "Description",
                 ConsoleRepresentation = new ConsoleRepresentation
