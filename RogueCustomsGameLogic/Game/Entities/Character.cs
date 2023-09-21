@@ -30,10 +30,10 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<Item> Inventory { get; set; }
 
         public readonly string ExperiencePayoutFormula;
-        public int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula);
+        public int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
         public int Experience { get; set; }
         public readonly string ExperienceToLevelUpFormula;
-        public int ExperienceToLevelUp => LastLevelUpExperience + ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula);
+        public int ExperienceToLevelUp => LastLevelUpExperience + ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
         public int LastLevelUpExperience { get; set; }
         public int ExperienceToLevelUpDifference => ExperienceToLevelUp - Experience;
         public int Level { get; set; }
@@ -212,7 +212,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (Level > 1)
             {
                 Level = level - 1;
-                Experience = ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula);
+                Experience = ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
                 Level++;
             }
             else
@@ -369,9 +369,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        private int ParseArgForFormulaAndCalculate(string arg)
+        private int ParseArgForFormulaAndCalculate(string arg, bool capIfLevelIsMax)
         {
-            if (Level == MaxLevel) return Experience;
+            if (Level == MaxLevel && capIfLevelIsMax) return Experience;
             var parsedArg = arg.ToLowerInvariant();
 
             parsedArg = parsedArg.Replace("level", Level.ToString());
@@ -450,6 +450,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return TargetType.Neutral;
             if (Faction.EnemiesWith.Contains(target.Faction))
                 return TargetType.Enemy;
+            if (Faction.Id.Equals(target.Faction.Id))
+                return TargetType.Neutral;
 
             throw new InvalidDataException($"Cannot identify target relationship between {Name} and {target.Name}!");
         }

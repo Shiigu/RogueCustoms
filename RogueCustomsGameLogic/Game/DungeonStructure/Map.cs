@@ -969,7 +969,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             || GetTileFromCoordinates(rngX, rngY - 1).Type == TileType.Hallway
                                             || GetTileFromCoordinates(rngX, rngY + 1).Type == TileType.Hallway;
             }
-            while (!tileToCheck.IsWalkable || tileToCheck.Character != null || tileToCheck.Items?.Any() == true || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
+            while (!tileToCheck.IsWalkable || tileToCheck.Type == TileType.Stairs || tileToCheck.Character != null || tileToCheck.Items?.Any() == true || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
             return new Point(rngX, rngY);
         }
 

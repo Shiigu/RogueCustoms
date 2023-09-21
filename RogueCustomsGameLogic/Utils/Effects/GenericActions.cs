@@ -91,7 +91,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Any(als => als.RemainingTurns != 0 && als.ClassId.Equals(statusTarget.ClassId));
-                var success = statusToApply.ApplyTo(statusTarget, (int) paramsObject.Power, (int) paramsObject.TurnLength);
+                var success = statusToApply.ApplyTo(statusTarget, paramsObject.Power, (int) paramsObject.TurnLength);
                 if (success && statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget)))
                 {
@@ -114,10 +114,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
             if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
-                statAlterations.Add(new StatModification {
+                statAlterations.Add(new StatModification
+                {
                     Id = paramsObject.Id,
-                    Amount = paramsObject.Amount,
-                    RemainingTurns = (int) paramsObject.TurnLength
+                    Amount = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? paramsObject.Amount : (int)paramsObject.Amount,
+                    RemainingTurns = (int)paramsObject.TurnLength
                 });
                 output = (int) paramsObject.Amount;
                 var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;

@@ -1,0 +1,780 @@
+[
+  {
+    "InternalName": "DealDamage",
+    "DisplayName": "Deal Damage to Target",
+    "Description": "Used by the User to damage Target.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Attacker",
+        "DisplayName": "Attacker",
+        "Description": "What will deal damage. Generally Source, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will receive the damage. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Attack",
+        "DisplayName": "Attack",
+        "Description": "Base damage of the action, before Defense applies. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{source.Damage}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Defense",
+        "DisplayName": "Defense",
+        "Description": "Reduces a certain amount of Attack to get the final damage value. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{target.Mitigation}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Attack to land.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "StealItem",
+    "DisplayName": "Steal Item from Target",
+    "Description": "Used by the User take an item from Target's inventory and put it into their own.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will have an item stolen. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for an Item to be stolen.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "CanStealEquippables",
+        "DisplayName": "Can Steal Equippables?",
+        "Description": "If false, the User will pretend Target has no Weapons or Armor in their inventory.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "CanStealConsumabes",
+        "DisplayName": "Can Steal Consumables?",
+        "Description": "If false, the User will pretend Target has no Consumables in their inventory.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ReplaceConsoleRepresentation",
+    "DisplayName": "Change Own Console Representation",
+    "Description": "The way the calling object shows up in the Console Client will be modified.",
+    "CanReturnFailure": false,
+    "Parameters": [
+      {
+        "InternalName": "Character",
+        "DisplayName": "Character",
+        "Description": "The Character that will replace the current Console Representation's one.",
+        "ParameterType": "Character",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [ "Color" ]
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Color",
+        "Description": "The Color that will replace the current Console Representation's one.",
+        "ParameterType": "Color",
+        "Default": "255,255,255,255",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [ "Character" ]
+      }
+    ]
+  },
+  {
+    "InternalName": "Remove",
+    "DisplayName": "Remove Target from Game",
+    "Description": "The User will try to remove Target.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "What will be removed. Generally Target, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "this",
+            "Value": "This"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to be removed.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "PrintText",
+    "DisplayName": "Print Text to Message Log",
+    "Description": "If Player can see the User, text will be printed into the Message Log.",
+    "CanReturnFailure": false,
+    "Parameters": [
+      {
+        "InternalName": "Text",
+        "DisplayName": "Text",
+        "Description": "What will be printed. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Color",
+        "Description": "The Color in which the Text will be printed. If left empty, it will be white.",
+        "ParameterType": "Color",
+        "Default": "255,255,255,255",
+        "ValidValues": [],
+        "Required": false,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "MessageBox",
+    "DisplayName": "Show a Message Box",
+    "Description": "Player will see a Message Box on their next turn.",
+    "CanReturnFailure": false,
+    "Parameters": [
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The Message Box's Title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Text",
+        "DisplayName": "Text",
+        "Description": "The text in the middle of the Message Box. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Color",
+        "Description": "The Color of the Message Box border.",
+        "ParameterType": "Color",
+        "Default": "255,255,255,255",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "HealDamage",
+    "DisplayName": "Heal Damage from Target",
+    "Description": "Used by the User to heal Target.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "What will heal. Generally the User, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be healed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Healing Power",
+        "Description": "Maximum Amount of Damage that will be healed. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{source.Power}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "GiveExperience",
+    "DisplayName": "Give Experience to Target",
+    "Description": "Used by the User to give Target some experience points.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be healed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Amount",
+        "Description": "Amount of Experience Points to be given. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{this.experiencepayout}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ApplyAlteredStatus",
+    "DisplayName": "Apply Altered Status on Target",
+    "Description": "Used by the User to put an Altered Status on Target.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Altered Status to apply.",
+        "ParameterType": "AlteredStatus",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be healed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to receive the Altered Status, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Status Power",
+        "Description": "Sets the Altered Status's Power. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "TurnLength",
+        "DisplayName": "Duration",
+        "Description": "Indicates how long the Altered Status will apply. Negative values indicate indefinite duration.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ApplyStatAlteration",
+    "DisplayName": "Alter one of Target's Stats",
+    "Description": "Used by the User to increase or decrease one of Target's stats.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.",
+        "ParameterType": "Text",
+        "Default": "{this}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be healed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Stat",
+        "DisplayName": "Stat",
+        "Description": "Indicates the Stat that will be Altered.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
+        "ParameterType": "ComboBox",
+        "Default": "",
+        "ValidValues": [
+          {
+            "Key": "maxHP",
+            "Value": "Max HP"
+          },
+          {
+            "Key": "attack",
+            "Value": "Attack"
+          },
+          {
+            "Key": "defense",
+            "Value": "Defense"
+          },
+          {
+            "Key": "movement",
+            "Value": "Movement"
+          },
+          {
+            "Key": "hpRegeneration",
+            "Value": "HP Regeneration"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Amount",
+        "Description": "How much the Stat will be modified. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "TurnLength",
+        "DisplayName": "Duration",
+        "Description": "Indicates how long the Stat Alteration will apply. Negative values indicate indefinite duration.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "CanBeStacked",
+        "DisplayName": "Can Stack?",
+        "Description": "If enabled, multiple Stat Alterations with the same Id can be present on the same Character at the same time.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "DisplayOnLog",
+        "DisplayName": "Display on Log?",
+        "Description": "If enabled, the stat alteration will be informed in the Message Log. Disabling it can be useful for items that alter your stats when equipped.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "CleanseAlteredStatus",
+    "DisplayName": "Remove Altered Status from Target",
+    "Description": "Used by the User to remove a certain Altered Status on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Altered Status to remove.",
+        "ParameterType": "AlteredStatus",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get an Altered Status removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "CleanseStatAlteration",
+    "DisplayName": "Remove all Alterations from one of Target's Stats",
+    "Description": "Used by the User to remove all the removable Alterations on one of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Stat",
+        "DisplayName": "Stat",
+        "Description": "Indicates the Stat whose Alterations will be removed.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
+        "ParameterType": "ComboBox",
+        "Default": "",
+        "ValidValues": [
+          {
+            "Key": "maxHP",
+            "Value": "Max HP"
+          },
+          {
+            "Key": "attack",
+            "Value": "Attack"
+          },
+          {
+            "Key": "defense",
+            "Value": "Defense"
+          },
+          {
+            "Key": "movement",
+            "Value": "Movement"
+          },
+          {
+            "Key": "hpRegeneration",
+            "Value": "HP Regeneration"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get a Stat Alteration removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "CleanseAllAlteredStatuses",
+    "DisplayName": "Remove all Altered Statuses from Target",
+    "Description": "Used by the User to remove all removable Altered Statuses on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will have all Altered Statuses removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "CleanseStatAlterations",
+    "DisplayName": "Remove all Alterations from all of Target's Stats",
+    "Description": "Used by the User to remove all the removable Alterations on all of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get all Stat Alterations removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ForceSkipTurn",
+    "DisplayName": "Make Target skip the next turn",
+    "Description": "Used by the User to make Target skip their next turn.",
+    "CanReturnFailure": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will have the next turn skipped. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Chance",
+        "DisplayName": "Chance",
+        "Description": "Indicates the odds for Target to have their next turn skipped.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "GenerateStairs",
+    "DisplayName": "Spawn Stairs",
+    "Description": "Stairs will appear in the current Floor, if there weren't any before.",
+    "CanReturnFailure": true,
+    "Parameters": []
+  },
+  {
+    "InternalName": "Equip",
+    "DisplayName": "Equip",
+    "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE!",
+    "CanReturnFailure": false,
+    "Parameters": []
+  }
+]

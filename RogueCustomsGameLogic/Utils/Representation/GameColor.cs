@@ -32,6 +32,11 @@ namespace RogueCustomsGameEngine.Utils.Representation
             };
         }
 
+        public override string ToString()
+        {
+            return $"{R},{G},{B},{A}";
+        }
+
         public override bool Equals(object? obj)
         {
             if(obj is GameColor gc)

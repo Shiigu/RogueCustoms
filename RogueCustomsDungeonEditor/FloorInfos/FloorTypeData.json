@@ -1,0 +1,26 @@
+[
+  {
+    "InternalName": "Standard",
+    "DisplayName": "Standard",
+    "Description": "Randomizes Room Types without any biases. At least two non-dummy Rooms will be present.",
+    "ImagePath": "./FloorInfos/Standard.png"
+  },
+  {
+    "InternalName": "InnerDummyRing",
+    "DisplayName": "Inner Dummy Rings",
+    "Description": "Separates Rooms in 'rings'. One every other 'ring' will be full of dummy Rooms. Border ring will be normal Rooms.",
+    "ImagePath": "./FloorInfos/InnerDummyRing.png"
+  },
+  {
+    "InternalName": "OuterDummyRing",
+    "DisplayName": "Outer Dummy Rings",
+    "Description": "Separates Rooms in 'rings'. One every other 'ring' will be full of dummy Rooms. Border ring will be dummy Rooms.",
+    "ImagePath": "./FloorInfos/OuterDummyRing.png"
+  },
+  {
+    "InternalName": "OneBigRoom",
+    "DisplayName": "Single Room",
+    "Description": "Creates only one normal Room.",
+    "ImagePath": "./FloorInfos/OneBigRoom.png"
+  }
+]

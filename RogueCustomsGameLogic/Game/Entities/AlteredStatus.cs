@@ -20,7 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public int TurnLength { get; set; }
 
-        public int Power { get; set; }
+        public decimal Power { get; set; }
 
         public List<ActionWithEffects> OnStatusApplyActions { get; set; }
 
@@ -35,7 +35,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MapClassActions(entityClass.OnStatusApplyActions, OnStatusApplyActions);
         }
 
-        public bool ApplyTo(Character target, int power, int turnLength)
+        public bool ApplyTo(Character target, decimal power, int turnLength)
         {
             if (!CanOverwrite && !CanStack && target.AlteredStatuses.Any(als => als.ClassId.Equals(ClassId))) return false;
             if (CanOverwrite && !CanStack && target.AlteredStatuses.Any(als => als.ClassId.Equals(ClassId)))
