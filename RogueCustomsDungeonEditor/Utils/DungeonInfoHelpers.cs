@@ -12,7 +12,7 @@ namespace RogueCustomsDungeonEditor.Utils
 {
     public static class DungeonInfoHelpers
     {
-        public static DungeonInfo CreateEmptyDungeonTemplate(List<string> mandatoryLocaleKeys, List<string> baseLocaleLanguages)
+        public static DungeonInfo CreateEmptyDungeonTemplate(LocaleInfo localeTemplate, List<string> baseLocaleLanguages)
         {
             var templateDungeon = new DungeonInfo
             {
@@ -28,7 +28,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
             foreach (var localeLanguage in baseLocaleLanguages)
             {
-                var newLocale = CreateLocaleTemplate(mandatoryLocaleKeys);
+                var newLocale = localeTemplate.Clone();
                 newLocale.Language = localeLanguage;
 
                 templateDungeon.Locales.Add(newLocale);
@@ -58,18 +58,19 @@ namespace RogueCustomsDungeonEditor.Utils
             return templateDungeon;
         }
 
-        public static LocaleInfo CreateLocaleTemplate(List<string> mandatoryLocaleKeys)
+        public static LocaleInfo Clone(this LocaleInfo localeInfo)
         {
             var newLocale = new LocaleInfo
             {
+                Language = localeInfo.Language,
                 LocaleStrings = new()
             };
-            foreach (var localeKey in mandatoryLocaleKeys)
+            foreach (var localeEntry in localeInfo.LocaleStrings)
             {
                 newLocale.LocaleStrings.Add(new LocaleInfoString
                 {
-                    Key = localeKey,
-                    Value = localeKey
+                    Key = localeEntry.Key,
+                    Value = localeEntry.Value
                 });
             }
             return newLocale;
@@ -86,7 +87,15 @@ namespace RogueCustomsDungeonEditor.Utils
                 PossibleMonsters = new(),
                 PossibleItems = new(),
                 PossibleTraps = new(),
-                PossibleGeneratorAlgorithms = new(),
+                PossibleGeneratorAlgorithms = new()
+                {
+                    new GeneratorAlgorithmInfo
+                    {
+                        Name = "OneBigRoom",
+                        Rows = 1,
+                        Columns = 1
+                    }
+                },
                 OnFloorStartActions = new()
             };
         }

@@ -19,11 +19,31 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public bool Saved { get; private set; }
         private List<string> ValidNPCClasses;
 
-        public frmNPCGeneration(FloorInfo floorGroupToUse, NPCGenerationParams npcGenerationParams, DungeonInfo activeDungeon)
+        public frmNPCGeneration(FloorInfo floorGroupToUse, int minFloorLevel, int maxFloorLevel, NPCGenerationParams npcGenerationParams, DungeonInfo activeDungeon)
         {
             InitializeComponent();
             ActiveFloorGroup = floorGroupToUse;
-            NPCGenerationParams = npcGenerationParams;
+            NPCGenerationParams = new NPCGenerationParams
+            {
+                MinNPCSpawnsAtStart = npcGenerationParams.MinNPCSpawnsAtStart,
+                SimultaneousMaxNPCs = npcGenerationParams.SimultaneousMaxNPCs,
+                TurnsPerNPCGeneration = npcGenerationParams.TurnsPerNPCGeneration,
+                NPCList = new()
+            };
+            foreach (var npc in npcGenerationParams.NPCList)
+            {
+                NPCGenerationParams.NPCList.Add(new ClassInFloorInfo
+                {
+                    ClassId = npc.ClassId,
+                    MinLevel = npc.MinLevel,
+                    MaxLevel = npc.MaxLevel,
+                    SimultaneousMaxForKindInFloor = npc.SimultaneousMaxForKindInFloor,
+                    OverallMaxForKindInFloor = npc.OverallMaxForKindInFloor,
+                    ChanceToPick = npc.ChanceToPick,
+                    CanSpawnOnFirstTurn = npc.CanSpawnOnFirstTurn,
+                    CanSpawnAfterFirstTurn = npc.CanSpawnAfterFirstTurn,
+                });
+            }
             ValidNPCClasses = activeDungeon.NPCs.ConvertAll(npc => npc.Id);
             var classIdColumn = (DataGridViewComboBoxColumn)dgvNPCTable.Columns["ClassId"];
             classIdColumn.DataSource = ValidNPCClasses;
@@ -32,18 +52,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 AllowNew = true,
                 AllowRemove = true
             };
-            foreach (var npc in NPCGenerationParams.NPCList ?? floorGroupToUse.PossibleMonsters)
+            foreach (var npc in NPCGenerationParams.NPCList)
             {
                 npcTable.Add(npc);
             }
             dgvNPCTable.DataSource = npcTable;
-            nudMinNPCSpawnsAtStart.Value = floorGroupToUse.SimultaneousMinMonstersAtStart;
-            nudSimultaneousMaxNPCs.Value = floorGroupToUse.SimultaneousMaxMonstersInFloor;
-            nudTurnsPerNPCGeneration.Value = floorGroupToUse.TurnsPerMonsterGeneration;
-            if (floorGroupToUse.MinFloorLevel != floorGroupToUse.MaxFloorLevel)
-                lblFloorGroupTitle.Text = $"For Floor Levels {floorGroupToUse.MinFloorLevel} to {floorGroupToUse.MaxFloorLevel}:";
+            nudMinNPCSpawnsAtStart.Value = npcGenerationParams.MinNPCSpawnsAtStart;
+            nudSimultaneousMaxNPCs.Value = npcGenerationParams.SimultaneousMaxNPCs;
+            nudTurnsPerNPCGeneration.Value = npcGenerationParams.TurnsPerNPCGeneration;
+            if (minFloorLevel != maxFloorLevel)
+                lblFloorGroupTitle.Text = $"For Floor Levels {minFloorLevel} to {maxFloorLevel}:";
             else
-                lblFloorGroupTitle.Text = $"For Floor Level {floorGroupToUse.MinFloorLevel}:";
+                lblFloorGroupTitle.Text = $"For Floor Level {minFloorLevel}:";
         }
 
         private bool ValidateAndPrepareListForSave(out List<ClassInFloorInfo> npcList, out List<string> errorMessages)

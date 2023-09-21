@@ -345,7 +345,7 @@
         "DisplayName": "Amount",
         "Description": "Amount of Experience Points to be given. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
         "ParameterType": "Formula",
-        "Default": "{source.experiencepayout}",
+        "Default": "{this.experiencepayout}",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []

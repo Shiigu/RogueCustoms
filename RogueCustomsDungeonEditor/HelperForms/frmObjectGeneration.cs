@@ -20,11 +20,25 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public bool Saved { get; private set; }
         private List<string> ValidObjectClasses;
 
-        public frmObjectGeneration(FloorInfo floorGroupToUse, ObjectGenerationParams objectGenerationParams, EntityTypeForForm typeToUse, DungeonInfo activeDungeon)
+        public frmObjectGeneration(FloorInfo floorGroupToUse, int minFloorLevel, int maxFloorLevel, ObjectGenerationParams objectGenerationParams, EntityTypeForForm typeToUse, DungeonInfo activeDungeon)
         {
             InitializeComponent();
             ActiveFloorGroup = floorGroupToUse;
-            ObjectGenerationParams = objectGenerationParams;
+            ObjectGenerationParams = new ObjectGenerationParams
+            {
+                MinInFloor = objectGenerationParams.MinInFloor,
+                MaxInFloor = objectGenerationParams.MaxInFloor,
+                ObjectList = new()
+            };
+            foreach (var @object in objectGenerationParams.ObjectList)
+            {
+                objectGenerationParams.ObjectList.Add(new ClassInFloorInfo
+                {
+                    ClassId = @object.ClassId,
+                    SimultaneousMaxForKindInFloor = @object.SimultaneousMaxForKindInFloor,
+                    ChanceToPick = @object.ChanceToPick,
+                });
+            }
             TypeToUse = typeToUse;
             if (typeToUse == EntityTypeForForm.Item)
             {
@@ -47,10 +61,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 AllowNew = true,
                 AllowRemove = true
             };
-            var objectListToUse = objectGenerationParams.ObjectList ?? ((typeToUse == EntityTypeForForm.Item)
-                                    ? floorGroupToUse.PossibleItems
-                                    : floorGroupToUse.PossibleTraps);
-            foreach (var @object in objectListToUse)
+            foreach (var @object in objectGenerationParams.ObjectList)
             {
                 objectTable.Add(@object);
             }
@@ -60,12 +71,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             dgvObjectTable.Columns["CanSpawnOnFirstTurn"].Visible = false;
             dgvObjectTable.Columns["CanSpawnAfterFirstTurn"].Visible = false;
             dgvObjectTable.Columns["OverallMaxForKindInFloor"].Visible = false;
-            nudMinInFloor.Value = (typeToUse == EntityTypeForForm.Item) ? floorGroupToUse.MinItemsInFloor : floorGroupToUse.MinTrapsInFloor;
-            nudMaxInFloor.Value = (typeToUse == EntityTypeForForm.Item) ? floorGroupToUse.MaxItemsInFloor : floorGroupToUse.MaxTrapsInFloor;
-            if (floorGroupToUse.MinFloorLevel != floorGroupToUse.MaxFloorLevel)
-                lblFloorGroupTitle.Text = $"For Floor Levels {floorGroupToUse.MinFloorLevel} to {floorGroupToUse.MaxFloorLevel}:";
+            nudMinInFloor.Value = ObjectGenerationParams.MinInFloor;
+            nudMaxInFloor.Value = ObjectGenerationParams.MaxInFloor;
+            if (minFloorLevel != maxFloorLevel)
+                lblFloorGroupTitle.Text = $"For Floor Levels {minFloorLevel} to {maxFloorLevel}:";
             else
-                lblFloorGroupTitle.Text = $"For Floor Level {floorGroupToUse.MinFloorLevel}:";
+                lblFloorGroupTitle.Text = $"For Floor Level {minFloorLevel}:";
         }
 
         private bool ValidateAndPrepareListForSave(out List<ClassInFloorInfo> objectList, out List<string> errorMessages)

@@ -41,7 +41,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             InitializeComponent();
             ActiveDungeon = activeDungeon;
-            if (!string.IsNullOrWhiteSpace(effectToSave?.EffectName))
+            if (paramsData.InternalName.Equals(effectToSave?.EffectName))
             {
                 EffectToSave = effectToSave.Clone();
                 if (EffectToSave.Params.Count() != paramsData.Parameters.Count)
@@ -134,7 +134,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         };
                         comboBox.Items.AddRange(parameter.ValidValues.Select(v => v.Value).ToArray());
                         if (originalValue != null)
-                            comboBox.Text = originalValue;
+                        {
+                            var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue)).Value;
+                            comboBox.Text = valueOfKey;
+                        }
                         else
                             comboBox.Text = parameter.Default;
                         control = comboBox;
@@ -252,11 +255,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         colorButton.Tag = control;
                         colorButton.Click += (sender, e) =>
                         {
+                            var textColor = (colorButton.Tag as TextBox).Text;
                             var colorDialog = new ColorDialog();
                             try
                             {
-                                colorDialog.Color = ((TextBox)colorButton.Tag).Text.ToColor();
-                                colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
+                                if(!string.IsNullOrWhiteSpace(textColor))
+                                {
+                                    colorDialog.Color = textColor.ToColor();
+                                    colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
+                                }
                             }
                             catch { }
                             if (colorDialog.ShowDialog() == DialogResult.OK)
@@ -269,21 +276,25 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control.Leave += (sender, e) =>
                         {
                             var valueToValidate = (sender as TextBox).Text;
-                            try
+                            if (!string.IsNullOrWhiteSpace(valueToValidate))
                             {
-                                var textBox = sender as TextBox;
-                                colorButton.BackColor = valueToValidate.ToColor();
+                                try
+                                {
+                                    var textBox = sender as TextBox;
+                                    colorButton.BackColor = valueToValidate.ToColor();
+                                }
+                                catch
+                                {
+                                    MessageBox.Show(
+                                        $"You have entered an invalid color.",
+                                        "Invalid parameter data",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error
+                                    );
+                                    (sender as TextBox).Text = PreviousTextBoxValue;
+                                }
                             }
-                            catch
-                            {
-                                MessageBox.Show(
-                                    $"You have entered an invalid color.",
-                                    "Invalid parameter data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error
-                                );
-                                (sender as TextBox).Text = PreviousTextBoxValue;
-                            }
+                            colorButton.BackColor = SystemColors.ButtonFace;
                         };
                         var colorTooltip = new ToolTip();
                         colorTooltip.SetToolTip(colorButton, "Change Color");
@@ -354,7 +365,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             alteredStatusComboBox.Items.Add(alteredStatus);
                         }
                         if (originalValue != null)
-                            alteredStatusComboBox.Text = originalValue;
+                        {
+                            var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue));
+                            alteredStatusComboBox.Text = valueOfKey;
+                        }
                         else
                             alteredStatusComboBox.Text = parameter.Default;
                         control = alteredStatusComboBox;
@@ -445,6 +459,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 switch (parameterData.Type)
                 {
                     case ParameterType.ComboBox:
+                        valueToValidate = (controlToValidate as ComboBox).Text;
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !(controlToValidate as ComboBox).Items.Contains(valueToValidate))
+                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid value.");
+                        else
+                            valueToValidate = parameterData.ValidValues.Find(vv => vv.Value.Equals(valueToValidate)).Key;
+                        break;
                     case ParameterType.AlteredStatus:
                         valueToValidate = (controlToValidate as ComboBox).Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !(controlToValidate as ComboBox).Items.Contains(valueToValidate))

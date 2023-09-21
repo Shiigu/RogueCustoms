@@ -23,7 +23,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private int MaxColumns, MaxRows;
         private string CurrentAlgorithmName => lvFloorAlgorithms.SelectedItems.Count > 0 ? FloorTypeData[lvFloorAlgorithms.SelectedIndices[0]].InternalName : "";
 
-        public frmFloorGeneratorAlgorithm(FloorInfo floorGroupToUse, GeneratorAlgorithmInfo algorithmToSave, List<FloorTypeData> floorTypeData)
+        public frmFloorGeneratorAlgorithm(FloorInfo floorGroupToUse, int width, int height, int minFloorLevel, int maxFloorLevel, GeneratorAlgorithmInfo algorithmToSave, List<FloorTypeData> floorTypeData)
         {
             InitializeComponent();
             CurrentFloorGroup = floorGroupToUse;
@@ -42,13 +42,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 lvFloorAlgorithms.Items.Add(algorithmItem);
             }
             lvFloorAlgorithms.LargeImageList = algorithmIcons;
-            if (floorGroupToUse.MinFloorLevel != floorGroupToUse.MaxFloorLevel)
-                lblFloorGroupTitle.Text = $"For Floor Levels {floorGroupToUse.MinFloorLevel} to {floorGroupToUse.MaxFloorLevel}:";
+            if (minFloorLevel != maxFloorLevel)
+                lblFloorGroupTitle.Text = $"For Floor Levels {minFloorLevel} to {maxFloorLevel}:";
             else
-                lblFloorGroupTitle.Text = $"For Floor Level {floorGroupToUse.MinFloorLevel}:";
+                lblFloorGroupTitle.Text = $"For Floor Level {minFloorLevel}:";
             AlgorithmToSave = algorithmToSave;
-            MaxColumns = floorGroupToUse.Width / 5;
-            MaxRows = floorGroupToUse.Height / 5;
+            MaxColumns = width / 5;
+            MaxRows = height / 5;
             if (AlgorithmToSave?.Rows > MaxRows)
                 nudAlgorithmRows.Value = MaxRows;
             else
@@ -72,19 +72,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             btnSave.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
             if (lvFloorAlgorithms.SelectedItems.Count > 0 && lvFloorAlgorithms.SelectedItems[0].Text == "Single Room")
             {
-                nudAlgorithmColumns.Minimum = 1;
                 nudAlgorithmColumns.Value = 1;
                 nudAlgorithmColumns.Enabled = false;
-                nudAlgorithmRows.Minimum = 1;
                 nudAlgorithmRows.Value = 1;
                 nudAlgorithmRows.Enabled = false;
             }
             else if (lvFloorAlgorithms.SelectedItems.Count > 0 && lvFloorAlgorithms.SelectedItems[0].Text != "Single Room")
             {
-                nudAlgorithmColumns.Minimum = 2;
                 nudAlgorithmColumns.Value = Math.Max(nudAlgorithmColumns.Value, nudAlgorithmColumns.Minimum);
                 nudAlgorithmColumns.Enabled = true;
-                nudAlgorithmRows.Minimum = 2;
                 nudAlgorithmRows.Value = Math.Max(nudAlgorithmRows.Value, nudAlgorithmRows.Minimum);
                 nudAlgorithmRows.Enabled = true;
             }
@@ -98,6 +94,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if(CurrentAlgorithmName != "OneBigRoom" && nudAlgorithmColumns.Value == 1 && nudAlgorithmRows.Value == 1)
+            {
+                var messageBoxResult = MessageBox.Show(
+                    $"You have selected an Algorithm that isn't One Big Room, yet you have set it to have only one room. This is valid, but not recommended.\n\nDo you want to proceed?",
+                    "Save Floor Algorithm",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                    return;
+            }
             if (AlgorithmToSave != null)
             {
                 AlgorithmToSave.Name = CurrentAlgorithmName;

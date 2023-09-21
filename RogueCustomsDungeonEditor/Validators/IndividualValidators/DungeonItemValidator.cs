@@ -58,7 +58,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else if (itemJson.EntityType == "Weapon")
             {
-                messages.AddError("Weapon does not have OnAttackActions.");
+                messages.AddWarning("Weapon does not have OnAttackActions. Weapon cannot do anything in this current state.");
             }
 
             if (itemJson.OnAttackedActions.Any())
@@ -99,7 +99,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else if (!itemJson.OnAttackActions.Any())
             {
-                messages.AddError("Consumable Item doesn't have any OnItemUseActions or OnAttackActions.");
+                messages.AddWarning("Consumable Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
             }
 
             if (itemJson.OnDeathActions.Any())

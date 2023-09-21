@@ -174,32 +174,38 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             else if (characterJson.MaxLevel == 1 && isPlayerCharacter)
                 messages.AddWarning("Character is set as a Player Class, but its Max Level is 1, so it's not allowed to gain any experience points. Reconsider this.");
 
-            try
+            if(!isPlayerCharacter)
             {
-                for (int i = 1; i <= characterJson.MaxLevel; i++)
+                try
                 {
-                    var payout = new Expression(characterJson.ExperiencePayoutFormula.Replace("level", i.ToString(), StringComparison.InvariantCultureIgnoreCase)).Eval<int>();
-                    if (payout < 0)
-                        messages.AddError($"Experience Payout formula returns a number lower than 0 at Level {i}, which is not valid.");
+                    for (int i = 1; i <= characterJson.MaxLevel; i++)
+                    {
+                        var payout = new Expression(characterJson.ExperiencePayoutFormula.Replace("level", i.ToString(), StringComparison.InvariantCultureIgnoreCase)).Eval<int>();
+                        if (payout < 0)
+                            messages.AddError($"Experience Payout formula returns a number lower than 0 at Level {i}, which is not valid.");
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                messages.AddError($"Experience Payout formula is invalid: {ex.Message}.");
+                catch (Exception ex)
+                {
+                    messages.AddError($"Experience Payout formula is invalid: {ex.Message}.");
+                }
             }
 
-            try
+            if(characterJson.CanGainExperience)
             {
-                for (int i = 1; i <= characterJson.MaxLevel; i++)
+                try
                 {
-                    var payout = new Expression(characterJson.ExperienceToLevelUpFormula.Replace("level", i.ToString(), StringComparison.InvariantCultureIgnoreCase)).Eval<int>();
-                    if (payout < 0)
-                        messages.AddError($"Experience To Level Up formula returns a number lower than 0 at Level {i}, which is not valid.");
+                    for (int i = 1; i <= characterJson.MaxLevel; i++)
+                    {
+                        var payout = new Expression(characterJson.ExperienceToLevelUpFormula.Replace("level", i.ToString(), StringComparison.InvariantCultureIgnoreCase)).Eval<int>();
+                        if (payout < 0)
+                            messages.AddError($"Experience To Level Up formula returns a number lower than 0 at Level {i}, which is not valid.");
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                messages.AddError($"Experience To Level Up formula is invalid: {ex.Message}.");
+                catch (Exception ex)
+                {
+                    messages.AddError($"Experience To Level Up formula is invalid: {ex.Message}.");
+                }
             }
 
             if(characterJson.StartingInventory != null)

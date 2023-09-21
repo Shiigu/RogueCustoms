@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::RogueCustomsDungeonEditor.frmMain));
-            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new global::System.Windows.Forms.DataGridViewCellStyle();
+            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
             this.msMenu = (new global::System.Windows.Forms.MenuStrip());
             this.editorToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
             this.exitToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
@@ -563,11 +563,12 @@
             // 
             // tvDungeonInfo
             // 
+            this.tvDungeonInfo.HideSelection = (false);
             this.tvDungeonInfo.Location = (new global::System.Drawing.Point(0, 65));
             this.tvDungeonInfo.Name = ("tvDungeonInfo");
             this.tvDungeonInfo.Size = (new global::System.Drawing.Size(217, 384));
             this.tvDungeonInfo.TabIndex = (2);
-            this.tvDungeonInfo.NodeMouseClick += (this.tvDungeonInfo_NodeMouseClick);
+            this.tvDungeonInfo.AfterSelect += (this.tvDungeonInfo_AfterSelect);
             // 
             // tbTabs
             // 
@@ -900,8 +901,8 @@
             // 
             // cmKey
             // 
-            dataGridViewCellStyle2.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.cmKey.DefaultCellStyle = (dataGridViewCellStyle2);
+            dataGridViewCellStyle1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.cmKey.DefaultCellStyle = (dataGridViewCellStyle1);
             this.cmKey.HeaderText = ("Key");
             this.cmKey.Name = ("cmKey");
             this.cmKey.ReadOnly = (true);
@@ -2057,7 +2058,6 @@
             // 
             this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(583, 166));
             this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerBaseMovement.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudPlayerBaseMovement.Name = ("nudPlayerBaseMovement");
             this.nudPlayerBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseMovement.TabIndex = (45);
@@ -2958,7 +2958,6 @@
             // 
             this.nudNPCBaseMovement.Location = (new global::System.Drawing.Point(583, 166));
             this.nudNPCBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCBaseMovement.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudNPCBaseMovement.Name = ("nudNPCBaseMovement");
             this.nudNPCBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseMovement.TabIndex = (140);
@@ -3456,7 +3455,6 @@
             // 
             this.cmbItemType.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbItemType.FormattingEnabled = (true);
-            this.cmbItemType.Items.AddRange(new global::System.Object[] { "Weapon", "Armor", "Consumable" });
             this.cmbItemType.Location = (new global::System.Drawing.Point(77, 209));
             this.cmbItemType.Name = ("cmbItemType");
             this.cmbItemType.Size = (new global::System.Drawing.Size(159, 23));
@@ -4052,6 +4050,7 @@
             this.Name = ("frmMain");
             this.StartPosition = (global::System.Windows.Forms.FormStartPosition.CenterScreen);
             this.Text = ("Rogue Customs Dungeon Editor");
+            this.FormClosing += (this.frmMain_FormClosing);
             this.msMenu.ResumeLayout(false);
             this.msMenu.PerformLayout();
             this.tsButtons.ResumeLayout(false);

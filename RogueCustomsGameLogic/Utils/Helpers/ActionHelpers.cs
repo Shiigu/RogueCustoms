@@ -24,27 +24,27 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 switch (paramName)
                 {
                     case "attacker":
-                        if (value.Equals("this"))
+                        if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Attacker = This;
-                        else if (value.Equals("source"))
+                        else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Attacker = Source;
-                        else if (value.Equals("target"))
+                        else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Attacker = Target;
                         break;
                     case "source":
-                        if (value.Equals("this"))
+                        if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Source = This;
-                        else if(value.Equals("source"))
+                        else if(value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Source = Source;
-                        else if (value.Equals("target"))
+                        else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Source = Target;
                         break;
                     case "target":
-                        if (value.Equals("this"))
+                        if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Target = This;
-                        else if (value.Equals("source"))
+                        else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Target = Source;
-                        else if (value.Equals("target"))
+                        else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
                             paramsObject.Target = Target;
                         break;
                     case "stat":
@@ -178,22 +178,22 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 parsedArg = parsedArg.Replace($"{{{cName}.armor}}", c.Armor.Name, StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.hp}}", StringComparison.InvariantCultureIgnoreCase) && c.HP > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.hp}}", c.HP.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.hp}}", c.HP.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.maxhp}}", StringComparison.InvariantCultureIgnoreCase) && c.MaxHP > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.maxhp}}", c.MaxHP.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.maxhp}}", c.MaxHP.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.damage}}", StringComparison.InvariantCultureIgnoreCase) && c.Damage != null)
                 parsedArg = parsedArg.Replace($"{{{cName}.damage}}", c.Damage, StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.attack}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.attack}}", c.Attack.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.attack}}", c.Attack.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.defense}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.defense}}", c.Defense.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.defense}}", c.Defense.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.movement}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.movement}}", c.Movement.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.movement}}", c.Movement.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.hpregeneration}}", StringComparison.InvariantCultureIgnoreCase))
                 parsedArg = parsedArg.Replace($"{{{cName}.hpregeneration}}", c.HPRegeneration.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
@@ -202,7 +202,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 parsedArg = parsedArg.Replace($"{{{cName}.mitigation}}", c.Mitigation, StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{cName}.experiencepayout}}", StringComparison.InvariantCultureIgnoreCase) && c.ExperiencePayout > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.experiencepayout}}", c.ExperiencePayout.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{cName}.experiencepayout}}", c.ExperiencePayout.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             return parsedArg;
         }
@@ -217,7 +217,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 parsedArg = parsedArg.Replace($"{{{iName}.owner}}", i.Owner.Name, StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{iName}.power}}", StringComparison.InvariantCultureIgnoreCase) && i.Power != null)
-                parsedArg = parsedArg.Replace($"{{{iName}.power}}", i.Power, StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{iName}.power}}", i.Power.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             return parsedArg;
         }
@@ -232,7 +232,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 parsedArg = parsedArg.Replace($"{{{alsName}.turnlength}}", als.TurnLength.ToString(), StringComparison.InvariantCultureIgnoreCase);
 
             if (parsedArg.Contains($"{{{alsName}.power}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{alsName}.power}}", als.Power.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace($"{{{alsName}.power}}", als.Power.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
 
             return parsedArg;
         }

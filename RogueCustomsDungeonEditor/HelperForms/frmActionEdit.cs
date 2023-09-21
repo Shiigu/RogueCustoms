@@ -20,6 +20,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
     {
         public ActionWithEffectsInfo ActionToSave { get; set; }
         public bool Saved { get; set; }
+        public bool IsNewAction { get; set; }
         private DungeonInfo ActiveDungeon;
         private List<string> UsableAlteredStatusList;
         private List<EffectTypeData> SelectableEffects;
@@ -29,9 +30,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private bool HasOnSuccessFailureChildNodes;
         private bool RequiresDescription;
         private bool RequiresActionName;
+        private UsageCriteria UsageCriteria;
         private string ClassId;
-
-        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, bool requiresDescription, bool requiresActionName, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
+        private string PlaceholderActionName;
+        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
         {
             InitializeComponent();
             ActionToSave = actionToSave.Clone();
@@ -44,10 +46,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 lblTitle.Text = "Edit Action";
             }
-            btnSaveAs.Enabled = !string.IsNullOrWhiteSpace(classId);
+            btnSaveAs.Enabled = requiresActionName;
             ClassId = classId;
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
+
+            if (!RequiresActionName)
+                PlaceholderActionName = placeholderActionNameIfNeeded;
+
+            UsageCriteria = usageCriteria;
 
             if (RequiresDescription)
             {
@@ -237,6 +244,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (effectTypeSelection == null) return;
             var selectedEffectTypeData = SelectableEffects.Find(se => se.DisplayName.Equals(effectTypeSelection));
             if (selectedEffectTypeData == null) return;
+            if (!selectedEffectTypeData.InternalName.Equals(currentEffect.EffectName) && (!string.IsNullOrWhiteSpace(currentEffect.Then?.EffectName)
+                || !string.IsNullOrWhiteSpace(currentEffect.OnSuccess?.EffectName)
+                || !string.IsNullOrWhiteSpace(currentEffect.OnFailure?.EffectName)))
+            {
+                var messageBoxResult = MessageBox.Show(
+                    "This Action has child steps. If you change the function and save it, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                    "Add THEN Step",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                    return;
+            }
             var frmActionParameter = new frmActionParameters(currentEffect, ActiveDungeon, selectedEffectTypeData, UsableAlteredStatusList, selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
             frmActionParameter.ShowDialog();
             if (frmActionParameter.Saved)
@@ -317,7 +337,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             var messageBoxPrompt = (SelectedNode.Nodes.Count > 0)
                 ? "Do you wish to remove this Step?\n\nWARNING: This will also remove ALL steps that follow it."
-                : "Do you wish to remove this Step";
+                : "Do you wish to remove this Step?";
             var messageBoxResult = MessageBox.Show(
                 messageBoxPrompt,
                 "Delete Step",
@@ -423,8 +443,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
                             {
-                                if (ActionToSave.TargetTypes == null)
-                                    ActionToSave.TargetTypes = new List<string>();
+                                ActionToSave.TargetTypes = new List<string>();
                                 if (chkAllies.Checked)
                                     ActionToSave.TargetTypes.Add("Ally");
                                 if (chkEnemies.Checked)
@@ -462,7 +481,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (ActionToSave == null || ActionToSave.Effect == null || string.IsNullOrWhiteSpace(ActionToSave.Effect.EffectName))
                 {
                     var messageBoxResult = MessageBox.Show(
-                        "This Action has NO steps. If saved, it will be completely erased!\n\nAre you sure you want to continue?",
+                        "This Action has NO steps. Proceeding means it will not be saved.\n\nAre you sure you want to continue?",
                         "Add THEN Step",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -470,6 +489,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     if (messageBoxResult == DialogResult.Yes)
                     {
                         ActionToSave = null;
+                        this.IsNewAction = RequiresActionName;
                         this.Saved = true;
                         this.Close();
                     }
@@ -477,7 +497,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 else
                 {
                     var nameToUse = (!RequiresActionName)
-                           ? "Action"
+                           ? PlaceholderActionName
                            : InputBox.Show("Please write a name for the Action. If this is an Action for the Player Character or a usable Item, this will be its visible name.\nTo cancel Saving, leave the field empty.", "Give the Action a name", "");
                     if (!string.IsNullOrWhiteSpace(nameToUse))
                     {
@@ -485,8 +505,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
                             {
-                                if (ActionToSave.TargetTypes == null)
-                                    ActionToSave.TargetTypes = new List<string>();
+                                ActionToSave.TargetTypes = new List<string>();
                                 if (chkAllies.Checked)
                                     ActionToSave.TargetTypes.Add("Ally");
                                 if (chkEnemies.Checked)
@@ -503,6 +522,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.Description = txtActionDescription.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         ActionToSave.Name = nameToUse;
+                        this.IsNewAction = RequiresActionName;
                         this.Saved = true;
                         this.Close();
                     }
@@ -513,19 +533,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private bool ValidateStepsBeforeSave(out List<string> errorMessages)
         {
             errorMessages = new List<string>();
-            if (gbSelectionCriteria.Enabled)
+            if (UsageCriteria != UsageCriteria.AnyTargetAnyTime)
             {
-                if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
+                if(UsageCriteria != UsageCriteria.AnyTarget)
                 {
-                    errorMessages.Add("Action is not set to be targetable to anyone.");
-                }
-                else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
-                {
-                    errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
-                }
-                else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
-                {
-                    errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
+                    if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
+                    {
+                        errorMessages.Add("Action is not set to be targetable to anyone.");
+                    }
+                    else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
+                    {
+                        errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
+                    }
+                    else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
+                    {
+                        errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
+                    }
                 }
             }
             if (RequiresDescription && string.IsNullOrWhiteSpace(txtActionDescription.Text))

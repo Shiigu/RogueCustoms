@@ -276,6 +276,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             }
             catch (Exception)
             {
+                LatestDungeonStatus = null;
                 ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
             return false;

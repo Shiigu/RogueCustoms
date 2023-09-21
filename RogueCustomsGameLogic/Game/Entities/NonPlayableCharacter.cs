@@ -34,6 +34,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void PickTargetAndPath()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;                                       // Dead entities don't move
+            if (!OnAttackActions.Any()) return;
             UpdateKnownCharacterList();
             var attackActionsWithValidTargets = LookForAttackActionsWithValidTargets().Where(a => a.PossibleTargets.Any());
             if (attackActionsWithValidTargets.Any())
