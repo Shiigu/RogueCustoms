@@ -33,18 +33,26 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private UsageCriteria UsageCriteria;
         private string ClassId;
         private string PlaceholderActionName;
-        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
+        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
         {
             InitializeComponent();
             ActionToSave = actionToSave.Clone();
             ActiveDungeon = activeDungeon;
             if (actionToSave == null || actionToSave.Effect == null)
             {
-                lblTitle.Text = "New Action";
+                this.Text = "Action Editor - [New Action]";
+                if(!string.IsNullOrWhiteSpace(classId))
+                    lblTitle.Text = $"Create {actionTypeText} for {classId}";
+                else
+                    lblTitle.Text = $"Create {actionTypeText} for Floor Group";
             }
             else
             {
-                lblTitle.Text = "Edit Action";
+                this.Text = $"Action Editor - [{actionToSave.Name}]";
+                if (!string.IsNullOrWhiteSpace(classId))
+                    lblTitle.Text = $"Edit {actionTypeText} for {classId}";
+                else
+                    lblTitle.Text = $"Edit {actionTypeText} for Floor Group";
             }
             btnSaveAs.Enabled = requiresActionName;
             ClassId = classId;

@@ -851,13 +851,13 @@ namespace RogueCustomsDungeonEditor
 
         #region Shared between tabs
 
-        private void OpenActionEditScreenForListBox(ListBox actionListBox, bool isNewAction, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
+        private void OpenActionEditScreenForListBox(ListBox actionListBox, string actionTypeText, bool isNewAction, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
         {
             var action = (isNewAction)
                             ? new ActionWithEffectsInfo()
                             : (actionListBox.SelectedItem as ListBoxItem).Tag as ActionWithEffectsInfo;
             var classId = ((ClassInfo)ActiveNodeTag.DungeonElement).Id;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
+            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {
@@ -880,10 +880,10 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void OpenActionEditScreenForButton(Button actionButton, string classId, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
+        private void OpenActionEditScreenForButton(Button actionButton, string actionTypeText, string classId, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
         {
             var action = actionButton.Tag as ActionWithEffectsInfo;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
+            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {
@@ -1614,7 +1614,7 @@ namespace RogueCustomsDungeonEditor
         private void btnOnFloorStartAction_Click(object sender, EventArgs e)
         {
             var floorGroup = ((FloorInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnOnFloorStartAction, string.Empty, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnOnFloorStartAction, "Turn Start", string.Empty, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAddAlgorithm_Click(object sender, EventArgs e)
@@ -2646,7 +2646,7 @@ namespace RogueCustomsDungeonEditor
         private void btnPlayerOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, playerClass.Id, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, "Turn Start", playerClass.Id, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbPlayerOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -2657,13 +2657,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddPlayerOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, true, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", true, true, true, string.Empty, UsageCriteria.FullConditions);
 
         }
 
         private void btnEditPlayerOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, false, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", false, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemovePlayerOnAttackAction_Click(object sender, EventArgs e)
@@ -2685,13 +2685,13 @@ namespace RogueCustomsDungeonEditor
         private void btnPlayerOnAttackedAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnAttackedAction, playerClass.Id, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnAttackedAction, "Interacted", playerClass.Id, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnPlayerOnDeathAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnDeathAction, playerClass.Id, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
         }
 
         #endregion
@@ -2985,17 +2985,6 @@ namespace RogueCustomsDungeonEditor
                 else
                 {
                     SaveNPC(inputBoxResult);
-                    /*IsNewElement = false;
-                    DirtyDungeon = true;
-                    DirtyTab = false;
-                    PassedValidation = false;
-                    RefreshTreeNodes();
-                    var savedClass = ActiveDungeon.NPCs.Find(pc => pc.Id.Equals(inputBoxResult));
-                    if (savedClass != null)
-                    {
-                        var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
-                        SelectNodeIfExists(nodeText, "NPCs");
-                    }*/
                 }
             }
         }
@@ -3327,7 +3316,7 @@ namespace RogueCustomsDungeonEditor
         private void btnNPCOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnTurnStartAction, NPC.Id, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnTurnStartAction, "Turn Start", NPC.Id, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbNPCOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -3338,12 +3327,12 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddNPCOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, true, false, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", true, false, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnEditNPCOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, false, false, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", false, false, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemoveNPCOnAttackAction_Click(object sender, EventArgs e)
@@ -3365,13 +3354,13 @@ namespace RogueCustomsDungeonEditor
         private void btnNPCOnAttackedAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnAttackedAction, NPC.Id, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnAttackedAction, "Interacted", NPC.Id, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnNPCOnDeathAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnDeathAction, NPC.Id, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
         }
         #endregion
 
@@ -3781,13 +3770,13 @@ namespace RogueCustomsDungeonEditor
         private void btnItemOnSteppedAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnSteppedAction, item.Id, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnSteppedAction, "Stepped On", item.Id, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnUseAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnUseAction, item.Id, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnUseAction, "Used", item.Id, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbItemOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -3798,12 +3787,12 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddItemOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, true, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", true, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnEditItemOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, false, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", false, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemoveItemOnAttackAction_Click(object sender, EventArgs e)
@@ -3825,13 +3814,13 @@ namespace RogueCustomsDungeonEditor
         private void btnItemOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnTurnStartAction, item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnTurnStartAction, "Owner Turn Start", item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnAttackedAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnAttackedAction, item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnAttackedAction, "Owner Interacted", item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         #endregion
 
@@ -4097,7 +4086,7 @@ namespace RogueCustomsDungeonEditor
         private void btnTrapOnSteppedAction_Click(object sender, EventArgs e)
         {
             var trap = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnTrapOnSteppedAction, trap.Id, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnTrapOnSteppedAction, "Stepped On", trap.Id, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
         #endregion
@@ -4337,13 +4326,13 @@ namespace RogueCustomsDungeonEditor
         private void btnAlteredStatusOnApplyAction_Click(object sender, EventArgs e)
         {
             var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, alteredStatus.Id, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, "Apply Status", alteredStatus.Id, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAlteredStatusOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, alteredStatus.Id, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, "Inflicted Turn Start", alteredStatus.Id, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
         {
