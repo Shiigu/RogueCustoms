@@ -4044,6 +4044,7 @@
             this.Controls.Add(this.tvDungeonInfo);
             this.Controls.Add(this.tsButtons);
             this.Controls.Add(this.msMenu);
+            this.FormBorderStyle = (global::System.Windows.Forms.FormBorderStyle.FixedSingle);
             this.Icon = ((global::System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = (this.msMenu);
             this.MaximizeBox = (false);
