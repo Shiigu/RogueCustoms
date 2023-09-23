@@ -1556,11 +1556,13 @@ namespace RogueCustomsDungeonEditor
 
         private void nudMinFloorLevel_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
 
         private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
 
@@ -2584,6 +2586,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtPlayerLevelUpFormula_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.PlayerClass])) return;
             var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
             if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestExpression(false, out string errorMessage))
@@ -3015,6 +3018,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC does not have an Emergency Weapon.");
             if (string.IsNullOrWhiteSpace(cmbNPCStartingArmor.Text))
                 errorMessages.Add("This NPC does not have an Emergency Armor.");
+            if (string.IsNullOrWhiteSpace(txtNPCExperiencePayout.Text))
+                errorMessages.Add("This NPC does not have an Experience Payout Formula.");
             if (chkNPCCanGainExperience.Checked && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
                 errorMessages.Add("This NPC can gain experience, but does not have a Level Up Formula.");
             if (chkNPCCanGainExperience.Checked && (int)nudNPCMaxLevel.Value == 1)
@@ -3067,6 +3072,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtNPCExperiencePayout_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
             var parsedPayoutFormula = Regex.Replace(txtNPCExperiencePayout.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
             if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestExpression(false, out string errorMessage))
@@ -3261,6 +3267,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtNPCLevelUpFormula_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
             var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
             if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestExpression(false, out string errorMessage))
@@ -3707,6 +3714,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtItemPower_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Item])) return;
             if (!string.IsNullOrWhiteSpace(txtItemPower.Text) && !txtItemPower.Text.IsDiceNotation() && !int.TryParse(txtItemPower.Text, out _))
             {
                 MessageBox.Show(
@@ -4027,6 +4035,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtTrapPower_Leave(object sender, EventArgs e)
         {
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Trap])) return;
             if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !int.TryParse(txtTrapPower.Text, out _))
             {
                 MessageBox.Show(
