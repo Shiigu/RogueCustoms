@@ -32,7 +32,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
             foreach (var @object in objectGenerationParams.ObjectList)
             {
-                objectGenerationParams.ObjectList.Add(new ClassInFloorInfo
+                ObjectGenerationParams.ObjectList.Add(new ClassInFloorInfo
                 {
                     ClassId = @object.ClassId,
                     SimultaneousMaxForKindInFloor = @object.SimultaneousMaxForKindInFloor,
