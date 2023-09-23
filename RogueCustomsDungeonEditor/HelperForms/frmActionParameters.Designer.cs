@@ -94,6 +94,7 @@
             // 
             // lblRequired
             // 
+            lblRequired.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblRequired.Location = new Point(10, 79);
             lblRequired.Name = "lblRequired";
             lblRequired.Size = new Size(315, 33);

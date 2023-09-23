@@ -134,13 +134,21 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             DropDownStyle = ComboBoxStyle.DropDownList
                         };
                         comboBox.Items.AddRange(parameter.ValidValues.Select(v => v.Value).ToArray());
-                        if (originalValue != null)
+
+                        try
                         {
-                            var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue)).Value;
-                            comboBox.Text = valueOfKey;
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase)).Value;
+                                comboBox.Text = valueOfKey;
+                            }
+                            else
+                                comboBox.Text = parameter.Default;
                         }
-                        else
+                        catch (Exception ex)
+                        {
                             comboBox.Text = parameter.Default;
+                        }
                         control = comboBox;
                         break;
                     case ParameterType.Formula:
@@ -365,13 +373,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             alteredStatusComboBox.Items.Add(alteredStatus);
                         }
-                        if (originalValue != null)
+                        try
                         {
-                            var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue));
-                            alteredStatusComboBox.Text = valueOfKey;
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                alteredStatusComboBox.Text = valueOfKey;
+                            }
+                            else
+                                alteredStatusComboBox.Text = parameter.Default;
                         }
-                        else
+                        catch (Exception ex)
+                        {
                             alteredStatusComboBox.Text = parameter.Default;
+                        }
                         control = alteredStatusComboBox;
                         break;
                     case ParameterType.Number:
@@ -418,10 +433,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             var tableFinalY = tlpParameters.Location.Y + tlpParameters.Height;
             llblWikiParameters.Location = new Point(llblWikiParameters.Location.X, tableFinalY + 10);
-            llblWikiAction.Location = new Point(llblWikiAction.Location.X, tableFinalY + 30);
-            btnSave.Location = new Point(btnSave.Location.X, tableFinalY + 60);
-            btnCancel.Location = new Point(btnCancel.Location.X, tableFinalY + 60);
-            this.Height = tableFinalY + 140;
+            llblWikiAction.Location = new Point(llblWikiAction.Location.X, tableFinalY + 35);
+            btnSave.Location = new Point(btnSave.Location.X, tableFinalY + 65);
+            btnCancel.Location = new Point(btnCancel.Location.X, tableFinalY + 65);
+            this.Height = tableFinalY + 145;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
