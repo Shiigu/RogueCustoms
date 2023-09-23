@@ -362,11 +362,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 };
             }
 
-            if (info.Then != null)
+            if (!string.IsNullOrWhiteSpace(info?.Then?.EffectName))
                 clonedEffect.Then = info.Then.Clone();
-            if (info.OnSuccess != null)
+            if (!string.IsNullOrWhiteSpace(info?.OnSuccess?.EffectName))
                 clonedEffect.OnSuccess = info.OnSuccess.Clone();
-            if (info.OnFailure != null)
+            if (!string.IsNullOrWhiteSpace(info?.OnFailure?.EffectName))
                 clonedEffect.OnFailure = info.OnFailure.Clone();
 
             return clonedEffect;

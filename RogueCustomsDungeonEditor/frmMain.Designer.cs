@@ -563,6 +563,7 @@
             // 
             // tvDungeonInfo
             // 
+            this.tvDungeonInfo.FullRowSelect = (true);
             this.tvDungeonInfo.HideSelection = (false);
             this.tvDungeonInfo.Location = (new global::System.Drawing.Point(0, 65));
             this.tvDungeonInfo.Name = ("tvDungeonInfo");

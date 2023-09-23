@@ -217,13 +217,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     }
                 }
                 btnEdit.Enabled = true;
-                btnRemove.Enabled = selectedEffectData != null;
+                btnRemove.Enabled = true;
                 btnNewThen.Enabled = selectedEffectData != null && !HasThenChildNode;
                 btnNewOnSuccessFailure.Enabled = selectedEffectData != null && selectedEffectData.CanReturnFailure && selectedEffect != null && !HasOnSuccessFailureChildNodes;
             }
             else
             {
-
                 btnEdit.Enabled = false;
                 btnRemove.Enabled = false;
                 btnNewThen.Enabled = false;
@@ -257,6 +256,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (messageBoxResult == DialogResult.No)
                     return;
             }
+            if (selectedEffectTypeData.InternalName.Equals(currentEffect.EffectName) && ((currentEffect.Then != null && string.IsNullOrWhiteSpace(currentEffect.Then?.EffectName))
+                || (currentEffect.OnSuccess != null && string.IsNullOrWhiteSpace(currentEffect.OnSuccess?.EffectName))
+                || (currentEffect.OnFailure != null && string.IsNullOrWhiteSpace(currentEffect.OnFailure?.EffectName))))
+            {
+                var messageBoxResult = MessageBox.Show(
+                    "This Action has 'Do Nothing' child steps. If you save any changes you make, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                    "Add THEN Step",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                    return;
+            }
             var frmActionParameter = new frmActionParameters(currentEffect, ActiveDungeon, selectedEffectTypeData, UsableAlteredStatusList, selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
             frmActionParameter.ShowDialog();
             if (frmActionParameter.Saved)
@@ -276,6 +288,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
             RefreshActionSequenceTree();
+            tvEffectSequence.SelectNodeByTag(frmActionParameter.EffectToSave);
         }
 
         private void btnNewThen_Click(object sender, EventArgs e)
@@ -302,8 +315,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
 
-            currentEffect.Then = new EffectInfo();
+            var newEffect = new EffectInfo();
+            currentEffect.Then = newEffect;
             RefreshActionSequenceTree();
+            tvEffectSequence.SelectNodeByTag(newEffect);
         }
 
         private void btnNewOnSuccessFailure_Click(object sender, EventArgs e)
@@ -328,9 +343,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
 
-            currentEffect.OnSuccess = new EffectInfo();
-            currentEffect.OnFailure = new EffectInfo();
+            var newOnSuccess = new EffectInfo();
+            currentEffect.OnSuccess = newOnSuccess;
+            var newOnFailure = new EffectInfo();
+            currentEffect.OnFailure = newOnFailure;
             RefreshActionSequenceTree();
+            tvEffectSequence.SelectNodeByTag(newOnSuccess);
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -361,6 +379,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 HasThenChildNode = false;
                 HasOnSuccessFailureChildNodes = false;
                 RefreshActionSequenceTree();
+
+                btnEdit.Enabled = false;
+                btnRemove.Enabled = false;
+                btnNewThen.Enabled = false;
+                btnNewOnSuccessFailure.Enabled = false;
+
+                if (parentEffect != null)
+                    tvEffectSequence.SelectNodeByTag(parentEffect);
             }
         }
 
@@ -535,7 +561,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             errorMessages = new List<string>();
             if (UsageCriteria != UsageCriteria.AnyTargetAnyTime)
             {
-                if(UsageCriteria != UsageCriteria.AnyTarget)
+                if (UsageCriteria != UsageCriteria.AnyTarget)
                 {
                     if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
                     {
