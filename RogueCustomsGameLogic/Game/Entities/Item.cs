@@ -22,7 +22,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnItemSteppedActions = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnItemSteppedActions, OnItemSteppedActions);
             OnItemUseActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnItemUseActions, OnItemUseActions);
+            if (entityClass.EntityType != EntityType.Trap)
+                MapClassActions(entityClass.OnItemUseActions, OnItemUseActions);
+            if (entityClass.EntityType != EntityType.Trap)
+                MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
+            if (entityClass.EntityType != EntityType.Trap)
+                MapClassActions(entityClass.OnAttackActions, OwnOnAttackActions);
+            if (entityClass.EntityType != EntityType.Trap)
+                MapClassActions(entityClass.OnAttackedActions, OwnOnAttackedActions);
         }
 
         public void Stepped(Entity stomper)

@@ -45,13 +45,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             Visible = entityClass.StartsVisible;
             ExistenceStatus = EntityExistenceStatus.Alive;
             OwnOnTurnStartActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
             OwnOnAttackActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnAttackActions, OwnOnAttackActions);
             OwnOnAttackedActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnAttackedActions, OwnOnAttackedActions);
             OwnOnDeathActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnDeathActions, OwnOnDeathActions);
         }
 
         protected void MapClassActions(List<ActionWithEffects> classActions, List<ActionWithEffects> entityActions)

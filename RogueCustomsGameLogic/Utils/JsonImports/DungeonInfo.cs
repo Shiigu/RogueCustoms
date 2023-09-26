@@ -17,11 +17,11 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int AmountOfFloors { get; set; }
         public List<FloorInfo> FloorInfos { get; set; }
         public List<FactionInfo> FactionInfos { get; set; }
-        public List<ClassInfo> PlayerClasses { get; set; }
-        public List<ClassInfo> NPCs { get; set; }
-        public List<ClassInfo> Items { get; set; }
-        public List<ClassInfo> Traps { get; set; }
-        public List<ClassInfo> AlteredStatuses { get; set; }
+        public List<PlayerClassInfo> PlayerClasses { get; set; }
+        public List<NPCInfo> NPCs { get; set; }
+        public List<ItemInfo> Items { get; set; }
+        public List<TrapInfo> Traps { get; set; }
+        public List<AlteredStatusInfo> AlteredStatuses { get; set; }
 
         public string GetLocalizedName(string localeLanguage)
         {

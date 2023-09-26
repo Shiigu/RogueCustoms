@@ -74,101 +74,168 @@ namespace RogueCustomsGameEngine.Game.Entities
             Id = classInfo.Id;
             Name = Locale[classInfo.Name];
             Description = (classInfo.Description != null) ? Locale[classInfo.Description] : null;
-            FactionId = classInfo.Faction;
             ConsoleRepresentation = classInfo.ConsoleRepresentation;
-            EntityType = entityType ?? (EntityType)Enum.Parse(typeof(EntityType), classInfo.EntityType);
-            StartsVisible = classInfo.StartsVisible;
-            if (EntityType == EntityType.Player || EntityType == EntityType.NPC)
+
+            if (classInfo is ItemInfo itemInfo)
             {
-                Passable = false;
-                StartingInventoryIds = new List<string>(classInfo.StartingInventory);
-                if (EntityType == EntityType.Player)
-                    RequiresNamePrompt = classInfo.RequiresNamePrompt;
-            }
-            else if (EntityType == EntityType.Consumable || EntityType == EntityType.Weapon || EntityType == EntityType.Armor || EntityType == EntityType.Trap)
-            {
+                EntityType = entityType ?? (EntityType)Enum.Parse(typeof(EntityType), itemInfo.EntityType);
+                Power = itemInfo.Power;
+                StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
+                CanBePickedUp = itemInfo.CanBePickedUp;
+                OnTurnStartActions = new List<ActionWithEffects>();
+                MapActions(OnTurnStartActions, itemInfo.OnTurnStartActions);
+                OnAttackActions = new List<ActionWithEffects>();
+                MapActions(OnAttackActions, itemInfo.OnAttackActions);
+                OnAttackedActions = new List<ActionWithEffects>();
+                MapActions(OnAttackedActions, itemInfo.OnAttackedActions);
+                OnItemSteppedActions = new List<ActionWithEffects>();
+                MapActions(OnItemSteppedActions, itemInfo.OnItemSteppedActions);
+                OnItemUseActions = new List<ActionWithEffects>();
+                MapActions(OnItemUseActions, itemInfo.OnItemUseActions);
             }
-
-            Power = classInfo.Power;
-
-            #region Character-only data
-
-            BaseHP = classInfo.BaseHP;
-            BaseAttack = classInfo.BaseAttack;
-            BaseDefense = classInfo.BaseDefense;
-            BaseMovement = classInfo.BaseMovement;
-            BaseHPRegeneration = classInfo.BaseHPRegeneration;
-            StartingWeaponId = classInfo.StartingWeapon;
-            StartingArmorId = classInfo.StartingArmor;
-            CanGainExperience = classInfo.CanGainExperience;
-            MaxLevel = classInfo.MaxLevel;
-            ExperiencePayoutFormula = classInfo.ExperiencePayoutFormula;
-            ExperienceToLevelUpFormula = classInfo.ExperienceToLevelUpFormula;
-            MaxHPIncreasePerLevel = classInfo.MaxHPIncreasePerLevel;
-            AttackIncreasePerLevel = classInfo.AttackIncreasePerLevel;
-            DefenseIncreasePerLevel = classInfo.DefenseIncreasePerLevel;
-            MovementIncreasePerLevel = classInfo.MovementIncreasePerLevel;
-            HPRegenerationIncreasePerLevel = classInfo.HPRegenerationIncreasePerLevel;
-            KnowsAllCharacterPositions = classInfo.KnowsAllCharacterPositions;
-            BaseSightRange = 0;
-            if (!string.IsNullOrWhiteSpace(classInfo.BaseSightRange))
+            else if (classInfo is PlayerClassInfo playerClassInfo)
             {
-                switch (classInfo.BaseSightRange.ToLower())
+                FactionId = playerClassInfo.Faction;
+                BaseHP = playerClassInfo.BaseHP;
+                BaseAttack = playerClassInfo.BaseAttack;
+                BaseDefense = playerClassInfo.BaseDefense;
+                BaseMovement = playerClassInfo.BaseMovement;
+                BaseHPRegeneration = playerClassInfo.BaseHPRegeneration;
+                StartingWeaponId = playerClassInfo.StartingWeapon;
+                StartingArmorId = playerClassInfo.StartingArmor;
+                CanGainExperience = playerClassInfo.CanGainExperience;
+                MaxLevel = playerClassInfo.MaxLevel;
+                ExperiencePayoutFormula = playerClassInfo.ExperiencePayoutFormula;
+                ExperienceToLevelUpFormula = playerClassInfo.ExperienceToLevelUpFormula;
+                MaxHPIncreasePerLevel = playerClassInfo.MaxHPIncreasePerLevel;
+                AttackIncreasePerLevel = playerClassInfo.AttackIncreasePerLevel;
+                DefenseIncreasePerLevel = playerClassInfo.DefenseIncreasePerLevel;
+                MovementIncreasePerLevel = playerClassInfo.MovementIncreasePerLevel;
+                HPRegenerationIncreasePerLevel = playerClassInfo.HPRegenerationIncreasePerLevel;
+                BaseSightRange = 0;
+                if (!string.IsNullOrWhiteSpace(playerClassInfo.BaseSightRange))
                 {
-                    case "full map":
-                    case "fullmap":
-                    case "whole map":
-                    case "wholemap":
-                        BaseSightRange = Constants.FullMapSightRange;
-                        break;
-                    case "full room":
-                    case "fullroom":
-                    case "whole room":
-                    case "wholeroom":
-                        BaseSightRange = Constants.FullRoomSightRange;
-                        break;
-                    default:
-                        if (!int.TryParse(classInfo.BaseSightRange, out int sightRange) || sightRange < 0)
-                            throw new InvalidDataException($"Sight Range of {classInfo.BaseSightRange} is not valid.");
-                        BaseSightRange = sightRange;
-                        break;
+                    switch (playerClassInfo.BaseSightRange.ToLower())
+                    {
+                        case "full map":
+                        case "fullmap":
+                        case "whole map":
+                        case "wholemap":
+                            BaseSightRange = Constants.FullMapSightRange;
+                            break;
+                        case "full room":
+                        case "fullroom":
+                        case "whole room":
+                        case "wholeroom":
+                            BaseSightRange = Constants.FullRoomSightRange;
+                            break;
+                        default:
+                            if (!int.TryParse(playerClassInfo.BaseSightRange, out int sightRange) || sightRange < 0)
+                                throw new InvalidDataException($"Sight Range of {playerClassInfo.BaseSightRange} is not valid.");
+                            BaseSightRange = sightRange;
+                            break;
+                    }
                 }
+                InventorySize = playerClassInfo.InventorySize;
+                OnTurnStartActions = new List<ActionWithEffects>();
+                MapActions(OnTurnStartActions, playerClassInfo.OnTurnStartActions);
+                OnAttackActions = new List<ActionWithEffects>();
+                MapActions(OnAttackActions, playerClassInfo.OnAttackActions);
+                OnAttackedActions = new List<ActionWithEffects>();
+                MapActions(OnAttackedActions, playerClassInfo.OnAttackedActions);
+                OnDeathActions = new List<ActionWithEffects>();
+                MapActions(OnDeathActions, playerClassInfo.OnDeathActions);
+
+                EntityType = EntityType.Player;
+                StartsVisible = playerClassInfo.StartsVisible;
+                StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
+                Passable = false;
+                RequiresNamePrompt = playerClassInfo.RequiresNamePrompt;
             }
-            InventorySize = classInfo.InventorySize;
-            AIOddsToUseActionsOnSelf = classInfo.AIOddsToUseActionsOnSelf;
+            else if (classInfo is NPCInfo npcInfo)
+            {
+                FactionId = npcInfo.Faction;
+                BaseHP = npcInfo.BaseHP;
+                BaseAttack = npcInfo.BaseAttack;
+                BaseDefense = npcInfo.BaseDefense;
+                BaseMovement = npcInfo.BaseMovement;
+                BaseHPRegeneration = npcInfo.BaseHPRegeneration;
+                StartingWeaponId = npcInfo.StartingWeapon;
+                StartingArmorId = npcInfo.StartingArmor;
+                CanGainExperience = npcInfo.CanGainExperience;
+                MaxLevel = npcInfo.MaxLevel;
+                ExperiencePayoutFormula = npcInfo.ExperiencePayoutFormula;
+                ExperienceToLevelUpFormula = npcInfo.ExperienceToLevelUpFormula;
+                MaxHPIncreasePerLevel = npcInfo.MaxHPIncreasePerLevel;
+                AttackIncreasePerLevel = npcInfo.AttackIncreasePerLevel;
+                DefenseIncreasePerLevel = npcInfo.DefenseIncreasePerLevel;
+                MovementIncreasePerLevel = npcInfo.MovementIncreasePerLevel;
+                HPRegenerationIncreasePerLevel = npcInfo.HPRegenerationIncreasePerLevel;
+                BaseSightRange = 0;
+                if (!string.IsNullOrWhiteSpace(npcInfo.BaseSightRange))
+                {
+                    switch (npcInfo.BaseSightRange.ToLower())
+                    {
+                        case "full map":
+                        case "fullmap":
+                        case "whole map":
+                        case "wholemap":
+                            BaseSightRange = Constants.FullMapSightRange;
+                            break;
+                        case "full room":
+                        case "fullroom":
+                        case "whole room":
+                        case "wholeroom":
+                            BaseSightRange = Constants.FullRoomSightRange;
+                            break;
+                        default:
+                            if (!int.TryParse(npcInfo.BaseSightRange, out int sightRange) || sightRange < 0)
+                                throw new InvalidDataException($"Sight Range of {npcInfo.BaseSightRange} is not valid.");
+                            BaseSightRange = sightRange;
+                            break;
+                    }
+                }
+                InventorySize = npcInfo.InventorySize;
+                OnTurnStartActions = new List<ActionWithEffects>();
+                MapActions(OnTurnStartActions, npcInfo.OnTurnStartActions);
+                OnAttackActions = new List<ActionWithEffects>();
+                MapActions(OnAttackActions, npcInfo.OnAttackActions);
+                OnAttackedActions = new List<ActionWithEffects>();
+                MapActions(OnAttackedActions, npcInfo.OnAttackedActions);
+                OnDeathActions = new List<ActionWithEffects>();
+                MapActions(OnDeathActions, npcInfo.OnDeathActions);
 
-            #endregion
-
-            #region Item-only datas
-
-            CanBePickedUp = classInfo.CanBePickedUp;
-            OnItemSteppedActions = new List<ActionWithEffects>();
-            MapActions(OnItemSteppedActions, classInfo.OnItemSteppedActions);
-            OnItemUseActions = new List<ActionWithEffects>();
-            MapActions(OnItemUseActions, classInfo.OnItemUseActions);
-
-            #endregion
-            
-            #region Status-only datas
-
-            CanStack = classInfo.CanStack;
-            CanOverwrite = classInfo.CanOverwrite;
-            CleanseOnFloorChange = classInfo.CleanseOnFloorChange;
-            CleansedByCleanseActions = classInfo.CleansedByCleanseActions;
-            OnStatusApplyActions = new List<ActionWithEffects>();
-            MapActions(OnStatusApplyActions, classInfo.OnStatusApplyActions);
-
-            #endregion
-
-            OnTurnStartActions = new List<ActionWithEffects>();
-            MapActions(OnTurnStartActions, classInfo.OnTurnStartActions);
-            OnAttackActions = new List<ActionWithEffects>();
-            MapActions(OnAttackActions, classInfo.OnAttackActions);
-            OnAttackedActions = new List<ActionWithEffects>();
-            MapActions(OnAttackedActions, classInfo.OnAttackedActions);
-            OnDeathActions = new List<ActionWithEffects>();
-            MapActions(OnDeathActions, classInfo.OnDeathActions);
+                EntityType = EntityType.NPC;
+                StartsVisible = npcInfo.StartsVisible;
+                StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
+                Passable = false;
+                AIOddsToUseActionsOnSelf = npcInfo.AIOddsToUseActionsOnSelf;
+                KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
+            }
+            else if (classInfo is TrapInfo trapInfo)
+            {
+                EntityType = EntityType.Trap;
+                Power = trapInfo.Power;
+                StartsVisible = trapInfo.StartsVisible;
+                Passable = true;
+                CanBePickedUp = false;
+                OnItemSteppedActions = new List<ActionWithEffects>();
+                MapActions(OnItemSteppedActions, trapInfo.OnItemSteppedActions);
+            }
+            else if (classInfo is AlteredStatusInfo alteredStatusInfo)
+            {
+                EntityType = EntityType.AlteredStatus;
+                Passable = true;
+                OnTurnStartActions = new List<ActionWithEffects>();
+                MapActions(OnTurnStartActions, alteredStatusInfo.OnTurnStartActions);
+                CanStack = alteredStatusInfo.CanStack;
+                CanOverwrite = alteredStatusInfo.CanOverwrite;
+                CleanseOnFloorChange = alteredStatusInfo.CleanseOnFloorChange;
+                CleansedByCleanseActions = alteredStatusInfo.CleansedByCleanseActions;
+                OnStatusApplyActions = new List<ActionWithEffects>();
+                MapActions(OnStatusApplyActions, alteredStatusInfo.OnStatusApplyActions);
+            }
         }
 
         protected void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)

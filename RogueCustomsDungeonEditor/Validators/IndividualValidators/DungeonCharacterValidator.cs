@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonCharacterValidator
     {
-        public static DungeonValidationMessages Validate(ClassInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static DungeonValidationMessages Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             Character characterAsInstance = isPlayerCharacter
                                         ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player), 1, sampleDungeon.CurrentFloor)
@@ -102,13 +102,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         break;
                 }
             }
-            if(characterJson.KnowsAllCharacterPositions)
-            {
-                if(seesWholeMap)
-                    messages.AddWarning("KnowsAllCharacterPositions is set to true but Sight Range covers the entire map. KnowsAllCharacterPositions will have no effect.");
-                else if (isPlayerCharacter)
-                    messages.AddWarning("KnowsAllCharacterPositions is set to true but Character is a Player. KnowsAllCharacterPositions will have no effect.");
-            }
             if (characterJson.HPRegenerationIncreasePerLevel < 0)
                 messages.AddError("HP Regeneration Gained per level must be 0 or higher.");
             else if (characterJson.HPRegenerationIncreasePerLevel == 0)
@@ -117,79 +110,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)
                 messages.AddWarning("Inventory Size is 0. It won't be able to carry any items.");
-            if (!isPlayerCharacter)
-            {
-                if (characterJson.AIOddsToUseActionsOnSelf < 0)
-                    messages.AddError("AIOddsToUseActionsOnSelf must be 0 or higher.");
-                else if (characterJson.AIOddsToUseActionsOnSelf == 0 && characterJson.InventorySize > 0)
-                    messages.AddWarning("AIOddsToUseActionsOnSelf is 0 but Inventory Size is above 0. It won't be able to use any items it carries.");
-                else if (characterJson.AIOddsToUseActionsOnSelf > 0 && characterJson.InventorySize == 0)
-                    messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Inventory Size is 0. Unable to carry any items, AIOddsToUseActionsOnSelf won't have any effect.");
-            }
-            else
-            {
-                var foundNameInLocales = false;
-                foreach (var locale in dungeonJson.Locales)
-                {
-                    var nameLocale = locale.LocaleStrings.Find(ls => ls.Key.Equals(characterJson.Name));
-                    if(nameLocale != null)
-                    {
-                        foundNameInLocales = true;
-                        if(nameLocale.Value.Length > 13)
-                        {
-                            if(characterJson.RequiresNamePrompt)
-                                messages.AddWarning($"Character is a Player whose default name in locale {locale.Language} exceeds 13 characters. Console Clients may display the name incorrectly");
-                            else
-                                messages.AddWarning($"Character is a Player whose name in locale {locale.Language} exceeds 13 characters. Console Clients may display the name incorrectly");
-                        }
-                            
-                    }
-                    if(!foundNameInLocales && characterJson.Name.Length > 13)
-                    {
-                        if (characterJson.RequiresNamePrompt)
-                            messages.AddWarning("Character is a player whose unlocalizable default name exceeds 13 characters. Console Clients may display the name incorrectly");
-                        else
-                            messages.AddWarning("Character is a Player whose unlocalizable name exceeds 13 characters. Console Clients may display the name incorrectly");
-                    }
-                }
-                var startingWeaponId = characterJson.StartingWeapon;
-                var startingArmorId = characterJson.StartingArmor;
-                if (dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pi => pi.ClassId.Equals(startingWeaponId))))
-                    messages.AddWarning($"Character is a Player whose Starting Weapon, {startingWeaponId}, can spawn as a pickable item in a floor. This might cause unintended behaviour.");
-                if (dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pi => pi.ClassId.Equals(startingArmorId))))
-                    messages.AddWarning($"Character is a Player whose Starting Armor, {startingArmorId}, can spawn as a pickable item in a floor. This might cause unintended behaviour.");
-                if (characterJson.AIOddsToUseActionsOnSelf > 0)
-                    messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Character is a player. AIOddsToUseActionsOnSelf won't have any effect.");
-            }
             if (string.IsNullOrWhiteSpace(characterJson.StartingWeapon) || !dungeonJson.Items.Any(c => c.EntityType == "Weapon" && c.Id.Equals(characterJson.StartingWeapon)))
                 messages.AddError($"Starting Weapon, {characterJson.StartingWeapon}, is not valid.");
             if (string.IsNullOrWhiteSpace(characterJson.StartingArmor) || !dungeonJson.Items.Any(c => c.EntityType == "Armor" && c.Id.Equals(characterJson.StartingArmor)))
                 messages.AddError($"Starting Armor, {characterJson.StartingArmor}, is not valid.");
-            if (!characterJson.CanGainExperience && isPlayerCharacter)
-                messages.AddWarning("Character is set as a Player Class, but is not allowed to gain any experience points. Reconsider this.");
             if (characterJson.MaxLevel < 1)
                 messages.AddError("Max Level must be 1 or higher.");
             else if (characterJson.MaxLevel == 1 && characterJson.CanGainExperience)
                 messages.AddError("Max Level is 1, which prevents getting experience points, but CanGainExperience is set to true. Reconcile this contradiction.");
-            else if (characterJson.MaxLevel == 1 && isPlayerCharacter)
-                messages.AddWarning("Character is set as a Player Class, but its Max Level is 1, so it's not allowed to gain any experience points. Reconsider this.");
-
-            if(!isPlayerCharacter)
-            {
-                try
-                {
-                    for (int i = 1; i <= characterJson.MaxLevel; i++)
-                    {
-                        var payout = new Expression(characterJson.ExperiencePayoutFormula.Replace("level", i.ToString(), StringComparison.InvariantCultureIgnoreCase)).Eval<int>();
-                        if (payout < 0)
-                            messages.AddError($"Experience Payout formula returns a number lower than 0 at Level {i}, which is not valid.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    messages.AddError($"Experience Payout formula is invalid: {ex.Message}.");
-                }
-            }
 
             if(characterJson.CanGainExperience)
             {
@@ -248,18 +176,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 messages.AddWarning("Character does not have OnDeathActions!");
             }
-
-            if (characterJson.OnItemSteppedActions.Any())
-                messages.AddWarning("Character has OnItemSteppedActions, which will be ignored by the game. Consider removing it.");
-            if (characterJson.OnItemUseActions.Any())
-                messages.AddWarning("Character has OnItemUseActions, which will be ignored by the game. Consider removing it.");
-            if (characterJson.OnStatusApplyActions.Any())
-                messages.AddWarning("Character has OnStatusApplyActions, which will be ignored by the game. Consider removing it.");
-
-            if(!isPlayerCharacter && !dungeonJson.FloorInfos.Any(fi => fi.PossibleMonsters.Any(pm => pm.ClassId.Equals(characterJson.Id))))
-                messages.AddWarning("Character is an NPC but does not show up in any list of PossibleMonsters. It will never be spawned. Consider adding it to a PossibleMonsters list.");
-
-            if (!messages.Any()) messages.AddSuccess("ALL OK!");
 
             return messages;
         }

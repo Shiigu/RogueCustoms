@@ -757,7 +757,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction";
                     break;
                 case TabTypes.PlayerClass:
-                    var tagPlayerClass = (ClassInfo)tag.DungeonElement;
+                    var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
                     LoadPlayerClassInfoFor(tagPlayerClass);
                     if (!IsNewElement)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Player Class - {tagPlayerClass.Id}";
@@ -765,7 +765,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Player Class";
                     break;
                 case TabTypes.NPC:
-                    var tagNPC = (ClassInfo)tag.DungeonElement;
+                    var tagNPC = (NPCInfo)tag.DungeonElement;
                     LoadNPCInfoFor(tagNPC);
                     if (!IsNewElement)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"NPC - {tagNPC.Id}";
@@ -773,7 +773,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"NPC";
                     break;
                 case TabTypes.Item:
-                    var tagItem = (ClassInfo)tag.DungeonElement;
+                    var tagItem = (ItemInfo)tag.DungeonElement;
                     LoadItemInfoFor(tagItem);
                     if (!IsNewElement)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Item - {tagItem.Id}";
@@ -781,7 +781,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Item";
                     break;
                 case TabTypes.Trap:
-                    var tagTrap = (ClassInfo)tag.DungeonElement;
+                    var tagTrap = (TrapInfo)tag.DungeonElement;
                     LoadTrapInfoFor(tagTrap);
                     if (!IsNewElement)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Trap - {tagTrap.Id}";
@@ -789,7 +789,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Trap";
                     break;
                 case TabTypes.AlteredStatus:
-                    var tagAlteredStatus = (ClassInfo)tag.DungeonElement;
+                    var tagAlteredStatus = (AlteredStatusInfo)tag.DungeonElement;
                     LoadAlteredStatusInfoFor(tagAlteredStatus);
                     if (!IsNewElement)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Altered Status - {tagAlteredStatus.Id}";
@@ -2060,7 +2060,7 @@ namespace RogueCustomsDungeonEditor
 
         #region Player Class
 
-        private void LoadPlayerClassInfoFor(ClassInfo playerClass)
+        private void LoadPlayerClassInfoFor(PlayerClassInfo playerClass)
         {
             txtPlayerClassName.Text = playerClass.Name;
             chkRequirePlayerPrompt.Checked = playerClass.RequiresNamePrompt;
@@ -2203,8 +2203,8 @@ namespace RogueCustomsDungeonEditor
                 return;
             }
             var playerClass = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.PlayerClasses.Find(p => p.Id.Equals(id)) ?? new ClassInfo() { Id = id }
-                : (ClassInfo)ActiveNodeTag.DungeonElement;
+                ? ActiveDungeon.PlayerClasses.Find(p => p.Id.Equals(id)) ?? new PlayerClassInfo() { Id = id }
+                : (PlayerClassInfo)ActiveNodeTag.DungeonElement;
             playerClass.Name = txtPlayerClassName.Text;
             playerClass.RequiresNamePrompt = chkRequirePlayerPrompt.Checked;
             playerClass.Description = txtPlayerClassDescription.Text;
@@ -2697,7 +2697,7 @@ namespace RogueCustomsDungeonEditor
         #endregion
 
         #region NPC
-        private void LoadNPCInfoFor(ClassInfo npc)
+        private void LoadNPCInfoFor(NPCInfo npc)
         {
             txtNPCName.Text = npc.Name;
             txtNPCDescription.Text = npc.Description;
@@ -2843,8 +2843,8 @@ namespace RogueCustomsDungeonEditor
                 return;
             }
             var npc = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.NPCs.Find(n => n.Id.Equals(id)) ?? new ClassInfo() { Id = id }
-                : (ClassInfo)ActiveNodeTag.DungeonElement;
+                ? ActiveDungeon.NPCs.Find(n => n.Id.Equals(id)) ?? new NPCInfo() { Id = id }
+                : (NPCInfo)ActiveNodeTag.DungeonElement;
             npc.Name = txtNPCName.Text;
             npc.Description = txtNPCDescription.Text;
             npc.ConsoleRepresentation = new ConsoleRepresentation
@@ -3365,7 +3365,7 @@ namespace RogueCustomsDungeonEditor
         #endregion
 
         #region Item
-        private void LoadItemInfoFor(ClassInfo item)
+        private void LoadItemInfoFor(ItemInfo item)
         {
             txtItemName.Text = item.Name;
             txtItemDescription.Text = item.Description;
@@ -3429,8 +3429,8 @@ namespace RogueCustomsDungeonEditor
                 return;
             }
             var item = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.Items.Find(i => i.Id.Equals(id)) ?? new ClassInfo() { Id = id }
-                : (ClassInfo)ActiveNodeTag.DungeonElement;
+                ? ActiveDungeon.Items.Find(i => i.Id.Equals(id)) ?? new ItemInfo() { Id = id }
+                : (ItemInfo)ActiveNodeTag.DungeonElement;
             item.Name = txtItemName.Text;
             item.Description = txtItemDescription.Text;
             item.ConsoleRepresentation = new ConsoleRepresentation
@@ -3449,7 +3449,6 @@ namespace RogueCustomsDungeonEditor
             item.OnAttackedActions = new();
             item.OnItemSteppedActions = new();
             item.OnItemUseActions = new();
-            item.OnDeathActions = new();
 
             if (item.EntityType == "Weapon" || item.EntityType == "Armor")
             {
@@ -3826,7 +3825,7 @@ namespace RogueCustomsDungeonEditor
 
         #region Trap
 
-        private void LoadTrapInfoFor(ClassInfo trap)
+        private void LoadTrapInfoFor(TrapInfo trap)
         {
             txtTrapName.Text = trap.Name;
             txtTrapDescription.Text = trap.Description;
@@ -3861,8 +3860,8 @@ namespace RogueCustomsDungeonEditor
                 return;
             }
             var trap = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.Traps.Find(t => t.Id.Equals(id)) ?? new ClassInfo() { Id = id }
-                : (ClassInfo)ActiveNodeTag.DungeonElement;
+                ? ActiveDungeon.Traps.Find(t => t.Id.Equals(id)) ?? new TrapInfo() { Id = id }
+                : (TrapInfo)ActiveNodeTag.DungeonElement;
             trap.Name = txtTrapName.Text;
             trap.Description = txtTrapDescription.Text;
             trap.ConsoleRepresentation = new ConsoleRepresentation
@@ -3872,9 +3871,7 @@ namespace RogueCustomsDungeonEditor
                 ForegroundColor = new GameColor(lblTrapConsoleRepresentation.ForeColor)
             };
             trap.StartsVisible = chkTrapStartsVisible.Checked;
-            trap.CanBePickedUp = false;
             trap.Power = txtTrapPower.Text;
-            trap.EntityType = "Trap";
 
             trap.OnItemSteppedActions = new();
 
@@ -4093,7 +4090,7 @@ namespace RogueCustomsDungeonEditor
 
         #region Altered Status
 
-        private void LoadAlteredStatusInfoFor(ClassInfo alteredStatus)
+        private void LoadAlteredStatusInfoFor(AlteredStatusInfo alteredStatus)
         {
             txtAlteredStatusName.Text = alteredStatus.Name;
             txtAlteredStatusDescription.Text = alteredStatus.Description;
@@ -4129,8 +4126,8 @@ namespace RogueCustomsDungeonEditor
                 return;
             }
             var alteredStatus = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.AlteredStatuses.Find(als => als.Id.Equals(id)) ?? new ClassInfo() { Id = id }
-                : (ClassInfo)ActiveNodeTag.DungeonElement;
+                ? ActiveDungeon.AlteredStatuses.Find(als => als.Id.Equals(id)) ?? new AlteredStatusInfo() { Id = id }
+                : (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
             alteredStatus.Name = txtAlteredStatusName.Text;
             alteredStatus.Description = txtAlteredStatusDescription.Text;
             alteredStatus.ConsoleRepresentation = new ConsoleRepresentation

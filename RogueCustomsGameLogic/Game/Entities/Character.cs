@@ -234,6 +234,15 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             LastLevelUpExperience = Experience;
             CarriedHPRegeneration = 0;
+
+            OwnOnTurnStartActions = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
+            OwnOnAttackActions = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnAttackActions, OwnOnAttackActions);
+            OwnOnAttackedActions = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnAttackedActions, OwnOnAttackedActions);
+            OwnOnDeathActions = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnDeathActions, OwnOnDeathActions);
         }
 
         public List<Tile> ComputeFOVTiles()

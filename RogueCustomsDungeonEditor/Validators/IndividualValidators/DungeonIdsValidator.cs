@@ -29,10 +29,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            UpdateIdDictionaryWith(idDictionary, dungeonJson.NPCs);
-            UpdateIdDictionaryWith(idDictionary, dungeonJson.Items);
-            UpdateIdDictionaryWith(idDictionary, dungeonJson.Traps);
-            UpdateIdDictionaryWith(idDictionary, dungeonJson.AlteredStatuses);
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.NPCs.ConvertAll(npc => (npc.Id, npc.Name)));
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.Items.ConvertAll(i => (i.Id, i.Name)));
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.Traps.ConvertAll(t => (t.Id, t.Name)));
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.AlteredStatuses.ConvertAll(als => (als.Id, als.Name)));
 
             foreach (var key in idDictionary.Keys)
             {
@@ -50,7 +50,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             return messages;
         }
 
-        private static void UpdateIdDictionaryWith(Dictionary<string, List<string>> idDictionary, List<ClassInfo> classes)
+        private static void UpdateIdDictionaryWith(Dictionary<string, List<string>> idDictionary, List<(string Id, string Name)> classes)
         {
             foreach (var @class in classes)
             {
