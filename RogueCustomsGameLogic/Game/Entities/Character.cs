@@ -439,8 +439,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void AttackCharacter(Character target, ActionWithEffects action)
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            action.Do(this, target);
-            target.AttackedBy(this);
+            var successfulEffects = action.Do(this, target);
+            if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+                target.AttackedBy(this);
             RemainingMovement = 0;
         }
 

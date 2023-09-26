@@ -58,13 +58,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             Effect = new Effect(info.Effect);
         }
 
-        public void Do(Entity source, Entity target)
+        public List<string> Do(Entity source, Entity target)
         {
-            Effect.Do(User, source, target);
+            var successfulEffects = Effect.Do(User, source, target);
 
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
             if (MaximumUses > 0) CurrentUses++;
             source.Visible = true;
+
+            return successfulEffects;
         }
 
         public bool CanBeUsedOn(Character target, Map map)
@@ -228,14 +230,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void Do(Entity This, Entity Source, Entity Target)
+        public List<string> Do(Entity This, Entity Source, Entity Target)
         {
             var currentEffect = this;
+            var successfulEffects = new List<string>();
 
             do
             {
                 int output = 0;
                 var success = currentEffect.Function(This, Source, Target, output, out output, currentEffect.Params);
+                if (success)
+                    successfulEffects.Add(currentEffect.Function.Method.Name);
                 if (currentEffect.Then != null)
                 {
                     currentEffect = currentEffect.Then;
@@ -249,6 +254,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
             while (currentEffect != null);
+            return successfulEffects.Distinct().ToList();
         }
 
         public Effect Clone()
