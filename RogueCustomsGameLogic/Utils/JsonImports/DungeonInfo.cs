@@ -8,6 +8,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     [Serializable]
     public class DungeonInfo
     {
+        public string Version { get; set; }
         public string Name { get; set; }
         public string Author { get; set; }
         public string WelcomeMessage { get; set; }

@@ -18,6 +18,8 @@ namespace RogueCustomsDungeonEditor
 {
     public partial class frmMain : Form
     {
+        private const string CurrentDungeonVersion = "1.0";
+
         private readonly Dictionary<TabTypes, TabPage> TabsForNodeTypes = new();
         private readonly List<string> MandatoryLocaleKeys = new();
         private readonly List<string> BaseLocaleLanguages = new();
@@ -395,6 +397,7 @@ namespace RogueCustomsDungeonEditor
                 }
             }
             ActiveDungeon = DungeonInfoHelpers.CreateEmptyDungeonTemplate(LocaleTemplate, BaseLocaleLanguages);
+            ActiveDungeon.Version = CurrentDungeonVersion;
             RefreshTreeNodes();
             tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
             tvDungeonInfo.Focus();
@@ -442,6 +445,8 @@ namespace RogueCustomsDungeonEditor
                     {
                         PropertyNameCaseInsensitive = true
                     });
+                    if (string.IsNullOrWhiteSpace(ActiveDungeon.Version))
+                        ActiveDungeon.Version = CurrentDungeonVersion;
                     tbTabs.TabPages.Clear();
                     DirtyEntry = false;
                     DirtyTab = false;
