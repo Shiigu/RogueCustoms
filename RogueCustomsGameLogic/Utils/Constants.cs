@@ -1,4 +1,6 @@
-﻿namespace RogueCustomsGameEngine.Utils
+﻿using System.Collections.Generic;
+
+namespace RogueCustomsGameEngine.Utils
 {
     public static class Constants
     {
@@ -12,5 +14,11 @@
         public const int FullMapSightRange = -2;
 
         public static readonly string DiceNotationRegexPattern = "(\\d+)?d(\\d+)([\\+\\-]\\d+)?";
+
+        public static readonly string[] EffectsThatTriggerOnAttacked = new[]
+        {
+            "DealDamage", "StealItem", "ApplyAlteredStatus", "CleanseAlteredStatus", "CleanseAllAlteredStatuses",
+            "ApplyStatAlteration", "CleanseStatAlteration", "CleanseStatAlterations", "ForceSkipTurn"
+        };
     }
 }
