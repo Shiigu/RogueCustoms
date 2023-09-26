@@ -14,6 +14,7 @@ using org.matheval;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.JsonImports;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
@@ -52,50 +53,22 @@ namespace RogueCustomsDungeonEditor.Utils
         private static string ParseArgsForPlaceHolder(this string arg, string placeholder, string eName)
         {
             var parsedArg = arg;
-
             parsedArg = parsedArg.Replace($"{{{eName}}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
+            var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(AlteredStatus) };
 
-            if (parsedArg.Contains($"{{{eName}.weapon}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.weapon}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
+            foreach (var entityType in entityTypes)
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    string propertyName = property.Name;
+                    string fieldToken = $"{{{eName}.{propertyName}}}";
 
-            if (parsedArg.Contains($"{{{eName}.armor}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.armor}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.hp}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.hp}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.maxhp}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.maxhp}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.damage}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.damage}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.attack}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.attack}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.defense}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.defense}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.movement}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.movement}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.hpregeneration}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.hpregeneration}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.mitigation}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.mitigation}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.experiencepayout}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.experiencepayout}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.owner}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.owner}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.power}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.power}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{eName}.turnlength}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{eName}.turnlength}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
+                    if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        parsedArg = parsedArg.Replace(fieldToken, placeholder, StringComparison.InvariantCultureIgnoreCase);
+                    }
+                }
+            }
 
             return parsedArg;
         }

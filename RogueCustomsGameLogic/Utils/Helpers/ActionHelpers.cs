@@ -4,14 +4,34 @@ using org.matheval;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Utils.Helpers
 {
     public static class ActionHelpers
     {
+        private static List<string> FieldsToConsider = new List<string>
+        {
+            "Weapon",
+            "Armor",
+            "HP",
+            "MaxHP",
+            "Attack",
+            "Damage",
+            "Defense",
+            "Mitigation",
+            "Movement",
+            "HPRegeneration",
+            "ExperiencePayout",
+            "Owner",
+            "Power",
+            "TurnLength"
+        };
         public static Map Map;
 
         public static ExpandoObject ParseParams(Entity This, Entity Source, Entity Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
@@ -134,7 +154,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         private static string ParseValueForTextDisplay(string value)
         {
-            const string functionMatchRegex = @"(?:LEFT|RIGHT|MID|REVERSE|LOWER|UPPER|PROPER|TRIM|TEXT|REPLACE|SUBSTITUTE|CONCAT)";
+            const string functionMatchRegex = "(?:LEFT|RIGHT|MID|REVERSE|LOWER|UPPER|PROPER|TRIM|TEXT|REPLACE|SUBSTITUTE|CONCAT)";
             if (Regex.Match(value, functionMatchRegex).Success)
                 return new Expression($"TEXT({value})").Eval<string>();
             return value;
@@ -153,88 +173,54 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         private static string ParseArgForEntity(string arg, Entity e, string eName)
         {
+            if (e == null) return arg;
             var parsedArg = arg;
 
-            if (e is Character c)
-                return ParseArgForCharacter(parsedArg, c, eName);
-            else if (e is Item i)
-                return ParseArgForItem(parsedArg, i, eName);
-            else if (e is AlteredStatus als)
-                return ParseArgForAlteredStatus(parsedArg, als, eName);
+            parsedArg = parsedArg.Replace($"{{{eName}}}", e.Name, StringComparison.InvariantCultureIgnoreCase);
+
+            var entityType = e.GetType();
+            foreach (var property in entityType.GetProperties().Where(p => FieldsToConsider.Contains(p.Name)))
+            {
+                string propertyName = property.Name;
+                string fieldToken = $"{{{eName}.{propertyName}}}";
+
+                if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    object propertyValue = property.GetValue(e);
+                    if (propertyValue != null)
+                    {
+                        if (propertyValue is Entity entityProperty)
+                        {
+                            parsedArg = parsedArg.Replace(fieldToken, entityProperty.Name, StringComparison.InvariantCultureIgnoreCase);
+                        }
+                        else
+                        {
+                            parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue(propertyValue), StringComparison.InvariantCultureIgnoreCase);
+                        }
+                    }
+                }
+            }
 
             return parsedArg;
         }
 
-        private static string ParseArgForCharacter(string arg, Character c, string cName)
+        private static string FormatParameterValue(object parameterValue)
         {
-            var parsedArg = arg;
-
-            parsedArg = parsedArg.Replace($"{{{cName}}}", c.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.weapon}}", StringComparison.InvariantCultureIgnoreCase) && c.Weapon != null)
-                parsedArg = parsedArg.Replace($"{{{cName}.weapon}}", c.Weapon.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.armor}}", StringComparison.InvariantCultureIgnoreCase) && c.Armor != null)
-                parsedArg = parsedArg.Replace($"{{{cName}.armor}}", c.Armor.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.hp}}", StringComparison.InvariantCultureIgnoreCase) && c.HP > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.hp}}", c.HP.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.maxhp}}", StringComparison.InvariantCultureIgnoreCase) && c.MaxHP > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.maxhp}}", c.MaxHP.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.damage}}", StringComparison.InvariantCultureIgnoreCase) && c.Damage != null)
-                parsedArg = parsedArg.Replace($"{{{cName}.damage}}", c.Damage, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.attack}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.attack}}", c.Attack.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.defense}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.defense}}", c.Defense.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.movement}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.movement}}", c.Movement.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.hpregeneration}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{cName}.hpregeneration}}", c.HPRegeneration.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.mitigation}}", StringComparison.InvariantCultureIgnoreCase) && c.Mitigation != null)
-                parsedArg = parsedArg.Replace($"{{{cName}.mitigation}}", c.Mitigation, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{cName}.experiencepayout}}", StringComparison.InvariantCultureIgnoreCase) && c.ExperiencePayout > 0)
-                parsedArg = parsedArg.Replace($"{{{cName}.experiencepayout}}", c.ExperiencePayout.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            return parsedArg;
-        }
-
-        private static string ParseArgForItem(string arg, Item i, string iName)
-        {
-            var parsedArg = arg;
-
-            parsedArg = parsedArg.Replace($"{{{iName}}}", i.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{iName}.owner}}", StringComparison.InvariantCultureIgnoreCase) && i.Owner != null)
-                parsedArg = parsedArg.Replace($"{{{iName}.owner}}", i.Owner.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{iName}.power}}", StringComparison.InvariantCultureIgnoreCase) && i.Power != null)
-                parsedArg = parsedArg.Replace($"{{{iName}.power}}", i.Power.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            return parsedArg;
-        }
-
-        private static string ParseArgForAlteredStatus(string arg, AlteredStatus als, string alsName)
-        {
-            var parsedArg = arg;
-
-            parsedArg = parsedArg.Replace($"{{{alsName}}}", als.Name, StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{alsName}.turnlength}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{alsName}.turnlength}}", als.TurnLength.ToString(), StringComparison.InvariantCultureIgnoreCase);
-
-            if (parsedArg.Contains($"{{{alsName}.power}}", StringComparison.InvariantCultureIgnoreCase))
-                parsedArg = parsedArg.Replace($"{{{alsName}.power}}", als.Power.ToString(new CultureInfo("en-US")), StringComparison.InvariantCultureIgnoreCase);
-
-            return parsedArg;
+            if (parameterValue is decimal decimalValue)
+            {
+                if (decimalValue == decimal.Truncate(decimalValue))
+                {
+                    return decimal.Truncate(decimalValue).ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return decimalValue.ToString("F2", CultureInfo.GetCultureInfo("en-US"));
+                }
+            }
+            else
+            {
+                return parameterValue.ToString();
+            }
         }
     }
 }
