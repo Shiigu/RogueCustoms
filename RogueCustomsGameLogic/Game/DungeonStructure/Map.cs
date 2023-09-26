@@ -783,6 +783,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             character.Position = targetTile.Position;
 
             targetTile.Items?.ForEach(i => character.TryToPickItem(i));
+            if (targetTile.Trap != null)
+                targetTile.Trap.Stepped(character);
 
             character.RemainingMovement--;
 

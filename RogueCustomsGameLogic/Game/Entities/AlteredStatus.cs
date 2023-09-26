@@ -33,6 +33,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             CleansedByCleanseActions = entityClass.CleansedByCleanseActions;
             OnStatusApplyActions = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnStatusApplyActions, OnStatusApplyActions);
+            MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
         }
 
         public bool ApplyTo(Character target, decimal power, int turnLength)

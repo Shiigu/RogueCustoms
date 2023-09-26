@@ -66,9 +66,9 @@ namespace RogueCustomsDungeonEditor.Validators
                 FactionValidationMessages.Add((factionInfo.Id, DungeonFactionValidator.Validate(factionInfo, DungeonJson)));
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)
-                PlayerClassValidationMessages.Add((playerInfo.Id, DungeonCharacterValidator.Validate(playerInfo, true, DungeonJson, sampleDungeon)));
+                PlayerClassValidationMessages.Add((playerInfo.Id, DungeonPlayerClassValidator.Validate(playerInfo, DungeonJson, sampleDungeon)));
             foreach (var npcInfo in DungeonJson.NPCs)
-                NPCValidationMessages.Add((npcInfo.Id, DungeonCharacterValidator.Validate(npcInfo, false, DungeonJson, sampleDungeon)));
+                NPCValidationMessages.Add((npcInfo.Id, DungeonNPCValidator.Validate(npcInfo, DungeonJson, sampleDungeon)));
             foreach (var itemInfo in DungeonJson.Items)
                 ItemValidationMessages.Add((itemInfo.Id, DungeonItemValidator.Validate(itemInfo, DungeonJson, sampleDungeon)));
             foreach (var trapInfo in DungeonJson.Traps)

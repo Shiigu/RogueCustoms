@@ -24,16 +24,16 @@ namespace RogueCustomsDungeonEditor.Utils
                 messages.AddWarning("Console Representation cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
 
             if(!ownerIsPlayerClass)
-                messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.PlayerClasses));
-            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.NPCs));
-            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Items));
-            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Traps));
-            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.AlteredStatuses));
+                messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.PlayerClasses.ConvertAll(pc => (pc.Id, pc.ConsoleRepresentation))));
+            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.NPCs.ConvertAll(npc => (npc.Id, npc.ConsoleRepresentation))));
+            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Items.ConvertAll(i => (i.Id, i.ConsoleRepresentation))));
+            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.Traps.ConvertAll(t => (t.Id, t.ConsoleRepresentation))));
+            messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.AlteredStatuses.ConvertAll(als => (als.Id, als.ConsoleRepresentation))));
 
             return messages;
         }
 
-        private static DungeonValidationMessages CheckIdenticalRepresentations(this ConsoleRepresentation representation, string ownerClassId, List<ClassInfo> classes)
+        private static DungeonValidationMessages CheckIdenticalRepresentations(this ConsoleRepresentation representation, string ownerClassId, List<(string Id, ConsoleRepresentation ConsoleRepresentation)> classes)
         {
             var messages = new DungeonValidationMessages();
 

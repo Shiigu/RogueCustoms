@@ -14,7 +14,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonItemValidator
     {
-        public static DungeonValidationMessages Validate(ClassInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static DungeonValidationMessages Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
@@ -101,11 +101,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 messages.AddWarning("Consumable Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
             }
-
-            if (itemJson.OnDeathActions.Any())
-                messages.AddWarning("Item has OnDeathActions, which will be ignored by the game. Consider removing it.");
-            if (itemJson.OnStatusApplyActions.Any())
-                messages.AddWarning("Item has OnStatusApplyActions, which will be ignored by the game. Consider removing it.");
 
             if (!dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pm => pm.ClassId.Equals(itemJson.Id))))
             {

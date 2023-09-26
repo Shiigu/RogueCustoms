@@ -563,6 +563,7 @@
             // 
             // tvDungeonInfo
             // 
+            this.tvDungeonInfo.FullRowSelect = (true);
             this.tvDungeonInfo.HideSelection = (false);
             this.tvDungeonInfo.Location = (new global::System.Drawing.Point(0, 65));
             this.tvDungeonInfo.Name = ("tvDungeonInfo");
@@ -4044,6 +4045,7 @@
             this.Controls.Add(this.tvDungeonInfo);
             this.Controls.Add(this.tsButtons);
             this.Controls.Add(this.msMenu);
+            this.FormBorderStyle = (global::System.Windows.Forms.FormBorderStyle.FixedSingle);
             this.Icon = ((global::System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = (this.msMenu);
             this.MaximizeBox = (false);

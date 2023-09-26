@@ -113,9 +113,9 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-        public static ClassInfo CreatePlayerClassTemplate()
+        public static PlayerClassInfo CreatePlayerClassTemplate()
         {
-            return new ClassInfo
+            return new PlayerClassInfo
             {
                 Id = "DummyPlayer",
                 Name = "Player",
@@ -153,9 +153,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 OnDeathActions = new()
             };
         }
-        public static ClassInfo CreateNPCTemplate()
+        public static NPCInfo CreateNPCTemplate()
         {
-            return new ClassInfo
+            return new NPCInfo
             {
                 Id = "DummyNPC",
                 Name = "NPC",
@@ -195,9 +195,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 AIOddsToUseActionsOnSelf = 50
             };
         }
-        public static ClassInfo CreateItemTemplate()
+        public static ItemInfo CreateItemTemplate()
         {
-            return new ClassInfo
+            return new ItemInfo
             {
                 Id = "DummyItem",
                 Name = "Item",
@@ -220,9 +220,9 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-        public static ClassInfo CreateTrapTemplate()
+        public static TrapInfo CreateTrapTemplate()
         {
-            return new ClassInfo
+            return new TrapInfo
             {
                 Id = "DummyTrap",
                 Name = "Trap",
@@ -239,9 +239,9 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-        public static ClassInfo CreateAlteredStatusTemplate()
+        public static AlteredStatusInfo CreateAlteredStatusTemplate()
         {
-            return new ClassInfo
+            return new AlteredStatusInfo
             {
                 Id = "DummyStatus",
                 Name = "AlteredStatus",
@@ -362,11 +362,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 };
             }
 
-            if (info.Then != null)
+            if (!string.IsNullOrWhiteSpace(info?.Then?.EffectName))
                 clonedEffect.Then = info.Then.Clone();
-            if (info.OnSuccess != null)
+            if (!string.IsNullOrWhiteSpace(info?.OnSuccess?.EffectName))
                 clonedEffect.OnSuccess = info.OnSuccess.Clone();
-            if (info.OnFailure != null)
+            if (!string.IsNullOrWhiteSpace(info?.OnFailure?.EffectName))
                 clonedEffect.OnFailure = info.OnFailure.Clone();
 
             return clonedEffect;

@@ -37,6 +37,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private DungeonInfo ActiveDungeon;
         private string PreviousTextBoxValue;
 
+        private readonly List<ParameterType> TypesThatAlwaysHoldAValue = new()
+        {
+            ParameterType.Boolean,
+            ParameterType.Odds,
+            ParameterType.Number
+        };
+
         public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validAlteredStatuses, bool isActionEdit)
         {
             InitializeComponent();
@@ -74,30 +81,24 @@ namespace RogueCustomsDungeonEditor.HelperForms
             EffectTypeData = paramsData;
             ValidAlteredStatuses = validAlteredStatuses;
             lblDisplayName.Text = $"{paramsData.DisplayName}:";
+            lblDescription.Text = paramsData.Description;
 
-            var heightChange = lblDisplayName.Height - lblDisplayName.PreferredHeight;
-            lblDisplayName.Height = lblDisplayName.PreferredHeight;
-            lblRequired.Location = new Point(lblRequired.Location.X, lblRequired.Location.Y - heightChange);
-            tlpParameters.Location = new Point(llblWiki.Location.X, tlpParameters.Location.Y - heightChange);
-            llblWiki.Location = new Point(llblWiki.Location.X, llblWiki.Location.Y - heightChange);
-            btnSave.Location = new Point(btnSave.Location.X, btnSave.Location.Y - heightChange);
-            btnCancel.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y - heightChange);
-            this.Height -= heightChange;
-
-            if(lblDisplayName.PreferredWidth > lblDisplayName.Width)
+            if (lblDisplayName.PreferredWidth > lblDisplayName.Width)
             {
                 var widthChange = lblDisplayName.Width - lblDisplayName.PreferredWidth;
                 lblDisplayName.Width = lblDisplayName.PreferredWidth;
+                lblDescription.Width -= widthChange;
                 lblRequired.Width -= widthChange;
                 tlpParameters.Width -= widthChange;
-                llblWiki.Width -= widthChange;
-                btnSave.Width -= widthChange;
-                btnCancel.Location = new Point(btnCancel.Location.X - widthChange, btnCancel.Location.Y);
-                btnCancel.Width -= widthChange;
+                llblWikiAction.Width -= widthChange;
+                btnSave.Width -= widthChange / 2;
+                btnCancel.Location = new Point(btnCancel.Location.X - widthChange / 2, btnCancel.Location.Y);
+                btnCancel.Width -= widthChange / 2;
                 this.Width -= widthChange;
             }
 
             var rowNumber = 0;
+            llblWikiAction.Focus();
 
             foreach (var parameter in paramsData.Parameters)
             {
@@ -108,11 +109,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     Height = 30
                 };
 
-                if (parameter.Required && !parameter.OptionalIfFieldsHaveValue.Any())
+                if (parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && !parameter.OptionalIfFieldsHaveValue.Any())
                 {
                     nameLabel.Text = $"{parameter.DisplayName}*";
                 }
-                else if (parameter.Required && parameter.OptionalIfFieldsHaveValue.Any())
+                else if (parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Any())
                 {
                     nameLabel.Text = $"{parameter.DisplayName}^";
                 }
@@ -133,13 +134,21 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             DropDownStyle = ComboBoxStyle.DropDownList
                         };
                         comboBox.Items.AddRange(parameter.ValidValues.Select(v => v.Value).ToArray());
-                        if (originalValue != null)
+
+                        try
                         {
-                            var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue)).Value;
-                            comboBox.Text = valueOfKey;
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase)).Value;
+                                comboBox.Text = valueOfKey;
+                            }
+                            else
+                                comboBox.Text = parameter.Default;
                         }
-                        else
+                        catch (Exception ex)
+                        {
                             comboBox.Text = parameter.Default;
+                        }
                         control = comboBox;
                         break;
                     case ParameterType.Formula:
@@ -259,7 +268,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             var colorDialog = new ColorDialog();
                             try
                             {
-                                if(!string.IsNullOrWhiteSpace(textColor))
+                                if (!string.IsNullOrWhiteSpace(textColor))
                                 {
                                     colorDialog.Color = textColor.ToColor();
                                     colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
@@ -364,13 +373,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             alteredStatusComboBox.Items.Add(alteredStatus);
                         }
-                        if (originalValue != null)
+                        try
                         {
-                            var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue));
-                            alteredStatusComboBox.Text = valueOfKey;
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                alteredStatusComboBox.Text = valueOfKey;
+                            }
+                            else
+                                alteredStatusComboBox.Text = parameter.Default;
                         }
-                        else
+                        catch (Exception ex)
+                        {
                             alteredStatusComboBox.Text = parameter.Default;
+                        }
                         control = alteredStatusComboBox;
                         break;
                     case ParameterType.Number:
@@ -411,16 +427,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             tlpParameters.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             tlpParameters.Height = 30 * rowNumber;
-            llblWiki.Focus();
         }
 
         private void tlpParameters_SizeChanged(object sender, EventArgs e)
         {
             var tableFinalY = tlpParameters.Location.Y + tlpParameters.Height;
-            llblWiki.Location = new Point(llblWiki.Location.X, tableFinalY + 10);
-            btnSave.Location = new Point(btnSave.Location.X, tableFinalY + 40);
-            btnCancel.Location = new Point(btnCancel.Location.X, tableFinalY + 40);
-            this.Height = tableFinalY + 120;
+            llblWikiParameters.Location = new Point(llblWikiParameters.Location.X, tableFinalY + 10);
+            llblWikiAction.Location = new Point(llblWikiAction.Location.X, tableFinalY + 35);
+            btnSave.Location = new Point(btnSave.Location.X, tableFinalY + 65);
+            btnCancel.Location = new Point(btnCancel.Location.X, tableFinalY + 65);
+            this.Height = tableFinalY + 145;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -428,9 +444,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
             this.Close();
         }
 
-        private void llblWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void llblWikiParameters_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            llblWiki.LinkVisited = true;
+            llblWikiParameters.LinkVisited = true;
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = $"https://github.com/Shiigu/RogueCustoms/wiki/Effect-Parameters",
+                UseShellExecute = true
+            });
+        }
+
+        private void llblWikiAction_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llblWikiAction.LinkVisited = true;
             Process.Start(new ProcessStartInfo
             {
                 FileName = $"https://github.com/Shiigu/RogueCustoms/wiki/{EffectTypeData.InternalName}",

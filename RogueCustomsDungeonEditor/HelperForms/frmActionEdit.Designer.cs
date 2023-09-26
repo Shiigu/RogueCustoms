@@ -77,6 +77,8 @@
             // 
             // tvEffectSequence
             // 
+            tvEffectSequence.FullRowSelect = true;
+            tvEffectSequence.HideSelection = false;
             tvEffectSequence.Location = new Point(3, 31);
             tvEffectSequence.Name = "tvEffectSequence";
             tvEffectSequence.ShowNodeToolTips = true;
