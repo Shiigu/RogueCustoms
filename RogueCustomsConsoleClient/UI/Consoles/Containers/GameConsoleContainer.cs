@@ -144,7 +144,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 GameControlsConsole.IsEnabled = true;
                 InGameUpdate(delta);
             }
-            else if (ActiveWindow == null)
+            else if (ActiveWindow?.IsVisible != true)
             {
                 var classSelectionList = BackendHandler.Instance.GetPlayerClassSelection();
                 if (classSelectionList.CharacterClasses.Count == 1)
@@ -175,8 +175,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     ActiveWindow = PlayerClassWindow.Show(this, classSelectionList);
                 }
             }
-
-            base.Update(delta);
+            else
+            {
+                base.Update(delta);
+            }
         }
 
         private void InGameUpdate(TimeSpan delta)

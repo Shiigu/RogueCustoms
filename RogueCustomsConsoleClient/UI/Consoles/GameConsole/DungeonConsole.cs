@@ -27,7 +27,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Build();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
-            RefreshOnlyOnStatusUpdate = false;
+            RefreshOnlyOnStatusUpdate = true;
             CursorLocation = default;
             LatestCursorLocation = default;
         }
@@ -35,6 +35,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public void AddCursor()
         {
             var playerEntity = ParentContainer.LatestDungeonStatus.PlayerEntity;
+            RefreshOnlyOnStatusUpdate = false;
             if (playerEntity != null)
             {
                 CursorLocation = (playerEntity.X, playerEntity.Y);
@@ -62,6 +63,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         {
             this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
             LatestCursorLocation = CursorLocation = default;
+            RefreshOnlyOnStatusUpdate = true;
         }
 
         public override void Update(TimeSpan delta)
