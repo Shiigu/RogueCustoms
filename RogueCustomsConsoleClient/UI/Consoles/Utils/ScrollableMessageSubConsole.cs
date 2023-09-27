@@ -37,7 +37,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
 
         private void ScrollBar_ValueChanged(object? sender, EventArgs e)
         {
-            //Display viewable content based on our scroll offset.
             View = new Rectangle(0, ScrollBar.Value, Width, ViewHeight);
         }
 
@@ -65,10 +64,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
             {
                 var logMessage = messageList[i];
                 Cursor.Print(new ColoredString(logMessage.Message.ToAscii(), logMessage.ForegroundColor.ToSadRogueColor(), logMessage.BackgroundColor.ToSadRogueColor()));
-                if (i < messageList.Count - 1)
+                if(Cursor.Position.X > 0)
                     Cursor.NewLine();
             }
-            ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y + 1 - ViewHeight);
+            ScrollBar.Maximum = Math.Max(0, Cursor.Position.Y - ViewHeight);
             ScrollBar.IsEnabled = Cursor.Position.Y > ViewHeight;
             ScrollBar.Value = ScrollBar.IsEnabled ? ScrollBar.Maximum : 0;
         }

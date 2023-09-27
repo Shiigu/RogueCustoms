@@ -65,7 +65,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             foreach (var logMessage in messages)
             {
                 textAreaSubConsole.Cursor.Print(new ColoredString(logMessage.Message.ToAscii(), logMessage.ForegroundColor.ToSadRogueColor(), logMessage.BackgroundColor.ToSadRogueColor()));
-                textAreaSubConsole.Cursor.NewLine();
+                if(textAreaSubConsole.Cursor.Position.X > 0)
+                    textAreaSubConsole.Cursor.NewLine();
             }
 
             window.TextAreaSubConsole = textAreaSubConsole;
