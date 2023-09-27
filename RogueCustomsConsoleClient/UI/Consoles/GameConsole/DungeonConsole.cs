@@ -15,10 +15,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
     {
         private readonly BicolorBlink SelectionBlink;
         public (int X, int Y) CursorLocation;
+        public bool WithCursor { get; set; }
         private (int X, int Y) LatestCursorLocation;
         public DungeonConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MapCellWidth, GameConsoleConstants.MapCellHeight)
         {
-            SelectionBlink = new BicolorBlink() { BlinkSpeed = TimeSpan.FromSeconds(0.1d), BlinkOutBackgroundColor = Color.White, BlinkOutForegroundColor = Color.White }; ;
+            SelectionBlink = new BicolorBlink() { BlinkSpeed = TimeSpan.FromSeconds(0.075d), BlinkOutBackgroundColor = Color.White, BlinkOutForegroundColor = Color.White }; ;
             Build();
         }
 
@@ -30,6 +31,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             RefreshOnlyOnStatusUpdate = true;
             CursorLocation = default;
             LatestCursorLocation = default;
+            WithCursor = false;
         }
 
         public void AddCursor()
@@ -38,6 +40,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             RefreshOnlyOnStatusUpdate = false;
             if (playerEntity != null)
             {
+                WithCursor = true;
                 CursorLocation = (playerEntity.X, playerEntity.Y);
                 this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, SelectionBlink);
             }
@@ -61,9 +64,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 
         public void RemoveCursor()
         {
+            this.SetEffect(CursorLocation.X, CursorLocation.Y, null);
             this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
             LatestCursorLocation = CursorLocation = default;
             RefreshOnlyOnStatusUpdate = true;
+            WithCursor = false;
+            Update(TimeSpan.Zero);
         }
 
         public override void Update(TimeSpan delta)

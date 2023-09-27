@@ -183,7 +183,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
         private void InGameUpdate(TimeSpan delta)
         {
-            if (ControlMode == ControlMode.NormalMove)
+            if (ControlMode == ControlMode.NormalMove && DungeonConsole.WithCursor)
                 DungeonConsole.RemoveCursor();
 
             try
