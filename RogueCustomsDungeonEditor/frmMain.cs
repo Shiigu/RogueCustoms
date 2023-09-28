@@ -2594,7 +2594,7 @@ namespace RogueCustomsDungeonEditor
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.PlayerClass])) return;
             var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestExpression(false, out string errorMessage))
+            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
             {
                 MessageBox.Show(
                     $"You have entered an invalid Experience Formula: {errorMessage}",
@@ -3069,7 +3069,7 @@ namespace RogueCustomsDungeonEditor
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
             var parsedPayoutFormula = Regex.Replace(txtNPCExperiencePayout.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestExpression(false, out string errorMessage))
+            if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestNumericExpression(false, out string errorMessage))
             {
                 MessageBox.Show(
                     $"You have entered an invalid Experience Formula: {errorMessage}",
@@ -3264,7 +3264,7 @@ namespace RogueCustomsDungeonEditor
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
             var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestExpression(false, out string errorMessage))
+            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
             {
                 MessageBox.Show(
                     $"You have entered an invalid Experience Formula: {errorMessage}",
