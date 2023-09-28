@@ -70,5 +70,22 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 }
             }
         }
+
+        public static List<T> Shuffle<T>(this List<T> list, Random rng)
+        {
+            var shuffledList = new List<T>(list);
+
+            int n = shuffledList.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = shuffledList[k];
+                shuffledList[k] = shuffledList[n];
+                shuffledList[n] = value;
+            }
+
+            return shuffledList;
+        }
     }
 }
