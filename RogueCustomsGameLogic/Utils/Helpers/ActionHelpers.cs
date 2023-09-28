@@ -122,6 +122,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     case "canstealconsumables":
                         paramsObject.CanStealConsumables = new Expression(value).Eval<bool>();
                         break;
+                    case "condition":
+                        paramsObject.Condition = value;
+                        break;
                     case "character":
                         paramsObject.Character = value[0];
                         break;

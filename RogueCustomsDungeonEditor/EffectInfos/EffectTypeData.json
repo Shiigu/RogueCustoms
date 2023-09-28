@@ -3,7 +3,8 @@
     "InternalName": "DealDamage",
     "DisplayName": "Deal Damage to Target",
     "Description": "Used by the User to damage Target.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Attacker",
@@ -79,7 +80,8 @@
     "InternalName": "StealItem",
     "DisplayName": "Steal Item from Target",
     "Description": "Used by the User take an item from Target's inventory and put it into their own.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -132,7 +134,8 @@
     "InternalName": "ReplaceConsoleRepresentation",
     "DisplayName": "Change Own Console Representation",
     "Description": "The way the calling object shows up in the Console Client will be modified.",
-    "CanReturnFailure": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
       {
         "InternalName": "Character",
@@ -160,7 +163,8 @@
     "InternalName": "Remove",
     "DisplayName": "Remove Target from Game",
     "Description": "The User will try to remove Target.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -197,7 +201,8 @@
     "InternalName": "PrintText",
     "DisplayName": "Print Text to Message Log",
     "Description": "If Player can see the User, text will be printed into the Message Log.",
-    "CanReturnFailure": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
       {
         "InternalName": "Text",
@@ -225,7 +230,8 @@
     "InternalName": "MessageBox",
     "DisplayName": "Show a Message Box",
     "Description": "Player will see a Message Box on their next turn.",
-    "CanReturnFailure": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
       {
         "InternalName": "Title",
@@ -263,7 +269,8 @@
     "InternalName": "HealDamage",
     "DisplayName": "Heal Damage from Target",
     "Description": "Used by the User to heal Target.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Source",
@@ -319,7 +326,8 @@
     "InternalName": "GiveExperience",
     "DisplayName": "Give Experience to Target",
     "Description": "Used by the User to give Target some experience points.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -356,7 +364,8 @@
     "InternalName": "ApplyAlteredStatus",
     "DisplayName": "Apply Altered Status on Target",
     "Description": "Used by the User to put an Altered Status on Target.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -423,7 +432,8 @@
     "InternalName": "ApplyStatAlteration",
     "DisplayName": "Alter one of Target's Stats",
     "Description": "Used by the User to increase or decrease one of Target's stats.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -541,7 +551,8 @@
     "InternalName": "CleanseAlteredStatus",
     "DisplayName": "Remove Altered Status from Target",
     "Description": "Used by the User to remove a certain Altered Status on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -588,7 +599,8 @@
     "InternalName": "CleanseStatAlteration",
     "DisplayName": "Remove all Alterations from one of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on one of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Stat",
@@ -656,7 +668,8 @@
     "InternalName": "CleanseAllAlteredStatuses",
     "DisplayName": "Remove all Altered Statuses from Target",
     "Description": "Used by the User to remove all removable Altered Statuses on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -693,7 +706,8 @@
     "InternalName": "CleanseStatAlterations",
     "DisplayName": "Remove all Alterations from all of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on all of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Chance",
@@ -730,7 +744,8 @@
     "InternalName": "ForceSkipTurn",
     "DisplayName": "Make Target skip the next turn",
     "Description": "Used by the User to make Target skip their next turn.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -767,14 +782,35 @@
     "InternalName": "GenerateStairs",
     "DisplayName": "Spawn Stairs",
     "Description": "Stairs will appear in the current Floor, if there weren't any before.",
-    "CanReturnFailure": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": []
+  },
+  {
+    "InternalName": "CheckCondition",
+    "DisplayName": "Run Condition",
+    "Description": "Evaluates a boolean expression.\n\nIf the expression returns true, it's a Success.\nIf the expression returns false, it's Failure.",
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Condition",
+        "DisplayName": "Condition",
+        "Description": "The boolean expression to be evaluated.",
+        "ParameterType": "BooleanExpression",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
   },
   {
     "InternalName": "Equip",
     "DisplayName": "Equip",
-    "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE!",
-    "CanReturnFailure": false,
+    "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE! IT MAY CRASH THE GAME!",
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": []
   }
 ]

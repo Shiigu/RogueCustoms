@@ -13,7 +13,8 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         public string InternalName { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public bool CanReturnFailure { get; set; }
+        public bool CanHaveThenChild { get; set; }
+        public bool CanHaveOnSuccessOnFailureChild { get; set; }
         public List<EffectParameter> Parameters { get; set; }
     }
 
@@ -46,6 +47,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Color,
         Text,
         AlteredStatus,
-        Number
+        Number,
+        BooleanExpression
     }
 }

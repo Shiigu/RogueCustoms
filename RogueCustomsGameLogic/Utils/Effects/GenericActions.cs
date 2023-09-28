@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
+using org.matheval;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -280,6 +281,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return true;
             }
             return false;
+        }
+
+        public static bool CheckCondition(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            _ = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            return new Expression(paramsObject.Condition).Eval<bool>();
         }
     }
 }

@@ -59,10 +59,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         newParamsList[i] = new Parameter();
                         newParamsList[i].ParamName = paramsData.Parameters[i].InternalName;
                         var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
-                        if (existingParam != null)
-                            newParamsList[i].Value = existingParam.Value;
-                        else
-                            newParamsList[i].Value = paramsData.Parameters[i].Default;
+                        newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
                     }
                 }
             }
@@ -113,13 +110,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     nameLabel.Text = $"{parameter.DisplayName}*";
                 }
-                else if (parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Any())
-                {
-                    nameLabel.Text = $"{parameter.DisplayName}^";
-                }
                 else
                 {
-                    nameLabel.Text = parameter.DisplayName;
+                    nameLabel.Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Any()
+                        ? $"{parameter.DisplayName}^"
+                        : parameter.DisplayName;
                 }
 
                 Control control = null;
@@ -153,15 +148,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Formula:
                         control = new TextBox();
-                        if (originalValue != null)
-                            ((TextBox)control).Text = originalValue;
-                        else
-                            ((TextBox)control).Text = parameter.Default;
+                        ((TextBox)control).Text = originalValue ?? parameter.Default;
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
                             var valueToValidate = (sender as TextBox)?.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestExpression(true, out string errorMessage))
+                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
                             {
                                 MessageBox.Show(
                                     $"You have entered an invalid formula: {errorMessage}.",
@@ -198,10 +190,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             TextAlign = ContentAlignment.MiddleCenter,
                             AutoSize = false
                         };
-                        if (originalValue != null)
-                            ((Label)control).Text = originalValue;
-                        else
-                            ((Label)control).Text = parameter.Default;
+                        ((Label)control).Text = originalValue ?? parameter.Default;
                         var characterMapButton = new Button
                         {
                             Text = "Edit",
@@ -329,10 +318,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             Dock = DockStyle.Fill
                         };
-                        if (originalValue != null)
-                            ((TextBox)control).Text = originalValue;
-                        else
-                            ((TextBox)control).Text = parameter.Default;
+                        ((TextBox)control).Text = originalValue ?? parameter.Default;
                         var warningBox = new PictureBox()
                         {
                             ImageLocation = "./Icons/outline_info_black_24dp.png",
@@ -391,18 +377,34 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Number:
                         control = new TextBox();
-                        if (originalValue != null)
-                            ((TextBox)control).Text = originalValue;
-                        else
-                            ((TextBox)control).Text = parameter.Default;
+                        ((TextBox)control).Text = originalValue ?? parameter.Default;
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
                             var valueToValidate = (sender as TextBox)?.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestExpression(false, out string errorMessage))
+                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out string errorMessage))
                             {
                                 MessageBox.Show(
                                     $"You have entered an invalid value: {errorMessage}.",
+                                    "Invalid parameter data",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error
+                                );
+                                (sender as TextBox).Text = PreviousTextBoxValue;
+                            }
+                        };
+                        break;
+                    case ParameterType.BooleanExpression:
+                        control = new TextBox();
+                        ((TextBox)control).Text = originalValue ?? parameter.Default;
+                        control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
+                        control.Leave += (sender, e) =>
+                        {
+                            var valueToValidate = (sender as TextBox)?.Text;
+                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out string errorMessage))
+                            {
+                                MessageBox.Show(
+                                    $"You have entered an invalid expression: {errorMessage}.",
                                     "Invalid parameter data",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error
@@ -473,14 +475,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 var parameterData = EffectTypeData.Parameters[i];
                 Control controlToValidate = null;
                 var valueToValidate = string.Empty;
-                if (parameterData.Type == ParameterType.Character || parameterData.Type == ParameterType.Color || parameterData.Type == ParameterType.Text)
-                {
-                    controlToValidate = tlpParameters.GetControlFromPosition(1, i).Controls[0];
-                }
-                else
-                {
-                    controlToValidate = tlpParameters.GetControlFromPosition(1, i);
-                }
+                controlToValidate = parameterData.Type == ParameterType.Character || parameterData.Type == ParameterType.Color || parameterData.Type == ParameterType.Text
+                    ? tlpParameters.GetControlFromPosition(1, i).Controls[0]
+                    : tlpParameters.GetControlFromPosition(1, i);
 
                 switch (parameterData.Type)
                 {
@@ -498,7 +495,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Formula:
                         valueToValidate = (controlToValidate as TextBox).Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestExpression(true, out string errorMessage))
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
                             errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid formula: {errorMessage}.");
                         break;
                     case ParameterType.Character:
@@ -525,7 +522,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Number:
                         valueToValidate = (controlToValidate as TextBox).Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestExpression(false, out errorMessage))
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out errorMessage))
                             errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid value: {errorMessage}.");
                         break;
                     case ParameterType.Odds:
@@ -533,6 +530,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Boolean:
                         valueToValidate = (controlToValidate as CheckBox).Checked.ToString();
+                        break;
+                    case ParameterType.BooleanExpression:
+                        valueToValidate = (controlToValidate as TextBox).Text;
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out errorMessage))
+                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid expression: {errorMessage}.");
                         break;
                 }
 

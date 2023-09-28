@@ -20,7 +20,7 @@ namespace RogueCustomsDungeonEditor.Utils
 {
     public static class ActionValidationHelpers
     {
-        public static bool TestExpression(this string expression, bool checkDiceNotationAsWell, out string errorMessage)
+        public static bool TestNumericExpression(this string expression, bool checkDiceNotationAsWell, out string errorMessage)
         {
             try
             {
@@ -39,10 +39,27 @@ namespace RogueCustomsDungeonEditor.Utils
             }
         }
 
+        public static bool TestBooleanExpression(this string expression, out string errorMessage)
+        {
+            try
+            {
+                var parsedExpression = ConvertArgsToPlaceholders(expression, "1");
+                _ = new Expression(parsedExpression).Eval<bool>();
+                errorMessage = string.Empty;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
         private static string ConvertArgsToPlaceholders(this string arg, string placeholder)
         {
             var parsedArg = arg;
 
+            parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "player");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "this");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "source");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "target");

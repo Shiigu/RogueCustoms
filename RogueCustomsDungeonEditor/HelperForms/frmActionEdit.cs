@@ -226,8 +226,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 btnEdit.Enabled = true;
                 btnRemove.Enabled = true;
-                btnNewThen.Enabled = selectedEffectData != null && !HasThenChildNode;
-                btnNewOnSuccessFailure.Enabled = selectedEffectData != null && selectedEffectData.CanReturnFailure && selectedEffect != null && !HasOnSuccessFailureChildNodes;
+                btnNewThen.Enabled = selectedEffectData?.CanHaveThenChild == true && !HasThenChildNode;
+                btnNewOnSuccessFailure.Enabled = selectedEffectData?.CanHaveOnSuccessOnFailureChild == true && selectedEffect != null && !HasOnSuccessFailureChildNodes;
             }
             else
             {
