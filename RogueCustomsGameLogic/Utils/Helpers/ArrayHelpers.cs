@@ -41,10 +41,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 var currentCell = openList.Values.MinBy(nodeData => nodeData.F);
                 var currentNode = currentCell.Node;
 
-                if (currentNode.Equals(targetT)) break;
-
                 openList.Remove(currentNode);
                 closedList[currentNode] = currentCell;
+
+                if (currentNode.Equals(targetT)) break;
 
                 var adjacentValidCells = grid.GetAdjacentElementsWhere(grid.IndexOf(currentNode).i, grid.IndexOf(currentNode).j, includeDiagonals, validCellPredicate);
 
