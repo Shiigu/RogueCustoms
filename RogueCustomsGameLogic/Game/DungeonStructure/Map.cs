@@ -780,6 +780,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     return false;
                 }
             }
+            if (character is NonPlayableCharacter npc)
+                npc.LastPosition = character.Position;
+
             character.Position = targetTile.Position;
 
             targetTile.Items?.ForEach(i => character.TryToPickItem(i));
@@ -1262,10 +1265,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             // Discourage but not prohibit walking on occupied tiles
             var tile = GetTileFromCoordinates(x2, y2);
             if (tile.IsOccupied)
-                return distance + 8;
-            var entitiesInTile = GetEntitiesFromCoordinates(new Point(x2, y2));
+                return distance + 24;
             // Discourage but not prohibit walking on visible traps
-            if (entitiesInTile.Any(e => e.EntityType == EntityType.Trap && e.Visible))
+            if (tile.Trap?.Visible == true && tile.Trap?.ExistenceStatus == EntityExistenceStatus.Alive)
                 return distance + 8;
             return distance;
         }
@@ -1273,6 +1275,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Tile> GetAdjacentTiles(Point position)
         {
             return Tiles.GetAdjacentElements(GetTileFromCoordinates(position), true);
+        }
+        public List<Tile> GetAdjacentWalkableTiles(Point position)
+        {
+            return Tiles.GetAdjacentElementsWhere(GetTileFromCoordinates(position), true, t => t.IsWalkable);
         }
         public List<Tile> GetFOVTilesWithinDistance(Point source, int distance)
         {

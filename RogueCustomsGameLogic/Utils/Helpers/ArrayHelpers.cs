@@ -27,48 +27,66 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             if (!validCellPredicate(grid[source.Y, source.X])) throw new ArgumentException("Cannot find a path from an invalid node!");
             if (!validCellPredicate(grid[target.Y, target.X])) throw new ArgumentException("Cannot find a path towards an invalid node!");
             if (source.X == target.X && source.Y == target.Y) return new List<T> { grid[target.Y, target.X] };
+
             var sourceT = grid[source.Y, source.X];
             var targetT = grid[target.Y, target.X];
-            var openList = new List<AStarNodeData<T>>();
-            var closedList = new List<AStarNodeData<T>>();
-            openList.Add(grid.GetAStarNodeData(source.Y, source.X, sourceT, targetT, null, XDataFunction, YDataFunction, GFunction, HFunction));
-            while (openList.Any(n => n != null))
+
+            var openList = new Dictionary<T, AStarNodeData<T>>();
+            var closedList = new Dictionary<T, AStarNodeData<T>>();
+
+            openList[sourceT] = grid.GetAStarNodeData(source.Y, source.X, sourceT, targetT, null, XDataFunction, YDataFunction, GFunction, HFunction);
+
+            while (openList.Count > 0)
             {
-                var minOpenF = openList.Where(n => n != null).Min(n => n.F);
-                var currentCell = openList.First(n => n != null && n.F == minOpenF);
-                var indexOfCell = grid.IndexOf(currentCell.Node);
-                var adjacentValidCells = grid.GetAdjacentElementsWhere(indexOfCell.i, indexOfCell.j, includeDiagonals, validCellPredicate);
-                Parallel.ForEach(adjacentValidCells, c => {
-                    if (closedList.Any(l => l.Node.Equals(c))) return;
-                    var (i, j) = grid.IndexOf(c);
-                    var existingAStarNodeData = openList.Find(l => l?.Node.Equals(c) == true);
+                var currentCell = openList.Values.MinBy(nodeData => nodeData.F);
+                var currentNode = currentCell.Node;
+
+                if (currentNode.Equals(targetT)) break;
+
+                openList.Remove(currentNode);
+                closedList[currentNode] = currentCell;
+
+                var adjacentValidCells = grid.GetAdjacentElementsWhere(grid.IndexOf(currentNode).i, grid.IndexOf(currentNode).j, includeDiagonals, validCellPredicate);
+
+                foreach (var adjacentCell in adjacentValidCells)
+                {
+                    if (closedList.ContainsKey(adjacentCell)) continue;
+
+                    var (i, j) = grid.IndexOf(adjacentCell);
+                    var existingAStarNodeData = openList.GetValueOrDefault(adjacentCell);
                     var newAStarNodeData = grid.GetAStarNodeData(i, j, sourceT, targetT, currentCell, XDataFunction, YDataFunction, GFunction, HFunction);
-                    if (newAStarNodeData == null || newAStarNodeData.Node == null) return;
-                    if (existingAStarNodeData == null)
+
+                    if (newAStarNodeData == null || newAStarNodeData.Node == null) continue;
+
+                    if (existingAStarNodeData == null || newAStarNodeData.G < existingAStarNodeData.G)
                     {
-                        openList.Add(newAStarNodeData);
+                        openList[adjacentCell] = newAStarNodeData;
                     }
-                    else
-                    {
-                        if(newAStarNodeData.G < existingAStarNodeData.G)
-                            existingAStarNodeData = newAStarNodeData;
-                    }
-                });
-                openList.Remove(currentCell);
-                closedList.Add(currentCell);
-                if (currentCell.Node.Equals(targetT)) break;
+                }
             }
-            var path = new List<T>();
-            var minClosedF = closedList.Min(l => l.F);
-            var cellInPath = (closedList.Any(l => l.Node.Equals(targetT))) ? closedList.Last() : closedList.First(l => l.F == minClosedF);
-            while(cellInPath?.Node != null)
+
+            var path = new Stack<T>();
+            AStarNodeData<T> cellInPath;
+
+            if (closedList.ContainsKey(targetT))
             {
-                path.Add(cellInPath.Node);
+                cellInPath = closedList[targetT];
+            }
+            else
+            {
+                var minClosedF = closedList.Values.Min(nodeData => nodeData.F);
+                cellInPath = closedList.Values.First(nodeData => nodeData.F == minClosedF);
+            }
+
+            while (cellInPath?.Node != null)
+            {
+                path.Push(cellInPath.Node);
                 cellInPath = cellInPath.PrecedingNode;
             }
-            path.Reverse();
-            return path;
+
+            return path.ToList();
         }
+
 
         private static AStarNodeData<T> GetAStarNodeData<T>(this T[,] grid, int X, int Y, T source, T target, AStarNodeData<T> precedingNode, Func<T, int> XDataFunction, Func<T, int> YDataFunction, Func<int, int, int, int, double> GFunction, Func<int, int, int, int, double> HFunction) where T : class
         {
@@ -117,31 +135,53 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         {
             return grid.GetElementsWithinDistanceWhere(i, j, distance, includeDiagonals, _ => true);
         }
-        public static List<T> GetElementsWithinDistanceWhere<T>(this T[,] grid, int i, int j, int distance, bool includeDiagonals, Func<T, bool> predicate)
+        public static List<T> GetElementsWithinDistanceWhere<T>(this T[,] grid, int i, int j, int maxDistance, bool includeDiagonals, Func<T, bool> predicate)
         {
             var nearbyElements = new List<T>();
-            var visitedDistances = new int[grid.GetLength(0), grid.GetLength(1)];
-
-            for (int x = 0; x < visitedDistances.GetLength(0); x++)
+            var directions = (includeDiagonals) ? new List<(int, int)>
             {
-                for (int y = 0; y < visitedDistances.GetLength(1); y++)
-                {
-                    visitedDistances[x, y] = -1;
-                }
+                (-1, -1), (-1, 0), (-1, 1),
+                (0, -1) ,          (0, 1),
+                (1, -1) , (1, 0) , (1, 1)
+            } : new List<(int, int)>
+            {
+                          (-1, 0),
+                (0, -1) ,          (0, 1),
+                          (1, 0)
+            };
+
+            bool IsValidTile(int x, int y)
+            {
+                return x >= 0 && x < grid.GetLength(0) && y >= 0 && y < grid.GetLength(1) && predicate(grid[x, y]);
             }
 
-            if (distance > 0)
-            {
-                SetDistancesFromCenter(grid, visitedDistances, distance, includeDiagonals, i, j, predicate);
-            }
+            Queue<(int, int, int)> queue = new Queue<(int, int, int)>();
+            HashSet<(int, int)> visited = new HashSet<(int, int)>();
 
-            for (int x = 0; x < visitedDistances.GetLength(0); x++)
+            queue.Enqueue((i, j, 0));
+            visited.Add((i, j));
+
+            while(queue.Count > 0)
             {
-                for (int y = 0; y < visitedDistances.GetLength(1); y++)
+                (int x, int y, int distance) = queue.Dequeue();
+
+                if(distance <= maxDistance)
                 {
-                    if ((x != i || y != j) && visitedDistances[x, y] >= 0)
-                    {
+                    if (x != i || y != j)
                         nearbyElements.Add(grid[x, y]);
+                    foreach ((int dx, int dy) in directions)
+                    {
+                        var newX = x + dx;
+                        var newY = y + dy;
+
+                        if (dx == 0 || dy == 0 || (IsValidTile(newX, y) && IsValidTile(x, newY)))
+                        {
+                            if(IsValidTile(newX, newY) && !visited.Contains((newX, newY)))
+                            {
+                                visited.Add((newX, newY));
+                                queue.Enqueue((newX, newY, distance + 1));
+                            }
+                        }
                     }
                 }
             }

@@ -6,6 +6,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.IO;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -15,6 +16,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         
         // This is used to prevent continuous paying attention to themselves rather than on others
         private ActionWithEffects LastUsedActionOnSelf;
+        // This is used to prevent continuous shuffling between tiles if it does not find an open path
+        public Point LastPosition { get; set; }
 
         private Character CurrentTarget;
         private bool KnowsAllCharacterPositions;
@@ -91,6 +94,21 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = pickedTarget;
                 PathToUse = (Destination: destination, Route: Map.GetPathBetweenTiles(Position, destination));
             }
+            if(PathToUse.Route?.Count > 1 && PathToUse.Route?[1].IsOccupied == true)
+            {
+                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position).OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
+                foreach (var adjacentTile in adjacentTiles)
+                {
+                    if (!adjacentTile.IsWalkable || adjacentTile.IsOccupied || adjacentTile == ContainingTile || adjacentTile.Position.Equals(LastPosition)) continue;
+                    var pathToDestination = Map.GetPathBetweenTiles(Position, PathToUse.Destination);
+                    if (pathToDestination?.Any() == true)
+                    {
+                        pathToDestination.Insert(0, adjacentTile);
+                        PathToUse.Route = pathToDestination;
+                        break;
+                    }
+                }
+            }
         }
 
         public void AttackOrMove()
@@ -146,11 +164,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (path.Route?.Any() == true)
             {
-                if (path.Route.Count > 1)
+                if (path.Route[0].Position.Equals(Position))
                     path.Route = path.Route.Skip(1).ToList();
 
-                if (Map.TryMoveCharacter(this, path.Route[0]))
-                    PathToUse = path;
+                if (path.Route.Any() && path.Route[0] != ContainingTile && Map.TryMoveCharacter(this, path.Route[0]))
+                        PathToUse = path;
                 else
                     PathToUse.Destination = null;
             }
