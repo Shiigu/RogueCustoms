@@ -186,6 +186,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             if (ControlMode == ControlMode.NormalMove && DungeonConsole.WithCursor)
                 DungeonConsole.RemoveCursor();
 
+            if (!this.IsEnabled) return;
+
             try
             {
 
@@ -276,7 +278,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 if (ControlMode == ControlMode.None)
                     return ProcessNoneModeKeyboard(keyboard);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 LatestDungeonStatus = null;
                 ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
