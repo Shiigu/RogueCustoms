@@ -262,7 +262,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 defenseTestModification = target.DefenseModifications.Find(dm => dm.Id == "defenseTest");
                                 if (defenseTestModification != null)
                                     defenseTestModification.Amount++;
-                                if (target.HP <= 0) target.HP = target.MaxHP - 1;
+                                if (target.HP <= 0)
+                                    target.HP = target.MaxHP - 1;
+                                else
+                                    target.HP--;
                                 if(target.TotalMaxHPIncrements > 1000000)
                                 {
                                     if(!excessiveTargetHPWarning)
