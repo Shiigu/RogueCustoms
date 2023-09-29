@@ -13,6 +13,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -89,9 +90,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int RoomCount => Rooms.GetLength(0) * Rooms.GetLength(1);
         private RoomConnectionType?[,] RoomAdjacencyMatrix;
 
+        public List<Flag> Flags { get; set; }
+
         #endregion
 
-        public Map(Dungeon dungeon, int floorLevel)
+        public Map(Dungeon dungeon, int floorLevel, List<Flag> flags)
         {
             Dungeon = dungeon;
             FloorLevel = floorLevel;
@@ -103,6 +106,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 throw new InvalidDataException("There's no valid configuration for the current floor");
             Seed = Environment.TickCount;
             Rng = new Random(Seed);
+            Flags = flags;
             if (!FloorConfigurationToUse.PossibleGeneratorAlgorithms.Any())
                 throw new InvalidDataException("There's no valid generation algorithm for the current floor");
 
@@ -1604,6 +1608,32 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         tile.IsConnectorTile = true;
                 }
             }
+        }
+
+        #endregion
+
+        #region Flags
+
+        public bool HasFlag(string key)
+        {
+            return Flags.Any(f => f.Key.Equals(key));
+        }
+
+        public int GetFlagValue(string key)
+        {
+            var flag = Flags.Find(f => f.Key.Equals(key)) ?? throw new ArgumentException($"There's no flag with key {key} in {FloorName}");
+            return flag.Value;
+        }
+
+        public void CreateFlag(string key, int value, bool removeOnFloorChange)
+        {
+            Flags.Add(new Flag(key, value, removeOnFloorChange));
+        }
+
+        public void SetFlagValue(string key, int value)
+        {
+            var flag = Flags.Find(f => f.Key.Equals(key)) ?? throw new ArgumentException($"There's no flag with key {key} in {FloorName}");
+            flag.Value = value;
         }
 
         #endregion

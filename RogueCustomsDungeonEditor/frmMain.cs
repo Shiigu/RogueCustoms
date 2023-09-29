@@ -174,7 +174,7 @@ namespace RogueCustomsDungeonEditor
                         tbTabs.TabPages.Remove(tabPage);
                 }
                 tbTabs.TabPages.Insert(0, TabsForNodeTypes[tag.TabToOpen]);
-                tbTabs.SelectedTab = TabsForNodeTypes[tag.TabToOpen];
+                tbTabs.SelectedIndex = 0;
                 var matchingNodes = tvDungeonInfo.Nodes.Find(e.Node.Text, true).Where(n => (n.Parent == null && e.Node.Parent == null) || (n.Parent.Text.Equals(e.Node.Parent.Text))).ToList();
                 if (matchingNodes.Any())
                 {
@@ -728,6 +728,7 @@ namespace RogueCustomsDungeonEditor
             tsbSaveElementAs.Visible = true;
             tsbDeleteElement.Visible = true;
             tssElementValidate.Visible = true;
+            DirtyTab = false;
             switch (tag.TabToOpen)
             {
                 case TabTypes.BasicInfo:
@@ -807,7 +808,6 @@ namespace RogueCustomsDungeonEditor
                     break;
             }
             tbTabs_SelectedIndexChanged(null, EventArgs.Empty);
-            DirtyTab = false;
         }
 
         private void tbTabs_SelectedIndexChanged(object sender, EventArgs e)

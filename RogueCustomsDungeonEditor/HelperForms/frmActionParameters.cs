@@ -413,6 +413,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             }
                         };
                         break;
+                    case ParameterType.Key:
+                        control = new TextBox()
+                        {
+                            Dock = DockStyle.Fill
+                        };
+                        ((TextBox)control).Text = originalValue ?? parameter.Default;
+                        control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+                        break;
                 }
 
                 var toolTip = new ToolTip();
@@ -518,6 +526,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         break;
                     case ParameterType.Text:
+                    case ParameterType.Key:
                         valueToValidate = (controlToValidate as TextBox).Text;
                         break;
                     case ParameterType.Number:

@@ -48,6 +48,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Text,
         AlteredStatus,
         Number,
-        BooleanExpression
+        BooleanExpression,
+        Key
     }
 }

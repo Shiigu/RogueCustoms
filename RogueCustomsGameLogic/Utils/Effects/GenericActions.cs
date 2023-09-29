@@ -289,5 +289,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             return new Expression(paramsObject.Condition).Eval<bool>();
         }
+
+        public static bool SetFlag(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            _ = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            var existingFlag = Map.Flags.Find(f => f.Key.Equals(paramsObject.Key));
+            if(existingFlag != null)
+                Map.SetFlagValue(paramsObject.Key, paramsObject.Value);
+            else
+                Map.CreateFlag(paramsObject.Key, paramsObject.Value, paramsObject.RemoveOnFloorChange);
+            return true;
+        }
     }
 }

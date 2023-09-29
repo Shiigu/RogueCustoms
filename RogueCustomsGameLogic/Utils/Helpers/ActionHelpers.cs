@@ -17,6 +17,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
     {
         private static List<string> FieldsToConsider = new List<string>
         {
+            "Id",
             "ClassId",
             "Name",
             "Weapon",
@@ -129,6 +130,15 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "condition":
                             paramsObject.Condition = value;
                             break;
+                        case "key":
+                            paramsObject.Key = value;
+                            break;
+                        case "value":
+                            paramsObject.Value = (int) CalculateDiceNotationIfNeeded(value);
+                            break;
+                        case "removeonfloorchange":
+                            paramsObject.RemoveOnFloorChange = new Expression(value).Eval<bool>();
+                            break;
                         case "character":
                             paramsObject.Character = value[0];
                             break;
@@ -198,7 +208,28 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             if (e == null) return arg;
             var parsedArg = arg;
 
+            parsedArg = ParseEntityNames(parsedArg, e, eName);
+            parsedArg = ParseEntityProperties(parsedArg, e, eName);
+            parsedArg = ParseRngExpressions(parsedArg);
+            parsedArg = ParseFlagExistsExpressions(parsedArg);
+            parsedArg = ParseNamedFlags(parsedArg);
+            parsedArg = ParseStatusCheck(parsedArg, e, eName);
+
+            return parsedArg;
+        }
+
+        private static string ParseEntityNames(string arg, Entity e, string eName)
+        {
+            var parsedArg = arg;
+
             parsedArg = parsedArg.Replace($"{{{eName}}}", e.Name, StringComparison.InvariantCultureIgnoreCase);
+
+            return parsedArg;
+        }
+
+        private static string ParseEntityProperties(string arg, Entity e, string eName)
+        {
+            var parsedArg = arg;
 
             var entityType = e.GetType();
             foreach (var property in entityType.GetProperties().Where(p => FieldsToConsider.Contains(p.Name)))
@@ -234,10 +265,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     }
                 }
             }
-
-            parsedArg = ParseRngExpressions(parsedArg);
-
-            parsedArg = ParseStatusCheck(parsedArg, e, eName);
 
             return parsedArg;
         }
@@ -312,6 +339,41 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     int randomValue = Map.Rng.Next(x, y + 1);
                     parsedArg = parsedArg.Replace(match.Value, randomValue.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 }
+            }
+
+            return parsedArg;
+        }
+
+        private static string ParseFlagExistsExpressions(string arg)
+        {
+            var regexFlagExists = @"FlagExists\(([^)]+)\)";
+            string parsedArg = arg;
+            var matches = Regex.Matches(arg, regexFlagExists);
+
+            foreach (Match match in matches)
+            {
+                var flagName = match.Groups[1].Value;
+
+                bool flagExists = Map.HasFlag(flagName);
+                parsedArg = parsedArg.Replace(match.Value, flagExists.ToString(), StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            return parsedArg;
+        }
+
+        private static string ParseNamedFlags(string arg)
+        {
+            var parsedArg = arg;
+
+            var matches = Regex.Matches(parsedArg, @"\[(.*?)\]");
+
+            foreach (Match match in matches)
+            {
+                var flagToken = match.Value;
+                var flagName = match.Groups[1].Value;
+
+                var flagValue = Map.GetFlagValue(flagName);
+                parsedArg = parsedArg.Replace(flagToken, FormatParameterValue(flagValue), StringComparison.InvariantCultureIgnoreCase);
             }
 
             return parsedArg;

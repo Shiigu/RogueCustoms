@@ -15,6 +15,8 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
+using System.Linq.Expressions;
+using Expression = org.matheval.Expression;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
@@ -70,7 +72,28 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             var parsedArg = arg;
 
+            parsedArg = ParseEntityNames(parsedArg, stringPlaceholder, eName);
+            parsedArg = ParseEntityProperties(parsedArg, numericPlaceholder, stringPlaceholder, eName);
+            parsedArg = ParseRngExpressions(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
+            parsedArg = ParseFlagExistsExpressions(parsedArg, booleanPlaceholder);
+            parsedArg = ParseNamedFlags(parsedArg, numericPlaceholder);
+            parsedArg = ParseStatusCheck(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
+
+            return parsedArg;
+        }
+
+        private static string ParseEntityNames(string arg, string stringPlaceholder, string eName)
+        {
+            var parsedArg = arg;
+
             parsedArg = parsedArg.Replace($"{{{eName}}}", stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+
+            return parsedArg;
+        }
+
+        private static string ParseEntityProperties(string arg, string numericPlaceholder, string stringPlaceholder, string eName)
+        {
+            var parsedArg = arg;
 
             var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(AlteredStatus) };
 
@@ -83,7 +106,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
                     if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if(propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
+                        if (propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
                             || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
                             parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
                         else
@@ -91,10 +114,6 @@ namespace RogueCustomsDungeonEditor.Utils
                     }
                 }
             }
-
-            parsedArg = ParseRngExpressions(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
-
-            parsedArg = ParseStatusCheck(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
 
             return parsedArg;
         }
@@ -153,14 +172,88 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return parsedArg;
         }
+        private static string ParseFlagExistsExpressions(string arg, string booleanPlaceholder)
+        {
+            string regexFlagExists = @"FlagExists\(([^)]+)\)";
+            string parsedArg = arg;
+            var matches = Regex.Matches(arg, regexFlagExists);
+
+            foreach (Match match in matches)
+            {
+                parsedArg = parsedArg.Replace(match.Value, booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            return parsedArg;
+        }
+
+        private static string ParseNamedFlags(string arg, string numericPlaceholder)
+        {
+            var parsedArg = arg;
+
+            var matches = Regex.Matches(parsedArg, @"\[(.*?)\]");
+
+            foreach (Match match in matches)
+            {
+                var flagToken = match.Value;
+
+                parsedArg = parsedArg.Replace(flagToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            return parsedArg;
+        }
 
         private static bool IsDiceNotation(this string s)
         {
             return Regex.Match(s, RogueCustomsGameEngine.Utils.Constants.DiceNotationRegexPattern).Success;
         }
 
-        public static bool HaveAllParametersBeenParsed(this Effect effect, Entity This, Entity Source, Entity Target)
+        public static bool HaveAllParametersBeenParsed(this Effect effect, Entity This, Entity Source, Entity Target, Map map, out bool flagsAreInvolved)
         {
+            flagsAreInvolved = false;
+
+            // Hardcode Flags due to unpredictability
+            var regexFlagExists = @"FlagExists\(([^)]+)\)";
+            var regexFlagValue = @"\[(.*?)\]";
+
+            var paramValuesToReplace = new List<(string ParamName, string Value)>();
+
+            foreach (var param in effect.Params)
+            {
+                var flagExistsMatches = Regex.Matches(param.Value, regexFlagExists);
+
+                foreach (Match match in flagExistsMatches)
+                {
+                    paramValuesToReplace.Add((param.ParamName, param.Value.Replace(match.Value, "true", StringComparison.InvariantCultureIgnoreCase)));
+                }
+
+                var flagValueMatches = Regex.Matches(param.Value, regexFlagValue);
+
+                foreach (Match match in flagValueMatches)
+                {
+                    paramValuesToReplace.Add((param.ParamName, param.Value.Replace(match.Value, "1", StringComparison.InvariantCultureIgnoreCase)));
+                }
+
+                var flagValueLocaleMatches = Regex.Matches(map.Locale[param.Value], regexFlagValue);
+
+                foreach (Match match in flagValueLocaleMatches)
+                {
+                    paramValuesToReplace.Add((param.ParamName, map.Locale[param.Value].Replace(match.Value, "1", StringComparison.InvariantCultureIgnoreCase)));
+                }
+            }
+
+            if (paramValuesToReplace.Any())
+            {
+                foreach (var paramValue in paramValuesToReplace)
+                {
+                    var paramList = effect.Params.ToList();
+                    paramList.RemoveAll(p => p.ParamName.Equals(paramValue.ParamName));
+                    (string ParamName, string ParamValue) paramToReplace = new (paramValue.ParamName, paramValue.Value);
+                    paramList.Add(paramToReplace);
+                    effect.Params = paramList.ToArray();
+                }
+                flagsAreInvolved = true;
+            }
+
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, 0, effect.Params);
 
             var paramsObjectAsDictionary = ((IDictionary<string, object>)paramsObject);
