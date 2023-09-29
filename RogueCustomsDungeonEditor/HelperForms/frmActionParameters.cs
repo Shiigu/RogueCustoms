@@ -580,7 +580,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     EffectToSave.EffectName = EffectTypeData.InternalName;
                 foreach (var param in paramsAndValues)
                 {
-                    var paramToSave = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(param.ParamName));
+                    var paramToSave = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(param.ParamName, StringComparison.InvariantCultureIgnoreCase));
                     if (paramToSave != null)                 // This should always be true
                     {
                         paramToSave.Value = param.Value;
