@@ -70,34 +70,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             var parsedArg = arg;
 
-            var regex = new Regex(@"HasStatus\(([^,]+),\s*([^)]+)\)|DoesNotHaveStatus\(([^,]+),\s*([^)]+)\)", RegexOptions.IgnoreCase);
-            if (regex.IsMatch(parsedArg))
-            {
-                var logicalOperators = new string[] { "&&", "||" };
-                var subExpressions = parsedArg.Split(logicalOperators, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var subExpression in subExpressions)
-                {
-                    var parsedSubExpression = new string(subExpression.Trim());
-                    var match = regex.Match(subExpression);
-
-                    if (match.Success)
-                    {
-                        if (match.Groups.Count < 5) continue;
-
-                        var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
-
-                        var entityName = (isNot) ? match.Groups[3].Value : match.Groups[1].Value;
-
-                        if (!entityName.Equals(eName)) continue;
-
-                        parsedArg = parsedArg.Replace(match.Value.Trim(), booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                    }
-                }
-            }
-            
             parsedArg = parsedArg.Replace($"{{{eName}}}", stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-
 
             var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(AlteredStatus) };
 
@@ -116,6 +89,65 @@ namespace RogueCustomsDungeonEditor.Utils
                         else
                             parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
                     }
+                }
+            }
+
+            parsedArg = ParseRngExpressions(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
+
+            parsedArg = ParseStatusCheck(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
+
+            return parsedArg;
+        }
+
+        private static string ParseStatusCheck(string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
+        {
+            var parsedArg = arg;
+
+            var statusRegex = new Regex(@"HasStatus\(([^,]+),\s*([^)]+)\)|DoesNotHaveStatus\(([^,]+),\s*([^)]+)\)", RegexOptions.IgnoreCase);
+            if (statusRegex.IsMatch(parsedArg))
+            {
+                var logicalOperators = new string[] { "&&", "||" };
+                var subExpressions = parsedArg.Split(logicalOperators, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var subExpression in subExpressions)
+                {
+                    var parsedSubExpression = new string(subExpression.Trim());
+                    var match = statusRegex.Match(subExpression);
+
+                    if (match.Success)
+                    {
+                        if (match.Groups.Count < 5) continue;
+
+                        var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
+
+                        var entityName = (isNot) ? match.Groups[3].Value : match.Groups[1].Value;
+
+                        if (!entityName.Equals(eName)) continue;
+
+                        parsedArg = parsedArg.Replace(match.Value.Trim(), booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                    }
+                }
+            }
+
+            return parsedArg;
+        }
+
+        private static string ParseRngExpressions(string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
+        {
+            var parsedArg = arg;
+            var rngRegex = @"rng\((\d+),\s*(\d+)\)";
+            var matches = Regex.Matches(arg, rngRegex, RegexOptions.IgnoreCase);
+
+            foreach (Match match in matches)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int x) && int.TryParse(match.Groups[2].Value, out int y))
+                {
+                    if (x > y)
+                    {
+                        throw new ArgumentException($"Invalid rng({x},{y}) expression: first parameter cannot be greater than the second.");
+                    }
+
+                    parsedArg = parsedArg.Replace(match.Value, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
                 }
             }
 
