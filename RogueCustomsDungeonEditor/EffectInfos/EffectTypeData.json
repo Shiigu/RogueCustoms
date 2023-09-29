@@ -806,6 +806,45 @@
     ]
   },
   {
+    "InternalName": "SetFlag",
+    "DisplayName": "Create or Update Flag",
+    "Description": "The Dungeon will create a new Flag with the set name, or update its value if it already exists.\n\nDepending on parameters, Flags can persist through Floors.\n\nRemember to Set a flag before using it.",
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "Parameters": [
+      {
+        "InternalName": "Key",
+        "DisplayName": "Key",
+        "Description": "The Flag's name.",
+        "ParameterType": "Key",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Value",
+        "DisplayName": "Value",
+        "Description": "The value to set on the Flag.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "RemoveOnFloorChange",
+        "DisplayName": "Remove when in a new Floor?",
+        "Description": "If checked, the Flag will be removed upon using the stairs.\nIf false, the Flag will persist until the end of the game.\n\nIf the Flag already existed, this has no effect.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "Equip",
     "DisplayName": "Equip",
     "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE! IT MAY CRASH THE GAME!",

@@ -776,6 +776,14 @@
         {
           "Key": "Floor2HealthWarningHeader",
           "Value": "Warning"
+        },
+        {
+          "Key": "Floor5BossDefeatedHeader",
+          "Value": "CONGRATULATIONS!"
+        },
+        {
+          "Key": "Floor5BossDefeatedText",
+          "Value": "You\u0027ve defeated the Boss! Now you can leave!\r\n\r\nDead Enemies Counter: [EnemiesDefeated]"
         }
       ]
     },
@@ -1072,11 +1080,11 @@
         },
         {
           "Key": "EasyPlayerName",
-          "Value": "J. F\u00E1cil"
+          "Value": "J. Facil"
         },
         {
           "Key": "EasyPlayerDescription",
-          "Value": "Este eres t\u00FA, el Jugador.\n\nLo tienes f\u00E1cil.\nTu objetivo es llegar con vida al final de la mazmorra."
+          "Value": "Este eres t\u00FA, el Jugador.\r\n\r\nLo tienes facil.\r\nTu objetivo es llegar con vida al final de la mazmorra."
         },
         {
           "Key": "NormalPlayerName",
@@ -1088,7 +1096,7 @@
         },
         {
           "Key": "HardPlayerName",
-          "Value": "J. Dif\u00EDcil"
+          "Value": "J. Dificil"
         },
         {
           "Key": "HardPlayerDescription",
@@ -1292,7 +1300,7 @@
         },
         {
           "Key": "SwordAllInAttackName",
-          "Value": "Con Todo"
+          "Value": "A por todas"
         },
         {
           "Key": "SwordAllInAttackDescription",
@@ -1545,6 +1553,14 @@
         {
           "Key": "Floor2HealthWarningHeader",
           "Value": "Cuidado..."
+        },
+        {
+          "Key": "Floor5BossDefeatedHeader",
+          "Value": "\u00A1FELICIDADES!"
+        },
+        {
+          "Key": "Floor5BossDefeatedText",
+          "Value": "\u00A1Has derrotado al Jefe! \u00A1Ya puedes salir!\r\n\r\nTotal de Enemigos Muertos: [EnemiesDefeated]"
         }
       ]
     }
@@ -1778,10 +1794,13 @@
       "OnFloorStartActions": [
         {
           "Name": "DungeonStartMessage",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "MessageBox",
@@ -1798,7 +1817,24 @@
                 "ParamName": "color",
                 "Value": "255,255,0,255"
               }
-            ]
+            ],
+            "Then": {
+              "EffectName": "SetFlag",
+              "Params": [
+                {
+                  "ParamName": "Key",
+                  "Value": "EnemiesDefeated"
+                },
+                {
+                  "ParamName": "Value",
+                  "Value": "0"
+                },
+                {
+                  "ParamName": "RemoveOnFloorChange",
+                  "Value": "False"
+                }
+              ]
+            }
           }
         }
       ]
@@ -2714,10 +2750,13 @@
       "OnDeathActions": [
         {
           "Name": "PrintDeath",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2750,7 +2789,24 @@
                     "ParamName": "amount",
                     "Value": "{this.experiencepayout}"
                   }
-                ]
+                ],
+                "Then": {
+                  "EffectName": "SetFlag",
+                  "Params": [
+                    {
+                      "ParamName": "Key",
+                      "Value": "EnemiesDefeated"
+                    },
+                    {
+                      "ParamName": "Value",
+                      "Value": "[EnemiesDefeated] \u002B 1"
+                    },
+                    {
+                      "ParamName": "RemoveOnFloorChange",
+                      "Value": "False"
+                    }
+                  ]
+                }
               }
             }
           }
@@ -2806,10 +2862,13 @@
       "OnDeathActions": [
         {
           "Name": "PrintDeath",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2842,7 +2901,24 @@
                     "ParamName": "amount",
                     "Value": "{this.experiencepayout}"
                   }
-                ]
+                ],
+                "Then": {
+                  "EffectName": "SetFlag",
+                  "Params": [
+                    {
+                      "ParamName": "Key",
+                      "Value": "EnemiesDefeated"
+                    },
+                    {
+                      "ParamName": "Value",
+                      "Value": "[EnemiesDefeated] \u002B 1"
+                    },
+                    {
+                      "ParamName": "RemoveOnFloorChange",
+                      "Value": "False"
+                    }
+                  ]
+                }
               }
             }
           }
@@ -2962,10 +3038,13 @@
       "OnDeathActions": [
         {
           "Name": "PrintDeath",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2998,7 +3077,24 @@
                     "ParamName": "amount",
                     "Value": "{this.experiencepayout}"
                   }
-                ]
+                ],
+                "Then": {
+                  "EffectName": "SetFlag",
+                  "Params": [
+                    {
+                      "ParamName": "Key",
+                      "Value": "EnemiesDefeated"
+                    },
+                    {
+                      "ParamName": "Value",
+                      "Value": "[EnemiesDefeated] \u002B 1"
+                    },
+                    {
+                      "ParamName": "RemoveOnFloorChange",
+                      "Value": "False"
+                    }
+                  ]
+                }
               }
             }
           }
@@ -3075,10 +3171,13 @@
       "OnDeathActions": [
         {
           "Name": "PrintDeath",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3190,10 +3289,13 @@
       "OnDeathActions": [
         {
           "Name": "PrintDeath",
+          "Description": "",
           "MinimumRange": 0,
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "",
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3217,7 +3319,41 @@
               ],
               "Then": {
                 "EffectName": "GenerateStairs",
-                "Params": []
+                "Params": [],
+                "Then": {
+                  "EffectName": "SetFlag",
+                  "Params": [
+                    {
+                      "ParamName": "Key",
+                      "Value": "EnemiesDefeated"
+                    },
+                    {
+                      "ParamName": "Value",
+                      "Value": "[EnemiesDefeated] \u002B 1"
+                    },
+                    {
+                      "ParamName": "RemoveOnFloorChange",
+                      "Value": "False"
+                    }
+                  ],
+                  "Then": {
+                    "EffectName": "MessageBox",
+                    "Params": [
+                      {
+                        "ParamName": "Title",
+                        "Value": "Floor5BossDefeatedHeader"
+                      },
+                      {
+                        "ParamName": "Text",
+                        "Value": "Floor5BossDefeatedText"
+                      },
+                      {
+                        "ParamName": "Color",
+                        "Value": "0,255,0,255"
+                      }
+                    ]
+                  }
+                }
               }
             }
           }

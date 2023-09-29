@@ -100,6 +100,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void NewMap()
         {
+            var flagList = new List<Flag>();
             if (CurrentFloorLevel > 1)
             {
                 Messages.Clear();
@@ -112,8 +113,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     PlayerCharacter.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(status.Name));
                 }
                 PlayerCharacter.AlteredStatuses.RemoveAll(als => als.CleanseOnFloorChange);
+                flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
-            CurrentFloor = new Map(this, CurrentFloorLevel);
+            CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
             CurrentFloor.Generate();
         }
 

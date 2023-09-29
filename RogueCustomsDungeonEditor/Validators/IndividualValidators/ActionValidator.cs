@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -204,11 +205,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                     try
                     {
-                        if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target))
+                        if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target, sampleDungeon.CurrentFloor, out bool flagsAreInvolved))
                         {
                             errorOnActionChain = true;
                             messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has parameters that haven't been parsed.");
                         }
+                        if(flagsAreInvolved)
+                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
                     }
                     catch (Exception ex)
                     {
