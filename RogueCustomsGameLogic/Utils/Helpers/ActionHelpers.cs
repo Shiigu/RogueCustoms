@@ -235,6 +235,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 }
             }
 
+            parsedArg = ParseRngExpressions(parsedArg);
+
             parsedArg = ParseStatusCheck(parsedArg, e, eName);
 
             return parsedArg;
@@ -286,6 +288,29 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         }
                         parsedArg = parsedArg.Replace(match.Value.Trim(), parsedSubExpression.Trim(), StringComparison.InvariantCultureIgnoreCase);
                     }
+                }
+            }
+
+            return parsedArg;
+        }
+
+        private static string ParseRngExpressions(string arg)
+        {
+            var rngRegex = @"rng\((\d+),\s*(\d+)\)";
+            var parsedArg = arg;
+            var matches = Regex.Matches(arg, rngRegex);
+
+            foreach (Match match in matches)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int x) && int.TryParse(match.Groups[2].Value, out int y))
+                {
+                    if (x > y)
+                    {
+                        throw new ArgumentException($"Invalid rng({x},{y}) expression: first parameter cannot be greater than the second.");
+                    }
+
+                    int randomValue = Map.Rng.Next(x, y + 1);
+                    parsedArg = parsedArg.Replace(match.Value, randomValue.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 }
             }
 
