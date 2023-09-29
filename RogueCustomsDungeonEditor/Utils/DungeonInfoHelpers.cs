@@ -28,7 +28,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
             foreach (var localeLanguage in baseLocaleLanguages)
             {
-                var newLocale = localeTemplate.Clone();
+                var newLocale = localeTemplate.Clone(localeTemplate.LocaleStrings.ConvertAll(ls => ls.Key));
                 newLocale.Language = localeLanguage;
 
                 templateDungeon.Locales.Add(newLocale);
@@ -58,14 +58,26 @@ namespace RogueCustomsDungeonEditor.Utils
             return templateDungeon;
         }
 
-        public static LocaleInfo Clone(this LocaleInfo localeInfo)
+        public static LocaleInfo Clone(this LocaleInfo localeInfo, List<string> mandatoryLocaleKeys)
         {
             var newLocale = new LocaleInfo
             {
                 Language = localeInfo.Language,
                 LocaleStrings = new()
             };
-            foreach (var localeEntry in localeInfo.LocaleStrings)
+            foreach (var mandatoryKey in mandatoryLocaleKeys)
+            {
+                var localeEntry = localeInfo.LocaleStrings.Find(ls => mandatoryKey.Equals(ls.Key));
+                if(localeEntry != null)
+                {
+                    newLocale.LocaleStrings.Add(new LocaleInfoString
+                    {
+                        Key = localeEntry.Key,
+                        Value = localeEntry.Value
+                    });
+                }
+            }
+            foreach (var localeEntry in localeInfo.LocaleStrings.Where(ls => !mandatoryLocaleKeys.Contains(ls.Key)))
             {
                 newLocale.LocaleStrings.Add(new LocaleInfoString
                 {

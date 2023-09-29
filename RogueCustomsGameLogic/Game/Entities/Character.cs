@@ -209,7 +209,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             CanGainExperience = entityClass.CanGainExperience;
             Level = level;
             MaxLevel = entityClass.MaxLevel;
-            if (Level > 1)
+            if (Level > 1 && CanGainExperience)
             {
                 Level = level - 1;
                 Experience = ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
@@ -314,7 +314,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
             RefreshCooldownsAndUpdateTurnLength();
-            OnTurnStartActions.Where(otsa => otsa.CanBeUsed).ForEach(otsa => otsa.Do(otsa.User, this));
+            OnTurnStartActions.Where(otsa => otsa.MayBeUsed).ForEach(otsa => otsa.Do(otsa.User, this));
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
@@ -385,7 +385,14 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             parsedArg = parsedArg.Replace("level", Level.ToString());
 
-            return new Expression(parsedArg).Eval<int>();
+            try
+            {
+                return new Expression(parsedArg).Eval<int>();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Attempting to parse formula \"{arg}\" for {Name} failed: {ex.Message}");
+            }
         }
 
         public abstract void DropItem(Item item);

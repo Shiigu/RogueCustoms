@@ -46,7 +46,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (Rng.NextInclusive(1, 100) <= AIOddsToUseActionsOnSelf)
                 {
                     var hasUsableAttacksOnSelf = OnAttackActions.Any(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
-                    var hasUsableItemsOnSelf = Inventory?.Any(i => i.EntityType == EntityType.Consumable && i.OnItemUseActions.Any(oiua => oiua != LastUsedActionOnSelf && oiua.CanBeUsed)) == true;
+                    var hasUsableItemsOnSelf = Inventory?.Any(i => i.EntityType == EntityType.Consumable && i.OnItemUseActions.Any(oiua => oiua != LastUsedActionOnSelf && oiua.MayBeUsed)) == true;
                     if(hasUsableAttacksOnSelf || hasUsableItemsOnSelf)
                     {
                         CurrentTarget = this;
@@ -64,8 +64,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else
             {
-                var minimumMaximumRange = OnAttackActions.Where(oaa => oaa.CanBeUsed).Min(oaa => oaa.MaximumRange);
-                var attackActionsWithMinimumMaximumRange = OnAttackActions.Where(oaa => oaa.CanBeUsed && oaa.MaximumRange == minimumMaximumRange);
+                var minimumMaximumRange = OnAttackActions.Where(oaa => oaa.MayBeUsed).Min(oaa => oaa.MaximumRange);
+                var attackActionsWithMinimumMaximumRange = OnAttackActions.Where(oaa => oaa.MayBeUsed && oaa.MaximumRange == minimumMaximumRange);
                 var closestTargets = GetClosestTargets(attackActionsWithMinimumMaximumRange.TakeRandomElement(Rng));
 
                 if (!closestTargets.Any()) return;
@@ -134,7 +134,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 foreach (var item in Inventory.Where(i => i.EntityType == EntityType.Consumable))
                 {
-                    foreach (var action in item.OnItemUseActions.Where(oiua => oiua != LastUsedActionOnSelf && oiua.CanBeUsed))
+                    foreach (var action in item.OnItemUseActions.Where(oiua => oiua != LastUsedActionOnSelf && oiua.MayBeUsed))
                     {
                         possibleActionsOnSelf.Add((action, item));
                     }
@@ -203,7 +203,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             foreach (var action in OnAttackActions)
             {
-                if (action.CanBeUsed)
+                if (action.MayBeUsed)
                 {
                     var possibleTargets = KnownCharacters.Where(kc => kc.TargetType != TargetType.Self && action.TargetTypes.Contains(kc.TargetType))
                         .Select(kc => (kc.Character, Distance: (int)Point.Distance(kc.Character.Position, Position)));

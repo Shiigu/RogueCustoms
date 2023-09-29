@@ -270,6 +270,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         {
             try
             {
+                if(this != (Parent as RootScreen).ActiveContainer)
+                    return (Parent as RootScreen).ActiveContainer.ProcessKeyboard(keyboard);
                 if (LatestDungeonStatus == null) return true;
                 if (ControlMode == ControlMode.NormalMove || ControlMode == ControlMode.OnStairs || ControlMode == ControlMode.Immobilized || ControlMode == ControlMode.CannotAct)
                     return ProcessMoveModeKeyboard(keyboard);

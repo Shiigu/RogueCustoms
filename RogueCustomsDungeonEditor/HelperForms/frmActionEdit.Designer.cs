@@ -57,6 +57,9 @@
             fklblActionDescriptionLocale = new Button();
             txtActionDescription = new TextBox();
             label6 = new Label();
+            fklblConditionWarning = new Button();
+            txtActionCondition = new TextBox();
+            label7 = new Label();
             gbSelectionCriteria.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).BeginInit();
@@ -88,7 +91,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(292, 538);
+            btnCancel.Location = new Point(292, 618);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -113,9 +116,9 @@
             gbSelectionCriteria.Controls.Add(chkEnemies);
             gbSelectionCriteria.Controls.Add(chkAllies);
             gbSelectionCriteria.Controls.Add(label1);
-            gbSelectionCriteria.Location = new Point(3, 286);
+            gbSelectionCriteria.Location = new Point(3, 370);
             gbSelectionCriteria.Name = "gbSelectionCriteria";
-            gbSelectionCriteria.Size = new Size(467, 217);
+            gbSelectionCriteria.Size = new Size(467, 213);
             gbSelectionCriteria.TabIndex = 3;
             gbSelectionCriteria.TabStop = false;
             gbSelectionCriteria.Text = "Usage Criteria";
@@ -123,7 +126,7 @@
             // lblNoCooldown
             // 
             lblNoCooldown.AutoSize = true;
-            lblNoCooldown.Location = new Point(353, 119);
+            lblNoCooldown.Location = new Point(352, 119);
             lblNoCooldown.Name = "lblNoCooldown";
             lblNoCooldown.Size = new Size(108, 15);
             lblNoCooldown.TabIndex = 14;
@@ -134,7 +137,7 @@
             // lblInfiniteUse
             // 
             lblInfiniteUse.AutoSize = true;
-            lblInfiniteUse.Location = new Point(361, 185);
+            lblInfiniteUse.Location = new Point(360, 185);
             lblInfiniteUse.Name = "lblInfiniteUse";
             lblInfiniteUse.Size = new Size(100, 15);
             lblInfiniteUse.TabIndex = 13;
@@ -144,7 +147,7 @@
             // 
             // nudMaximumUses
             // 
-            nudMaximumUses.Location = new Point(110, 183);
+            nudMaximumUses.Location = new Point(109, 183);
             nudMaximumUses.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudMaximumUses.Name = "nudMaximumUses";
             nudMaximumUses.Size = new Size(41, 23);
@@ -154,7 +157,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(6, 186);
+            label5.Location = new Point(5, 186);
             label5.Name = "label5";
             label5.Size = new Size(186, 15);
             label5.TabIndex = 11;
@@ -162,7 +165,7 @@
             // 
             // nudInitialCooldown
             // 
-            nudInitialCooldown.Location = new Point(105, 152);
+            nudInitialCooldown.Location = new Point(104, 152);
             nudInitialCooldown.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudInitialCooldown.Name = "nudInitialCooldown";
             nudInitialCooldown.Size = new Size(41, 23);
@@ -171,7 +174,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(6, 155);
+            label4.Location = new Point(5, 155);
             label4.Name = "label4";
             label4.Size = new Size(326, 15);
             label4.TabIndex = 9;
@@ -179,7 +182,7 @@
             // 
             // nudCooldown
             // 
-            nudCooldown.Location = new Point(105, 117);
+            nudCooldown.Location = new Point(104, 117);
             nudCooldown.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudCooldown.Name = "nudCooldown";
             nudCooldown.Size = new Size(41, 23);
@@ -189,7 +192,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(6, 120);
+            label3.Location = new Point(5, 120);
             label3.Name = "label3";
             label3.Size = new Size(277, 15);
             label3.TabIndex = 7;
@@ -197,7 +200,7 @@
             // 
             // nudMaxRange
             // 
-            nudMaxRange.Location = new Point(192, 81);
+            nudMaxRange.Location = new Point(191, 81);
             nudMaxRange.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudMaxRange.Name = "nudMaxRange";
             nudMaxRange.Size = new Size(41, 23);
@@ -205,7 +208,7 @@
             // 
             // nudMinRange
             // 
-            nudMinRange.Location = new Point(129, 81);
+            nudMinRange.Location = new Point(128, 81);
             nudMinRange.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudMinRange.Name = "nudMinRange";
             nudMinRange.Size = new Size(41, 23);
@@ -214,7 +217,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(6, 83);
+            label2.Location = new Point(5, 83);
             label2.Name = "label2";
             label2.Size = new Size(386, 15);
             label2.TabIndex = 4;
@@ -223,7 +226,7 @@
             // chkSelf
             // 
             chkSelf.AutoSize = true;
-            chkSelf.Location = new Point(416, 53);
+            chkSelf.Location = new Point(415, 53);
             chkSelf.Name = "chkSelf";
             chkSelf.Size = new Size(45, 19);
             chkSelf.TabIndex = 3;
@@ -233,7 +236,7 @@
             // chkEnemies
             // 
             chkEnemies.AutoSize = true;
-            chkEnemies.Location = new Point(192, 53);
+            chkEnemies.Location = new Point(191, 53);
             chkEnemies.Name = "chkEnemies";
             chkEnemies.Size = new Size(70, 19);
             chkEnemies.TabIndex = 2;
@@ -243,7 +246,7 @@
             // chkAllies
             // 
             chkAllies.AutoSize = true;
-            chkAllies.Location = new Point(6, 53);
+            chkAllies.Location = new Point(5, 53);
             chkAllies.Name = "chkAllies";
             chkAllies.Size = new Size(54, 19);
             chkAllies.TabIndex = 1;
@@ -253,7 +256,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(6, 26);
+            label1.Location = new Point(5, 26);
             label1.Name = "label1";
             label1.Size = new Size(98, 15);
             label1.TabIndex = 0;
@@ -261,7 +264,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(132, 538);
+            btnSave.Location = new Point(132, 618);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -272,7 +275,7 @@
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(4, 509);
+            btnEdit.Location = new Point(4, 589);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -283,7 +286,7 @@
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(123, 509);
+            btnNewThen.Location = new Point(123, 589);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -294,7 +297,7 @@
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(206, 509);
+            btnNewOnSuccessFailure.Location = new Point(206, 589);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -305,7 +308,7 @@
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(377, 509);
+            btnRemove.Location = new Point(377, 589);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(91, 23);
             btnRemove.TabIndex = 8;
@@ -315,7 +318,7 @@
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(211, 538);
+            btnSaveAs.Location = new Point(211, 618);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -357,11 +360,50 @@
             label6.TabIndex = 13;
             label6.Text = "Description";
             // 
+            // fklblConditionWarning
+            // 
+            fklblConditionWarning.Enabled = false;
+            fklblConditionWarning.FlatAppearance.BorderSize = 0;
+            fklblConditionWarning.FlatStyle = FlatStyle.Flat;
+            fklblConditionWarning.Image = (Image)resources.GetObject("fklblConditionWarning.Image");
+            fklblConditionWarning.ImageAlign = ContentAlignment.TopLeft;
+            fklblConditionWarning.Location = new Point(3, 329);
+            fklblConditionWarning.Name = "fklblConditionWarning";
+            fklblConditionWarning.Size = new Size(464, 42);
+            fklblConditionWarning.TabIndex = 24;
+            fklblConditionWarning.Text = "This is a valid condition, but the Editor currently can't support validating whether it will truly work as intended or not. Remember to test it in-game.";
+            fklblConditionWarning.TextAlign = ContentAlignment.MiddleLeft;
+            fklblConditionWarning.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblConditionWarning.UseVisualStyleBackColor = true;
+            fklblConditionWarning.Visible = false;
+            // 
+            // txtActionCondition
+            // 
+            txtActionCondition.Location = new Point(3, 300);
+            txtActionCondition.Name = "txtActionCondition";
+            txtActionCondition.Size = new Size(464, 23);
+            txtActionCondition.TabIndex = 23;
+            txtActionCondition.Enter += txtActionCondition_Enter;
+            txtActionCondition.Leave += txtActionCondition_Leave;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(3, 282);
+            label7.Name = "label7";
+            label7.Size = new Size(238, 15);
+            label7.TabIndex = 22;
+            label7.Text = "To be used, it must fulfill this condition first:";
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(479, 571);
+            ClientSize = new Size(479, 655);
+            Controls.Add(fklblConditionWarning);
+            Controls.Add(txtActionCondition);
+            Controls.Add(label7);
+            Controls.Add(gbSelectionCriteria);
             Controls.Add(fklblActionDescriptionLocale);
             Controls.Add(txtActionDescription);
             Controls.Add(label6);
@@ -371,7 +413,6 @@
             Controls.Add(btnNewThen);
             Controls.Add(btnEdit);
             Controls.Add(btnSave);
-            Controls.Add(gbSelectionCriteria);
             Controls.Add(btnCancel);
             Controls.Add(tvEffectSequence);
             Controls.Add(lblTitle);
@@ -421,5 +462,8 @@
         private Button fklblActionDescriptionLocale;
         private TextBox txtActionDescription;
         private Label label6;
+        private Button fklblConditionWarning;
+        private TextBox txtActionCondition;
+        private Label label7;
     }
 }

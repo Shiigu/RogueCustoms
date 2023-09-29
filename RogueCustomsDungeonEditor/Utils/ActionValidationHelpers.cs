@@ -24,7 +24,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             try
             {
-                var parsedExpression = ConvertArgsToPlaceholders(expression, "1");
+                var parsedExpression = ConvertArgsToPlaceholders(expression, "1", "\"name\"", "true");
                 if (checkDiceNotationAsWell && parsedExpression.IsDiceNotation())
                     _ = new Dice().Roll(parsedExpression, new RandomDieRoller()).Value;
                 else
@@ -43,7 +43,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             try
             {
-                var parsedExpression = ConvertArgsToPlaceholders(expression, "1");
+                var parsedExpression = ConvertArgsToPlaceholders(expression, "1", "\"name\"", "true");
                 _ = new Expression(parsedExpression).Eval<bool>();
                 errorMessage = string.Empty;
                 return true;
@@ -55,22 +55,50 @@ namespace RogueCustomsDungeonEditor.Utils
             }
         }
 
-        private static string ConvertArgsToPlaceholders(this string arg, string placeholder)
+        private static string ConvertArgsToPlaceholders(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder)
         {
             var parsedArg = arg;
 
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "player");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "this");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "source");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(placeholder, "target");
+            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
+            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
+            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
 
             return parsedArg;
         }
 
-        private static string ParseArgsForPlaceHolder(this string arg, string placeholder, string eName)
+        private static string ParseArgsForPlaceHolder(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
         {
             var parsedArg = arg;
-            parsedArg = parsedArg.Replace($"{{{eName}}}", placeholder, StringComparison.InvariantCultureIgnoreCase);
+
+            var regex = new Regex(@"HasStatus\(([^,]+),\s*([^)]+)\)|DoesNotHaveStatus\(([^,]+),\s*([^)]+)\)", RegexOptions.IgnoreCase);
+            if (regex.IsMatch(parsedArg))
+            {
+                var logicalOperators = new string[] { "&&", "||" };
+                var subExpressions = parsedArg.Split(logicalOperators, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var subExpression in subExpressions)
+                {
+                    var parsedSubExpression = new string(subExpression.Trim());
+                    var match = regex.Match(subExpression);
+
+                    if (match.Success)
+                    {
+                        if (match.Groups.Count < 5) continue;
+
+                        var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
+
+                        var entityName = (isNot) ? match.Groups[3].Value : match.Groups[1].Value;
+
+                        if (!entityName.Equals(eName)) continue;
+
+                        parsedArg = parsedArg.Replace(match.Value.Trim(), booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                    }
+                }
+            }
+            
+            parsedArg = parsedArg.Replace($"{{{eName}}}", stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+
+
             var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(AlteredStatus) };
 
             foreach (var entityType in entityTypes)
@@ -82,7 +110,11 @@ namespace RogueCustomsDungeonEditor.Utils
 
                     if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        parsedArg = parsedArg.Replace(fieldToken, placeholder, StringComparison.InvariantCultureIgnoreCase);
+                        if(propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
+                            || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
+                            parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                        else
+                            parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
             }

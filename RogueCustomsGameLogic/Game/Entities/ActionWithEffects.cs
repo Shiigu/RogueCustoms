@@ -8,6 +8,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using org.matheval;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -31,7 +32,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int CurrentUses { get; set; }
         public List<TargetType> TargetTypes { get; set; }
 
-        public bool CanBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
+        public string UseCondition { get; set; }
+
+        public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
         #endregion
 
         public Effect Effect { get; set; }                       // What is going to be executed when the action is called
@@ -53,6 +56,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             CurrentCooldown = info.StartingCooldown;
             MaximumUses = info.MaximumUses;
             CurrentUses = 0;
+            UseCondition = info.UseCondition;
             TargetTypes = new List<TargetType>();
             info.TargetTypes?.ForEach(tt => TargetTypes.Add(Enum.Parse<TargetType>(tt, true)));
             Effect = new Effect(info.Effect);
@@ -73,14 +77,33 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (target == null && !TargetTypes.Any(tt => tt == TargetType.Room || tt == TargetType.Floor)) return false;
 
-            var character = User is Character ? User as Character : User is Item i ? i.Owner : null;
+            Character character = null;
+
+            if (User is Character c)
+            {
+                character = c;
+            }
+            else if (User is Item i)
+            {
+                if (i.Owner != null)
+                    character = i.Owner;
+                else if (i.Position != null && i.ContainingTile.Character != null)
+                    character = i.ContainingTile.Character;
+            }
 
             if (character == null) return false;
-            if (!CanBeUsed) return false;
+            if (!MayBeUsed) return false;
             if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
             if (!character.CanSee(target)) return false;
-            if (!TargetTypes.Contains(character.CalculateTargetTypeFor(target))) return false;
+            if (TargetTypes.Any() && !TargetTypes.Contains(character.CalculateTargetTypeFor(target))) return false;
             if (!((int)Point.Distance(target.Position, character.Position)).Between(MinimumRange, MaximumRange)) return false;
+
+            if(!string.IsNullOrWhiteSpace(UseCondition))
+            {
+                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+
+                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+            }
 
             return character.ContainingRoom == target.ContainingRoom ||
                 (character.ContainingTile.Type == TileType.Hallway &&
@@ -144,6 +167,18 @@ namespace RogueCustomsGameEngine.Game.Entities
                     var usableTargetTypesString = string.Join('/', usableTargetTypes);
                     descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
                 }
+
+                if(!string.IsNullOrWhiteSpace(UseCondition))
+                {
+                    var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+
+                    if (!ActionHelpers.CalculateBooleanExpression(parsedCondition))
+                    {
+                        if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                            descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.AppendLine(Locale["TargetDoesNotFulfillConditions"]);
+                    }
+                }
             }
             else
             {
@@ -178,6 +213,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 MaximumUses = MaximumUses,
                 CurrentUses = 0,
                 Effect = Effect.Clone(),
+                UseCondition = UseCondition,
                 TargetTypes = new List<TargetType>(TargetTypes)
             };
         }

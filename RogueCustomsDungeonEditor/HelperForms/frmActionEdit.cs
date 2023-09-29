@@ -30,10 +30,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private bool HasOnSuccessFailureChildNodes;
         private bool RequiresDescription;
         private bool RequiresActionName;
+        private bool RequiresCondition;
         private UsageCriteria UsageCriteria;
         private string ClassId;
         private string PlaceholderActionName;
-        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
+        private string PreviousTextBoxValue;
+        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
         {
             InitializeComponent();
             ActionToSave = actionToSave.Clone();
@@ -41,7 +43,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (actionToSave == null || actionToSave.Effect == null)
             {
                 this.Text = "Action Editor - [New Action]";
-                if(!string.IsNullOrWhiteSpace(classId))
+                if (!string.IsNullOrWhiteSpace(classId))
                     lblTitle.Text = $"Create {actionTypeText} for {classId}";
                 else
                     lblTitle.Text = $"Create {actionTypeText} for Floor Group";
@@ -58,6 +60,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ClassId = classId;
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
+            RequiresCondition = requiresCondition;
 
             if (!RequiresActionName)
                 PlaceholderActionName = placeholderActionNameIfNeeded;
@@ -73,6 +76,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 txtActionDescription.Enabled = false;
                 txtActionDescription.Text = "";
+            }
+
+            if (RequiresCondition)
+            {
+                txtActionCondition.Enabled = true;
+                txtActionCondition.Text = actionToSave.UseCondition;
+                fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
+            }
+            else
+            {
+                txtActionCondition.Enabled = false;
+                txtActionCondition.Text = "";
+                fklblConditionWarning.Visible = false;
             }
 
             UsableAlteredStatusList = alteredStatusList.Where(als => !als.Equals(classId)).ToList();
@@ -472,7 +488,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     }
                     else
                     {
-                        ScrubNullEffects(ActionToSave.Effect, null);
                         if (gbSelectionCriteria.Enabled)
                         {
                             if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
@@ -491,7 +506,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.StartingCooldown = (int)nudInitialCooldown.Value;
                             ActionToSave.MaximumUses = (int)nudMaximumUses.Value;
                         }
+                        ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.Description = txtActionDescription.Text;
+                        ScrubNullEffects(ActionToSave.Effect, null);
                         this.Saved = true;
                         this.Close();
                     }
@@ -553,6 +570,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.StartingCooldown = (int)nudInitialCooldown.Value;
                             ActionToSave.MaximumUses = (int)nudMaximumUses.Value;
                         }
+                        ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.Description = txtActionDescription.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         ActionToSave.Name = nameToUse;
@@ -593,6 +611,26 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private void txtActionDescription_TextChanged(object sender, EventArgs e)
         {
             txtActionDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblActionDescriptionLocale);
+        }
+
+        private void txtActionCondition_Enter(object sender, EventArgs e)
+        {
+            PreviousTextBoxValue = txtActionCondition.Text;
+        }
+
+        private void txtActionCondition_Leave(object sender, EventArgs e)
+        {
+            if (!txtActionCondition.Text.TestBooleanExpression(out string errorMessage))
+            {
+                MessageBox.Show(
+                    $"You have entered an invalid value: {errorMessage}.",
+                    "Invalid condition",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                txtActionCondition.Text = PreviousTextBoxValue;
+            }
+            fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
         }
     }
 
