@@ -63,7 +63,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void PerformOnTurnStartActions()
         {
             if (Target == null) return;
-            OwnOnTurnStartActions?.Where(a => a.CanBeUsed).ForEach(a => a.Do(this, Target));
+            OwnOnTurnStartActions?.Where(a => a.MayBeUsed).ForEach(a => a.Do(this, Target));
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()

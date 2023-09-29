@@ -15,11 +15,10 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int CooldownBetweenUses { get; set; }
         public int MaximumUses { get; set; }
         public List<string> TargetTypes { get; set; }
+        public string UseCondition { get; set; }
         #endregion
 
-        #region Exclusive to Altered Statuses
         public int StartingCooldown { get; set; }
-        #endregion
 
         public EffectInfo Effect { get; set; }
     }

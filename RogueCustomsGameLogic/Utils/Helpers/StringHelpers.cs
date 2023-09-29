@@ -10,7 +10,14 @@ namespace RogueCustomsGameEngine.Utils.Helpers
     {
         public static bool IsDiceNotation(this string s)
         {
-            return Regex.Match(s, Constants.DiceNotationRegexPattern).Success;
+            return Regex.Match(s, Constants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
+        }
+
+        public static bool IsBooleanExpression(this string input)
+        {
+            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false|HasStatus|DoesNotHaveStatus)\b";
+
+            return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
 
         public static GameColor ToGameColor(this string s)
@@ -28,6 +35,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 A = a
             };
         }
+
         public static bool Contains(this string source, string toCheck, StringComparison comp)
         {
             return source?.IndexOf(toCheck, comp) >= 0;

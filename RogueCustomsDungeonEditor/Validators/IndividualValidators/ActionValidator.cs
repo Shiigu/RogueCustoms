@@ -24,6 +24,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var description = action.Description;
             var ownerName = owner != null ? owner.ClassId : "The Floor Type";
 
+            if(!string.IsNullOrWhiteSpace(action.UseCondition))
+            {
+                if(action.UseCondition.IsBooleanExpression() && action.UseCondition.TestBooleanExpression(out _))
+                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
+                else
+                    messages.AddError($"Action {action.Name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
+            }
+
             if (owner != null)
             {
                 messages.AddRange(dungeonJson.ValidateString(action.NameLocaleKey, $"An Action of {ownerName}", "Name", true));
@@ -230,7 +238,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                         try
                         {
-                            target.HP = target.MaxHP - 1; // Slightly damaged so that heals may work
+                            target.HP = target.MaxHP;
                             var defenseTestModification = target.DefenseModifications.Find(dm => dm.Id == "defenseTest");
                             if (defenseTestModification == null)
                             {
@@ -263,10 +271,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 if (defenseTestModification != null)
                                     defenseTestModification.Amount++;
                                 if (target.HP <= 0)
-                                    target.HP = target.MaxHP - 1;
+                                    target.HP = target.MaxHP;
                                 else
-                                    target.HP--;
-                                if(target.TotalMaxHPIncrements > 1000000)
+                                    target.HP--;  // Slightly damage it so that heals may work
+                                if (target.TotalMaxHPIncrements > 1000000)
                                 {
                                     if(!excessiveTargetHPWarning)
                                         messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");

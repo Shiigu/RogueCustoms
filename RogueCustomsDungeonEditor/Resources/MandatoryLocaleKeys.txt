@@ -25,6 +25,7 @@ TargetTypeSelf
 TargetTypeAlly
 TargetTypeNeutral
 TargetTypeEnemy
+TargetDoesNotFulfillConditions
 RequiresATarget
 FromSource
 SightRangeStatFullMap

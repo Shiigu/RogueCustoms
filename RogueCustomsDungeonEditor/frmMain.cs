@@ -555,7 +555,7 @@ namespace RogueCustomsDungeonEditor
             switch (tabToOpen)
             {
                 case TabTypes.Locales:
-                    ActiveNodeTag.DungeonElement = LocaleTemplate.Clone();
+                    ActiveNodeTag.DungeonElement = LocaleTemplate.Clone(MandatoryLocaleKeys);
                     break;
                 case TabTypes.FloorInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFloorGroupTemplate();
@@ -589,6 +589,7 @@ namespace RogueCustomsDungeonEditor
 
         private void tsbSaveElement_Click(object sender, EventArgs e)
         {
+            ActiveControl = null;
             SaveElement();
         }
 
@@ -637,6 +638,7 @@ namespace RogueCustomsDungeonEditor
 
         private void tsbSaveElementAs_Click(object sender, EventArgs e)
         {
+            ActiveControl = null;
             SaveElementAs();
         }
 
@@ -856,13 +858,13 @@ namespace RogueCustomsDungeonEditor
 
         #region Shared between tabs
 
-        private void OpenActionEditScreenForListBox(ListBox actionListBox, string actionTypeText, bool isNewAction, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
+        private void OpenActionEditScreenForListBox(ListBox actionListBox, string actionTypeText, bool isNewAction, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
         {
             var action = (isNewAction)
                             ? new ActionWithEffectsInfo()
                             : (actionListBox.SelectedItem as ListBoxItem).Tag as ActionWithEffectsInfo;
             var classId = ((ClassInfo)ActiveNodeTag.DungeonElement).Id;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
+            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresCondition, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {
@@ -885,10 +887,10 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void OpenActionEditScreenForButton(Button actionButton, string actionTypeText, string classId, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
+        private void OpenActionEditScreenForButton(Button actionButton, string actionTypeText, string classId, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
         {
             var action = actionButton.Tag as ActionWithEffectsInfo;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
+            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresCondition, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {
@@ -978,11 +980,38 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadLocaleInfoFor(LocaleInfo localeInfo)
         {
-            dgvLocales.Tag = localeInfo.Clone();
+            var localeClone = localeInfo.Clone(MandatoryLocaleKeys);
+            AddMissingMandatoryLocalesIfNeeded(localeClone);
+            dgvLocales.Tag = localeClone;
             dgvLocales.Rows.Clear();
-            foreach (var entry in localeInfo.LocaleStrings)
+            foreach (var entry in localeClone.LocaleStrings)
             {
                 dgvLocales.Rows.Add(entry.Key, entry.Value);
+            }
+        }
+
+        private void AddMissingMandatoryLocalesIfNeeded(LocaleInfo localeInfo)
+        {
+            var localeKeys = localeInfo.LocaleStrings.Select(x => x.Key).ToList();
+            var missingMandatoryKeys = MandatoryLocaleKeys.Except(localeKeys);
+            foreach (var missingKey in missingMandatoryKeys)
+            {
+                var templateLocaleEntry = LocaleTemplate.LocaleStrings.Find(ls => ls.Key.Equals(missingKey));
+                localeInfo.LocaleStrings.Add(new LocaleInfoString
+                {
+                    Key = templateLocaleEntry.Key,
+                    Value = templateLocaleEntry.Value
+                });
+            }
+            if(missingMandatoryKeys.Any())
+            {
+                DirtyTab = true;
+                MessageBox.Show(
+                    "This Locale is missing some mandatory keys.\n\nThey have been added at the end of the table. Please check them.",
+                    "Locale",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
         }
 
@@ -1147,7 +1176,7 @@ namespace RogueCustomsDungeonEditor
             if (messageBoxResult == DialogResult.Yes)
             {
                 var preExistingLocaleIndex = ActiveDungeon.Locales.FindIndex(l => l.Language.Equals(locale.Language));
-                ActiveDungeon.Locales[preExistingLocaleIndex] = ((LocaleInfo)dgvLocales.Tag).Clone();
+                ActiveDungeon.Locales[preExistingLocaleIndex] = ((LocaleInfo)dgvLocales.Tag).Clone(MandatoryLocaleKeys);
                 MessageBox.Show(
                     $"Locale {locale.Language} has been successfully updated!",
                     "Update Locale",
@@ -1191,7 +1220,7 @@ namespace RogueCustomsDungeonEditor
                 var preExistingLocale = ActiveDungeon.Locales.Find(l => l.Language.Equals(inputBoxResult));
                 if (preExistingLocale == null)
                 {
-                    var newLocale = ((LocaleInfo)dgvLocales.Tag).Clone();
+                    var newLocale = ((LocaleInfo)dgvLocales.Tag).Clone(MandatoryLocaleKeys);
                     newLocale.Language = inputBoxResult;
                     ActiveDungeon.Locales.Add(newLocale);
                     MessageBox.Show(
@@ -1619,7 +1648,7 @@ namespace RogueCustomsDungeonEditor
         private void btnOnFloorStartAction_Click(object sender, EventArgs e)
         {
             var floorGroup = ((FloorInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnOnFloorStartAction, "Turn Start", string.Empty, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnOnFloorStartAction, "Turn Start", string.Empty, false, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAddAlgorithm_Click(object sender, EventArgs e)
@@ -2132,20 +2161,19 @@ namespace RogueCustomsDungeonEditor
             }
             chkPlayerCanGainExperience.Checked = playerClass.CanGainExperience;
             nudPlayerMaxLevel.Value = playerClass.MaxLevel;
-            nudPlayerHPPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerAttackPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            if (playerClass.CanGainExperience && playerClass.MaxLevel > 1)
+            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            if (playerClass.CanGainExperience || playerClass.MaxLevel > 1)
             {
                 txtPlayerLevelUpFormula.Text = playerClass.ExperienceToLevelUpFormula;
-                txtPlayerLevelUpFormula.Enabled = true;
             }
             else
             {
                 txtPlayerLevelUpFormula.Text = "";
-                txtPlayerLevelUpFormula.Enabled = false;
             }
             cmbPlayerStartingWeapon.Items.Clear();
             cmbPlayerStartingWeapon.Text = "";
@@ -2237,26 +2265,13 @@ namespace RogueCustomsDungeonEditor
             }
 
             playerClass.CanGainExperience = chkPlayerCanGainExperience.Checked;
-            if (playerClass.CanGainExperience)
-            {
-                playerClass.MaxLevel = (int)nudPlayerMaxLevel.Value;
-                playerClass.ExperienceToLevelUpFormula = txtPlayerLevelUpFormula.Text;
-                playerClass.MaxHPIncreasePerLevel = nudPlayerHPPerLevelUp.Value;
-                playerClass.AttackIncreasePerLevel = nudPlayerAttackPerLevelUp.Value;
-                playerClass.DefenseIncreasePerLevel = nudPlayerDefensePerLevelUp.Value;
-                playerClass.MovementIncreasePerLevel = nudPlayerMovementPerLevelUp.Value;
-                playerClass.HPRegenerationIncreasePerLevel = nudPlayerHPRegenerationPerLevelUp.Value;
-            }
-            else
-            {
-                playerClass.MaxLevel = 1;
-                playerClass.ExperienceToLevelUpFormula = "";
-                playerClass.MaxHPIncreasePerLevel = 0;
-                playerClass.AttackIncreasePerLevel = 0;
-                playerClass.DefenseIncreasePerLevel = 0;
-                playerClass.MovementIncreasePerLevel = 0;
-                playerClass.HPRegenerationIncreasePerLevel = 0;
-            }
+            playerClass.MaxLevel = (int)nudPlayerMaxLevel.Value;
+            playerClass.ExperienceToLevelUpFormula = txtPlayerLevelUpFormula.Text;
+            playerClass.MaxHPIncreasePerLevel = nudPlayerHPPerLevelUp.Value;
+            playerClass.AttackIncreasePerLevel = nudPlayerAttackPerLevelUp.Value;
+            playerClass.DefenseIncreasePerLevel = nudPlayerDefensePerLevelUp.Value;
+            playerClass.MovementIncreasePerLevel = nudPlayerMovementPerLevelUp.Value;
+            playerClass.HPRegenerationIncreasePerLevel = nudPlayerHPRegenerationPerLevelUp.Value;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
@@ -2575,13 +2590,12 @@ namespace RogueCustomsDungeonEditor
         private void chkPlayerCanGainExperience_CheckedChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            nudPlayerMaxLevel.Enabled = chkPlayerCanGainExperience.Checked;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked && nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked;
+            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
         }
 
         private void txtPlayerLevelUpFormula_Enter(object sender, EventArgs e)
@@ -2592,21 +2606,25 @@ namespace RogueCustomsDungeonEditor
         private void txtPlayerLevelUpFormula_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.PlayerClass])) return;
-            var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
+            if (!PreviousTextBoxValue.Equals(txtPlayerLevelUpFormula.Text))
             {
-                MessageBox.Show(
-                    $"You have entered an invalid Experience Formula: {errorMessage}",
-                    "Invalid Formula",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                txtPlayerLevelUpFormula.Text = PreviousTextBoxValue;
-            }
-            else
-            {
-                DirtyTab = true;
+                var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
+
+                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid Experience Formula: {errorMessage}",
+                        "Invalid Formula",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    txtPlayerLevelUpFormula.Text = PreviousTextBoxValue;
+                }
+                else
+                {
+                    DirtyTab = true;
+                }
             }
 
             PreviousTextBoxValue = "";
@@ -2615,12 +2633,12 @@ namespace RogueCustomsDungeonEditor
         private void nudPlayerMaxLevel_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked && nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerAttackPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = nudPlayerMaxLevel.Value > 1;
+            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
         }
 
         private void nudPlayerHPPerLevelUp_ValueChanged(object sender, EventArgs e)
@@ -2651,7 +2669,7 @@ namespace RogueCustomsDungeonEditor
         private void btnPlayerOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, "Turn Start", playerClass.Id, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, "Turn Start", playerClass.Id, false, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbPlayerOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -2662,13 +2680,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddPlayerOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", true, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", true, true, true, true, string.Empty, UsageCriteria.FullConditions);
 
         }
 
         private void btnEditPlayerOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", false, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", false, true, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemovePlayerOnAttackAction_Click(object sender, EventArgs e)
@@ -2690,13 +2708,13 @@ namespace RogueCustomsDungeonEditor
         private void btnPlayerOnAttackedAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnAttackedAction, "Interacted", playerClass.Id, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnAttackedAction, "Interacted", playerClass.Id, false, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnPlayerOnDeathAction_Click(object sender, EventArgs e)
         {
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
         }
 
         #endregion
@@ -2738,12 +2756,12 @@ namespace RogueCustomsDungeonEditor
             nudNPCMovementPerLevelUp.Value = npc.MovementIncreasePerLevel;
             nudNPCBaseHPRegeneration.Value = npc.BaseHPRegeneration;
             nudNPCHPRegenerationPerLevelUp.Value = npc.HPRegenerationIncreasePerLevel;
-            nudNPCMaxLevel.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
+            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             cmbNPCSightRange.Items.Clear();
             cmbNPCSightRange.Text = "";
             foreach (var sightRange in BaseSightRangeDisplayNames)
@@ -2776,15 +2794,13 @@ namespace RogueCustomsDungeonEditor
             }
             chkNPCCanGainExperience.Checked = npc.CanGainExperience;
             nudNPCMaxLevel.Value = npc.MaxLevel;
-            if (npc.CanGainExperience && npc.MaxLevel > 1)
+            if (npc.CanGainExperience || npc.MaxLevel > 1)
             {
                 txtNPCLevelUpFormula.Text = npc.ExperienceToLevelUpFormula;
-                txtNPCLevelUpFormula.Enabled = true;
             }
             else
             {
                 txtNPCLevelUpFormula.Text = "";
-                txtNPCLevelUpFormula.Enabled = false;
             }
             cmbNPCStartingWeapon.Items.Clear();
             cmbNPCStartingWeapon.Text = "";
@@ -2861,6 +2877,7 @@ namespace RogueCustomsDungeonEditor
             npc.Faction = cmbNPCFaction.Text;
             npc.StartsVisible = chkNPCStartsVisible.Checked;
             npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
+            npc.ExperienceToLevelUpFormula = txtNPCLevelUpFormula.Text;
             npc.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
             npc.BaseHP = (int)nudNPCBaseHP.Value;
             npc.BaseAttack = (int)nudNPCBaseAttack.Value;
@@ -2878,26 +2895,11 @@ namespace RogueCustomsDungeonEditor
             }
 
             npc.CanGainExperience = chkNPCCanGainExperience.Checked;
-            if (npc.CanGainExperience)
-            {
-                npc.MaxLevel = (int)nudNPCMaxLevel.Value;
-                npc.ExperienceToLevelUpFormula = txtNPCLevelUpFormula.Text;
-                npc.MaxHPIncreasePerLevel = nudNPCHPPerLevelUp.Value;
-                npc.AttackIncreasePerLevel = nudNPCAttackPerLevelUp.Value;
-                npc.DefenseIncreasePerLevel = nudNPCDefensePerLevelUp.Value;
-                npc.MovementIncreasePerLevel = nudNPCMovementPerLevelUp.Value;
-                npc.HPRegenerationIncreasePerLevel = nudNPCHPRegenerationPerLevelUp.Value;
-            }
-            else
-            {
-                npc.MaxLevel = 1;
-                npc.ExperienceToLevelUpFormula = "";
-                npc.MaxHPIncreasePerLevel = 0;
-                npc.AttackIncreasePerLevel = 0;
-                npc.DefenseIncreasePerLevel = 0;
-                npc.MovementIncreasePerLevel = 0;
-                npc.HPRegenerationIncreasePerLevel = 0;
-            }
+            npc.MaxHPIncreasePerLevel = nudNPCHPPerLevelUp.Value;
+            npc.AttackIncreasePerLevel = nudNPCAttackPerLevelUp.Value;
+            npc.DefenseIncreasePerLevel = nudNPCDefensePerLevelUp.Value;
+            npc.MovementIncreasePerLevel = nudNPCMovementPerLevelUp.Value;
+            npc.HPRegenerationIncreasePerLevel = nudNPCHPRegenerationPerLevelUp.Value;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
@@ -3018,6 +3020,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC can gain experience, but does not have a Level Up Formula.");
             if (chkNPCCanGainExperience.Checked && (int)nudNPCMaxLevel.Value == 1)
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
+            if ((int)nudNPCMaxLevel.Value > 1 && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
+                errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
 
             return !errorMessages.Any();
         }
@@ -3067,21 +3071,25 @@ namespace RogueCustomsDungeonEditor
         private void txtNPCExperiencePayout_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
-            var parsedPayoutFormula = Regex.Replace(txtNPCExperiencePayout.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestNumericExpression(false, out string errorMessage))
+            if (!PreviousTextBoxValue.Equals(txtNPCExperiencePayout.Text))
             {
-                MessageBox.Show(
-                    $"You have entered an invalid Experience Formula: {errorMessage}",
-                    "Invalid Formula",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                txtNPCExperiencePayout.Text = PreviousTextBoxValue;
-            }
-            else
-            {
-                DirtyTab = true;
+                var parsedPayoutFormula = Regex.Replace(txtNPCExperiencePayout.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
+
+                if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestNumericExpression(false, out string errorMessage))
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid Experience Formula: {errorMessage}",
+                        "Invalid Formula",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    txtNPCExperiencePayout.Text = PreviousTextBoxValue;
+                }
+                else
+                {
+                    DirtyTab = true;
+                }
             }
 
             PreviousTextBoxValue = "";
@@ -3245,13 +3253,12 @@ namespace RogueCustomsDungeonEditor
         private void chkNPCCanGainExperience_CheckedChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            nudNPCMaxLevel.Enabled = chkNPCCanGainExperience.Checked;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked && nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked;
+            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
         }
 
         private void txtNPCLevelUpFormula_Enter(object sender, EventArgs e)
@@ -3262,21 +3269,25 @@ namespace RogueCustomsDungeonEditor
         private void txtNPCLevelUpFormula_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
-            var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
+            if(!PreviousTextBoxValue.Equals(txtNPCLevelUpFormula.Text))
             {
-                MessageBox.Show(
-                    $"You have entered an invalid Experience Formula: {errorMessage}",
-                    "Invalid Formula",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                txtNPCLevelUpFormula.Text = PreviousTextBoxValue;
-            }
-            else
-            {
-                DirtyTab = true;
+                var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
+
+                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid Experience Formula: {errorMessage}",
+                        "Invalid Formula",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    txtNPCLevelUpFormula.Text = PreviousTextBoxValue;
+                }
+                else
+                {
+                    DirtyTab = true;
+                }
             }
 
             PreviousTextBoxValue = "";
@@ -3285,12 +3296,12 @@ namespace RogueCustomsDungeonEditor
         private void nudNPCMaxLevel_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked && nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1;
-            nudNPCAttackPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1;
+            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
+            nudNPCAttackPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
+            nudNPCDefensePerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
+            nudNPCMovementPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
+            nudNPCHPRegenerationPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
         }
 
         private void nudNPCHPPerLevelUp_ValueChanged(object sender, EventArgs e)
@@ -3321,7 +3332,7 @@ namespace RogueCustomsDungeonEditor
         private void btnNPCOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnTurnStartAction, "Turn Start", NPC.Id, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnTurnStartAction, "Turn Start", NPC.Id, false, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbNPCOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -3332,12 +3343,12 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddNPCOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", true, false, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", true, true, false, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnEditNPCOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", false, false, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", false, true, false, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemoveNPCOnAttackAction_Click(object sender, EventArgs e)
@@ -3359,13 +3370,13 @@ namespace RogueCustomsDungeonEditor
         private void btnNPCOnAttackedAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnAttackedAction, "Interacted", NPC.Id, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnAttackedAction, "Interacted", NPC.Id, false, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnNPCOnDeathAction_Click(object sender, EventArgs e)
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
         }
         #endregion
 
@@ -3708,19 +3719,23 @@ namespace RogueCustomsDungeonEditor
         private void txtItemPower_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Item])) return;
-            if (!string.IsNullOrWhiteSpace(txtItemPower.Text) && !txtItemPower.Text.IsDiceNotation() && !int.TryParse(txtItemPower.Text, out _))
+
+            if (!PreviousTextBoxValue.Equals(txtItemPower.Text))
             {
-                MessageBox.Show(
-                    $"Item Power must be either a flat integer or a Dice Notation expression",
-                    "Invalid Formula",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                txtItemPower.Text = PreviousTextBoxValue;
-            }
-            else
-            {
-                DirtyTab = true;
+                if (!string.IsNullOrWhiteSpace(txtItemPower.Text) && !txtItemPower.Text.IsDiceNotation() && !int.TryParse(txtItemPower.Text, out _))
+                {
+                    MessageBox.Show(
+                        $"Item Power must be either a flat integer or a Dice Notation expression",
+                        "Invalid Formula",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    txtItemPower.Text = PreviousTextBoxValue;
+                }
+                else
+                {
+                    DirtyTab = true;
+                }
             }
 
             PreviousTextBoxValue = "";
@@ -3774,13 +3789,13 @@ namespace RogueCustomsDungeonEditor
         private void btnItemOnSteppedAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnSteppedAction, "Stepped On", item.Id, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnSteppedAction, "Stepped On", item.Id, false, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnUseAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnUseAction, "Used", item.Id, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnUseAction, "Used", item.Id, true, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void lbItemOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -3791,12 +3806,12 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAddItemOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", true, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", true, true, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnEditItemOnAttackAction_Click(object sender, EventArgs e)
         {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", false, true, true, string.Empty, UsageCriteria.FullConditions);
+            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", false, true, true, true, string.Empty, UsageCriteria.FullConditions);
         }
 
         private void btnRemoveItemOnAttackAction_Click(object sender, EventArgs e)
@@ -3818,13 +3833,13 @@ namespace RogueCustomsDungeonEditor
         private void btnItemOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnTurnStartAction, "Owner Turn Start", item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnTurnStartAction, "Owner Turn Start", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnAttackedAction_Click(object sender, EventArgs e)
         {
             var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnItemOnAttackedAction, "Owner Interacted", item.Id, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnItemOnAttackedAction, "Owner Interacted", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         #endregion
 
@@ -4027,19 +4042,23 @@ namespace RogueCustomsDungeonEditor
         private void txtTrapPower_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Trap])) return;
-            if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !int.TryParse(txtTrapPower.Text, out _))
+
+            if (!PreviousTextBoxValue.Equals(txtTrapPower.Text))
             {
-                MessageBox.Show(
-                    $"Trap Power must be either a flat integer or a Dice Notation expression",
-                    "Invalid Formula",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                txtTrapPower.Text = PreviousTextBoxValue;
-            }
-            else
-            {
-                DirtyTab = true;
+                if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !int.TryParse(txtTrapPower.Text, out _))
+                {
+                    MessageBox.Show(
+                        $"Trap Power must be either a flat integer or a Dice Notation expression",
+                        "Invalid Formula",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    txtTrapPower.Text = PreviousTextBoxValue;
+                }
+                else
+                {
+                    DirtyTab = true;
+                }
             }
 
             PreviousTextBoxValue = "";
@@ -4088,7 +4107,7 @@ namespace RogueCustomsDungeonEditor
         private void btnTrapOnSteppedAction_Click(object sender, EventArgs e)
         {
             var trap = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnTrapOnSteppedAction, "Stepped On", trap.Id, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnTrapOnSteppedAction, "Stepped On", trap.Id, false, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
         #endregion
@@ -4328,13 +4347,13 @@ namespace RogueCustomsDungeonEditor
         private void btnAlteredStatusOnApplyAction_Click(object sender, EventArgs e)
         {
             var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, "Apply Status", alteredStatus.Id, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, "Apply Status", alteredStatus.Id, false, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAlteredStatusOnTurnStartAction_Click(object sender, EventArgs e)
         {
             var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
-            OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, "Inflicted Turn Start", alteredStatus.Id, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
+            OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, "Inflicted Turn Start", alteredStatus.Id, false, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
         {
