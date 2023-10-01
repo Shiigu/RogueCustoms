@@ -145,17 +145,27 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": [ "Color" ]
+        "OptionalIfFieldsHaveValue": [ "BackColor", "ForeColor" ]
       },
       {
-        "InternalName": "Color",
-        "DisplayName": "Color",
-        "Description": "The Color that will replace the current Console Representation's one.",
+        "InternalName": "BackColor",
+        "DisplayName": "Background Color",
+        "Description": "The Background Color that will replace the current Console Representation's one.",
+        "ParameterType": "Color",
+        "Default": "0,0,0,255",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [ "Character", "ForeColor" ]
+      },
+      {
+        "InternalName": "ForeColor",
+        "DisplayName": "Foreground Color",
+        "Description": "The Foreground Color that will replace the current Console Representation's one.",
         "ParameterType": "Color",
         "Default": "255,255,255,255",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": [ "Character" ]
+        "OptionalIfFieldsHaveValue": [ "Character", "BackColor" ]
       }
     ]
   },
