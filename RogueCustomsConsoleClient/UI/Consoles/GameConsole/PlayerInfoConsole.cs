@@ -115,7 +115,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 {
                     const int statusBaseColumnIndex = 2;
                     const int statusBaseRowIndex = 30;
-                    const int statusesPerRow = 9;
+                    const int statusesPerRow = 13;
                     foreach (var als in dungeonStatus.AlteredStatuses)
                     {
                         var index = dungeonStatus.AlteredStatuses.IndexOf(als);
