@@ -14,6 +14,7 @@ ReturnToMainMenuText = RETURN TO MAIN MENU
 GameTitle = Rogue Customs
 SelectFileText = START A DUNGEON
 OptionsText = OPTIONS
+GameVersionText = Game Version {GameVersion}
 
 ; OptionsConsole
 OptionsHeaderText = SELECT OPTIONS

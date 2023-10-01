@@ -11,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using SadConsole.Input;
 using static SFML.Graphics.Font;
+using MathNet.Numerics;
+using RogueCustomsConsoleClient.Utils;
+using RogueCustomsConsoleClient.Helpers;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -23,6 +26,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         private List<Button> Buttons;
         private int CurrentFocusedIndex;
         private ControlsConsole LogoConsole;
+        private string GameVersionString;
 
         public MainMenuConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
@@ -38,6 +42,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ExitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
+            GameVersionString = LocalizationManager.GetString("GameVersionText").Format(new { GameVersion = GlobalConstants.GameVersion }).ToAscii();
 
             LogoConsole = new ControlsConsole(Width, 8)
             {
@@ -101,6 +106,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         public override void Update(TimeSpan delta)
         {
             this.IsFocused = true;
+            this.Print(Width / 2 - GameVersionString.Length, Height / 2 - 1, GameVersionString);
             base.Update(delta);
         }
 
