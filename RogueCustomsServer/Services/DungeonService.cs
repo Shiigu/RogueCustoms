@@ -19,7 +19,7 @@ namespace Roguelike.Services
                 Cache.Set("DungeonManager", DungeonManager);
             }
         }
-        public List<DungeonListDto> GetPickableDungeonList(string locale)
+        public DungeonListDto GetPickableDungeonList(string locale)
         {
             return DungeonManager.GetPickableDungeonList(locale);
         }

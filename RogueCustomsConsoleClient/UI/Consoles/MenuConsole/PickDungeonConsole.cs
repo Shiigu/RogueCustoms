@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using SadConsole.Input;
 using static SFML.Graphics.Font;
+using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
+using RogueCustomsConsoleClient.UI.Windows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -81,7 +83,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         }
         public override void Update(TimeSpan delta)
         {
-            this.IsFocused = true;
+            if (ParentContainer.ActiveWindow?.IsVisible != true)
+                this.IsFocused = true;
             base.Update(delta);
         }
 
@@ -121,11 +124,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             var RepeatedNameCount = new Dictionary<string, int>();
             DungeonListBox.Items.Clear();
-            if(ParentContainer.PossibleDungeons.Any())
+            if(ParentContainer.PossibleDungeonsInfo.Dungeons.Any())
             {
                 DungeonListBox.IsVisible = true;
                 this.Clear();
-                foreach (var dungeon in ParentContainer.PossibleDungeons)
+                foreach (var dungeon in ParentContainer.PossibleDungeonsInfo.Dungeons)
                 {
                     var dungeonDisplayName = LocalizationManager.GetString("DungeonDisplayNameText").Format(new
                     {
@@ -172,13 +175,19 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             try
             {
-                var selectedItem = ParentContainer.PossibleDungeons[DungeonListBox.SelectedIndex];
+                var selectedItem = ParentContainer.PossibleDungeonsInfo.Dungeons[DungeonListBox.SelectedIndex];
 
-                BackendHandler.Instance.CreateDungeon(selectedItem.InternalName, LocalizationManager.CurrentLocale);
+                if (selectedItem.IsAtCurrentVersion)
+                {
+                    BackendHandler.Instance.CreateDungeon(selectedItem.InternalName, LocalizationManager.CurrentLocale);
+                    var message = BackendHandler.Instance.GetDungeonWelcomeMessage();
 
-                var message = BackendHandler.Instance.GetDungeonWelcomeMessage();
-
-                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Game, LocalizationManager.GetString("BriefingMessageHeader"), message);
+                    ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Game, LocalizationManager.GetString("BriefingMessageHeader"), message);
+                }
+                else
+                {
+                    ParentContainer.ActiveWindow = MessageBox.Show(new ColoredString(LocalizationManager.GetString("IncompatibleDungeonMessageBoxText").Format(new { DungeonJsonVersion = selectedItem.Version, RequiredDungeonJsonVersion = ParentContainer.PossibleDungeonsInfo.CurrentVersion })), LocalizationManager.GetString("OKButtonText"), LocalizationManager.GetString("IncompatibleDungeonMessageBoxHeader"), Color.Red);
+                }
             }
             catch (Exception)
             {

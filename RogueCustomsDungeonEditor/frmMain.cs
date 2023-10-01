@@ -4,6 +4,7 @@ using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion;
 using RogueCustomsDungeonEditor.Validators;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
@@ -396,7 +397,7 @@ namespace RogueCustomsDungeonEditor
                 }
             }
             ActiveDungeon = DungeonInfoHelpers.CreateEmptyDungeonTemplate(LocaleTemplate, BaseLocaleLanguages);
-            ActiveDungeon.Version = Constants.CurrentDungeonVersion;
+            ActiveDungeon.Version = Constants.CurrentDungeonJsonVersion;
             RefreshTreeNodes();
             tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
             tvDungeonInfo.Focus();

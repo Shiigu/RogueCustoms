@@ -1,4 +1,5 @@
-﻿using RogueCustomsGameEngine.Utils.JsonImports;
+﻿using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon)
         {
-            while(!dungeon.Version.Equals(Constants.CurrentDungeonVersion))
+            while(!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
             {
                 switch (dungeon.Version)
                 {

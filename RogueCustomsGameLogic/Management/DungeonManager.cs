@@ -1,4 +1,5 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
@@ -14,14 +15,14 @@ namespace RogueCustomsGameEngine.Management
         private int CurrentDungeonId;
         private readonly List<Dungeon> Dungeons;
         private readonly Dictionary<string, DungeonInfo> AvailableDungeonInfos;
-        private readonly List<DungeonListDto> DungeonListForDisplay;
+        private readonly DungeonListDto DungeonListForDisplay;
 
         public DungeonManager()
         {
             CurrentDungeonId = 1;
             Dungeons = new List<Dungeon>();
             AvailableDungeonInfos = new Dictionary<string, DungeonInfo>();
-            DungeonListForDisplay = new List<DungeonListDto>();
+            DungeonListForDisplay = new DungeonListDto(Constants.CurrentDungeonJsonVersion);
         }
 
         private void GetDungeonList(string locale)
@@ -34,7 +35,7 @@ namespace RogueCustomsGameEngine.Management
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 dungeonsInNewRetrieval.Add(fileName);
                 AvailableDungeonInfos[fileName] = dungeonInfo;
-                DungeonListForDisplay.Add(new DungeonListDto(fileName, dungeonInfo, locale));
+                DungeonListForDisplay.AddDungeonToList(fileName, dungeonInfo, locale);
             }
             foreach(var removedDungeon in dungeonsSinceLastRetrieval.Except(dungeonsInNewRetrieval))
             {
@@ -51,9 +52,9 @@ namespace RogueCustomsGameEngine.Management
             });
         }
 
-        public List<DungeonListDto> GetPickableDungeonList(string locale)
+        public DungeonListDto GetPickableDungeonList(string locale)
         {
-            DungeonListForDisplay.Clear();
+            DungeonListForDisplay.Dungeons.Clear();
             GetDungeonList(locale);
             return DungeonListForDisplay;
         }

@@ -31,6 +31,8 @@ DungeonDisplayNameText = {DungeonName} - by {Author}
 NoDungeonsText = There are no Dungeons to show.
 NoLocalDungeonsSubtext = Put Dungeons in the JSON folder first.
 NoServerDungeonsSubtext = Server has no Dungeons installed.
+IncompatibleDungeonMessageBoxHeader = CANNOT PLAY THIS DUNGEON
+IncompatibleDungeonMessageBoxText = This Dungeon is at version {DungeonJsonVersion}.\nThis game's version requires Dungeons at version {RequiredDungeonJsonVersion}.\n\nPlease contact the Dungeon creator to get the correct version.
 PickButtonText = PLAY SELECTED DUNGEON
 
 ; MessageConsole

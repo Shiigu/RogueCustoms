@@ -34,7 +34,7 @@ namespace Roguelike.Controllers
         }
 
         [HttpGet("GetPickableDungeonList/{locale}")]
-        public List<DungeonListDto> GetPickableDungeonList(string locale)
+        public DungeonListDto GetPickableDungeonList(string locale)
         {
             try
             {
