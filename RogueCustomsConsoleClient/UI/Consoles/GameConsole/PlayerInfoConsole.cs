@@ -8,12 +8,14 @@ using SadRogue.Primitives;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Linq;
+using SadConsole.UI;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
     public class PlayerInfoConsole : GameSubConsole
     {
         private string DetailsButtonText;
+        private ProgressBar HPBar;
         public Button DetailsButton;
 
         public PlayerInfoConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.PlayerInfoCellWidth, GameConsoleConstants.PlayerInfoCellHeight)
@@ -34,6 +36,26 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             };
             DetailsButton.Click += DetailsButton_Click;
 
+
+            HPBar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left)
+            {
+                Position = new Point(2, 10),
+                DisplayTextAlignment = HorizontalAlignment.Center,
+                DisplayTextColor = Color.White
+            };
+
+            var themeColors = new Colors();
+
+            themeColors.Appearance_ControlDisabled.Foreground = Color.Red;
+            themeColors.Appearance_ControlFocused.Foreground = Color.Red;
+            themeColors.Appearance_ControlMouseDown.Foreground = Color.Red;
+            themeColors.Appearance_ControlOver.Foreground = Color.Red;
+            themeColors.Appearance_ControlNormal.Foreground = Color.Red;
+            themeColors.Appearance_ControlSelected.Foreground = Color.Red;
+
+            HPBar.SetThemeColors(themeColors);
+
+            Controls.Add(HPBar);
             Controls.Add(DetailsButton);
         }
 
@@ -73,7 +95,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 
                 this.Print((square.Width - levelString.Length) / 2, 4, levelString, true);
                 this.SetGlyph((square.Width - 1) / 2, 6, new ColoredGlyph(playerEntity.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.ConsoleRepresentation.Character.ToGlyph()));
-                this.Print(2, 10, $"{playerEntity.HPStatName}: {playerEntity.HP}/{playerEntity.MaxHP}", true);
+
+                this.Print((square.Width - playerEntity.HPStatName.Length) / 2, 9, playerEntity.HPStatName, true);
+                HPBar.DisplayText = $"{playerEntity.HP}/{playerEntity.MaxHP}";
+                HPBar.Progress = (float)playerEntity.HP / playerEntity.MaxHP;
+                //this.Print(2, 10, $"{playerEntity.HPStatName}: {playerEntity.HP}/{playerEntity.MaxHP}", true);
                 this.Print(2, 13, LocalizationManager.GetString("PlayerInfoWeaponHeader"), true);
                 this.Print(2, 14, playerEntity.Weapon, true);
                 this.Print(2, 16, $"{playerEntity.DamageStatName}:", true);
