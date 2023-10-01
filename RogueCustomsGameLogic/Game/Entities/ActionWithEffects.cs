@@ -31,6 +31,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int MaximumUses { get; set; }
         public int CurrentUses { get; set; }
         public List<TargetType> TargetTypes { get; set; }
+        public int MPCost { get; set; }
 
         public string UseCondition { get; set; }
 
@@ -58,6 +59,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             CurrentUses = 0;
             UseCondition = info.UseCondition;
             TargetTypes = new List<TargetType>();
+            MPCost = info.MPCost;
             info.TargetTypes?.ForEach(tt => TargetTypes.Add(Enum.Parse<TargetType>(tt, true)));
             Effect = new Effect(info.Effect);
         }
@@ -97,8 +99,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!character.CanSee(target)) return false;
             if (TargetTypes.Any() && !TargetTypes.Contains(character.CalculateTargetTypeFor(target))) return false;
             if (!((int)Point.Distance(target.Position, character.Position)).Between(MinimumRange, MaximumRange)) return false;
+            if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0)) return false;
 
-            if(!string.IsNullOrWhiteSpace(UseCondition))
+            if (!string.IsNullOrWhiteSpace(UseCondition))
             {
                 var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
 
@@ -118,6 +121,33 @@ namespace RogueCustomsGameEngine.Game.Entities
             var cannotBeUsedString = Locale["CannotBeUsed"];
 
             if (character == null) return "";
+
+            descriptionWithUsageNotes.AppendLine();
+
+            if (MaximumRange == 0)
+            {
+                descriptionWithUsageNotes.Append($"\n{Locale["SelfRange"]}");
+            }
+            else if (MaximumRange == 1)
+            {
+                if (MinimumRange == 1)
+                    descriptionWithUsageNotes.Append($"\n{Locale["MeleeRange"]}");
+                else if (MinimumRange == 0)
+                    descriptionWithUsageNotes.Append($"\n{Locale["SelfOrMeleeRange"]}");
+            }
+            else if (MaximumRange > 1)
+            {
+                var tilesRange = (MinimumRange != MaximumRange) ? $"{MinimumRange}-{MaximumRange}" : $"{MaximumRange}";
+                if (MinimumRange > 0)
+                    descriptionWithUsageNotes.Append($"\n{Locale["MeleeRange"].Format(new { TilesRange = tilesRange })}");
+                else if (MinimumRange == 0)
+                    descriptionWithUsageNotes.Append($"\n{Locale["SelfOrMeleeRange"].Format(new { TilesRange = tilesRange })}");
+            }
+
+            if (MPCost > 0)
+            {
+                descriptionWithUsageNotes.Append($"\n{Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost })}");
+            }
 
             var distance = target != null ? (int)Point.Distance(target.Position, character.Position) : -1;
 
@@ -179,6 +209,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                         descriptionWithUsageNotes.AppendLine(Locale["TargetDoesNotFulfillConditions"]);
                     }
                 }
+
+                if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0))
+                {
+                    if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.AppendLine(Locale["NotEnoughMP"].Format(new { MPStat = Map.Locale["CharacterMPStat"].ToUpperInvariant() }));
+                }
             }
             else
             {
@@ -214,7 +251,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentUses = 0,
                 Effect = Effect.Clone(),
                 UseCondition = UseCondition,
-                TargetTypes = new List<TargetType>(TargetTypes)
+                TargetTypes = new List<TargetType>(TargetTypes),
+                MPCost = MPCost
             };
         }
 

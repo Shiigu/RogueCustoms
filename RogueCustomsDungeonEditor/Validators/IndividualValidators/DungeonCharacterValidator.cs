@@ -48,6 +48,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("HP Gained per level must be 0 or higher.");
             else if (characterJson.MaxHPIncreasePerLevel == 0)
                 messages.AddWarning("HP Gained per level is 0. It won't gain any HP on level up.");
+            if(characterJson.UsesMP)
+            {
+                if (characterJson.BaseMP <= 0)
+                    messages.AddError("Character is set to use MP, but Base MP is 0 or lower.");
+                if (characterJson.MaxMPIncreasePerLevel < 0)
+                    messages.AddError("Character is set to use MP, but MP Gained per level is 0 or lower.");
+                else if (characterJson.MaxMPIncreasePerLevel == 0)
+                    messages.AddWarning("Character is set to use MP, but MP Gained per level is 0. It won't gain any MP on level up.");
+            }
             if (characterJson.BaseAttack < 0)
                 messages.AddError("Base Attack must be 0 or higher.");
             else if (characterJson.BaseAttack == 0)

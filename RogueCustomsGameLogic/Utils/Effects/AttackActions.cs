@@ -14,15 +14,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
+            output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to damage {paramsObject.Target.Name} when it's not a Character.");
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
-            {
-                output = 0;
                 return false;
-            }
-            var damageDealt = Math.Max(0, (int) paramsObject.Damage - (int) paramsObject.Mitigation);
-            output = damageDealt;
+            var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
+            if (damageDealt > 0 && damageDealt < 1)
+                damageDealt = 1;
+            damageDealt = (int) damageDealt;
+            output = (int) damageDealt;
             if(damageDealt <= 0 || Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
                 return false;
             if (c.EntityType == EntityType.Player
@@ -36,11 +37,46 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     forecolorToUse = Color.Lime;
                 else
                     forecolorToUse = Color.DeepSkyBlue;
-                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt }), forecolorToUse);
+                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"] }), forecolorToUse);
             }
             c.HP = Math.Max(0, c.HP - damageDealt);
             if (c.HP == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);
+            return true;
+        }
+
+        public static bool BurnMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to burn {paramsObject.Target.Name}'s MP when it's not a Character.");
+            if (c.ExistenceStatus != EntityExistenceStatus.Alive)
+                return false;
+            if (!c.UsesMP)
+                return false;
+            if (Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
+                return false;
+            var burnAmount = paramsObject.Power;
+            if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                burnAmount = 1;
+            burnAmount = (int)burnAmount;
+            output = burnAmount;
+            if (burnAmount <= 0)
+                return false;
+            if (c.EntityType == EntityType.Player
+                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            {
+                Faction targetFaction = c.Faction;
+                Color forecolorToUse;
+                if (c.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Red;
+                else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
+                    forecolorToUse = Color.Lime;
+                else
+                    forecolorToUse = Color.DeepSkyBlue;
+                Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), forecolorToUse);
+            }
+            c.MP = Math.Max(0, c.MP - burnAmount);
             return true;
         }
     }

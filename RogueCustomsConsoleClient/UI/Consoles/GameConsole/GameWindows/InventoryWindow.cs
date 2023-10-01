@@ -46,8 +46,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         public static Window Show(GameConsoleContainer parent, InventoryDto inventory, bool readOnly)
         {
             if (inventory == null || !inventory.InventoryItems.Any()) return null;
-            var width = 65;
-            var height = 30;
+            var width = GameConsoleConstants.SelectionWindowWidth;
+            var height = GameConsoleConstants.SelectionWindowHeight;
 
             var window = new InventoryWindow(width, height);
 
@@ -151,7 +151,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawLine(new Point(0, 0), new Point(0, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.DrawLine(new Point(0, 0), new Point(Width - 1, 0), ICellSurface.ConnectedLineThick[3], Color.Yellow);
-            ds.Surface.DrawLine(new Point(32, 0), new Point(32, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
+            ds.Surface.DrawLine(new Point(39, 0), new Point(39, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.DrawLine(new Point(Width - 1, 0), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.DrawLine(new Point(0, window.Height - 3), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Yellow);
             ds.Surface.ConnectLines(ICellSurface.ConnectedLineThick);
@@ -161,7 +161,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             var initialIndexToShow = CurrentlyShownInventoryItems != null && CurrentlyShownInventoryItems.Contains(item) ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, Inventory.InventoryItems.IndexOf(item));
             CurrentlyShownFirstIndex = initialIndexToShow;
-            var inventoryItemsToShow = CurrentlyShownInventoryItems != null && CurrentlyShownInventoryItems.Contains(item) ? CurrentlyShownInventoryItems : Inventory.InventoryItems.Skip(initialIndexToShow).Take(24).ToList();
+            var inventoryItemsToShow = CurrentlyShownInventoryItems != null && CurrentlyShownInventoryItems.Contains(item) ? CurrentlyShownInventoryItems : Inventory.InventoryItems.Skip(initialIndexToShow).Take(30).ToList();
             CurrentlyShownInventoryItems = inventoryItemsToShow;
 
             for (int i = 0; i < inventoryItemsToShow.Count; i++)
@@ -173,7 +173,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                     nameToDisplay = $"{LocalizationManager.GetString("EquippedItemNamePrefix").ToAscii()} {Inventory.InventoryItems[initialIndexToShow + i].Name.ToAscii()}";
                 else
                     nameToDisplay = Inventory.InventoryItems[initialIndexToShow + i].Name.ToAscii();
-                var itemName = nameToDisplay.PadRight(29);
+                var itemName = nameToDisplay.PadRight(36);
                 if (Inventory.InventoryItems[initialIndexToShow + i] == item)
                     ds.Surface.Print(2, 2 + i, itemName, Color.Black, Color.White);
                 else
@@ -209,9 +209,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 UseOrEquipButton.IsEnabled = !item.IsEquipped && item.CanBeUsed;
 
-                ds.Surface.Print(34, 2, item.Name.ToAscii(), Color.White, Color.Black);
+                ds.Surface.Print(41, 2, item.Name.ToAscii(), Color.White, Color.Black);
 
-                ds.Surface.SetGlyph(34, 4, item.ConsoleRepresentation.Character.ToGlyph(), item.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), item.ConsoleRepresentation.BackgroundColor.ToSadRogueColor());
+                ds.Surface.SetGlyph(41, 4, item.ConsoleRepresentation.Character.ToGlyph(), item.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), item.ConsoleRepresentation.BackgroundColor.ToSadRogueColor());
 
                 var descriptionToDisplay = new StringBuilder(item.Description);
 
@@ -232,10 +232,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 var splitWrappedDescription = new List<string>();
                 foreach (var line in linesInDescription)
                 {
-                    if (line.Trim().Length < 20)
+                    if (line.Trim().Length < 36)
                         splitWrappedDescription.Add(line);
                     else
-                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,29}\s*\b)[.]?[)]?") select m.Value).ToList());
+                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,36}\s*\b)[.]?[)]?") select m.Value).ToList());
                 }
 
                 var lastPrintedLine = 6;
@@ -243,7 +243,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 for (int i = 0; i < splitWrappedDescription.Count; i++)
                 {
                     lastPrintedLine++;
-                    ds.Surface.Print(34, lastPrintedLine, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
+                    ds.Surface.Print(41, lastPrintedLine, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
                 }
 
             }

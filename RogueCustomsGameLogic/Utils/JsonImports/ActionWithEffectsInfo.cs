@@ -16,6 +16,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int MaximumUses { get; set; }
         public List<string> TargetTypes { get; set; }
         public string UseCondition { get; set; }
+        public int MPCost { get; set; }
         #endregion
 
         public int StartingCooldown { get; set; }

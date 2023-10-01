@@ -1,3 +1,4 @@
+using MathNet.Numerics.Distributions;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.HelperForms;
@@ -1009,7 +1010,7 @@ namespace RogueCustomsDungeonEditor
                     Value = templateLocaleEntry.Value
                 });
             }
-            if(missingMandatoryKeys.Any())
+            if (missingMandatoryKeys.Any())
             {
                 DirtyTab = true;
                 MessageBox.Show(
@@ -2127,6 +2128,8 @@ namespace RogueCustomsDungeonEditor
             chkPlayerStartsVisible.Checked = playerClass.StartsVisible;
             nudPlayerBaseHP.Value = playerClass.BaseHP;
             nudPlayerHPPerLevelUp.Value = playerClass.MaxHPIncreasePerLevel;
+            nudPlayerBaseMP.Value = playerClass.BaseMP;
+            nudPlayerMPPerLevelUp.Value = playerClass.MaxMPIncreasePerLevel;
             nudPlayerBaseAttack.Value = playerClass.BaseAttack;
             nudPlayerAttackPerLevelUp.Value = playerClass.AttackIncreasePerLevel;
             nudPlayerBaseDefense.Value = playerClass.BaseDefense;
@@ -2135,8 +2138,12 @@ namespace RogueCustomsDungeonEditor
             nudPlayerMovementPerLevelUp.Value = playerClass.MovementIncreasePerLevel;
             nudPlayerBaseHPRegeneration.Value = playerClass.BaseHPRegeneration;
             nudPlayerHPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
+            nudPlayerBaseMPRegeneration.Value = playerClass.BaseHPRegeneration;
+            nudPlayerMPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
             cmbPlayerSightRange.Items.Clear();
             cmbPlayerSightRange.Text = "";
+            chkPlayerUsesMP.Checked = playerClass.UsesMP;
+            TogglePlayerMPControls();
             foreach (var sightRange in BaseSightRangeDisplayNames)
             {
                 cmbPlayerSightRange.Items.Add(sightRange.Value);
@@ -2169,10 +2176,12 @@ namespace RogueCustomsDungeonEditor
             nudPlayerMaxLevel.Value = playerClass.MaxLevel;
             txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
             nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
             if (playerClass.CanGainExperience || playerClass.MaxLevel > 1)
             {
                 txtPlayerLevelUpFormula.Text = playerClass.ExperienceToLevelUpFormula;
@@ -2255,11 +2264,14 @@ namespace RogueCustomsDungeonEditor
             };
             playerClass.Faction = cmbPlayerFaction.Text;
             playerClass.StartsVisible = chkPlayerStartsVisible.Checked;
+            playerClass.UsesMP = chkPlayerUsesMP.Checked;
             playerClass.BaseHP = (int)nudPlayerBaseHP.Value;
+            playerClass.BaseMP = (int)nudPlayerBaseMP.Value;
             playerClass.BaseAttack = (int)nudPlayerBaseAttack.Value;
             playerClass.BaseDefense = (int)nudPlayerBaseDefense.Value;
             playerClass.BaseMovement = (int)nudPlayerBaseMovement.Value;
             playerClass.BaseHPRegeneration = nudPlayerBaseHPRegeneration.Value;
+            playerClass.BaseMPRegeneration = nudPlayerBaseMPRegeneration.Value;
 
             if (cmbPlayerSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
             {
@@ -2274,10 +2286,12 @@ namespace RogueCustomsDungeonEditor
             playerClass.MaxLevel = (int)nudPlayerMaxLevel.Value;
             playerClass.ExperienceToLevelUpFormula = txtPlayerLevelUpFormula.Text;
             playerClass.MaxHPIncreasePerLevel = nudPlayerHPPerLevelUp.Value;
+            playerClass.MaxMPIncreasePerLevel = nudPlayerMPPerLevelUp.Value;
             playerClass.AttackIncreasePerLevel = nudPlayerAttackPerLevelUp.Value;
             playerClass.DefenseIncreasePerLevel = nudPlayerDefensePerLevelUp.Value;
             playerClass.MovementIncreasePerLevel = nudPlayerMovementPerLevelUp.Value;
             playerClass.HPRegenerationIncreasePerLevel = nudPlayerHPRegenerationPerLevelUp.Value;
+            playerClass.MPRegenerationIncreasePerLevel = nudPlayerMPRegenerationPerLevelUp.Value;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
@@ -2598,10 +2612,12 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
             txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
         }
 
         private void txtPlayerLevelUpFormula_Enter(object sender, EventArgs e)
@@ -2641,10 +2657,12 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
             txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
             nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
             nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
+            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
         }
 
         private void nudPlayerHPPerLevelUp_ValueChanged(object sender, EventArgs e)
@@ -2722,6 +2740,47 @@ namespace RogueCustomsDungeonEditor
             var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
             OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
         }
+        private void nudPlayerBaseMP_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void chkPlayerUsesMP_CheckedChanged(object sender, EventArgs e)
+        {
+            TogglePlayerMPControls();
+            DirtyTab = true;
+        }
+
+        private void nudPlayerBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudPlayerMPPerLevelUp_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudPlayerMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void TogglePlayerMPControls()
+        {
+            nudPlayerBaseMP.Enabled = chkPlayerUsesMP.Checked;
+            if (!chkPlayerUsesMP.Checked)
+                nudPlayerBaseMP.Value = 0;
+            nudPlayerBaseMPRegeneration.Enabled = chkPlayerUsesMP.Checked;
+            if (!chkPlayerUsesMP.Checked)
+                nudPlayerBaseMPRegeneration.Value = 0;
+            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
+            if (!chkPlayerUsesMP.Checked)
+                nudPlayerMPPerLevelUp.Value = 0;
+            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
+            if (!chkPlayerUsesMP.Checked)
+                nudPlayerMPRegenerationPerLevelUp.Value = 0;
+        }
 
         #endregion
 
@@ -2754,6 +2813,8 @@ namespace RogueCustomsDungeonEditor
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
             nudNPCBaseHP.Value = npc.BaseHP;
             nudNPCHPPerLevelUp.Value = npc.MaxHPIncreasePerLevel;
+            nudNPCBaseMP.Value = npc.BaseMP;
+            nudNPCMPPerLevelUp.Value = npc.MaxMPIncreasePerLevel;
             nudNPCBaseAttack.Value = npc.BaseAttack;
             nudNPCAttackPerLevelUp.Value = npc.AttackIncreasePerLevel;
             nudNPCBaseDefense.Value = npc.BaseDefense;
@@ -2762,12 +2823,18 @@ namespace RogueCustomsDungeonEditor
             nudNPCMovementPerLevelUp.Value = npc.MovementIncreasePerLevel;
             nudNPCBaseHPRegeneration.Value = npc.BaseHPRegeneration;
             nudNPCHPRegenerationPerLevelUp.Value = npc.HPRegenerationIncreasePerLevel;
+            nudNPCBaseMPRegeneration.Value = npc.BaseMPRegeneration;
+            nudNPCMPRegenerationPerLevelUp.Value = npc.MPRegenerationIncreasePerLevel;
+            chkNPCUsesMP.Checked = npc.UsesMP;
+            ToggleNPCMPControls();
             txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
             nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
             cmbNPCSightRange.Items.Clear();
             cmbNPCSightRange.Text = "";
             foreach (var sightRange in BaseSightRangeDisplayNames)
@@ -2885,11 +2952,14 @@ namespace RogueCustomsDungeonEditor
             npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
             npc.ExperienceToLevelUpFormula = txtNPCLevelUpFormula.Text;
             npc.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
+            npc.UsesMP = chkNPCUsesMP.Checked;
             npc.BaseHP = (int)nudNPCBaseHP.Value;
+            npc.BaseMP = (int)nudNPCBaseMP.Value;
             npc.BaseAttack = (int)nudNPCBaseAttack.Value;
             npc.BaseDefense = (int)nudNPCBaseDefense.Value;
             npc.BaseMovement = (int)nudNPCBaseMovement.Value;
             npc.BaseHPRegeneration = nudNPCBaseHPRegeneration.Value;
+            npc.BaseMPRegeneration = nudNPCBaseMPRegeneration.Value;
 
             if (cmbNPCSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
             {
@@ -2902,10 +2972,12 @@ namespace RogueCustomsDungeonEditor
 
             npc.CanGainExperience = chkNPCCanGainExperience.Checked;
             npc.MaxHPIncreasePerLevel = nudNPCHPPerLevelUp.Value;
+            npc.MaxMPIncreasePerLevel = nudNPCMPPerLevelUp.Value;
             npc.AttackIncreasePerLevel = nudNPCAttackPerLevelUp.Value;
             npc.DefenseIncreasePerLevel = nudNPCDefensePerLevelUp.Value;
             npc.MovementIncreasePerLevel = nudNPCMovementPerLevelUp.Value;
             npc.HPRegenerationIncreasePerLevel = nudNPCHPRegenerationPerLevelUp.Value;
+            npc.MPRegenerationIncreasePerLevel = nudNPCMPRegenerationPerLevelUp.Value;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
@@ -3261,10 +3333,12 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
             txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
             nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
             nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
         }
 
         private void txtNPCLevelUpFormula_Enter(object sender, EventArgs e)
@@ -3276,7 +3350,7 @@ namespace RogueCustomsDungeonEditor
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
 
-            if(!PreviousTextBoxValue.Equals(txtNPCLevelUpFormula.Text))
+            if (!PreviousTextBoxValue.Equals(txtNPCLevelUpFormula.Text))
             {
                 var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
 
@@ -3303,11 +3377,13 @@ namespace RogueCustomsDungeonEditor
         {
             DirtyTab = true;
             txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
-            nudNPCAttackPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = nudNPCMaxLevel.Value > 1 || nudNPCMaxLevel.Value > 1;
+            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
+            nudNPCMPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
         }
 
         private void nudNPCHPPerLevelUp_ValueChanged(object sender, EventArgs e)
@@ -3383,6 +3459,48 @@ namespace RogueCustomsDungeonEditor
         {
             var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
             OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
+        }
+
+        private void nudNPCBaseMP_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void chkNPCUsesMP_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleNPCMPControls();
+            DirtyTab = true;
+        }
+
+        private void nudNPCBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudNPCMPPerLevelUp_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudNPCMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void ToggleNPCMPControls()
+        {
+            nudNPCBaseMP.Enabled = chkNPCUsesMP.Checked;
+            if (!chkNPCUsesMP.Checked)
+                nudNPCBaseMP.Value = 0;
+            nudNPCBaseMPRegeneration.Enabled = chkNPCUsesMP.Checked;
+            if (!chkNPCUsesMP.Checked)
+                nudNPCBaseMPRegeneration.Value = 0;
+            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
+            if (!chkNPCUsesMP.Checked)
+                nudNPCMPPerLevelUp.Value = 0;
+            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
+            if (!chkNPCUsesMP.Checked)
+                nudNPCMPRegenerationPerLevelUp.Value = 0;
         }
         #endregion
 

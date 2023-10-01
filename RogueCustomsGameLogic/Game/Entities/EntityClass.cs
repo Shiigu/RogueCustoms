@@ -23,11 +23,14 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         #region Character-only data
 
+        public bool UsesMP { get; set; }
         public readonly int BaseHP;
+        public readonly int BaseMP;
         public readonly int BaseAttack;
         public readonly int BaseDefense;
         public readonly int BaseMovement;
         public readonly decimal BaseHPRegeneration;
+        public readonly decimal BaseMPRegeneration;
         public readonly int BaseSightRange;
         public readonly bool KnowsAllCharacterPositions;
         public readonly int InventorySize;
@@ -40,10 +43,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly string ExperiencePayoutFormula;
         public readonly string ExperienceToLevelUpFormula;
         public readonly decimal MaxHPIncreasePerLevel;
+        public readonly decimal MaxMPIncreasePerLevel;
         public readonly decimal AttackIncreasePerLevel;
         public readonly decimal DefenseIncreasePerLevel;
         public readonly decimal MovementIncreasePerLevel;
         public readonly decimal HPRegenerationIncreasePerLevel;
+        public readonly decimal MPRegenerationIncreasePerLevel;
 
         #endregion
 
@@ -96,12 +101,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
+                UsesMP = playerClassInfo.UsesMP;
                 FactionId = playerClassInfo.Faction;
                 BaseHP = playerClassInfo.BaseHP;
+                BaseMP = playerClassInfo.BaseMP;
                 BaseAttack = playerClassInfo.BaseAttack;
                 BaseDefense = playerClassInfo.BaseDefense;
                 BaseMovement = playerClassInfo.BaseMovement;
                 BaseHPRegeneration = playerClassInfo.BaseHPRegeneration;
+                BaseMPRegeneration = playerClassInfo.BaseMPRegeneration;
                 StartingWeaponId = playerClassInfo.StartingWeapon;
                 StartingArmorId = playerClassInfo.StartingArmor;
                 CanGainExperience = playerClassInfo.CanGainExperience;
@@ -109,10 +117,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ExperiencePayoutFormula = playerClassInfo.ExperiencePayoutFormula;
                 ExperienceToLevelUpFormula = playerClassInfo.ExperienceToLevelUpFormula;
                 MaxHPIncreasePerLevel = playerClassInfo.MaxHPIncreasePerLevel;
+                MaxMPIncreasePerLevel = playerClassInfo.MaxMPIncreasePerLevel;
                 AttackIncreasePerLevel = playerClassInfo.AttackIncreasePerLevel;
                 DefenseIncreasePerLevel = playerClassInfo.DefenseIncreasePerLevel;
                 MovementIncreasePerLevel = playerClassInfo.MovementIncreasePerLevel;
                 HPRegenerationIncreasePerLevel = playerClassInfo.HPRegenerationIncreasePerLevel;
+                MPRegenerationIncreasePerLevel = playerClassInfo.MPRegenerationIncreasePerLevel;
                 BaseSightRange = 0;
                 if (!string.IsNullOrWhiteSpace(playerClassInfo.BaseSightRange))
                 {
@@ -155,12 +165,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else if (classInfo is NPCInfo npcInfo)
             {
+                UsesMP = npcInfo.UsesMP;
                 FactionId = npcInfo.Faction;
                 BaseHP = npcInfo.BaseHP;
+                BaseMP = npcInfo.BaseMP;
                 BaseAttack = npcInfo.BaseAttack;
                 BaseDefense = npcInfo.BaseDefense;
                 BaseMovement = npcInfo.BaseMovement;
                 BaseHPRegeneration = npcInfo.BaseHPRegeneration;
+                BaseMPRegeneration = npcInfo.BaseMPRegeneration;
                 StartingWeaponId = npcInfo.StartingWeapon;
                 StartingArmorId = npcInfo.StartingArmor;
                 CanGainExperience = npcInfo.CanGainExperience;
@@ -168,10 +181,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ExperiencePayoutFormula = npcInfo.ExperiencePayoutFormula;
                 ExperienceToLevelUpFormula = npcInfo.ExperienceToLevelUpFormula;
                 MaxHPIncreasePerLevel = npcInfo.MaxHPIncreasePerLevel;
+                MaxMPIncreasePerLevel = npcInfo.MaxMPIncreasePerLevel;
                 AttackIncreasePerLevel = npcInfo.AttackIncreasePerLevel;
                 DefenseIncreasePerLevel = npcInfo.DefenseIncreasePerLevel;
                 MovementIncreasePerLevel = npcInfo.MovementIncreasePerLevel;
                 HPRegenerationIncreasePerLevel = npcInfo.HPRegenerationIncreasePerLevel;
+                MPRegenerationIncreasePerLevel = npcInfo.MPRegenerationIncreasePerLevel;
                 BaseSightRange = 0;
                 if (!string.IsNullOrWhiteSpace(npcInfo.BaseSightRange))
                 {

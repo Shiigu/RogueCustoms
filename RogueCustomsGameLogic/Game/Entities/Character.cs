@@ -40,6 +40,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int MaxLevel { get; set; }
         public bool CanGainExperience { get; set; }
         public bool CanTakeAction { get; set; }
+        public bool UsesMP { get; set; }
         public int HP { get; set; }
 
         public readonly int BaseMaxHP;
@@ -47,6 +48,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<StatModification> MaxHPModifications { get; set; }
         public int TotalMaxHPIncrements => MaxHPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
         public int MaxHP => BaseMaxHP + (int)(MaxHPIncreasePerLevel * (Level - 1)) + TotalMaxHPIncrements;
+        public int MP { get; set; }
+
+        public readonly int BaseMaxMP;
+        public readonly decimal MaxMPIncreasePerLevel;
+        public List<StatModification> MaxMPModifications { get; set; }
+        public int TotalMaxMPIncrements => MaxMPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
+        public int MaxMP => BaseMaxMP + (int)(MaxMPIncreasePerLevel * (Level - 1)) + TotalMaxMPIncrements;
 
         public readonly int BaseAttack;
         public readonly decimal AttackIncreasePerLevel;
@@ -93,6 +101,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         public decimal TotalHPRegenerationIncrements => HPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
         public decimal HPRegeneration => BaseHPRegeneration + HPRegenerationIncreasePerLevel * (Level - 1) + TotalHPRegenerationIncrements;
         private decimal CarriedHPRegeneration;
+
+        public readonly decimal BaseMPRegeneration;
+        public readonly decimal MPRegenerationIncreasePerLevel;
+        public List<StatModification> MPRegenerationModifications { get; set; }
+        public decimal TotalMPRegenerationIncrements => MPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
+        public decimal MPRegeneration => BaseMPRegeneration + MPRegenerationIncreasePerLevel * (Level - 1) + TotalMPRegenerationIncrements;
+        private decimal CarriedMPRegeneration;
 
         public readonly int BaseSightRange;
         public int TotalSightRangeIncrements { get; set; } = 0;
@@ -193,9 +208,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             Faction = entityClass.Faction;
             StartingWeaponId = entityClass.StartingWeaponId;
             StartingArmorId = entityClass.StartingArmorId;
+            UsesMP = entityClass.UsesMP;
             HP = entityClass.BaseHP;
             BaseMaxHP = entityClass.BaseHP;
             MaxHPIncreasePerLevel = entityClass.MaxHPIncreasePerLevel;
+            MP = entityClass.BaseMP;
+            BaseMaxMP = entityClass.BaseMP;
+            MaxMPIncreasePerLevel = entityClass.MaxMPIncreasePerLevel;
             BaseAttack = entityClass.BaseAttack;
             AttackIncreasePerLevel = entityClass.AttackIncreasePerLevel;
             BaseDefense = entityClass.BaseDefense;
@@ -204,6 +223,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementIncreasePerLevel = entityClass.MovementIncreasePerLevel;
             BaseHPRegeneration = entityClass.BaseHPRegeneration;
             HPRegenerationIncreasePerLevel = entityClass.HPRegenerationIncreasePerLevel;
+            BaseMPRegeneration = entityClass.BaseMPRegeneration;
+            MPRegenerationIncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel;
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
             CanGainExperience = entityClass.CanGainExperience;
@@ -221,10 +242,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
 
             MaxHPModifications = new List<StatModification>();
+            MaxMPModifications = new List<StatModification>();
             AttackModifications = new List<StatModification>();
             DefenseModifications = new List<StatModification>();
             MovementModifications = new List<StatModification>();
             HPRegenerationModifications = new List<StatModification>();
+            MPRegenerationModifications = new List<StatModification>();
 
             BaseSightRange = entityClass.BaseSightRange;
             InventorySize = entityClass.InventorySize;
@@ -234,6 +257,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             LastLevelUpExperience = Experience;
             CarriedHPRegeneration = 0;
+            CarriedMPRegeneration = 0;
 
             OwnOnTurnStartActions = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
@@ -274,16 +298,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             MaxHPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            MaxMPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             AttackModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             DefenseModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             MovementModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             HPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            MPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
             MaxHPModifications?.RemoveAll(a => a.RemainingTurns == 0);
+            MaxMPModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AttackModifications?.RemoveAll(a => a.RemainingTurns == 0);
             DefenseModifications?.RemoveAll(a => a.RemainingTurns == 0);
             MovementModifications?.RemoveAll(a => a.RemainingTurns == 0);
             HPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
+            MPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
@@ -301,10 +329,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 modificationsThatMightBeNeutralized.AddRange(new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>
                 {
                     (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
+                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
                     (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
                     (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
                     (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false)
+                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
+                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false)
                 });
 
                 foreach (var alteredStatus in AlteredStatuses)
@@ -327,6 +357,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
             }
             TryRegenerateHP();
+            TryRegenerateMP();
         }
 
         public void TryRegenerateHP()
@@ -345,6 +376,26 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Min(MaxHP, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
+            }
+        }
+
+        public void TryRegenerateMP()
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (!UsesMP) return;
+            if (MP > MaxMP) MP = MaxMP;
+            if (MP == MaxMP || MPRegeneration == 0)
+            {
+                CarriedMPRegeneration = 0;
+                return;
+            }
+            CarriedMPRegeneration += MPRegeneration;
+            if (CarriedMPRegeneration > 1)
+            {
+                var wholePart = Math.Truncate(CarriedMPRegeneration);
+                var fractionalPart = CarriedMPRegeneration - wholePart;
+                MP = Math.Min(MaxMP, MP + (int)wholePart);
+                CarriedMPRegeneration = fractionalPart;
             }
         }
 
@@ -375,6 +426,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}), forecolorToUse);
                 HP = MaxHP;
+                MP = MaxMP;
             }
         }
 
@@ -446,6 +498,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void AttackCharacter(Character target, ActionWithEffects action)
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (UsesMP)
+                MP = Math.Max(0, MP - action.MPCost);
             var successfulEffects = action.Do(this, target);
             if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);

@@ -146,6 +146,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
         private static void PrintPlayerStatsInfo(Console subConsole, StatDto stat)
         {
+            if(!stat.Visible) return;
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
             if (stat.HasMaxStat && stat.Max != null && stat.IsIntegerStat)

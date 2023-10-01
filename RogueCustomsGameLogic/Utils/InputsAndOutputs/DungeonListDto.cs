@@ -36,7 +36,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             InternalName = internalName;
             Name = name;
             Author = author;
-            Version = version;
+            Version = (!string.IsNullOrWhiteSpace(version)) ? version : "0.9";
             IsAtCurrentVersion = isAtCurrentVersion;
         }
     }

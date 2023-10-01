@@ -140,6 +140,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string HPStatName { get; set; }
         public int HP { get; set; }
         public int MaxHP { get; set; }
+
+        public bool UsesMP { get; set; }
+        public string MPStatName { get; set; }
+        public int MP { get; set; }
+        public int MaxMP { get; set; }
         public SimpleEntityDto Weapon { get; set; }
         public string DamageStatName { get; set; }
         public string Damage { get; set; }
@@ -187,6 +192,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HPStatName = map.Locale["CharacterHPStat"];
                 HP = pc.HP;
                 MaxHP = pc.MaxHP;
+                UsesMP = pc.UsesMP;
+                MPStatName = map.Locale["CharacterMPStat"];
+                MP = pc.MP;
+                MaxMP = pc.MaxMP;
                 Weapon = new SimpleEntityDto(pc.Weapon);
                 DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;

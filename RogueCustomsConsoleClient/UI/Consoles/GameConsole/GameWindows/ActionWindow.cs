@@ -39,8 +39,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         public static Window Show(GameConsoleContainer parent, ActionListDto actionListData)
         {
             if (!actionListData.Actions.Any()) return null;
-            var width = 65;
-            var height = 30;
+            var width = GameConsoleConstants.SelectionWindowWidth;
+            var height = GameConsoleConstants.SelectionWindowHeight;
 
             var window = new ActionWindow(width, height);
 
@@ -124,7 +124,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawLine(new Point(0, 0), new Point(0, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.DrawLine(new Point(0, 0), new Point(Width - 1, 0), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
-            ds.Surface.DrawLine(new Point(32, 0), new Point(32, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
+            ds.Surface.DrawLine(new Point(39, 0), new Point(39, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.DrawLine(new Point(Width - 1, 0), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.DrawLine(new Point(0, window.Height - 3), new Point(Width - 1, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.ConnectLines(ICellSurface.ConnectedLineThick);
@@ -133,12 +133,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             var action = ActionItems.ElementAtOrDefault(ActionSelectedIndex);
             var initialIndexToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, ActionItems.IndexOf(action));
             CurrentlyShownFirstIndex = initialIndexToShow;
-            var actionItemsToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownActionItems : ActionItems.Skip(initialIndexToShow).Take(24).ToList();
+            var actionItemsToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownActionItems : ActionItems.Skip(initialIndexToShow).Take(30).ToList();
             CurrentlyShownActionItems = actionItemsToShow;
 
             for (int i = 0; i < actionItemsToShow.Count; i++)
             {
-                var actionName = ActionItems[initialIndexToShow + i].Name.PadRight(29);
+                var actionName = ActionItems[initialIndexToShow + i].Name.PadRight(36);
                 if (ActionItems[initialIndexToShow + i] == action)
                     ds.Surface.Print(2, 2 + i, actionName.ToAscii(), Color.Black, Color.White);
                 else
@@ -151,7 +151,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 DoButton.IsEnabled = action.CanBeUsed;
 
-                ds.Surface.Print(34, 2, action.Name.ToAscii(), Color.White, Color.Black);
+                ds.Surface.Print(41, 2, action.Name.ToAscii(), Color.White, Color.Black);
 
                 var descriptionAsString = action.Description.Wrap(30);
                 var linesInDescription = action.Description.Split(
@@ -160,15 +160,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 var splitWrappedDescription = new List<string>();
                 foreach (var line in linesInDescription)
                 {
-                    if (line.Trim().Length < 20)
+                    if (line.Trim().Length < 36)
                         splitWrappedDescription.Add(line);
                     else
-                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,29}\s*\b)[.]?[)]?") select m.Value).ToList());
+                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,36}\s*\b)[.]?[)]?") select m.Value).ToList());
                 }
 
                 for (int i = 0; i < splitWrappedDescription.Count; i++)
                 {
-                    ds.Surface.Print(34, 4 + i, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
+                    ds.Surface.Print(41, 4 + i, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
                 }
             }
             ds.IsDirty = true;

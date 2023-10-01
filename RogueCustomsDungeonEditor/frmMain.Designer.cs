@@ -128,6 +128,17 @@
             this.txtFactionName = (new global::System.Windows.Forms.TextBox());
             this.label21 = (new global::System.Windows.Forms.Label());
             this.tpPlayerClass = (new global::System.Windows.Forms.TabPage());
+            this.label122 = (new global::System.Windows.Forms.Label());
+            this.label123 = (new global::System.Windows.Forms.Label());
+            this.nudPlayerMPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
+            this.label121 = (new global::System.Windows.Forms.Label());
+            this.nudPlayerMPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
+            this.label119 = (new global::System.Windows.Forms.Label());
+            this.label120 = (new global::System.Windows.Forms.Label());
+            this.nudPlayerBaseMPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
+            this.chkPlayerUsesMP = (new global::System.Windows.Forms.CheckBox());
+            this.label110 = (new global::System.Windows.Forms.Label());
+            this.nudPlayerBaseMP = (new global::System.Windows.Forms.NumericUpDown());
             this.btnChangePlayerConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
             this.btnPlayerOnDeathAction = (new global::System.Windows.Forms.Button());
             this.label63 = (new global::System.Windows.Forms.Label());
@@ -207,6 +218,17 @@
             this.label27 = (new global::System.Windows.Forms.Label());
             this.lblPlayerSightRangeText = (new global::System.Windows.Forms.Label());
             this.tpNPC = (new global::System.Windows.Forms.TabPage());
+            this.label128 = (new global::System.Windows.Forms.Label());
+            this.label129 = (new global::System.Windows.Forms.Label());
+            this.nudNPCMPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
+            this.label127 = (new global::System.Windows.Forms.Label());
+            this.nudNPCMPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
+            this.label124 = (new global::System.Windows.Forms.Label());
+            this.label125 = (new global::System.Windows.Forms.Label());
+            this.nudNPCBaseMPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
+            this.chkNPCUsesMP = (new global::System.Windows.Forms.CheckBox());
+            this.label126 = (new global::System.Windows.Forms.Label());
+            this.nudNPCBaseMP = (new global::System.Windows.Forms.NumericUpDown());
             this.nudNPCOddsToTargetSelf = (new global::System.Windows.Forms.NumericUpDown());
             this.label104 = (new global::System.Windows.Forms.Label());
             this.txtNPCExperiencePayout = (new global::System.Windows.Forms.TextBox());
@@ -377,6 +399,10 @@
             ((global::System.ComponentModel.ISupportInitialize)(this.nudMinFloorLevel)).BeginInit();
             this.tpFactionInfos.SuspendLayout();
             this.tpPlayerClass.SuspendLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPRegenerationPerLevelUp)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPPerLevelUp)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMPRegeneration)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMP)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMaxLevel)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerFlatSightRange)).BeginInit();
@@ -391,6 +417,10 @@
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerHPPerLevelUp)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHP)).BeginInit();
             this.tpNPC.SuspendLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPRegenerationPerLevelUp)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPPerLevelUp)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMPRegeneration)).BeginInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMP)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMaxLevel)).BeginInit();
@@ -1507,6 +1537,17 @@
             // tpPlayerClass
             // 
             this.tpPlayerClass.AutoScroll = (true);
+            this.tpPlayerClass.Controls.Add(this.label122);
+            this.tpPlayerClass.Controls.Add(this.label123);
+            this.tpPlayerClass.Controls.Add(this.nudPlayerMPRegenerationPerLevelUp);
+            this.tpPlayerClass.Controls.Add(this.label121);
+            this.tpPlayerClass.Controls.Add(this.nudPlayerMPPerLevelUp);
+            this.tpPlayerClass.Controls.Add(this.label119);
+            this.tpPlayerClass.Controls.Add(this.label120);
+            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMPRegeneration);
+            this.tpPlayerClass.Controls.Add(this.chkPlayerUsesMP);
+            this.tpPlayerClass.Controls.Add(this.label110);
+            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMP);
             this.tpPlayerClass.Controls.Add(this.btnChangePlayerConsoleCharacterBackColor);
             this.tpPlayerClass.Controls.Add(this.btnPlayerOnDeathAction);
             this.tpPlayerClass.Controls.Add(this.label63);
@@ -1592,6 +1633,112 @@
             this.tpPlayerClass.Text = ("Player Class");
             this.tpPlayerClass.UseVisualStyleBackColor = (true);
             // 
+            // label122
+            // 
+            this.label122.AutoSize = (true);
+            this.label122.Location = (new global::System.Drawing.Point(403, 725));
+            this.label122.Name = ("label122");
+            this.label122.Size = (new global::System.Drawing.Size(54, 15));
+            this.label122.TabIndex = (122);
+            this.label122.Text = ("Recovers");
+            // 
+            // label123
+            // 
+            this.label123.AutoSize = (true);
+            this.label123.Location = (new global::System.Drawing.Point(517, 727));
+            this.label123.Name = ("label123");
+            this.label123.Size = (new global::System.Drawing.Size(169, 15));
+            this.label123.TabIndex = (121);
+            this.label123.Text = ("more MP per turn per Level Up");
+            // 
+            // nudPlayerMPRegenerationPerLevelUp
+            // 
+            this.nudPlayerMPRegenerationPerLevelUp.DecimalPlaces = (4);
+            this.nudPlayerMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 723));
+            this.nudPlayerMPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerMPRegenerationPerLevelUp.Name = ("nudPlayerMPRegenerationPerLevelUp");
+            this.nudPlayerMPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
+            this.nudPlayerMPRegenerationPerLevelUp.TabIndex = (120);
+            this.nudPlayerMPRegenerationPerLevelUp.ValueChanged += (this.nudPlayerMPRegenerationPerLevelUp_ValueChanged);
+            // 
+            // label121
+            // 
+            this.label121.AutoSize = (true);
+            this.label121.Location = (new global::System.Drawing.Point(459, 582));
+            this.label121.Name = ("label121");
+            this.label121.Size = (new global::System.Drawing.Size(124, 15));
+            this.label121.TabIndex = (119);
+            this.label121.Text = ("more MP per Level Up");
+            // 
+            // nudPlayerMPPerLevelUp
+            // 
+            this.nudPlayerMPPerLevelUp.DecimalPlaces = (4);
+            this.nudPlayerMPPerLevelUp.Location = (new global::System.Drawing.Point(403, 579));
+            this.nudPlayerMPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerMPPerLevelUp.Name = ("nudPlayerMPPerLevelUp");
+            this.nudPlayerMPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
+            this.nudPlayerMPPerLevelUp.TabIndex = (118);
+            this.nudPlayerMPPerLevelUp.ValueChanged += (this.nudPlayerMPPerLevelUp_ValueChanged);
+            // 
+            // label119
+            // 
+            this.label119.AutoSize = (true);
+            this.label119.Location = (new global::System.Drawing.Point(642, 228));
+            this.label119.Name = ("label119");
+            this.label119.Size = (new global::System.Drawing.Size(70, 15));
+            this.label119.TabIndex = (117);
+            this.label119.Text = ("MP per turn");
+            // 
+            // label120
+            // 
+            this.label120.AutoSize = (true);
+            this.label120.Location = (new global::System.Drawing.Point(527, 226));
+            this.label120.Name = ("label120");
+            this.label120.Size = (new global::System.Drawing.Size(54, 15));
+            this.label120.TabIndex = (116);
+            this.label120.Text = ("Recovers");
+            // 
+            // nudPlayerBaseMPRegeneration
+            // 
+            this.nudPlayerBaseMPRegeneration.DecimalPlaces = (4);
+            this.nudPlayerBaseMPRegeneration.Location = (new global::System.Drawing.Point(582, 224));
+            this.nudPlayerBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseMPRegeneration.Name = ("nudPlayerBaseMPRegeneration");
+            this.nudPlayerBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
+            this.nudPlayerBaseMPRegeneration.TabIndex = (115);
+            this.nudPlayerBaseMPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.nudPlayerBaseMPRegeneration.ValueChanged += (this.nudPlayerBaseMPRegeneration_ValueChanged);
+            // 
+            // chkPlayerUsesMP
+            // 
+            this.chkPlayerUsesMP.AutoSize = (true);
+            this.chkPlayerUsesMP.Location = (new global::System.Drawing.Point(615, 198));
+            this.chkPlayerUsesMP.Name = ("chkPlayerUsesMP");
+            this.chkPlayerUsesMP.Size = (new global::System.Drawing.Size(71, 19));
+            this.chkPlayerUsesMP.TabIndex = (114);
+            this.chkPlayerUsesMP.Text = ("Uses MP");
+            this.chkPlayerUsesMP.UseVisualStyleBackColor = (true);
+            this.chkPlayerUsesMP.CheckedChanged += (this.chkPlayerUsesMP_CheckedChanged);
+            // 
+            // label110
+            // 
+            this.label110.AutoSize = (true);
+            this.label110.Location = (new global::System.Drawing.Point(584, 199));
+            this.label110.Name = ("label110");
+            this.label110.Size = (new global::System.Drawing.Size(25, 15));
+            this.label110.TabIndex = (113);
+            this.label110.Text = ("MP");
+            // 
+            // nudPlayerBaseMP
+            // 
+            this.nudPlayerBaseMP.Location = (new global::System.Drawing.Point(527, 195));
+            this.nudPlayerBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseMP.Name = ("nudPlayerBaseMP");
+            this.nudPlayerBaseMP.Size = (new global::System.Drawing.Size(55, 23));
+            this.nudPlayerBaseMP.TabIndex = (112);
+            this.nudPlayerBaseMP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.nudPlayerBaseMP.ValueChanged += (this.nudPlayerBaseMP_ValueChanged);
+            // 
             // btnChangePlayerConsoleCharacterBackColor
             // 
             this.btnChangePlayerConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(577, 66));
@@ -1675,7 +1822,7 @@
             // label62
             // 
             this.label62.AutoSize = (true);
-            this.label62.Location = (new global::System.Drawing.Point(402, 289));
+            this.label62.Location = (new global::System.Drawing.Point(393, 317));
             this.label62.Name = ("label62");
             this.label62.Size = (new global::System.Drawing.Size(291, 30));
             this.label62.TabIndex = (102);
@@ -1850,7 +1997,7 @@
             // label52
             // 
             this.label52.AutoSize = (true);
-            this.label52.Location = (new global::System.Drawing.Point(407, 641));
+            this.label52.Location = (new global::System.Drawing.Point(403, 696));
             this.label52.Name = ("label52");
             this.label52.Size = (new global::System.Drawing.Size(54, 15));
             this.label52.TabIndex = (69);
@@ -1859,7 +2006,7 @@
             // label47
             // 
             this.label47.AutoSize = (true);
-            this.label47.Location = (new global::System.Drawing.Point(395, 483));
+            this.label47.Location = (new global::System.Drawing.Point(391, 505));
             this.label47.Name = ("label47");
             this.label47.Size = (new global::System.Drawing.Size(325, 30));
             this.label47.TabIndex = (68);
@@ -1869,7 +2016,7 @@
             // 
             this.label51.AutoSize = (true);
             this.label51.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label51.Location = (new global::System.Drawing.Point(408, 454));
+            this.label51.Location = (new global::System.Drawing.Point(404, 476));
             this.label51.Name = ("label51");
             this.label51.Size = (new global::System.Drawing.Size(115, 15));
             this.label51.TabIndex = (67);
@@ -1878,7 +2025,7 @@
             // chkPlayerCanGainExperience
             // 
             this.chkPlayerCanGainExperience.AutoSize = (true);
-            this.chkPlayerCanGainExperience.Location = (new global::System.Drawing.Point(407, 362));
+            this.chkPlayerCanGainExperience.Location = (new global::System.Drawing.Point(403, 384));
             this.chkPlayerCanGainExperience.Name = ("chkPlayerCanGainExperience");
             this.chkPlayerCanGainExperience.Size = (new global::System.Drawing.Size(169, 19));
             this.chkPlayerCanGainExperience.TabIndex = (66);
@@ -1888,7 +2035,7 @@
             // 
             // nudPlayerMaxLevel
             // 
-            this.nudPlayerMaxLevel.Location = (new global::System.Drawing.Point(513, 414));
+            this.nudPlayerMaxLevel.Location = (new global::System.Drawing.Point(509, 436));
             this.nudPlayerMaxLevel.Name = ("nudPlayerMaxLevel");
             this.nudPlayerMaxLevel.Size = (new global::System.Drawing.Size(44, 23));
             this.nudPlayerMaxLevel.TabIndex = (65);
@@ -1898,7 +2045,7 @@
             // label50
             // 
             this.label50.AutoSize = (true);
-            this.label50.Location = (new global::System.Drawing.Point(404, 417));
+            this.label50.Location = (new global::System.Drawing.Point(400, 439));
             this.label50.Name = ("label50");
             this.label50.Size = (new global::System.Drawing.Size(103, 15));
             this.label50.TabIndex = (64);
@@ -1906,7 +2053,7 @@
             // 
             // txtPlayerLevelUpFormula
             // 
-            this.txtPlayerLevelUpFormula.Location = (new global::System.Drawing.Point(534, 386));
+            this.txtPlayerLevelUpFormula.Location = (new global::System.Drawing.Point(530, 408));
             this.txtPlayerLevelUpFormula.Name = ("txtPlayerLevelUpFormula");
             this.txtPlayerLevelUpFormula.Size = (new global::System.Drawing.Size(180, 23));
             this.txtPlayerLevelUpFormula.TabIndex = (63);
@@ -1916,7 +2063,7 @@
             // label49
             // 
             this.label49.AutoSize = (true);
-            this.label49.Location = (new global::System.Drawing.Point(404, 389));
+            this.label49.Location = (new global::System.Drawing.Point(400, 411));
             this.label49.Name = ("label49");
             this.label49.Size = (new global::System.Drawing.Size(126, 15));
             this.label49.TabIndex = (62);
@@ -1926,7 +2073,7 @@
             // 
             this.label48.AutoSize = (true);
             this.label48.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label48.Location = (new global::System.Drawing.Point(502, 332));
+            this.label48.Location = (new global::System.Drawing.Point(498, 354));
             this.label48.Name = ("label48");
             this.label48.Size = (new global::System.Drawing.Size(101, 21));
             this.label48.TabIndex = (61);
@@ -1934,7 +2081,7 @@
             // 
             // nudPlayerFlatSightRange
             // 
-            this.nudPlayerFlatSightRange.Location = (new global::System.Drawing.Point(588, 255));
+            this.nudPlayerFlatSightRange.Location = (new global::System.Drawing.Point(576, 283));
             this.nudPlayerFlatSightRange.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerFlatSightRange.Name = ("nudPlayerFlatSightRange");
             this.nudPlayerFlatSightRange.Size = (new global::System.Drawing.Size(54, 23));
@@ -1946,7 +2093,7 @@
             // 
             this.cmbPlayerSightRange.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbPlayerSightRange.FormattingEnabled = (true);
-            this.cmbPlayerSightRange.Location = (new global::System.Drawing.Point(452, 255));
+            this.cmbPlayerSightRange.Location = (new global::System.Drawing.Point(443, 283));
             this.cmbPlayerSightRange.Name = ("cmbPlayerSightRange");
             this.cmbPlayerSightRange.Size = (new global::System.Drawing.Size(121, 23));
             this.cmbPlayerSightRange.TabIndex = (58);
@@ -1955,7 +2102,7 @@
             // label43
             // 
             this.label43.AutoSize = (true);
-            this.label43.Location = (new global::System.Drawing.Point(402, 258));
+            this.label43.Location = (new global::System.Drawing.Point(393, 286));
             this.label43.Name = ("label43");
             this.label43.Size = (new global::System.Drawing.Size(48, 15));
             this.label43.TabIndex = (57);
@@ -1964,7 +2111,7 @@
             // label44
             // 
             this.label44.AutoSize = (true);
-            this.label44.Location = (new global::System.Drawing.Point(637, 202));
+            this.label44.Location = (new global::System.Drawing.Point(637, 170));
             this.label44.Name = ("label44");
             this.label44.Size = (new global::System.Drawing.Size(68, 15));
             this.label44.TabIndex = (56);
@@ -1973,7 +2120,7 @@
             // label45
             // 
             this.label45.AutoSize = (true);
-            this.label45.Location = (new global::System.Drawing.Point(522, 200));
+            this.label45.Location = (new global::System.Drawing.Point(522, 168));
             this.label45.Name = ("label45");
             this.label45.Size = (new global::System.Drawing.Size(54, 15));
             this.label45.TabIndex = (55);
@@ -1982,7 +2129,7 @@
             // label46
             // 
             this.label46.AutoSize = (true);
-            this.label46.Location = (new global::System.Drawing.Point(521, 643));
+            this.label46.Location = (new global::System.Drawing.Point(517, 698));
             this.label46.Name = ("label46");
             this.label46.Size = (new global::System.Drawing.Size(167, 15));
             this.label46.TabIndex = (54);
@@ -1991,7 +2138,7 @@
             // nudPlayerHPRegenerationPerLevelUp
             // 
             this.nudPlayerHPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(464, 639));
+            this.nudPlayerHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 694));
             this.nudPlayerHPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerHPRegenerationPerLevelUp.Name = ("nudPlayerHPRegenerationPerLevelUp");
             this.nudPlayerHPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2001,7 +2148,7 @@
             // nudPlayerBaseHPRegeneration
             // 
             this.nudPlayerBaseHPRegeneration.DecimalPlaces = (4);
-            this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 198));
+            this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 166));
             this.nudPlayerBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerBaseHPRegeneration.Name = ("nudPlayerBaseHPRegeneration");
             this.nudPlayerBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
@@ -2012,7 +2159,7 @@
             // label42
             // 
             this.label42.AutoSize = (true);
-            this.label42.Location = (new global::System.Drawing.Point(407, 614));
+            this.label42.Location = (new global::System.Drawing.Point(403, 667));
             this.label42.Name = ("label42");
             this.label42.Size = (new global::System.Drawing.Size(61, 15));
             this.label42.TabIndex = (51);
@@ -2021,7 +2168,7 @@
             // label41
             // 
             this.label41.AutoSize = (true);
-            this.label41.Location = (new global::System.Drawing.Point(643, 170));
+            this.label41.Location = (new global::System.Drawing.Point(513, 258));
             this.label41.Name = ("label41");
             this.label41.Size = (new global::System.Drawing.Size(73, 15));
             this.label41.TabIndex = (50);
@@ -2030,7 +2177,7 @@
             // label40
             // 
             this.label40.AutoSize = (true);
-            this.label40.Location = (new global::System.Drawing.Point(522, 168));
+            this.label40.Location = (new global::System.Drawing.Point(392, 256));
             this.label40.Name = ("label40");
             this.label40.Size = (new global::System.Drawing.Size(61, 15));
             this.label40.TabIndex = (49);
@@ -2039,7 +2186,7 @@
             // label39
             // 
             this.label39.AutoSize = (true);
-            this.label39.Location = (new global::System.Drawing.Point(525, 615));
+            this.label39.Location = (new global::System.Drawing.Point(521, 668));
             this.label39.Name = ("label39");
             this.label39.Size = (new global::System.Drawing.Size(174, 15));
             this.label39.TabIndex = (48);
@@ -2048,7 +2195,7 @@
             // nudPlayerMovementPerLevelUp
             // 
             this.nudPlayerMovementPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMovementPerLevelUp.Location = (new global::System.Drawing.Point(468, 612));
+            this.nudPlayerMovementPerLevelUp.Location = (new global::System.Drawing.Point(464, 665));
             this.nudPlayerMovementPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerMovementPerLevelUp.Name = ("nudPlayerMovementPerLevelUp");
             this.nudPlayerMovementPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2057,7 +2204,7 @@
             // 
             // nudPlayerBaseMovement
             // 
-            this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(583, 166));
+            this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(453, 254));
             this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerBaseMovement.Name = ("nudPlayerBaseMovement");
             this.nudPlayerBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
@@ -2068,7 +2215,7 @@
             // label37
             // 
             this.label37.AutoSize = (true);
-            this.label37.Location = (new global::System.Drawing.Point(463, 585));
+            this.label37.Location = (new global::System.Drawing.Point(459, 638));
             this.label37.Name = ("label37");
             this.label37.Size = (new global::System.Drawing.Size(148, 15));
             this.label37.TabIndex = (44);
@@ -2077,7 +2224,7 @@
             // nudPlayerDefensePerLevelUp
             // 
             this.nudPlayerDefensePerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerDefensePerLevelUp.Location = (new global::System.Drawing.Point(407, 582));
+            this.nudPlayerDefensePerLevelUp.Location = (new global::System.Drawing.Point(403, 635));
             this.nudPlayerDefensePerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerDefensePerLevelUp.Name = ("nudPlayerDefensePerLevelUp");
             this.nudPlayerDefensePerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2114,7 +2261,7 @@
             // label34
             // 
             this.label34.AutoSize = (true);
-            this.label34.Location = (new global::System.Drawing.Point(463, 558));
+            this.label34.Location = (new global::System.Drawing.Point(459, 611));
             this.label34.Name = ("label34");
             this.label34.Size = (new global::System.Drawing.Size(140, 15));
             this.label34.TabIndex = (39);
@@ -2123,7 +2270,7 @@
             // nudPlayerAttackPerLevelUp
             // 
             this.nudPlayerAttackPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerAttackPerLevelUp.Location = (new global::System.Drawing.Point(407, 555));
+            this.nudPlayerAttackPerLevelUp.Location = (new global::System.Drawing.Point(403, 608));
             this.nudPlayerAttackPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerAttackPerLevelUp.Name = ("nudPlayerAttackPerLevelUp");
             this.nudPlayerAttackPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2151,7 +2298,7 @@
             // label33
             // 
             this.label33.AutoSize = (true);
-            this.label33.Location = (new global::System.Drawing.Point(463, 531));
+            this.label33.Location = (new global::System.Drawing.Point(459, 553));
             this.label33.Name = ("label33");
             this.label33.Size = (new global::System.Drawing.Size(122, 15));
             this.label33.TabIndex = (35);
@@ -2160,7 +2307,7 @@
             // nudPlayerHPPerLevelUp
             // 
             this.nudPlayerHPPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPPerLevelUp.Location = (new global::System.Drawing.Point(407, 528));
+            this.nudPlayerHPPerLevelUp.Location = (new global::System.Drawing.Point(403, 550));
             this.nudPlayerHPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerHPPerLevelUp.Name = ("nudPlayerHPPerLevelUp");
             this.nudPlayerHPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2348,7 +2495,7 @@
             // lblPlayerSightRangeText
             // 
             this.lblPlayerSightRangeText.AutoSize = (true);
-            this.lblPlayerSightRangeText.Location = (new global::System.Drawing.Point(648, 258));
+            this.lblPlayerSightRangeText.Location = (new global::System.Drawing.Point(639, 286));
             this.lblPlayerSightRangeText.Name = ("lblPlayerSightRangeText");
             this.lblPlayerSightRangeText.Size = (new global::System.Drawing.Size(28, 15));
             this.lblPlayerSightRangeText.TabIndex = (60);
@@ -2358,6 +2505,17 @@
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
+            this.tpNPC.Controls.Add(this.label128);
+            this.tpNPC.Controls.Add(this.label129);
+            this.tpNPC.Controls.Add(this.nudNPCMPRegenerationPerLevelUp);
+            this.tpNPC.Controls.Add(this.label127);
+            this.tpNPC.Controls.Add(this.nudNPCMPPerLevelUp);
+            this.tpNPC.Controls.Add(this.label124);
+            this.tpNPC.Controls.Add(this.label125);
+            this.tpNPC.Controls.Add(this.nudNPCBaseMPRegeneration);
+            this.tpNPC.Controls.Add(this.chkNPCUsesMP);
+            this.tpNPC.Controls.Add(this.label126);
+            this.tpNPC.Controls.Add(this.nudNPCBaseMP);
             this.tpNPC.Controls.Add(this.nudNPCOddsToTargetSelf);
             this.tpNPC.Controls.Add(this.label104);
             this.tpNPC.Controls.Add(this.txtNPCExperiencePayout);
@@ -2446,6 +2604,112 @@
             this.tpNPC.TabIndex = (5);
             this.tpNPC.Text = ("NPC");
             this.tpNPC.UseVisualStyleBackColor = (true);
+            // 
+            // label128
+            // 
+            this.label128.AutoSize = (true);
+            this.label128.Location = (new global::System.Drawing.Point(406, 727));
+            this.label128.Name = ("label128");
+            this.label128.Size = (new global::System.Drawing.Size(54, 15));
+            this.label128.TabIndex = (206);
+            this.label128.Text = ("Recovers");
+            // 
+            // label129
+            // 
+            this.label129.AutoSize = (true);
+            this.label129.Location = (new global::System.Drawing.Point(520, 729));
+            this.label129.Name = ("label129");
+            this.label129.Size = (new global::System.Drawing.Size(169, 15));
+            this.label129.TabIndex = (205);
+            this.label129.Text = ("more MP per turn per Level Up");
+            // 
+            // nudNPCMPRegenerationPerLevelUp
+            // 
+            this.nudNPCMPRegenerationPerLevelUp.DecimalPlaces = (4);
+            this.nudNPCMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(463, 725));
+            this.nudNPCMPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCMPRegenerationPerLevelUp.Name = ("nudNPCMPRegenerationPerLevelUp");
+            this.nudNPCMPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
+            this.nudNPCMPRegenerationPerLevelUp.TabIndex = (204);
+            this.nudNPCMPRegenerationPerLevelUp.ValueChanged += (this.nudNPCMPRegenerationPerLevelUp_ValueChanged);
+            // 
+            // label127
+            // 
+            this.label127.AutoSize = (true);
+            this.label127.Location = (new global::System.Drawing.Point(462, 588));
+            this.label127.Name = ("label127");
+            this.label127.Size = (new global::System.Drawing.Size(124, 15));
+            this.label127.TabIndex = (203);
+            this.label127.Text = ("more MP per Level Up");
+            // 
+            // nudNPCMPPerLevelUp
+            // 
+            this.nudNPCMPPerLevelUp.DecimalPlaces = (4);
+            this.nudNPCMPPerLevelUp.Location = (new global::System.Drawing.Point(406, 585));
+            this.nudNPCMPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCMPPerLevelUp.Name = ("nudNPCMPPerLevelUp");
+            this.nudNPCMPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
+            this.nudNPCMPPerLevelUp.TabIndex = (202);
+            this.nudNPCMPPerLevelUp.ValueChanged += (this.nudNPCMPPerLevelUp_ValueChanged);
+            // 
+            // label124
+            // 
+            this.label124.AutoSize = (true);
+            this.label124.Location = (new global::System.Drawing.Point(636, 230));
+            this.label124.Name = ("label124");
+            this.label124.Size = (new global::System.Drawing.Size(70, 15));
+            this.label124.TabIndex = (201);
+            this.label124.Text = ("MP per turn");
+            // 
+            // label125
+            // 
+            this.label125.AutoSize = (true);
+            this.label125.Location = (new global::System.Drawing.Point(521, 228));
+            this.label125.Name = ("label125");
+            this.label125.Size = (new global::System.Drawing.Size(54, 15));
+            this.label125.TabIndex = (200);
+            this.label125.Text = ("Recovers");
+            // 
+            // nudNPCBaseMPRegeneration
+            // 
+            this.nudNPCBaseMPRegeneration.DecimalPlaces = (4);
+            this.nudNPCBaseMPRegeneration.Location = (new global::System.Drawing.Point(576, 226));
+            this.nudNPCBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseMPRegeneration.Name = ("nudNPCBaseMPRegeneration");
+            this.nudNPCBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
+            this.nudNPCBaseMPRegeneration.TabIndex = (199);
+            this.nudNPCBaseMPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.nudNPCBaseMPRegeneration.ValueChanged += (this.nudNPCBaseMPRegeneration_ValueChanged);
+            // 
+            // chkNPCUsesMP
+            // 
+            this.chkNPCUsesMP.AutoSize = (true);
+            this.chkNPCUsesMP.Location = (new global::System.Drawing.Point(609, 200));
+            this.chkNPCUsesMP.Name = ("chkNPCUsesMP");
+            this.chkNPCUsesMP.Size = (new global::System.Drawing.Size(71, 19));
+            this.chkNPCUsesMP.TabIndex = (198);
+            this.chkNPCUsesMP.Text = ("Uses MP");
+            this.chkNPCUsesMP.UseVisualStyleBackColor = (true);
+            this.chkNPCUsesMP.CheckedChanged += (this.chkNPCUsesMP_CheckedChanged);
+            // 
+            // label126
+            // 
+            this.label126.AutoSize = (true);
+            this.label126.Location = (new global::System.Drawing.Point(578, 201));
+            this.label126.Name = ("label126");
+            this.label126.Size = (new global::System.Drawing.Size(25, 15));
+            this.label126.TabIndex = (197);
+            this.label126.Text = ("MP");
+            // 
+            // nudNPCBaseMP
+            // 
+            this.nudNPCBaseMP.Location = (new global::System.Drawing.Point(521, 197));
+            this.nudNPCBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseMP.Name = ("nudNPCBaseMP");
+            this.nudNPCBaseMP.Size = (new global::System.Drawing.Size(55, 23));
+            this.nudNPCBaseMP.TabIndex = (196);
+            this.nudNPCBaseMP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.nudNPCBaseMP.ValueChanged += (this.nudNPCBaseMP_ValueChanged);
             // 
             // nudNPCOddsToTargetSelf
             // 
@@ -2576,7 +2840,7 @@
             // label68
             // 
             this.label68.AutoSize = (true);
-            this.label68.Location = (new global::System.Drawing.Point(402, 289));
+            this.label68.Location = (new global::System.Drawing.Point(401, 318));
             this.label68.Name = ("label68");
             this.label68.Size = (new global::System.Drawing.Size(291, 30));
             this.label68.TabIndex = (181);
@@ -2751,7 +3015,7 @@
             // label75
             // 
             this.label75.AutoSize = (true);
-            this.label75.Location = (new global::System.Drawing.Point(407, 641));
+            this.label75.Location = (new global::System.Drawing.Point(406, 700));
             this.label75.Name = ("label75");
             this.label75.Size = (new global::System.Drawing.Size(54, 15));
             this.label75.TabIndex = (163);
@@ -2760,7 +3024,7 @@
             // label76
             // 
             this.label76.AutoSize = (true);
-            this.label76.Location = (new global::System.Drawing.Point(395, 483));
+            this.label76.Location = (new global::System.Drawing.Point(394, 512));
             this.label76.Name = ("label76");
             this.label76.Size = (new global::System.Drawing.Size(325, 30));
             this.label76.TabIndex = (162);
@@ -2770,7 +3034,7 @@
             // 
             this.label77.AutoSize = (true);
             this.label77.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label77.Location = (new global::System.Drawing.Point(408, 454));
+            this.label77.Location = (new global::System.Drawing.Point(407, 483));
             this.label77.Name = ("label77");
             this.label77.Size = (new global::System.Drawing.Size(115, 15));
             this.label77.TabIndex = (161);
@@ -2779,7 +3043,7 @@
             // chkNPCCanGainExperience
             // 
             this.chkNPCCanGainExperience.AutoSize = (true);
-            this.chkNPCCanGainExperience.Location = (new global::System.Drawing.Point(407, 362));
+            this.chkNPCCanGainExperience.Location = (new global::System.Drawing.Point(406, 391));
             this.chkNPCCanGainExperience.Name = ("chkNPCCanGainExperience");
             this.chkNPCCanGainExperience.Size = (new global::System.Drawing.Size(169, 19));
             this.chkNPCCanGainExperience.TabIndex = (160);
@@ -2789,7 +3053,7 @@
             // 
             // nudNPCMaxLevel
             // 
-            this.nudNPCMaxLevel.Location = (new global::System.Drawing.Point(513, 414));
+            this.nudNPCMaxLevel.Location = (new global::System.Drawing.Point(512, 443));
             this.nudNPCMaxLevel.Name = ("nudNPCMaxLevel");
             this.nudNPCMaxLevel.Size = (new global::System.Drawing.Size(44, 23));
             this.nudNPCMaxLevel.TabIndex = (159);
@@ -2799,7 +3063,7 @@
             // label78
             // 
             this.label78.AutoSize = (true);
-            this.label78.Location = (new global::System.Drawing.Point(404, 417));
+            this.label78.Location = (new global::System.Drawing.Point(403, 446));
             this.label78.Name = ("label78");
             this.label78.Size = (new global::System.Drawing.Size(103, 15));
             this.label78.TabIndex = (158);
@@ -2807,7 +3071,7 @@
             // 
             // txtNPCLevelUpFormula
             // 
-            this.txtNPCLevelUpFormula.Location = (new global::System.Drawing.Point(534, 386));
+            this.txtNPCLevelUpFormula.Location = (new global::System.Drawing.Point(533, 415));
             this.txtNPCLevelUpFormula.Name = ("txtNPCLevelUpFormula");
             this.txtNPCLevelUpFormula.Size = (new global::System.Drawing.Size(180, 23));
             this.txtNPCLevelUpFormula.TabIndex = (157);
@@ -2817,7 +3081,7 @@
             // label79
             // 
             this.label79.AutoSize = (true);
-            this.label79.Location = (new global::System.Drawing.Point(404, 389));
+            this.label79.Location = (new global::System.Drawing.Point(403, 418));
             this.label79.Name = ("label79");
             this.label79.Size = (new global::System.Drawing.Size(126, 15));
             this.label79.TabIndex = (156);
@@ -2827,7 +3091,7 @@
             // 
             this.label80.AutoSize = (true);
             this.label80.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label80.Location = (new global::System.Drawing.Point(502, 332));
+            this.label80.Location = (new global::System.Drawing.Point(501, 361));
             this.label80.Name = ("label80");
             this.label80.Size = (new global::System.Drawing.Size(101, 21));
             this.label80.TabIndex = (155);
@@ -2835,7 +3099,7 @@
             // 
             // nudNPCFlatSightRange
             // 
-            this.nudNPCFlatSightRange.Location = (new global::System.Drawing.Point(588, 255));
+            this.nudNPCFlatSightRange.Location = (new global::System.Drawing.Point(587, 284));
             this.nudNPCFlatSightRange.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCFlatSightRange.Name = ("nudNPCFlatSightRange");
             this.nudNPCFlatSightRange.Size = (new global::System.Drawing.Size(54, 23));
@@ -2847,7 +3111,7 @@
             // 
             this.cmbNPCSightRange.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbNPCSightRange.FormattingEnabled = (true);
-            this.cmbNPCSightRange.Location = (new global::System.Drawing.Point(452, 255));
+            this.cmbNPCSightRange.Location = (new global::System.Drawing.Point(451, 284));
             this.cmbNPCSightRange.Name = ("cmbNPCSightRange");
             this.cmbNPCSightRange.Size = (new global::System.Drawing.Size(121, 23));
             this.cmbNPCSightRange.TabIndex = (152);
@@ -2856,7 +3120,7 @@
             // label81
             // 
             this.label81.AutoSize = (true);
-            this.label81.Location = (new global::System.Drawing.Point(402, 258));
+            this.label81.Location = (new global::System.Drawing.Point(401, 287));
             this.label81.Name = ("label81");
             this.label81.Size = (new global::System.Drawing.Size(48, 15));
             this.label81.TabIndex = (151);
@@ -2865,7 +3129,7 @@
             // label82
             // 
             this.label82.AutoSize = (true);
-            this.label82.Location = (new global::System.Drawing.Point(637, 202));
+            this.label82.Location = (new global::System.Drawing.Point(634, 172));
             this.label82.Name = ("label82");
             this.label82.Size = (new global::System.Drawing.Size(68, 15));
             this.label82.TabIndex = (150);
@@ -2874,7 +3138,7 @@
             // label83
             // 
             this.label83.AutoSize = (true);
-            this.label83.Location = (new global::System.Drawing.Point(522, 200));
+            this.label83.Location = (new global::System.Drawing.Point(519, 170));
             this.label83.Name = ("label83");
             this.label83.Size = (new global::System.Drawing.Size(54, 15));
             this.label83.TabIndex = (149);
@@ -2883,7 +3147,7 @@
             // label84
             // 
             this.label84.AutoSize = (true);
-            this.label84.Location = (new global::System.Drawing.Point(521, 643));
+            this.label84.Location = (new global::System.Drawing.Point(520, 702));
             this.label84.Name = ("label84");
             this.label84.Size = (new global::System.Drawing.Size(167, 15));
             this.label84.TabIndex = (148);
@@ -2892,7 +3156,7 @@
             // nudNPCHPRegenerationPerLevelUp
             // 
             this.nudNPCHPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(464, 639));
+            this.nudNPCHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(463, 698));
             this.nudNPCHPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCHPRegenerationPerLevelUp.Name = ("nudNPCHPRegenerationPerLevelUp");
             this.nudNPCHPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2901,7 +3165,7 @@
             // nudNPCBaseHPRegeneration
             // 
             this.nudNPCBaseHPRegeneration.DecimalPlaces = (4);
-            this.nudNPCBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 198));
+            this.nudNPCBaseHPRegeneration.Location = (new global::System.Drawing.Point(574, 168));
             this.nudNPCBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCBaseHPRegeneration.Name = ("nudNPCBaseHPRegeneration");
             this.nudNPCBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
@@ -2912,7 +3176,7 @@
             // label85
             // 
             this.label85.AutoSize = (true);
-            this.label85.Location = (new global::System.Drawing.Point(407, 614));
+            this.label85.Location = (new global::System.Drawing.Point(406, 673));
             this.label85.Name = ("label85");
             this.label85.Size = (new global::System.Drawing.Size(61, 15));
             this.label85.TabIndex = (145);
@@ -2921,7 +3185,7 @@
             // label86
             // 
             this.label86.AutoSize = (true);
-            this.label86.Location = (new global::System.Drawing.Point(643, 170));
+            this.label86.Location = (new global::System.Drawing.Point(523, 259));
             this.label86.Name = ("label86");
             this.label86.Size = (new global::System.Drawing.Size(73, 15));
             this.label86.TabIndex = (144);
@@ -2930,7 +3194,7 @@
             // label87
             // 
             this.label87.AutoSize = (true);
-            this.label87.Location = (new global::System.Drawing.Point(522, 168));
+            this.label87.Location = (new global::System.Drawing.Point(402, 257));
             this.label87.Name = ("label87");
             this.label87.Size = (new global::System.Drawing.Size(61, 15));
             this.label87.TabIndex = (143);
@@ -2939,7 +3203,7 @@
             // label88
             // 
             this.label88.AutoSize = (true);
-            this.label88.Location = (new global::System.Drawing.Point(525, 615));
+            this.label88.Location = (new global::System.Drawing.Point(524, 674));
             this.label88.Name = ("label88");
             this.label88.Size = (new global::System.Drawing.Size(174, 15));
             this.label88.TabIndex = (142);
@@ -2948,7 +3212,7 @@
             // nudNPCMovementPerLevelUp
             // 
             this.nudNPCMovementPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCMovementPerLevelUp.Location = (new global::System.Drawing.Point(468, 612));
+            this.nudNPCMovementPerLevelUp.Location = (new global::System.Drawing.Point(467, 671));
             this.nudNPCMovementPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCMovementPerLevelUp.Name = ("nudNPCMovementPerLevelUp");
             this.nudNPCMovementPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2957,7 +3221,7 @@
             // 
             // nudNPCBaseMovement
             // 
-            this.nudNPCBaseMovement.Location = (new global::System.Drawing.Point(583, 166));
+            this.nudNPCBaseMovement.Location = (new global::System.Drawing.Point(463, 255));
             this.nudNPCBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCBaseMovement.Name = ("nudNPCBaseMovement");
             this.nudNPCBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
@@ -2968,7 +3232,7 @@
             // label89
             // 
             this.label89.AutoSize = (true);
-            this.label89.Location = (new global::System.Drawing.Point(463, 585));
+            this.label89.Location = (new global::System.Drawing.Point(462, 644));
             this.label89.Name = ("label89");
             this.label89.Size = (new global::System.Drawing.Size(148, 15));
             this.label89.TabIndex = (139);
@@ -2977,7 +3241,7 @@
             // nudNPCDefensePerLevelUp
             // 
             this.nudNPCDefensePerLevelUp.DecimalPlaces = (4);
-            this.nudNPCDefensePerLevelUp.Location = (new global::System.Drawing.Point(407, 582));
+            this.nudNPCDefensePerLevelUp.Location = (new global::System.Drawing.Point(406, 641));
             this.nudNPCDefensePerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCDefensePerLevelUp.Name = ("nudNPCDefensePerLevelUp");
             this.nudNPCDefensePerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -3014,7 +3278,7 @@
             // label92
             // 
             this.label92.AutoSize = (true);
-            this.label92.Location = (new global::System.Drawing.Point(463, 558));
+            this.label92.Location = (new global::System.Drawing.Point(462, 617));
             this.label92.Name = ("label92");
             this.label92.Size = (new global::System.Drawing.Size(140, 15));
             this.label92.TabIndex = (134);
@@ -3023,7 +3287,7 @@
             // nudNPCAttackPerLevelUp
             // 
             this.nudNPCAttackPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCAttackPerLevelUp.Location = (new global::System.Drawing.Point(407, 555));
+            this.nudNPCAttackPerLevelUp.Location = (new global::System.Drawing.Point(406, 614));
             this.nudNPCAttackPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCAttackPerLevelUp.Name = ("nudNPCAttackPerLevelUp");
             this.nudNPCAttackPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -3051,7 +3315,7 @@
             // label94
             // 
             this.label94.AutoSize = (true);
-            this.label94.Location = (new global::System.Drawing.Point(463, 531));
+            this.label94.Location = (new global::System.Drawing.Point(462, 560));
             this.label94.Name = ("label94");
             this.label94.Size = (new global::System.Drawing.Size(122, 15));
             this.label94.TabIndex = (130);
@@ -3060,7 +3324,7 @@
             // nudNPCHPPerLevelUp
             // 
             this.nudNPCHPPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCHPPerLevelUp.Location = (new global::System.Drawing.Point(407, 528));
+            this.nudNPCHPPerLevelUp.Location = (new global::System.Drawing.Point(406, 557));
             this.nudNPCHPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudNPCHPPerLevelUp.Name = ("nudNPCHPPerLevelUp");
             this.nudNPCHPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -3237,7 +3501,7 @@
             // lblNPCSightRangeText
             // 
             this.lblNPCSightRangeText.AutoSize = (true);
-            this.lblNPCSightRangeText.Location = (new global::System.Drawing.Point(648, 258));
+            this.lblNPCSightRangeText.Location = (new global::System.Drawing.Point(647, 287));
             this.lblNPCSightRangeText.Name = ("lblNPCSightRangeText");
             this.lblNPCSightRangeText.Size = (new global::System.Drawing.Size(28, 15));
             this.lblNPCSightRangeText.TabIndex = (154);
@@ -4076,6 +4340,10 @@
             this.tpFactionInfos.PerformLayout();
             this.tpPlayerClass.ResumeLayout(false);
             this.tpPlayerClass.PerformLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPRegenerationPerLevelUp)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPPerLevelUp)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMPRegeneration)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMP)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMaxLevel)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerFlatSightRange)).EndInit();
@@ -4091,6 +4359,10 @@
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHP)).EndInit();
             this.tpNPC.ResumeLayout(false);
             this.tpNPC.PerformLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPRegenerationPerLevelUp)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPPerLevelUp)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMPRegeneration)).EndInit();
+            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMP)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMaxLevel)).EndInit();
@@ -4449,5 +4721,27 @@
         private global::System.Windows.Forms.Label label109;
         private global::System.Windows.Forms.TreeView tvValidationResults;
         private global::System.Windows.Forms.SaveFileDialog sfdDungeon;
+        private global::System.Windows.Forms.Label label122;
+        private global::System.Windows.Forms.Label label123;
+        private global::System.Windows.Forms.NumericUpDown nudPlayerMPRegenerationPerLevelUp;
+        private global::System.Windows.Forms.Label label121;
+        private global::System.Windows.Forms.NumericUpDown nudPlayerMPPerLevelUp;
+        private global::System.Windows.Forms.Label label119;
+        private global::System.Windows.Forms.Label label120;
+        private global::System.Windows.Forms.NumericUpDown nudPlayerBaseMPRegeneration;
+        private global::System.Windows.Forms.CheckBox chkPlayerUsesMP;
+        private global::System.Windows.Forms.Label label110;
+        private global::System.Windows.Forms.NumericUpDown nudPlayerBaseMP;
+        private global::System.Windows.Forms.Label label128;
+        private global::System.Windows.Forms.Label label129;
+        private global::System.Windows.Forms.NumericUpDown nudNPCMPRegenerationPerLevelUp;
+        private global::System.Windows.Forms.Label label127;
+        private global::System.Windows.Forms.NumericUpDown nudNPCMPPerLevelUp;
+        private global::System.Windows.Forms.Label label124;
+        private global::System.Windows.Forms.Label label125;
+        private global::System.Windows.Forms.NumericUpDown nudNPCBaseMPRegeneration;
+        private global::System.Windows.Forms.CheckBox chkNPCUsesMP;
+        private global::System.Windows.Forms.Label label126;
+        private global::System.Windows.Forms.NumericUpDown nudNPCBaseMP;
     }
 }

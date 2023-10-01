@@ -4,5 +4,6 @@
     {
         void Die(Entity? attacker = null);
         void TryRegenerateHP();
+        void TryRegenerateMP();
     }
 }
