@@ -25,7 +25,7 @@ namespace RogueCustomsConsoleClient {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsLocal {
             get {
                 return ((bool)(this["IsLocal"]));
