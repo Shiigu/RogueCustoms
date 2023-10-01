@@ -36,7 +36,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             };
             DetailsButton.Click += DetailsButton_Click;
 
-
             HPBar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left)
             {
                 Position = new Point(2, 10),
@@ -99,13 +98,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 this.Print((square.Width - playerEntity.HPStatName.Length) / 2, 9, playerEntity.HPStatName, true);
                 HPBar.DisplayText = $"{playerEntity.HP}/{playerEntity.MaxHP}";
                 HPBar.Progress = (float)playerEntity.HP / playerEntity.MaxHP;
-                //this.Print(2, 10, $"{playerEntity.HPStatName}: {playerEntity.HP}/{playerEntity.MaxHP}", true);
                 this.Print(2, 13, LocalizationManager.GetString("PlayerInfoWeaponHeader"), true);
-                this.Print(2, 14, playerEntity.Weapon, true);
+
+                this.SetGlyph(2, 14, new ColoredGlyph(playerEntity.Weapon.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.Character.ToGlyph()));
+                this.Print(3, 14, $" - {playerEntity.Weapon.Name}", true);
                 this.Print(2, 16, $"{playerEntity.DamageStatName}:", true);
                 this.Print(2, 17, playerEntity.Damage, true);
                 this.Print(2, 20, LocalizationManager.GetString("PlayerInfoArmorHeader"), true);
-                this.Print(2, 21, playerEntity.Armor, true);
+                this.SetGlyph(2, 21, new ColoredGlyph(playerEntity.Armor.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.Character.ToGlyph()));
+                this.Print(3, 21, $" - {playerEntity.Armor.Name}", true);
                 this.Print(2, 23, $"{playerEntity.MitigationStatName}:", true);
                 this.Print(2, 24, playerEntity.Mitigation, true);
                 this.Print(2, 26, $"{playerEntity.MovementStatName}: {playerEntity.Movement}", true);

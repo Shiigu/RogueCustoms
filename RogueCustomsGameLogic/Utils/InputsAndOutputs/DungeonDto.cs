@@ -140,10 +140,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string HPStatName { get; set; }
         public int HP { get; set; }
         public int MaxHP { get; set; }
-        public string Weapon { get; set; }
+        public SimpleEntityDto Weapon { get; set; }
         public string DamageStatName { get; set; }
         public string Damage { get; set; }
-        public string Armor { get; set; }
+        public SimpleEntityDto Armor { get; set; }
         public string MitigationStatName { get; set; }
         public string Mitigation { get; set; }
         public string MovementStatName { get; set; }
@@ -187,10 +187,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HPStatName = map.Locale["CharacterHPStat"];
                 HP = pc.HP;
                 MaxHP = pc.MaxHP;
-                Weapon = pc.Weapon.Name;
+                Weapon = new SimpleEntityDto(pc.Weapon);
                 DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;
-                Armor = pc.Armor.Name;
+                Armor = new SimpleEntityDto(pc.Armor);
                 MitigationStatName = map.Locale["CharacterMitigationStat"];
                 Mitigation = pc.Mitigation;
                 MovementStatName = map.Locale["CharacterMovementStat"];
@@ -198,6 +198,18 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 CanMove = pc.Movement > 0;
                 CanTakeAction = pc.CanTakeAction;
             }
+        }
+    }
+
+    public class SimpleEntityDto
+    {
+        public string Name { get; set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; set; }
+
+        public SimpleEntityDto(Entity e)
+        {
+            Name = e.Name;
+            ConsoleRepresentation = e.ConsoleRepresentation;
         }
     }
 
