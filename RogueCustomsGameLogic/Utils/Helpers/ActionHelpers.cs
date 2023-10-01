@@ -24,12 +24,15 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "Armor",
             "HP",
             "MaxHP",
+            "MP",
+            "MaxMP",
             "Attack",
             "Damage",
             "Defense",
             "Mitigation",
             "Movement",
             "HPRegeneration",
+            "MPRegeneration",
             "ExperiencePayout",
             "Owner",
             "Power",
@@ -80,6 +83,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                                 case "maxhp":
                                     paramsObject.StatAlterationList = c.MaxHPModifications;
                                     break;
+                                case "maxmp":
+                                    paramsObject.StatAlterationList = c.MaxMPModifications;
+                                    break;
                                 case "attack":
                                     paramsObject.StatAlterationList = c.AttackModifications;
                                     break;
@@ -91,6 +97,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                                     break;
                                 case "hpregeneration":
                                     paramsObject.StatAlterationList = c.HPRegenerationModifications;
+                                    break;
+                                case "mpregeneration":
+                                    paramsObject.StatAlterationList = c.MPRegenerationModifications;
                                     break;
                             }
                             break;

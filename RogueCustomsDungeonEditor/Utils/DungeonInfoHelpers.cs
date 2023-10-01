@@ -141,8 +141,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 RequiresNamePrompt = false,
                 Faction = "",
                 StartsVisible = true,
+                UsesMP = false,
                 BaseHP = 1,
                 MaxHPIncreasePerLevel = 0,
+                BaseMP = 0,
+                MaxMPIncreasePerLevel = 0,
                 BaseAttack = 0,
                 AttackIncreasePerLevel = 0,
                 BaseDefense = 0,
@@ -151,6 +154,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 MovementIncreasePerLevel = 0,
                 BaseHPRegeneration = 0,
                 HPRegenerationIncreasePerLevel = 0,
+                BaseMPRegeneration = 0,
+                MPRegenerationIncreasePerLevel = 0,
                 BaseSightRange = "FullRoom",
                 StartingWeapon = "",
                 StartingArmor = "",
@@ -182,8 +187,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 StartsVisible = true,
                 KnowsAllCharacterPositions = true,
                 ExperiencePayoutFormula = "level",
+                UsesMP = false,
                 BaseHP = 1,
                 MaxHPIncreasePerLevel = 0,
+                BaseMP = 0,
+                MaxMPIncreasePerLevel = 0,
                 BaseAttack = 0,
                 AttackIncreasePerLevel = 0,
                 BaseDefense = 0,
@@ -192,6 +200,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 MovementIncreasePerLevel = 0,
                 BaseHPRegeneration = 0,
                 HPRegenerationIncreasePerLevel = 0,
+                BaseMPRegeneration = 0,
+                MPRegenerationIncreasePerLevel = 0,
                 BaseSightRange = "FullRoom",
                 StartingWeapon = "",
                 StartingArmor = "",
@@ -349,6 +359,7 @@ namespace RogueCustomsDungeonEditor.Utils
             clonedAction.MinimumRange = info.MinimumRange;
             clonedAction.MaximumRange = info.MaximumRange;
             clonedAction.MaximumUses = info.MaximumUses;
+            clonedAction.MPCost = info.MPCost;
             clonedAction.TargetTypes = new List<string>(info.TargetTypes ?? new List<string>());
             clonedAction.Effect = info.Effect.Clone();
 

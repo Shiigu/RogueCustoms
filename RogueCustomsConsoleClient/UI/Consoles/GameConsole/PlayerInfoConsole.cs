@@ -16,6 +16,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
     {
         private string DetailsButtonText;
         private ProgressBar HPBar;
+        private ProgressBar MPBar;
         public Button DetailsButton;
 
         public PlayerInfoConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.PlayerInfoCellWidth, GameConsoleConstants.PlayerInfoCellHeight)
@@ -31,7 +32,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             DetailsButtonText = $" {LocalizationManager.GetString("DetailsButtonText")} ".ToAscii();
             DetailsButton = new Button(DetailsButtonText.Length, 1)
             {
-                Position = new Point((Width - DetailsButtonText.Length) / 2, 38),
+                Position = new Point((Width - DetailsButtonText.Length) / 2, 39),
                 Text = DetailsButtonText
             };
             DetailsButton.Click += DetailsButton_Click;
@@ -43,18 +44,37 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 DisplayTextColor = Color.White
             };
 
-            var themeColors = new Colors();
+            var hpBarThemeColors = new Colors();
 
-            themeColors.Appearance_ControlDisabled.Foreground = Color.Red;
-            themeColors.Appearance_ControlFocused.Foreground = Color.Red;
-            themeColors.Appearance_ControlMouseDown.Foreground = Color.Red;
-            themeColors.Appearance_ControlOver.Foreground = Color.Red;
-            themeColors.Appearance_ControlNormal.Foreground = Color.Red;
-            themeColors.Appearance_ControlSelected.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlDisabled.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlFocused.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlMouseDown.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlOver.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlNormal.Foreground = Color.Red;
+            hpBarThemeColors.Appearance_ControlSelected.Foreground = Color.Red;
 
-            HPBar.SetThemeColors(themeColors);
+            HPBar.SetThemeColors(hpBarThemeColors);
+
+            MPBar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left)
+            {
+                Position = new Point(2, 11),
+                DisplayTextAlignment = HorizontalAlignment.Center,
+                DisplayTextColor = Color.White
+            };
+
+            var mpBarThemeColors = new Colors();
+
+            mpBarThemeColors.Appearance_ControlDisabled.Foreground = Color.Blue;
+            mpBarThemeColors.Appearance_ControlFocused.Foreground = Color.Blue;
+            mpBarThemeColors.Appearance_ControlMouseDown.Foreground = Color.Blue;
+            mpBarThemeColors.Appearance_ControlOver.Foreground = Color.Blue;
+            mpBarThemeColors.Appearance_ControlNormal.Foreground = Color.Blue;
+            mpBarThemeColors.Appearance_ControlSelected.Foreground = Color.Blue;
+
+            MPBar.SetThemeColors(mpBarThemeColors);
 
             Controls.Add(HPBar);
+            Controls.Add(MPBar);
             Controls.Add(DetailsButton);
         }
 
@@ -98,23 +118,36 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 this.Print((square.Width - playerEntity.HPStatName.Length) / 2, 9, playerEntity.HPStatName, true);
                 HPBar.DisplayText = $"{playerEntity.HP}/{playerEntity.MaxHP}";
                 HPBar.Progress = (float)playerEntity.HP / playerEntity.MaxHP;
-                this.Print(2, 13, LocalizationManager.GetString("PlayerInfoWeaponHeader"), true);
 
-                this.SetGlyph(2, 14, new ColoredGlyph(playerEntity.Weapon.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.Character.ToGlyph()));
-                this.Print(3, 14, $" - {playerEntity.Weapon.Name}", true);
-                this.Print(2, 16, $"{playerEntity.DamageStatName}:", true);
-                this.Print(2, 17, playerEntity.Damage, true);
-                this.Print(2, 20, LocalizationManager.GetString("PlayerInfoArmorHeader"), true);
-                this.SetGlyph(2, 21, new ColoredGlyph(playerEntity.Armor.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.Character.ToGlyph()));
-                this.Print(3, 21, $" - {playerEntity.Armor.Name}", true);
-                this.Print(2, 23, $"{playerEntity.MitigationStatName}:", true);
-                this.Print(2, 24, playerEntity.Mitigation, true);
-                this.Print(2, 26, $"{playerEntity.MovementStatName}: {playerEntity.Movement}", true);
-                this.Print(2, 28, LocalizationManager.GetString("PlayerInfoStatusesHeader"), true);
+                MPBar.IsVisible = playerEntity.UsesMP;
+                if(playerEntity.UsesMP)
+                {
+                    MPBar.DisplayText = $"{playerEntity.MP}/{playerEntity.MaxMP}";
+                    MPBar.Progress = (float)playerEntity.MP / playerEntity.MaxMP;
+                    this.Print((square.Width - playerEntity.MPStatName.Length) / 2, 12, playerEntity.MPStatName, true);
+                }
+
+                this.Print(2, 14, LocalizationManager.GetString("PlayerInfoWeaponHeader"), true);
+                this.SetGlyph(2, 15, new ColoredGlyph(playerEntity.Weapon.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Weapon.ConsoleRepresentation.Character.ToGlyph()));
+                this.Print(3, 15, $" - {playerEntity.Weapon.Name}", true);
+
+                this.Print(2, 17, $"{playerEntity.DamageStatName}:", true);
+                this.Print(2, 18, playerEntity.Damage, true);
+
+                this.Print(2, 21, LocalizationManager.GetString("PlayerInfoArmorHeader"), true);
+                this.SetGlyph(2, 22, new ColoredGlyph(playerEntity.Armor.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.BackgroundColor.ToSadRogueColor(), playerEntity.Armor.ConsoleRepresentation.Character.ToGlyph()));
+                this.Print(3, 22, $" - {playerEntity.Armor.Name}", true);
+
+                this.Print(2, 24, $"{playerEntity.MitigationStatName}:", true);
+                this.Print(2, 25, playerEntity.Mitigation, true);
+
+                this.Print(2, 27, $"{playerEntity.MovementStatName}: {playerEntity.Movement}", true);
+
+                this.Print(2, 29, LocalizationManager.GetString("PlayerInfoStatusesHeader"), true);
                 if(dungeonStatus.AlteredStatuses.Any())
                 {
                     const int statusBaseColumnIndex = 2;
-                    const int statusBaseRowIndex = 30;
+                    const int statusBaseRowIndex = 31;
                     const int statusesPerRow = 13;
                     foreach (var als in dungeonStatus.AlteredStatuses)
                     {
@@ -129,7 +162,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 }
                 else
                 {
-                    this.Print(4, 29, LocalizationManager.GetString("PlayerNoStatusesText"), true);
+                    this.Print(4, 30, LocalizationManager.GetString("PlayerNoStatusesText"), true);
                 }
             }
             base.Update(delta);

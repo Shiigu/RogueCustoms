@@ -118,6 +118,34 @@
       "Value": "TARGET DOES NOT FULFILL CONDITIONS"
     },
     {
+      "Key": "NotEnoughMP",
+      "Value": "NOT ENOUGH {MPStat}"
+    },
+    {
+      "Key": "SelfRange",
+      "Value": "Range: Own tile"
+    },
+    {
+      "Key": "MeleeRange",
+      "Value": "Range: Melee"
+    },
+    {
+      "Key": "SelfOrMeleeRange",
+      "Value": "Range: Own tile or Melee"
+    },
+    {
+      "Key": "TilesRange",
+      "Value": "Range: {TilesRange} tiles"
+    },
+    {
+      "Key": "SelfOrTilesRange",
+      "Value": "Range: Own tile or {TilesRange} tiles"
+    },
+    {
+      "Key": "MPCost",
+      "Value": "{MPStat} Cost: {MPCost}"
+    },
+    {
       "Key": "FromSource",
       "Value": "(From {SourceName})"
     },
@@ -154,6 +182,14 @@
       "Value": "Max HP"
     },
     {
+      "Key": "CharacterMPStat",
+      "Value": "MP"
+    },
+    {
+      "Key": "CharacterMaxMPStat",
+      "Value": "Max MP"
+    },
+    {
       "Key": "CharacterAttackStat",
       "Value": "Attack"
     },
@@ -174,6 +210,10 @@
       "Value": "HP Regeneration"
     },
     {
+      "Key": "CharacterMPRegenerationStat",
+      "Value": "MP Regeneration"
+    },
+    {
       "Key": "CharacterInventorySizeStat",
       "Value": "Inventory Size"
     },
@@ -187,15 +227,27 @@
     },
     {
       "Key": "CharacterTakesDamage",
-      "Value": "{CharacterName} took {DamageDealt} damage."
+      "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage."
     },
     {
       "Key": "CharacterHealsSomeHP",
-      "Value": "{CharacterName} healed {HealAmount} HP!"
+      "Value": "{CharacterName} healed {HealAmount} {CharacterHPStat}!"
     },
     {
       "Key": "CharacterHealsAllHP",
-      "Value": "{CharacterName} is now at maximum HP!"
+      "Value": "{CharacterName} is now at maximum {CharacterHPStat}!"
+    },
+    {
+      "Key": "CharacterLosesMP",
+      "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
+    },
+    {
+      "Key": "CharacterRecoversSomeMP",
+      "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterMPStat}!"
+    },
+    {
+      "Key": "CharacterRecoversAllMP",
+      "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
     },
     {
       "Key": "CharacterGainsExperience",

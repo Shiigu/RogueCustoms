@@ -77,6 +77,73 @@
     ]
   },
   {
+    "InternalName": "BurnMP",
+    "DisplayName": "Burn Target's MP",
+    "Description": "Used by the User to remove some of Target's MP.",
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Attacker",
+        "DisplayName": "Attacker",
+        "Description": "What will burn MP. Generally Source, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get MP burned. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Power",
+        "Description": "Amount of MP that will be burned. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Attack to land.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "StealItem",
     "DisplayName": "Steal Item from Target",
     "Description": "Used by the User take an item from Target's inventory and put it into their own.",
@@ -333,6 +400,63 @@
     ]
   },
   {
+    "InternalName": "ReplenishMP",
+    "DisplayName": "Recover some of Target's MP",
+    "Description": "Used by the User to give Target some MP.",
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "What will give MP. Generally the User, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get MP. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "MP Recovery Power",
+        "Description": "Maximum Amount of MP that will be recovered. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{source.Power}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "GiveExperience",
     "DisplayName": "Give Experience to Target",
     "Description": "Used by the User to give Target some experience points.",
@@ -486,6 +610,10 @@
             "Value": "Max HP"
           },
           {
+            "Key": "maxMP",
+            "Value": "Max MP"
+          },
+          {
             "Key": "attack",
             "Value": "Attack"
           },
@@ -500,6 +628,10 @@
           {
             "Key": "hpRegeneration",
             "Value": "HP Regeneration"
+          },
+          {
+            "Key": "mpRegeneration",
+            "Value": "MP Regeneration"
           }
         ],
         "Required": true,

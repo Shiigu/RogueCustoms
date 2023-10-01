@@ -290,6 +290,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
         private static void PrintPlayerStatsInfo(Console subConsole, CharacterClassStatDto stat)
         {
+            if (!stat.Visible) return;
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
             if (!stat.IsIntegerStat)

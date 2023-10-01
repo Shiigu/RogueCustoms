@@ -50,8 +50,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to heal {paramsObject.Target.Name} when it's not a Character.");
             if (paramsObject.Target.HP >= paramsObject.Target.MaxHP)
                 return false;
-            var healAmount = (int) Math.Min(paramsObject.Target.MaxHP - paramsObject.Target.HP, paramsObject.Power);
-            output = healAmount;
+            var healAmount = Math.Min(paramsObject.Target.MaxHP - paramsObject.Target.HP, paramsObject.Power);
+            if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                healAmount = 1;
+            healAmount = (int)healAmount;
+            output = (int)healAmount;
             paramsObject.Target.HP = Math.Min(paramsObject.Target.MaxHP, paramsObject.Target.HP + healAmount);
 
             if (paramsObject.Target.EntityType == EntityType.Player
@@ -60,7 +63,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.Target.HP == paramsObject.Target.MaxHP)
                     Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = paramsObject.Target.Name }), Color.DeepSkyBlue);
                 else
-                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString() }), Color.DeepSkyBlue);
+                    Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString(), CharacterHPStat = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue);
             }
             return true;
         }
@@ -92,7 +95,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Any(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
-                var success = statusToApply.ApplyTo(statusTarget, paramsObject.Power, (int) paramsObject.TurnLength);
+                var statusPower = (decimal) paramsObject.Power;
+                var turnlength = (int)paramsObject.TurnLength;
+                var success = statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                 if (success && (statusTarget.EntityType == EntityType.Player
                         || (statusTarget.EntityType == EntityType.NPC && Map.Player.CanSee(statusTarget))))
                 {
@@ -112,24 +117,43 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var statAlterationTarget = paramsObject.Target as Character;
+            if ((string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase) || string.Equals(paramsObject.StatName, "mp", StringComparison.InvariantCultureIgnoreCase))
+                && !statAlterationTarget.UsesMP)
+                return false;
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
             if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
+                var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                var alterationAmount = isHPRegeneration || isMPRegeneration ? paramsObject.Amount : (int)paramsObject.Amount;
+
+                if(!isHPRegeneration && !isMPRegeneration)
+                {
+                    if (paramsObject.Amount > 0 && paramsObject.Amount < 1)
+                        alterationAmount = 1;
+                    else if (paramsObject.Amount < 0 && paramsObject.Amount > -1)
+                        alterationAmount = -1;
+                }
+
                 statAlterations.Add(new StatModification
                 {
                     Id = paramsObject.Id,
-                    Amount = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? paramsObject.Amount : (int)paramsObject.Amount,
+                    Amount = alterationAmount,
                     RemainingTurns = (int)paramsObject.TurnLength
                 });
-                output = (int) paramsObject.Amount;
-                var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
+                output = (int)alterationAmount;
+                var statName = paramsObject.StatName;
+                if (isHPRegeneration)
+                    statName = "HPRegeneration";
+                else if (isMPRegeneration)
+                    statName = "MPRegeneration";
                 if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
                     if(paramsObject.Amount > 0)
-                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }), Color.DeepSkyBlue);
+                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = alterationAmount.ToString() }), Color.DeepSkyBlue);
                     else
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = (Math.Abs(paramsObject.Amount)).ToString() }), Color.DeepSkyBlue);
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = alterationAmount.ToString() }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -147,10 +171,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 c.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(statusToRemove.ClassId));
                 c.MaxHPModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
+                c.MaxMPModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 c.AttackModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 c.DefenseModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 c.MovementModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 c.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
+                c.MPRegenerationModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
                 {
@@ -175,7 +201,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.Target.EntityType == EntityType.Player
                     || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
                 {
-                    var statName = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase) ? "HPRegeneration" : paramsObject.StatName;
+                    var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                    var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                    var statName = paramsObject.StatName;
+                    if (isHPRegeneration)
+                        statName = "HPRegeneration";
+                    else if (isMPRegeneration)
+                        statName = "MPRegeneration";
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
                 }
                 return true;
@@ -196,6 +228,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.MaxHPModifications.Clear();
                 if(c == Map.Player || Map.Player.CanSee(c))
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMaxHPStat"] }), Color.DeepSkyBlue);
+                if(c.UsesMP)
+                {
+                    c.MaxMPModifications.Clear();
+                    if (c == Map.Player || Map.Player.CanSee(c))
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMaxMPStat"] }), Color.DeepSkyBlue);
+                }
                 c.AttackModifications.Clear();
                 if (c == Map.Player || Map.Player.CanSee(c))
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue);
@@ -208,6 +246,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.HPRegenerationModifications.Clear();
                 if (c == Map.Player || Map.Player.CanSee(c))
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue);
+                if(c.UsesMP)
+                {
+                    c.MPRegenerationModifications.Clear();
+                    if (c == Map.Player || Map.Player.CanSee(c))
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMPRegenerationStat"] }), Color.DeepSkyBlue);
+                }
 
                 return true;
             }
@@ -299,6 +343,32 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.SetFlagValue(paramsObject.Key, paramsObject.Value);
             else
                 Map.CreateFlag(paramsObject.Key, paramsObject.Value, paramsObject.RemoveOnFloorChange);
+            return true;
+        }
+
+        public static bool ReplenishMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to recover {paramsObject.Target.Name}'s MP when it's not a Character.");
+            if (!paramsObject.Target.UsesMP) return false;
+            if (paramsObject.Target.MP >= paramsObject.Target.MaxMP)
+                return false;
+            var replenishAmount = Math.Min(paramsObject.Target.MaxMP - paramsObject.Target.MP, paramsObject.Power);
+            if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                replenishAmount = 1;
+            replenishAmount = (int)replenishAmount;
+            output = (int)replenishAmount;
+            paramsObject.Target.MP = Math.Min(paramsObject.Target.MaxMP, paramsObject.Target.MP + replenishAmount);
+
+            if (paramsObject.Target.EntityType == EntityType.Player
+                || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
+            {
+                if (paramsObject.Target.MP == paramsObject.Target.MaxMP)
+                    Map.AppendMessage(Map.Locale["CharacterRecoversAllMP"].Format(new { CharacterName = paramsObject.Target.Name, CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
+                else
+                    Map.AppendMessage(Map.Locale["CharacterRecoversSomeMP"].Format(new { CharacterName = paramsObject.Target.Name, ReplenishAmount = replenishAmount.ToString(), CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
+            }
             return true;
         }
     }

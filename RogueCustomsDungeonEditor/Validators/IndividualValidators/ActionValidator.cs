@@ -224,24 +224,31 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         int amountOfSuccesses = 0, amountOfFailures = 0;
 
                         var excessiveTargetHPWarning = false;
+                        var excessiveTargetMPWarning = false;
                         var excessiveTargetAttackWarning = false;
                         var excessiveTargetDefenseWarning = false;
                         var excessiveTargetMovementWarning = false;
                         var excessiveTargetHPRegenerationWarning = false;
+                        var excessiveTargetMPRegenerationWarning = false;
                         var excessiveSourceHPWarning = false;
+                        var excessiveSourceMPWarning = false;
                         var excessiveSourceAttackWarning = false;
                         var excessiveSourceDefenseWarning = false;
                         var excessiveSourceMovementWarning = false;
                         var excessiveSourceHPRegenerationWarning = false;
+                        var excessiveSourceMPRegenerationWarning = false;
                         var excessiveThisHPWarning = false;
+                        var excessiveThisMPWarning = false;
                         var excessiveThisAttackWarning = false;
                         var excessiveThisDefenseWarning = false;
                         var excessiveThisMovementWarning = false;
                         var excessiveThisHPRegenerationWarning = false;
+                        var excessiveThisMPRegenerationWarning = false;
 
                         try
                         {
                             target.HP = target.MaxHP;
+                            target.MP = target.MaxMP;
                             var defenseTestModification = target.DefenseModifications.Find(dm => dm.Id == "defenseTest");
                             if (defenseTestModification == null)
                             {
@@ -277,12 +284,23 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                     target.HP = target.MaxHP;
                                 else
                                     target.HP--;  // Slightly damage it so that heals may work
+                                if (target.MP <= 0)
+                                    target.MP = target.MaxMP;
+                                else
+                                    target.MP--;  // Slightly burn its MP so that replenishes may work
                                 if (target.TotalMaxHPIncrements > 1000000)
                                 {
                                     if(!excessiveTargetHPWarning)
                                         messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.MaxHPModifications.Clear();
                                     excessiveTargetHPWarning = true;
+                                }
+                                if (target.TotalMaxMPIncrements > 1000000)
+                                {
+                                    if (!excessiveTargetMPWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.MaxMPModifications.Clear();
+                                    excessiveTargetMPWarning = true;
                                 }
                                 if (target.TotalAttackIncrements > 1000000)
                                 {
@@ -312,7 +330,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                     target.HPRegenerationModifications.Clear();
                                     excessiveTargetHPRegenerationWarning = true;
                                 }
-                                if(source is Character s)
+                                if (target.TotalMPRegenerationIncrements > 1000000)
+                                {
+                                    if (!excessiveTargetMPRegenerationWarning)
+                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                    target.MPRegenerationModifications.Clear();
+                                    excessiveTargetMPRegenerationWarning = true;
+                                }
+                                if (source is Character s)
                                 {
                                     if (s.TotalMaxHPIncrements > 1000000)
                                     {
@@ -320,6 +345,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                             messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.MaxHPModifications.Clear();
                                         excessiveSourceHPWarning = true;
+                                    }
+                                    if (s.TotalMaxMPIncrements > 1000000)
+                                    {
+                                        if (!excessiveSourceMPWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.MaxMPModifications.Clear();
+                                        excessiveSourceMPWarning = true;
                                     }
                                     if (s.TotalAttackIncrements > 1000000)
                                     {
@@ -348,6 +380,65 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                             messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.HPRegenerationModifications.Clear();
                                         excessiveSourceHPRegenerationWarning = true;
+                                    }
+                                    if (s.TotalMPRegenerationIncrements > 1000000)
+                                    {
+                                        if (!excessiveSourceMPRegenerationWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        s.MPRegenerationModifications.Clear();
+                                        excessiveSourceMPRegenerationWarning = true;
+                                    }
+                                }
+                                if (owner is Character o)
+                                {
+                                    if (o.TotalMaxHPIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisHPWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.MaxHPModifications.Clear();
+                                        excessiveThisHPWarning = true;
+                                    }
+                                    if (o.TotalMaxMPIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisMPWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.MaxMPModifications.Clear();
+                                        excessiveThisMPWarning = true;
+                                    }
+                                    if (o.TotalAttackIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisAttackWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.AttackModifications.Clear();
+                                        excessiveThisAttackWarning = true;
+                                    }
+                                    if (o.TotalDefenseIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisDefenseWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.DefenseModifications.Clear();
+                                        excessiveThisDefenseWarning = true;
+                                    }
+                                    if (o.TotalMovementIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisMovementWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.MovementModifications.Clear();
+                                        excessiveThisMovementWarning = true;
+                                    }
+                                    if (o.TotalHPRegenerationIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisHPRegenerationWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.HPRegenerationModifications.Clear();
+                                        excessiveThisHPRegenerationWarning = true;
+                                    }
+                                    if (o.TotalMPRegenerationIncrements > 1000000)
+                                    {
+                                        if (!excessiveThisMPRegenerationWarning)
+                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        o.MPRegenerationModifications.Clear();
+                                        excessiveThisMPRegenerationWarning = true;
                                     }
                                 }
                             }

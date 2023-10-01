@@ -60,12 +60,15 @@
             fklblConditionWarning = new Button();
             txtActionCondition = new TextBox();
             label7 = new Label();
+            label8 = new Label();
+            nudMPCost = new NumericUpDown();
             gbSelectionCriteria.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudCooldown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             SuspendLayout();
             // 
             // lblTitle
@@ -91,7 +94,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(292, 618);
+            btnCancel.Location = new Point(292, 654);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -101,6 +104,8 @@
             // 
             // gbSelectionCriteria
             // 
+            gbSelectionCriteria.Controls.Add(nudMPCost);
+            gbSelectionCriteria.Controls.Add(label8);
             gbSelectionCriteria.Controls.Add(lblNoCooldown);
             gbSelectionCriteria.Controls.Add(lblInfiniteUse);
             gbSelectionCriteria.Controls.Add(nudMaximumUses);
@@ -118,7 +123,7 @@
             gbSelectionCriteria.Controls.Add(label1);
             gbSelectionCriteria.Location = new Point(3, 370);
             gbSelectionCriteria.Name = "gbSelectionCriteria";
-            gbSelectionCriteria.Size = new Size(467, 213);
+            gbSelectionCriteria.Size = new Size(467, 249);
             gbSelectionCriteria.TabIndex = 3;
             gbSelectionCriteria.TabStop = false;
             gbSelectionCriteria.Text = "Usage Criteria";
@@ -264,7 +269,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(132, 618);
+            btnSave.Location = new Point(132, 654);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -275,7 +280,7 @@
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(4, 589);
+            btnEdit.Location = new Point(4, 625);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -286,7 +291,7 @@
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(123, 589);
+            btnNewThen.Location = new Point(123, 625);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -297,7 +302,7 @@
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(206, 589);
+            btnNewOnSuccessFailure.Location = new Point(206, 625);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -308,7 +313,7 @@
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(377, 589);
+            btnRemove.Location = new Point(377, 625);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(91, 23);
             btnRemove.TabIndex = 8;
@@ -318,7 +323,7 @@
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(211, 618);
+            btnSaveAs.Location = new Point(211, 654);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -395,11 +400,28 @@
             label7.TabIndex = 22;
             label7.Text = "To be used, it must fulfill this condition first:";
             // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(7, 219);
+            label8.Name = "label8";
+            label8.Size = new Size(137, 15);
+            label8.TabIndex = 15;
+            label8.Text = "Costs                MP to use";
+            // 
+            // nudMPCost
+            // 
+            nudMPCost.Location = new Point(43, 217);
+            nudMPCost.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
+            nudMPCost.Name = "nudMPCost";
+            nudMPCost.Size = new Size(41, 23);
+            nudMPCost.TabIndex = 16;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(479, 655);
+            ClientSize = new Size(479, 690);
             Controls.Add(fklblConditionWarning);
             Controls.Add(txtActionCondition);
             Controls.Add(label7);
@@ -428,6 +450,7 @@
             ((System.ComponentModel.ISupportInitialize)nudCooldown).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMPCost).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -465,5 +488,7 @@
         private Button fklblConditionWarning;
         private TextBox txtActionCondition;
         private Label label7;
+        private NumericUpDown nudMPCost;
+        private Label label8;
     }
 }

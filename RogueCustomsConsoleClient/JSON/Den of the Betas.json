@@ -1,5 +1,5 @@
 {
-  "Version": "1.0",
+  "Version": "1.1",
   "Name": "DungeonName",
   "Author": "Shiigu",
   "WelcomeMessage": "WelcomeMessage",
@@ -122,8 +122,36 @@
           "Value": "TARGET DOES NOT FULFILL CONDITIONS"
         },
         {
+          "Key": "NotEnoughMP",
+          "Value": "NOT ENOUGH {MPStat}"
+        },
+        {
           "Key": "RequiresATarget",
           "Value": "REQUIRES A TARGET"
+        },
+        {
+          "Key": "SelfRange",
+          "Value": "Range: Own tile"
+        },
+        {
+          "Key": "MeleeRange",
+          "Value": "Range: Melee"
+        },
+        {
+          "Key": "SelfOrMeleeRange",
+          "Value": "Range: Own tile or Melee"
+        },
+        {
+          "Key": "TilesRange",
+          "Value": "Range: {TilesRange} tiles"
+        },
+        {
+          "Key": "SelfOrTilesRange",
+          "Value": "Range: Own tile or {TilesRange} tiles"
+        },
+        {
+          "Key": "MPCost",
+          "Value": "{MPStat} Cost: {MPCost}"
         },
         {
           "Key": "FromSource",
@@ -162,6 +190,14 @@
           "Value": "Max HP"
         },
         {
+          "Key": "CharacterMPStat",
+          "Value": "MP"
+        },
+        {
+          "Key": "CharacterMaxMPStat",
+          "Value": "Max MP"
+        },
+        {
           "Key": "CharacterAttackStat",
           "Value": "Attack"
         },
@@ -180,6 +216,10 @@
         {
           "Key": "CharacterHPRegenerationStat",
           "Value": "HP Regeneration"
+        },
+        {
+          "Key": "CharacterMPRegenerationStat",
+          "Value": "MP Regeneration"
         },
         {
           "Key": "CharacterInventorySizeStat",
@@ -204,6 +244,18 @@
         {
           "Key": "CharacterHealsAllHP",
           "Value": "{CharacterName} is now at maximum HP!"
+        },
+        {
+          "Key": "CharacterLosesMP",
+          "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeMP",
+          "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllMP",
+          "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -459,7 +511,7 @@
         },
         {
           "Key": "HealingPotionDescription",
-          "Value": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears."
+          "Value": "The quintessential healing item.\r\n\r\nHeals up to 2d4 HP, then it disappears."
         },
         {
           "Key": "PotionOfStrengthName",
@@ -784,6 +836,14 @@
         {
           "Key": "Floor5BossDefeatedText",
           "Value": "You\u0027ve defeated the Boss! Now you can leave!\r\n\r\nDead Enemies Counter: [EnemiesDefeated]"
+        },
+        {
+          "Key": "MagicPotionName",
+          "Value": "Magic Potion"
+        },
+        {
+          "Key": "MagicPotionDescription",
+          "Value": "A mysterious beverage oozing with magic\n\nHeals up to 1d4 MP, then it disappears."
         }
       ]
     },
@@ -903,8 +963,36 @@
           "Value": "EL OBJETIVO NO CUMPLE LAS CONDICIONES"
         },
         {
+          "Key": "NotEnoughMP",
+          "Value": "NO TIENES SUFICIENTE {MPStat}"
+        },
+        {
           "Key": "RequiresATarget",
           "Value": "REQUIERE UN OBJETIVO"
+        },
+        {
+          "Key": "SelfRange",
+          "Value": "Alcance: Tu casilla"
+        },
+        {
+          "Key": "MeleeRange",
+          "Value": "Alcance: Mel\u00E9"
+        },
+        {
+          "Key": "SelfOrMeleeRange",
+          "Value": "Alcance: Tu casilla o Mel\u00E9"
+        },
+        {
+          "Key": "TilesRange",
+          "Value": "Alcance: {TilesRange} casillas"
+        },
+        {
+          "Key": "SelfOrTilesRange",
+          "Value": "Alcance: Tu casilla o {TilesRange} casillas"
+        },
+        {
+          "Key": "MPCost",
+          "Value": "Coste de {MPStat}: {MPCost}"
         },
         {
           "Key": "FromSource",
@@ -943,6 +1031,14 @@
           "Value": "PS M\u00E1ximos"
         },
         {
+          "Key": "CharacterMPStat",
+          "Value": "PM"
+        },
+        {
+          "Key": "CharacterMaxMPStat",
+          "Value": "PM M\u00E1ximos"
+        },
+        {
           "Key": "CharacterAttackStat",
           "Value": "Ataque"
         },
@@ -961,6 +1057,10 @@
         {
           "Key": "CharacterHPRegenerationStat",
           "Value": "Regeneraci\u00F3n de PS"
+        },
+        {
+          "Key": "CharacterMPRegenerationStat",
+          "Value": "Regeneraci\u00F3n de PM"
         },
         {
           "Key": "CharacterInventorySizeStat",
@@ -985,6 +1085,18 @@
         {
           "Key": "CharacterHealsAllHP",
           "Value": "\u00A1{CharacterName} ha recuperado todos los PS!"
+        },
+        {
+          "Key": "CharacterLosesMP",
+          "Value": "{CharacterName} perdi\u00F3 {BurnedMP} {CharacterMPStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeMP",
+          "Value": "\u00A1{CharacterName} recuper\u00F3 {ReplenishAmount} {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllMP",
+          "Value": "\u00A1{CharacterName} ha recuperado todo su {CharacterMPStat}!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -1240,7 +1352,7 @@
         },
         {
           "Key": "HealingPotionDescription",
-          "Value": "El objeto de curaci\u00F3n m\u00E1s elemental.\n\nCura hasta 2d4 puntos de vida antes de desaparecer."
+          "Value": "El objeto de curaci\u00F3n m\u00E1s elemental.\r\n\r\nCura hasta 2d4 PS antes de desaparecer."
         },
         {
           "Key": "PotionOfStrengthName",
@@ -1561,6 +1673,14 @@
         {
           "Key": "Floor5BossDefeatedText",
           "Value": "\u00A1Has derrotado al Jefe! \u00A1Ya puedes salir!\r\n\r\nTotal de Enemigos Muertos: [EnemiesDefeated]"
+        },
+        {
+          "Key": "MagicPotionName",
+          "Value": "Poci\u00F3n M\u00E1gica"
+        },
+        {
+          "Key": "MagicPotionDescription",
+          "Value": "Una bebida misteriosa que rebosa magia.\n\nCura hasta 1d4 PM antes de desaparecer."
         }
       ]
     }
@@ -1637,7 +1757,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 20
+          "ChanceToPick": 15
         },
         {
           "ClassId": "LeatherArmor",
@@ -1701,6 +1821,16 @@
         },
         {
           "ClassId": "ScrollOfDestruction",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "MagicPotion",
           "MinLevel": 0,
           "MaxLevel": 0,
           "OverallMaxForKindInFloor": 0,
@@ -1801,6 +1931,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "MessageBox",
@@ -1858,7 +1989,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 50
+          "ChanceToPick": 45
         },
         {
           "ClassId": "PotionOfStrength",
@@ -1889,9 +2020,19 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 10
+        },
+        {
+          "ClassId": "MagicPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
-      "MinItemsInFloor": 0,
+      "MinItemsInFloor": 1,
       "MaxItemsInFloor": 4,
       "PossibleTraps": [],
       "MinTrapsInFloor": 0,
@@ -1916,6 +2057,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ApplyAlteredStatus",
@@ -2075,7 +2217,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 15
+          "ChanceToPick": 10
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2136,6 +2278,16 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 10
+        },
+        {
+          "ClassId": "MagicPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 2,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 3,
@@ -2251,7 +2403,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 50
+          "ChanceToPick": 40
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2261,11 +2413,21 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 50
+          "ChanceToPick": 40
+        },
+        {
+          "ClassId": "MagicPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 2,
+          "ChanceToPick": 20
         }
       ],
       "MinItemsInFloor": 0,
-      "MaxItemsInFloor": 2,
+      "MaxItemsInFloor": 3,
       "PossibleTraps": [
         {
           "ClassId": "SpikeTrap",
@@ -2307,6 +2469,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "MessageBox",
@@ -2412,11 +2575,14 @@
       "Faction": "PlayerFaction",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": true,
       "BaseHP": 18,
+      "BaseMP": 10,
       "BaseAttack": 4,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0.125,
+      "BaseMPRegeneration": 0.250,
       "BaseSightRange": "FullMap",
       "InventorySize": 6,
       "StartingWeapon": "Pistol",
@@ -2429,10 +2595,12 @@
       "ExperiencePayoutFormula": "0",
       "ExperienceToLevelUpFormula": "2 * level \u002B 8",
       "MaxHPIncreasePerLevel": 2.5,
+      "MaxMPIncreasePerLevel": 1.0000,
       "AttackIncreasePerLevel": 1.25,
       "DefenseIncreasePerLevel": 0.5,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.05,
+      "MPRegenerationIncreasePerLevel": 0.00750,
       "OnTurnStartActions": [],
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -2443,12 +2611,13 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "color",
+                "ParamName": "ForeColor",
                 "Value": "255,0,0,255"
               }
             ],
@@ -2509,11 +2678,14 @@
       "Faction": "PlayerFaction",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": true,
       "BaseHP": 12,
+      "BaseMP": 6,
       "BaseAttack": 2,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0.075,
+      "BaseMPRegeneration": 0.1250,
       "BaseSightRange": "FullRoom",
       "InventorySize": 4,
       "StartingWeapon": "Sword",
@@ -2524,10 +2696,12 @@
       "ExperiencePayoutFormula": "0",
       "ExperienceToLevelUpFormula": "(1/4) * (level ^ 3) \u002B 2 * level \u002B 8",
       "MaxHPIncreasePerLevel": 2,
+      "MaxMPIncreasePerLevel": 0.7500,
       "AttackIncreasePerLevel": 1,
       "DefenseIncreasePerLevel": 0.34,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.025,
+      "MPRegenerationIncreasePerLevel": 0.0750,
       "OnTurnStartActions": [],
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -2538,12 +2712,13 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "color",
+                "ParamName": "ForeColor",
                 "Value": "255,0,0,255"
               }
             ],
@@ -2604,11 +2779,14 @@
       "Faction": "PlayerFaction",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": false,
       "BaseHP": 8,
+      "BaseMP": 0,
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0.025,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "6",
       "InventorySize": 2,
       "StartingWeapon": "BareFists",
@@ -2619,10 +2797,12 @@
       "ExperiencePayoutFormula": "0",
       "ExperienceToLevelUpFormula": "(1/2) * (level ^ 3) \u002B (2/5) * (level ^ 2) \u002B 2 * level \u002B 8",
       "MaxHPIncreasePerLevel": 1.5,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0.75,
       "DefenseIncreasePerLevel": 0.26,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.0075,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -2633,12 +2813,13 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "color",
+                "ParamName": "ForeColor",
                 "Value": "255,0,0,255"
               }
             ],
@@ -2702,11 +2883,14 @@
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": false,
       "BaseHP": 4,
+      "BaseMP": 0,
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
@@ -2717,10 +2901,12 @@
       "ExperiencePayoutFormula": "1 * Level",
       "ExperienceToLevelUpFormula": "",
       "MaxHPIncreasePerLevel": 0,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0,
       "DefenseIncreasePerLevel": 0,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [
         {
@@ -2734,6 +2920,7 @@
             "Enemy"
           ],
           "UseCondition": "{source.HP} / {source.MaxHP} \u003E 0.8",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2757,6 +2944,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2837,11 +3025,14 @@
       "Faction": "RangedEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": false,
       "BaseHP": 4,
+      "BaseMP": 0,
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
       "InventorySize": 0,
       "StartingWeapon": "Javelin",
@@ -2852,10 +3043,12 @@
       "ExperiencePayoutFormula": "1 \u002B Level",
       "ExperienceToLevelUpFormula": "500",
       "MaxHPIncreasePerLevel": 2,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0.5,
       "DefenseIncreasePerLevel": 0.25,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [],
       "OnAttackedActions": [],
@@ -2869,6 +3062,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -2949,11 +3143,14 @@
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": false,
+      "UsesMP": false,
       "BaseHP": 4,
+      "BaseMP": 0,
       "BaseAttack": 0,
       "BaseDefense": 0,
       "BaseMovement": 2,
       "BaseHPRegeneration": 0,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
       "InventorySize": 1,
       "StartingWeapon": "BareFists",
@@ -2964,10 +3161,12 @@
       "ExperiencePayoutFormula": "2 * Level",
       "ExperienceToLevelUpFormula": "500",
       "MaxHPIncreasePerLevel": 1,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0.5,
       "DefenseIncreasePerLevel": 0.25,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [
         {
@@ -2979,6 +3178,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3045,6 +3245,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3125,11 +3326,14 @@
       "Faction": "AlliedNPCs",
       "CanBePickedUp": false,
       "StartsVisible": true,
+      "UsesMP": false,
       "BaseHP": 4,
+      "BaseMP": 0,
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
       "InventorySize": 0,
       "StartingWeapon": "BareFists",
@@ -3140,10 +3344,12 @@
       "ExperiencePayoutFormula": "1 * Level",
       "ExperienceToLevelUpFormula": "500",
       "MaxHPIncreasePerLevel": 1,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0.5,
       "DefenseIncreasePerLevel": 0.25,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [
         {
@@ -3155,6 +3361,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3178,6 +3385,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3241,11 +3449,14 @@
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
-      "BaseHP": 10,
+      "UsesMP": false,
+      "BaseHP": 25,
+      "BaseMP": 0,
       "BaseAttack": 2,
       "BaseDefense": 0,
       "BaseMovement": 1,
       "BaseHPRegeneration": 0.025,
+      "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
       "InventorySize": 0,
       "StartingWeapon": "Pistol",
@@ -3256,10 +3467,12 @@
       "ExperiencePayoutFormula": "0",
       "ExperienceToLevelUpFormula": "",
       "MaxHPIncreasePerLevel": 0,
+      "MaxMPIncreasePerLevel": 0,
       "AttackIncreasePerLevel": 0,
       "DefenseIncreasePerLevel": 0,
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0,
+      "MPRegenerationIncreasePerLevel": 0,
       "OnTurnStartActions": [],
       "OnAttackActions": [
         {
@@ -3273,6 +3486,7 @@
             "Enemy"
           ],
           "UseCondition": "{source.HP} / {source.MaxHP} \u003E 0.9",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3296,6 +3510,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3397,6 +3612,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3538,6 +3754,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3560,6 +3777,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "{target.HP} \u003C {target.MaxHP}",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3654,6 +3872,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3673,6 +3892,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3775,6 +3995,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3797,6 +4018,7 @@
           "MaximumUses": 0,
           "TargetTypes": [],
           "UseCondition": "HasStatus(target,Poisoned)",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3893,6 +4115,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3948,6 +4171,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4002,6 +4226,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4021,6 +4246,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4073,6 +4299,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4128,6 +4355,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4182,6 +4410,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4201,6 +4430,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4251,6 +4481,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4270,6 +4501,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4320,6 +4552,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4339,6 +4572,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4391,6 +4625,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4446,6 +4681,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4501,6 +4737,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4581,6 +4818,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4628,6 +4866,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ApplyStatAlteration",
@@ -4679,6 +4918,7 @@
           "TargetTypes": [
             "enemy"
           ],
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4729,11 +4969,13 @@
           "Description": "FireballDescription",
           "MinimumRange": 1,
           "MaximumRange": 2,
-          "CooldownBetweenUses": 3,
+          "CooldownBetweenUses": 2,
           "MaximumUses": 0,
           "TargetTypes": [
-            "enemy"
+            "Enemy"
           ],
+          "UseCondition": "",
+          "MPCost": 2,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4809,11 +5051,13 @@
           "Description": "IceballDescription",
           "MinimumRange": 1,
           "MaximumRange": 3,
-          "CooldownBetweenUses": 5,
+          "CooldownBetweenUses": 2,
           "MaximumUses": 0,
           "TargetTypes": [
-            "enemy"
+            "Enemy"
           ],
+          "UseCondition": "",
+          "MPCost": 3,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4889,13 +5133,14 @@
           "Description": "HealDescription",
           "MinimumRange": 0,
           "MaximumRange": 3,
-          "CooldownBetweenUses": 5,
+          "CooldownBetweenUses": 3,
           "MaximumUses": 0,
           "TargetTypes": [
             "Ally",
             "Self"
           ],
           "UseCondition": "{target.HP} \u003C {target.MaxHP}",
+          "MPCost": 4,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4942,6 +5187,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4961,6 +5207,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5014,6 +5261,7 @@
             "Enemy"
           ],
           "UseCondition": "{target.ClassId} != \u0022Boss\u0022",
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5090,6 +5338,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5121,6 +5370,132 @@
           "A": 255
         }
       }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "1d4",
+      "EntityType": "Consumable",
+      "OnTurnStartActions": [],
+      "OnAttackActions": [],
+      "OnAttackedActions": [],
+      "OnItemSteppedActions": [
+        {
+          "Name": "PrintStepped",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "MPCost": 0,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "ObjectSteppedText"
+              }
+            ]
+          }
+        }
+      ],
+      "OnItemUseActions": [
+        {
+          "Name": "Heal",
+          "Description": "",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [],
+          "UseCondition": "{target.MP} \u003C {target.MaxMP}",
+          "MPCost": 0,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "ObjectDrunkText"
+              }
+            ],
+            "Then": {
+              "EffectName": "ReplenishMP",
+              "Params": [
+                {
+                  "ParamName": "Source",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "Target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "Power",
+                  "Value": "{source.Power}"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Chance",
+                    "Value": "100"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "ObjectNotUsedText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "Id": "MagicPotion",
+      "Name": "MagicPotionName",
+      "Description": "MagicPotionDescription",
+      "ConsoleRepresentation": {
+        "Character": "M",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
     }
   ],
   "Traps": [
@@ -5134,6 +5509,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5231,6 +5607,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5293,6 +5670,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5389,6 +5767,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5470,6 +5849,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ApplyStatAlteration",
@@ -5537,6 +5917,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 28,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 28,
           "Effect": {
             "EffectName": "PrintText",
@@ -5606,6 +5987,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 5,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 5,
           "Effect": {
             "EffectName": "PrintText",
@@ -5654,6 +6036,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "CleanseAlteredStatus",
@@ -5701,6 +6084,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5737,6 +6121,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "CleanseAlteredStatus",
@@ -5802,6 +6187,7 @@
           "MaximumRange": 0,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "MPCost": 0,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "ApplyStatAlteration",

@@ -44,9 +44,23 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Base = character.BaseMaxHP + (int)(character.MaxHPIncreasePerLevel * (character.Level - 1)),
                 IsIntegerStat = true,
                 HasMaxStat = true,
+                Visible = true,
                 Modifications = new List<StatModificationDto>()
             };
             character.MaxHPModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpStat.Modifications.Add(new StatModificationDto(hpm, hpStat)));
+            var mpStat = new StatDto()
+            {
+                Name = map.Locale["CharacterMPStat"],
+                MaxName = map.Locale["CharacterMaxMPStat"],
+                Current = character.MP,
+                Max = character.MaxMP,
+                Base = character.BaseMaxMP + (int)(character.MaxMPIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = true,
+                HasMaxStat = true,
+                Visible = character.UsesMP,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.MaxMPModifications.Where(m => m.RemainingTurns != 0).ForEach(mpm => mpStat.Modifications.Add(new StatModificationDto(mpm, mpStat)));
             var attackStat = new StatDto()
             {
                 Name = map.Locale["CharacterAttackStat"],
@@ -54,6 +68,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Base = character.BaseAttack + (int)(character.AttackIncreasePerLevel * (character.Level - 1)),
                 IsIntegerStat = true,
                 HasMaxStat = false,
+                Visible = true,
                 Modifications = new List<StatModificationDto>()
             };
             character.AttackModifications.Where(m => m.RemainingTurns != 0).ForEach(am => attackStat.Modifications.Add(new StatModificationDto(am, attackStat)));
@@ -64,6 +79,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Base = character.BaseDefense + (int)(character.DefenseIncreasePerLevel * (character.Level - 1)),
                 IsIntegerStat = true,
                 HasMaxStat = false,
+                Visible = true,
                 Modifications = new List<StatModificationDto>()
             };
             character.DefenseModifications.Where(m => m.RemainingTurns != 0).ForEach(dm => defenseStat.Modifications.Add(new StatModificationDto(dm, defenseStat)));
@@ -74,6 +90,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Base = character.BaseMovement + (int)(character.MovementIncreasePerLevel * (character.Level - 1)),
                 IsIntegerStat = true,
                 HasMaxStat = false,
+                Visible = true,
                 Modifications = new List<StatModificationDto>()
             };
             character.MovementModifications.Where(m => m.RemainingTurns != 0).ForEach(mm => movementStat.Modifications.Add(new StatModificationDto(mm, movementStat)));
@@ -84,16 +101,30 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Base = character.BaseHPRegeneration + (character.HPRegenerationIncreasePerLevel * (character.Level - 1)),
                 IsIntegerStat = false,
                 HasMaxStat = false,
+                Visible = true,
                 Modifications = new List<StatModificationDto>()
             };
             character.HPRegenerationModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpRegenerationStat.Modifications.Add(new StatModificationDto(hpm, hpRegenerationStat)));
+            var mpRegenerationStat = new StatDto()
+            {
+                Name = map.Locale["CharacterMPRegenerationStat"],
+                Current = character.MPRegeneration,
+                Base = character.BaseMPRegeneration + (character.MPRegenerationIncreasePerLevel * (character.Level - 1)),
+                IsIntegerStat = false,
+                HasMaxStat = false,
+                Visible = character.UsesMP,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.MPRegenerationModifications.Where(m => m.RemainingTurns != 0).ForEach(mpm => mpRegenerationStat.Modifications.Add(new StatModificationDto(mpm, mpRegenerationStat)));
             Stats = new List<StatDto>
             {
                 hpStat,
+                mpStat,
                 attackStat,
                 defenseStat,
                 movementStat,
                 hpRegenerationStat,
+                mpRegenerationStat
             };
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
@@ -111,6 +142,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public decimal Base { get; set; }
         public bool IsIntegerStat { get; set; }
         public bool HasMaxStat { get; set; }
+        public bool Visible { get; set; }
         public List<StatModificationDto> Modifications { get; set; }
     }
 

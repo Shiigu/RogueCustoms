@@ -106,6 +106,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 chkSelf.Enabled = false;
                 nudMinRange.Enabled = false;
                 nudMaxRange.Enabled = false;
+                nudMPCost.Enabled = false;
             }
             else
             {
@@ -117,6 +118,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 nudCooldown.Value = ActionToSave.CooldownBetweenUses;
                 nudInitialCooldown.Value = ActionToSave.StartingCooldown;
                 nudMaximumUses.Value = ActionToSave.MaximumUses;
+                nudMPCost.Value = ActionToSave.MPCost;
                 lblNoCooldown.Visible = nudCooldown.Value < 2;
                 lblInfiniteUse.Visible = nudMaximumUses.Value == 0;
             }
@@ -505,6 +507,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.CooldownBetweenUses = (int)nudCooldown.Value;
                             ActionToSave.StartingCooldown = (int)nudInitialCooldown.Value;
                             ActionToSave.MaximumUses = (int)nudMaximumUses.Value;
+                            ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.Description = txtActionDescription.Text;
@@ -569,6 +572,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.CooldownBetweenUses = (int)nudCooldown.Value;
                             ActionToSave.StartingCooldown = (int)nudInitialCooldown.Value;
                             ActionToSave.MaximumUses = (int)nudMaximumUses.Value;
+                            ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.Description = txtActionDescription.Text;
