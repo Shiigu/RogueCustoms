@@ -170,7 +170,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             try
             {
-                ParentContainer.PossibleDungeons = BackendHandler.Instance.GetPickableDungeonList(LocalizationManager.CurrentLocale);
+                ParentContainer.PossibleDungeonsInfo = BackendHandler.Instance.GetPickableDungeonList(LocalizationManager.CurrentLocale);
                 ParentContainer.MoveToConsole(MenuConsoles.PickDungeon);
             }
             catch (Exception)

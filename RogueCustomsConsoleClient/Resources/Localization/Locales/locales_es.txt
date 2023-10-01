@@ -31,6 +31,8 @@ DungeonDisplayNameText = {DungeonName} - por {Author}
 NoDungeonsText = No hay Mazmorras para elegir.
 NoLocalDungeonsSubtext = Pon Mazmorras en la carpeta JSON.
 NoServerDungeonsSubtext = El Servidor no tiene Mazmorras.
+IncompatibleDungeonMessageBoxHeader = NO SE PUEDE JUGAR ESTA MAZMORRA
+IncompatibleDungeonMessageBoxText = Esta mazmorra está en la versión {DungeonJsonVersion}.\nLa versión de este juego requiere mazmorras en la versión {RequiredDungeonJsonVersion}.\n\nPor favor, contacta con el creador de la mazmorra para obtener la versión correcta.
 PickButtonText = JUGAR MAZMORRA
 
 ; MessageConsole

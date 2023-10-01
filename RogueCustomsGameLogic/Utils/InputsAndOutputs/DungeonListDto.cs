@@ -1,20 +1,43 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.JsonImports;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
     public class DungeonListDto
     {
-        public string InternalName { get; set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
+        public string CurrentVersion { get; set; } = string.Empty;
+        public List<DungeonPickDto> Dungeons { get; set; } = new List<DungeonPickDto>();
 
         public DungeonListDto() { }
 
-        public DungeonListDto(string internalName, DungeonInfo info, string locale) {
+        public DungeonListDto(string currentVersion)
+        {
+            CurrentVersion = currentVersion;
+        }
+
+        public void AddDungeonToList(string internalName, DungeonInfo info, string locale)
+        {
+            Dungeons.Add(new DungeonPickDto(internalName, info.GetLocalizedName(locale), info.Author, info.Version, info.Version.Equals(Constants.CurrentDungeonJsonVersion)));
+        }
+    }
+
+    public class DungeonPickDto
+    {
+        public string InternalName { get; set; }
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public string Version { get; set; }
+        public bool IsAtCurrentVersion { get; set; }
+
+        public DungeonPickDto(string internalName, string name, string author, string version, bool isAtCurrentVersion)
+        {
             InternalName = internalName;
-            Name = info.GetLocalizedName(locale);
-            Author = info.Author;
+            Name = name;
+            Author = author;
+            Version = version;
+            IsAtCurrentVersion = isAtCurrentVersion;
         }
     }
 }

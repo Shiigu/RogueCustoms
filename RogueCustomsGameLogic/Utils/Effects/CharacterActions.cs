@@ -19,8 +19,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (ExpandoObjectHelper.HasProperty(paramsObject, "Character"))
                 Source.ConsoleRepresentation.Character = paramsObject.Character;
-            if (ExpandoObjectHelper.HasProperty(paramsObject, "Color"))
-                Source.ConsoleRepresentation.ForegroundColor = paramsObject.Color;
+            if (ExpandoObjectHelper.HasProperty(paramsObject, "ForeColor"))
+                Source.ConsoleRepresentation.ForegroundColor = paramsObject.ForeColor;
+            if (ExpandoObjectHelper.HasProperty(paramsObject, "BackColor"))
+                Source.ConsoleRepresentation.BackgroundColor = paramsObject.BackColor;
             _ = 0;
             return true;
         }

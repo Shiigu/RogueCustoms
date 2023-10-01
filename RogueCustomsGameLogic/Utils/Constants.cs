@@ -4,6 +4,8 @@ namespace RogueCustomsGameEngine.Utils
 {
     public static class Constants
     {
+        public const string CurrentDungeonJsonVersion = "1.1";
+
         public const int MaxGenerationTries = 1000;
         public const int MaxGenerationTriesForHallway = 10;
         public const int LogMessagesToSend = 200;

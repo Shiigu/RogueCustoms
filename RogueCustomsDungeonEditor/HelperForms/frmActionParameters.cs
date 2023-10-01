@@ -594,6 +594,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     {
                         paramToSave.Value = param.Value;
                     }
+                    else
+                    {
+                        EffectToSave.Params = EffectToSave.Params.Append(new Parameter
+                        {
+                            ParamName = param.ParamName,
+                            Value = param.Value
+                        }).ToArray();
+                    }
                 }
                 Saved = true;
                 this.Close();

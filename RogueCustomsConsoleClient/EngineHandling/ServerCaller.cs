@@ -21,10 +21,10 @@ namespace RogueCustomsConsoleClient.EngineHandling
             };
             Address = address;
         }
-        public async Task<List<DungeonListDto>> GetPickableDungeonList(string locale)
+        public async Task<DungeonListDto> GetPickableDungeonList(string locale)
         {
             var json = await client.GetStringAsync($"{Address}/api/GetPickableDungeonList/{locale}");
-            return JsonConvert.DeserializeObject<List<DungeonListDto>>(json);
+            return JsonConvert.DeserializeObject<DungeonListDto>(json);
         }
 
         public async Task<int> CreateDungeon(string dungeonName, string locale)

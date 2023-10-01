@@ -145,6 +145,12 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "color":
                             paramsObject.Color = value.ToGameColor();
                             break;
+                        case "forecolor":
+                            paramsObject.ForeColor = value.ToGameColor();
+                            break;
+                        case "backcolor":
+                            paramsObject.BackColor = value.ToGameColor();
+                            break;
                         case "output":
                             paramsObject.Output = previousEffectOutput;
                             break;

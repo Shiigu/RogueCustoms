@@ -62,11 +62,11 @@ namespace RogueCustomsConsoleClient.EngineHandling
             sw.WriteLine("------------------------------------");
         }
 
-        public List<DungeonListDto> GetPickableDungeonList(string locale)
+        public DungeonListDto GetPickableDungeonList(string locale)
         {
             try
             {
-                List<DungeonListDto> DungeonList = null;
+                DungeonListDto DungeonList = null;
                 if (IsLocal)
                     DungeonList = LocalHandler.GetPickableDungeonList(locale);
                 else

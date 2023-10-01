@@ -6,6 +6,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System;
 using SadConsole.Input;
+using SadConsole.UI;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
@@ -16,8 +17,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         private readonly MainMenuConsole MainMenuConsole;
         private readonly PickDungeonConsole PickDungeonConsole;
         private readonly OptionsConsole OptionsConsole;
+        public Window ActiveWindow;
 
-        public List<DungeonListDto> PossibleDungeons;
+        public DungeonListDto PossibleDungeonsInfo;
 
         public MenuConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
@@ -47,6 +49,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 Children.Add(ActiveConsole);
             }
             ActiveConsole.Render(delta);
+
+            if (ActiveWindow?.IsVisible == true)
+                ActiveWindow.Render(delta);
         }
 
         public override void Start()
@@ -63,6 +68,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 ActiveConsole.IsVisible = false;
                 ActiveConsole.IsEnabled = false;
             }
+            ActiveWindow = null;
             switch (console)
             {
                 case MenuConsoles.Main:

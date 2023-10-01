@@ -2,7 +2,9 @@ using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion;
 using RogueCustomsDungeonEditor.Validators;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
@@ -18,8 +20,6 @@ namespace RogueCustomsDungeonEditor
 {
     public partial class frmMain : Form
     {
-        private const string CurrentDungeonVersion = "1.0";
-
         private readonly Dictionary<TabTypes, TabPage> TabsForNodeTypes = new();
         private readonly List<string> MandatoryLocaleKeys = new();
         private readonly List<string> BaseLocaleLanguages = new();
@@ -397,7 +397,7 @@ namespace RogueCustomsDungeonEditor
                 }
             }
             ActiveDungeon = DungeonInfoHelpers.CreateEmptyDungeonTemplate(LocaleTemplate, BaseLocaleLanguages);
-            ActiveDungeon.Version = CurrentDungeonVersion;
+            ActiveDungeon.Version = Constants.CurrentDungeonJsonVersion;
             RefreshTreeNodes();
             tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
             tvDungeonInfo.Focus();
@@ -445,8 +445,8 @@ namespace RogueCustomsDungeonEditor
                     {
                         PropertyNameCaseInsensitive = true
                     });
-                    if (string.IsNullOrWhiteSpace(ActiveDungeon.Version))
-                        ActiveDungeon.Version = CurrentDungeonVersion;
+                    var formerVersion = !string.IsNullOrWhiteSpace(ActiveDungeon.Version) ? new string(ActiveDungeon.Version) : "1.0";
+                    ActiveDungeon.ConvertDungeonInfoIfNeeded();
                     tbTabs.TabPages.Clear();
                     DirtyEntry = false;
                     DirtyTab = false;
@@ -460,7 +460,13 @@ namespace RogueCustomsDungeonEditor
                     DungeonPath = ofdDungeon.FileName;
                     sfdDungeon.InitialDirectory = Path.GetDirectoryName(ofdDungeon.FileName);
                     this.Text = $"Rogue Customs Dungeon Editor - [{Path.GetFileName(DungeonPath)}]";
-                    DirtyDungeon = false;
+                    if (!ActiveDungeon.Version.Equals(formerVersion))
+                    {
+                        MessageBox.Show($"Dungeon has been found to belong to outdated version {formerVersion}.\n\nDungeon has been updated to {ActiveDungeon.Version} with default values. Please check differences to ensure they work as intended, or adjust them if needed.\n\nRemember to save the Dungeon afterwards.", "Open Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        DirtyDungeon = true;
+                    }
+                    else
+                        DirtyDungeon = false;
                 }
                 catch (Exception ex)
                 {
