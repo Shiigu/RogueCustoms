@@ -404,7 +404,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 }
                 else
                 {
-                    return decimalValue.ToString("F2", CultureInfo.GetCultureInfo("en-US"));
+                    return decimalValue.ToString("F5", CultureInfo.GetCultureInfo("en-US"));
                 }
             }
             else
