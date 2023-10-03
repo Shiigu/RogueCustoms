@@ -47,20 +47,20 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal MaxHPIncreasePerLevel;
         public List<StatModification> MaxHPModifications { get; set; }
         public int TotalMaxHPIncrements => MaxHPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
-        public int MaxHP => BaseMaxHP + (int)(MaxHPIncreasePerLevel * (Level - 1)) + TotalMaxHPIncrements;
+        public int MaxHP => Math.Min(BaseMaxHP + (int)(MaxHPIncreasePerLevel * (Level - 1)) + TotalMaxHPIncrements, Constants.RESOURCE_STAT_CAP);
         public int MP { get; set; }
 
         public readonly int BaseMaxMP;
         public readonly decimal MaxMPIncreasePerLevel;
         public List<StatModification> MaxMPModifications { get; set; }
         public int TotalMaxMPIncrements => MaxMPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int MaxMP => BaseMaxMP + (int)(MaxMPIncreasePerLevel * (Level - 1)) + TotalMaxMPIncrements;
+        public int MaxMP => Math.Min(BaseMaxMP + (int)(MaxMPIncreasePerLevel * (Level - 1)) + TotalMaxMPIncrements, Constants.RESOURCE_STAT_CAP);
 
         public readonly int BaseAttack;
         public readonly decimal AttackIncreasePerLevel;
         public List<StatModification> AttackModifications { get; set; }
         public int TotalAttackIncrements => AttackModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
-        public int Attack => BaseAttack + (int)(AttackIncreasePerLevel * (Level - 1)) + TotalAttackIncrements;
+        public int Attack => Math.Min(BaseAttack + (int)(AttackIncreasePerLevel * (Level - 1)) + TotalAttackIncrements, Constants.NORMAL_STAT_CAP);
         public string Damage
         {
             get
@@ -75,7 +75,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal DefenseIncreasePerLevel;
         public List<StatModification> DefenseModifications { get; set; }
         public int TotalDefenseIncrements => DefenseModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
-        public int Defense => BaseDefense + (int)(DefenseIncreasePerLevel * (Level - 1)) + TotalDefenseIncrements;
+        public int Defense => Math.Min(BaseDefense + (int)(DefenseIncreasePerLevel * (Level - 1)) + TotalDefenseIncrements, Constants.NORMAL_STAT_CAP);
         public string Mitigation
         {
             get
@@ -91,7 +91,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public List<StatModification> MovementModifications { get; set; }
         public int TotalMovementIncrements => MovementModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
-        public int Movement => BaseMovement + (int)(MovementIncreasePerLevel * (Level - 1)) + TotalMovementIncrements;
+        public int Movement => Math.Min(BaseMovement + (int)(MovementIncreasePerLevel * (Level - 1)) + TotalMovementIncrements, Constants.MOVEMENT_STAT_CAP);
 
         public int RemainingMovement { get; set; }
 
@@ -99,14 +99,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal HPRegenerationIncreasePerLevel;
         public List<StatModification> HPRegenerationModifications { get; set; }
         public decimal TotalHPRegenerationIncrements => HPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal HPRegeneration => BaseHPRegeneration + HPRegenerationIncreasePerLevel * (Level - 1) + TotalHPRegenerationIncrements;
+        public decimal HPRegeneration => Math.Min(BaseHPRegeneration + HPRegenerationIncreasePerLevel * (Level - 1) + TotalHPRegenerationIncrements, Constants.REGEN_STAT_CAP);
         private decimal CarriedHPRegeneration;
 
         public readonly decimal BaseMPRegeneration;
         public readonly decimal MPRegenerationIncreasePerLevel;
         public List<StatModification> MPRegenerationModifications { get; set; }
         public decimal TotalMPRegenerationIncrements => MPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal MPRegeneration => BaseMPRegeneration + MPRegenerationIncreasePerLevel * (Level - 1) + TotalMPRegenerationIncrements;
+        public decimal MPRegeneration => Math.Min(BaseMPRegeneration + MPRegenerationIncreasePerLevel * (Level - 1) + TotalMPRegenerationIncrements, Constants.REGEN_STAT_CAP);
         private decimal CarriedMPRegeneration;
 
         public readonly int BaseSightRange;

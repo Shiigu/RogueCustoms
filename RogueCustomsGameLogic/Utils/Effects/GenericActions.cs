@@ -121,6 +121,43 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 && !statAlterationTarget.UsesMP)
                 return false;
             var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
+            var statCap = 0m;
+            var statValue = 0m;
+            switch (paramsObject.StatName.ToLowerInvariant())
+            {
+                case "hp":
+                    statValue = statAlterationTarget.HP;
+                    statCap = Constants.RESOURCE_STAT_CAP;
+                    break;
+                case "mp":
+                    statValue = statAlterationTarget.MP;
+                    statCap = Constants.RESOURCE_STAT_CAP;
+                    break;
+                case "attack":
+                    statValue = statAlterationTarget.Attack;
+                    statCap = Constants.NORMAL_STAT_CAP;
+                    break;
+                case "defense":
+                    statValue = statAlterationTarget.Defense;
+                    statCap = Constants.NORMAL_STAT_CAP;
+                    break;
+                case "movement":
+                    statValue = statAlterationTarget.Movement;
+                    statCap = Constants.MOVEMENT_STAT_CAP;
+                    break;
+                case "hpregeneration":
+                    statValue = statAlterationTarget.HPRegeneration;
+                    statCap = Constants.REGEN_STAT_CAP;
+                    break;
+                case "mpregeneration":
+                    statValue = statAlterationTarget.MPRegeneration;
+                    statCap = Constants.REGEN_STAT_CAP;
+                    break;
+                default:
+                    throw new ArgumentException($"Unrecognized stat: {paramsObject.StatName}.");
+            }
+            if (statValue >= statCap)
+                return false;
             if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
@@ -134,6 +171,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     else if (paramsObject.Amount < 0 && paramsObject.Amount > -1)
                         alterationAmount = -1;
                 }
+
+                if (alterationAmount > statCap)
+                    alterationAmount = statCap;
 
                 statAlterations.Add(new StatModification
                 {
