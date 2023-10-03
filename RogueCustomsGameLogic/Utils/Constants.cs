@@ -22,5 +22,10 @@ namespace RogueCustomsGameEngine.Utils
             "DealDamage", "StealItem", "ApplyAlteredStatus", "CleanseAlteredStatus", "CleanseAllAlteredStatuses",
             "ApplyStatAlteration", "CleanseStatAlteration", "CleanseStatAlterations", "ForceSkipTurn"
         };
+
+        public const int RESOURCE_STAT_CAP = 99999;
+        public const int NORMAL_STAT_CAP = 9999;
+        public const int MOVEMENT_STAT_CAP = 9;
+        public const decimal REGEN_STAT_CAP = 999;
     }
 }
