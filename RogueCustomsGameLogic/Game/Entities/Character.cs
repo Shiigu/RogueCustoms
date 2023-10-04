@@ -393,7 +393,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (!UsesMP) return;
             if (MP > MaxMP) MP = MaxMP;
-            if (MP == MaxMP || MPRegeneration == 0)
+            if ((MPRegeneration > 0 && MP == MaxMP) || MPRegeneration == 0)
             {
                 CarriedMPRegeneration = 0;
                 return;
