@@ -9,6 +9,7 @@ using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text.Encodings.Web;
@@ -16,6 +17,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
+using System;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -496,7 +498,7 @@ namespace RogueCustomsDungeonEditor
         {
             try
             {
-                File.WriteAllText(filePath, String.Empty);
+                File.WriteAllText(filePath, string.Empty);
                 using FileStream createStream = File.OpenWrite(filePath);
                 JsonSerializer.Serialize(createStream, ActiveDungeon, new JsonSerializerOptions
                 {
@@ -2108,14 +2110,15 @@ namespace RogueCustomsDungeonEditor
             txtPlayerClassDescription.Text = playerClass.Description;
             try
             {
-                lblPlayerConsoleRepresentation.Text = playerClass.ConsoleRepresentation.Character.ToString();
-                lblPlayerConsoleRepresentation.BackColor = playerClass.ConsoleRepresentation.BackgroundColor.ToColor();
-                lblPlayerConsoleRepresentation.ForeColor = playerClass.ConsoleRepresentation.ForegroundColor.ToColor();
+                crsPlayer.Character = playerClass.ConsoleRepresentation.Character;
+                crsPlayer.BackgroundColor = playerClass.ConsoleRepresentation.BackgroundColor;
+                crsPlayer.ForegroundColor = playerClass.ConsoleRepresentation.ForegroundColor;
             }
             catch (Exception ex)
             {
-                lblPlayerConsoleRepresentation.BackColor = Color.Transparent;
-                lblPlayerConsoleRepresentation.ForeColor = Color.Black;
+                crsPlayer.Character = '\0';
+                crsPlayer.BackgroundColor = new GameColor(Color.Black);
+                crsPlayer.ForegroundColor = new GameColor(Color.White);
             }
             cmbPlayerFaction.Items.Clear();
             cmbPlayerFaction.Text = "";
@@ -2256,12 +2259,7 @@ namespace RogueCustomsDungeonEditor
             playerClass.Name = txtPlayerClassName.Text;
             playerClass.RequiresNamePrompt = chkRequirePlayerPrompt.Checked;
             playerClass.Description = txtPlayerClassDescription.Text;
-            playerClass.ConsoleRepresentation = new ConsoleRepresentation
-            {
-                Character = lblPlayerConsoleRepresentation.Text[0],
-                BackgroundColor = new GameColor(lblPlayerConsoleRepresentation.BackColor),
-                ForegroundColor = new GameColor(lblPlayerConsoleRepresentation.ForeColor)
-            };
+            playerClass.ConsoleRepresentation = crsPlayer.ConsoleRepresentation;
             playerClass.Faction = cmbPlayerFaction.Text;
             playerClass.StartsVisible = chkPlayerStartsVisible.Checked;
             playerClass.UsesMP = chkPlayerUsesMP.Checked;
@@ -2401,7 +2399,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter a Player Class Name first.");
             if (string.IsNullOrWhiteSpace(txtPlayerClassDescription.Text))
                 errorMessages.Add("Enter a Player Class Description first.");
-            if (string.IsNullOrWhiteSpace(lblPlayerConsoleRepresentation.Text))
+            if (crsPlayer.ConsoleRepresentation.Character == '\0')
                 errorMessages.Add("This Player Class does not have a Console Representation character.");
             if (string.IsNullOrWhiteSpace(cmbPlayerSightRange.Text))
                 errorMessages.Add("This Player Class does not have a Sight Range set.");
@@ -2524,39 +2522,9 @@ namespace RogueCustomsDungeonEditor
             btnPlayerRemoveItem.Enabled = lbPlayerStartingInventory.SelectedItem != null;
         }
 
-        private void btnChangePlayerConsoleCharacter_Click(object sender, EventArgs e)
+        private void crsPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblPlayerConsoleRepresentation.Text)) ? lblPlayerConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
-            {
-                lblPlayerConsoleRepresentation.Text = characterMapForm.CharacterToSave.ToString();
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangePlayerConsoleCharacterForeColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblPlayerConsoleRepresentation.ForeColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblPlayerConsoleRepresentation.ForeColor = colorDialog.Color;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangePlayerConsoleCharacterBackColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblPlayerConsoleRepresentation.BackColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblPlayerConsoleRepresentation.BackColor = colorDialog.Color;
-                DirtyTab = true;
-            }
+            DirtyTab = true;
         }
 
         private void nudPlayerBaseHP_ValueChanged(object sender, EventArgs e)
@@ -2791,14 +2759,15 @@ namespace RogueCustomsDungeonEditor
             txtNPCDescription.Text = npc.Description;
             try
             {
-                lblNPCConsoleRepresentation.Text = npc.ConsoleRepresentation.Character.ToString();
-                lblNPCConsoleRepresentation.BackColor = npc.ConsoleRepresentation.BackgroundColor.ToColor();
-                lblNPCConsoleRepresentation.ForeColor = npc.ConsoleRepresentation.ForegroundColor.ToColor();
+                crsNPC.Character = npc.ConsoleRepresentation.Character;
+                crsNPC.BackgroundColor = npc.ConsoleRepresentation.BackgroundColor;
+                crsNPC.ForegroundColor = npc.ConsoleRepresentation.ForegroundColor;
             }
             catch (Exception ex)
             {
-                lblNPCConsoleRepresentation.BackColor = Color.Transparent;
-                lblNPCConsoleRepresentation.ForeColor = Color.Black;
+                crsNPC.Character = '\0';
+                crsNPC.BackgroundColor = new GameColor(Color.Black);
+                crsNPC.ForegroundColor = new GameColor(Color.White);
             }
             cmbNPCFaction.Items.Clear();
             cmbNPCFaction.Text = "";
@@ -2941,12 +2910,7 @@ namespace RogueCustomsDungeonEditor
                 : (NPCInfo)ActiveNodeTag.DungeonElement;
             npc.Name = txtNPCName.Text;
             npc.Description = txtNPCDescription.Text;
-            npc.ConsoleRepresentation = new ConsoleRepresentation
-            {
-                Character = lblNPCConsoleRepresentation.Text[0],
-                BackgroundColor = new GameColor(lblNPCConsoleRepresentation.BackColor),
-                ForegroundColor = new GameColor(lblNPCConsoleRepresentation.ForeColor)
-            };
+            npc.ConsoleRepresentation = crsNPC.ConsoleRepresentation;
             npc.Faction = cmbNPCFaction.Text;
             npc.StartsVisible = chkNPCStartsVisible.Checked;
             npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
@@ -3082,7 +3046,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an NPC Name first.");
             if (string.IsNullOrWhiteSpace(txtNPCDescription.Text))
                 errorMessages.Add("Enter an NPC Description first.");
-            if (string.IsNullOrWhiteSpace(lblNPCConsoleRepresentation.Text))
+            if (crsNPC.Character == '\0')
                 errorMessages.Add("This NPC does not have a Console Representation character.");
             if (string.IsNullOrWhiteSpace(cmbNPCSightRange.Text))
                 errorMessages.Add("This NPC does not have a Sight Range set.");
@@ -3245,39 +3209,9 @@ namespace RogueCustomsDungeonEditor
             btnNPCRemoveItem.Enabled = lbNPCStartingInventory.SelectedItem != null;
         }
 
-        private void btnChangeNPCConsoleCharacter_Click(object sender, EventArgs e)
+        private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblNPCConsoleRepresentation.Text)) ? lblNPCConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
-            {
-                lblNPCConsoleRepresentation.Text = characterMapForm.CharacterToSave.ToString();
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeNPCConsoleCharacterForeColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblNPCConsoleRepresentation.ForeColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblNPCConsoleRepresentation.ForeColor = colorDialog.Color;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeNPCConsoleCharacterBackColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblNPCConsoleRepresentation.BackColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblNPCConsoleRepresentation.BackColor = colorDialog.Color;
-                DirtyTab = true;
-            }
+            DirtyTab = true;
         }
 
         private void nudNPCBaseHP_ValueChanged(object sender, EventArgs e)
@@ -3511,14 +3445,15 @@ namespace RogueCustomsDungeonEditor
             txtItemDescription.Text = item.Description;
             try
             {
-                lblItemConsoleRepresentation.Text = item.ConsoleRepresentation.Character.ToString();
-                lblItemConsoleRepresentation.BackColor = item.ConsoleRepresentation.BackgroundColor.ToColor();
-                lblItemConsoleRepresentation.ForeColor = item.ConsoleRepresentation.ForegroundColor.ToColor();
+                crsItem.Character = item.ConsoleRepresentation.Character;
+                crsItem.BackgroundColor = item.ConsoleRepresentation.BackgroundColor;
+                crsItem.ForegroundColor = item.ConsoleRepresentation.ForegroundColor;
             }
             catch (Exception ex)
             {
-                lblItemConsoleRepresentation.BackColor = Color.Transparent;
-                lblItemConsoleRepresentation.ForeColor = Color.Black;
+                crsItem.Character = '\0';
+                crsItem.BackgroundColor = new GameColor(Color.Black);
+                crsItem.ForegroundColor = new GameColor(Color.White);
             }
             cmbItemType.Text = "";
             cmbItemType.Items.Clear();
@@ -3573,12 +3508,7 @@ namespace RogueCustomsDungeonEditor
                 : (ItemInfo)ActiveNodeTag.DungeonElement;
             item.Name = txtItemName.Text;
             item.Description = txtItemDescription.Text;
-            item.ConsoleRepresentation = new ConsoleRepresentation
-            {
-                Character = lblItemConsoleRepresentation.Text[0],
-                BackgroundColor = new GameColor(lblItemConsoleRepresentation.BackColor),
-                ForegroundColor = new GameColor(lblItemConsoleRepresentation.ForeColor)
-            };
+            item.ConsoleRepresentation = crsItem.ConsoleRepresentation;
             item.StartsVisible = chkItemStartsVisible.Checked;
             item.CanBePickedUp = chkItemCanBePickedUp.Checked;
             item.EntityType = cmbItemType.Text;
@@ -3693,7 +3623,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an Item Name first.");
             if (string.IsNullOrWhiteSpace(txtItemDescription.Text))
                 errorMessages.Add("Enter an Item Description first.");
-            if (string.IsNullOrWhiteSpace(lblItemConsoleRepresentation.Text))
+            if (crsItem.Character == '\0')
                 errorMessages.Add("This Item does not have a Console Representation character.");
             if (string.IsNullOrWhiteSpace(cmbItemType.Text))
                 errorMessages.Add("This Item does not have an Item Type.");
@@ -3875,39 +3805,9 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void btnChangeItemConsoleCharacter_Click(object sender, EventArgs e)
+        private void crsItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblItemConsoleRepresentation.Text)) ? lblItemConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
-            {
-                lblItemConsoleRepresentation.Text = characterMapForm.CharacterToSave.ToString();
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeItemConsoleCharacterForeColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblItemConsoleRepresentation.ForeColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblItemConsoleRepresentation.ForeColor = colorDialog.Color;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeItemConsoleCharacterBackColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblItemConsoleRepresentation.BackColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblItemConsoleRepresentation.BackColor = colorDialog.Color;
-                DirtyTab = true;
-            }
+            DirtyTab = true;
         }
 
         private void btnItemOnSteppedAction_Click(object sender, EventArgs e)
@@ -3975,14 +3875,15 @@ namespace RogueCustomsDungeonEditor
             txtTrapDescription.Text = trap.Description;
             try
             {
-                lblTrapConsoleRepresentation.Text = trap.ConsoleRepresentation.Character.ToString();
-                lblTrapConsoleRepresentation.BackColor = trap.ConsoleRepresentation.BackgroundColor.ToColor();
-                lblTrapConsoleRepresentation.ForeColor = trap.ConsoleRepresentation.ForegroundColor.ToColor();
+                crsTrap.Character = trap.ConsoleRepresentation.Character;
+                crsTrap.BackgroundColor = trap.ConsoleRepresentation.BackgroundColor;
+                crsTrap.ForegroundColor = trap.ConsoleRepresentation.ForegroundColor;
             }
             catch (Exception ex)
             {
-                lblTrapConsoleRepresentation.BackColor = Color.Transparent;
-                lblTrapConsoleRepresentation.ForeColor = Color.Black;
+                crsTrap.Character = '\0';
+                crsTrap.BackgroundColor = new GameColor(Color.Black);
+                crsTrap.ForegroundColor = new GameColor(Color.White);
             }
             txtTrapPower.Text = trap.Power;
             chkTrapStartsVisible.Checked = trap.StartsVisible;
@@ -4008,12 +3909,7 @@ namespace RogueCustomsDungeonEditor
                 : (TrapInfo)ActiveNodeTag.DungeonElement;
             trap.Name = txtTrapName.Text;
             trap.Description = txtTrapDescription.Text;
-            trap.ConsoleRepresentation = new ConsoleRepresentation
-            {
-                Character = lblTrapConsoleRepresentation.Text[0],
-                BackgroundColor = new GameColor(lblTrapConsoleRepresentation.BackColor),
-                ForegroundColor = new GameColor(lblTrapConsoleRepresentation.ForeColor)
-            };
+            trap.ConsoleRepresentation = crsTrap.ConsoleRepresentation;
             trap.StartsVisible = chkTrapStartsVisible.Checked;
             trap.Power = txtTrapPower.Text;
 
@@ -4100,7 +3996,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an Trap Name first.");
             if (string.IsNullOrWhiteSpace(txtTrapDescription.Text))
                 errorMessages.Add("Enter an Trap Description first.");
-            if (string.IsNullOrWhiteSpace(lblTrapConsoleRepresentation.Text))
+            if (crsTrap.Character == '\0')
                 errorMessages.Add("This Trap does not have a Console Representation character.");
             if (string.IsNullOrWhiteSpace(txtTrapPower.Text))
                 errorMessages.Add("This Trap does not have a Power.");
@@ -4193,39 +4089,9 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void btnChangeTrapConsoleCharacter_Click(object sender, EventArgs e)
+        private void crsTrap_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblTrapConsoleRepresentation.Text)) ? lblTrapConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
-            {
-                lblTrapConsoleRepresentation.Text = characterMapForm.CharacterToSave.ToString();
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeTrapConsoleCharacterForeColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblTrapConsoleRepresentation.ForeColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblTrapConsoleRepresentation.ForeColor = colorDialog.Color;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeTrapConsoleCharacterBackColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblTrapConsoleRepresentation.BackColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblTrapConsoleRepresentation.BackColor = colorDialog.Color;
-                DirtyTab = true;
-            }
+            DirtyTab = true;
         }
 
         private void btnTrapOnSteppedAction_Click(object sender, EventArgs e)
@@ -4244,14 +4110,15 @@ namespace RogueCustomsDungeonEditor
             txtAlteredStatusDescription.Text = alteredStatus.Description;
             try
             {
-                lblAlteredStatusConsoleRepresentation.Text = alteredStatus.ConsoleRepresentation.Character.ToString();
-                lblAlteredStatusConsoleRepresentation.BackColor = alteredStatus.ConsoleRepresentation.BackgroundColor.ToColor();
-                lblAlteredStatusConsoleRepresentation.ForeColor = alteredStatus.ConsoleRepresentation.ForegroundColor.ToColor();
+                crsAlteredStatus.Character = alteredStatus.ConsoleRepresentation.Character;
+                crsAlteredStatus.BackgroundColor = alteredStatus.ConsoleRepresentation.BackgroundColor;
+                crsAlteredStatus.ForegroundColor = alteredStatus.ConsoleRepresentation.ForegroundColor;
             }
             catch (Exception ex)
             {
-                lblAlteredStatusConsoleRepresentation.BackColor = Color.Transparent;
-                lblAlteredStatusConsoleRepresentation.ForeColor = Color.Black;
+                crsAlteredStatus.Character = '\0';
+                crsAlteredStatus.BackgroundColor = new GameColor(Color.Black);
+                crsAlteredStatus.ForegroundColor = new GameColor(Color.White);
             }
             chkAlteredStatusCanStack.Checked = alteredStatus.CanStack;
             chkAlteredStatusCanOverwrite.Checked = alteredStatus.CanOverwrite;
@@ -4278,12 +4145,7 @@ namespace RogueCustomsDungeonEditor
                 : (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
             alteredStatus.Name = txtAlteredStatusName.Text;
             alteredStatus.Description = txtAlteredStatusDescription.Text;
-            alteredStatus.ConsoleRepresentation = new ConsoleRepresentation
-            {
-                Character = lblAlteredStatusConsoleRepresentation.Text[0],
-                BackgroundColor = new GameColor(lblAlteredStatusConsoleRepresentation.BackColor),
-                ForegroundColor = new GameColor(lblAlteredStatusConsoleRepresentation.ForeColor)
-            };
+            alteredStatus.ConsoleRepresentation = crsAlteredStatus.ConsoleRepresentation;
             alteredStatus.CanStack = chkAlteredStatusCanStack.Checked;
             alteredStatus.CanOverwrite = chkAlteredStatusCanOverwrite.Checked;
             alteredStatus.CleanseOnFloorChange = chkAlteredStatusCleanseOnFloorChange.Checked;
@@ -4377,7 +4239,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an Altered Status Name first.");
             if (string.IsNullOrWhiteSpace(txtAlteredStatusDescription.Text))
                 errorMessages.Add("Enter an Altered Status Description first.");
-            if (string.IsNullOrWhiteSpace(lblAlteredStatusConsoleRepresentation.Text))
+            if (crsAlteredStatus.Character == '\0')
                 errorMessages.Add("This Altered Status does not have a Console Representation character.");
 
             return !errorMessages.Any();
@@ -4433,39 +4295,9 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void btnChangeAlteredStatusConsoleCharacter_Click(object sender, EventArgs e)
+        private void crsAlteredStatus_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblAlteredStatusConsoleRepresentation.Text)) ? lblAlteredStatusConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
-            {
-                lblAlteredStatusConsoleRepresentation.Text = characterMapForm.CharacterToSave.ToString();
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeAlteredStatusConsoleCharacterForeColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblAlteredStatusConsoleRepresentation.ForeColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblAlteredStatusConsoleRepresentation.ForeColor = colorDialog.Color;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnChangeAlteredStatusConsoleCharacterBackColor_Click(object sender, EventArgs e)
-        {
-            var colorDialog = new ColorDialog();
-            colorDialog.Color = lblAlteredStatusConsoleRepresentation.BackColor;
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                lblAlteredStatusConsoleRepresentation.BackColor = colorDialog.Color;
-                DirtyTab = true;
-            }
+            DirtyTab = true;
         }
 
         private void btnAlteredStatusOnApplyAction_Click(object sender, EventArgs e)

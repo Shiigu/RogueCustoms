@@ -30,6 +30,16 @@
         {
             global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::RogueCustomsDungeonEditor.frmMain));
             global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor1 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor2 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor3 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor4 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor5 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor6 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor7 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor8 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor9 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor10 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
             this.msMenu = (new global::System.Windows.Forms.MenuStrip());
             this.editorToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
             this.exitToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
@@ -139,7 +149,6 @@
             this.chkPlayerUsesMP = (new global::System.Windows.Forms.CheckBox());
             this.label110 = (new global::System.Windows.Forms.Label());
             this.nudPlayerBaseMP = (new global::System.Windows.Forms.NumericUpDown());
-            this.btnChangePlayerConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
             this.btnPlayerOnDeathAction = (new global::System.Windows.Forms.Button());
             this.label63 = (new global::System.Windows.Forms.Label());
             this.btnPlayerOnAttackedAction = (new global::System.Windows.Forms.Button());
@@ -202,9 +211,6 @@
             this.label32 = (new global::System.Windows.Forms.Label());
             this.nudPlayerBaseHP = (new global::System.Windows.Forms.NumericUpDown());
             this.label31 = (new global::System.Windows.Forms.Label());
-            this.btnChangePlayerConsoleCharacterForeColor = (new global::System.Windows.Forms.Button());
-            this.btnChangePlayerConsoleCharacter = (new global::System.Windows.Forms.Button());
-            this.lblPlayerConsoleRepresentation = (new global::System.Windows.Forms.Label());
             this.label30 = (new global::System.Windows.Forms.Label());
             this.chkPlayerStartsVisible = (new global::System.Windows.Forms.CheckBox());
             this.cmbPlayerFaction = (new global::System.Windows.Forms.ComboBox());
@@ -217,6 +223,7 @@
             this.txtPlayerClassName = (new global::System.Windows.Forms.TextBox());
             this.label27 = (new global::System.Windows.Forms.Label());
             this.lblPlayerSightRangeText = (new global::System.Windows.Forms.Label());
+            this.crsPlayer = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpNPC = (new global::System.Windows.Forms.TabPage());
             this.label128 = (new global::System.Windows.Forms.Label());
             this.label129 = (new global::System.Windows.Forms.Label());
@@ -234,7 +241,6 @@
             this.txtNPCExperiencePayout = (new global::System.Windows.Forms.TextBox());
             this.label103 = (new global::System.Windows.Forms.Label());
             this.chkNPCKnowsAllCharacterPositions = (new global::System.Windows.Forms.CheckBox());
-            this.btnChangeNPCConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
             this.btnNPCOnDeathAction = (new global::System.Windows.Forms.Button());
             this.label64 = (new global::System.Windows.Forms.Label());
             this.btnNPCOnAttackedAction = (new global::System.Windows.Forms.Button());
@@ -297,9 +303,6 @@
             this.label95 = (new global::System.Windows.Forms.Label());
             this.nudNPCBaseHP = (new global::System.Windows.Forms.NumericUpDown());
             this.label96 = (new global::System.Windows.Forms.Label());
-            this.btnChangeNPCConsoleCharacterForeColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeNPCConsoleCharacter = (new global::System.Windows.Forms.Button());
-            this.lblNPCConsoleRepresentation = (new global::System.Windows.Forms.Label());
             this.label98 = (new global::System.Windows.Forms.Label());
             this.chkNPCStartsVisible = (new global::System.Windows.Forms.CheckBox());
             this.cmbNPCFaction = (new global::System.Windows.Forms.ComboBox());
@@ -331,10 +334,6 @@
             this.chkItemStartsVisible = (new global::System.Windows.Forms.CheckBox());
             this.cmbItemType = (new global::System.Windows.Forms.ComboBox());
             this.label107 = (new global::System.Windows.Forms.Label());
-            this.btnChangeItemConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeItemConsoleCharacterForeColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeItemConsoleCharacter = (new global::System.Windows.Forms.Button());
-            this.lblItemConsoleRepresentation = (new global::System.Windows.Forms.Label());
             this.label102 = (new global::System.Windows.Forms.Label());
             this.fklblItemDescriptionLocale = (new global::System.Windows.Forms.Button());
             this.txtItemDescription = (new global::System.Windows.Forms.TextBox());
@@ -348,10 +347,6 @@
             this.txtTrapPower = (new global::System.Windows.Forms.TextBox());
             this.label113 = (new global::System.Windows.Forms.Label());
             this.chkTrapStartsVisible = (new global::System.Windows.Forms.CheckBox());
-            this.btnChangeTrapConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeTrapConsoleCharacterForeColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeTrapConsoleCharacter = (new global::System.Windows.Forms.Button());
-            this.lblTrapConsoleRepresentation = (new global::System.Windows.Forms.Label());
             this.label116 = (new global::System.Windows.Forms.Label());
             this.fklblTrapDescriptionLocale = (new global::System.Windows.Forms.Button());
             this.txtTrapDescription = (new global::System.Windows.Forms.TextBox());
@@ -368,10 +363,6 @@
             this.btnAlteredStatusOnApplyAction = (new global::System.Windows.Forms.Button());
             this.label97 = (new global::System.Windows.Forms.Label());
             this.chkAlteredStatusCanStack = (new global::System.Windows.Forms.CheckBox());
-            this.btnChangeAlteredStatusConsoleCharacterBackColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeAlteredStatusConsoleCharacterForeColor = (new global::System.Windows.Forms.Button());
-            this.btnChangeAlteredStatusConsoleCharacter = (new global::System.Windows.Forms.Button());
-            this.lblAlteredStatusConsoleRepresentation = (new global::System.Windows.Forms.Label());
             this.label111 = (new global::System.Windows.Forms.Label());
             this.fklblAlteredStatusDescriptionLocale = (new global::System.Windows.Forms.Button());
             this.txtAlteredStatusDescription = (new global::System.Windows.Forms.TextBox());
@@ -383,6 +374,11 @@
             this.tvValidationResults = (new global::System.Windows.Forms.TreeView());
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
+            this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
+            this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.crsItem = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.crsAlteredStatus = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
@@ -1548,7 +1544,6 @@
             this.tpPlayerClass.Controls.Add(this.chkPlayerUsesMP);
             this.tpPlayerClass.Controls.Add(this.label110);
             this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMP);
-            this.tpPlayerClass.Controls.Add(this.btnChangePlayerConsoleCharacterBackColor);
             this.tpPlayerClass.Controls.Add(this.btnPlayerOnDeathAction);
             this.tpPlayerClass.Controls.Add(this.label63);
             this.tpPlayerClass.Controls.Add(this.btnPlayerOnAttackedAction);
@@ -1611,9 +1606,6 @@
             this.tpPlayerClass.Controls.Add(this.label32);
             this.tpPlayerClass.Controls.Add(this.nudPlayerBaseHP);
             this.tpPlayerClass.Controls.Add(this.label31);
-            this.tpPlayerClass.Controls.Add(this.btnChangePlayerConsoleCharacterForeColor);
-            this.tpPlayerClass.Controls.Add(this.btnChangePlayerConsoleCharacter);
-            this.tpPlayerClass.Controls.Add(this.lblPlayerConsoleRepresentation);
             this.tpPlayerClass.Controls.Add(this.label30);
             this.tpPlayerClass.Controls.Add(this.chkPlayerStartsVisible);
             this.tpPlayerClass.Controls.Add(this.cmbPlayerFaction);
@@ -1626,6 +1618,7 @@
             this.tpPlayerClass.Controls.Add(this.txtPlayerClassName);
             this.tpPlayerClass.Controls.Add(this.label27);
             this.tpPlayerClass.Controls.Add(this.lblPlayerSightRangeText);
+            this.tpPlayerClass.Controls.Add(this.crsPlayer);
             this.tpPlayerClass.Location = (new global::System.Drawing.Point(4, 24));
             this.tpPlayerClass.Name = ("tpPlayerClass");
             this.tpPlayerClass.Size = (new global::System.Drawing.Size(740, 356));
@@ -1739,16 +1732,6 @@
             this.nudPlayerBaseMP.TabIndex = (112);
             this.nudPlayerBaseMP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudPlayerBaseMP.ValueChanged += (this.nudPlayerBaseMP_ValueChanged);
-            // 
-            // btnChangePlayerConsoleCharacterBackColor
-            // 
-            this.btnChangePlayerConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(577, 66));
-            this.btnChangePlayerConsoleCharacterBackColor.Name = ("btnChangePlayerConsoleCharacterBackColor");
-            this.btnChangePlayerConsoleCharacterBackColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangePlayerConsoleCharacterBackColor.TabIndex = (111);
-            this.btnChangePlayerConsoleCharacterBackColor.Text = ("Change Background...");
-            this.btnChangePlayerConsoleCharacterBackColor.UseVisualStyleBackColor = (true);
-            this.btnChangePlayerConsoleCharacterBackColor.Click += (this.btnChangePlayerConsoleCharacterBackColor_Click);
             // 
             // btnPlayerOnDeathAction
             // 
@@ -2346,35 +2329,6 @@
             this.label31.TabIndex = (31);
             this.label31.Text = ("Base Stats (Level 1)");
             // 
-            // btnChangePlayerConsoleCharacterForeColor
-            // 
-            this.btnChangePlayerConsoleCharacterForeColor.Location = (new global::System.Drawing.Point(577, 37));
-            this.btnChangePlayerConsoleCharacterForeColor.Name = ("btnChangePlayerConsoleCharacterForeColor");
-            this.btnChangePlayerConsoleCharacterForeColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangePlayerConsoleCharacterForeColor.TabIndex = (29);
-            this.btnChangePlayerConsoleCharacterForeColor.Text = ("Change Foreground...");
-            this.btnChangePlayerConsoleCharacterForeColor.UseVisualStyleBackColor = (true);
-            this.btnChangePlayerConsoleCharacterForeColor.Click += (this.btnChangePlayerConsoleCharacterForeColor_Click);
-            // 
-            // btnChangePlayerConsoleCharacter
-            // 
-            this.btnChangePlayerConsoleCharacter.Location = (new global::System.Drawing.Point(577, 8));
-            this.btnChangePlayerConsoleCharacter.Name = ("btnChangePlayerConsoleCharacter");
-            this.btnChangePlayerConsoleCharacter.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangePlayerConsoleCharacter.TabIndex = (28);
-            this.btnChangePlayerConsoleCharacter.Text = ("Change Character...");
-            this.btnChangePlayerConsoleCharacter.UseVisualStyleBackColor = (true);
-            this.btnChangePlayerConsoleCharacter.Click += (this.btnChangePlayerConsoleCharacter_Click);
-            // 
-            // lblPlayerConsoleRepresentation
-            // 
-            this.lblPlayerConsoleRepresentation.Font = (new global::System.Drawing.Font("Courier New", 36F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.lblPlayerConsoleRepresentation.Location = (new global::System.Drawing.Point(504, 17));
-            this.lblPlayerConsoleRepresentation.Name = ("lblPlayerConsoleRepresentation");
-            this.lblPlayerConsoleRepresentation.Size = (new global::System.Drawing.Size(64, 64));
-            this.lblPlayerConsoleRepresentation.TabIndex = (27);
-            this.lblPlayerConsoleRepresentation.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
-            // 
             // label30
             // 
             this.label30.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
@@ -2504,6 +2458,25 @@
             this.lblPlayerSightRangeText.Text = ("tiles");
             this.lblPlayerSightRangeText.Visible = (false);
             // 
+            // crsPlayer
+            // 
+            gameColor1.A = ((global::System.Byte)(255));
+            gameColor1.B = ((global::System.Byte)(0));
+            gameColor1.G = ((global::System.Byte)(0));
+            gameColor1.R = ((global::System.Byte)(0));
+            this.crsPlayer.BackgroundColor = (gameColor1);
+            this.crsPlayer.Character = ('\0');
+            gameColor2.A = ((global::System.Byte)(255));
+            gameColor2.B = ((global::System.Byte)(255));
+            gameColor2.G = ((global::System.Byte)(255));
+            gameColor2.R = ((global::System.Byte)(255));
+            this.crsPlayer.ForegroundColor = (gameColor2);
+            this.crsPlayer.Location = (new global::System.Drawing.Point(504, 8));
+            this.crsPlayer.Name = ("crsPlayer");
+            this.crsPlayer.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsPlayer.TabIndex = (123);
+            this.crsPlayer.PropertyChanged += (this.crsPlayer_PropertyChanged);
+            // 
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
@@ -2523,7 +2496,6 @@
             this.tpNPC.Controls.Add(this.txtNPCExperiencePayout);
             this.tpNPC.Controls.Add(this.label103);
             this.tpNPC.Controls.Add(this.chkNPCKnowsAllCharacterPositions);
-            this.tpNPC.Controls.Add(this.btnChangeNPCConsoleCharacterBackColor);
             this.tpNPC.Controls.Add(this.btnNPCOnDeathAction);
             this.tpNPC.Controls.Add(this.label64);
             this.tpNPC.Controls.Add(this.btnNPCOnAttackedAction);
@@ -2586,9 +2558,6 @@
             this.tpNPC.Controls.Add(this.label95);
             this.tpNPC.Controls.Add(this.nudNPCBaseHP);
             this.tpNPC.Controls.Add(this.label96);
-            this.tpNPC.Controls.Add(this.btnChangeNPCConsoleCharacterForeColor);
-            this.tpNPC.Controls.Add(this.btnChangeNPCConsoleCharacter);
-            this.tpNPC.Controls.Add(this.lblNPCConsoleRepresentation);
             this.tpNPC.Controls.Add(this.label98);
             this.tpNPC.Controls.Add(this.chkNPCStartsVisible);
             this.tpNPC.Controls.Add(this.cmbNPCFaction);
@@ -2600,6 +2569,7 @@
             this.tpNPC.Controls.Add(this.txtNPCName);
             this.tpNPC.Controls.Add(this.label101);
             this.tpNPC.Controls.Add(this.lblNPCSightRangeText);
+            this.tpNPC.Controls.Add(this.crsNPC);
             this.tpNPC.Location = (new global::System.Drawing.Point(4, 24));
             this.tpNPC.Name = ("tpNPC");
             this.tpNPC.Size = (new global::System.Drawing.Size(740, 356));
@@ -2759,16 +2729,6 @@
             this.chkNPCKnowsAllCharacterPositions.Text = ("Knows the position of all living characters (even when not seen)");
             this.chkNPCKnowsAllCharacterPositions.UseVisualStyleBackColor = (true);
             this.chkNPCKnowsAllCharacterPositions.CheckedChanged += (this.chkNPCKnowsAllCharacterPositions_CheckedChanged);
-            // 
-            // btnChangeNPCConsoleCharacterBackColor
-            // 
-            this.btnChangeNPCConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(577, 66));
-            this.btnChangeNPCConsoleCharacterBackColor.Name = ("btnChangeNPCConsoleCharacterBackColor");
-            this.btnChangeNPCConsoleCharacterBackColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeNPCConsoleCharacterBackColor.TabIndex = (189);
-            this.btnChangeNPCConsoleCharacterBackColor.Text = ("Change Background...");
-            this.btnChangeNPCConsoleCharacterBackColor.UseVisualStyleBackColor = (true);
-            this.btnChangeNPCConsoleCharacterBackColor.Click += (this.btnChangeNPCConsoleCharacterBackColor_Click);
             // 
             // btnNPCOnDeathAction
             // 
@@ -3365,35 +3325,6 @@
             this.label96.TabIndex = (126);
             this.label96.Text = ("Base Stats (Level 1)");
             // 
-            // btnChangeNPCConsoleCharacterForeColor
-            // 
-            this.btnChangeNPCConsoleCharacterForeColor.Location = (new global::System.Drawing.Point(577, 37));
-            this.btnChangeNPCConsoleCharacterForeColor.Name = ("btnChangeNPCConsoleCharacterForeColor");
-            this.btnChangeNPCConsoleCharacterForeColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeNPCConsoleCharacterForeColor.TabIndex = (125);
-            this.btnChangeNPCConsoleCharacterForeColor.Text = ("Change Foreground...");
-            this.btnChangeNPCConsoleCharacterForeColor.UseVisualStyleBackColor = (true);
-            this.btnChangeNPCConsoleCharacterForeColor.Click += (this.btnChangeNPCConsoleCharacterForeColor_Click);
-            // 
-            // btnChangeNPCConsoleCharacter
-            // 
-            this.btnChangeNPCConsoleCharacter.Location = (new global::System.Drawing.Point(577, 8));
-            this.btnChangeNPCConsoleCharacter.Name = ("btnChangeNPCConsoleCharacter");
-            this.btnChangeNPCConsoleCharacter.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeNPCConsoleCharacter.TabIndex = (124);
-            this.btnChangeNPCConsoleCharacter.Text = ("Change Character...");
-            this.btnChangeNPCConsoleCharacter.UseVisualStyleBackColor = (true);
-            this.btnChangeNPCConsoleCharacter.Click += (this.btnChangeNPCConsoleCharacter_Click);
-            // 
-            // lblNPCConsoleRepresentation
-            // 
-            this.lblNPCConsoleRepresentation.Font = (new global::System.Drawing.Font("Courier New", 36F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.lblNPCConsoleRepresentation.Location = (new global::System.Drawing.Point(504, 17));
-            this.lblNPCConsoleRepresentation.Name = ("lblNPCConsoleRepresentation");
-            this.lblNPCConsoleRepresentation.Size = (new global::System.Drawing.Size(64, 64));
-            this.lblNPCConsoleRepresentation.TabIndex = (123);
-            this.lblNPCConsoleRepresentation.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
-            // 
             // label98
             // 
             this.label98.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
@@ -3533,10 +3464,6 @@
             this.tpItem.Controls.Add(this.chkItemStartsVisible);
             this.tpItem.Controls.Add(this.cmbItemType);
             this.tpItem.Controls.Add(this.label107);
-            this.tpItem.Controls.Add(this.btnChangeItemConsoleCharacterBackColor);
-            this.tpItem.Controls.Add(this.btnChangeItemConsoleCharacterForeColor);
-            this.tpItem.Controls.Add(this.btnChangeItemConsoleCharacter);
-            this.tpItem.Controls.Add(this.lblItemConsoleRepresentation);
             this.tpItem.Controls.Add(this.label102);
             this.tpItem.Controls.Add(this.fklblItemDescriptionLocale);
             this.tpItem.Controls.Add(this.txtItemDescription);
@@ -3544,6 +3471,7 @@
             this.tpItem.Controls.Add(this.fklblItemNameLocale);
             this.tpItem.Controls.Add(this.txtItemName);
             this.tpItem.Controls.Add(this.label106);
+            this.tpItem.Controls.Add(this.crsItem);
             this.tpItem.Location = (new global::System.Drawing.Point(4, 24));
             this.tpItem.Name = ("tpItem");
             this.tpItem.Size = (new global::System.Drawing.Size(740, 356));
@@ -3739,45 +3667,6 @@
             this.label107.TabIndex = (201);
             this.label107.Text = ("Item Type");
             // 
-            // btnChangeItemConsoleCharacterBackColor
-            // 
-            this.btnChangeItemConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(597, 67));
-            this.btnChangeItemConsoleCharacterBackColor.Name = ("btnChangeItemConsoleCharacterBackColor");
-            this.btnChangeItemConsoleCharacterBackColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeItemConsoleCharacterBackColor.TabIndex = (200);
-            this.btnChangeItemConsoleCharacterBackColor.Text = ("Change Background...");
-            this.btnChangeItemConsoleCharacterBackColor.UseVisualStyleBackColor = (true);
-            this.btnChangeItemConsoleCharacterBackColor.Click += (this.btnChangeItemConsoleCharacterBackColor_Click);
-            // 
-            // btnChangeItemConsoleCharacterForeColor
-            // 
-            this.btnChangeItemConsoleCharacterForeColor.Location = (new global::System.Drawing.Point(597, 38));
-            this.btnChangeItemConsoleCharacterForeColor.Name = ("btnChangeItemConsoleCharacterForeColor");
-            this.btnChangeItemConsoleCharacterForeColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeItemConsoleCharacterForeColor.TabIndex = (199);
-            this.btnChangeItemConsoleCharacterForeColor.Text = ("Change Foreground...");
-            this.btnChangeItemConsoleCharacterForeColor.UseVisualStyleBackColor = (true);
-            this.btnChangeItemConsoleCharacterForeColor.Click += (this.btnChangeItemConsoleCharacterForeColor_Click);
-            // 
-            // btnChangeItemConsoleCharacter
-            // 
-            this.btnChangeItemConsoleCharacter.Location = (new global::System.Drawing.Point(597, 9));
-            this.btnChangeItemConsoleCharacter.Name = ("btnChangeItemConsoleCharacter");
-            this.btnChangeItemConsoleCharacter.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeItemConsoleCharacter.TabIndex = (198);
-            this.btnChangeItemConsoleCharacter.Text = ("Change Character...");
-            this.btnChangeItemConsoleCharacter.UseVisualStyleBackColor = (true);
-            this.btnChangeItemConsoleCharacter.Click += (this.btnChangeItemConsoleCharacter_Click);
-            // 
-            // lblItemConsoleRepresentation
-            // 
-            this.lblItemConsoleRepresentation.Font = (new global::System.Drawing.Font("Courier New", 36F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.lblItemConsoleRepresentation.Location = (new global::System.Drawing.Point(524, 18));
-            this.lblItemConsoleRepresentation.Name = ("lblItemConsoleRepresentation");
-            this.lblItemConsoleRepresentation.Size = (new global::System.Drawing.Size(64, 64));
-            this.lblItemConsoleRepresentation.TabIndex = (197);
-            this.lblItemConsoleRepresentation.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
-            // 
             // label102
             // 
             this.label102.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
@@ -3863,10 +3752,6 @@
             this.tpTrap.Controls.Add(this.txtTrapPower);
             this.tpTrap.Controls.Add(this.label113);
             this.tpTrap.Controls.Add(this.chkTrapStartsVisible);
-            this.tpTrap.Controls.Add(this.btnChangeTrapConsoleCharacterBackColor);
-            this.tpTrap.Controls.Add(this.btnChangeTrapConsoleCharacterForeColor);
-            this.tpTrap.Controls.Add(this.btnChangeTrapConsoleCharacter);
-            this.tpTrap.Controls.Add(this.lblTrapConsoleRepresentation);
             this.tpTrap.Controls.Add(this.label116);
             this.tpTrap.Controls.Add(this.fklblTrapDescriptionLocale);
             this.tpTrap.Controls.Add(this.txtTrapDescription);
@@ -3874,6 +3759,7 @@
             this.tpTrap.Controls.Add(this.fklblTrapNameLocale);
             this.tpTrap.Controls.Add(this.txtTrapName);
             this.tpTrap.Controls.Add(this.label118);
+            this.tpTrap.Controls.Add(this.crsTrap);
             this.tpTrap.Location = (new global::System.Drawing.Point(4, 24));
             this.tpTrap.Name = ("tpTrap");
             this.tpTrap.Size = (new global::System.Drawing.Size(740, 356));
@@ -3929,45 +3815,6 @@
             this.chkTrapStartsVisible.Text = ("Spawns visible");
             this.chkTrapStartsVisible.UseVisualStyleBackColor = (true);
             this.chkTrapStartsVisible.CheckedChanged += (this.chkTrapStartsVisible_CheckedChanged);
-            // 
-            // btnChangeTrapConsoleCharacterBackColor
-            // 
-            this.btnChangeTrapConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(597, 67));
-            this.btnChangeTrapConsoleCharacterBackColor.Name = ("btnChangeTrapConsoleCharacterBackColor");
-            this.btnChangeTrapConsoleCharacterBackColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeTrapConsoleCharacterBackColor.TabIndex = (230);
-            this.btnChangeTrapConsoleCharacterBackColor.Text = ("Change Background...");
-            this.btnChangeTrapConsoleCharacterBackColor.UseVisualStyleBackColor = (true);
-            this.btnChangeTrapConsoleCharacterBackColor.Click += (this.btnChangeTrapConsoleCharacterBackColor_Click);
-            // 
-            // btnChangeTrapConsoleCharacterForeColor
-            // 
-            this.btnChangeTrapConsoleCharacterForeColor.Location = (new global::System.Drawing.Point(597, 38));
-            this.btnChangeTrapConsoleCharacterForeColor.Name = ("btnChangeTrapConsoleCharacterForeColor");
-            this.btnChangeTrapConsoleCharacterForeColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeTrapConsoleCharacterForeColor.TabIndex = (229);
-            this.btnChangeTrapConsoleCharacterForeColor.Text = ("Change Foreground...");
-            this.btnChangeTrapConsoleCharacterForeColor.UseVisualStyleBackColor = (true);
-            this.btnChangeTrapConsoleCharacterForeColor.Click += (this.btnChangeTrapConsoleCharacterForeColor_Click);
-            // 
-            // btnChangeTrapConsoleCharacter
-            // 
-            this.btnChangeTrapConsoleCharacter.Location = (new global::System.Drawing.Point(597, 9));
-            this.btnChangeTrapConsoleCharacter.Name = ("btnChangeTrapConsoleCharacter");
-            this.btnChangeTrapConsoleCharacter.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeTrapConsoleCharacter.TabIndex = (228);
-            this.btnChangeTrapConsoleCharacter.Text = ("Change Character...");
-            this.btnChangeTrapConsoleCharacter.UseVisualStyleBackColor = (true);
-            this.btnChangeTrapConsoleCharacter.Click += (this.btnChangeTrapConsoleCharacter_Click);
-            // 
-            // lblTrapConsoleRepresentation
-            // 
-            this.lblTrapConsoleRepresentation.Font = (new global::System.Drawing.Font("Courier New", 36F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.lblTrapConsoleRepresentation.Location = (new global::System.Drawing.Point(524, 18));
-            this.lblTrapConsoleRepresentation.Name = ("lblTrapConsoleRepresentation");
-            this.lblTrapConsoleRepresentation.Size = (new global::System.Drawing.Size(64, 64));
-            this.lblTrapConsoleRepresentation.TabIndex = (227);
-            this.lblTrapConsoleRepresentation.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // label116
             // 
@@ -4057,10 +3904,6 @@
             this.tpAlteredStatus.Controls.Add(this.btnAlteredStatusOnApplyAction);
             this.tpAlteredStatus.Controls.Add(this.label97);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCanStack);
-            this.tpAlteredStatus.Controls.Add(this.btnChangeAlteredStatusConsoleCharacterBackColor);
-            this.tpAlteredStatus.Controls.Add(this.btnChangeAlteredStatusConsoleCharacterForeColor);
-            this.tpAlteredStatus.Controls.Add(this.btnChangeAlteredStatusConsoleCharacter);
-            this.tpAlteredStatus.Controls.Add(this.lblAlteredStatusConsoleRepresentation);
             this.tpAlteredStatus.Controls.Add(this.label111);
             this.tpAlteredStatus.Controls.Add(this.fklblAlteredStatusDescriptionLocale);
             this.tpAlteredStatus.Controls.Add(this.txtAlteredStatusDescription);
@@ -4068,6 +3911,7 @@
             this.tpAlteredStatus.Controls.Add(this.fklblAlteredStatusNameLocale);
             this.tpAlteredStatus.Controls.Add(this.txtAlteredStatusName);
             this.tpAlteredStatus.Controls.Add(this.label115);
+            this.tpAlteredStatus.Controls.Add(this.crsAlteredStatus);
             this.tpAlteredStatus.Location = (new global::System.Drawing.Point(4, 24));
             this.tpAlteredStatus.Name = ("tpAlteredStatus");
             this.tpAlteredStatus.Size = (new global::System.Drawing.Size(740, 356));
@@ -4158,45 +4002,6 @@
             this.chkAlteredStatusCanStack.Text = ("Can stack with other Altered Statuses with the same Id");
             this.chkAlteredStatusCanStack.UseVisualStyleBackColor = (true);
             this.chkAlteredStatusCanStack.CheckedChanged += (this.chkAlteredStatusCanStack_CheckedChanged);
-            // 
-            // btnChangeAlteredStatusConsoleCharacterBackColor
-            // 
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.Location = (new global::System.Drawing.Point(597, 67));
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.Name = ("btnChangeAlteredStatusConsoleCharacterBackColor");
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.TabIndex = (249);
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.Text = ("Change Background...");
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.UseVisualStyleBackColor = (true);
-            this.btnChangeAlteredStatusConsoleCharacterBackColor.Click += (this.btnChangeAlteredStatusConsoleCharacterBackColor_Click);
-            // 
-            // btnChangeAlteredStatusConsoleCharacterForeColor
-            // 
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.Location = (new global::System.Drawing.Point(597, 38));
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.Name = ("btnChangeAlteredStatusConsoleCharacterForeColor");
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.TabIndex = (248);
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.Text = ("Change Foreground...");
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.UseVisualStyleBackColor = (true);
-            this.btnChangeAlteredStatusConsoleCharacterForeColor.Click += (this.btnChangeAlteredStatusConsoleCharacterForeColor_Click);
-            // 
-            // btnChangeAlteredStatusConsoleCharacter
-            // 
-            this.btnChangeAlteredStatusConsoleCharacter.Location = (new global::System.Drawing.Point(597, 9));
-            this.btnChangeAlteredStatusConsoleCharacter.Name = ("btnChangeAlteredStatusConsoleCharacter");
-            this.btnChangeAlteredStatusConsoleCharacter.Size = (new global::System.Drawing.Size(135, 23));
-            this.btnChangeAlteredStatusConsoleCharacter.TabIndex = (247);
-            this.btnChangeAlteredStatusConsoleCharacter.Text = ("Change Character...");
-            this.btnChangeAlteredStatusConsoleCharacter.UseVisualStyleBackColor = (true);
-            this.btnChangeAlteredStatusConsoleCharacter.Click += (this.btnChangeAlteredStatusConsoleCharacter_Click);
-            // 
-            // lblAlteredStatusConsoleRepresentation
-            // 
-            this.lblAlteredStatusConsoleRepresentation.Font = (new global::System.Drawing.Font("Courier New", 36F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.lblAlteredStatusConsoleRepresentation.Location = (new global::System.Drawing.Point(524, 18));
-            this.lblAlteredStatusConsoleRepresentation.Name = ("lblAlteredStatusConsoleRepresentation");
-            this.lblAlteredStatusConsoleRepresentation.Size = (new global::System.Drawing.Size(64, 64));
-            this.lblAlteredStatusConsoleRepresentation.TabIndex = (246);
-            this.lblAlteredStatusConsoleRepresentation.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // label111
             // 
@@ -4303,6 +4108,82 @@
             // 
             this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
             this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
+            // 
+            // crsNPC
+            // 
+            gameColor3.A = ((global::System.Byte)(255));
+            gameColor3.B = ((global::System.Byte)(0));
+            gameColor3.G = ((global::System.Byte)(0));
+            gameColor3.R = ((global::System.Byte)(0));
+            this.crsNPC.BackgroundColor = (gameColor3);
+            this.crsNPC.Character = ('\0');
+            gameColor4.A = ((global::System.Byte)(255));
+            gameColor4.B = ((global::System.Byte)(255));
+            gameColor4.G = ((global::System.Byte)(255));
+            gameColor4.R = ((global::System.Byte)(255));
+            this.crsNPC.ForegroundColor = (gameColor4);
+            this.crsNPC.Location = (new global::System.Drawing.Point(504, 8));
+            this.crsNPC.Name = ("crsNPC");
+            this.crsNPC.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsNPC.TabIndex = (207);
+            this.crsNPC.PropertyChanged += (this.crsNPC_PropertyChanged);
+            // 
+            // crsItem
+            // 
+            gameColor5.A = ((global::System.Byte)(255));
+            gameColor5.B = ((global::System.Byte)(0));
+            gameColor5.G = ((global::System.Byte)(0));
+            gameColor5.R = ((global::System.Byte)(0));
+            this.crsItem.BackgroundColor = (gameColor5);
+            this.crsItem.Character = ('\0');
+            gameColor6.A = ((global::System.Byte)(255));
+            gameColor6.B = ((global::System.Byte)(255));
+            gameColor6.G = ((global::System.Byte)(255));
+            gameColor6.R = ((global::System.Byte)(255));
+            this.crsItem.ForegroundColor = (gameColor6);
+            this.crsItem.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsItem.Name = ("crsItem");
+            this.crsItem.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsItem.TabIndex = (220);
+            this.crsItem.PropertyChanged += (this.crsItem_PropertyChanged);
+            // 
+            // crsTrap
+            // 
+            gameColor7.A = ((global::System.Byte)(255));
+            gameColor7.B = ((global::System.Byte)(0));
+            gameColor7.G = ((global::System.Byte)(0));
+            gameColor7.R = ((global::System.Byte)(0));
+            this.crsTrap.BackgroundColor = (gameColor7);
+            this.crsTrap.Character = ('\0');
+            gameColor8.A = ((global::System.Byte)(255));
+            gameColor8.B = ((global::System.Byte)(255));
+            gameColor8.G = ((global::System.Byte)(255));
+            gameColor8.R = ((global::System.Byte)(255));
+            this.crsTrap.ForegroundColor = (gameColor8);
+            this.crsTrap.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsTrap.Name = ("crsTrap");
+            this.crsTrap.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsTrap.TabIndex = (239);
+            this.crsTrap.PropertyChanged += (this.crsTrap_PropertyChanged);
+            // 
+            // crsAlteredStatus
+            // 
+            gameColor9.A = ((global::System.Byte)(255));
+            gameColor9.B = ((global::System.Byte)(0));
+            gameColor9.G = ((global::System.Byte)(0));
+            gameColor9.R = ((global::System.Byte)(0));
+            this.crsAlteredStatus.BackgroundColor = (gameColor9);
+            this.crsAlteredStatus.Character = ('\0');
+            gameColor10.A = ((global::System.Byte)(255));
+            gameColor10.B = ((global::System.Byte)(255));
+            gameColor10.G = ((global::System.Byte)(255));
+            gameColor10.R = ((global::System.Byte)(255));
+            this.crsAlteredStatus.ForegroundColor = (gameColor10);
+            this.crsAlteredStatus.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsAlteredStatus.Name = ("crsAlteredStatus");
+            this.crsAlteredStatus.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsAlteredStatus.TabIndex = (260);
+            this.crsAlteredStatus.PropertyChanged += (this.crsAlteredStatus_PropertyChanged);
             // 
             // frmMain
             // 
@@ -4508,9 +4389,6 @@
         private Label label29;
         private CheckBox chkRequirePlayerPrompt;
         private CheckBox chkPlayerStartsVisible;
-        private Button btnChangePlayerConsoleCharacterForeColor;
-        private Button btnChangePlayerConsoleCharacter;
-        private Label lblPlayerConsoleRepresentation;
         private Label label30;
         private Button btnRemovePlayerOnAttackAction;
         private Button btnEditPlayerOnAttackAction;
@@ -4575,11 +4453,9 @@
         private Button btnPlayerOnTurnStartAction;
         private Label label60;
         private Label label58;
-        private Button btnChangePlayerConsoleCharacterBackColor;
         private global::System.Windows.Forms.TextBox txtNPCExperiencePayout;
         private global::System.Windows.Forms.Label label103;
         private global::System.Windows.Forms.CheckBox chkNPCKnowsAllCharacterPositions;
-        private global::System.Windows.Forms.Button btnChangeNPCConsoleCharacterBackColor;
         private global::System.Windows.Forms.Button btnNPCOnDeathAction;
         private global::System.Windows.Forms.Label label64;
         private global::System.Windows.Forms.Button btnNPCOnAttackedAction;
@@ -4642,9 +4518,6 @@
         private global::System.Windows.Forms.Label label95;
         private global::System.Windows.Forms.NumericUpDown nudNPCBaseHP;
         private global::System.Windows.Forms.Label label96;
-        private global::System.Windows.Forms.Button btnChangeNPCConsoleCharacterForeColor;
-        private global::System.Windows.Forms.Button btnChangeNPCConsoleCharacter;
-        private global::System.Windows.Forms.Label lblNPCConsoleRepresentation;
         private global::System.Windows.Forms.Label label98;
         private global::System.Windows.Forms.CheckBox chkNPCStartsVisible;
         private global::System.Windows.Forms.ComboBox cmbNPCFaction;
@@ -4665,10 +4538,6 @@
         private global::System.Windows.Forms.CheckBox chkItemStartsVisible;
         private global::System.Windows.Forms.ComboBox cmbItemType;
         private global::System.Windows.Forms.Label label107;
-        private global::System.Windows.Forms.Button btnChangeItemConsoleCharacterBackColor;
-        private global::System.Windows.Forms.Button btnChangeItemConsoleCharacterForeColor;
-        private global::System.Windows.Forms.Button btnChangeItemConsoleCharacter;
-        private global::System.Windows.Forms.Label lblItemConsoleRepresentation;
         private global::System.Windows.Forms.Label label102;
         private global::System.Windows.Forms.Button fklblItemDescriptionLocale;
         private global::System.Windows.Forms.TextBox txtItemDescription;
@@ -4692,10 +4561,6 @@
         private global::System.Windows.Forms.Button btnTrapOnSteppedAction;
         private global::System.Windows.Forms.Label label112;
         private global::System.Windows.Forms.CheckBox chkTrapStartsVisible;
-        private global::System.Windows.Forms.Button btnChangeTrapConsoleCharacterBackColor;
-        private global::System.Windows.Forms.Button btnChangeTrapConsoleCharacterForeColor;
-        private global::System.Windows.Forms.Button btnChangeTrapConsoleCharacter;
-        private global::System.Windows.Forms.Label lblTrapConsoleRepresentation;
         private global::System.Windows.Forms.Label label116;
         private global::System.Windows.Forms.Button fklblTrapDescriptionLocale;
         private global::System.Windows.Forms.TextBox txtTrapDescription;
@@ -4708,10 +4573,6 @@
         private global::System.Windows.Forms.Button btnAlteredStatusOnApplyAction;
         private global::System.Windows.Forms.Label label97;
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCanStack;
-        private global::System.Windows.Forms.Button btnChangeAlteredStatusConsoleCharacterBackColor;
-        private global::System.Windows.Forms.Button btnChangeAlteredStatusConsoleCharacterForeColor;
-        private global::System.Windows.Forms.Button btnChangeAlteredStatusConsoleCharacter;
-        private global::System.Windows.Forms.Label lblAlteredStatusConsoleRepresentation;
         private global::System.Windows.Forms.Label label111;
         private global::System.Windows.Forms.Button fklblAlteredStatusDescriptionLocale;
         private global::System.Windows.Forms.TextBox txtAlteredStatusDescription;
@@ -4747,5 +4608,11 @@
         private global::System.Windows.Forms.CheckBox chkNPCUsesMP;
         private global::System.Windows.Forms.Label label126;
         private global::System.Windows.Forms.NumericUpDown nudNPCBaseMP;
+        private global::System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsPlayer;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsNPC;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsItem;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsTrap;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsAlteredStatus;
     }
 }
