@@ -1703,6 +1703,7 @@
             this.nudPlayerBaseMPRegeneration.DecimalPlaces = (4);
             this.nudPlayerBaseMPRegeneration.Location = (new global::System.Drawing.Point(582, 224));
             this.nudPlayerBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseMPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudPlayerBaseMPRegeneration.Name = ("nudPlayerBaseMPRegeneration");
             this.nudPlayerBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseMPRegeneration.TabIndex = (115);
@@ -1732,7 +1733,7 @@
             // nudPlayerBaseMP
             // 
             this.nudPlayerBaseMP.Location = (new global::System.Drawing.Point(527, 195));
-            this.nudPlayerBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudPlayerBaseMP.Name = ("nudPlayerBaseMP");
             this.nudPlayerBaseMP.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseMP.TabIndex = (112);
@@ -2150,6 +2151,7 @@
             this.nudPlayerBaseHPRegeneration.DecimalPlaces = (4);
             this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 166));
             this.nudPlayerBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseHPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudPlayerBaseHPRegeneration.Name = ("nudPlayerBaseHPRegeneration");
             this.nudPlayerBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseHPRegeneration.TabIndex = (52);
@@ -2205,7 +2207,7 @@
             // nudPlayerBaseMovement
             // 
             this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(453, 254));
-            this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
             this.nudPlayerBaseMovement.Name = ("nudPlayerBaseMovement");
             this.nudPlayerBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseMovement.TabIndex = (45);
@@ -2243,7 +2245,7 @@
             // nudPlayerBaseDefense
             // 
             this.nudPlayerBaseDefense.Location = (new global::System.Drawing.Point(402, 225));
-            this.nudPlayerBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudPlayerBaseDefense.Name = ("nudPlayerBaseDefense");
             this.nudPlayerBaseDefense.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseDefense.TabIndex = (41);
@@ -2289,7 +2291,7 @@
             // nudPlayerBaseAttack
             // 
             this.nudPlayerBaseAttack.Location = (new global::System.Drawing.Point(402, 196));
-            this.nudPlayerBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudPlayerBaseAttack.Name = ("nudPlayerBaseAttack");
             this.nudPlayerBaseAttack.Size = (new global::System.Drawing.Size(55, 23));
             this.nudPlayerBaseAttack.TabIndex = (36);
@@ -2326,7 +2328,7 @@
             // nudPlayerBaseHP
             // 
             this.nudPlayerBaseHP.Location = (new global::System.Drawing.Point(402, 166));
-            this.nudPlayerBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudPlayerBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudPlayerBaseHP.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudPlayerBaseHP.Name = ("nudPlayerBaseHP");
             this.nudPlayerBaseHP.Size = (new global::System.Drawing.Size(55, 23));
@@ -2675,6 +2677,7 @@
             this.nudNPCBaseMPRegeneration.DecimalPlaces = (4);
             this.nudNPCBaseMPRegeneration.Location = (new global::System.Drawing.Point(576, 226));
             this.nudNPCBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseMPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudNPCBaseMPRegeneration.Name = ("nudNPCBaseMPRegeneration");
             this.nudNPCBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseMPRegeneration.TabIndex = (199);
@@ -2704,7 +2707,7 @@
             // nudNPCBaseMP
             // 
             this.nudNPCBaseMP.Location = (new global::System.Drawing.Point(521, 197));
-            this.nudNPCBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudNPCBaseMP.Name = ("nudNPCBaseMP");
             this.nudNPCBaseMP.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseMP.TabIndex = (196);
@@ -3167,6 +3170,7 @@
             this.nudNPCBaseHPRegeneration.DecimalPlaces = (4);
             this.nudNPCBaseHPRegeneration.Location = (new global::System.Drawing.Point(574, 168));
             this.nudNPCBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseHPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudNPCBaseHPRegeneration.Name = ("nudNPCBaseHPRegeneration");
             this.nudNPCBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseHPRegeneration.TabIndex = (146);
@@ -3222,7 +3226,7 @@
             // nudNPCBaseMovement
             // 
             this.nudNPCBaseMovement.Location = (new global::System.Drawing.Point(463, 255));
-            this.nudNPCBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
             this.nudNPCBaseMovement.Name = ("nudNPCBaseMovement");
             this.nudNPCBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseMovement.TabIndex = (140);
@@ -3260,7 +3264,7 @@
             // nudNPCBaseDefense
             // 
             this.nudNPCBaseDefense.Location = (new global::System.Drawing.Point(402, 225));
-            this.nudNPCBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudNPCBaseDefense.Name = ("nudNPCBaseDefense");
             this.nudNPCBaseDefense.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseDefense.TabIndex = (136);
@@ -3306,7 +3310,7 @@
             // nudNPCBaseAttack
             // 
             this.nudNPCBaseAttack.Location = (new global::System.Drawing.Point(402, 196));
-            this.nudNPCBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudNPCBaseAttack.Name = ("nudNPCBaseAttack");
             this.nudNPCBaseAttack.Size = (new global::System.Drawing.Size(55, 23));
             this.nudNPCBaseAttack.TabIndex = (131);
@@ -3343,7 +3347,7 @@
             // nudNPCBaseHP
             // 
             this.nudNPCBaseHP.Location = (new global::System.Drawing.Point(402, 166));
-            this.nudNPCBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
+            this.nudNPCBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudNPCBaseHP.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudNPCBaseHP.Name = ("nudNPCBaseHP");
             this.nudNPCBaseHP.Size = (new global::System.Drawing.Size(55, 23));

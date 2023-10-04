@@ -67,7 +67,8 @@ namespace SadConsole.Effects
         /// <inheritdoc />
         public override bool ApplyToCell(ColoredGlyph cell, ColoredGlyphState originalState)
         {
-            Color oldColor = cell.Foreground;
+            Color oldForeColor = cell.Foreground;
+            Color oldBackColor = cell.Background;
 
             if (!_isOn)
             {
@@ -87,7 +88,7 @@ namespace SadConsole.Effects
                 cell.Foreground = originalState.Foreground;
                 cell.Background = originalState.Background;
             }
-            return cell.Foreground != oldColor;
+            return cell.Foreground != oldForeColor || cell.Background != oldBackColor;
         }
 
 

@@ -358,13 +358,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             TryRegenerateHP();
             TryRegenerateMP();
+            if (HP <= 0)
+                Die();
         }
 
         public void TryRegenerateHP()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (HP > MaxHP) HP = MaxHP;
-            if (HP == MaxHP || HPRegeneration == 0)
+            if ((HPRegeneration > 0 && HP == MaxHP) || HPRegeneration == 0)
             {
                 CarriedHPRegeneration = 0;
                 return;
@@ -375,6 +377,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var wholePart = Math.Truncate(CarriedHPRegeneration);
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Min(MaxHP, HP + (int)wholePart);
+                CarriedHPRegeneration = fractionalPart;
+            }
+            else if (CarriedHPRegeneration < -1)
+            {
+                var wholePart = Math.Truncate(CarriedHPRegeneration);
+                var fractionalPart = CarriedHPRegeneration - wholePart;
+                HP = Math.Max(0, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
             }
         }
@@ -395,6 +404,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var wholePart = Math.Truncate(CarriedMPRegeneration);
                 var fractionalPart = CarriedMPRegeneration - wholePart;
                 MP = Math.Min(MaxMP, MP + (int)wholePart);
+                CarriedMPRegeneration = fractionalPart;
+            }
+            else if (CarriedMPRegeneration < -1)
+            {
+                var wholePart = Math.Truncate(CarriedMPRegeneration);
+                var fractionalPart = CarriedMPRegeneration - wholePart;
+                MP = Math.Max(0, MP + (int)wholePart);
                 CarriedMPRegeneration = fractionalPart;
             }
         }
