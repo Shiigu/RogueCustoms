@@ -60,7 +60,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             ExistenceStatus = EntityExistenceStatus.Dead;
             Map.DungeonStatus = DungeonStatus.GameOver;
             Passable = true;
-            if (attacker != null)
+            if (attacker == null || attacker is Character)
                 OnDeathActions?.ForEach(oda => oda.Do(this, attacker));
         }
 

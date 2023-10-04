@@ -241,8 +241,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             ExistenceStatus = EntityExistenceStatus.Dead;
             Passable = true;
-            if (attacker is Character c)
-                OnDeathActions?.ForEach(oda => oda.Do(this, c));
+            if (attacker == null || attacker is Character)
+                OnDeathActions?.ForEach(oda => oda.Do(this, attacker));
             Inventory?.ForEach(i => DropItem(i));
             Inventory?.Clear();
         }

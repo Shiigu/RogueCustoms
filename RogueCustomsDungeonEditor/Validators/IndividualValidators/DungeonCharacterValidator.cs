@@ -53,7 +53,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if (characterJson.BaseMP <= 0)
                     messages.AddError("Character is set to use MP, but Base MP is 0 or lower.");
                 if (characterJson.MaxMPIncreasePerLevel < 0)
-                    messages.AddError("Character is set to use MP, but MP Gained per level is 0 or lower.");
+                    messages.AddWarning("Character is set to use MP, but MP Gained per level is lower than 0. Character may run out of MP by not doing anything.");
                 else if (characterJson.MaxMPIncreasePerLevel == 0)
                     messages.AddWarning("Character is set to use MP, but MP Gained per level is 0. It won't gain any MP on level up.");
             }
@@ -80,7 +80,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             else if (characterJson.MovementIncreasePerLevel == 0)
                 messages.AddWarning("Movement Gained per level is 0. It won't gain any Movement on level up.");
             if (characterJson.BaseHPRegeneration < 0)
-                messages.AddError("Base HP Regeneration must be 0 or higher.");
+                messages.AddWarning("Base HP Regeneration is lower than 0. The Character might spontaneously die under normal circumnstances.");
             else if (characterJson.BaseHPRegeneration == 0)
                 messages.AddWarning("Base HP Regeneration is 0. Under normal circumnstances, it won't be able to regenerate HP at all.");
             var seesWholeMap = false;

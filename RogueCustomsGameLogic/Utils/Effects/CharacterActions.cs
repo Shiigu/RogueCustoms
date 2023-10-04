@@ -32,7 +32,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (Source is not Character s) throw new ArgumentException($"Attempted to have {Source.Name} steal an item when it's not a Character.");
-            if (paramsObject.Target is not Character t) throw new ArgumentException($"Attempted to steal an item from {paramsObject.Target.Name} when it's not a Character.");
+            if (paramsObject.Target is not Character t) throw new ArgumentException($"Attempted to steal an item from {paramsObject.Target?.Name} when it's not a Character.");
             if (s.Inventory.Count < s.InventorySize && t.Inventory.Count > 0 && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 var stealableItems = new List<Item>();

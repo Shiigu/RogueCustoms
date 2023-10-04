@@ -15,6 +15,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
+            if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to damage {paramsObject.Target.Name} when it's not a Character.");
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
@@ -48,6 +49,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         public static bool BurnMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
+            if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to burn {paramsObject.Target.Name}'s MP when it's not a Character.");
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)

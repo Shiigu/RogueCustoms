@@ -16,6 +16,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         private readonly BicolorBlink SelectionBlink;
         public (int X, int Y) CursorLocation;
         public bool WithCursor { get; set; }
+        private bool UpdateCursorDisplay { get; set; }
         private (int X, int Y) LatestCursorLocation;
         public DungeonConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MapCellWidth, GameConsoleConstants.MapCellHeight)
         {
@@ -32,6 +33,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             CursorLocation = default;
             LatestCursorLocation = default;
             WithCursor = false;
+            UpdateCursorDisplay = false;
         }
 
         public void AddCursor()
@@ -69,6 +71,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             LatestCursorLocation = CursorLocation = default;
             RefreshOnlyOnStatusUpdate = true;
             WithCursor = false;
+            UpdateCursorDisplay = false;
             Update(TimeSpan.Zero);
         }
 
@@ -77,18 +80,20 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
             if (dungeonStatus == null) return;
 
-            if (CursorLocation == default || !CursorLocation.Equals(LatestCursorLocation))
+            UpdateCursorDisplay = (WithCursor && !CursorLocation.Equals(LatestCursorLocation));
+
+            if (WithCursor && !CursorLocation.Equals(LatestCursorLocation))
             {
                 this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
                 LatestCursorLocation = default;
             }
-            else
+            else if (WithCursor)
             {
                 base.Update(delta);
                 return;
             }
 
-            if(dungeonStatus.DungeonStatus == DungeonStatus.Completed)
+            if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
             {
                 var message = BackendHandler.Instance.GetDungeonEndingMessage();
 
@@ -168,9 +173,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                                                            tileInCoordinates.BackgroundColor.ToSadRogueColor(),
                                                            tileInCoordinates.Character.ToGlyph());
                         this.SetGlyph(xScreenCoord, yScreenCoord, displayCell);
-                        if (LatestCursorLocation == default && CursorLocation != default && (x, y).Equals(CursorLocation))
+                        if (UpdateCursorDisplay && (x, y).Equals(CursorLocation))
                         {
                             LatestCursorLocation = CursorLocation;
+                            this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
                             this.SetEffect(xScreenCoord, yScreenCoord, SelectionBlink);
                         }
                     }
