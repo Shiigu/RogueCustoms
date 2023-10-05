@@ -110,7 +110,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Flags = flags;
             if (!FloorConfigurationToUse.PossibleGeneratorAlgorithms.Any())
                 throw new InvalidDataException("There's no valid generation algorithm for the current floor");
-
+            ConsoleRepresentation.EmptyTile = TileSet.Empty;
             GeneratorAlgorithmToUse = FloorConfigurationToUse.PossibleGeneratorAlgorithms[Rng.NextInclusive(FloorConfigurationToUse.PossibleGeneratorAlgorithms.Count - 1)];
 
             PossibleStatuses = new List<AlteredStatus>();

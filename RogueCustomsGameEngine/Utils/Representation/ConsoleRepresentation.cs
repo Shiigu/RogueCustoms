@@ -12,12 +12,7 @@ namespace RogueCustomsGameEngine.Utils.Representation
         public GameColor BackgroundColor { get; set; } = new GameColor(Color.Black);
         public GameColor ForegroundColor { get; set; } = new GameColor(Color.White);
 
-        public static ConsoleRepresentation EmptyTile => new ConsoleRepresentation
-        {
-            BackgroundColor = new GameColor(Color.Black),
-            ForegroundColor = new GameColor(Color.Black),
-            Character = ' '
-        };
+        public static ConsoleRepresentation EmptyTile { get; set; }
 
         public override bool Equals(object? obj)
         {
