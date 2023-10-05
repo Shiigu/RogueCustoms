@@ -1,4 +1,4 @@
-ï»¿"DeployProject"
+"DeployProject"
 {
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
@@ -75,12 +75,12 @@
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x64"
                     {
-                    "Name" = "8:EntornoÂ deÂ ejecuciÃ³nÂ deÂ escritorioÂ deÂ .NETÂ 6.0.16 (x64)"
+                    "Name" = "8:Entorno de ejecución de escritorio de .NET 6.0.16 (x64)"
                     "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x64"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x86"
                     {
-                    "Name" = "8:EntornoÂ deÂ ejecuciÃ³nÂ deÂ escritorioÂ deÂ .NETÂ 6.0.16 (x86)"
+                    "Name" = "8:Entorno de ejecución de escritorio de .NET 6.0.16 (x86)"
                     "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x86"
                     }
                 }
@@ -224,15 +224,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Rogue Customs Server Installer"
-        "ProductCode" = "8:{D9ADA3CD-FD6F-4CDA-9C25-C714A2DD1D2D}"
-        "PackageCode" = "8:{E145DBF7-5F70-4DF0-A35D-4765D9AFD593}"
+        "ProductCode" = "8:{40602F86-AE5F-47EE-B745-E26934723E36}"
+        "PackageCode" = "8:{11D72C9C-1053-42F7-86D1-D3B7ABA284EC}"
         "UpgradeCode" = "8:{23018C93-31E0-4083-9900-53B4FEBFC740}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.5.0"
+        "ProductVersion" = "8:1.6.0"
         "Manufacturer" = "8:Rogue Customs"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/Shiigu"
@@ -487,7 +487,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4399EC38692149C397BA74BAD68A9EC1"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Carpeta de instalaciÃ³n"
+                    "DisplayName" = "8:Carpeta de instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -522,7 +522,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4B6143D407454E21A2B264FDE1217B06"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmar instalaciÃ³n"
+                    "DisplayName" = "8:Confirmar instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -601,7 +601,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_6AF6F50E648F446ABB87A43E26937EEE"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Carpeta de instalaciÃ³n"
+                    "DisplayName" = "8:Carpeta de instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
@@ -623,7 +623,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_83FFB4B4E3C846A98919ADC08C0D9C77"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmar instalaciÃ³n"
+                    "DisplayName" = "8:Confirmar instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"

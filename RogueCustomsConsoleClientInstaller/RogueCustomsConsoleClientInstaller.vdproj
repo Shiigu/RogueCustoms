@@ -1,4 +1,4 @@
-ï»¿"DeployProject"
+"DeployProject"
 {
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
@@ -75,12 +75,12 @@
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x64"
                     {
-                    "Name" = "8:EntornoÂ deÂ ejecuciÃ³nÂ deÂ escritorioÂ deÂ .NETÂ 6.0.16 (x64)"
+                    "Name" = "8:Entorno de ejecución de escritorio de .NET 6.0.16 (x64)"
                     "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x64"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x86"
                     {
-                    "Name" = "8:EntornoÂ deÂ ejecuciÃ³nÂ deÂ escritorioÂ deÂ .NETÂ 6.0.16 (x86)"
+                    "Name" = "8:Entorno de ejecución de escritorio de .NET 6.0.16 (x86)"
                     "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x86"
                     }
                 }
@@ -224,15 +224,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Rogue Customs Console Client"
-        "ProductCode" = "8:{3DCB5BCB-149B-4756-895E-3220D931EC6A}"
-        "PackageCode" = "8:{921328B4-08B8-40FE-8663-36530539A33A}"
+        "ProductCode" = "8:{67C43402-1136-4863-8799-A6D8737EF031}"
+        "PackageCode" = "8:{4E061AC5-D92B-47AF-B8E9-EEB2FCFE2F0F}"
         "UpgradeCode" = "8:{88B7461B-3C13-4534-A929-34784308EF57}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.5.0"
+        "ProductVersion" = "8:1.6.0"
         "Manufacturer" = "8:Rogue Customs"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/Shiigu"
@@ -402,7 +402,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5CC00C5876BA40B5B14C5BE0DA4AC5D9"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Carpeta de instalaciÃ³n"
+                    "DisplayName" = "8:Carpeta de instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
@@ -424,7 +424,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5D87A9AA0BC245388BF84DAA1844CE8E"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmar instalaciÃ³n"
+                    "DisplayName" = "8:Confirmar instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
@@ -628,7 +628,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_A2511D54409842D291FCEBDFF94B2D9E"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Carpeta de instalaciÃ³n"
+                    "DisplayName" = "8:Carpeta de instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -711,7 +711,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C8C9CC9EFB964056A1C62E49610581E9"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmar instalaciÃ³n"
+                    "DisplayName" = "8:Confirmar instalación"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -746,7 +746,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4663EA1201514EA985E9FEA5AC06BE02"
             {
-            "SourcePath" = "8:..\\RogueCustomsConsoleClient\\obj\\Debug\\net6.0\\apphost.exe"
+            "SourcePath" = "8:..\\RogueCustomsConsoleClient\\obj\\Release\\net6.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_941457CFFBED403CBA3E47ABF9036539"
@@ -774,7 +774,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_737E2E4C260540269F82CC1462F70E4B"
             {
-            "SourcePath" = "8:..\\RogueCustomsDungeonEditor\\obj\\Debug\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\RogueCustomsDungeonEditor\\obj\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_941457CFFBED403CBA3E47ABF9036539"

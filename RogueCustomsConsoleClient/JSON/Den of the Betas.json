@@ -2793,7 +2793,7 @@
       "Width": 64,
       "Height": 32,
       "GenerateStairsOnStart": true,
-      "TileSetId": "Default",
+      "TileSetId": "Retro",
       "PossibleMonsters": [
         {
           "ClassId": "MeleeEnemy",
@@ -3020,7 +3020,7 @@
       "Width": 32,
       "Height": 16,
       "GenerateStairsOnStart": false,
-      "TileSetId": "Default",
+      "TileSetId": "Retro",
       "PossibleMonsters": [
         {
           "ClassId": "Boss",
