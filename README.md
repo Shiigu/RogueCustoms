@@ -6,7 +6,12 @@ The gameplay itself might be extremely simplistic, but the appeal is that you do
 
 ## Do you just want to play a Dungeon?
 
-Go [Here][howtoplay] to know how to play the game.
+Get the game in either of these sites:
+ - The Releases section here.
+ - https://supersnivy.itch.io/rogue-customs
+ - https://gamejolt.com/games/RogueCustoms/813156
+
+Then, go [Here][howtoplay] to know how to play the game.
 
 ## Do you want to make a Dungeon?
 
