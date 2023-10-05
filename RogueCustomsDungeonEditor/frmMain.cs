@@ -18,6 +18,10 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using System;
+using System.Windows.Forms;
+using System.Linq;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -57,6 +61,7 @@ namespace RogueCustomsDungeonEditor
             InitializeComponent();
             TabsForNodeTypes[TabTypes.BasicInfo] = tpBasicInfo;
             TabsForNodeTypes[TabTypes.Locales] = tpLocales;
+            TabsForNodeTypes[TabTypes.TileSetInfo] = tpTileSetInfos;
             TabsForNodeTypes[TabTypes.FloorInfo] = tpFloorInfos;
             TabsForNodeTypes[TabTypes.FactionInfo] = tpFactionInfos;
             TabsForNodeTypes[TabTypes.PlayerClass] = tpPlayerClass;
@@ -208,6 +213,11 @@ namespace RogueCustomsDungeonEditor
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.Locales;
                         break;
+                    case "Tilesets":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.TileSetInfo;
+                        break;
                     case "Floor Groups":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
@@ -271,6 +281,18 @@ namespace RogueCustomsDungeonEditor
                 localesRootNode.Nodes.Add(localeNode);
             }
             tvDungeonInfo.Nodes.Add(localesRootNode);
+
+            var tileSetsRootNode = new TreeNode("Tilesets");
+            foreach (var tileSetInfo in ActiveDungeon.TileSetInfos)
+            {
+                var tileSetInfoNode = new TreeNode(tileSetInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = TabTypes.TileSetInfo, DungeonElement = tileSetInfo },
+                    Name = tileSetInfo.Id
+                };
+                tileSetsRootNode.Nodes.Add(tileSetInfoNode);
+            }
+            tvDungeonInfo.Nodes.Add(tileSetsRootNode);
 
             var floorInfosRootNode = new TreeNode("Floor Groups");
             foreach (var floorInfo in ActiveDungeon.FloorInfos.OrderBy(fi => fi.MinFloorLevel))
@@ -535,6 +557,9 @@ namespace RogueCustomsDungeonEditor
                     case "Locales":
                         tabToOpen = TabTypes.Locales;
                         break;
+                    case "Tilesets":
+                        tabToOpen = TabTypes.TileSetInfo;
+                        break;
                     case "Floor Groups":
                         tabToOpen = TabTypes.FloorInfo;
                         break;
@@ -565,6 +590,9 @@ namespace RogueCustomsDungeonEditor
             {
                 case TabTypes.Locales:
                     ActiveNodeTag.DungeonElement = LocaleTemplate.Clone(MandatoryLocaleKeys);
+                    break;
+                case TabTypes.TileSetInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateDefaultTileSet();
                     break;
                 case TabTypes.FloorInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFloorGroupTemplate();
@@ -614,6 +642,9 @@ namespace RogueCustomsDungeonEditor
                     case TabTypes.Locales:
                         SaveLocale();
                         break;
+                    case TabTypes.TileSetInfo:
+                        SaveTileSet(null);
+                        break;
                     case TabTypes.FloorInfo:
                         SaveFloorGroup();
                         break;
@@ -658,6 +689,9 @@ namespace RogueCustomsDungeonEditor
                 case TabTypes.Locales:
                     SaveLocaleAs();
                     break;
+                case TabTypes.TileSetInfo:
+                    SaveTileSetAs();
+                    break;
                 case TabTypes.FloorInfo:
                     SaveFloorGroupAs();
                     break;
@@ -690,6 +724,9 @@ namespace RogueCustomsDungeonEditor
             {
                 case TabTypes.Locales:
                     DeleteLocale();
+                    break;
+                case TabTypes.TileSetInfo:
+                    DeleteTileSet();
                     break;
                 case TabTypes.FloorInfo:
                     DeleteFloorGroup();
@@ -751,6 +788,14 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale";
                     dgvLocales.Rows[0].Selected = true;
+                    break;
+                case TabTypes.TileSetInfo:
+                    var tagTileSet = (TileSetInfo)tag.DungeonElement;
+                    LoadTileSetInfoFor(tagTileSet);
+                    if (!IsNewElement)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Tileset - {tagTileSet.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Tileset";
                     break;
                 case TabTypes.FloorInfo:
                     var tagFloorGroup = (FloorInfo)tag.DungeonElement;
@@ -1302,6 +1347,316 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
+        #region Tileset
+
+        private void LoadTileSetInfoFor(TileSetInfo tileSet)
+        {
+            csrTopLeftWall.SetConsoleRepresentation(tileSet.TopLeftWall);
+            csrTopRightWall.SetConsoleRepresentation(tileSet.TopRightWall);
+            csrBottomLeftWall.SetConsoleRepresentation(tileSet.BottomLeftWall);
+            csrBottomRightWall.SetConsoleRepresentation(tileSet.BottomRightWall);
+            csrHorizontalWall.SetConsoleRepresentation(tileSet.HorizontalWall);
+            csrConnectorWall.SetConsoleRepresentation(tileSet.ConnectorWall);
+            csrVerticalWall.SetConsoleRepresentation(tileSet.VerticalWall);
+            csrTopLeftHallway.SetConsoleRepresentation(tileSet.TopLeftHallway);
+            csrTopRightHallway.SetConsoleRepresentation(tileSet.TopRightHallway);
+            csrBottomLeftHallway.SetConsoleRepresentation(tileSet.BottomLeftHallway);
+            csrBottomRightHallway.SetConsoleRepresentation(tileSet.BottomRightHallway);
+            csrHorizontalHallway.SetConsoleRepresentation(tileSet.HorizontalHallway);
+            csrHorizontalBottomHallway.SetConsoleRepresentation(tileSet.HorizontalBottomHallway);
+            csrHorizontalTopHallway.SetConsoleRepresentation(tileSet.HorizontalTopHallway);
+            csrVerticalHallway.SetConsoleRepresentation(tileSet.VerticalHallway);
+            csrVerticalLeftHallway.SetConsoleRepresentation(tileSet.VerticalLeftHallway);
+            csrVerticalRightHallway.SetConsoleRepresentation(tileSet.VerticalRightHallway);
+            csrCentralHallway.SetConsoleRepresentation(tileSet.CentralHallway);
+            csrFloor.SetConsoleRepresentation(tileSet.Floor);
+            csrStairs.SetConsoleRepresentation(tileSet.Stairs);
+            csrEmpty.SetConsoleRepresentation(tileSet.Empty);
+        }
+
+        private void SaveTileSet(string id)
+        {
+            if (!ValidateTileSetDataForSave(out List<string> errorMessages))
+            {
+                MessageBox.Show(
+                    $"Cannot save Tileset. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    "Save Tileset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+            var tileSet = !string.IsNullOrWhiteSpace(id)
+                ? ActiveDungeon.TileSetInfos.Find(tsi => tsi.Id.Equals(id)) ?? new TileSetInfo() { Id = id }
+                : (TileSetInfo)ActiveNodeTag.DungeonElement;
+            tileSet.TopLeftWall = csrTopLeftWall.ConsoleRepresentation;
+            tileSet.TopRightWall = csrTopRightWall.ConsoleRepresentation;
+            tileSet.BottomLeftWall = csrBottomLeftWall.ConsoleRepresentation;
+            tileSet.BottomRightWall = csrBottomRightWall.ConsoleRepresentation;
+            tileSet.HorizontalWall = csrHorizontalWall.ConsoleRepresentation;
+            tileSet.ConnectorWall = csrConnectorWall.ConsoleRepresentation;
+            tileSet.VerticalWall = csrVerticalWall.ConsoleRepresentation;
+            tileSet.TopLeftHallway = csrTopLeftHallway.ConsoleRepresentation;
+            tileSet.TopRightHallway = csrTopRightHallway.ConsoleRepresentation;
+            tileSet.BottomLeftHallway = csrBottomLeftHallway.ConsoleRepresentation;
+            tileSet.BottomRightHallway = csrBottomRightHallway.ConsoleRepresentation;
+            tileSet.HorizontalHallway = csrHorizontalHallway.ConsoleRepresentation;
+            tileSet.HorizontalBottomHallway = csrHorizontalBottomHallway.ConsoleRepresentation;
+            tileSet.HorizontalTopHallway = csrHorizontalTopHallway.ConsoleRepresentation;
+            tileSet.VerticalHallway = csrVerticalHallway.ConsoleRepresentation;
+            tileSet.VerticalLeftHallway = csrVerticalLeftHallway.ConsoleRepresentation;
+            tileSet.VerticalRightHallway = csrVerticalRightHallway.ConsoleRepresentation;
+            tileSet.CentralHallway = csrCentralHallway.ConsoleRepresentation;
+            tileSet.Floor = csrFloor.ConsoleRepresentation;
+            tileSet.Stairs = csrStairs.ConsoleRepresentation;
+            tileSet.Empty = csrEmpty.ConsoleRepresentation;
+
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.TileSetInfos.Any(tsi => tsi.Id.Equals(id)))
+            {
+                ActiveDungeon.TileSetInfos.Add(tileSet);
+                MessageBox.Show(
+                    $"Tileset {id} has been successfully created!",
+                    "Create Tileset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Tileset {tileSet.Id} has been successfully updated!",
+                    "Update Tileset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(tileSet.Id, "Tilesets");
+            PassedValidation = false;
+        }
+
+        private void SaveTileSetAs()
+        {
+            if (!ValidateTileSetDataForSave(out List<string> errorMessages))
+            {
+                MessageBox.Show(
+                    $"Cannot save Tileset. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    "Save Tileset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+            var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As");
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.TileSetInfos.Any(tsi => tsi.Id.Equals(inputBoxResult)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Tileset with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Tileset Status",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        SaveTileSet(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    SaveTileSet(inputBoxResult);
+                }
+                var savedTileSet = ActiveDungeon.AlteredStatuses.Find(tsi => tsi.Id.Equals(inputBoxResult));
+                if (savedTileSet != null)
+                {
+                    SelectNodeIfExists(savedTileSet.Id, "Tilesets");
+                }
+            }
+        }
+
+        private bool ValidateTileSetDataForSave(out List<string> errorMessages)
+        {
+            errorMessages = new List<string>();
+
+            errorMessages.AddRange(csrTopLeftWall.ConsoleRepresentation.Validate("Top Left Wall"));
+            errorMessages.AddRange(csrTopRightWall.ConsoleRepresentation.Validate("Top Right Wall"));
+            errorMessages.AddRange(csrBottomLeftWall.ConsoleRepresentation.Validate("Bottom Left Wall"));
+            errorMessages.AddRange(csrBottomRightWall.ConsoleRepresentation.Validate("Bottom Right Wall"));
+            errorMessages.AddRange(csrHorizontalWall.ConsoleRepresentation.Validate("Horizontal Wall"));
+            errorMessages.AddRange(csrConnectorWall.ConsoleRepresentation.Validate("Connector Wall"));
+            errorMessages.AddRange(csrVerticalWall.ConsoleRepresentation.Validate("Vertical Wall"));
+            errorMessages.AddRange(csrTopLeftHallway.ConsoleRepresentation.Validate("Top Left Hallway"));
+            errorMessages.AddRange(csrTopRightHallway.ConsoleRepresentation.Validate("Top Right Hallway"));
+            errorMessages.AddRange(csrBottomLeftHallway.ConsoleRepresentation.Validate("Bottom Left Hallway"));
+            errorMessages.AddRange(csrBottomRightHallway.ConsoleRepresentation.Validate("Bottom Right Hallway"));
+            errorMessages.AddRange(csrHorizontalHallway.ConsoleRepresentation.Validate("Horizontal Hallway"));
+            errorMessages.AddRange(csrHorizontalBottomHallway.ConsoleRepresentation.Validate("Horizontal Bottom Hallway"));
+            errorMessages.AddRange(csrHorizontalTopHallway.ConsoleRepresentation.Validate("Horizontal Top Hallway"));
+            errorMessages.AddRange(csrVerticalHallway.ConsoleRepresentation.Validate("Vertical Hallway"));
+            errorMessages.AddRange(csrVerticalLeftHallway.ConsoleRepresentation.Validate("Vertical Left Hallway"));
+            errorMessages.AddRange(csrVerticalRightHallway.ConsoleRepresentation.Validate("Vertical Right Hallway"));
+            errorMessages.AddRange(csrCentralHallway.ConsoleRepresentation.Validate("Central Hallway"));
+            errorMessages.AddRange(csrFloor.ConsoleRepresentation.Validate("Floor"));
+            errorMessages.AddRange(csrStairs.ConsoleRepresentation.Validate("Stairs"));
+            errorMessages.AddRange(csrEmpty.ConsoleRepresentation.Validate("Empty (inaccessible)"));
+
+            return !errorMessages.Any();
+        }
+
+        public void DeleteTileSet()
+        {
+            var activeTileSet = (TileSetInfo)ActiveNodeTag.DungeonElement;
+            var deleteTileSetPrompt = (IsNewElement)
+                ? "Do you want to remove this unsaved Tileset?"
+                : $"Do you want to PERMANENTLY delete Tileset {activeTileSet.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteTileSetPrompt,
+                "Tileset",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewElement)
+                {
+                    var removedId = new string(activeTileSet.Id);
+                    ActiveDungeon.TileSetInfos.RemoveAll(tsi => tsi.Id.Equals(activeTileSet.Id));
+                    MessageBox.Show(
+                        $"Tileset {removedId} has been successfully deleted.",
+                        "Delete Tileset",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewElement = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void csrTopLeftWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrTopRightWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrVerticalWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrBottomLeftWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrBottomRightWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrHorizontalWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrVerticalConnectorWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrConnectorWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrTopLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrTopRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrVerticalHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrBottomLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrBottomRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrHorizontalHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrHorizontalBottomHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrHorizontalTopHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrVerticalLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrVerticalRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrCentralHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrFloor_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrStairs_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void csrEmpty_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        #endregion
+
         #region Floor Group
 
         private void LoadFloorInfoFor(FloorInfo floorGroup)
@@ -1334,6 +1689,13 @@ namespace RogueCustomsDungeonEditor
                 MinInFloor = floorGroup.MinTrapsInFloor,
                 MaxInFloor = floorGroup.MaxTrapsInFloor
             };
+            cmbTilesets.Items.Clear();
+            foreach (var tileSet in ActiveDungeon.TileSetInfos)
+            {
+                cmbTilesets.Items.Add(tileSet.Id);
+                if (floorGroup.TileSetId.Equals(tileSet.Id))
+                    cmbTilesets.Text = tileSet.Id;
+            }
             btnOnFloorStartAction.Tag = floorGroup.OnFloorStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
             chkGenerateStairsOnStart.Checked = floorGroup.GenerateStairsOnStart;
             fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
@@ -1350,6 +1712,16 @@ namespace RogueCustomsDungeonEditor
             {
                 MessageBox.Show(
                     "You cannot save this Floor Group because it has no set Generator Algorithms.\n\nPlease correct it.",
+                    "Invalid Floor Range",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+            if (string.IsNullOrEmpty(cmbTilesets.Text))
+            {
+                MessageBox.Show(
+                    "Please select a Tileset before saving this Floor Group.",
                     "Invalid Floor Range",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -1375,6 +1747,16 @@ namespace RogueCustomsDungeonEditor
             {
                 MessageBox.Show(
                     "You cannot save this Floor Group because it has no set Generator Algorithms.\n\nPlease correct it.",
+                    "Invalid Floor Range",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+            if (string.IsNullOrEmpty(cmbTilesets.Text))
+            {
+                MessageBox.Show(
+                    "Please select a Tileset before saving this Floor Group.",
                     "Invalid Floor Range",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -1434,6 +1816,7 @@ namespace RogueCustomsDungeonEditor
                 }
                 floorGroup.MinFloorLevel = (int)nudMinFloorLevel.Value;
                 floorGroup.MaxFloorLevel = (int)nudMaxFloorLevel.Value;
+                floorGroup.TileSetId = cmbTilesets.Text;
                 floorGroup.Width = (int)nudWidth.Value;
                 floorGroup.Height = (int)nudHeight.Value;
                 floorGroup.GenerateStairsOnStart = chkGenerateStairsOnStart.Checked;
@@ -1764,6 +2147,11 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void nudRoomFusionOdds_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void cmbTilesets_SelectedIndexChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
         }
@@ -2419,7 +2807,7 @@ namespace RogueCustomsDungeonEditor
 
         public void DeletePlayerClass()
         {
-            var activePlayerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
+            var activePlayerClass = (PlayerClassInfo)ActiveNodeTag.DungeonElement;
             var deletePlayerClassPrompt = (IsNewElement)
                 ? "Do you want to remove this unsaved Player Class?"
                 : $"Do you want to PERMANENTLY delete Player Class {activePlayerClass.Id}?";
@@ -3070,7 +3458,7 @@ namespace RogueCustomsDungeonEditor
 
         public void DeleteNPC()
         {
-            var activeNPC = (ClassInfo)ActiveNodeTag.DungeonElement;
+            var activeNPC = (NPCInfo)ActiveNodeTag.DungeonElement;
             var deleteNPCPrompt = (IsNewElement)
                 ? "Do you want to remove this unsaved NPC?"
                 : $"Do you want to PERMANENTLY delete NPC {activeNPC.Id}?";
@@ -3635,7 +4023,7 @@ namespace RogueCustomsDungeonEditor
 
         public void DeleteItem()
         {
-            var activeItem = (ClassInfo)ActiveNodeTag.DungeonElement;
+            var activeItem = (ItemInfo)ActiveNodeTag.DungeonElement;
             var deleteItemPrompt = (IsNewElement)
                 ? "Do you want to remove this unsaved Item?"
                 : $"Do you want to PERMANENTLY delete Item {activeItem.Id}?";
@@ -4006,7 +4394,7 @@ namespace RogueCustomsDungeonEditor
 
         public void DeleteTrap()
         {
-            var activeTrap = (ClassInfo)ActiveNodeTag.DungeonElement;
+            var activeTrap = (TrapInfo)ActiveNodeTag.DungeonElement;
             var deleteTrapPrompt = (IsNewElement)
                 ? "Do you want to remove this unsaved Trap?"
                 : $"Do you want to PERMANENTLY delete Trap {activeTrap.Id}?";
@@ -4195,7 +4583,7 @@ namespace RogueCustomsDungeonEditor
             if (!ValidateAlteredStatusDataForSave(out List<string> errorMessages))
             {
                 MessageBox.Show(
-                    $"Cannot save AlteredStatus. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    $"Cannot save Altered Status. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
                     "Save Altered Status",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -4247,7 +4635,7 @@ namespace RogueCustomsDungeonEditor
 
         public void DeleteAlteredStatus()
         {
-            var activeAlteredStatus = (ClassInfo)ActiveNodeTag.DungeonElement;
+            var activeAlteredStatus = (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
             var deleteAlteredStatusPrompt = (IsNewElement)
                 ? "Do you want to remove this unsaved Altered Status?"
                 : $"Do you want to PERMANENTLY delete Altered Status {activeAlteredStatus.Id}?";
@@ -4358,6 +4746,11 @@ namespace RogueCustomsDungeonEditor
                 AddValidationResultNode("General Floor Plan", dungeonValidator.FloorPlanValidationMessages);
 
                 AddValidationResultNode("Object Ids", dungeonValidator.IdValidationMessages);
+
+                foreach (var (Id, ValidationMessages) in dungeonValidator.TileSetValidationMessages)
+                {
+                    AddValidationResultNode($"Tileset {Id}", ValidationMessages);
+                }
 
                 foreach (var (FloorMinimumLevel, FloorMaximumLevel, ValidationMessages) in dungeonValidator.FloorGroupValidationMessages)
                 {
@@ -4481,6 +4874,7 @@ namespace RogueCustomsDungeonEditor
     {
         BasicInfo,
         Locales,
+        TileSetInfo,
         FloorInfo,
         FactionInfo,
         PlayerClass,

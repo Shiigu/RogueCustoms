@@ -76,6 +76,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return new Room(Map, Position, RoomRow, RoomColumn, Width, Height);
         }
 
-        public override string ToString() => $"Index: [{RoomRow}, {RoomColumn}]; Top left: {Position}; Bottom right: {new Point(Position.X + Width - 1, Position.Y + Height - 1)}; Width: {Width}; Height: {Height}";
+        public Point TopLeft => new(Position.X, Position.Y);
+        public Point TopRight => new(Position.X + Width - 1, Position.Y);
+        public Point BottomLeft => new(Position.X, Position.Y + Height - 1);
+        public Point BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
+
+        public override string ToString() => $"Index: [{RoomRow}, {RoomColumn}]; Top left: {Position}; Bottom right: {BottomRight}; Width: {Width}; Height: {Height}";
     }
 }

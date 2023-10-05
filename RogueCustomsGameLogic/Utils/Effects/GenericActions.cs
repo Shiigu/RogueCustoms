@@ -130,10 +130,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
             switch (paramsObject.StatName.ToLowerInvariant())
             {
                 case "hp":
+                case "maxhp":
                     statValue = statAlterationTarget.HP;
                     statCap = Constants.RESOURCE_STAT_CAP;
                     break;
                 case "mp":
+                case "maxmp":
                     statValue = statAlterationTarget.MP;
                     statCap = Constants.RESOURCE_STAT_CAP;
                     break;

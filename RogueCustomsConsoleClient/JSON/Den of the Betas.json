@@ -1686,6 +1686,644 @@
     }
   ],
   "AmountOfFloors": 5,
+  "TileSetInfos": [
+    {
+      "Id": "Default",
+      "TopLeftWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "TopRightWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "BottomLeftWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "BottomRightWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "HorizontalWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "VerticalWall": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "ConnectorWall": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "TopLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "TopRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "BottomLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "BottomRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "HorizontalHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "HorizontalBottomHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "HorizontalTopHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "VerticalHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "VerticalLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "VerticalRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "CentralHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      },
+      "Floor": {
+        "Character": ".",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 169,
+          "G": 169,
+          "B": 169,
+          "A": 255
+        }
+      },
+      "Stairs": {
+        "Character": "\u003E",
+        "BackgroundColor": {
+          "R": 255,
+          "G": 255,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 100,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "Empty": {
+        "Character": " ",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    },
+    {
+      "Id": "Retro",
+      "TopLeftWall": {
+        "Character": "\u2554",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "TopRightWall": {
+        "Character": "\u2557",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "BottomLeftWall": {
+        "Character": "\u255A",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "BottomRightWall": {
+        "Character": "\u255D",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "HorizontalWall": {
+        "Character": "\u2550",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "VerticalWall": {
+        "Character": "\u2551",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "ConnectorWall": {
+        "Character": "\u256C",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 84,
+          "B": 0,
+          "A": 255
+        }
+      },
+      "TopLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "TopRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "BottomLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "BottomRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "HorizontalHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "HorizontalBottomHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "HorizontalTopHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "VerticalHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "VerticalLeftHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "VerticalRightHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "CentralHallway": {
+        "Character": "\u2592",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 168,
+          "G": 168,
+          "B": 168,
+          "A": 255
+        }
+      },
+      "Floor": {
+        "Character": ".",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 84,
+          "G": 252,
+          "B": 84,
+          "A": 255
+        }
+      },
+      "Stairs": {
+        "Character": "\u256B",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 84,
+          "G": 252,
+          "B": 84,
+          "A": 255
+        }
+      },
+      "Empty": {
+        "Character": " ",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    }
+  ],
   "FloorInfos": [
     {
       "MinFloorLevel": 1,
@@ -1693,6 +2331,7 @@
       "Width": 64,
       "Height": 32,
       "GenerateStairsOnStart": true,
+      "TileSetId": "Default",
       "PossibleMonsters": [
         {
           "ClassId": "MeleeEnemy",
@@ -1976,6 +2615,7 @@
       "Width": 48,
       "Height": 24,
       "GenerateStairsOnStart": true,
+      "TileSetId": "Default",
       "PossibleMonsters": [],
       "SimultaneousMinMonstersAtStart": 0,
       "SimultaneousMaxMonstersInFloor": 0,
@@ -2153,6 +2793,7 @@
       "Width": 64,
       "Height": 32,
       "GenerateStairsOnStart": true,
+      "TileSetId": "Default",
       "PossibleMonsters": [
         {
           "ClassId": "MeleeEnemy",
@@ -2379,6 +3020,7 @@
       "Width": 32,
       "Height": 16,
       "GenerateStairsOnStart": false,
+      "TileSetId": "Default",
       "PossibleMonsters": [
         {
           "ClassId": "Boss",

@@ -48,6 +48,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private readonly FloorType FloorConfigurationToUse;
 
         private readonly GeneratorAlgorithm GeneratorAlgorithmToUse;
+        public TileSet TileSet => FloorConfigurationToUse.TileSet;
 
 
 

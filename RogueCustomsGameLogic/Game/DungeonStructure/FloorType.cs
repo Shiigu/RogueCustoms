@@ -15,7 +15,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly int Width;
         public readonly int Height;
-        public readonly bool GenerateStairsOnStart;                     // If false, some entity must have a GenerateStairs effect. 
+        public readonly bool GenerateStairsOnStart;                     // If false, some entity must have a GenerateStairs effect.
+
+        public readonly string TileSetId;
+        public TileSet TileSet { get; set; }
 
         private readonly List<ClassInFloorInfo> PossibleMonstersInfo;
         public List<ClassInFloor> PossibleMonsters { get; private set; }
@@ -43,6 +46,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             MinFloorLevel = floorInfo.MinFloorLevel;
             MaxFloorLevel = floorInfo.MaxFloorLevel;
+            TileSetId = floorInfo.TileSetId;
             Width = floorInfo.Width;
             Height = floorInfo.Height;
             GenerateStairsOnStart = floorInfo.GenerateStairsOnStart;

@@ -45,5 +45,20 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return messages;
         }
+        public static List<string> Validate(this ConsoleRepresentation consoleRepresentation, string objectName)
+        {
+            var errorMessages = new List<string>();
+
+            if (consoleRepresentation.Character == '\0')
+                errorMessages.Add($"{objectName} does not have a Console Representation character.");
+
+            if (consoleRepresentation.ForegroundColor == null)
+                errorMessages.Add($"{objectName} does not have a Console Representation Foreground Color.");
+
+            if (consoleRepresentation.BackgroundColor == null)
+                errorMessages.Add($"{objectName} does not have a Console Representation Foreground Color.");
+
+            return errorMessages;
+        }
     }
 }

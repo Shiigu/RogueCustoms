@@ -1,4 +1,7 @@
-﻿namespace RogueCustomsDungeonEditor.HelperForms
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace RogueCustomsDungeonEditor.HelperForms
 {
     partial class frmObjectGeneration
     {
