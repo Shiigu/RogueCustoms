@@ -1084,6 +1084,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (tile.Character != null)
             {
+                if(tile.Character.ExistenceStatus != EntityExistenceStatus.Alive && tile.Type == TileType.Stairs)
+                        return tileBaseConsoleRepresentation;
+
                 var characterBaseConsoleRepresentation = new ConsoleRepresentation
                 {
                     ForegroundColor = tile.Character.ConsoleRepresentation.ForegroundColor.Clone(),
@@ -1099,7 +1102,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 else if (tile.Character.Visible)
                     return characterBaseConsoleRepresentation;
             }
-            if (tile.ConsoleRepresentation.Character == (char)TileType.Stairs)
+            if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
             if (tile.Items.Any(i => i.Visible))
                 return tile.Items.Find(i => i.Visible).ConsoleRepresentation;
