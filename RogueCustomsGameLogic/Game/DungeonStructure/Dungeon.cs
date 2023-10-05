@@ -33,6 +33,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public string Author { get; set; }
         public int AmountOfFloors { get; set; }
         public Locale LocaleToUse { get; set; }
+        public List<TileSet> TileSets { get; set; }
         public List<FloorType> FloorTypes { get; set; }
         public List<EntityClass> Classes { get; set; }
 
@@ -45,6 +46,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
             Classes = new List<EntityClass>();
+            TileSets = new List<TileSet>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
                 ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
@@ -52,6 +54,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
+            dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts)));
             dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player)));
             dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC)));
             dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null)));
@@ -59,7 +62,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus)));
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi)));
-            FloorTypes.ForEach(ft => ft.FillPossibleClassLists(Classes));
+            FloorTypes.ForEach(ft => {
+                ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId));
+                ft.FillPossibleClassLists(Classes);
+            });
             Factions = new List<Faction>();
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();

@@ -13,6 +13,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int Height { get; set; }
         public bool GenerateStairsOnStart { get; set; }                   // If false, some entity must have a GenerateStairs effect.
 
+        public string TileSetId { get; set; }
+
         public List<ClassInFloorInfo> PossibleMonsters { get; set; }
         public int SimultaneousMinMonstersAtStart { get; set; }
         public int SimultaneousMaxMonstersInFloor { get; set; }

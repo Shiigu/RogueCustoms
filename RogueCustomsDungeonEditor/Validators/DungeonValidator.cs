@@ -21,6 +21,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public DungeonValidationMessages MessageValidationMessages { get; private set; }
         public DungeonValidationMessages IdValidationMessages { get; private set; }
         public DungeonValidationMessages FloorPlanValidationMessages { get; private set; }
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> TileSetValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)> FloorGroupValidationMessages { get; private set; } = new List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> FactionValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -58,6 +59,9 @@ namespace RogueCustomsDungeonEditor.Validators
             MessageValidationMessages = DungeonMessageValidator.Validate(DungeonJson);
             IdValidationMessages = DungeonIdsValidator.Validate(DungeonJson);
             FloorPlanValidationMessages = DungeonFloorValidator.ValidateGeneralFloorPlan(DungeonJson);
+
+            foreach (var tileSetInfo in DungeonJson.TileSetInfos)
+                TileSetValidationMessages.Add((tileSetInfo.Id, DungeonTilesetValidator.Validate(tileSetInfo, DungeonJson)));
 
             foreach (var floorInfo in DungeonJson.FloorInfos)
                 FloorGroupValidationMessages.Add((floorInfo.MinFloorLevel, floorInfo.MaxFloorLevel, DungeonFloorValidator.ValidateFloorType(floorInfo, DungeonJson, sampleDungeon)));

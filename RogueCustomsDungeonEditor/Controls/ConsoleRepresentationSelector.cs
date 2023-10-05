@@ -77,6 +77,13 @@ namespace RogueCustomsDungeonEditor.Controls
             InitializeComponent();
         }
 
+        public void SetConsoleRepresentation(ConsoleRepresentation consoleRepresentation)
+        {
+            Character = consoleRepresentation.Character;
+            ForegroundColor = consoleRepresentation.ForegroundColor;
+            BackgroundColor = consoleRepresentation.BackgroundColor;
+        }
+
         private void btnChangeConsoleCharacter_Click(object sender, EventArgs e)
         {
             var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblConsoleRepresentation.Text)) ? lblConsoleRepresentation.Text[0] : '\0');

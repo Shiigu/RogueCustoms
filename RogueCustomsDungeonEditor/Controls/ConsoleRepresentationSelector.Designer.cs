@@ -1,4 +1,7 @@
-﻿namespace RogueCustomsDungeonEditor.Controls
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace RogueCustomsDungeonEditor.Controls
 {
     partial class ConsoleRepresentationSelector
     {

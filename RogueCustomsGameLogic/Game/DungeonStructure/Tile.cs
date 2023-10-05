@@ -32,29 +32,109 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 if (_consoleRepresentation == null)
                 {
-                    _consoleRepresentation = new ConsoleRepresentation
+                    _consoleRepresentation = new ConsoleRepresentation();
+                    if (Type == TileType.Empty)
+                        _consoleRepresentation = Map.TileSet.Empty;
+                    else if (Type == TileType.Stairs)
+                        _consoleRepresentation = Map.TileSet.Stairs;
+                    else if (Type == TileType.Floor)
+                        _consoleRepresentation = Map.TileSet.Floor;
+                    else if (Type == TileType.Wall)
                     {
-                        Character = (char)Type
-                    };
-                    switch (Type)
+                        if(Position.Equals(Room.TopLeft))
+                            _consoleRepresentation = Map.TileSet.TopLeftWall;
+                        else if(Position.Equals(Room.TopRight))
+                            _consoleRepresentation = Map.TileSet.TopRightWall;
+                        else if (Position.Equals(Room.BottomLeft))
+                            _consoleRepresentation = Map.TileSet.BottomLeftWall;
+                        else if (Position.Equals(Room.BottomRight))
+                            _consoleRepresentation = Map.TileSet.BottomRightWall;
+                        else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
+                            _consoleRepresentation = Map.TileSet.VerticalWall;
+                        else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                            _consoleRepresentation = Map.TileSet.HorizontalWall;
+                    }
+                    else if (Type == TileType.Hallway)
                     {
-                        case TileType.Empty:
-                            _consoleRepresentation.BackgroundColor = new GameColor(Color.Black);
-                            _consoleRepresentation.ForegroundColor = new GameColor(Color.Black);
-                            break;
-                        case TileType.Floor:
-                            _consoleRepresentation.BackgroundColor = new GameColor(Color.Black);
-                            _consoleRepresentation.ForegroundColor = new GameColor(Color.DarkGray);
-                            break;
-                        case TileType.Wall:
-                        case TileType.Hallway:
-                            _consoleRepresentation.BackgroundColor = new GameColor(Color.Black);
-                            _consoleRepresentation.ForegroundColor = new GameColor(Color.Blue);
-                            break;
-                        case TileType.Stairs:
-                            _consoleRepresentation.BackgroundColor = new GameColor(Color.Yellow);
-                            _consoleRepresentation.ForegroundColor = new GameColor(Color.DarkGreen);
-                            break;
+                        if(IsConnectorTile && (Room.Width > 1 || Room.Height > 1))
+                        {
+                            _consoleRepresentation = Map.TileSet.ConnectorWall;
+                        }
+                        else
+                        {
+                            if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.TopLeftHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.TopRightHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.BottomLeftHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.BottomRightHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.VerticalHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.HorizontalTopHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.HorizontalBottomHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.VerticalLeftHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.VerticalRightHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.VerticalHallway;
+                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
+                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                                _consoleRepresentation = Map.TileSet.VerticalHallway;
+                            else
+                                _consoleRepresentation = Map.TileSet.CentralHallway;
+                        }
                     }
                 }
                 return _consoleRepresentation;
@@ -66,6 +146,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Visible { get; set; }
 
         public Map Map { get; set; }
+        public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
         public Character Character => Map.Characters.Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Item> Items => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
@@ -75,10 +156,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
     public enum TileType
     {
-        Empty = ' ',
-        Floor = '.',
-        Wall = '█',
-        Hallway = '▒',
-        Stairs = '>'
+        Empty,
+        Floor,
+        Wall,
+        Hallway,
+        Stairs
     }
 }

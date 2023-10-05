@@ -29,8 +29,14 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
         #region 1.0 to 1.1
         private static DungeonInfo ConvertDungeonInfoToV11(this DungeonInfo dungeon)
         {
+            dungeon.TileSetInfos = new()
+            {
+                DungeonInfoHelpers.CreateDefaultTileSet(),
+                DungeonInfoHelpers.CreateRetroTileSet()
+            };
             foreach (var floorGroup in dungeon.FloorInfos)
             {
+                floorGroup.TileSetId = "Default";
                 foreach (var action in floorGroup.OnFloorStartActions)
                 {
                     action.UpdateReplaceConsoleRepresentationStepsToV11();

@@ -16,6 +16,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string DefaultLocale { get; set; }
         public List<LocaleInfo> Locales { get; set; }
         public int AmountOfFloors { get; set; }
+        public List<TileSetInfo> TileSetInfos { get; set; }
         public List<FloorInfo> FloorInfos { get; set; }
         public List<FactionInfo> FactionInfos { get; set; }
         public List<PlayerClassInfo> PlayerClasses { get; set; }

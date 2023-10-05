@@ -1,4 +1,6 @@
-﻿namespace RogueCustomsDungeonEditor
+﻿using System.Windows.Forms;
+
+namespace RogueCustomsDungeonEditor
 {
     partial class frmMain
     {
@@ -40,6 +42,48 @@
             global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor8 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
             global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor9 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
             global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor10 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor11 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor12 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor13 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor14 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor15 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor16 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor17 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor18 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor19 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor20 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor21 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor22 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor23 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor24 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor25 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor26 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor27 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor28 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor29 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor30 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor31 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor32 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor33 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor34 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor35 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor36 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor37 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor38 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor39 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor40 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor41 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor42 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor43 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor44 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor45 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor46 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor47 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor48 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor49 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor50 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor51 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
+            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor52 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
             this.msMenu = (new global::System.Windows.Forms.MenuStrip());
             this.editorToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
             this.exitToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
@@ -84,7 +128,55 @@
             this.dgvLocales = (new global::System.Windows.Forms.DataGridView());
             this.cmKey = (new global::System.Windows.Forms.DataGridViewTextBoxColumn());
             this.cmValue = (new global::System.Windows.Forms.DataGridViewTextBoxColumn());
+            this.tpTileSetInfos = (new global::System.Windows.Forms.TabPage());
+            this.label151 = (new global::System.Windows.Forms.Label());
+            this.csrEmpty = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label152 = (new global::System.Windows.Forms.Label());
+            this.csrStairs = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label153 = (new global::System.Windows.Forms.Label());
+            this.label154 = (new global::System.Windows.Forms.Label());
+            this.csrFloor = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label148 = (new global::System.Windows.Forms.Label());
+            this.csrHorizontalHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label149 = (new global::System.Windows.Forms.Label());
+            this.csrBottomRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label150 = (new global::System.Windows.Forms.Label());
+            this.csrBottomLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label137 = (new global::System.Windows.Forms.Label());
+            this.csrCentralHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label140 = (new global::System.Windows.Forms.Label());
+            this.csrVerticalRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label141 = (new global::System.Windows.Forms.Label());
+            this.csrVerticalLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label142 = (new global::System.Windows.Forms.Label());
+            this.csrHorizontalTopHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label143 = (new global::System.Windows.Forms.Label());
+            this.csrHorizontalBottomHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label144 = (new global::System.Windows.Forms.Label());
+            this.csrVerticalHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label145 = (new global::System.Windows.Forms.Label());
+            this.csrTopRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label146 = (new global::System.Windows.Forms.Label());
+            this.label147 = (new global::System.Windows.Forms.Label());
+            this.csrTopLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label138 = (new global::System.Windows.Forms.Label());
+            this.csrConnectorWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label134 = (new global::System.Windows.Forms.Label());
+            this.csrHorizontalWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label135 = (new global::System.Windows.Forms.Label());
+            this.csrBottomRightWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label136 = (new global::System.Windows.Forms.Label());
+            this.csrBottomLeftWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label133 = (new global::System.Windows.Forms.Label());
+            this.csrVerticalWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label132 = (new global::System.Windows.Forms.Label());
+            this.csrTopRightWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
+            this.label131 = (new global::System.Windows.Forms.Label());
+            this.label130 = (new global::System.Windows.Forms.Label());
+            this.csrTopLeftWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpFloorInfos = (new global::System.Windows.Forms.TabPage());
+            this.cmbTilesets = (new global::System.Windows.Forms.ComboBox());
+            this.label155 = (new global::System.Windows.Forms.Label());
             this.btnOnFloorStartAction = (new global::System.Windows.Forms.Button());
             this.label20 = (new global::System.Windows.Forms.Label());
             this.nudRoomFusionOdds = (new global::System.Windows.Forms.NumericUpDown());
@@ -314,6 +406,7 @@
             this.txtNPCName = (new global::System.Windows.Forms.TextBox());
             this.label101 = (new global::System.Windows.Forms.Label());
             this.lblNPCSightRangeText = (new global::System.Windows.Forms.Label());
+            this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpItem = (new global::System.Windows.Forms.TabPage());
             this.btnItemOnTurnStartAction = (new global::System.Windows.Forms.Button());
             this.lblItemOnTurnStartAction = (new global::System.Windows.Forms.Label());
@@ -341,6 +434,7 @@
             this.fklblItemNameLocale = (new global::System.Windows.Forms.Button());
             this.txtItemName = (new global::System.Windows.Forms.TextBox());
             this.label106 = (new global::System.Windows.Forms.Label());
+            this.crsItem = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpTrap = (new global::System.Windows.Forms.TabPage());
             this.btnTrapOnSteppedAction = (new global::System.Windows.Forms.Button());
             this.label112 = (new global::System.Windows.Forms.Label());
@@ -354,6 +448,7 @@
             this.fklblTrapNameLocale = (new global::System.Windows.Forms.Button());
             this.txtTrapName = (new global::System.Windows.Forms.TextBox());
             this.label118 = (new global::System.Windows.Forms.Label());
+            this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpAlteredStatus = (new global::System.Windows.Forms.TabPage());
             this.btnAlteredStatusOnTurnStartAction = (new global::System.Windows.Forms.Button());
             this.label109 = (new global::System.Windows.Forms.Label());
@@ -370,21 +465,19 @@
             this.fklblAlteredStatusNameLocale = (new global::System.Windows.Forms.Button());
             this.txtAlteredStatusName = (new global::System.Windows.Forms.TextBox());
             this.label115 = (new global::System.Windows.Forms.Label());
+            this.crsAlteredStatus = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpValidation = (new global::System.Windows.Forms.TabPage());
             this.tvValidationResults = (new global::System.Windows.Forms.TreeView());
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
             this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
-            this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.crsItem = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.crsAlteredStatus = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
             this.tpBasicInfo.SuspendLayout();
             this.tpLocales.SuspendLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.dgvLocales)).BeginInit();
+            this.tpTileSetInfos.SuspendLayout();
             this.tpFloorInfos.SuspendLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudRoomFusionOdds)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudExtraRoomConnectionOdds)).BeginInit();
@@ -601,6 +694,7 @@
             // 
             this.tbTabs.Controls.Add(this.tpBasicInfo);
             this.tbTabs.Controls.Add(this.tpLocales);
+            this.tbTabs.Controls.Add(this.tpTileSetInfos);
             this.tbTabs.Controls.Add(this.tpFloorInfos);
             this.tbTabs.Controls.Add(this.tpFactionInfos);
             this.tbTabs.Controls.Add(this.tpPlayerClass);
@@ -941,9 +1035,705 @@
             this.cmValue.ReadOnly = (true);
             this.cmValue.Width = (300);
             // 
+            // tpTileSetInfos
+            // 
+            this.tpTileSetInfos.AutoScroll = (true);
+            this.tpTileSetInfos.Controls.Add(this.label151);
+            this.tpTileSetInfos.Controls.Add(this.csrEmpty);
+            this.tpTileSetInfos.Controls.Add(this.label152);
+            this.tpTileSetInfos.Controls.Add(this.csrStairs);
+            this.tpTileSetInfos.Controls.Add(this.label153);
+            this.tpTileSetInfos.Controls.Add(this.label154);
+            this.tpTileSetInfos.Controls.Add(this.csrFloor);
+            this.tpTileSetInfos.Controls.Add(this.label148);
+            this.tpTileSetInfos.Controls.Add(this.csrHorizontalHallway);
+            this.tpTileSetInfos.Controls.Add(this.label149);
+            this.tpTileSetInfos.Controls.Add(this.csrBottomRightHallway);
+            this.tpTileSetInfos.Controls.Add(this.label150);
+            this.tpTileSetInfos.Controls.Add(this.csrBottomLeftHallway);
+            this.tpTileSetInfos.Controls.Add(this.label137);
+            this.tpTileSetInfos.Controls.Add(this.csrCentralHallway);
+            this.tpTileSetInfos.Controls.Add(this.label140);
+            this.tpTileSetInfos.Controls.Add(this.csrVerticalRightHallway);
+            this.tpTileSetInfos.Controls.Add(this.label141);
+            this.tpTileSetInfos.Controls.Add(this.csrVerticalLeftHallway);
+            this.tpTileSetInfos.Controls.Add(this.label142);
+            this.tpTileSetInfos.Controls.Add(this.csrHorizontalTopHallway);
+            this.tpTileSetInfos.Controls.Add(this.label143);
+            this.tpTileSetInfos.Controls.Add(this.csrHorizontalBottomHallway);
+            this.tpTileSetInfos.Controls.Add(this.label144);
+            this.tpTileSetInfos.Controls.Add(this.csrVerticalHallway);
+            this.tpTileSetInfos.Controls.Add(this.label145);
+            this.tpTileSetInfos.Controls.Add(this.csrTopRightHallway);
+            this.tpTileSetInfos.Controls.Add(this.label146);
+            this.tpTileSetInfos.Controls.Add(this.label147);
+            this.tpTileSetInfos.Controls.Add(this.csrTopLeftHallway);
+            this.tpTileSetInfos.Controls.Add(this.label138);
+            this.tpTileSetInfos.Controls.Add(this.csrConnectorWall);
+            this.tpTileSetInfos.Controls.Add(this.label134);
+            this.tpTileSetInfos.Controls.Add(this.csrHorizontalWall);
+            this.tpTileSetInfos.Controls.Add(this.label135);
+            this.tpTileSetInfos.Controls.Add(this.csrBottomRightWall);
+            this.tpTileSetInfos.Controls.Add(this.label136);
+            this.tpTileSetInfos.Controls.Add(this.csrBottomLeftWall);
+            this.tpTileSetInfos.Controls.Add(this.label133);
+            this.tpTileSetInfos.Controls.Add(this.csrVerticalWall);
+            this.tpTileSetInfos.Controls.Add(this.label132);
+            this.tpTileSetInfos.Controls.Add(this.csrTopRightWall);
+            this.tpTileSetInfos.Controls.Add(this.label131);
+            this.tpTileSetInfos.Controls.Add(this.label130);
+            this.tpTileSetInfos.Controls.Add(this.csrTopLeftWall);
+            this.tpTileSetInfos.Location = (new global::System.Drawing.Point(4, 24));
+            this.tpTileSetInfos.Name = ("tpTileSetInfos");
+            this.tpTileSetInfos.Size = (new global::System.Drawing.Size(740, 356));
+            this.tpTileSetInfos.TabIndex = (10);
+            this.tpTileSetInfos.Text = ("Tileset");
+            this.tpTileSetInfos.UseVisualStyleBackColor = (true);
+            // 
+            // label151
+            // 
+            this.label151.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label151.Location = (new global::System.Drawing.Point(465, 1055));
+            this.label151.Name = ("label151");
+            this.label151.Size = (new global::System.Drawing.Size(211, 32));
+            this.label151.TabIndex = (169);
+            this.label151.Text = ("Empty (inaccessible)");
+            this.label151.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrEmpty
+            // 
+            gameColor1.A = ((global::System.Byte)(255));
+            gameColor1.B = ((global::System.Byte)(0));
+            gameColor1.G = ((global::System.Byte)(0));
+            gameColor1.R = ((global::System.Byte)(0));
+            this.csrEmpty.BackgroundColor = (gameColor1);
+            this.csrEmpty.Character = ('\0');
+            gameColor2.A = ((global::System.Byte)(255));
+            gameColor2.B = ((global::System.Byte)(255));
+            gameColor2.G = ((global::System.Byte)(255));
+            gameColor2.R = ((global::System.Byte)(255));
+            this.csrEmpty.ForegroundColor = (gameColor2);
+            this.csrEmpty.Location = (new global::System.Drawing.Point(465, 1090));
+            this.csrEmpty.Name = ("csrEmpty");
+            this.csrEmpty.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrEmpty.TabIndex = (170);
+            this.csrEmpty.PropertyChanged += (this.csrEmpty_PropertyChanged);
+            // 
+            // label152
+            // 
+            this.label152.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label152.Location = (new global::System.Drawing.Point(248, 1055));
+            this.label152.Name = ("label152");
+            this.label152.Size = (new global::System.Drawing.Size(211, 32));
+            this.label152.TabIndex = (167);
+            this.label152.Text = ("Stairs");
+            this.label152.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrStairs
+            // 
+            gameColor3.A = ((global::System.Byte)(255));
+            gameColor3.B = ((global::System.Byte)(0));
+            gameColor3.G = ((global::System.Byte)(0));
+            gameColor3.R = ((global::System.Byte)(0));
+            this.csrStairs.BackgroundColor = (gameColor3);
+            this.csrStairs.Character = ('\0');
+            gameColor4.A = ((global::System.Byte)(255));
+            gameColor4.B = ((global::System.Byte)(255));
+            gameColor4.G = ((global::System.Byte)(255));
+            gameColor4.R = ((global::System.Byte)(255));
+            this.csrStairs.ForegroundColor = (gameColor4);
+            this.csrStairs.Location = (new global::System.Drawing.Point(248, 1090));
+            this.csrStairs.Name = ("csrStairs");
+            this.csrStairs.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrStairs.TabIndex = (168);
+            this.csrStairs.PropertyChanged += (this.csrStairs_PropertyChanged);
+            // 
+            // label153
+            // 
+            this.label153.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label153.Location = (new global::System.Drawing.Point(248, 1003));
+            this.label153.Name = ("label153");
+            this.label153.Size = (new global::System.Drawing.Size(211, 52));
+            this.label153.TabIndex = (166);
+            this.label153.Text = ("OTHERS");
+            this.label153.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // label154
+            // 
+            this.label154.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label154.Location = (new global::System.Drawing.Point(31, 1055));
+            this.label154.Name = ("label154");
+            this.label154.Size = (new global::System.Drawing.Size(211, 32));
+            this.label154.TabIndex = (164);
+            this.label154.Text = ("Unoccupied Floor");
+            this.label154.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrFloor
+            // 
+            gameColor5.A = ((global::System.Byte)(255));
+            gameColor5.B = ((global::System.Byte)(0));
+            gameColor5.G = ((global::System.Byte)(0));
+            gameColor5.R = ((global::System.Byte)(0));
+            this.csrFloor.BackgroundColor = (gameColor5);
+            this.csrFloor.Character = ('\0');
+            gameColor6.A = ((global::System.Byte)(255));
+            gameColor6.B = ((global::System.Byte)(255));
+            gameColor6.G = ((global::System.Byte)(255));
+            gameColor6.R = ((global::System.Byte)(255));
+            this.csrFloor.ForegroundColor = (gameColor6);
+            this.csrFloor.Location = (new global::System.Drawing.Point(31, 1090));
+            this.csrFloor.Name = ("csrFloor");
+            this.csrFloor.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrFloor.TabIndex = (165);
+            this.csrFloor.PropertyChanged += (this.csrFloor_PropertyChanged);
+            // 
+            // label148
+            // 
+            this.label148.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label148.Location = (new global::System.Drawing.Point(454, 611));
+            this.label148.Name = ("label148");
+            this.label148.Size = (new global::System.Drawing.Size(211, 32));
+            this.label148.TabIndex = (162);
+            this.label148.Text = ("Horizontal");
+            this.label148.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrHorizontalHallway
+            // 
+            gameColor7.A = ((global::System.Byte)(255));
+            gameColor7.B = ((global::System.Byte)(0));
+            gameColor7.G = ((global::System.Byte)(0));
+            gameColor7.R = ((global::System.Byte)(0));
+            this.csrHorizontalHallway.BackgroundColor = (gameColor7);
+            this.csrHorizontalHallway.Character = ('\0');
+            gameColor8.A = ((global::System.Byte)(255));
+            gameColor8.B = ((global::System.Byte)(255));
+            gameColor8.G = ((global::System.Byte)(255));
+            gameColor8.R = ((global::System.Byte)(255));
+            this.csrHorizontalHallway.ForegroundColor = (gameColor8);
+            this.csrHorizontalHallway.Location = (new global::System.Drawing.Point(454, 646));
+            this.csrHorizontalHallway.Name = ("csrHorizontalHallway");
+            this.csrHorizontalHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrHorizontalHallway.TabIndex = (163);
+            this.csrHorizontalHallway.PropertyChanged += (this.csrHorizontalHallway_PropertyChanged);
+            // 
+            // label149
+            // 
+            this.label149.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label149.Location = (new global::System.Drawing.Point(237, 611));
+            this.label149.Name = ("label149");
+            this.label149.Size = (new global::System.Drawing.Size(211, 32));
+            this.label149.TabIndex = (160);
+            this.label149.Text = ("Bottom Right Corner");
+            this.label149.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrBottomRightHallway
+            // 
+            gameColor9.A = ((global::System.Byte)(255));
+            gameColor9.B = ((global::System.Byte)(0));
+            gameColor9.G = ((global::System.Byte)(0));
+            gameColor9.R = ((global::System.Byte)(0));
+            this.csrBottomRightHallway.BackgroundColor = (gameColor9);
+            this.csrBottomRightHallway.Character = ('\0');
+            gameColor10.A = ((global::System.Byte)(255));
+            gameColor10.B = ((global::System.Byte)(255));
+            gameColor10.G = ((global::System.Byte)(255));
+            gameColor10.R = ((global::System.Byte)(255));
+            this.csrBottomRightHallway.ForegroundColor = (gameColor10);
+            this.csrBottomRightHallway.Location = (new global::System.Drawing.Point(237, 646));
+            this.csrBottomRightHallway.Name = ("csrBottomRightHallway");
+            this.csrBottomRightHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrBottomRightHallway.TabIndex = (161);
+            this.csrBottomRightHallway.PropertyChanged += (this.csrBottomRightHallway_PropertyChanged);
+            // 
+            // label150
+            // 
+            this.label150.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label150.Location = (new global::System.Drawing.Point(20, 611));
+            this.label150.Name = ("label150");
+            this.label150.Size = (new global::System.Drawing.Size(211, 32));
+            this.label150.TabIndex = (158);
+            this.label150.Text = ("Bottom Left Corner");
+            this.label150.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrBottomLeftHallway
+            // 
+            gameColor11.A = ((global::System.Byte)(255));
+            gameColor11.B = ((global::System.Byte)(0));
+            gameColor11.G = ((global::System.Byte)(0));
+            gameColor11.R = ((global::System.Byte)(0));
+            this.csrBottomLeftHallway.BackgroundColor = (gameColor11);
+            this.csrBottomLeftHallway.Character = ('\0');
+            gameColor12.A = ((global::System.Byte)(255));
+            gameColor12.B = ((global::System.Byte)(255));
+            gameColor12.G = ((global::System.Byte)(255));
+            gameColor12.R = ((global::System.Byte)(255));
+            this.csrBottomLeftHallway.ForegroundColor = (gameColor12);
+            this.csrBottomLeftHallway.Location = (new global::System.Drawing.Point(20, 646));
+            this.csrBottomLeftHallway.Name = ("csrBottomLeftHallway");
+            this.csrBottomLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrBottomLeftHallway.TabIndex = (159);
+            this.csrBottomLeftHallway.PropertyChanged += (this.csrBottomLeftHallway_PropertyChanged);
+            // 
+            // label137
+            // 
+            this.label137.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label137.Location = (new global::System.Drawing.Point(324, 862));
+            this.label137.Name = ("label137");
+            this.label137.Size = (new global::System.Drawing.Size(211, 32));
+            this.label137.TabIndex = (156);
+            this.label137.Text = ("Central");
+            this.label137.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrCentralHallway
+            // 
+            gameColor13.A = ((global::System.Byte)(255));
+            gameColor13.B = ((global::System.Byte)(0));
+            gameColor13.G = ((global::System.Byte)(0));
+            gameColor13.R = ((global::System.Byte)(0));
+            this.csrCentralHallway.BackgroundColor = (gameColor13);
+            this.csrCentralHallway.Character = ('\0');
+            gameColor14.A = ((global::System.Byte)(255));
+            gameColor14.B = ((global::System.Byte)(255));
+            gameColor14.G = ((global::System.Byte)(255));
+            gameColor14.R = ((global::System.Byte)(255));
+            this.csrCentralHallway.ForegroundColor = (gameColor14);
+            this.csrCentralHallway.Location = (new global::System.Drawing.Point(324, 897));
+            this.csrCentralHallway.Name = ("csrCentralHallway");
+            this.csrCentralHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrCentralHallway.TabIndex = (157);
+            this.csrCentralHallway.PropertyChanged += (this.csrCentralHallway_PropertyChanged);
+            // 
+            // label140
+            // 
+            this.label140.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label140.Location = (new global::System.Drawing.Point(107, 862));
+            this.label140.Name = ("label140");
+            this.label140.Size = (new global::System.Drawing.Size(211, 32));
+            this.label140.TabIndex = (154);
+            this.label140.Text = ("Vertical-Right");
+            this.label140.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrVerticalRightHallway
+            // 
+            gameColor15.A = ((global::System.Byte)(255));
+            gameColor15.B = ((global::System.Byte)(0));
+            gameColor15.G = ((global::System.Byte)(0));
+            gameColor15.R = ((global::System.Byte)(0));
+            this.csrVerticalRightHallway.BackgroundColor = (gameColor15);
+            this.csrVerticalRightHallway.Character = ('\0');
+            gameColor16.A = ((global::System.Byte)(255));
+            gameColor16.B = ((global::System.Byte)(255));
+            gameColor16.G = ((global::System.Byte)(255));
+            gameColor16.R = ((global::System.Byte)(255));
+            this.csrVerticalRightHallway.ForegroundColor = (gameColor16);
+            this.csrVerticalRightHallway.Location = (new global::System.Drawing.Point(107, 897));
+            this.csrVerticalRightHallway.Name = ("csrVerticalRightHallway");
+            this.csrVerticalRightHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrVerticalRightHallway.TabIndex = (155);
+            this.csrVerticalRightHallway.PropertyChanged += (this.csrVerticalRightHallway_PropertyChanged);
+            // 
+            // label141
+            // 
+            this.label141.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label141.Location = (new global::System.Drawing.Point(454, 741));
+            this.label141.Name = ("label141");
+            this.label141.Size = (new global::System.Drawing.Size(211, 32));
+            this.label141.TabIndex = (152);
+            this.label141.Text = ("Vertical-Left");
+            this.label141.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrVerticalLeftHallway
+            // 
+            gameColor17.A = ((global::System.Byte)(255));
+            gameColor17.B = ((global::System.Byte)(0));
+            gameColor17.G = ((global::System.Byte)(0));
+            gameColor17.R = ((global::System.Byte)(0));
+            this.csrVerticalLeftHallway.BackgroundColor = (gameColor17);
+            this.csrVerticalLeftHallway.Character = ('\0');
+            gameColor18.A = ((global::System.Byte)(255));
+            gameColor18.B = ((global::System.Byte)(255));
+            gameColor18.G = ((global::System.Byte)(255));
+            gameColor18.R = ((global::System.Byte)(255));
+            this.csrVerticalLeftHallway.ForegroundColor = (gameColor18);
+            this.csrVerticalLeftHallway.Location = (new global::System.Drawing.Point(454, 776));
+            this.csrVerticalLeftHallway.Name = ("csrVerticalLeftHallway");
+            this.csrVerticalLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrVerticalLeftHallway.TabIndex = (153);
+            this.csrVerticalLeftHallway.PropertyChanged += (this.csrVerticalLeftHallway_PropertyChanged);
+            // 
+            // label142
+            // 
+            this.label142.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label142.Location = (new global::System.Drawing.Point(237, 741));
+            this.label142.Name = ("label142");
+            this.label142.Size = (new global::System.Drawing.Size(211, 32));
+            this.label142.TabIndex = (150);
+            this.label142.Text = ("Horizontal-Top");
+            this.label142.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrHorizontalTopHallway
+            // 
+            gameColor19.A = ((global::System.Byte)(255));
+            gameColor19.B = ((global::System.Byte)(0));
+            gameColor19.G = ((global::System.Byte)(0));
+            gameColor19.R = ((global::System.Byte)(0));
+            this.csrHorizontalTopHallway.BackgroundColor = (gameColor19);
+            this.csrHorizontalTopHallway.Character = ('\0');
+            gameColor20.A = ((global::System.Byte)(255));
+            gameColor20.B = ((global::System.Byte)(255));
+            gameColor20.G = ((global::System.Byte)(255));
+            gameColor20.R = ((global::System.Byte)(255));
+            this.csrHorizontalTopHallway.ForegroundColor = (gameColor20);
+            this.csrHorizontalTopHallway.Location = (new global::System.Drawing.Point(237, 776));
+            this.csrHorizontalTopHallway.Name = ("csrHorizontalTopHallway");
+            this.csrHorizontalTopHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrHorizontalTopHallway.TabIndex = (151);
+            this.csrHorizontalTopHallway.PropertyChanged += (this.csrHorizontalTopHallway_PropertyChanged);
+            // 
+            // label143
+            // 
+            this.label143.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label143.Location = (new global::System.Drawing.Point(20, 741));
+            this.label143.Name = ("label143");
+            this.label143.Size = (new global::System.Drawing.Size(211, 32));
+            this.label143.TabIndex = (148);
+            this.label143.Text = ("Horizontal-Bottom");
+            this.label143.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrHorizontalBottomHallway
+            // 
+            gameColor21.A = ((global::System.Byte)(255));
+            gameColor21.B = ((global::System.Byte)(0));
+            gameColor21.G = ((global::System.Byte)(0));
+            gameColor21.R = ((global::System.Byte)(0));
+            this.csrHorizontalBottomHallway.BackgroundColor = (gameColor21);
+            this.csrHorizontalBottomHallway.Character = ('\0');
+            gameColor22.A = ((global::System.Byte)(255));
+            gameColor22.B = ((global::System.Byte)(255));
+            gameColor22.G = ((global::System.Byte)(255));
+            gameColor22.R = ((global::System.Byte)(255));
+            this.csrHorizontalBottomHallway.ForegroundColor = (gameColor22);
+            this.csrHorizontalBottomHallway.Location = (new global::System.Drawing.Point(20, 776));
+            this.csrHorizontalBottomHallway.Name = ("csrHorizontalBottomHallway");
+            this.csrHorizontalBottomHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrHorizontalBottomHallway.TabIndex = (149);
+            this.csrHorizontalBottomHallway.PropertyChanged += (this.csrHorizontalBottomHallway_PropertyChanged);
+            // 
+            // label144
+            // 
+            this.label144.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label144.Location = (new global::System.Drawing.Point(454, 490));
+            this.label144.Name = ("label144");
+            this.label144.Size = (new global::System.Drawing.Size(211, 32));
+            this.label144.TabIndex = (146);
+            this.label144.Text = ("Vertical");
+            this.label144.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrVerticalHallway
+            // 
+            gameColor23.A = ((global::System.Byte)(255));
+            gameColor23.B = ((global::System.Byte)(0));
+            gameColor23.G = ((global::System.Byte)(0));
+            gameColor23.R = ((global::System.Byte)(0));
+            this.csrVerticalHallway.BackgroundColor = (gameColor23);
+            this.csrVerticalHallway.Character = ('\0');
+            gameColor24.A = ((global::System.Byte)(255));
+            gameColor24.B = ((global::System.Byte)(255));
+            gameColor24.G = ((global::System.Byte)(255));
+            gameColor24.R = ((global::System.Byte)(255));
+            this.csrVerticalHallway.ForegroundColor = (gameColor24);
+            this.csrVerticalHallway.Location = (new global::System.Drawing.Point(454, 525));
+            this.csrVerticalHallway.Name = ("csrVerticalHallway");
+            this.csrVerticalHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrVerticalHallway.TabIndex = (147);
+            this.csrVerticalHallway.PropertyChanged += (this.csrVerticalHallway_PropertyChanged);
+            // 
+            // label145
+            // 
+            this.label145.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label145.Location = (new global::System.Drawing.Point(237, 490));
+            this.label145.Name = ("label145");
+            this.label145.Size = (new global::System.Drawing.Size(211, 32));
+            this.label145.TabIndex = (144);
+            this.label145.Text = ("Top Right Corner");
+            this.label145.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrTopRightHallway
+            // 
+            gameColor25.A = ((global::System.Byte)(255));
+            gameColor25.B = ((global::System.Byte)(0));
+            gameColor25.G = ((global::System.Byte)(0));
+            gameColor25.R = ((global::System.Byte)(0));
+            this.csrTopRightHallway.BackgroundColor = (gameColor25);
+            this.csrTopRightHallway.Character = ('\0');
+            gameColor26.A = ((global::System.Byte)(255));
+            gameColor26.B = ((global::System.Byte)(255));
+            gameColor26.G = ((global::System.Byte)(255));
+            gameColor26.R = ((global::System.Byte)(255));
+            this.csrTopRightHallway.ForegroundColor = (gameColor26);
+            this.csrTopRightHallway.Location = (new global::System.Drawing.Point(237, 525));
+            this.csrTopRightHallway.Name = ("csrTopRightHallway");
+            this.csrTopRightHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrTopRightHallway.TabIndex = (145);
+            this.csrTopRightHallway.PropertyChanged += (this.csrTopRightHallway_PropertyChanged);
+            // 
+            // label146
+            // 
+            this.label146.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label146.Location = (new global::System.Drawing.Point(237, 438));
+            this.label146.Name = ("label146");
+            this.label146.Size = (new global::System.Drawing.Size(211, 52));
+            this.label146.TabIndex = (143);
+            this.label146.Text = ("HALLWAYS");
+            this.label146.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // label147
+            // 
+            this.label147.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label147.Location = (new global::System.Drawing.Point(20, 490));
+            this.label147.Name = ("label147");
+            this.label147.Size = (new global::System.Drawing.Size(211, 32));
+            this.label147.TabIndex = (141);
+            this.label147.Text = ("Top Left Corner");
+            this.label147.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrTopLeftHallway
+            // 
+            gameColor27.A = ((global::System.Byte)(255));
+            gameColor27.B = ((global::System.Byte)(0));
+            gameColor27.G = ((global::System.Byte)(0));
+            gameColor27.R = ((global::System.Byte)(0));
+            this.csrTopLeftHallway.BackgroundColor = (gameColor27);
+            this.csrTopLeftHallway.Character = ('\0');
+            gameColor28.A = ((global::System.Byte)(255));
+            gameColor28.B = ((global::System.Byte)(255));
+            gameColor28.G = ((global::System.Byte)(255));
+            gameColor28.R = ((global::System.Byte)(255));
+            this.csrTopLeftHallway.ForegroundColor = (gameColor28);
+            this.csrTopLeftHallway.Location = (new global::System.Drawing.Point(20, 525));
+            this.csrTopLeftHallway.Name = ("csrTopLeftHallway");
+            this.csrTopLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrTopLeftHallway.TabIndex = (142);
+            this.csrTopLeftHallway.PropertyChanged += (this.csrTopLeftHallway_PropertyChanged);
+            // 
+            // label138
+            // 
+            this.label138.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label138.Location = (new global::System.Drawing.Point(253, 304));
+            this.label138.Name = ("label138");
+            this.label138.Size = (new global::System.Drawing.Size(211, 32));
+            this.label138.TabIndex = (139);
+            this.label138.Text = ("Hallway Connector");
+            this.label138.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrConnectorWall
+            // 
+            gameColor29.A = ((global::System.Byte)(255));
+            gameColor29.B = ((global::System.Byte)(0));
+            gameColor29.G = ((global::System.Byte)(0));
+            gameColor29.R = ((global::System.Byte)(0));
+            this.csrConnectorWall.BackgroundColor = (gameColor29);
+            this.csrConnectorWall.Character = ('\0');
+            gameColor30.A = ((global::System.Byte)(255));
+            gameColor30.B = ((global::System.Byte)(255));
+            gameColor30.G = ((global::System.Byte)(255));
+            gameColor30.R = ((global::System.Byte)(255));
+            this.csrConnectorWall.ForegroundColor = (gameColor30);
+            this.csrConnectorWall.Location = (new global::System.Drawing.Point(253, 339));
+            this.csrConnectorWall.Name = ("csrConnectorWall");
+            this.csrConnectorWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrConnectorWall.TabIndex = (140);
+            this.csrConnectorWall.PropertyChanged += (this.csrConnectorWall_PropertyChanged);
+            // 
+            // label134
+            // 
+            this.label134.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label134.Location = (new global::System.Drawing.Point(470, 183));
+            this.label134.Name = ("label134");
+            this.label134.Size = (new global::System.Drawing.Size(211, 32));
+            this.label134.TabIndex = (135);
+            this.label134.Text = ("Horizontal");
+            this.label134.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrHorizontalWall
+            // 
+            gameColor31.A = ((global::System.Byte)(255));
+            gameColor31.B = ((global::System.Byte)(0));
+            gameColor31.G = ((global::System.Byte)(0));
+            gameColor31.R = ((global::System.Byte)(0));
+            this.csrHorizontalWall.BackgroundColor = (gameColor31);
+            this.csrHorizontalWall.Character = ('\0');
+            gameColor32.A = ((global::System.Byte)(255));
+            gameColor32.B = ((global::System.Byte)(255));
+            gameColor32.G = ((global::System.Byte)(255));
+            gameColor32.R = ((global::System.Byte)(255));
+            this.csrHorizontalWall.ForegroundColor = (gameColor32);
+            this.csrHorizontalWall.Location = (new global::System.Drawing.Point(470, 218));
+            this.csrHorizontalWall.Name = ("csrHorizontalWall");
+            this.csrHorizontalWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrHorizontalWall.TabIndex = (136);
+            this.csrHorizontalWall.PropertyChanged += (this.csrHorizontalWall_PropertyChanged);
+            // 
+            // label135
+            // 
+            this.label135.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label135.Location = (new global::System.Drawing.Point(253, 183));
+            this.label135.Name = ("label135");
+            this.label135.Size = (new global::System.Drawing.Size(211, 32));
+            this.label135.TabIndex = (133);
+            this.label135.Text = ("Bottom Right Corner");
+            this.label135.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrBottomRightWall
+            // 
+            gameColor33.A = ((global::System.Byte)(255));
+            gameColor33.B = ((global::System.Byte)(0));
+            gameColor33.G = ((global::System.Byte)(0));
+            gameColor33.R = ((global::System.Byte)(0));
+            this.csrBottomRightWall.BackgroundColor = (gameColor33);
+            this.csrBottomRightWall.Character = ('\0');
+            gameColor34.A = ((global::System.Byte)(255));
+            gameColor34.B = ((global::System.Byte)(255));
+            gameColor34.G = ((global::System.Byte)(255));
+            gameColor34.R = ((global::System.Byte)(255));
+            this.csrBottomRightWall.ForegroundColor = (gameColor34);
+            this.csrBottomRightWall.Location = (new global::System.Drawing.Point(253, 218));
+            this.csrBottomRightWall.Name = ("csrBottomRightWall");
+            this.csrBottomRightWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrBottomRightWall.TabIndex = (134);
+            this.csrBottomRightWall.PropertyChanged += (this.csrBottomRightWall_PropertyChanged);
+            // 
+            // label136
+            // 
+            this.label136.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label136.Location = (new global::System.Drawing.Point(36, 183));
+            this.label136.Name = ("label136");
+            this.label136.Size = (new global::System.Drawing.Size(211, 32));
+            this.label136.TabIndex = (131);
+            this.label136.Text = ("Bottom Left Corner");
+            this.label136.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrBottomLeftWall
+            // 
+            gameColor35.A = ((global::System.Byte)(255));
+            gameColor35.B = ((global::System.Byte)(0));
+            gameColor35.G = ((global::System.Byte)(0));
+            gameColor35.R = ((global::System.Byte)(0));
+            this.csrBottomLeftWall.BackgroundColor = (gameColor35);
+            this.csrBottomLeftWall.Character = ('\0');
+            gameColor36.A = ((global::System.Byte)(255));
+            gameColor36.B = ((global::System.Byte)(255));
+            gameColor36.G = ((global::System.Byte)(255));
+            gameColor36.R = ((global::System.Byte)(255));
+            this.csrBottomLeftWall.ForegroundColor = (gameColor36);
+            this.csrBottomLeftWall.Location = (new global::System.Drawing.Point(36, 218));
+            this.csrBottomLeftWall.Name = ("csrBottomLeftWall");
+            this.csrBottomLeftWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrBottomLeftWall.TabIndex = (132);
+            this.csrBottomLeftWall.PropertyChanged += (this.csrBottomLeftWall_PropertyChanged);
+            // 
+            // label133
+            // 
+            this.label133.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label133.Location = (new global::System.Drawing.Point(470, 62));
+            this.label133.Name = ("label133");
+            this.label133.Size = (new global::System.Drawing.Size(211, 32));
+            this.label133.TabIndex = (129);
+            this.label133.Text = ("Vertical");
+            this.label133.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrVerticalWall
+            // 
+            gameColor37.A = ((global::System.Byte)(255));
+            gameColor37.B = ((global::System.Byte)(0));
+            gameColor37.G = ((global::System.Byte)(0));
+            gameColor37.R = ((global::System.Byte)(0));
+            this.csrVerticalWall.BackgroundColor = (gameColor37);
+            this.csrVerticalWall.Character = ('\0');
+            gameColor38.A = ((global::System.Byte)(255));
+            gameColor38.B = ((global::System.Byte)(255));
+            gameColor38.G = ((global::System.Byte)(255));
+            gameColor38.R = ((global::System.Byte)(255));
+            this.csrVerticalWall.ForegroundColor = (gameColor38);
+            this.csrVerticalWall.Location = (new global::System.Drawing.Point(470, 97));
+            this.csrVerticalWall.Name = ("csrVerticalWall");
+            this.csrVerticalWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrVerticalWall.TabIndex = (130);
+            this.csrVerticalWall.PropertyChanged += (this.csrVerticalWall_PropertyChanged);
+            // 
+            // label132
+            // 
+            this.label132.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label132.Location = (new global::System.Drawing.Point(253, 62));
+            this.label132.Name = ("label132");
+            this.label132.Size = (new global::System.Drawing.Size(211, 32));
+            this.label132.TabIndex = (127);
+            this.label132.Text = ("Top Right Corner");
+            this.label132.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrTopRightWall
+            // 
+            gameColor39.A = ((global::System.Byte)(255));
+            gameColor39.B = ((global::System.Byte)(0));
+            gameColor39.G = ((global::System.Byte)(0));
+            gameColor39.R = ((global::System.Byte)(0));
+            this.csrTopRightWall.BackgroundColor = (gameColor39);
+            this.csrTopRightWall.Character = ('\0');
+            gameColor40.A = ((global::System.Byte)(255));
+            gameColor40.B = ((global::System.Byte)(255));
+            gameColor40.G = ((global::System.Byte)(255));
+            gameColor40.R = ((global::System.Byte)(255));
+            this.csrTopRightWall.ForegroundColor = (gameColor40);
+            this.csrTopRightWall.Location = (new global::System.Drawing.Point(253, 97));
+            this.csrTopRightWall.Name = ("csrTopRightWall");
+            this.csrTopRightWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrTopRightWall.TabIndex = (128);
+            this.csrTopRightWall.PropertyChanged += (this.csrTopRightWall_PropertyChanged);
+            // 
+            // label131
+            // 
+            this.label131.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label131.Location = (new global::System.Drawing.Point(253, 10));
+            this.label131.Name = ("label131");
+            this.label131.Size = (new global::System.Drawing.Size(211, 52));
+            this.label131.TabIndex = (126);
+            this.label131.Text = ("WALLS");
+            this.label131.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // label130
+            // 
+            this.label130.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            this.label130.Location = (new global::System.Drawing.Point(36, 62));
+            this.label130.Name = ("label130");
+            this.label130.Size = (new global::System.Drawing.Size(211, 32));
+            this.label130.TabIndex = (124);
+            this.label130.Text = ("Top Left Corner");
+            this.label130.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            // 
+            // csrTopLeftWall
+            // 
+            gameColor41.A = ((global::System.Byte)(255));
+            gameColor41.B = ((global::System.Byte)(0));
+            gameColor41.G = ((global::System.Byte)(0));
+            gameColor41.R = ((global::System.Byte)(0));
+            this.csrTopLeftWall.BackgroundColor = (gameColor41);
+            this.csrTopLeftWall.Character = ('\0');
+            gameColor42.A = ((global::System.Byte)(255));
+            gameColor42.B = ((global::System.Byte)(255));
+            gameColor42.G = ((global::System.Byte)(255));
+            gameColor42.R = ((global::System.Byte)(255));
+            this.csrTopLeftWall.ForegroundColor = (gameColor42);
+            this.csrTopLeftWall.Location = (new global::System.Drawing.Point(36, 97));
+            this.csrTopLeftWall.Name = ("csrTopLeftWall");
+            this.csrTopLeftWall.Size = (new global::System.Drawing.Size(211, 83));
+            this.csrTopLeftWall.TabIndex = (125);
+            this.csrTopLeftWall.PropertyChanged += (this.csrTopLeftWall_PropertyChanged);
+            // 
             // tpFloorInfos
             // 
             this.tpFloorInfos.AutoScroll = (true);
+            this.tpFloorInfos.Controls.Add(this.cmbTilesets);
+            this.tpFloorInfos.Controls.Add(this.label155);
             this.tpFloorInfos.Controls.Add(this.btnOnFloorStartAction);
             this.tpFloorInfos.Controls.Add(this.label20);
             this.tpFloorInfos.Controls.Add(this.nudRoomFusionOdds);
@@ -980,6 +1770,25 @@
             this.tpFloorInfos.TabIndex = (2);
             this.tpFloorInfos.Text = ("Floor Group");
             this.tpFloorInfos.UseVisualStyleBackColor = (true);
+            // 
+            // cmbTilesets
+            // 
+            this.cmbTilesets.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
+            this.cmbTilesets.FormattingEnabled = (true);
+            this.cmbTilesets.Location = (new global::System.Drawing.Point(167, 77));
+            this.cmbTilesets.Name = ("cmbTilesets");
+            this.cmbTilesets.Size = (new global::System.Drawing.Size(149, 23));
+            this.cmbTilesets.TabIndex = (39);
+            this.cmbTilesets.SelectedIndexChanged += (this.cmbTilesets_SelectedIndexChanged);
+            // 
+            // label155
+            // 
+            this.label155.AutoSize = (true);
+            this.label155.Location = (new global::System.Drawing.Point(121, 80));
+            this.label155.Name = ("label155");
+            this.label155.Size = (new global::System.Drawing.Size(40, 15));
+            this.label155.TabIndex = (38);
+            this.label155.Text = ("Tileset");
             // 
             // btnOnFloorStartAction
             // 
@@ -2460,17 +3269,17 @@
             // 
             // crsPlayer
             // 
-            gameColor1.A = ((global::System.Byte)(255));
-            gameColor1.B = ((global::System.Byte)(0));
-            gameColor1.G = ((global::System.Byte)(0));
-            gameColor1.R = ((global::System.Byte)(0));
-            this.crsPlayer.BackgroundColor = (gameColor1);
+            gameColor43.A = ((global::System.Byte)(255));
+            gameColor43.B = ((global::System.Byte)(0));
+            gameColor43.G = ((global::System.Byte)(0));
+            gameColor43.R = ((global::System.Byte)(0));
+            this.crsPlayer.BackgroundColor = (gameColor43);
             this.crsPlayer.Character = ('\0');
-            gameColor2.A = ((global::System.Byte)(255));
-            gameColor2.B = ((global::System.Byte)(255));
-            gameColor2.G = ((global::System.Byte)(255));
-            gameColor2.R = ((global::System.Byte)(255));
-            this.crsPlayer.ForegroundColor = (gameColor2);
+            gameColor44.A = ((global::System.Byte)(255));
+            gameColor44.B = ((global::System.Byte)(255));
+            gameColor44.G = ((global::System.Byte)(255));
+            gameColor44.R = ((global::System.Byte)(255));
+            this.crsPlayer.ForegroundColor = (gameColor44);
             this.crsPlayer.Location = (new global::System.Drawing.Point(504, 8));
             this.crsPlayer.Name = ("crsPlayer");
             this.crsPlayer.Size = (new global::System.Drawing.Size(211, 83));
@@ -3443,6 +4252,25 @@
             this.lblNPCSightRangeText.Text = ("tiles");
             this.lblNPCSightRangeText.Visible = (false);
             // 
+            // crsNPC
+            // 
+            gameColor45.A = ((global::System.Byte)(255));
+            gameColor45.B = ((global::System.Byte)(0));
+            gameColor45.G = ((global::System.Byte)(0));
+            gameColor45.R = ((global::System.Byte)(0));
+            this.crsNPC.BackgroundColor = (gameColor45);
+            this.crsNPC.Character = ('\0');
+            gameColor46.A = ((global::System.Byte)(255));
+            gameColor46.B = ((global::System.Byte)(255));
+            gameColor46.G = ((global::System.Byte)(255));
+            gameColor46.R = ((global::System.Byte)(255));
+            this.crsNPC.ForegroundColor = (gameColor46);
+            this.crsNPC.Location = (new global::System.Drawing.Point(504, 8));
+            this.crsNPC.Name = ("crsNPC");
+            this.crsNPC.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsNPC.TabIndex = (207);
+            this.crsNPC.PropertyChanged += (this.crsNPC_PropertyChanged);
+            // 
             // tpItem
             // 
             this.tpItem.Controls.Add(this.btnItemOnTurnStartAction);
@@ -3745,6 +4573,25 @@
             this.label106.TabIndex = (190);
             this.label106.Text = ("Default Name");
             // 
+            // crsItem
+            // 
+            gameColor47.A = ((global::System.Byte)(255));
+            gameColor47.B = ((global::System.Byte)(0));
+            gameColor47.G = ((global::System.Byte)(0));
+            gameColor47.R = ((global::System.Byte)(0));
+            this.crsItem.BackgroundColor = (gameColor47);
+            this.crsItem.Character = ('\0');
+            gameColor48.A = ((global::System.Byte)(255));
+            gameColor48.B = ((global::System.Byte)(255));
+            gameColor48.G = ((global::System.Byte)(255));
+            gameColor48.R = ((global::System.Byte)(255));
+            this.crsItem.ForegroundColor = (gameColor48);
+            this.crsItem.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsItem.Name = ("crsItem");
+            this.crsItem.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsItem.TabIndex = (220);
+            this.crsItem.PropertyChanged += (this.crsItem_PropertyChanged);
+            // 
             // tpTrap
             // 
             this.tpTrap.Controls.Add(this.btnTrapOnSteppedAction);
@@ -3893,6 +4740,25 @@
             this.label118.Size = (new global::System.Drawing.Size(80, 15));
             this.label118.TabIndex = (220);
             this.label118.Text = ("Default Name");
+            // 
+            // crsTrap
+            // 
+            gameColor49.A = ((global::System.Byte)(255));
+            gameColor49.B = ((global::System.Byte)(0));
+            gameColor49.G = ((global::System.Byte)(0));
+            gameColor49.R = ((global::System.Byte)(0));
+            this.crsTrap.BackgroundColor = (gameColor49);
+            this.crsTrap.Character = ('\0');
+            gameColor50.A = ((global::System.Byte)(255));
+            gameColor50.B = ((global::System.Byte)(255));
+            gameColor50.G = ((global::System.Byte)(255));
+            gameColor50.R = ((global::System.Byte)(255));
+            this.crsTrap.ForegroundColor = (gameColor50);
+            this.crsTrap.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsTrap.Name = ("crsTrap");
+            this.crsTrap.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsTrap.TabIndex = (239);
+            this.crsTrap.PropertyChanged += (this.crsTrap_PropertyChanged);
             // 
             // tpAlteredStatus
             // 
@@ -4081,6 +4947,25 @@
             this.label115.TabIndex = (239);
             this.label115.Text = ("Default Name");
             // 
+            // crsAlteredStatus
+            // 
+            gameColor51.A = ((global::System.Byte)(255));
+            gameColor51.B = ((global::System.Byte)(0));
+            gameColor51.G = ((global::System.Byte)(0));
+            gameColor51.R = ((global::System.Byte)(0));
+            this.crsAlteredStatus.BackgroundColor = (gameColor51);
+            this.crsAlteredStatus.Character = ('\0');
+            gameColor52.A = ((global::System.Byte)(255));
+            gameColor52.B = ((global::System.Byte)(255));
+            gameColor52.G = ((global::System.Byte)(255));
+            gameColor52.R = ((global::System.Byte)(255));
+            this.crsAlteredStatus.ForegroundColor = (gameColor52);
+            this.crsAlteredStatus.Location = (new global::System.Drawing.Point(524, 9));
+            this.crsAlteredStatus.Name = ("crsAlteredStatus");
+            this.crsAlteredStatus.Size = (new global::System.Drawing.Size(211, 83));
+            this.crsAlteredStatus.TabIndex = (260);
+            this.crsAlteredStatus.PropertyChanged += (this.crsAlteredStatus_PropertyChanged);
+            // 
             // tpValidation
             // 
             this.tpValidation.Controls.Add(this.tvValidationResults);
@@ -4109,82 +4994,6 @@
             this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
             this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
             // 
-            // crsNPC
-            // 
-            gameColor3.A = ((global::System.Byte)(255));
-            gameColor3.B = ((global::System.Byte)(0));
-            gameColor3.G = ((global::System.Byte)(0));
-            gameColor3.R = ((global::System.Byte)(0));
-            this.crsNPC.BackgroundColor = (gameColor3);
-            this.crsNPC.Character = ('\0');
-            gameColor4.A = ((global::System.Byte)(255));
-            gameColor4.B = ((global::System.Byte)(255));
-            gameColor4.G = ((global::System.Byte)(255));
-            gameColor4.R = ((global::System.Byte)(255));
-            this.crsNPC.ForegroundColor = (gameColor4);
-            this.crsNPC.Location = (new global::System.Drawing.Point(504, 8));
-            this.crsNPC.Name = ("crsNPC");
-            this.crsNPC.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsNPC.TabIndex = (207);
-            this.crsNPC.PropertyChanged += (this.crsNPC_PropertyChanged);
-            // 
-            // crsItem
-            // 
-            gameColor5.A = ((global::System.Byte)(255));
-            gameColor5.B = ((global::System.Byte)(0));
-            gameColor5.G = ((global::System.Byte)(0));
-            gameColor5.R = ((global::System.Byte)(0));
-            this.crsItem.BackgroundColor = (gameColor5);
-            this.crsItem.Character = ('\0');
-            gameColor6.A = ((global::System.Byte)(255));
-            gameColor6.B = ((global::System.Byte)(255));
-            gameColor6.G = ((global::System.Byte)(255));
-            gameColor6.R = ((global::System.Byte)(255));
-            this.crsItem.ForegroundColor = (gameColor6);
-            this.crsItem.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsItem.Name = ("crsItem");
-            this.crsItem.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsItem.TabIndex = (220);
-            this.crsItem.PropertyChanged += (this.crsItem_PropertyChanged);
-            // 
-            // crsTrap
-            // 
-            gameColor7.A = ((global::System.Byte)(255));
-            gameColor7.B = ((global::System.Byte)(0));
-            gameColor7.G = ((global::System.Byte)(0));
-            gameColor7.R = ((global::System.Byte)(0));
-            this.crsTrap.BackgroundColor = (gameColor7);
-            this.crsTrap.Character = ('\0');
-            gameColor8.A = ((global::System.Byte)(255));
-            gameColor8.B = ((global::System.Byte)(255));
-            gameColor8.G = ((global::System.Byte)(255));
-            gameColor8.R = ((global::System.Byte)(255));
-            this.crsTrap.ForegroundColor = (gameColor8);
-            this.crsTrap.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsTrap.Name = ("crsTrap");
-            this.crsTrap.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsTrap.TabIndex = (239);
-            this.crsTrap.PropertyChanged += (this.crsTrap_PropertyChanged);
-            // 
-            // crsAlteredStatus
-            // 
-            gameColor9.A = ((global::System.Byte)(255));
-            gameColor9.B = ((global::System.Byte)(0));
-            gameColor9.G = ((global::System.Byte)(0));
-            gameColor9.R = ((global::System.Byte)(0));
-            this.crsAlteredStatus.BackgroundColor = (gameColor9);
-            this.crsAlteredStatus.Character = ('\0');
-            gameColor10.A = ((global::System.Byte)(255));
-            gameColor10.B = ((global::System.Byte)(255));
-            gameColor10.G = ((global::System.Byte)(255));
-            gameColor10.R = ((global::System.Byte)(255));
-            this.crsAlteredStatus.ForegroundColor = (gameColor10);
-            this.crsAlteredStatus.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsAlteredStatus.Name = ("crsAlteredStatus");
-            this.crsAlteredStatus.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsAlteredStatus.TabIndex = (260);
-            this.crsAlteredStatus.PropertyChanged += (this.crsAlteredStatus_PropertyChanged);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = (new global::System.Drawing.SizeF(7F, 15F));
@@ -4212,6 +5021,7 @@
             this.tpLocales.ResumeLayout(false);
             this.tpLocales.PerformLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.dgvLocales)).EndInit();
+            this.tpTileSetInfos.ResumeLayout(false);
             this.tpFloorInfos.ResumeLayout(false);
             this.tpFloorInfos.PerformLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudRoomFusionOdds)).EndInit();
@@ -4614,5 +5424,53 @@
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsItem;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsTrap;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsAlteredStatus;
+        private global::System.Windows.Forms.TabPage tpTileSetInfos;
+        private global::System.Windows.Forms.Label label138;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrConnectorWall;
+        private global::System.Windows.Forms.Label label134;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrHorizontalWall;
+        private global::System.Windows.Forms.Label label135;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrBottomRightWall;
+        private global::System.Windows.Forms.Label label136;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrBottomLeftWall;
+        private global::System.Windows.Forms.Label label133;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrVerticalWall;
+        private global::System.Windows.Forms.Label label132;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrTopRightWall;
+        private global::System.Windows.Forms.Label label131;
+        private global::System.Windows.Forms.Label label130;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrTopLeftWall;
+        private global::System.Windows.Forms.Label label148;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrHorizontalHallway;
+        private global::System.Windows.Forms.Label label149;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrBottomRightHallway;
+        private global::System.Windows.Forms.Label label150;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrBottomLeftHallway;
+        private global::System.Windows.Forms.Label label137;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrCentralHallway;
+        private global::System.Windows.Forms.Label label140;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrVerticalRightHallway;
+        private global::System.Windows.Forms.Label label141;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrVerticalLeftHallway;
+        private global::System.Windows.Forms.Label label142;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrHorizontalTopHallway;
+        private global::System.Windows.Forms.Label label143;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrHorizontalBottomHallway;
+        private global::System.Windows.Forms.Label label144;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrVerticalHallway;
+        private global::System.Windows.Forms.Label label145;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrTopRightHallway;
+        private global::System.Windows.Forms.Label label146;
+        private global::System.Windows.Forms.Label label147;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrTopLeftHallway;
+        private global::System.Windows.Forms.Label label151;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrEmpty;
+        private global::System.Windows.Forms.Label label152;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrStairs;
+        private global::System.Windows.Forms.Label label153;
+        private global::System.Windows.Forms.Label label154;
+        private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrFloor;
+        private global::System.Windows.Forms.ComboBox cmbTilesets;
+        private global::System.Windows.Forms.Label label155;
     }
 }

@@ -56,6 +56,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!floorJson.GenerateStairsOnStart)
                 messages.AddWarning("GenerateStairsOnStart is false. Make sure at least one Character/Item/Trap calls GenerateStairs, or the Dungeon won't be able to be completed.");
 
+            if(!dungeonJson.TileSetInfos.Any(tsi => tsi.Id.Equals(floorJson.TileSetId)))
+                messages.AddError($"{floorJson.TileSetId} is not a recognized TileSet.");
+
             if (floorJson.PossibleMonsters.Any())
             {
                 var totalChanceForPossibleMonsters = 0;
