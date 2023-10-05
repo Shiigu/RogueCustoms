@@ -8,7 +8,12 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <ApplicationIcon>Icons\border_outer_FILL0_wght400_GRAD0_opsz24.ico</ApplicationIcon>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+	<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Icons\border_outer_FILL0_wght400_GRAD0_opsz24.ico">
@@ -17,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RogueCustomsGameLogic\RogueCustomsGameEngine.csproj" />
+    <ProjectReference Include="..\RogueCustomsGameEngine\RogueCustomsGameEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

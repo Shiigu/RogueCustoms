@@ -7,10 +7,15 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <PackageIcon>Icon.png</PackageIcon>
+	<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="JSON\Den of the Betas.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RogueCustomsGameLogic\RogueCustomsGameEngine.csproj" />
+    <ProjectReference Include="..\RogueCustomsGameEngine\RogueCustomsGameEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

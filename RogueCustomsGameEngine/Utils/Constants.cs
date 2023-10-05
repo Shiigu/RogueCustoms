@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace RogueCustomsGameEngine.Utils
 {
     public static class Constants
     {
-        public const string CurrentDungeonJsonVersion = "1.1";
+        public readonly static string CurrentDungeonJsonVersion = Assembly.GetExecutingAssembly()
+                                        .GetCustomAttribute<AssemblyFileVersionAttribute>()
+                                        .Version;
 
         public const int MaxGenerationTries = 1000;
         public const int MaxGenerationTriesForHallway = 10;
