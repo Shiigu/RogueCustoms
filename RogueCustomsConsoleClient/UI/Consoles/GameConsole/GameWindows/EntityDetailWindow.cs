@@ -15,6 +15,9 @@ using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsConsoleClient.Helpers;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsConsoleClient.Utils;
+using RogueCustomsConsoleClient.UI.Consoles.GameConsole;
 
 namespace RogueCustomsConsoleClient.UI.Windows
 {
@@ -43,14 +46,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             var linesInDescription = entityDetail.Description.Split(
                 new[] { "\r\n", "\n" }, StringSplitOptions.None
                 );
-            var splitWrappedDescription = new List<string>();
-            foreach (var line in linesInDescription)
-            {
-                if (line.Trim().Length < 50)
-                    splitWrappedDescription.Add(line);
-                else
-                    splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,59}\s*\b)[.]?[)]?") select m.Value).ToList());
-            }
+            var splitWrappedDescription = linesInDescription.SplitByLengthWithWholeWords(GameConsoleConstants.EntityDetailWindowMaxLength).ToList();
 
             var titleText = LocalizationManager.GetString("EntityDetailTitleText").ToAscii();
             var okButtonText = LocalizationManager.GetString("OKButtonText").ToAscii();
