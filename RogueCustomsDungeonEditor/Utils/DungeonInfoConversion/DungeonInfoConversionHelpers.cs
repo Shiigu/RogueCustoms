@@ -10,11 +10,19 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
     public static class DungeonInfoConversionHelpers
     {
-
-        public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon)
+        public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
+            var convertedLocales = false;
             while(!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
             {
+                if(!convertedLocales)
+                {
+                    foreach (var localeInfo in dungeon.Locales)
+                    {
+                        localeInfo.AddMissingMandatoryLocalesIfNeeded(localeTemplate, mandatoryLocaleKeys);
+                    }
+                    convertedLocales = true;
+                }
                 switch (dungeon.Version)
                 {
                     case "1.0":

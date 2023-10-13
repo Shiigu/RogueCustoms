@@ -124,7 +124,12 @@ namespace RogueCustomsDungeonEditor
                         Application.Exit();
                 }
                 else if (messageBoxResult == DialogResult.No)
+                {
+                    DirtyDungeon = false;
                     Application.Exit();
+                }
+                else
+                    e.Cancel = true;
             }
         }
 
@@ -471,7 +476,7 @@ namespace RogueCustomsDungeonEditor
                         PropertyNameCaseInsensitive = true
                     });
                     var formerVersion = !string.IsNullOrWhiteSpace(ActiveDungeon.Version) ? new string(ActiveDungeon.Version) : "1.0";
-                    ActiveDungeon.ConvertDungeonInfoIfNeeded();
+                    ActiveDungeon.ConvertDungeonInfoIfNeeded(LocaleTemplate, MandatoryLocaleKeys);
                     tbTabs.TabPages.Clear();
                     DirtyEntry = false;
                     DirtyTab = false;
@@ -1031,29 +1036,7 @@ namespace RogueCustomsDungeonEditor
         private void LoadLocaleInfoFor(LocaleInfo localeInfo)
         {
             var localeClone = localeInfo.Clone(MandatoryLocaleKeys);
-            AddMissingMandatoryLocalesIfNeeded(localeClone);
-            dgvLocales.Tag = localeClone;
-            dgvLocales.Rows.Clear();
-            foreach (var entry in localeClone.LocaleStrings)
-            {
-                dgvLocales.Rows.Add(entry.Key, entry.Value);
-            }
-        }
-
-        private void AddMissingMandatoryLocalesIfNeeded(LocaleInfo localeInfo)
-        {
-            var localeKeys = localeInfo.LocaleStrings.Select(x => x.Key).ToList();
-            var missingMandatoryKeys = MandatoryLocaleKeys.Except(localeKeys);
-            foreach (var missingKey in missingMandatoryKeys)
-            {
-                var templateLocaleEntry = LocaleTemplate.LocaleStrings.Find(ls => ls.Key.Equals(missingKey));
-                localeInfo.LocaleStrings.Add(new LocaleInfoString
-                {
-                    Key = templateLocaleEntry.Key,
-                    Value = templateLocaleEntry.Value
-                });
-            }
-            if (missingMandatoryKeys.Any())
+            if (localeClone.AddMissingMandatoryLocalesIfNeeded(LocaleTemplate, MandatoryLocaleKeys))
             {
                 DirtyTab = true;
                 MessageBox.Show(
@@ -1062,6 +1045,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
+            }
+            dgvLocales.Tag = localeClone;
+            dgvLocales.Rows.Clear();
+            foreach (var entry in localeClone.LocaleStrings)
+            {
+                dgvLocales.Rows.Add(entry.Key, entry.Value);
             }
         }
 
