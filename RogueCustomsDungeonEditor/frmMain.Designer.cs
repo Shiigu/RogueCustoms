@@ -968,6 +968,7 @@ namespace RogueCustomsDungeonEditor
             this.txtLocaleEntryValue.Location = (new global::System.Drawing.Point(401, 79));
             this.txtLocaleEntryValue.Multiline = (true);
             this.txtLocaleEntryValue.Name = ("txtLocaleEntryValue");
+            this.txtLocaleEntryValue.ScrollBars = (global::System.Windows.Forms.ScrollBars.Vertical);
             this.txtLocaleEntryValue.Size = (new global::System.Drawing.Size(331, 143));
             this.txtLocaleEntryValue.TabIndex = (4);
             this.txtLocaleEntryValue.TextChanged += (this.txtLocaleEntryValue_TextChanged);
