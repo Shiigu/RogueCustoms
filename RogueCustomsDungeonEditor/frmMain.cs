@@ -520,6 +520,20 @@ namespace RogueCustomsDungeonEditor
         {
             try
             {
+                if (DirtyTab)
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"The currently-opened Element has unsaved changes.\n\nDo you wish to save them before saving the Dungeon?",
+                        "Save Dungeon",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        if (!SaveElement())
+                            MessageBox.Show($"The currently-opened Element could not be saved due to errors. Please check it.\n\nThe Dungeon saving process will proceed nonetheless.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
                 File.WriteAllText(filePath, string.Empty);
                 using FileStream createStream = File.OpenWrite(filePath);
                 JsonSerializer.Serialize(createStream, ActiveDungeon, new JsonSerializerOptions
@@ -630,49 +644,39 @@ namespace RogueCustomsDungeonEditor
             SaveElement();
         }
 
-        private void SaveElement()
+        private bool SaveElement()
         {
             if (!IsNewElement)
             {
                 switch (ActiveNodeTag.TabToOpen)
                 {
                     case TabTypes.BasicInfo:
-                        SaveBasicInfo();
-                        break;
+                        return SaveBasicInfo();
                     case TabTypes.Locales:
-                        SaveLocale();
-                        break;
+                        return SaveLocale();
                     case TabTypes.TileSetInfo:
-                        SaveTileSet(null);
-                        break;
+                        return SaveTileSet(null);
                     case TabTypes.FloorInfo:
-                        SaveFloorGroup();
-                        break;
+                        return SaveFloorGroup();
                     case TabTypes.FactionInfo:
-                        SaveFaction(null);
-                        break;
+                        return SaveFaction(null);
                     case TabTypes.PlayerClass:
-                        SavePlayerClass(null);
-                        break;
+                        return SavePlayerClass(null);
                     case TabTypes.NPC:
-                        SaveNPC(null);
-                        break;
+                        return SaveNPC(null);
                     case TabTypes.Item:
-                        SaveItem(null);
-                        break;
+                        return SaveItem(null);
                     case TabTypes.Trap:
-                        SaveTrap(null);
-                        break;
+                        return SaveTrap(null);
                     case TabTypes.AlteredStatus:
-                        SaveAlteredStatus(null);
-                        break;
+                        return SaveAlteredStatus(null);
                     default:
-                        break;
+                        return true;
                 }
             }
             else
             {
-                SaveElementAs();
+                return SaveElementAs();
             }
         }
 
@@ -682,39 +686,30 @@ namespace RogueCustomsDungeonEditor
             SaveElementAs();
         }
 
-        private void SaveElementAs()
+        private bool SaveElementAs()
         {
             switch (ActiveNodeTag.TabToOpen)
             {
                 case TabTypes.Locales:
-                    SaveLocaleAs();
-                    break;
+                    return SaveLocaleAs();
                 case TabTypes.TileSetInfo:
-                    SaveTileSetAs();
-                    break;
+                    return SaveTileSetAs();
                 case TabTypes.FloorInfo:
-                    SaveFloorGroupAs();
-                    break;
+                    return SaveFloorGroupAs();
                 case TabTypes.FactionInfo:
-                    SaveFactionAs();
-                    break;
+                    return SaveFactionAs();
                 case TabTypes.PlayerClass:
-                    SavePlayerClassAs();
-                    break;
+                    return SavePlayerClassAs();
                 case TabTypes.NPC:
-                    SaveNPCAs();
-                    break;
+                    return SaveNPCAs();
                 case TabTypes.Item:
-                    SaveItemAs();
-                    break;
+                    return SaveItemAs();
                 case TabTypes.Trap:
-                    SaveTrapAs();
-                    break;
+                    return SaveTrapAs();
                 case TabTypes.AlteredStatus:
-                    SaveAlteredStatusAs();
-                    break;
+                    return SaveAlteredStatusAs();
                 default:
-                    break;
+                    return true;
             }
         }
 
@@ -1010,7 +1005,7 @@ namespace RogueCustomsDungeonEditor
             if (!AutomatedChange) DirtyTab = true;
         }
 
-        private void SaveBasicInfo()
+        private bool SaveBasicInfo()
         {
             ActiveDungeon.Name = txtDungeonName.Text;
             ActiveDungeon.Author = txtAuthor.Text;
@@ -1026,6 +1021,7 @@ namespace RogueCustomsDungeonEditor
             DirtyDungeon = true;
             DirtyTab = false;
             PassedValidation = false;
+            return true;
         }
 
         #endregion
@@ -1218,7 +1214,7 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void PromptLocaleUpdate(LocaleInfo locale)
+        private bool PromptLocaleUpdate(LocaleInfo locale)
         {
             var messageBoxResult = MessageBox.Show(
                 $"Are you sure you want to overwrite the existing values in Locale {locale.Language}?",
@@ -1243,22 +1239,25 @@ namespace RogueCustomsDungeonEditor
                 PassedValidation = false;
                 RefreshTreeNodes();
                 SelectNodeIfExists(locale.Language, "Locales");
+                return true;
             }
+            return false;
         }
 
-        private void SaveLocale()
+        private bool SaveLocale()
         {
             var locale = (LocaleInfo)dgvLocales.Tag;
             PromptLocaleUpdate(locale);
+            return true;
         }
 
-        private void SaveLocaleAs()
+        private bool SaveLocaleAs()
         {
             string inputBoxResult;
             do
             {
                 inputBoxResult = InputBox.Show("Indicate the Locale Identifier. It must be exactly two characters long.\n\n(For example, \"en\" or \"es\")", "Save Locale As");
-                if (inputBoxResult == null) return;
+                if (inputBoxResult == null) return false;
                 if (inputBoxResult.Length > 2)
                     MessageBox.Show(
                         $"{inputBoxResult} is too long of a name for a locale.\n\nIt must be exactly two characters long.",
@@ -1289,12 +1288,14 @@ namespace RogueCustomsDungeonEditor
                     PassedValidation = false;
                     RefreshTreeNodes();
                     SelectNodeIfExists(inputBoxResult, "Locales");
+                    return true;
                 }
                 else
                 {
-                    PromptLocaleUpdate(preExistingLocale);
+                    return PromptLocaleUpdate(preExistingLocale);
                 }
             }
+            return false;
         }
 
         private void DeleteLocale()
@@ -1374,7 +1375,7 @@ namespace RogueCustomsDungeonEditor
             csrEmpty.SetConsoleRepresentation(tileSet.Empty);
         }
 
-        private void SaveTileSet(string id)
+        private bool SaveTileSet(string id)
         {
             if (!ValidateTileSetDataForSave(out List<string> errorMessages))
             {
@@ -1384,7 +1385,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var tileSet = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.TileSetInfos.Find(tsi => tsi.Id.Equals(id)) ?? new TileSetInfo() { Id = id }
@@ -1436,9 +1437,10 @@ namespace RogueCustomsDungeonEditor
             RefreshTreeNodes();
             SelectNodeIfExists(tileSet.Id, "Tilesets");
             PassedValidation = false;
+            return true;
         }
 
-        private void SaveTileSetAs()
+        private bool SaveTileSetAs()
         {
             if (!ValidateTileSetDataForSave(out List<string> errorMessages))
             {
@@ -1448,11 +1450,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As");
             if (inputBoxResult != null)
             {
+                var saveResult = false;
                 if (ActiveDungeon.TileSetInfos.Any(tsi => tsi.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
@@ -1463,19 +1466,21 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveTileSet(inputBoxResult);
+                        saveResult = SaveTileSet(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveTileSet(inputBoxResult);
+                    saveResult = SaveTileSet(inputBoxResult);
                 }
                 var savedTileSet = ActiveDungeon.AlteredStatuses.Find(tsi => tsi.Id.Equals(inputBoxResult));
                 if (savedTileSet != null)
                 {
                     SelectNodeIfExists(savedTileSet.Id, "Tilesets");
                 }
+                return saveResult;
             }
+            return false;
         }
 
         private bool ValidateTileSetDataForSave(out List<string> errorMessages)
@@ -1705,75 +1710,51 @@ namespace RogueCustomsDungeonEditor
             nudRoomFusionOdds.Value = floorGroup.RoomFusionOdds;
         }
 
-        private void SaveFloorGroup()
+
+        private bool ValidateFloorGroupDataForSave(out List<string> errorMessages)
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
+            errorMessages = new List<string>();
+
             if ((lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>)?.Any() != true)
-            {
-                MessageBox.Show(
-                    "You cannot save this Floor Group because it has no set Generator Algorithms.\n\nPlease correct it.",
-                    "Invalid Floor Range",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return;
-            }
+                errorMessages.Add("This Floor Group has been given no Floor Generation Algorithms.");
             if (string.IsNullOrEmpty(cmbTilesets.Text))
-            {
-                MessageBox.Show(
-                    "Please select a Tileset before saving this Floor Group.",
-                    "Invalid Floor Range",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return;
-            }
+                errorMessages.Add("This Floor Group lacks a Tileset.");
             if (IsOverlappingWithOtherFloorInfos((int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, activeFloorGroup))
-            {
-                MessageBox.Show(
-                    "You cannot save this Floor Group because it would overlap with the level of another Floor Group.\n\nPlease correct it.",
-                    "Invalid Floor Range",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return;
-            }
-            PromptFloorInfoUpdate(activeFloorGroup);
+                errorMessages.Add("This Floor Group overlaps with another in at least one Floor Level.");
+
+            return !errorMessages.Any();
         }
 
-        private void SaveFloorGroupAs()
+        private bool SaveFloorGroup()
         {
-            if ((lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>)?.Any() != true)
+            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
+            if (!ValidateFloorGroupDataForSave(out List<string> errorMessages))
             {
                 MessageBox.Show(
-                    "You cannot save this Floor Group because it has no set Generator Algorithms.\n\nPlease correct it.",
-                    "Invalid Floor Range",
+                    $"Cannot save Floor Group. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    "Save Floor Group",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
-            if (string.IsNullOrEmpty(cmbTilesets.Text))
+            return PromptFloorInfoUpdate(activeFloorGroup);
+        }
+
+        private bool SaveFloorGroupAs()
+        {
+            if (!ValidateFloorGroupDataForSave(out List<string> errorMessages))
             {
                 MessageBox.Show(
-                    "Please select a Tileset before saving this Floor Group.",
-                    "Invalid Floor Range",
+                    $"Cannot save Floor Group. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    "Save Floor Group",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
-            if (IsOverlappingWithOtherFloorInfos((int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, null))
-            {
-                MessageBox.Show(
-                    "You cannot save this Floor Group because it would overlap with the level of another Floor Group.\n\nPlease correct it.",
-                    "Invalid Floor Range",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return;
-            }
-            PromptFloorInfoUpdate(null);
+            return PromptFloorInfoUpdate(null);
         }
 
         private bool IsOverlappingWithOtherFloorInfos(int minFloor, int maxFloor, FloorInfo floorGroup)
@@ -1787,7 +1768,7 @@ namespace RogueCustomsDungeonEditor
             return false;
         }
 
-        private void PromptFloorInfoUpdate(FloorInfo floorGroup)
+        private bool PromptFloorInfoUpdate(FloorInfo floorGroup)
         {
             string floorLevelString = string.Empty;
             var messageBoxResult = DialogResult.Yes;
@@ -1872,7 +1853,9 @@ namespace RogueCustomsDungeonEditor
                 IsNewElement = false;
                 RefreshTreeNodes();
                 SelectNodeIfExists(floorInfoNodeText, "Floor Groups");
+                return true;
             }
+            return false;
         }
 
 
@@ -2196,7 +2179,7 @@ namespace RogueCustomsDungeonEditor
             return !errorMessages.Any();
         }
 
-        public void SaveFaction(string id)
+        public bool SaveFaction(string id)
         {
             if (!ValidateFactionDataForSave(out List<string> errorMessages))
             {
@@ -2206,7 +2189,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var faction = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.FactionInfos.Find(fi => fi.Id.Equals(id)) ?? new FactionInfo() { Id = id }
@@ -2275,9 +2258,10 @@ namespace RogueCustomsDungeonEditor
             RefreshTreeNodes();
             SelectNodeIfExists(id ?? faction.Id, "Factions");
             PassedValidation = false;
+            return true;
         }
 
-        public void SaveFactionAs()
+        public bool SaveFactionAs()
         {
             if (!ValidateFactionDataForSave(out List<string> errorMessages))
             {
@@ -2287,7 +2271,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As");
             if (inputBoxResult != null)
@@ -2312,7 +2296,9 @@ namespace RogueCustomsDungeonEditor
                     if (ActiveDungeon.FactionInfos.Any(fi => fi.Id.Equals(inputBoxResult)))
                         SelectNodeIfExists(inputBoxResult, "Factions");
                 }
+                return true;
             }
+            return false;
         }
 
         public void DeleteFaction()
@@ -2629,7 +2615,7 @@ namespace RogueCustomsDungeonEditor
             btnPlayerOnDeathAction.Tag = playerClass.OnDeathActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
         }
 
-        private void SavePlayerClass(string id)
+        private bool SavePlayerClass(string id)
         {
             if (!ValidatePlayerClassDataForSave(out List<string> errorMessages))
             {
@@ -2639,7 +2625,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var playerClass = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.PlayerClasses.Find(p => p.Id.Equals(id)) ?? new PlayerClassInfo() { Id = id }
@@ -2736,9 +2722,10 @@ namespace RogueCustomsDungeonEditor
             var nodeText = $"{playerClass.ConsoleRepresentation.Character} - {playerClass.Id}";
             SelectNodeIfExists(nodeText, "Player Classes");
             PassedValidation = false;
+            return true;
         }
 
-        private void SavePlayerClassAs()
+        private bool SavePlayerClassAs()
         {
             if (!ValidatePlayerClassDataForSave(out List<string> errorMessages))
             {
@@ -2748,11 +2735,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As");
             if (inputBoxResult != null)
             {
+                var saveResult = false;
                 if (ActiveDungeon.PlayerClasses.Any(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
@@ -2763,12 +2751,12 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SavePlayerClass(inputBoxResult);
+                        saveResult = SavePlayerClass(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SavePlayerClass(inputBoxResult);
+                    saveResult = SavePlayerClass(inputBoxResult);
                 }
                 var savedClass = ActiveDungeon.PlayerClasses.Find(pc => pc.Id.Equals(inputBoxResult));
                 if (savedClass != null)
@@ -2776,7 +2764,9 @@ namespace RogueCustomsDungeonEditor
                     var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
                     SelectNodeIfExists(nodeText, "Player Classes");
                 }
+                return saveResult;
             }
+            return false;
         }
 
         private bool ValidatePlayerClassDataForSave(out List<string> errorMessages)
@@ -3281,7 +3271,7 @@ namespace RogueCustomsDungeonEditor
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
         }
 
-        private void SaveNPC(string id)
+        private bool SaveNPC(string id)
         {
             if (!ValidateNPCDataForSave(out List<string> errorMessages))
             {
@@ -3291,7 +3281,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var npc = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.NPCs.Find(n => n.Id.Equals(id)) ?? new NPCInfo() { Id = id }
@@ -3389,9 +3379,10 @@ namespace RogueCustomsDungeonEditor
             RefreshTreeNodes();
             var nodeText = $"{npc.ConsoleRepresentation.Character} - {npc.Id}";
             SelectNodeIfExists(nodeText, "NPCs");
+            return true;
         }
 
-        private void SaveNPCAs()
+        private bool SaveNPCAs()
         {
             if (!ValidateNPCDataForSave(out List<string> errorMessages))
             {
@@ -3401,7 +3392,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As");
             if (inputBoxResult != null)
@@ -3416,14 +3407,15 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveNPC(inputBoxResult);
+                        return SaveNPC(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveNPC(inputBoxResult);
+                    return SaveNPC(inputBoxResult);
                 }
             }
+            return false;
         }
 
         private bool ValidateNPCDataForSave(out List<string> errorMessages)
@@ -3879,7 +3871,7 @@ namespace RogueCustomsDungeonEditor
             btnRemoveItemOnAttackAction.Enabled = false;
         }
 
-        private void SaveItem(string id)
+        private bool SaveItem(string id)
         {
             if (!ValidateItemDataForSave(out List<string> errorMessages))
             {
@@ -3889,7 +3881,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var item = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.Items.Find(i => i.Id.Equals(id)) ?? new ItemInfo() { Id = id }
@@ -3960,9 +3952,10 @@ namespace RogueCustomsDungeonEditor
             var nodeText = $"{item.ConsoleRepresentation.Character} - {item.Id}";
             SelectNodeIfExists(nodeText, "Items");
             PassedValidation = false;
+            return true;
         }
 
-        private void SaveItemAs()
+        private bool SaveItemAs()
         {
             if (!ValidateItemDataForSave(out List<string> errorMessages))
             {
@@ -3972,11 +3965,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As");
             if (inputBoxResult != null)
             {
+                var saveResult = false;
                 if (ActiveDungeon.Items.Any(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
@@ -3987,12 +3981,12 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveItem(inputBoxResult);
+                        saveResult = SaveItem(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveItem(inputBoxResult);
+                    saveResult = SaveItem(inputBoxResult);
                 }
                 var savedClass = ActiveDungeon.Items.Find(pc => pc.Id.Equals(inputBoxResult));
                 if (savedClass != null)
@@ -4000,7 +3994,9 @@ namespace RogueCustomsDungeonEditor
                     var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
                     SelectNodeIfExists(nodeText, "Items");
                 }
+                return saveResult;
             }
+            return false;
         }
 
         private bool ValidateItemDataForSave(out List<string> errorMessages)
@@ -4280,7 +4276,7 @@ namespace RogueCustomsDungeonEditor
             btnTrapOnSteppedAction.Tag = trap.OnItemSteppedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
         }
 
-        private void SaveTrap(string id)
+        private bool SaveTrap(string id)
         {
             if (!ValidateTrapDataForSave(out List<string> errorMessages))
             {
@@ -4290,7 +4286,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var trap = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.Traps.Find(t => t.Id.Equals(id)) ?? new TrapInfo() { Id = id }
@@ -4333,9 +4329,10 @@ namespace RogueCustomsDungeonEditor
             var nodeText = $"{trap.ConsoleRepresentation.Character} - {trap.Id}";
             SelectNodeIfExists(nodeText, "Traps");
             PassedValidation = false;
+            return true;
         }
 
-        private void SaveTrapAs()
+        private bool SaveTrapAs()
         {
             if (!ValidateTrapDataForSave(out List<string> errorMessages))
             {
@@ -4345,11 +4342,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As");
             if (inputBoxResult != null)
             {
+                var saveResult = false;
                 if (ActiveDungeon.Traps.Any(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
@@ -4360,12 +4358,12 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveTrap(inputBoxResult);
+                        saveResult = SaveTrap(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveTrap(inputBoxResult);
+                    saveResult = SaveTrap(inputBoxResult);
                 }
                 var savedClass = ActiveDungeon.Traps.Find(pc => pc.Id.Equals(inputBoxResult));
                 if (savedClass != null)
@@ -4373,7 +4371,9 @@ namespace RogueCustomsDungeonEditor
                     var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
                     SelectNodeIfExists(nodeText, "Traps");
                 }
+                return saveResult;
             }
+            return false;
         }
 
         private bool ValidateTrapDataForSave(out List<string> errorMessages)
@@ -4516,7 +4516,7 @@ namespace RogueCustomsDungeonEditor
             btnAlteredStatusOnTurnStartAction.Tag = alteredStatus.OnTurnStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
         }
 
-        private void SaveAlteredStatus(string id)
+        private bool SaveAlteredStatus(string id)
         {
             if (!ValidateAlteredStatusDataForSave(out List<string> errorMessages))
             {
@@ -4526,7 +4526,7 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var alteredStatus = !string.IsNullOrWhiteSpace(id)
                 ? ActiveDungeon.AlteredStatuses.Find(als => als.Id.Equals(id)) ?? new AlteredStatusInfo() { Id = id }
@@ -4576,9 +4576,10 @@ namespace RogueCustomsDungeonEditor
             var nodeText = $"{alteredStatus.ConsoleRepresentation.Character} - {alteredStatus.Id}";
             SelectNodeIfExists(nodeText, "Altered Statuses");
             PassedValidation = false;
+            return true;
         }
 
-        private void SaveAlteredStatusAs()
+        private bool SaveAlteredStatusAs()
         {
             if (!ValidateAlteredStatusDataForSave(out List<string> errorMessages))
             {
@@ -4588,11 +4589,12 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
             var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As");
             if (inputBoxResult != null)
             {
+                var saveResult = false;
                 if (ActiveDungeon.AlteredStatuses.Any(als => als.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
@@ -4603,12 +4605,12 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveAlteredStatus(inputBoxResult);
+                        saveResult = SaveAlteredStatus(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveAlteredStatus(inputBoxResult);
+                    saveResult = SaveAlteredStatus(inputBoxResult);
                 }
                 var savedClass = ActiveDungeon.AlteredStatuses.Find(pc => pc.Id.Equals(inputBoxResult));
                 if (savedClass != null)
@@ -4616,7 +4618,9 @@ namespace RogueCustomsDungeonEditor
                     var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
                     SelectNodeIfExists(nodeText, "Altered Statuses");
                 }
+                return saveResult;
             }
+            return false;
         }
 
         private bool ValidateAlteredStatusDataForSave(out List<string> errorMessages)
