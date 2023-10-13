@@ -10,6 +10,11 @@ using Console = SadConsole.Console;
 using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
+using static SadConsole.Settings;
+using System.ComponentModel.DataAnnotations;
+using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsConsoleClient.Helpers;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Error
 {
@@ -71,7 +76,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Error
             if(!Children.Contains(TitleConsole))
                 Children.Add(TitleConsole);
 
-            MessageSubConsole.PrintList(Message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).ToList());
+            var splitMessage = Message.Split(new[] { "\r\n", "\n" }.ToArray(), StringSplitOptions.None).SplitByLengthWithWholeWords(MessageSubConsole.Width / 2).ToList();
+
+            MessageSubConsole.PrintList(splitMessage);
 
             this.Print(Width / 4 - PressEnterToContinue.Length / 2, Height / 2 - 2, PressEnterToContinue);
         }

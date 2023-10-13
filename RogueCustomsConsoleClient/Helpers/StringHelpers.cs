@@ -35,5 +35,51 @@ namespace RogueCustomsConsoleClient.Helpers
 
             return input;
         }
+
+        public static string[] SplitByLengthWithWholeWords(this string[] inputArray, int maxLength)
+        {
+            if (inputArray == null || inputArray.Length == 0 || maxLength <= 0)
+            {
+                return inputArray; // Return the original array as-is.
+            }
+
+            List<string> result = new List<string>();
+
+            foreach (string input in inputArray)
+            {
+                if (string.IsNullOrEmpty(input))
+                {
+                    result.Add(input); // Preserve empty strings.
+                    continue;
+                }
+
+                string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string currentLine = "";
+
+                foreach (string word in words)
+                {
+                    if ((currentLine + " " + word).Length <= maxLength)
+                    {
+                        if (!string.IsNullOrEmpty(currentLine))
+                        {
+                            currentLine += " ";
+                        }
+                        currentLine += word;
+                    }
+                    else
+                    {
+                        result.Add(currentLine);
+                        currentLine = word;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(currentLine))
+                {
+                    result.Add(currentLine);
+                }
+            }
+
+            return result.ToArray();
+        }
     }
 }

@@ -25,5 +25,8 @@
 
         public const int SelectionWindowWidth = 79;
         public const int SelectionWindowHeight = 36;
+
+        public const int DescriptionWindowMaxLength = 36;
+        public const int EntityDetailWindowMaxLength = 60;
     }
 }

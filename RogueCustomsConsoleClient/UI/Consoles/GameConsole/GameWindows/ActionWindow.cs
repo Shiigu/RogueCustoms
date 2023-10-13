@@ -157,14 +157,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 var linesInDescription = action.Description.Split(
                     new[] { "\r\n", "\n" }, StringSplitOptions.None
                     );
-                var splitWrappedDescription = new List<string>();
-                foreach (var line in linesInDescription)
-                {
-                    if (line.Trim().Length < 36)
-                        splitWrappedDescription.Add(line);
-                    else
-                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,36}\s*\b)[.]?[)]?") select m.Value).ToList());
-                }
+                var splitWrappedDescription = linesInDescription.SplitByLengthWithWholeWords(GameConsoleConstants.DescriptionWindowMaxLength).ToList();
 
                 for (int i = 0; i < splitWrappedDescription.Count; i++)
                 {

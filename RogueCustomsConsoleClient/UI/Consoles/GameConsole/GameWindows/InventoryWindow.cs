@@ -17,6 +17,7 @@ using System.Text;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using RogueCustomsGameEngine.Utils.Helpers;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
@@ -229,14 +230,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 var linesInDescription = descriptionToDisplay.ToString().Split(
                     new[] { "\r\n", "\n" }, StringSplitOptions.None
                     );
-                var splitWrappedDescription = new List<string>();
-                foreach (var line in linesInDescription)
-                {
-                    if (line.Trim().Length < 36)
-                        splitWrappedDescription.Add(line);
-                    else
-                        splitWrappedDescription.AddRange((from Match m in Regex.Matches(line, @"[(]?\b(.{1,36}\s*\b)[.]?[)]?") select m.Value).ToList());
-                }
+                var splitWrappedDescription = linesInDescription.SplitByLengthWithWholeWords(GameConsoleConstants.DescriptionWindowMaxLength).ToList();
 
                 var lastPrintedLine = 6;
 
