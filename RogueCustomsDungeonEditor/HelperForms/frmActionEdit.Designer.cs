@@ -36,6 +36,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tvEffectSequence = new TreeView();
             btnCancel = new Button();
             gbSelectionCriteria = new GroupBox();
+            nudMPCost = new NumericUpDown();
+            label8 = new Label();
             lblNoCooldown = new Label();
             lblInfiniteUse = new Label();
             nudMaximumUses = new NumericUpDown();
@@ -63,26 +65,24 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning = new Button();
             txtActionCondition = new TextBox();
             label7 = new Label();
-            label8 = new Label();
-            nudMPCost = new NumericUpDown();
             gbSelectionCriteria.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudCooldown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             SuspendLayout();
             // 
             // lblTitle
             // 
-            lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTitle.Location = new Point(3, 0);
+            lblTitle.Location = new Point(4, 2);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(87, 25);
+            lblTitle.Size = new Size(939, 26);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "X Action";
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tvEffectSequence
             // 
@@ -91,13 +91,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tvEffectSequence.Location = new Point(3, 31);
             tvEffectSequence.Name = "tvEffectSequence";
             tvEffectSequence.ShowNodeToolTips = true;
-            tvEffectSequence.Size = new Size(467, 155);
+            tvEffectSequence.Size = new Size(467, 248);
             tvEffectSequence.TabIndex = 1;
             tvEffectSequence.AfterSelect += tvEffectSequence_AfterSelect;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(292, 654);
+            btnCancel.Location = new Point(541, 406);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -124,12 +124,29 @@ namespace RogueCustomsDungeonEditor.HelperForms
             gbSelectionCriteria.Controls.Add(chkEnemies);
             gbSelectionCriteria.Controls.Add(chkAllies);
             gbSelectionCriteria.Controls.Add(label1);
-            gbSelectionCriteria.Location = new Point(3, 370);
+            gbSelectionCriteria.Location = new Point(476, 30);
             gbSelectionCriteria.Name = "gbSelectionCriteria";
             gbSelectionCriteria.Size = new Size(467, 249);
             gbSelectionCriteria.TabIndex = 3;
             gbSelectionCriteria.TabStop = false;
             gbSelectionCriteria.Text = "Usage Criteria";
+            // 
+            // nudMPCost
+            // 
+            nudMPCost.Location = new Point(43, 217);
+            nudMPCost.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
+            nudMPCost.Name = "nudMPCost";
+            nudMPCost.Size = new Size(41, 23);
+            nudMPCost.TabIndex = 16;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(7, 219);
+            label8.Name = "label8";
+            label8.Size = new Size(137, 15);
+            label8.TabIndex = 15;
+            label8.Text = "Costs                MP to use";
             // 
             // lblNoCooldown
             // 
@@ -272,7 +289,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(132, 654);
+            btnSave.Location = new Point(381, 406);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -283,7 +300,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(4, 625);
+            btnEdit.Location = new Point(253, 377);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -294,7 +311,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(123, 625);
+            btnNewThen.Location = new Point(372, 377);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -305,7 +322,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(206, 625);
+            btnNewOnSuccessFailure.Location = new Point(455, 377);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -316,7 +333,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(377, 625);
+            btnRemove.Location = new Point(626, 377);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(91, 23);
             btnRemove.TabIndex = 8;
@@ -326,7 +343,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(211, 654);
+            btnSaveAs.Location = new Point(460, 406);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -341,7 +358,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblActionDescriptionLocale.FlatStyle = FlatStyle.Flat;
             fklblActionDescriptionLocale.Image = (Image)resources.GetObject("fklblActionDescriptionLocale.Image");
             fklblActionDescriptionLocale.ImageAlign = ContentAlignment.TopLeft;
-            fklblActionDescriptionLocale.Location = new Point(3, 237);
+            fklblActionDescriptionLocale.Location = new Point(3, 329);
             fklblActionDescriptionLocale.Name = "fklblActionDescriptionLocale";
             fklblActionDescriptionLocale.Size = new Size(467, 42);
             fklblActionDescriptionLocale.TabIndex = 15;
@@ -353,7 +370,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionDescription
             // 
-            txtActionDescription.Location = new Point(3, 208);
+            txtActionDescription.Location = new Point(3, 300);
             txtActionDescription.Name = "txtActionDescription";
             txtActionDescription.Size = new Size(467, 23);
             txtActionDescription.TabIndex = 14;
@@ -362,7 +379,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(3, 190);
+            label6.Location = new Point(3, 282);
             label6.Name = "label6";
             label6.Size = new Size(67, 15);
             label6.TabIndex = 13;
@@ -375,7 +392,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning.FlatStyle = FlatStyle.Flat;
             fklblConditionWarning.Image = (Image)resources.GetObject("fklblConditionWarning.Image");
             fklblConditionWarning.ImageAlign = ContentAlignment.TopLeft;
-            fklblConditionWarning.Location = new Point(3, 329);
+            fklblConditionWarning.Location = new Point(476, 329);
             fklblConditionWarning.Name = "fklblConditionWarning";
             fklblConditionWarning.Size = new Size(464, 42);
             fklblConditionWarning.TabIndex = 24;
@@ -387,7 +404,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionCondition
             // 
-            txtActionCondition.Location = new Point(3, 300);
+            txtActionCondition.Location = new Point(476, 300);
             txtActionCondition.Name = "txtActionCondition";
             txtActionCondition.Size = new Size(464, 23);
             txtActionCondition.TabIndex = 23;
@@ -397,34 +414,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(3, 282);
+            label7.Location = new Point(476, 282);
             label7.Name = "label7";
             label7.Size = new Size(238, 15);
             label7.TabIndex = 22;
             label7.Text = "To be used, it must fulfill this condition first:";
             // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(7, 219);
-            label8.Name = "label8";
-            label8.Size = new Size(137, 15);
-            label8.TabIndex = 15;
-            label8.Text = "Costs                MP to use";
-            // 
-            // nudMPCost
-            // 
-            nudMPCost.Location = new Point(43, 217);
-            nudMPCost.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-            nudMPCost.Name = "nudMPCost";
-            nudMPCost.Size = new Size(41, 23);
-            nudMPCost.TabIndex = 16;
-            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(479, 690);
+            ClientSize = new Size(950, 437);
             Controls.Add(fklblConditionWarning);
             Controls.Add(txtActionCondition);
             Controls.Add(label7);
@@ -448,12 +448,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Text = "Action Editor";
             gbSelectionCriteria.ResumeLayout(false);
             gbSelectionCriteria.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudMPCost).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudCooldown).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudMPCost).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

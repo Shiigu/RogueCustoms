@@ -3146,7 +3146,7 @@ namespace RogueCustomsDungeonEditor
             this.label30.Name = ("label30");
             this.label30.Size = (new global::System.Drawing.Size(131, 52));
             this.label30.TabIndex = (26);
-            this.label30.Text = ("Appearance -");
+            this.label30.Text = ("Appearance");
             this.label30.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // chkPlayerStartsVisible
@@ -4142,7 +4142,7 @@ namespace RogueCustomsDungeonEditor
             this.label98.Name = ("label98");
             this.label98.Size = (new global::System.Drawing.Size(131, 52));
             this.label98.TabIndex = (122);
-            this.label98.Text = ("Appearance -");
+            this.label98.Text = ("Appearance");
             this.label98.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // chkNPCStartsVisible
@@ -4503,7 +4503,7 @@ namespace RogueCustomsDungeonEditor
             this.label102.Name = ("label102");
             this.label102.Size = (new global::System.Drawing.Size(131, 52));
             this.label102.TabIndex = (196);
-            this.label102.Text = ("Appearance -");
+            this.label102.Text = ("Appearance");
             this.label102.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // fklblItemDescriptionLocale
@@ -4671,7 +4671,7 @@ namespace RogueCustomsDungeonEditor
             this.label116.Name = ("label116");
             this.label116.Size = (new global::System.Drawing.Size(131, 52));
             this.label116.TabIndex = (226);
-            this.label116.Text = ("Appearance -");
+            this.label116.Text = ("Appearance");
             this.label116.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // fklblTrapDescriptionLocale
@@ -4877,7 +4877,7 @@ namespace RogueCustomsDungeonEditor
             this.label111.Name = ("label111");
             this.label111.Size = (new global::System.Drawing.Size(131, 52));
             this.label111.TabIndex = (245);
-            this.label111.Text = ("Appearance -");
+            this.label111.Text = ("Appearance");
             this.label111.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
             // 
             // fklblAlteredStatusDescriptionLocale
