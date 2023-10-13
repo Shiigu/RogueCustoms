@@ -667,5 +667,21 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return clonedEffect;
         }
+
+        public static bool AddMissingMandatoryLocalesIfNeeded(this LocaleInfo localeInfo, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
+        {
+            var localeKeys = localeInfo.LocaleStrings.Select(x => x.Key).ToList();
+            var missingMandatoryKeys = mandatoryLocaleKeys.Except(localeKeys);
+            foreach (var missingKey in missingMandatoryKeys)
+            {
+                var templateLocaleEntry = localeTemplate.LocaleStrings.Find(ls => ls.Key.Equals(missingKey));
+                localeInfo.LocaleStrings.Add(new LocaleInfoString
+                {
+                    Key = templateLocaleEntry.Key,
+                    Value = templateLocaleEntry.Value
+                });
+            }
+            return missingMandatoryKeys.Any();
+        }
     }
 }
