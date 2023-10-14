@@ -224,8 +224,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Rogue Customs Server Installer"
-        "ProductCode" = "8:{40602F86-AE5F-47EE-B745-E26934723E36}"
-        "PackageCode" = "8:{11D72C9C-1053-42F7-86D1-D3B7ABA284EC}"
+        "ProductCode" = "8:{6EE3F0F4-2329-4E64-8E98-91D677870BDF}"
+        "PackageCode" = "8:{BA81DA50-06BE-4095-AD15-B5C15EAE75FE}"
         "UpgradeCode" = "8:{23018C93-31E0-4083-9900-53B4FEBFC740}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
