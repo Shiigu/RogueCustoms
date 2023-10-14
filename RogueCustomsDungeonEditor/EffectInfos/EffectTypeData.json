@@ -756,6 +756,10 @@
             "Value": "Max HP"
           },
           {
+            "Key": "maxMP",
+            "Value": "Max MP"
+          },
+          {
             "Key": "attack",
             "Value": "Attack"
           },
@@ -770,6 +774,10 @@
           {
             "Key": "hpRegeneration",
             "Value": "HP Regeneration"
+          },
+          {
+            "Key": "mpRegeneration",
+            "Value": "MP Regeneration"
           }
         ],
         "Required": true,
