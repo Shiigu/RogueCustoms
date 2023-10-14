@@ -47,7 +47,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.UseKeyboard = true;
             window.IsDirty = true;
             window.UseMouse = true;
-            window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
+            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
             window.TitleCaption = LocalizationManager.GetString("PlayerCharacterDetailWindowTitleText").ToAscii().Format(new { PlayerName = playerInfo.Name.ToUpperInvariant() });
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
@@ -60,7 +60,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             var textAreaSubConsole = new Console(window.Width - 5, 24, window.Width - 5, 1024)
             {
                 Position = new Point(square.X, square.Y),
-                Font = Game.Instance.LoadFont("fonts/Cheepicus12.font")
+                Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font")
             };
 
             PrintPlayerLevelInfo(textAreaSubConsole, playerInfo.Level, playerInfo.IsAtMaxLevel, playerInfo.CurrentExperience, playerInfo.ExperienceToNextLevel);

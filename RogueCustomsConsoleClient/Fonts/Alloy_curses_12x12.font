@@ -1,0 +1,10 @@
+{  
+  "$type": "SadConsole.SadFont, SadConsole",
+  "FilePath":"Alloy_curses_12x12.png",
+  "GlyphHeight":12,
+  "GlyphPadding":0,
+  "GlyphWidth":12, 
+  "Columns":"16", 
+  "Name":"Alloy12x12",
+  "SolidGlyphIndex":219
+}

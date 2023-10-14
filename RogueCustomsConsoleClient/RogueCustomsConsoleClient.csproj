@@ -54,6 +54,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Fonts\Alloy_curses_12x12.font">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Fonts\Alloy_curses_12x12.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Fonts\Cheepicus12.font">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

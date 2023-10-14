@@ -72,7 +72,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             window.CloseButton = okButton;
             window.WindowColor = Color.Green;
             window.Details = entityDetail;
-            window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
+            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
 
             var printArea = new DrawingArea(window.Width, window.Height);
             printArea.OnDraw += window.DrawWindow;

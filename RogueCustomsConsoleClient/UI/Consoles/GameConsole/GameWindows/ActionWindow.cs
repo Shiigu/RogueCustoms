@@ -60,7 +60,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.ActionSelectedIndex = 0;
             window.IsDirty = true;
             window.ParentConsole = parent;
-            window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
+            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
             window.TitleCaption = LocalizationManager.GetString("ActionWindowTitleText").Format(new { TargetName = actionListData.TargetName });
 
             var drawingArea = new DrawingArea(window.Width, window.Height);
