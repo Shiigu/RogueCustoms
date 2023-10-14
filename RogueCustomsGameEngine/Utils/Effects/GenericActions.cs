@@ -197,9 +197,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
                     if(paramsObject.Amount > 0)
-                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString() }), Color.DeepSkyBlue);
+                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString("0.#####") }), Color.DeepSkyBlue);
                     else
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString() }), Color.DeepSkyBlue);
+                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString("0.#####") }), Color.DeepSkyBlue);
                 }
                 return true;
             }

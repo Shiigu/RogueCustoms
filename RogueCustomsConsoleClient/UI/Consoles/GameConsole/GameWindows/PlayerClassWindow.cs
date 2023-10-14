@@ -294,14 +294,14 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
             if (!stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {stat.Base:0.000}".ToAscii());
+                subConsole.Cursor.Print($"{stat.Name}: {stat.Base:0.#####}".ToAscii());
             else
                 subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Base}".ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
             subConsole.Cursor.Print(new ColoredString(LocalizationManager.GetString("PlayerClassIncreasePerLevelText").Format(new
             {
-                Increase = $"{stat.IncreasePerLevel:+0.000;-0.000;0}"
+                Increase = $"{stat.IncreasePerLevel:+0.#####;-0.#####;0}"
             }).ToAscii()));
         }
 

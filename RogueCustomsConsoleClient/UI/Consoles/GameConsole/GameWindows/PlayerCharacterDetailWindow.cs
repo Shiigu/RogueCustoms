@@ -14,6 +14,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SadConsole.Ansi;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
@@ -144,6 +145,17 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             subConsole.Cursor.NewLine();
         }
 
+        private static void PrintStatDetails(Console subConsole, StatDto stat)
+        {
+            string baseText = stat.HasMaxStat ? LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText") : LocalizationManager.GetString("PlayerCharacterDetailBaseText");
+            string baseValue = stat.IsIntegerStat ? ((int)stat.Base).ToString() : stat.Base.ToString("0.#####");
+
+            string statDetail = $"{baseText}: {baseValue}";
+
+            subConsole.Cursor.Print(statDetail.ToAscii());
+        }
+
+
         private static void PrintPlayerStatsInfo(Console subConsole, StatDto stat)
         {
             if(!stat.Visible) return;
@@ -152,21 +164,14 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             if (stat.HasMaxStat && stat.Max != null && stat.IsIntegerStat)
                 subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}/{(int) stat.Max}".ToAscii());
             else if (stat.HasMaxStat && stat.Max != null && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.000}/{stat.Max:0.000}".ToAscii());
+                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}".ToAscii());
             else if (!stat.HasMaxStat && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.000}".ToAscii());
+                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}".ToAscii());
             else if (!stat.HasMaxStat && stat.IsIntegerStat)
                 subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}".ToAscii());
             subConsole.Cursor.NewLine();
             subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
-            if (stat.HasMaxStat && stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText")}: {(int)stat.Base}".ToAscii());
-            else if (stat.HasMaxStat && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText")}: {stat.Base:0.000}".ToAscii());
-            else if (!stat.HasMaxStat && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailBaseText")}: {stat.Base:0.000}".ToAscii());
-            else if (!stat.HasMaxStat && stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{LocalizationManager.GetString("PlayerCharacterDetailBaseText")}: {(int)stat.Base}".ToAscii());
+            PrintStatDetails(subConsole, stat);
             stat.Modifications.ForEach(mhm =>
             {
                 subConsole.Cursor.NewLine();
@@ -178,7 +183,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 if(stat.IsIntegerStat)
                     modificationAmountText = $"{mhm.Amount:+0;-0;0}";
                 else
-                    modificationAmountText = $"{mhm.Amount:+0.000;-0.000;0}";
+                    modificationAmountText = $"{mhm.Amount:+0.#####;-0.#####;0}";
 
                 if (mhm.Amount > 0)
                     modificationDisplayForegroundColor = Color.AnsiGreenBright;
