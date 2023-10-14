@@ -143,6 +143,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 GameControlsConsole.IsVisible = true;
                 GameControlsConsole.IsEnabled = true;
                 InGameUpdate(delta);
+                if (ActiveWindow is PlayerClassWindow)
+                {
+                    ActiveWindow.Hide();
+                    ActiveWindow = null;
+                }
             }
             else if (ActiveWindow?.IsVisible != true)
             {

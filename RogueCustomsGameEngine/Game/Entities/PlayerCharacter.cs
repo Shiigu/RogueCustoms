@@ -23,6 +23,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var oldDefense = Defense;
             var oldMovement = Movement;
             var oldHPRegeneration = HPRegeneration;
+            var oldMPRegeneration = MPRegeneration;
             base.GainExperience(pointsToAdd);
             if (Level > oldLevel)
             {
@@ -38,7 +39,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (Movement != oldMovement)
                     levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"], Amount = (Movement - oldMovement).ToString() }));
                 if (HPRegeneration != oldHPRegeneration)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"], Amount = (HPRegeneration - oldHPRegeneration).ToString() }));
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"], Amount = (HPRegeneration - oldHPRegeneration).ToString("0.#####") }));
+                if(UsesMP && MPRegeneration != oldMPRegeneration)
+                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMPRegenerationStat"], Amount = (MPRegeneration - oldMPRegeneration).ToString("0.#####") }));
                 Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Lime));
             }
         }
