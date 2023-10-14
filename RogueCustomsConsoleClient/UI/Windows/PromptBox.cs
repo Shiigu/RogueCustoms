@@ -68,7 +68,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             window.AffirmativeButton = affirmativeButton;
             window.NegativeButton = negativeButton;
             window.WindowColor = windowColor;
-            window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
+            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
 
             message.IgnoreBackground = true;
 

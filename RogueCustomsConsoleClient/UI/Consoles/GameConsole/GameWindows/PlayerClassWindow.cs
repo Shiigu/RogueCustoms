@@ -86,7 +86,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.CurrentlyShownIndex = 0;
             window.IsDirty = true;
             window.ParentConsole = parent;
-            window.Font = Game.Instance.LoadFont("fonts/Cheepicus12.font");
+            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
             window.TitleCaption = LocalizationManager.GetString("PlayerClassWindowTitleText");
             window.DetailsCaption = LocalizationManager.GetString("DetailsSubconsoleTitleText");
             window.LastShownIndex = -1;
@@ -95,7 +95,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             var textAreaSubConsole = new Console(square.Width, square.Height, square.Width, 1024)
             {
                 Position = new Point(square.X, square.Y),
-                Font = Game.Instance.LoadFont("fonts/Cheepicus12.font")
+                Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font")
             };
             window.TextAreaSubConsole = textAreaSubConsole;
             window.Children.Add(textAreaSubConsole);
