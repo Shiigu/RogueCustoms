@@ -224,8 +224,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Rogue Customs Console Client"
-        "ProductCode" = "8:{67C43402-1136-4863-8799-A6D8737EF031}"
-        "PackageCode" = "8:{4E061AC5-D92B-47AF-B8E9-EEB2FCFE2F0F}"
+        "ProductCode" = "8:{79C5EEAD-19FB-4F6D-B6F5-E80A4ECFC603}"
+        "PackageCode" = "8:{022D88C5-7D1F-4C14-8CE4-B0E19BE5CECA}"
         "UpgradeCode" = "8:{88B7461B-3C13-4534-A929-34784308EF57}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
