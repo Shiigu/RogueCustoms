@@ -5,10 +5,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Collections.Generic;
+using RogueCustomsServer;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)
@@ -23,11 +22,10 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddMemoryCache();
+// Use the Startup class as the entry point for configuring the application.
+var startup = new Startup(config);
+
+startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 app.UseHttpLogging();
