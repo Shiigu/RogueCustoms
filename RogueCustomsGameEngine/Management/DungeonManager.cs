@@ -1,5 +1,6 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
@@ -64,16 +65,26 @@ namespace RogueCustomsGameEngine.Management
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
             var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo, locale);
+            dungeon.LastAccessTime = DateTime.UtcNow;
             Dungeons.Add(dungeon);
             CurrentDungeonId++;
             return dungeon.Id;
         }
-
         private Dungeon GetDungeonById(int id)
         {
             var dungeon = Dungeons.Find(d => d.Id == id);
             return dungeon ?? throw new ArgumentException("Dungeon does not exist");
         }
+
+        public void UpdateAccessTimeAndCleanupUnusedDungeons(int dungeonId)
+        {
+            var dungeon = GetDungeonById(dungeonId);
+            if (dungeon != null)
+                dungeon.LastAccessTime = DateTime.UtcNow;
+            var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * Constants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
+            Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
+        }
+
 
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
         {
@@ -103,7 +114,11 @@ namespace RogueCustomsGameEngine.Management
         public DungeonDto GetDungeonStatus(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
-            return dungeon.GetStatus();
+            var dungeonStatus = dungeon.GetStatus();
+            // Remove a completed dungeon from memory to clear space
+            if (dungeon.DungeonStatus == DungeonStatus.Completed)
+                Dungeons.Remove(dungeon);
+            return dungeonStatus;
         }
 
         public void MovePlayer(int dungeonId, CoordinateInput input)

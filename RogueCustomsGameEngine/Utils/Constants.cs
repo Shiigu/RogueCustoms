@@ -30,5 +30,7 @@ namespace RogueCustomsGameEngine.Utils
         public const int NORMAL_STAT_CAP = 9999;
         public const int MOVEMENT_STAT_CAP = 9;
         public const decimal REGEN_STAT_CAP = 999;
+
+        public const int HOURS_BEFORE_DUNGEON_CACHE_DELETION = 2;
     }
 }

@@ -16,7 +16,7 @@ namespace Roguelike.Controllers
     [ApiController]
     public class DungeonController : ControllerBase
     {
-        private readonly DungeonService DungeonService;
+        public readonly DungeonService DungeonService;
         private readonly ILogger<DungeonController> Logger;
         private readonly IMemoryCache Cache;
 
