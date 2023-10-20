@@ -25,9 +25,12 @@ namespace RogueCustomsServer
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddMemoryCache();
+
+            services.AddTransient<ExceptionMiddleware>();
+            services.AddTransient<DungeonMiddleware>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DungeonController dungeonController)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -43,8 +46,9 @@ namespace RogueCustomsServer
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.Use((context, next) => new DungeonMiddleware(next, dungeonController.DungeonService).Invoke(context));
             app.UseAuthorization();
+            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<DungeonMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Roguelike.Controllers;
 using Roguelike.Services;
 using Microsoft.Extensions.Caching.Memory;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +19,13 @@ var config = new ConfigurationBuilder()
     .Build();
 
 builder.Logging.ClearProviders();
-var path = config.GetValue<string>("Logging:FilePath");
+var path = config.GetValue<string>("Logging:FilePath").Replace("{DATE}", $"{DateTime.Now.ToString("s").Replace(":", "-")}");
 var logger = new LoggerConfiguration()
     .WriteTo.File(path)
     .WriteTo.Console(Serilog.Events.LogEventLevel.Verbose)
     .WriteTo.Debug(Serilog.Events.LogEventLevel.Debug)
     .CreateLogger();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddSingleton<DungeonController>();
 builder.Services.AddSingleton<DungeonService>();
@@ -36,9 +38,7 @@ startup.ConfigureServices(builder.Services);
 var app = builder.Build();
 app.UseHttpLogging();
 
-var dungeonController = app.Services.GetRequiredService<DungeonController>();
-
-startup.Configure(app, app.Environment, dungeonController);
+startup.Configure(app, app.Environment);
 
 app.MapControllers();
 
