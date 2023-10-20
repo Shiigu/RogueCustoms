@@ -7,9 +7,11 @@ using RogueCustomsGameEngine.Utils.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+    [Serializable]
     public class DungeonDto
     {
         public string DungeonName { get; set; }
@@ -73,6 +75,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class TileDto
     {
         public int X { get; set; }
@@ -97,6 +100,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class AlteredStatusDto
     {
         public string Name { get; set; }
@@ -113,6 +117,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class EntityDto
     {
         public int X { get; set; }
@@ -210,6 +215,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class SimpleEntityDto
     {
         public string Name { get; set; }
@@ -217,6 +223,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public SimpleEntityDto(Entity e)
         {
+            if (e == null) return;
             Name = e.Name;
             ConsoleRepresentation = e.ConsoleRepresentation;
         }
