@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RogueCustomsServer.Middlewares;
+using Roguelike.Controllers;
+using Roguelike.Services;
 using System.Collections.Generic;
 
 namespace RogueCustomsServer
@@ -24,7 +27,7 @@ namespace RogueCustomsServer
             services.AddMemoryCache();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DungeonController dungeonController)
         {
             if (env.IsDevelopment())
             {
@@ -40,8 +43,8 @@ namespace RogueCustomsServer
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.Use((context, next) => new DungeonMiddleware(next, dungeonController.DungeonService).Invoke(context));
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

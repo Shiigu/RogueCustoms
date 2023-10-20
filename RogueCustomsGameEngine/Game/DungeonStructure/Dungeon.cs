@@ -14,6 +14,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     public class Dungeon
     {
         public int Id { get; set; }
+        public DateTime LastAccessTime { get; set; }
         public PlayerCharacter? PlayerCharacter { get; set; }
         public EntityClass? PlayerClass { get; set; }
         public string? PlayerName { get; set; }

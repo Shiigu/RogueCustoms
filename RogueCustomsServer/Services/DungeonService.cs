@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using RogueCustomsGameEngine.Management;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System;
 using System.Collections.Generic;
 
 namespace Roguelike.Services
@@ -16,7 +17,10 @@ namespace Roguelike.Services
             if (!Cache.TryGetValue("DungeonManager", out DungeonManager))
             {
                 DungeonManager = new DungeonManager();
-                Cache.Set("DungeonManager", DungeonManager);
+                Cache.Set("DungeonManager", DungeonManager, new MemoryCacheEntryOptions
+                {
+                    SlidingExpiration = TimeSpan.FromHours(48) // Adjust as needed.
+                });
             }
         }
         public DungeonListDto GetPickableDungeonList(string locale)
@@ -37,6 +41,11 @@ namespace Roguelike.Services
         public void SetPlayerClassSelection(int dungeonId, PlayerClassSelectionInput input)
         {
             DungeonManager.SetPlayerClassSelection(dungeonId, input);
+        }
+
+        public void UpdateAccessTimeAndCleanupUnusedDungeons(int dungeonId)
+        {
+            DungeonManager.UpdateAccessTimeAndCleanupUnusedDungeons(dungeonId);
         }
 
         public DungeonDto GetDungeonStatus(int dungeonId)
