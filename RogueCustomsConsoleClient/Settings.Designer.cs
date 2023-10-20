@@ -37,7 +37,7 @@ namespace RogueCustomsConsoleClient {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:5001")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://roguecustomsserver.azurewebsites.net")]
         public string ServerAddress {
             get {
                 return ((string)(this["ServerAddress"]));
