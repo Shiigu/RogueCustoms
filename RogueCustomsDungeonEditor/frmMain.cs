@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using RogueCustomsGameEngine.Game.DungeonStructure;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -1046,12 +1047,50 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxIcon.Warning
                 );
             }
+            if (AddMissingCustomLocalesIfNeeded(localeClone))
+            {
+                DirtyTab = true;
+                MessageBox.Show(
+                    "This Locale is missing some custom keys present in other Locales.\n\nThey have been added at the end of the table. Please check them.",
+                    "Locale",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
             dgvLocales.Tag = localeClone;
             dgvLocales.Rows.Clear();
             foreach (var entry in localeClone.LocaleStrings)
             {
                 dgvLocales.Rows.Add(entry.Key, entry.Value);
             }
+        }
+
+        private bool AddMissingCustomLocalesIfNeeded(LocaleInfo localeInfo)
+        {
+            var customEntriesList = new List<LocaleInfoString>();
+            foreach (var locale in ActiveDungeon.Locales.Where(l => l != localeInfo))
+            {
+                foreach (var localeString in locale.LocaleStrings)
+                {
+                    if (MandatoryLocaleKeys.Contains(localeString.Key)) continue;
+                    customEntriesList.Add(localeString);
+                }
+            }
+            customEntriesList = customEntriesList
+                          .GroupBy(ck => ck.Key)
+                          .Select(ck => ck.First())
+                          .ToList();
+            var missingCustomEntries = customEntriesList.Where(ck => !localeInfo.LocaleStrings.Any(ls => ls.Key.Equals(ck.Key))).ToList();
+            foreach (var missingEntry in missingCustomEntries)
+            {
+                var customLocaleEntry = customEntriesList.Find(ck => ck.Key.Equals(missingEntry.Key));
+                localeInfo.LocaleStrings.Add(new LocaleInfoString
+                {
+                    Key = customLocaleEntry.Key,
+                    Value = customLocaleEntry.Value
+                });
+            }
+            return missingCustomEntries.Any();
         }
 
         private void dgvLocales_SelectionChanged(object sender, EventArgs e)
