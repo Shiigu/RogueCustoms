@@ -9,15 +9,13 @@ namespace RogueCustomsServer.Middlewares
     public class DungeonMiddleware : IMiddleware
     {
         private readonly DungeonService dungeonService;
-        private readonly RequestDelegate next;
 
-        public DungeonMiddleware(RequestDelegate next, DungeonService dungeonService)
+        public DungeonMiddleware(DungeonService dungeonService)
         {
-            this.next = next;
             this.dungeonService = dungeonService;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             // Extract the "dungeonId" from the route data.
             if (context.Request.RouteValues.TryGetValue("dungeonId", out var dungeonIdValue) &&
@@ -27,11 +25,6 @@ namespace RogueCustomsServer.Middlewares
             }
 
             await next(context);
-        }
-
-        public Task InvokeAsync(HttpContext context, RequestDelegate next)
-        {
-            return Invoke(context);
         }
     }
 }
