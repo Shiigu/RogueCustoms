@@ -28,6 +28,17 @@ namespace RogueCustomsServer
 
             services.AddTransient<ExceptionMiddleware>();
             services.AddTransient<DungeonMiddleware>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("https://localhost:7096")
+                           .WithOrigins("http://localhost:5000")
+                           .WithOrigins("https://roguecustomsserver.azurewebsite.net")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
