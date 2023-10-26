@@ -285,8 +285,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 else
                 {
-                    if (ContainingTile.Type == TileType.Hallway)
-                        return Map.GetFOVTilesWithinDistance(Position, Math.Max(SightRange / 6, 1));
+                    //if (ContainingTile.Type == TileType.Hallway)
+                    //    return Map.GetFOVTilesWithinDistance(Position, Math.Max(SightRange / 6, 1));
                     return Map.GetFOVTilesWithinDistance(Position, SightRange);
                 }
             }

@@ -1282,16 +1282,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var visibleTiles = new List<Tile>();
             foreach (var tile in tilesWithinDistance)
             {
-                visibleTiles.AddRange(GetFOVLineBetweenTiles(GetTileFromCoordinates(source.X, source.Y), tile));
+                visibleTiles.AddRange(GetFOVLineBetweenTiles(GetTileFromCoordinates(source.X, source.Y), tile, distance));
             }
             return visibleTiles.Distinct().ToList();
         }
-        public List<Tile> GetFOVLineBetweenTiles(Tile source, Tile target)
+        public List<Tile> GetFOVLineBetweenTiles(Tile source, Tile target, int distance)
         {
             var componentPositions = new List<Point>();
             var sourcePosition = source.Position;
             var targetPosition = target.Position;
-            componentPositions.AddRange(MathAlgorithms.BresenhamLine(sourcePosition, targetPosition, p => p.X, p => p.Y, (x, y) => new Point(x, y), p => GetTileFromCoordinates(p).IsWalkable).ToList());
+            componentPositions.AddRange(MathAlgorithms.Raycast(sourcePosition, targetPosition, p => p.X, p => p.Y, (x, y) => new Point(x, y), p => GetTileFromCoordinates(p).IsWalkable, p => GetTileFromCoordinates(p).Type == TileType.Hallway && GetTileFromCoordinates(p).Room == null, distance, (p1, p2) => Point.Distance(p1, p2)).ToList());
+            if(!componentPositions.Contains(sourcePosition))
+                componentPositions.Add(sourcePosition);
 
             if (!componentPositions.Any(p => p.Equals(sourcePosition)))
                 return new List<Tile>();
