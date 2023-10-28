@@ -32,9 +32,7 @@ namespace RogueCustomsServer
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("https://localhost:7096")
-                           .WithOrigins("http://localhost:5000")
-                           .WithOrigins("https://roguecustomsserver.azurewebsite.net")
+                    builder.AllowAnyOrigin()
                            .AllowAnyHeader()
                            .AllowAnyMethod();
                 });
@@ -55,6 +53,7 @@ namespace RogueCustomsServer
                 });
             }
 
+            app.UseCors();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
