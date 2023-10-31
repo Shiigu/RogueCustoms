@@ -7,7 +7,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 {
     public static class ItemActions
     {
-        public static Random Rng;
+        public static RngHandler Rng;
         public static Map Map;
 
         public static bool Equip(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
