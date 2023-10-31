@@ -381,7 +381,7 @@ namespace RogueCustomsDungeonEditor.Utils
                         Columns = 1
                     }
                 },
-                OnFloorStartActions = new()
+                OnFloorStart = new()
             };
         }
 
@@ -437,10 +437,10 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanGainExperience = true,
                 ExperienceToLevelUpFormula = "",
                 MaxLevel = 2,
-                OnTurnStartActions = new(),
-                OnAttackActions = new(),
-                OnAttackedActions = new(),
-                OnDeathActions = new()
+                OnTurnStart = new(),
+                OnAttack = new(),
+                OnAttacked = new(),
+                OnDeath = new()
             };
         }
         public static NPCInfo CreateNPCTemplate()
@@ -483,10 +483,10 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanGainExperience = true,
                 ExperienceToLevelUpFormula = "",
                 MaxLevel = 2,
-                OnTurnStartActions = new(),
-                OnAttackActions = new(),
-                OnAttackedActions = new(),
-                OnDeathActions = new(),
+                OnTurnStart = new(),
+                OnAttack = new(),
+                OnAttacked = new(),
+                OnDeath = new(),
                 AIOddsToUseActionsOnSelf = 50
             };
         }
@@ -507,11 +507,11 @@ namespace RogueCustomsDungeonEditor.Utils
                 StartsVisible = true,
                 Power = "0",
                 EntityType = "",
-                OnItemSteppedActions = new(),
-                OnTurnStartActions = new(),
-                OnAttackActions = new(),
-                OnAttackedActions = new(),
-                OnItemUseActions = new(),
+                OnStepped = new(),
+                OnTurnStart = new(),
+                OnAttack = new(),
+                OnAttacked = new(),
+                OnUse = new(),
             };
         }
 
@@ -530,7 +530,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 },
                 StartsVisible = false,
                 Power = "0",
-                OnItemSteppedActions = new(),
+                OnStepped = new(),
             };
         }
 
@@ -551,8 +551,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanOverwrite = false,
                 CleansedByCleanseActions = true,
                 CleanseOnFloorChange = true,
-                OnStatusApplyActions = new(),
-                OnTurnStartActions = new(),
+                OnApply = new(),
+                OnTurnStart = new(),
             };
         }
 
@@ -610,13 +610,66 @@ namespace RogueCustomsDungeonEditor.Utils
             clonedFloor.MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms;
             clonedFloor.OddsForExtraConnections = info.OddsForExtraConnections;
             clonedFloor.RoomFusionOdds = info.RoomFusionOdds;
-            clonedFloor.OnFloorStartActions = new List<ActionWithEffectsInfo>();
-            foreach (var action in info.OnFloorStartActions)
-            {
-                clonedFloor.OnFloorStartActions.Add(action.Clone());
-            }
+            clonedFloor.OnFloorStart = info.OnFloorStart.Clone();
 
             return clonedFloor;
+        }
+
+        public static void PruneNullActions(this DungeonInfo dungeonInfo)
+        {
+            foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => string.IsNullOrWhiteSpace(floorInfo.OnFloorStart?.Name)))
+            {
+                floorInfo.OnFloorStart = null;
+            }
+
+            foreach (var playerClass in dungeonInfo.PlayerClasses)
+            {
+                if (string.IsNullOrWhiteSpace(playerClass?.OnTurnStart?.Name))
+                    playerClass.OnTurnStart = null;
+                playerClass.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(playerClass?.OnAttacked?.Name))
+                    playerClass.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(playerClass?.OnDeath?.Name))
+                    playerClass.OnDeath = null;
+            }
+
+            foreach (var npc in dungeonInfo.NPCs)
+            {
+                if (string.IsNullOrWhiteSpace(npc?.OnTurnStart?.Name))
+                    npc.OnTurnStart = null;
+                npc.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(npc?.OnAttacked?.Name))
+                    npc.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(npc?.OnDeath?.Name))
+                    npc.OnDeath = null;
+            }
+
+            foreach (var item in dungeonInfo.Items)
+            {
+                if (string.IsNullOrWhiteSpace(item?.OnTurnStart?.Name))
+                    item.OnTurnStart = null;
+                item.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(item?.OnAttacked?.Name))
+                    item.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(item?.OnUse?.Name))
+                    item.OnUse = null;
+                if (string.IsNullOrWhiteSpace(item?.OnStepped?.Name))
+                    item.OnStepped = null;
+            }
+
+            foreach (var trap in dungeonInfo.Traps)
+            {
+                if (string.IsNullOrWhiteSpace(trap?.OnStepped?.Name))
+                    trap.OnStepped = null;
+            }
+
+            foreach (var alteredStatus in dungeonInfo.AlteredStatuses)
+            {
+                if (string.IsNullOrWhiteSpace(alteredStatus?.OnTurnStart?.Name))
+                    alteredStatus.OnTurnStart = null;
+                if (string.IsNullOrWhiteSpace(alteredStatus?.OnApply?.Name))
+                    alteredStatus.OnApply = null;
+            }
         }
 
         public static ActionWithEffectsInfo Clone(this ActionWithEffectsInfo info)
@@ -635,6 +688,7 @@ namespace RogueCustomsDungeonEditor.Utils
             clonedAction.MPCost = info.MPCost;
             clonedAction.TargetTypes = new List<string>(info.TargetTypes ?? new List<string>());
             clonedAction.Effect = info.Effect.Clone();
+            clonedAction.UseCondition = info.UseCondition;
 
             return clonedAction;
         }

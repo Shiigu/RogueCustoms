@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RogueCustomsGameEngine.Utils.JsonImports
+namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11
 {
     [Serializable]
-    public class FloorInfo
+    public class FloorInfoV11
     {
         public int MinFloorLevel { get; set; }
         public int MaxFloorLevel { get; set; }
@@ -15,16 +15,16 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
 
         public string TileSetId { get; set; }
 
-        public List<ClassInFloorInfo> PossibleMonsters { get; set; }
+        public List<ClassInFloorInfoV11> PossibleMonsters { get; set; }
         public int SimultaneousMinMonstersAtStart { get; set; }
         public int SimultaneousMaxMonstersInFloor { get; set; }
         public int TurnsPerMonsterGeneration { get; set; }
 
-        public List<ClassInFloorInfo> PossibleItems { get; set; }
+        public List<ClassInFloorInfoV11> PossibleItems { get; set; }
         public int MinItemsInFloor { get; set; }
         public int MaxItemsInFloor { get; set; }
 
-        public List<ClassInFloorInfo> PossibleTraps { get; set; }
+        public List<ClassInFloorInfoV11> PossibleTraps { get; set; }
         public int MinTrapsInFloor { get; set; }
         public int MaxTrapsInFloor { get; set; }
 
@@ -32,12 +32,12 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int OddsForExtraConnections { get; set; }
         public int RoomFusionOdds { get; set; }
 
-        public List<GeneratorAlgorithmInfo> PossibleGeneratorAlgorithms { get; set; }
-        public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
+        public List<GeneratorAlgorithmInfoV11> PossibleGeneratorAlgorithms { get; set; }
+        public List<ActionWithEffectsInfoV11> OnFloorStartActions { get; set; } = new List<ActionWithEffectsInfoV11>();
     }
 
     [Serializable]
-    public class ClassInFloorInfo
+    public class ClassInFloorInfoV11
     {
         public string ClassId { get; set; }
 
@@ -54,7 +54,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     }
 
     [Serializable]
-    public class GeneratorAlgorithmInfo
+    public class GeneratorAlgorithmInfoV11
     {
         public string Name { get; set; }
         public int Rows { get; set; }

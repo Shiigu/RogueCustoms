@@ -82,19 +82,22 @@ namespace RogueCustomsDungeonEditor
             var jsonString = File.ReadAllText("./EffectInfos/EffectTypeData.json");
             EffectParamData = JsonSerializer.Deserialize<List<EffectTypeData>>(jsonString, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
             jsonString = File.ReadAllText("./FloorInfos/FloorTypeData.json");
             BaseGeneratorAlgorithms = JsonSerializer.Deserialize<List<FloorTypeData>>(jsonString, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
             jsonString = File.ReadAllText("./Resources/LocaleTemplate.json");
             LocaleTemplate = JsonSerializer.Deserialize<LocaleInfo>(jsonString, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
             var algorithmIcons = new ImageList();
@@ -474,10 +477,12 @@ namespace RogueCustomsDungeonEditor
                     var jsonString = File.ReadAllText(ofdDungeon.FileName);
                     ActiveDungeon = JsonSerializer.Deserialize<DungeonInfo>(jsonString, new JsonSerializerOptions
                     {
-                        PropertyNameCaseInsensitive = true
+                        PropertyNameCaseInsensitive = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                     });
                     var formerVersion = !string.IsNullOrWhiteSpace(ActiveDungeon.Version) ? new string(ActiveDungeon.Version) : "1.0";
-                    ActiveDungeon.ConvertDungeonInfoIfNeeded(LocaleTemplate, MandatoryLocaleKeys);
+                    ActiveDungeon = ActiveDungeon.ConvertDungeonInfoIfNeeded(jsonString, LocaleTemplate, MandatoryLocaleKeys);
+                    ActiveDungeon.PruneNullActions();
                     tbTabs.TabPages.Clear();
                     DirtyEntry = false;
                     DirtyTab = false;
@@ -1729,7 +1734,7 @@ namespace RogueCustomsDungeonEditor
                 if (floorGroup.TileSetId.Equals(tileSet.Id))
                     cmbTilesets.Text = tileSet.Id;
             }
-            btnOnFloorStartAction.Tag = floorGroup.OnFloorStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnOnFloorStartAction.Tag = floorGroup.OnFloorStart ?? new ActionWithEffectsInfo();
             chkGenerateStairsOnStart.Checked = floorGroup.GenerateStairsOnStart;
             fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
             RefreshGenerationAlgorithmList();
@@ -1846,10 +1851,9 @@ namespace RogueCustomsDungeonEditor
                 floorGroup.MaxConnectionsBetweenRooms = (int)nudMaxRoomConnections.Value;
                 floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
                 floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
-                floorGroup.OnFloorStartActions = new();
                 var onFloorStartAction = btnOnFloorStartAction.Tag as ActionWithEffectsInfo;
                 if (!string.IsNullOrWhiteSpace(onFloorStartAction?.Effect?.EffectName))
-                    floorGroup.OnFloorStartActions.Add(onFloorStartAction);
+                    floorGroup.OnFloorStart = onFloorStartAction;
 
                 if (saveAsNew)
                 {
@@ -2625,10 +2629,10 @@ namespace RogueCustomsDungeonEditor
             }
             btnPlayerAddItem.Enabled = false;
             btnPlayerRemoveItem.Enabled = false;
-            btnPlayerOnTurnStartAction.Tag = playerClass.OnTurnStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnPlayerOnTurnStartAction.Tag = playerClass.OnTurnStart ?? new ActionWithEffectsInfo();
             lbPlayerOnAttackActions.Items.Clear();
             lbPlayerOnAttackActions.DisplayMember = "Text";
-            foreach (var action in playerClass.OnAttackActions)
+            foreach (var action in playerClass.OnAttack)
             {
                 var actionItem = new ListBoxItem
                 {
@@ -2639,8 +2643,8 @@ namespace RogueCustomsDungeonEditor
             }
             btnEditPlayerOnAttackAction.Enabled = false;
             btnRemovePlayerOnAttackAction.Enabled = false;
-            btnPlayerOnAttackedAction.Tag = playerClass.OnAttackedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnPlayerOnDeathAction.Tag = playerClass.OnDeathActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnPlayerOnAttackedAction.Tag = playerClass.OnAttacked ?? new ActionWithEffectsInfo();
+            btnPlayerOnDeathAction.Tag = playerClass.OnDeath ?? new ActionWithEffectsInfo();
         }
 
         private bool SavePlayerClass(string id)
@@ -2704,25 +2708,22 @@ namespace RogueCustomsDungeonEditor
             }
 
             var onTurnStartAction = btnPlayerOnTurnStartAction.Tag as ActionWithEffectsInfo;
-            playerClass.OnTurnStartActions = new();
             if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                playerClass.OnTurnStartActions.Add(onTurnStartAction);
+                playerClass.OnTurnStart = onTurnStartAction;
 
-            playerClass.OnAttackActions = new();
+            playerClass.OnAttack = new();
             foreach (ListBoxItem onAttackActionListItem in lbPlayerOnAttackActions.Items)
             {
-                playerClass.OnAttackActions.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
+                playerClass.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
             }
 
             var onAttackedAction = btnPlayerOnAttackedAction.Tag as ActionWithEffectsInfo;
-            playerClass.OnAttackedActions = new();
             if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                playerClass.OnAttackedActions.Add(onAttackedAction);
+                playerClass.OnAttacked = onAttackedAction;
 
             var onDeathAction = btnPlayerOnDeathAction.Tag as ActionWithEffectsInfo;
-            playerClass.OnDeathActions = new();
             if (!string.IsNullOrWhiteSpace(onDeathAction?.Effect?.EffectName))
-                playerClass.OnDeathActions.Add(onDeathAction);
+                playerClass.OnDeath = onDeathAction;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.PlayerClasses.Any(p => p.Id.Equals(id)))
             {
@@ -3280,10 +3281,10 @@ namespace RogueCustomsDungeonEditor
             }
             btnNPCAddItem.Enabled = false;
             btnNPCRemoveItem.Enabled = false;
-            btnNPCOnTurnStartAction.Tag = npc.OnTurnStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnNPCOnTurnStartAction.Tag = npc.OnTurnStart ?? new ActionWithEffectsInfo();
             lbNPCOnAttackActions.Items.Clear();
             lbNPCOnAttackActions.DisplayMember = "Text";
-            foreach (var action in npc.OnAttackActions)
+            foreach (var action in npc.OnAttack)
             {
                 var actionItem = new ListBoxItem
                 {
@@ -3294,8 +3295,8 @@ namespace RogueCustomsDungeonEditor
             }
             btnEditNPCOnAttackAction.Enabled = false;
             btnRemoveNPCOnAttackAction.Enabled = false;
-            btnNPCOnAttackedAction.Tag = npc.OnAttackedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnNPCOnDeathAction.Tag = npc.OnDeathActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnNPCOnAttackedAction.Tag = npc.OnAttacked ?? new ActionWithEffectsInfo();
+            btnNPCOnDeathAction.Tag = npc.OnDeath ?? new ActionWithEffectsInfo();
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
         }
 
@@ -3360,25 +3361,22 @@ namespace RogueCustomsDungeonEditor
             }
 
             var onTurnStartAction = btnNPCOnTurnStartAction.Tag as ActionWithEffectsInfo;
-            npc.OnTurnStartActions = new();
             if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                npc.OnTurnStartActions.Add(onTurnStartAction);
+                npc.OnTurnStart = onTurnStartAction;
 
-            npc.OnAttackActions = new();
+            npc.OnAttack = new();
             foreach (ListBoxItem onAttackActionListItem in lbNPCOnAttackActions.Items)
             {
-                npc.OnAttackActions.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
+                npc.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
             }
 
             var onAttackedAction = btnNPCOnAttackedAction.Tag as ActionWithEffectsInfo;
-            npc.OnAttackedActions = new();
             if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                npc.OnAttackedActions.Add(onAttackedAction);
+                npc.OnAttacked = onAttackedAction;
 
             var onDeathAction = btnNPCOnDeathAction.Tag as ActionWithEffectsInfo;
-            npc.OnDeathActions = new();
             if (!string.IsNullOrWhiteSpace(onDeathAction?.Effect?.EffectName))
-                npc.OnDeathActions.Add(onDeathAction);
+                npc.OnDeath = onDeathAction;
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Any(n => n.Id.Equals(id)))
@@ -3880,13 +3878,13 @@ namespace RogueCustomsDungeonEditor
             txtItemPower.Text = item.Power;
             chkItemStartsVisible.Checked = item.StartsVisible;
             chkItemCanBePickedUp.Checked = item.CanBePickedUp;
-            btnItemOnSteppedAction.Tag = item.OnItemSteppedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnItemOnUseAction.Tag = item.OnItemUseActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnItemOnTurnStartAction.Tag = item.OnTurnStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnItemOnAttackedAction.Tag = item.OnAttackedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnItemOnSteppedAction.Tag = item.OnStepped ?? new ActionWithEffectsInfo();
+            btnItemOnUseAction.Tag = item.OnUse ?? new ActionWithEffectsInfo();
+            btnItemOnTurnStartAction.Tag = item.OnTurnStart ?? new ActionWithEffectsInfo();
+            btnItemOnAttackedAction.Tag = item.OnAttacked ?? new ActionWithEffectsInfo();
             lbItemOnAttackActions.Items.Clear();
             lbItemOnAttackActions.DisplayMember = "Text";
-            foreach (var action in item.OnAttackActions)
+            foreach (var action in item.OnAttack)
             {
                 var actionItem = new ListBoxItem
                 {
@@ -3922,37 +3920,33 @@ namespace RogueCustomsDungeonEditor
             item.EntityType = cmbItemType.Text;
             item.Power = txtItemPower.Text;
 
-            item.OnTurnStartActions = new();
-            item.OnAttackActions = new();
-            item.OnAttackedActions = new();
-            item.OnItemSteppedActions = new();
-            item.OnItemUseActions = new();
+            item.OnAttack = new();
 
             if (item.EntityType == "Weapon" || item.EntityType == "Armor")
             {
                 var onTurnStartAction = btnItemOnTurnStartAction.Tag as ActionWithEffectsInfo;
                 if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                    item.OnTurnStartActions.Add(onTurnStartAction);
+                    item.OnTurnStart = onTurnStartAction;
                 var onAttackedAction = btnItemOnAttackedAction.Tag as ActionWithEffectsInfo;
                 if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                    item.OnAttackedActions.Add(onAttackedAction);
-                item.OnItemUseActions.Add(DungeonInfoHelpers.CreateEquipAction());
+                    item.OnAttacked = onAttackedAction;
+                item.OnUse = DungeonInfoHelpers.CreateEquipAction();
             }
             else if (item.EntityType == "Consumable")
             {
                 var onUseAction = btnItemOnUseAction.Tag as ActionWithEffectsInfo;
                 if (!string.IsNullOrWhiteSpace(onUseAction?.Effect?.EffectName))
-                    item.OnItemUseActions.Add(onUseAction);
+                    item.OnUse = onUseAction;
             }
 
             foreach (ListBoxItem onAttackActionListItem in lbItemOnAttackActions.Items)
             {
-                item.OnAttackActions.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
+                item.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
             }
 
             var onSteppedAction = btnItemOnSteppedAction.Tag as ActionWithEffectsInfo;
             if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
-                item.OnItemSteppedActions.Add(onSteppedAction);
+                item.OnStepped = onSteppedAction;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Any(i => i.Id.Equals(id)))
             {
@@ -4301,7 +4295,7 @@ namespace RogueCustomsDungeonEditor
             chkTrapStartsVisible.Checked = trap.StartsVisible;
             var toolTip = new ToolTip();
             toolTip.SetToolTip(chkTrapStartsVisible, "The 'spirit' of a Trap is that it spawns invisible.\n\nHowever, it can be enabled for debugging purposes.");
-            btnTrapOnSteppedAction.Tag = trap.OnItemSteppedActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnTrapOnSteppedAction.Tag = trap.OnStepped ?? new ActionWithEffectsInfo();
         }
 
         private bool SaveTrap(string id)
@@ -4325,11 +4319,11 @@ namespace RogueCustomsDungeonEditor
             trap.StartsVisible = chkTrapStartsVisible.Checked;
             trap.Power = txtTrapPower.Text;
 
-            trap.OnItemSteppedActions = new();
+            trap.OnStepped = new();
 
             var onSteppedAction = btnTrapOnSteppedAction.Tag as ActionWithEffectsInfo;
             if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
-                trap.OnItemSteppedActions.Add(onSteppedAction);
+                trap.OnStepped = onSteppedAction;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Traps.Any(t => t.Id.Equals(id)))
             {
@@ -4540,8 +4534,8 @@ namespace RogueCustomsDungeonEditor
             chkAlteredStatusCanOverwrite.Checked = alteredStatus.CanOverwrite;
             chkAlteredStatusCleanseOnFloorChange.Checked = alteredStatus.CleanseOnFloorChange;
             chkAlteredStatusCleansedOnCleanseActions.Checked = alteredStatus.CleansedByCleanseActions;
-            btnAlteredStatusOnApplyAction.Tag = alteredStatus.OnStatusApplyActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
-            btnAlteredStatusOnTurnStartAction.Tag = alteredStatus.OnTurnStartActions.ElementAtOrDefault(0) ?? new ActionWithEffectsInfo();
+            btnAlteredStatusOnApplyAction.Tag = alteredStatus.OnApply ?? new ActionWithEffectsInfo();
+            btnAlteredStatusOnTurnStartAction.Tag = alteredStatus.OnTurnStart ?? new ActionWithEffectsInfo();
         }
 
         private bool SaveAlteredStatus(string id)
@@ -4567,16 +4561,13 @@ namespace RogueCustomsDungeonEditor
             alteredStatus.CleanseOnFloorChange = chkAlteredStatusCleanseOnFloorChange.Checked;
             alteredStatus.CleansedByCleanseActions = chkAlteredStatusCleansedOnCleanseActions.Checked;
 
-            alteredStatus.OnTurnStartActions = new();
-            alteredStatus.OnStatusApplyActions = new();
-
             var onStatusApplyAction = btnAlteredStatusOnApplyAction.Tag as ActionWithEffectsInfo;
             if (!string.IsNullOrWhiteSpace(onStatusApplyAction?.Effect?.EffectName))
-                alteredStatus.OnStatusApplyActions.Add(onStatusApplyAction);
+                alteredStatus.OnApply = onStatusApplyAction;
 
             var onTurnStartAction = btnAlteredStatusOnTurnStartAction.Tag as ActionWithEffectsInfo;
             if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                alteredStatus.OnTurnStartActions.Add(onTurnStartAction);
+                alteredStatus.OnTurnStart = onTurnStartAction;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Any(als => als.Id.Equals(id)))
             {

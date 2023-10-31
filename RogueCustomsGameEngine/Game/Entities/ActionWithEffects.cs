@@ -44,7 +44,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private ActionWithEffects() { }
 
-        public ActionWithEffects(ActionWithEffectsInfo info)
+        private ActionWithEffects(ActionWithEffectsInfo info)
         {
             Name = info.Name;
             NameLocaleKey = info.Name;
@@ -62,6 +62,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             MPCost = info.MPCost;
             info.TargetTypes?.ForEach(tt => TargetTypes.Add(Enum.Parse<TargetType>(tt, true)));
             Effect = new Effect(info.Effect);
+        }
+
+        public static ActionWithEffects Create(ActionWithEffectsInfo info)
+        {
+            return info != null && !string.IsNullOrWhiteSpace(info.Name) ? new ActionWithEffects(info) : null;
         }
 
         public List<string> Do(Entity source, Entity target)

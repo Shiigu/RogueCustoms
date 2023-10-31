@@ -9,6 +9,6 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public bool StartsVisible { get; set; }
         public string Power { get; set; }
-        public List<ActionWithEffectsInfo> OnItemSteppedActions { get; set; } = new List<ActionWithEffectsInfo>();
+        public ActionWithEffectsInfo OnStepped { get; set; } = new ActionWithEffectsInfo();
     }
 }

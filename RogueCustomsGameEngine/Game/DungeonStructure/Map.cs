@@ -45,7 +45,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private readonly int FloorLevel;
 
-        private readonly FloorType FloorConfigurationToUse;
+        public readonly FloorType FloorConfigurationToUse;
 
         private readonly GeneratorAlgorithm GeneratorAlgorithmToUse;
         public TileSet TileSet => FloorConfigurationToUse.TileSet;
@@ -63,8 +63,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int OddsForExtraConnections => FloorConfigurationToUse.OddsForExtraConnections;
         public int RoomFusionOdds => FloorConfigurationToUse.RoomFusionOdds;
 
-        public int Width => FloorConfigurationToUse.Width;
-        public int Height => FloorConfigurationToUse.Height;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         private int TotalMonstersInFloor => AICharacters.Where(e => e.ExistenceStatus == EntityExistenceStatus.Alive).Count();
         private int TotalItemsInFloor => Items.Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone).Count();
@@ -104,6 +104,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             FloorConfigurationToUse = Dungeon.FloorTypes.Find(ft => floorLevel.Between(ft.MinFloorLevel, ft.MaxFloorLevel));
             if (FloorConfigurationToUse == null)
                 throw new InvalidDataException("There's no valid configuration for the current floor");
+            Width = FloorConfigurationToUse.Width;
+            Height = FloorConfigurationToUse.Height;
             Seed = Environment.TickCount;
             Rng = new Random(Seed);
             Flags = flags;
@@ -183,6 +185,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void GenerateDummyMap()
         {
             _generationTries = 0;
+            Width = 32;
+            Height = 16;
             ResetAndCreateTiles();
             var room = new Room(this, new Point(0, 0), 0, 0, 25, 10);
             Rooms = new List<Room> { room };
@@ -653,7 +657,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #region Perform On Floor Start Actions
 
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
-                FloorConfigurationToUse.OnFloorStartActions.ForEach(ofsa => ofsa.Do(Player, Player));
+                FloorConfigurationToUse.OnFloorStart?.Do(Player, Player);
 
                 #endregion
             }
@@ -672,10 +676,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TurnCount++;
             _displayedTurnMessage = false;
             Player.RemainingMovement = Player.Movement;
+            Player.TookAction = false;
             Player.PerformOnTurnStartActions();
             AICharacters.Where(e => e != null).ForEach(e =>
             {
                 e.RemainingMovement = e.Movement;
+                e.TookAction = false;
                 e.PerformOnTurnStartActions();
             });
         }
@@ -720,8 +726,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void ProcessTurn()
         {
             Player.UpdateVisibility();
-            if (Player.RemainingMovement > 0 && Player.CanTakeAction) return;
-            var aiCharactersThatCanAct = AICharacters.Where(c => c.CanTakeAction);
+            if (Player.RemainingMovement > 0 && (Player.CanTakeAction && !Player.TookAction)) return;
+            var aiCharactersThatCanAct = AICharacters.Where(c => c.CanTakeAction && !c.TookAction);
             Parallel.ForEach(aiCharactersThatCanAct, aictca => aictca.PickTargetAndPath());
             aiCharactersThatCanAct.ForEach(aictca => aictca.AttackOrMove());
             NewTurn();
@@ -757,7 +763,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     TryMoveCharacter(Player, targetTile);
                 }
             }
-            if (Player.RemainingMovement == 0) ProcessTurn();
+            if (Player.RemainingMovement == 0 || Player.TookAction) ProcessTurn();
         }
 
         public bool TryMoveCharacter(Character character, Tile targetTile)
@@ -803,7 +809,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void PlayerUseItem(Item item)
         {
-            item.OnItemUseActions.ForEach(oiua => oiua.Do(item, Player));
+            item.OnUse?.Do(item, Player);
+            Player.TookAction = true;
             Player.RemainingMovement = 0;
             ProcessTurn();
         }
@@ -830,6 +837,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else
             {
                 Player.PickItem(itemThatCanBePickedUp);
+                Player.TookAction = true;
                 Player.RemainingMovement = 0;
                 ProcessTurn();
             }
@@ -853,6 +861,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else
             {
                 Player.DropItem(itemThatCanBeDropped);
+                Player.TookAction = true;
                 Player.RemainingMovement = 0;
                 ProcessTurn();
             }
@@ -866,6 +875,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (itemInTile != null)
             {
                 Player.DropItem(itemInInventory);
+                Player.TookAction = true;
                 Player.TryToPickItem(itemInTile);
                 Player.RemainingMovement = 0;
                 ProcessTurn();
@@ -897,7 +907,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string name, int x, int y)
         {
-            var action = Player.OnAttackActions.Find(oaa => oaa.Name.Equals(name));
+            var action = Player.OnAttack.Find(oaa => oaa.Name.Equals(name));
 
             if (action == null) throw new ArgumentException("Player attempted use a non-existent action.");
 
@@ -916,7 +926,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTile = GetTileFromCoordinates(x, y).Character;
             var onAttackActionDtos = new List<ActionItemDto>();
 
-            Player.OnAttackActions.ForEach(oaa => onAttackActionDtos.Add(new ActionItemDto(oaa, characterInTile, this)));
+            Player.OnAttack.ForEach(oaa => onAttackActionDtos.Add(new ActionItemDto(oaa, characterInTile, this)));
 
             return new ActionListDto
             {
@@ -967,10 +977,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
                 rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
                 tileToCheck = GetTileFromCoordinates(rngX, rngY);
-                hasLaterallyAdjacentHallways = GetTileFromCoordinates(rngX - 1, rngY).Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX + 1, rngY).Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX, rngY - 1).Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX, rngY + 1).Type == TileType.Hallway;
+                hasLaterallyAdjacentHallways = GetTileFromCoordinates(rngX - 1, rngY)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(rngX + 1, rngY)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(rngX, rngY - 1)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(rngX, rngY + 1)?.Type == TileType.Hallway;
             }
             while (!tileToCheck.IsWalkable || tileToCheck.Type == TileType.Stairs || tileToCheck.Character != null || tileToCheck.Items?.Any() == true || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
             return new Point(rngX, rngY);

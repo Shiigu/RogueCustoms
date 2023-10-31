@@ -26,16 +26,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (string.IsNullOrWhiteSpace(trapJson.Power))
                 messages.AddWarning("Trap does not have a set Power. Remember to hardcode Action Power parameters, or the game may crash.");
 
-            if (trapJson.OnItemSteppedActions.Any())
+            if (trapJson.OnStepped != null)
             {
-                foreach (var onItemSteppedAction in trapAsInstance.OnItemSteppedActions)
-                {
-                    messages.AddRange(ActionValidator.Validate(onItemSteppedAction, dungeonJson, sampleDungeon));
-                }
+                messages.AddRange(ActionValidator.Validate(trapAsInstance.OnStepped, dungeonJson, sampleDungeon));
             }
             else
             {
-                messages.AddError("Trap doesn't have any OnItemSteppedActions.");
+                messages.AddError("Trap doesn't have any OnStepped.");
             }
 
             if (!dungeonJson.FloorInfos.Any(fi => fi.PossibleTraps.Any(pm => pm.ClassId.Equals(trapJson.Id))))

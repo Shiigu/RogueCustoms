@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Management
 {
@@ -49,7 +50,8 @@ namespace RogueCustomsGameEngine.Management
             var jsonString = File.ReadAllText(path);
             return JsonSerializer.Deserialize<DungeonInfo>(jsonString, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
         }
 

@@ -22,7 +22,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public decimal Power { get; set; }
 
-        public List<ActionWithEffects> OnStatusApplyActions { get; set; }
+        public ActionWithEffects OnApply { get; set; }
 
         public AlteredStatus(EntityClass entityClass, Map map) : base(entityClass, map)
         {
@@ -31,9 +31,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             CanOverwrite = entityClass.CanOverwrite;
             CleanseOnFloorChange = entityClass.CleanseOnFloorChange;
             CleansedByCleanseActions = entityClass.CleansedByCleanseActions;
-            OnStatusApplyActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnStatusApplyActions, OnStatusApplyActions);
-            MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
+            OnApply = MapClassAction(entityClass.OnApply);
+            OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
         }
 
         public bool ApplyTo(Character target, decimal power, int turnLength)
@@ -49,7 +48,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             alteredStatusInstance.TurnLength = turnLength;
             alteredStatusInstance.RemainingTurns = turnLength;
             target.AlteredStatuses.Add(alteredStatusInstance);
-            alteredStatusInstance.OnStatusApplyActions.ForEach(osaa => osaa.Do(this, target));
+            alteredStatusInstance.OnApply?.Do(this, target);
             return true;
         }
 
@@ -63,12 +62,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void PerformOnTurnStartActions()
         {
             if (Target == null) return;
-            OwnOnTurnStartActions?.Where(a => a.MayBeUsed).ForEach(a => a.Do(this, Target));
+            if (OwnOnTurnStart?.MayBeUsed == true)
+                OwnOnTurnStart.Do(this, Target);
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()
         {
-            OwnOnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
+                OwnOnTurnStart.CurrentCooldown--;
             if(RemainingTurns > 0)
                 RemainingTurns--;
         }

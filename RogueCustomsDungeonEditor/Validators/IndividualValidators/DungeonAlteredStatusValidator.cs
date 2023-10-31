@@ -29,24 +29,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!alteredStatus.CleansedByCleanseActions && !alteredStatus.CleanseOnFloorChange)
                 messages.AddWarning("Altered Status has both CleansedByCleanseActions and CleanseOnFloorChange set to False, making the status unremovable if TurnLength is a negative number. Consider making one of them True.");
 
-            if (alteredStatus.OnTurnStartActions.Any())
+            if (alteredStatus.OnTurnStart != null)
             {
-                foreach (var onTurnStartAction in alteredStatusAsInstance.OwnOnTurnStartActions)
-                {
-                    messages.AddRange(ActionValidator.Validate(onTurnStartAction, dungeonJson, sampleDungeon));
-                }
+                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
             }
 
-            if (alteredStatus.OnStatusApplyActions.Any())
+            if (alteredStatus.OnApply != null)
             {
-                foreach (var onStatusApplyAction in alteredStatusAsInstance.OnStatusApplyActions)
-                {
-                    messages.AddRange(ActionValidator.Validate(onStatusApplyAction, dungeonJson, sampleDungeon));
-                }
+                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OnApply, dungeonJson, sampleDungeon));
             }
 
-            if (!alteredStatus.OnTurnStartActions.Any() && !alteredStatus.OnStatusApplyActions.Any())
-                messages.AddError("Altered Status does not have OnTurnStartActions or OnStatusApplyActions. It needs to have at least one of them.");
+            if (alteredStatus.OnTurnStart == null && alteredStatus.OnApply == null)
+                messages.AddError("Altered Status does not have OnTurnStart or OnApply. It needs to have at least one of them.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 

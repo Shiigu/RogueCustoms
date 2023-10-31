@@ -27,14 +27,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if(string.IsNullOrWhiteSpace(itemJson.Power))
                 messages.AddWarning("Item does not have a set Power. Remember to hardcode Action Power parameters if needed, or the game may crash.");
 
-            if (itemJson.OnTurnStartActions.Any())
+            if (itemJson.OnTurnStart != null)
             {
                 if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")
                 {
-                    foreach (var onTurnStartAction in itemJson.OnTurnStartActions.ConvertAll(otsa => new ActionWithEffects(otsa)))
-                    {
-                        messages.AddRange(ActionValidator.Validate(onTurnStartAction, dungeonJson, sampleDungeon));
-                    }
+                    messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
                 }
                 else
                 {
@@ -42,11 +39,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            if (itemJson.OnAttackActions.Any())
+            if (itemJson.OnAttack.Any())
             {
                 if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Consumable")
                 {
-                    foreach (var onAttackAction in itemAsInstance.OwnOnAttackActions)
+                    foreach (var onAttackAction in itemAsInstance.OwnOnAttack)
                     {
                         messages.AddRange(ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
                     }
@@ -61,43 +58,37 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("Weapon does not have OnAttackActions. Weapon cannot do anything in this current state.");
             }
 
-            if (itemJson.OnAttackedActions.Any())
+            if (itemJson.OnAttacked != null)
             {
                 if (itemJson.EntityType == "Armor")
                 {
-                    foreach (var onAttackedAction in itemAsInstance.OwnOnAttackedActions)
-                    {
-                        messages.AddRange(ActionValidator.Validate(onAttackedAction, dungeonJson, sampleDungeon));
-                    }
+                    messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
                 }
                 else if (itemJson.EntityType == "Weapon")
                 {
-                    messages.AddWarning("Weapon has OnAttackedActions. Are you sure about that?");
+                    messages.AddWarning("Weapon has OnAttacked. Are you sure about that?");
                 }
                 else if (itemJson.EntityType == "Consumable")
                 {
-                    messages.AddWarning("Consumable has OnAttackedActions, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning("Consumable has OnAttacked, which will be ignored by the game. Consider removing it.");
                 }
             }
 
-            foreach (var onItemSteppedAction in itemAsInstance.OnItemSteppedActions)
+            if (itemJson.OnStepped != null)
             {
-                messages.AddRange(ActionValidator.Validate(onItemSteppedAction, dungeonJson, sampleDungeon));
+                messages.AddRange(ActionValidator.Validate(itemAsInstance.OnStepped, dungeonJson, sampleDungeon));
             }
 
 
-            if (itemJson.OnItemUseActions.Any())
+            if (itemJson.OnUse != null)
             {
-                foreach (var onItemUseAction in itemAsInstance.OnItemUseActions)
-                {
-                    messages.AddRange(ActionValidator.Validate(onItemUseAction, dungeonJson, sampleDungeon));
-                }
+                messages.AddRange(ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
             }
             else if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")
             {
                 messages.AddWarning("Equippable Item doesn't have any OnItemUseActions. If it's not set as a StartingWeapon or StartingArmor of a Character, the item will be unusable.");
             }
-            else if (!itemJson.OnAttackActions.Any())
+            else if (!itemJson.OnAttack.Any())
             {
                 messages.AddWarning("Consumable Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
             }

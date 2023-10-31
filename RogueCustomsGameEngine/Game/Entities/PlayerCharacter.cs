@@ -64,7 +64,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             Map.DungeonStatus = DungeonStatus.GameOver;
             Passable = true;
             if (attacker == null || attacker is Character)
-                OnDeathActions?.ForEach(oda => oda.Do(this, attacker));
+                OnDeath?.ForEach(oda => oda?.Do(this, attacker));
         }
 
         public void DropItem(int slot)

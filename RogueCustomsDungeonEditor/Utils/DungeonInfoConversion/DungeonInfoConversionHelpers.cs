@@ -1,21 +1,41 @@
-﻿using RogueCustomsGameEngine.Utils;
+﻿using RogueCustomsDungeonEditor.EffectInfos;
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.JsonImports;
+using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
     public static class DungeonInfoConversionHelpers
     {
-        public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
+        public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, string dungeonJson, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
             var convertedLocales = false;
-            while(!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
+            var V10to11Dungeon = JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
             {
-                if(!convertedLocales)
+                PropertyNameCaseInsensitive = true
+            });
+            while (!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
+            {
+                switch (dungeon.Version)
+                {
+                    case "1.1":
+                        dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
+                        break;
+                    case "1.0":
+                    default:
+                        V10to11Dungeon = V10to11Dungeon.ConvertDungeonInfoToV11();
+                        break;
+                }
+                if (!convertedLocales)
                 {
                     foreach (var localeInfo in dungeon.Locales)
                     {
@@ -23,24 +43,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     }
                     convertedLocales = true;
                 }
-                switch (dungeon.Version)
-                {
-                    case "1.0":
-                    default:
-                        dungeon = dungeon.ConvertDungeonInfoToV11();
-                        break;
-                }
             }
             return dungeon;
         }
 
         #region 1.0 to 1.1
-        private static DungeonInfo ConvertDungeonInfoToV11(this DungeonInfo dungeon)
+        private static DungeonInfoV11 ConvertDungeonInfoToV11(this DungeonInfoV11 dungeon)
         {
             dungeon.TileSetInfos = new()
             {
-                DungeonInfoHelpers.CreateDefaultTileSet(),
-                DungeonInfoHelpers.CreateRetroTileSet()
+                CreateDefaultTileSetV11(),
+                CreateRetroTileSetV11()
             };
             foreach (var floorGroup in dungeon.FloorInfos)
             {
@@ -133,12 +146,280 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             return dungeon;
         }
 
-        private static void UpdateReplaceConsoleRepresentationStepsToV11(this ActionWithEffectsInfo actionWithEffects)
+        private static TileSetInfoV11 CreateDefaultTileSetV11()
+        {
+            return new TileSetInfoV11
+            {
+                Id = "Default",
+                TopLeftWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                TopRightWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                BottomLeftWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                BottomRightWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                HorizontalWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                VerticalWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '█'
+                },
+                ConnectorWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                TopLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                TopRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                BottomLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                BottomRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                HorizontalHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                VerticalHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                HorizontalTopHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                HorizontalBottomHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                VerticalRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                VerticalLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                CentralHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Blue),
+                    Character = '▒'
+                },
+                Floor = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.DarkGray),
+                    Character = '.'
+                },
+                Stairs = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Yellow),
+                    ForegroundColor = new GameColor(Color.DarkGreen),
+                    Character = '>'
+                },
+                Empty = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Black),
+                    Character = ' '
+                }
+            };
+        }
+
+        private static TileSetInfoV11 CreateRetroTileSetV11()
+        {
+            return new TileSetInfoV11
+            {
+                Id = "Retro",
+                TopLeftWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '╔'
+                },
+                TopRightWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '╗'
+                },
+                BottomLeftWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '╚'
+                },
+                BottomRightWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '╝'
+                },
+                HorizontalWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '═'
+                },
+                VerticalWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '║'
+                },
+                ConnectorWall = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                    Character = '╬'
+                },
+                TopLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                TopRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                BottomLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                BottomRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                HorizontalHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                VerticalHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                HorizontalTopHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                HorizontalBottomHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                VerticalRightHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                VerticalLeftHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                CentralHallway = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                    Character = '▒'
+                },
+                Floor = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 84, 252, 84)),
+                    Character = '.'
+                },
+                Stairs = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.FromArgb(255, 84, 252, 84)),
+                    Character = '╫'
+                },
+                Empty = new ConsoleRepresentation
+                {
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Black),
+                    Character = ' '
+                }
+            };
+        }
+
+        private static void UpdateReplaceConsoleRepresentationStepsToV11(this ActionWithEffectsInfoV11 actionWithEffects)
         {
             actionWithEffects.Effect.UpdateReplaceConsoleRepresentationParametersToV11();
         }
 
-        private static void UpdateReplaceConsoleRepresentationParametersToV11(this EffectInfo effect)
+        private static void UpdateReplaceConsoleRepresentationParametersToV11(this EffectInfoV11 effect)
         {
             if(effect.EffectName.Equals("ReplaceConsoleRepresentation"))
             {
@@ -154,5 +435,140 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         #endregion
 
+        #region 1.1 to 1.2
+
+        private static DungeonInfo ConvertDungeonInfoToV12(this DungeonInfoV11 V11Dungeon)
+        {
+            var V11DungeonAsJSON = JsonSerializer.Serialize(V11Dungeon, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            var V12Dungeon = JsonSerializer.Deserialize<DungeonInfo>(V11DungeonAsJSON, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+
+            foreach (var floorInfo in V12Dungeon.FloorInfos)
+            {
+                var v11FloorInfo = V11Dungeon.FloorInfos.Find(fi => fi.MinFloorLevel == floorInfo.MinFloorLevel && fi.MaxFloorLevel == floorInfo.MaxFloorLevel);
+                if (v11FloorInfo == null) continue;
+                floorInfo.OnFloorStart = v11FloorInfo.OnFloorStartActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            foreach (var v12PlayerClass in V12Dungeon.PlayerClasses)
+            {
+                var v11PlayerClass = V11Dungeon.PlayerClasses.Find(pc => pc.Id.Equals(v12PlayerClass.Id));
+                if (v11PlayerClass == null) continue;
+                v12PlayerClass.OnTurnStart = v11PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12PlayerClass.OnAttack = new();
+                foreach (var onAttackAction in v11PlayerClass.OnAttackActions)
+                {
+                    v12PlayerClass.OnAttack.Add(onAttackAction.CloneToV12());
+                }
+                v12PlayerClass.OnAttacked = v11PlayerClass.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12PlayerClass.OnDeath = v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            foreach (var v12NPC in V12Dungeon.NPCs)
+            {
+                var v11NPC = V11Dungeon.NPCs.Find(npc => npc.Id.Equals(v12NPC.Id));
+                if (v11NPC == null) continue;
+                v12NPC.OnTurnStart = v11NPC.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12NPC.OnAttack = new();
+                foreach (var onAttackAction in v11NPC.OnAttackActions)
+                {
+                    v12NPC.OnAttack.Add(onAttackAction.CloneToV12());
+                }
+                v12NPC.OnAttacked = v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12NPC.OnDeath = v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            foreach (var v12Item in V12Dungeon.Items)
+            {
+                var v11Item = V11Dungeon.Items.Find(i => i.Id.Equals(v12Item.Id));
+                if (v11Item == null) continue;
+                v12Item.OnTurnStart = v11Item.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnAttack = new();
+                foreach (var onAttackAction in v11Item.OnAttackActions)
+                {
+                    v12Item.OnAttack.Add(onAttackAction.CloneToV12());
+                }
+                v12Item.OnAttacked = v11Item.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnUse = v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnStepped = v11Item.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            foreach (var v12Trap in V12Dungeon.Traps)
+            {
+                var v11Trap = V11Dungeon.Traps.Find(t => t.Id.Equals(v12Trap.Id));
+                if (v11Trap == null) continue;
+                v12Trap.OnStepped = v11Trap.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            foreach (var v12AlteredStatus in V12Dungeon.AlteredStatuses)
+            {
+                var v11AlteredStatus = V11Dungeon.AlteredStatuses.Find(als => als.Id.Equals(v12AlteredStatus.Id));
+                if (v11AlteredStatus == null) continue;
+                v12AlteredStatus.OnApply = v11AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).CloneToV12();
+                v12AlteredStatus.OnTurnStart = v11AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+            }
+
+            V12Dungeon.Version = "1.2";
+            return V12Dungeon;
+        }
+
+        private static ActionWithEffectsInfo CloneToV12(this ActionWithEffectsInfoV11 info)
+        {
+            if (info == null) return null;
+
+            var clonedAction = new ActionWithEffectsInfo();
+
+            clonedAction.Name = info.Name;
+            clonedAction.Description = info.Description;
+            clonedAction.CooldownBetweenUses = info.CooldownBetweenUses;
+            clonedAction.StartingCooldown = info.StartingCooldown;
+            clonedAction.MinimumRange = info.MinimumRange;
+            clonedAction.MaximumRange = info.MaximumRange;
+            clonedAction.MaximumUses = info.MaximumUses;
+            clonedAction.MPCost = info.MPCost;
+            clonedAction.UseCondition = info.UseCondition;
+            clonedAction.TargetTypes = new List<string>(info.TargetTypes ?? new List<string>());
+            clonedAction.Effect = info.Effect.CloneToV12();
+
+            return clonedAction;
+        }
+
+        public static EffectInfo CloneToV12(this EffectInfoV11 info)
+        {
+            if (info == null) return null;
+
+            var clonedEffect = new EffectInfo
+            {
+                EffectName = info.EffectName,
+                Params = new Parameter[info.Params.Length]
+            };
+
+            for (int i = 0; i < clonedEffect.Params.Length; i++)
+            {
+                clonedEffect.Params[i] = new Parameter
+                {
+                    ParamName = info.Params[i].ParamName,
+                    Value = info.Params[i].Value
+                };
+            }
+
+            if (!string.IsNullOrWhiteSpace(info?.Then?.EffectName))
+                clonedEffect.Then = info.Then.CloneToV12();
+            if (!string.IsNullOrWhiteSpace(info?.OnSuccess?.EffectName))
+                clonedEffect.OnSuccess = info.OnSuccess.CloneToV12();
+            if (!string.IsNullOrWhiteSpace(info?.OnFailure?.EffectName))
+                clonedEffect.OnFailure = info.OnFailure.CloneToV12();
+
+            return clonedEffect;
+        }
+
+        #endregion
     }
 }

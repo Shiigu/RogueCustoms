@@ -114,7 +114,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (owner != null && owner is Character c)
             {
                 source = c;
-                if(source.OwnOnAttackActions.Contains(action))
+                if(source.OwnOnAttack.Contains(action))
                 {
                     (source as Character).Faction = sampleDungeon.Factions.First();
                     var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor);

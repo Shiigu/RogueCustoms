@@ -57,22 +57,22 @@ namespace RogueCustomsGameEngine.Game.Entities
         #region Item-only data
 
         public readonly bool CanBePickedUp;
-        public List<ActionWithEffects> OnItemSteppedActions { get; set; }
-        public List<ActionWithEffects> OnItemUseActions { get; set; }
+        public ActionWithEffects OnStepped { get; set; }
+        public ActionWithEffects OnUse { get; set; }
 
         #endregion
 
-        public List<ActionWithEffects> OnTurnStartActions { get; set; }
-        public List<ActionWithEffects> OnAttackActions { get; set; }
-        public List<ActionWithEffects> OnAttackedActions { get; set; }
-        public List<ActionWithEffects> OnDeathActions { get; set; }
+        public ActionWithEffects OnTurnStart { get; set; }
+        public List<ActionWithEffects> OnAttack { get; set; }
+        public ActionWithEffects OnAttacked { get; set; }
+        public ActionWithEffects OnDeath { get; set; }
 
         #region Status-only data
         public readonly bool CanStack;
         public readonly bool CanOverwrite;
         public readonly bool CleanseOnFloorChange;
         public readonly bool CleansedByCleanseActions;
-        public List<ActionWithEffects> OnStatusApplyActions { get; set; }
+        public ActionWithEffects OnApply { get; set; }
         #endregion
         public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType)
         {
@@ -88,16 +88,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
                 CanBePickedUp = itemInfo.CanBePickedUp;
-                OnTurnStartActions = new List<ActionWithEffects>();
-                MapActions(OnTurnStartActions, itemInfo.OnTurnStartActions);
-                OnAttackActions = new List<ActionWithEffects>();
-                MapActions(OnAttackActions, itemInfo.OnAttackActions);
-                OnAttackedActions = new List<ActionWithEffects>();
-                MapActions(OnAttackedActions, itemInfo.OnAttackedActions);
-                OnItemSteppedActions = new List<ActionWithEffects>();
-                MapActions(OnItemSteppedActions, itemInfo.OnItemSteppedActions);
-                OnItemUseActions = new List<ActionWithEffects>();
-                MapActions(OnItemUseActions, itemInfo.OnItemUseActions);
+                OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart);
+                OnAttack = new List<ActionWithEffects>();
+                MapActions(OnAttack, itemInfo.OnAttack);
+                OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked);
+                OnStepped = ActionWithEffects.Create(itemInfo.OnStepped);
+                OnUse = ActionWithEffects.Create(itemInfo.OnUse);
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
@@ -148,15 +144,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = playerClassInfo.InventorySize;
-                OnTurnStartActions = new List<ActionWithEffects>();
-                MapActions(OnTurnStartActions, playerClassInfo.OnTurnStartActions);
-                OnAttackActions = new List<ActionWithEffects>();
-                MapActions(OnAttackActions, playerClassInfo.OnAttackActions);
-                OnAttackedActions = new List<ActionWithEffects>();
-                MapActions(OnAttackedActions, playerClassInfo.OnAttackedActions);
-                OnDeathActions = new List<ActionWithEffects>();
-                MapActions(OnDeathActions, playerClassInfo.OnDeathActions);
-
+                OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart);
+                OnAttack = new List<ActionWithEffects>();
+                MapActions(OnAttack, playerClassInfo.OnAttack);
+                OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked);
+                OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath);
                 EntityType = EntityType.Player;
                 StartsVisible = playerClassInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
@@ -212,14 +204,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = npcInfo.InventorySize;
-                OnTurnStartActions = new List<ActionWithEffects>();
-                MapActions(OnTurnStartActions, npcInfo.OnTurnStartActions);
-                OnAttackActions = new List<ActionWithEffects>();
-                MapActions(OnAttackActions, npcInfo.OnAttackActions);
-                OnAttackedActions = new List<ActionWithEffects>();
-                MapActions(OnAttackedActions, npcInfo.OnAttackedActions);
-                OnDeathActions = new List<ActionWithEffects>();
-                MapActions(OnDeathActions, npcInfo.OnDeathActions);
+                OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart);
+                OnAttack = new List<ActionWithEffects>();
+                MapActions(OnAttack, npcInfo.OnAttack);
+                OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked);
+                OnDeath = ActionWithEffects.Create(npcInfo.OnDeath);
 
                 EntityType = EntityType.NPC;
                 StartsVisible = npcInfo.StartsVisible;
@@ -235,27 +224,24 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartsVisible = trapInfo.StartsVisible;
                 Passable = true;
                 CanBePickedUp = false;
-                OnItemSteppedActions = new List<ActionWithEffects>();
-                MapActions(OnItemSteppedActions, trapInfo.OnItemSteppedActions);
+                OnStepped = ActionWithEffects.Create(trapInfo.OnStepped);
             }
             else if (classInfo is AlteredStatusInfo alteredStatusInfo)
             {
                 EntityType = EntityType.AlteredStatus;
                 Passable = true;
-                OnTurnStartActions = new List<ActionWithEffects>();
-                MapActions(OnTurnStartActions, alteredStatusInfo.OnTurnStartActions);
                 CanStack = alteredStatusInfo.CanStack;
                 CanOverwrite = alteredStatusInfo.CanOverwrite;
                 CleanseOnFloorChange = alteredStatusInfo.CleanseOnFloorChange;
                 CleansedByCleanseActions = alteredStatusInfo.CleansedByCleanseActions;
-                OnStatusApplyActions = new List<ActionWithEffects>();
-                MapActions(OnStatusApplyActions, alteredStatusInfo.OnStatusApplyActions);
+                OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart);
+                OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply);
             }
         }
 
         protected void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
         {
-            actionInfoList.ForEach(aa => actionList.Add(new ActionWithEffects(aa)));
+            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
         }
     }
 }
