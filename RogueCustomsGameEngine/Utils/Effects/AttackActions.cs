@@ -9,7 +9,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 {
     public static class AttackActions
     {
-        public static Random Rng;
+        public static RngHandler Rng;
         public static Map Map;
 
         public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)

@@ -33,7 +33,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int LastMonsterGenerationTurn;
 
         public int Id { get; }
-        private int Seed { get; }
 
         private readonly Dungeon Dungeon;
         public Locale Locale => Dungeon.LocaleToUse;
@@ -82,7 +81,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly List<AlteredStatus> PossibleStatuses;
 
-        public readonly Random Rng;
+        public readonly RngHandler Rng;
         private (Point TopLeftCorner, Point BottomRightCorner)[,] RoomLimitsTable { get; set; }
 
         public Tile[,] Tiles { get; private set; }
@@ -106,8 +105,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 throw new InvalidDataException("There's no valid configuration for the current floor");
             Width = FloorConfigurationToUse.Width;
             Height = FloorConfigurationToUse.Height;
-            Seed = Environment.TickCount;
-            Rng = new Random(Seed);
+            Rng = new RngHandler(Environment.TickCount);
             Flags = flags;
             if (!FloorConfigurationToUse.PossibleGeneratorAlgorithms.Any())
                 throw new InvalidDataException("There's no valid generation algorithm for the current floor");

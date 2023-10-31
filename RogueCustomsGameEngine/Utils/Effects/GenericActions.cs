@@ -14,7 +14,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
     // Represents Actions that are not expected to be used by any type of Entity in particular. Free to use by everyone.
     public static class GenericActions
     {
-        public static Random Rng;
+        public static RngHandler Rng;
         public static Map Map;
 
         public static bool PrintText(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)

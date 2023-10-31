@@ -21,14 +21,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool Passable { get; set; }
         public EntityType EntityType { get; set; }
         public Map Map { get; set; }
-        public Random Rng => Map.Rng;
+        public RngHandler Rng => Map.Rng;
 
         public ActionWithEffects OwnOnTurnStart { get; set; }
         public List<ActionWithEffects> OwnOnAttack { get; set; }
         public ActionWithEffects OwnOnAttacked { get; set; }
         public ActionWithEffects OwnOnDeath { get; set; }
 
-        public Entity(EntityClass entityClass, Map map)
+        protected Entity(EntityClass entityClass, Map map)
         {
             Map = map;
             Name = entityClass.Name;

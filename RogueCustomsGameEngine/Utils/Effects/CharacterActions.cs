@@ -11,7 +11,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
     // Represents Actions that are only expected to be used by Characters.
     public static class CharacterActions
     {
-        public static Random Rng;
+        public static RngHandler Rng;
         public static Map Map;
 
         public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
