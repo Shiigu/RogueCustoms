@@ -23,10 +23,10 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Map Map { get; set; }
         public Random Rng => Map.Rng;
 
-        public List<ActionWithEffects> OwnOnTurnStartActions { get; set; }
-        public List<ActionWithEffects> OwnOnAttackActions { get; set; }
-        public List<ActionWithEffects> OwnOnAttackedActions { get; set; }
-        public List<ActionWithEffects> OwnOnDeathActions { get; set; }
+        public ActionWithEffects OwnOnTurnStart { get; set; }
+        public List<ActionWithEffects> OwnOnAttack { get; set; }
+        public ActionWithEffects OwnOnAttacked { get; set; }
+        public ActionWithEffects OwnOnDeath { get; set; }
 
         public Entity(EntityClass entityClass, Map map)
         {
@@ -44,10 +44,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             Passable = entityClass.Passable;
             Visible = entityClass.StartsVisible;
             ExistenceStatus = EntityExistenceStatus.Alive;
-            OwnOnTurnStartActions = new List<ActionWithEffects>();
-            OwnOnAttackActions = new List<ActionWithEffects>();
-            OwnOnAttackedActions = new List<ActionWithEffects>();
-            OwnOnDeathActions = new List<ActionWithEffects>();
+            OwnOnAttack = new List<ActionWithEffects>();
         }
 
         protected void MapClassActions(List<ActionWithEffects> classActions, List<ActionWithEffects> entityActions)
@@ -61,6 +58,16 @@ namespace RogueCustomsGameEngine.Game.Entities
                 actionInstance.User = this;
                 entityActions.Add(actionInstance);
             });
+        }
+        protected ActionWithEffects MapClassAction(ActionWithEffects classAction)
+        {
+            if (classAction == null) return null;
+            var actionInstance = classAction.Clone();
+            actionInstance.Map = Map;
+            actionInstance.Name = Map.Locale[actionInstance.Name];
+            actionInstance.Description = Map.Locale[actionInstance.Description];
+            actionInstance.User = this;
+            return actionInstance;
         }
 
         public override string ToString() => $"Position: {Position}; Name: {Name}; Char: {ConsoleRepresentation.Character}";

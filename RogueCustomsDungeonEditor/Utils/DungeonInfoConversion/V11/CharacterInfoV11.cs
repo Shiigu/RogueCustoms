@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace RogueCustomsGameEngine.Utils.JsonImports
+namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11
 {
     [Serializable]
-    public abstract class CharacterInfo : ClassInfo
+    public abstract class CharacterInfoV11 : ClassInfoV11
     {
         public string Faction { get; set; }
         public bool CanBePickedUp { get; set; }
@@ -34,9 +34,9 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public decimal MovementIncreasePerLevel { get; set; }
         public decimal HPRegenerationIncreasePerLevel { get; set; }
         public decimal MPRegenerationIncreasePerLevel { get; set; }
-        public ActionWithEffectsInfo OnTurnStart { get; set; } = new ActionWithEffectsInfo();
-        public List<ActionWithEffectsInfo> OnAttack { get; set; } = new List<ActionWithEffectsInfo>();
-        public ActionWithEffectsInfo OnAttacked { get; set; } = new ActionWithEffectsInfo();
-        public ActionWithEffectsInfo OnDeath { get; set; } = new ActionWithEffectsInfo();
+        public List<ActionWithEffectsInfoV11> OnTurnStartActions { get; set; } = new List<ActionWithEffectsInfoV11>();
+        public List<ActionWithEffectsInfoV11> OnAttackActions { get; set; } = new List<ActionWithEffectsInfoV11>();
+        public List<ActionWithEffectsInfoV11> OnAttackedActions { get; set; } = new List<ActionWithEffectsInfoV11>();
+        public List<ActionWithEffectsInfoV11> OnDeathActions { get; set; } = new List<ActionWithEffectsInfoV11>();
     }
 }

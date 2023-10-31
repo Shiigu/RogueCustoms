@@ -37,9 +37,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             messages.AddRange(characterJson.ConsoleRepresentation.Validate(characterJson.Id, isPlayerCharacter, dungeonJson));
 
-            foreach (var onTurnStartAction in characterJson.OnTurnStartActions.ConvertAll(otsa => new ActionWithEffects(otsa)))
+            if (characterJson.OnTurnStart != null)
             {
-                messages.AddRange(ActionValidator.Validate(onTurnStartAction, dungeonJson, sampleDungeon));
+                messages.AddRange(ActionValidator.Validate(characterAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
             }
 
             if (characterJson.BaseHP <= 0)
@@ -157,9 +157,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             
 
-            if (characterAsInstance.OwnOnAttackActions.Any())
+            if (characterAsInstance.OwnOnAttack.Any())
             {
-                foreach (var onAttackAction in characterAsInstance.OwnOnAttackActions)
+                foreach (var onAttackAction in characterAsInstance.OwnOnAttack)
                 {
                     messages.AddRange(ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
                 }
@@ -169,21 +169,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("Character does not have OnAttackActions. Make sure they have items, otherwise they cannot attack.");
             }
 
-            foreach (var onAttackedAction in characterAsInstance.OwnOnAttackedActions)
+            if (characterJson.OnAttacked != null)
             {
-                messages.AddRange(ActionValidator.Validate(onAttackedAction, dungeonJson, sampleDungeon));
+                messages.AddRange(ActionValidator.Validate(characterAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
             }
 
-            if (characterJson.OnDeathActions.Any())
+            if (characterJson.OnDeath != null)
             {
-                foreach (var onDeathAction in characterAsInstance.OwnOnDeathActions)
-                {
-                    messages.AddRange(ActionValidator.Validate(onDeathAction, dungeonJson, sampleDungeon));
-                }
+                messages.AddRange(ActionValidator.Validate(characterAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
             }
             else
             {
-                messages.AddWarning("Character does not have OnDeathActions!");
+                messages.AddWarning("Character does not have OnDeath!");
             }
 
             return messages;

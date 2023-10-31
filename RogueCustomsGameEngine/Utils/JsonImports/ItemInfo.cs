@@ -11,11 +11,11 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool StartsVisible { get; set; }
         public string Power { get; set; }
         public string EntityType { get; set; }
-        public List<ActionWithEffectsInfo> OnTurnStartActions { get; set; } = new List<ActionWithEffectsInfo>();
-        public List<ActionWithEffectsInfo> OnAttackActions { get; set; } = new List<ActionWithEffectsInfo>();
-        public List<ActionWithEffectsInfo> OnAttackedActions { get; set; } = new List<ActionWithEffectsInfo>();
-        public List<ActionWithEffectsInfo> OnItemSteppedActions { get; set; } = new List<ActionWithEffectsInfo>();
-        public List<ActionWithEffectsInfo> OnItemUseActions { get; set; } = new List<ActionWithEffectsInfo>();
+        public ActionWithEffectsInfo OnTurnStart { get; set; } = new ActionWithEffectsInfo();
+        public List<ActionWithEffectsInfo> OnAttack { get; set; } = new List<ActionWithEffectsInfo>();
+        public ActionWithEffectsInfo OnAttacked { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnStepped { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnUse { get; set; } = new ActionWithEffectsInfo();
 
     }
 }

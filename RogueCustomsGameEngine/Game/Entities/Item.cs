@@ -11,49 +11,51 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanBePickedUp { get; set; }
         public string Power { get; set; }
         public Character Owner { get; set; }
-        public List<ActionWithEffects> OnItemSteppedActions { get; set; }
-        public List<ActionWithEffects> OnItemUseActions { get; set; }
+        public ActionWithEffects OnStepped { get; set; }
+        public ActionWithEffects OnUse { get; set; }
 
         public Item(EntityClass entityClass, Map map) : base(entityClass, map)
         {
             Power = entityClass.Power;
             CanBePickedUp = entityClass.CanBePickedUp;
             Owner = null;
-            OnItemSteppedActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnItemSteppedActions, OnItemSteppedActions);
-            OnItemUseActions = new List<ActionWithEffects>();
+            OnStepped = MapClassAction(entityClass.OnStepped);
             if (entityClass.EntityType != EntityType.Trap)
-                MapClassActions(entityClass.OnItemUseActions, OnItemUseActions);
+                OnUse = MapClassAction(entityClass.OnUse);
             if (entityClass.EntityType != EntityType.Trap)
-                MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
+                OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             if (entityClass.EntityType != EntityType.Trap)
-                MapClassActions(entityClass.OnAttackActions, OwnOnAttackActions);
+                MapClassActions(entityClass.OnAttack, OwnOnAttack);
             if (entityClass.EntityType != EntityType.Trap)
-                MapClassActions(entityClass.OnAttackedActions, OwnOnAttackedActions);
+                OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
         }
 
         public void Stepped(Entity stomper)
         {
-            OnItemSteppedActions.ForEach(oisa => oisa.Do(this, stomper));
+            OnStepped?.Do(this, stomper);
         }
         public void Used(Entity user)
         {
-            OnItemUseActions.ForEach(oiua => oiua.Do(this, user));
+            OnUse?.Do(this, user);
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()
         {
-            OwnOnAttackActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OwnOnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OwnOnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnItemSteppedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnItemUseActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OwnOnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            if (OwnOnAttacked?.CooldownBetweenUses > 0 && OwnOnAttacked?.CurrentCooldown > 0)
+                OwnOnAttacked.CurrentCooldown--;
+            if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
+                OwnOnTurnStart.CurrentCooldown--;
+            if (OnStepped?.CooldownBetweenUses > 0 && OnStepped?.CurrentCooldown > 0)
+                OnStepped.CurrentCooldown--;
+            if (OnUse?.CooldownBetweenUses > 0 && OnUse?.CurrentCooldown > 0)
+                OnUse.CurrentCooldown--;
         }
 
         public void PerformOnTurnStartActions()
         {
-            if(Owner != null)
-                OwnOnTurnStartActions?.Where(a => a.CanBeUsedOn(Owner, Map)).ForEach(a => a.Do(this, Owner));
+            if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.CanBeUsedOn(Owner, Map))
+                OwnOnTurnStart?.Do(this, Owner);
         }
     }
 }

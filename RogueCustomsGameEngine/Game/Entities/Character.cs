@@ -94,6 +94,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int Movement => Math.Min(BaseMovement + (int)(MovementIncreasePerLevel * (Level - 1)) + TotalMovementIncrements, Constants.MOVEMENT_STAT_CAP);
 
         public int RemainingMovement { get; set; }
+        public bool TookAction { get; set; }
 
         public readonly decimal BaseHPRegeneration;
         public readonly decimal HPRegenerationIncreasePerLevel;
@@ -116,78 +117,78 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<AlteredStatus> AlteredStatuses { get; set; }
 
         public readonly int InventorySize;
-        public List<ActionWithEffects> OnTurnStartActions
+        public List<ActionWithEffects> OnTurnStart
         {
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                if (OwnOnTurnStartActions != null)
-                    actionList.AddRange(OwnOnTurnStartActions);
-                if (Weapon?.OwnOnTurnStartActions != null)
-                    actionList.AddRange(Weapon.OwnOnTurnStartActions);
-                if (Armor?.OwnOnTurnStartActions != null)
-                    actionList.AddRange(Armor.OwnOnTurnStartActions);
+                if (OwnOnTurnStart != null)
+                    actionList.Add(OwnOnTurnStart);
+                if (Weapon?.OwnOnTurnStart != null)
+                    actionList.Add(Weapon.OwnOnTurnStart);
+                if (Armor?.OwnOnTurnStart != null)
+                    actionList.Add(Armor.OwnOnTurnStart);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttackActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
-                        actionList.AddRange(i.OwnOnTurnStartActions);
+                    if (i?.OwnOnTurnStart != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                        actionList.Add(i.OwnOnTurnStart);
                 });
                 return actionList;
             }
         }
-        public List<ActionWithEffects> OnAttackActions
+        public List<ActionWithEffects> OnAttack
         {
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                if (OwnOnAttackActions != null)
-                    actionList.AddRange(OwnOnAttackActions);
-                if (Weapon?.OwnOnAttackActions != null)
-                    actionList.AddRange(Weapon.OwnOnAttackActions);
-                if (Armor?.OwnOnAttackActions != null)
-                    actionList.AddRange(Armor.OwnOnAttackActions);
+                if (OwnOnAttack != null)
+                    actionList.AddRange(OwnOnAttack);
+                if (Weapon?.OwnOnAttack != null)
+                    actionList.AddRange(Weapon.OwnOnAttack);
+                if (Armor?.OwnOnAttack != null)
+                    actionList.AddRange(Armor.OwnOnAttack);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttackActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
-                        actionList.AddRange(i.OwnOnAttackActions);
+                    if (i?.OwnOnAttack != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                        actionList.AddRange(i.OwnOnAttack);
                 });
                 return actionList;
             }
         }
-        public List<ActionWithEffects> OnAttackedActions
+        public List<ActionWithEffects> OnAttacked
         {
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                if (OwnOnAttackedActions != null)
-                    actionList.AddRange(OwnOnAttackedActions);
-                if (Weapon?.OwnOnAttackedActions != null)
-                    actionList.AddRange(Weapon.OwnOnAttackedActions);
-                if (Armor?.OwnOnAttackedActions != null)
-                    actionList.AddRange(Armor.OwnOnAttackedActions);
+                if (OwnOnAttacked != null)
+                    actionList.Add(OwnOnAttacked);
+                if (Weapon?.OwnOnAttacked != null)
+                    actionList.Add(Weapon.OwnOnAttacked);
+                if (Armor?.OwnOnAttacked != null)
+                    actionList.Add(Armor.OwnOnAttacked);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttackedActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
-                        actionList.AddRange(i.OwnOnAttackedActions);
+                    if (i?.OwnOnAttacked != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                        actionList.Add(i.OwnOnAttacked);
                 });
                 return actionList;
             }
         }
-        public List<ActionWithEffects> OnDeathActions
+        public List<ActionWithEffects> OnDeath
         {
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                if (OwnOnDeathActions != null)
-                    actionList.AddRange(OwnOnDeathActions);
-                if (Weapon?.OwnOnDeathActions != null)
-                    actionList.AddRange(Weapon.OwnOnDeathActions);
-                if (Armor?.OwnOnDeathActions != null)
-                    actionList.AddRange(Armor.OwnOnDeathActions);
+                if (OwnOnDeath != null)
+                    actionList.Add(OwnOnDeath);
+                if (Weapon?.OwnOnDeath != null)
+                    actionList.Add(Weapon.OwnOnDeath);
+                if (Armor?.OwnOnDeath != null)
+                    actionList.Add(Armor.OwnOnDeath);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttackActions != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
-                        actionList.AddRange(i.OwnOnDeathActions);
+                    if (i?.OwnOnDeath != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                        actionList.Add(i.OwnOnDeath);
                 });
                 return actionList;
             }
@@ -259,14 +260,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             CarriedHPRegeneration = 0;
             CarriedMPRegeneration = 0;
 
-            OwnOnTurnStartActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnTurnStartActions, OwnOnTurnStartActions);
-            OwnOnAttackActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnAttackActions, OwnOnAttackActions);
-            OwnOnAttackedActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnAttackedActions, OwnOnAttackedActions);
-            OwnOnDeathActions = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnDeathActions, OwnOnDeathActions);
+            OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
+            OwnOnAttack = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnAttack, OwnOnAttack);
+            OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
+            OwnOnDeath = MapClassAction(entityClass.OnDeath);
         }
 
         public List<Tile> ComputeFOVTiles()
@@ -285,8 +283,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 else
                 {
-                    //if (ContainingTile.Type == TileType.Hallway)
-                    //    return Map.GetFOVTilesWithinDistance(Position, Math.Max(SightRange / 6, 1));
                     return Map.GetFOVTilesWithinDistance(Position, SightRange);
                 }
             }
@@ -294,9 +290,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void RefreshCooldownsAndUpdateTurnLength()
         {
-            OnAttackActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnAttackedActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnTurnStartActions?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnAttacked?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnTurnStart?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             MaxHPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             MaxMPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             AttackModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
@@ -344,7 +340,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
             RefreshCooldownsAndUpdateTurnLength();
-            OnTurnStartActions.Where(otsa => otsa.MayBeUsed).ForEach(otsa => otsa.Do(otsa.User, this));
+            OnTurnStart.Where(otsa => otsa.MayBeUsed).ForEach(otsa => otsa?.Do(otsa.User, this));
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
@@ -516,15 +512,16 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (UsesMP)
                 MP = Math.Max(0, MP - action.MPCost);
-            var successfulEffects = action.Do(this, target);
+            var successfulEffects = action?.Do(this, target);
             if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
+            TookAction = true;
             RemainingMovement = 0;
         }
 
         public virtual void AttackedBy(Character source)
         {
-            OnAttackedActions.ForEach(oaa => oaa.Do(this, source));
+            OnAttacked.ForEach(oaa => oaa?.Do(this, source));
         }
 
         public TargetType CalculateTargetTypeFor(Character target)

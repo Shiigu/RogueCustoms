@@ -1,5 +1,5 @@
 {
-  "Version": "1.1",
+  "Version": "1.2",
   "Name": "DungeonName",
   "Author": "Shiigu",
   "WelcomeMessage": "WelcomeMessage",
@@ -2560,54 +2560,52 @@
           "Columns": 4
         }
       ],
-      "OnFloorStartActions": [
-        {
-          "Name": "DungeonStartMessage",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "MessageBox",
+      "OnFloorStart": {
+        "Name": "DungeonStartMessage",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "MessageBox",
+          "Params": [
+            {
+              "ParamName": "title",
+              "Value": "DungeonName"
+            },
+            {
+              "ParamName": "text",
+              "Value": "Floor1WelcomeText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "255,255,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "SetFlag",
             "Params": [
               {
-                "ParamName": "title",
-                "Value": "DungeonName"
+                "ParamName": "Key",
+                "Value": "EnemiesDefeated"
               },
               {
-                "ParamName": "text",
-                "Value": "Floor1WelcomeText"
+                "ParamName": "Value",
+                "Value": "0"
               },
               {
-                "ParamName": "color",
-                "Value": "255,255,0,255"
+                "ParamName": "RemoveOnFloorChange",
+                "Value": "False"
               }
-            ],
-            "Then": {
-              "EffectName": "SetFlag",
-              "Params": [
-                {
-                  "ParamName": "Key",
-                  "Value": "EnemiesDefeated"
-                },
-                {
-                  "ParamName": "Value",
-                  "Value": "0"
-                },
-                {
-                  "ParamName": "RemoveOnFloorChange",
-                  "Value": "False"
-                }
-              ]
-            }
+            ]
           }
         }
-      ]
+      }
     },
     {
       "MinFloorLevel": 2,
@@ -2687,40 +2685,55 @@
           "Columns": 1
         }
       ],
-      "OnFloorStartActions": [
-        {
-          "Name": "FloorStartMessage",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ApplyAlteredStatus",
+      "OnFloorStart": {
+        "Name": "FloorStartMessage",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ApplyAlteredStatus",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "RegenBlock"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            },
+            {
+              "ParamName": "power",
+              "Value": "0"
+            },
+            {
+              "ParamName": "turnlength",
+              "Value": "-1"
+            }
+          ],
+          "Then": {
+            "EffectName": "MessageBox",
             "Params": [
               {
-                "ParamName": "id",
-                "Value": "RegenBlock"
+                "ParamName": "title",
+                "Value": "DungeonName"
               },
               {
-                "ParamName": "target",
-                "Value": "target"
+                "ParamName": "text",
+                "Value": "Floor2WelcomeText"
               },
               {
-                "ParamName": "chance",
-                "Value": "100"
-              },
-              {
-                "ParamName": "power",
-                "Value": "0"
-              },
-              {
-                "ParamName": "turnlength",
-                "Value": "-1"
+                "ParamName": "color",
+                "Value": "255,255,0,255"
               }
             ],
             "Then": {
@@ -2732,60 +2745,43 @@
                 },
                 {
                   "ParamName": "text",
-                  "Value": "Floor2WelcomeText"
+                  "Value": "Floor2WarningText"
                 },
                 {
                   "ParamName": "color",
-                  "Value": "255,255,0,255"
+                  "Value": "255,0,0,255"
                 }
               ],
               "Then": {
-                "EffectName": "MessageBox",
+                "EffectName": "CheckCondition",
                 "Params": [
                   {
-                    "ParamName": "title",
-                    "Value": "DungeonName"
-                  },
-                  {
-                    "ParamName": "text",
-                    "Value": "Floor2WarningText"
-                  },
-                  {
-                    "ParamName": "color",
-                    "Value": "255,0,0,255"
+                    "ParamName": "Condition",
+                    "Value": "({target.ClassId} == \u0022EasyPlayer\u0022 || {target.ClassId} == \u0022NormalPlayer\u0022) \u0026\u0026 ({target.HP} / {target.MaxHP} \u003C 0.5)"
                   }
                 ],
-                "Then": {
-                  "EffectName": "CheckCondition",
+                "OnSuccess": {
+                  "EffectName": "MessageBox",
                   "Params": [
                     {
-                      "ParamName": "Condition",
-                      "Value": "({target.ClassId} == \u0022EasyPlayer\u0022 || {target.ClassId} == \u0022NormalPlayer\u0022) \u0026\u0026 ({target.HP} / {target.MaxHP} \u003C 0.5)"
+                      "ParamName": "Title",
+                      "Value": "Floor2HealthWarningHeader"
+                    },
+                    {
+                      "ParamName": "Text",
+                      "Value": "Floor2HealthWarningText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,128,0,255"
                     }
-                  ],
-                  "OnSuccess": {
-                    "EffectName": "MessageBox",
-                    "Params": [
-                      {
-                        "ParamName": "Title",
-                        "Value": "Floor2HealthWarningHeader"
-                      },
-                      {
-                        "ParamName": "Text",
-                        "Value": "Floor2HealthWarningText"
-                      },
-                      {
-                        "ParamName": "Color",
-                        "Value": "255,128,0,255"
-                      }
-                    ]
-                  }
+                  ]
                 }
               }
             }
           }
         }
-      ]
+      }
     },
     {
       "MinFloorLevel": 3,
@@ -3011,8 +3007,7 @@
           "Rows": 5,
           "Columns": 5
         }
-      ],
-      "OnFloorStartActions": []
+      ]
     },
     {
       "MinFloorLevel": 5,
@@ -3104,16 +3099,32 @@
           "Columns": 1
         }
       ],
-      "OnFloorStartActions": [
-        {
-          "Name": "DungeonStartMessage",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
+      "OnFloorStart": {
+        "Name": "DungeonStartMessage",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "MessageBox",
+          "Params": [
+            {
+              "ParamName": "title",
+              "Value": "DungeonName"
+            },
+            {
+              "ParamName": "text",
+              "Value": "Floor5WelcomeText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "255,0,0,255"
+            }
+          ],
+          "Then": {
             "EffectName": "MessageBox",
             "Params": [
               {
@@ -3122,33 +3133,16 @@
               },
               {
                 "ParamName": "text",
-                "Value": "Floor5WelcomeText"
+                "Value": "Floor5WelcomeText2"
               },
               {
                 "ParamName": "color",
-                "Value": "255,0,0,255"
+                "Value": "255,255,0,255"
               }
-            ],
-            "Then": {
-              "EffectName": "MessageBox",
-              "Params": [
-                {
-                  "ParamName": "title",
-                  "Value": "DungeonName"
-                },
-                {
-                  "ParamName": "text",
-                  "Value": "Floor5WelcomeText2"
-                },
-                {
-                  "ParamName": "color",
-                  "Value": "255,255,0,255"
-                }
-              ]
-            }
+            ]
           }
         }
-      ]
+      }
     }
   ],
   "FactionInfos": [
@@ -3243,59 +3237,56 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.05,
       "MPRegenerationIncreasePerLevel": 0.00750,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ReplaceConsoleRepresentation",
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            {
+              "ParamName": "ForeColor",
+              "Value": "255,0,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
             "Params": [
               {
-                "ParamName": "ForeColor",
+                "ParamName": "text",
+                "Value": "PlayerDeathText"
+              },
+              {
+                "ParamName": "color",
                 "Value": "255,0,0,255"
               }
             ],
             "Then": {
-              "EffectName": "PrintText",
+              "EffectName": "MessageBox",
               "Params": [
                 {
+                  "ParamName": "title",
+                  "Value": "PlayerDeathMessageBoxHeader"
+                },
+                {
                   "ParamName": "text",
-                  "Value": "PlayerDeathText"
+                  "Value": "PlayerDeathMessageBoxText"
                 },
                 {
                   "ParamName": "color",
                   "Value": "255,0,0,255"
                 }
-              ],
-              "Then": {
-                "EffectName": "MessageBox",
-                "Params": [
-                  {
-                    "ParamName": "title",
-                    "Value": "PlayerDeathMessageBoxHeader"
-                  },
-                  {
-                    "ParamName": "text",
-                    "Value": "PlayerDeathMessageBoxText"
-                  },
-                  {
-                    "ParamName": "color",
-                    "Value": "255,0,0,255"
-                  }
-                ]
-              }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "EasyPlayer",
       "Name": "EasyPlayerName",
       "Description": "EasyPlayerDescription",
@@ -3344,59 +3335,56 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.025,
       "MPRegenerationIncreasePerLevel": 0.0750,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ReplaceConsoleRepresentation",
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            {
+              "ParamName": "ForeColor",
+              "Value": "255,0,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
             "Params": [
               {
-                "ParamName": "ForeColor",
+                "ParamName": "text",
+                "Value": "PlayerDeathText"
+              },
+              {
+                "ParamName": "color",
                 "Value": "255,0,0,255"
               }
             ],
             "Then": {
-              "EffectName": "PrintText",
+              "EffectName": "MessageBox",
               "Params": [
                 {
+                  "ParamName": "title",
+                  "Value": "PlayerDeathMessageBoxHeader"
+                },
+                {
                   "ParamName": "text",
-                  "Value": "PlayerDeathText"
+                  "Value": "PlayerDeathMessageBoxText"
                 },
                 {
                   "ParamName": "color",
                   "Value": "255,0,0,255"
                 }
-              ],
-              "Then": {
-                "EffectName": "MessageBox",
-                "Params": [
-                  {
-                    "ParamName": "title",
-                    "Value": "PlayerDeathMessageBoxHeader"
-                  },
-                  {
-                    "ParamName": "text",
-                    "Value": "PlayerDeathMessageBoxText"
-                  },
-                  {
-                    "ParamName": "color",
-                    "Value": "255,0,0,255"
-                  }
-                ]
-              }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "NormalPlayer",
       "Name": "NormalPlayerName",
       "Description": "NormalPlayerDescription",
@@ -3445,59 +3433,56 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.0075,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ReplaceConsoleRepresentation",
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ReplaceConsoleRepresentation",
+          "Params": [
+            {
+              "ParamName": "ForeColor",
+              "Value": "255,0,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "PrintText",
             "Params": [
               {
-                "ParamName": "ForeColor",
+                "ParamName": "text",
+                "Value": "PlayerDeathText"
+              },
+              {
+                "ParamName": "color",
                 "Value": "255,0,0,255"
               }
             ],
             "Then": {
-              "EffectName": "PrintText",
+              "EffectName": "MessageBox",
               "Params": [
                 {
+                  "ParamName": "title",
+                  "Value": "PlayerDeathMessageBoxHeader"
+                },
+                {
                   "ParamName": "text",
-                  "Value": "PlayerDeathText"
+                  "Value": "PlayerDeathMessageBoxText"
                 },
                 {
                   "ParamName": "color",
                   "Value": "255,0,0,255"
                 }
-              ],
-              "Then": {
-                "EffectName": "MessageBox",
-                "Params": [
-                  {
-                    "ParamName": "title",
-                    "Value": "PlayerDeathMessageBoxHeader"
-                  },
-                  {
-                    "ParamName": "text",
-                    "Value": "PlayerDeathMessageBoxText"
-                  },
-                  {
-                    "ParamName": "color",
-                    "Value": "255,0,0,255"
-                  }
-                ]
-              }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "HardPlayer",
       "Name": "HardPlayerName",
       "Description": "HardPlayerDescription",
@@ -3549,8 +3534,7 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "StickTongue",
           "Description": "",
@@ -3575,73 +3559,70 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "EnemyDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "0,180,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "EnemyDeathText"
-              },
-              {
-                "ParamName": "color",
-                "Value": "0,180,0,255"
+                "ParamName": "character",
+                "Value": "\u00B1"
               }
             ],
             "Then": {
-              "EffectName": "ReplaceConsoleRepresentation",
+              "EffectName": "GiveExperience",
               "Params": [
                 {
-                  "ParamName": "character",
-                  "Value": "\u00B1"
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "amount",
+                  "Value": "{this.experiencepayout}"
                 }
               ],
               "Then": {
-                "EffectName": "GiveExperience",
+                "EffectName": "SetFlag",
                 "Params": [
                   {
-                    "ParamName": "target",
-                    "Value": "target"
+                    "ParamName": "Key",
+                    "Value": "EnemiesDefeated"
                   },
                   {
-                    "ParamName": "amount",
-                    "Value": "{this.experiencepayout}"
+                    "ParamName": "Value",
+                    "Value": "[EnemiesDefeated] \u002B 1"
+                  },
+                  {
+                    "ParamName": "RemoveOnFloorChange",
+                    "Value": "False"
                   }
-                ],
-                "Then": {
-                  "EffectName": "SetFlag",
-                  "Params": [
-                    {
-                      "ParamName": "Key",
-                      "Value": "EnemiesDefeated"
-                    },
-                    {
-                      "ParamName": "Value",
-                      "Value": "[EnemiesDefeated] \u002B 1"
-                    },
-                    {
-                      "ParamName": "RemoveOnFloorChange",
-                      "Value": "False"
-                    }
-                  ]
-                }
+                ]
               }
             }
           }
         }
-      ],
+      },
       "Id": "MeleeEnemy",
       "Name": "MeleeEnemyName",
       "Description": "MeleeEnemyDescription",
@@ -3691,75 +3672,71 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "EnemyDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "0,180,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "EnemyDeathText"
-              },
-              {
-                "ParamName": "color",
-                "Value": "0,180,0,255"
+                "ParamName": "character",
+                "Value": "\u00B1"
               }
             ],
             "Then": {
-              "EffectName": "ReplaceConsoleRepresentation",
+              "EffectName": "GiveExperience",
               "Params": [
                 {
-                  "ParamName": "character",
-                  "Value": "\u00B1"
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "amount",
+                  "Value": "{this.experiencepayout}"
                 }
               ],
               "Then": {
-                "EffectName": "GiveExperience",
+                "EffectName": "SetFlag",
                 "Params": [
                   {
-                    "ParamName": "target",
-                    "Value": "target"
+                    "ParamName": "Key",
+                    "Value": "EnemiesDefeated"
                   },
                   {
-                    "ParamName": "amount",
-                    "Value": "{this.experiencepayout}"
+                    "ParamName": "Value",
+                    "Value": "[EnemiesDefeated] \u002B 1"
+                  },
+                  {
+                    "ParamName": "RemoveOnFloorChange",
+                    "Value": "False"
                   }
-                ],
-                "Then": {
-                  "EffectName": "SetFlag",
-                  "Params": [
-                    {
-                      "ParamName": "Key",
-                      "Value": "EnemiesDefeated"
-                    },
-                    {
-                      "ParamName": "Value",
-                      "Value": "[EnemiesDefeated] \u002B 1"
-                    },
-                    {
-                      "ParamName": "RemoveOnFloorChange",
-                      "Value": "False"
-                    }
-                  ]
-                }
+                ]
               }
             }
           }
         }
-      ],
+      },
       "Id": "RangedEnemy",
       "Name": "RangedEnemyName",
       "Description": "RangedEnemyDescription",
@@ -3809,8 +3786,7 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "Steal",
           "MinimumRange": 1,
@@ -3876,73 +3852,70 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "EnemyDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "0,180,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "EnemyDeathText"
-              },
-              {
-                "ParamName": "color",
-                "Value": "0,180,0,255"
+                "ParamName": "character",
+                "Value": "\u00B1"
               }
             ],
             "Then": {
-              "EffectName": "ReplaceConsoleRepresentation",
+              "EffectName": "GiveExperience",
               "Params": [
                 {
-                  "ParamName": "character",
-                  "Value": "\u00B1"
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "amount",
+                  "Value": "{this.experiencepayout}"
                 }
               ],
               "Then": {
-                "EffectName": "GiveExperience",
+                "EffectName": "SetFlag",
                 "Params": [
                   {
-                    "ParamName": "target",
-                    "Value": "target"
+                    "ParamName": "Key",
+                    "Value": "EnemiesDefeated"
                   },
                   {
-                    "ParamName": "amount",
-                    "Value": "{this.experiencepayout}"
+                    "ParamName": "Value",
+                    "Value": "[EnemiesDefeated] \u002B 1"
+                  },
+                  {
+                    "ParamName": "RemoveOnFloorChange",
+                    "Value": "False"
                   }
-                ],
-                "Then": {
-                  "EffectName": "SetFlag",
-                  "Params": [
-                    {
-                      "ParamName": "Key",
-                      "Value": "EnemiesDefeated"
-                    },
-                    {
-                      "ParamName": "Value",
-                      "Value": "[EnemiesDefeated] \u002B 1"
-                    },
-                    {
-                      "ParamName": "RemoveOnFloorChange",
-                      "Value": "False"
-                    }
-                  ]
-                }
+                ]
               }
             }
           }
         }
-      ],
+      },
       "Id": "Thief",
       "Name": "ThiefName",
       "Description": "ThiefDescription",
@@ -3992,8 +3965,7 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0.125,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "DoNothing",
           "MinimumRange": 1,
@@ -4016,56 +3988,53 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "AllyDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "255,30,30,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "AllyDeathText"
-              },
-              {
-                "ParamName": "color",
-                "Value": "255,30,30,255"
+                "ParamName": "character",
+                "Value": "\u00B1"
               }
             ],
             "Then": {
-              "EffectName": "ReplaceConsoleRepresentation",
+              "EffectName": "GiveExperience",
               "Params": [
                 {
-                  "ParamName": "character",
-                  "Value": "\u00B1"
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "amount",
+                  "Value": "{this.experiencepayout}"
                 }
-              ],
-              "Then": {
-                "EffectName": "GiveExperience",
-                "Params": [
-                  {
-                    "ParamName": "target",
-                    "Value": "target"
-                  },
-                  {
-                    "ParamName": "amount",
-                    "Value": "{this.experiencepayout}"
-                  }
-                ]
-              }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "MeleeAlly",
       "Name": "MeleeAllyName",
       "Description": "MeleeAllyDescription",
@@ -4115,8 +4084,7 @@
       "MovementIncreasePerLevel": 0,
       "HPRegenerationIncreasePerLevel": 0,
       "MPRegenerationIncreasePerLevel": 0,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "DoNothing",
           "Description": "",
@@ -4141,81 +4109,78 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnDeathActions": [
-        {
-          "Name": "PrintDeath",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnDeath": {
+        "Name": "PrintDeath",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "BossDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "0,255,0,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "BossDeathText"
-              },
-              {
-                "ParamName": "color",
-                "Value": "0,255,0,255"
+                "ParamName": "character",
+                "Value": "\u00B1"
               }
             ],
             "Then": {
-              "EffectName": "ReplaceConsoleRepresentation",
-              "Params": [
-                {
-                  "ParamName": "character",
-                  "Value": "\u00B1"
-                }
-              ],
+              "EffectName": "GenerateStairs",
+              "Params": [],
               "Then": {
-                "EffectName": "GenerateStairs",
-                "Params": [],
+                "EffectName": "SetFlag",
+                "Params": [
+                  {
+                    "ParamName": "Key",
+                    "Value": "EnemiesDefeated"
+                  },
+                  {
+                    "ParamName": "Value",
+                    "Value": "[EnemiesDefeated] \u002B 1"
+                  },
+                  {
+                    "ParamName": "RemoveOnFloorChange",
+                    "Value": "False"
+                  }
+                ],
                 "Then": {
-                  "EffectName": "SetFlag",
+                  "EffectName": "MessageBox",
                   "Params": [
                     {
-                      "ParamName": "Key",
-                      "Value": "EnemiesDefeated"
+                      "ParamName": "Title",
+                      "Value": "Floor5BossDefeatedHeader"
                     },
                     {
-                      "ParamName": "Value",
-                      "Value": "[EnemiesDefeated] \u002B 1"
+                      "ParamName": "Text",
+                      "Value": "Floor5BossDefeatedText"
                     },
                     {
-                      "ParamName": "RemoveOnFloorChange",
-                      "Value": "False"
+                      "ParamName": "Color",
+                      "Value": "0,255,0,255"
                     }
-                  ],
-                  "Then": {
-                    "EffectName": "MessageBox",
-                    "Params": [
-                      {
-                        "ParamName": "Title",
-                        "Value": "Floor5BossDefeatedHeader"
-                      },
-                      {
-                        "ParamName": "Text",
-                        "Value": "Floor5BossDefeatedText"
-                      },
-                      {
-                        "ParamName": "Color",
-                        "Value": "0,255,0,255"
-                      }
-                    ]
-                  }
+                  ]
                 }
               }
             }
           }
         }
-      ],
+      },
       "Id": "Boss",
       "Name": "BossName",
       "Description": "BossDescription",
@@ -4242,8 +4207,7 @@
       "StartsVisible": true,
       "Power": "1d2",
       "EntityType": "Weapon",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "MeleeWeaponAttackName",
           "Description": "BareFistsAttackDescription",
@@ -4301,9 +4265,6 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [],
-      "OnItemUseActions": [],
       "Id": "BareFists",
       "Name": "BareFistsName",
       "Description": "BareFistsDescription",
@@ -4328,11 +4289,7 @@
       "StartsVisible": false,
       "Power": "0",
       "EntityType": "Armor",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [],
-      "OnItemUseActions": [],
+      "OnAttack": [],
       "Id": "ClothArmor",
       "Name": "ClothArmorName",
       "Description": "ClothArmorDescription",
@@ -4357,11 +4314,7 @@
       "StartsVisible": false,
       "Power": "0",
       "EntityType": "Armor",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [],
-      "OnItemUseActions": [],
+      "OnAttack": [],
       "Id": "Skirt",
       "Name": "SkirtName",
       "Description": "SkirtDescription",
@@ -4386,100 +4339,95 @@
       "StartsVisible": true,
       "Power": "2d4",
       "EntityType": "Consumable",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ]
         }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Heal",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "{target.HP} \u003C {target.MaxHP}",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      },
+      "OnUse": {
+        "Name": "Heal",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "{target.HP} \u003C {target.MaxHP}",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            }
+          ],
+          "Then": {
+            "EffectName": "HealDamage",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectDrunkText"
+                "ParamName": "source",
+                "Value": "source"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "power",
+                "Value": "{this.Power}"
               }
             ],
-            "Then": {
-              "EffectName": "HealDamage",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "source",
-                  "Value": "source"
+                  "ParamName": "chance",
+                  "Value": "100"
                 },
                 {
                   "ParamName": "target",
-                  "Value": "target"
-                },
-                {
-                  "ParamName": "power",
-                  "Value": "{this.Power}"
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "chance",
-                    "Value": "100"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
-                  }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "text",
-                    "Value": "ObjectNotUsedText"
+                    "Value": "ObjectDisappearedText"
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotUsedText"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "HealingPotion",
       "Name": "HealingPotionName",
       "Description": "HealingPotionDescription",
@@ -4504,105 +4452,101 @@
       "StartsVisible": true,
       "Power": "1",
       "EntityType": "Consumable",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ]
         }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "ApplyInvigorated",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      },
+      "OnUse": {
+        "Name": "ApplyInvigorated",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            }
+          ],
+          "Then": {
+            "EffectName": "ApplyAlteredStatus",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectDrunkText"
+                "ParamName": "id",
+                "Value": "invigorated"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "chance",
+                "Value": "100"
+              },
+              {
+                "ParamName": "power",
+                "Value": "Ceiling({target.Attack} / 10, 1)"
+              },
+              {
+                "ParamName": "turnlength",
+                "Value": "75"
               }
             ],
-            "Then": {
-              "EffectName": "ApplyAlteredStatus",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
-                {
-                  "ParamName": "id",
-                  "Value": "invigorated"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                },
                 {
                   "ParamName": "chance",
                   "Value": "100"
                 },
                 {
-                  "ParamName": "power",
-                  "Value": "Ceiling({target.Attack} / 10, 1)"
-                },
-                {
-                  "ParamName": "turnlength",
-                  "Value": "75"
+                  "ParamName": "target",
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "chance",
-                    "Value": "100"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
-                  }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "text",
-                    "Value": "ObjectNotUsedText"
+                    "Value": "ObjectDisappearedText"
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotUsedText"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "PotionOfStrength",
       "Name": "PotionOfStrengthName",
       "Description": "PotionOfStrengthDescription",
@@ -4627,100 +4571,95 @@
       "StartsVisible": true,
       "Power": "0",
       "EntityType": "Consumable",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ]
         }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "CurePoison",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "HasStatus(target,Poisoned)",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      },
+      "OnUse": {
+        "Name": "CurePoison",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "HasStatus(target,Poisoned)",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            }
+          ],
+          "Then": {
+            "EffectName": "CleanseAlteredStatus",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectDrunkText"
+                "ParamName": "id",
+                "Value": "poisoned"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "chance",
+                "Value": "100"
               }
             ],
-            "Then": {
-              "EffectName": "CleanseAlteredStatus",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
-                {
-                  "ParamName": "id",
-                  "Value": "poisoned"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                },
                 {
                   "ParamName": "chance",
                   "Value": "100"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "chance",
-                    "Value": "100"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
-                  }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "text",
-                    "Value": "ObjectNotUsedText"
+                    "Value": "ObjectDisappearedText"
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotUsedText"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "Antidote",
       "Name": "AntidoteName",
       "Description": "AntidoteDescription",
@@ -4745,8 +4684,7 @@
       "StartsVisible": true,
       "Power": "1d3",
       "EntityType": "Weapon",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "MeleeWeaponAttackName",
           "Description": "SwordAttackDescription",
@@ -4860,51 +4798,48 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
-        }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
             }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "Sword",
       "Name": "SwordName",
       "Description": "SwordDescription",
@@ -4929,8 +4864,7 @@
       "StartsVisible": true,
       "Power": "2d3",
       "EntityType": "Weapon",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "MeleeWeaponAttackName",
           "Description": "PistolMeleeAttackDescription",
@@ -5044,51 +4978,48 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
-        }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
             }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "Pistol",
       "Name": "PistolName",
       "Description": "PistolDescription",
@@ -5113,53 +5044,49 @@
       "StartsVisible": true,
       "Power": "1",
       "EntityType": "Armor",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
-        }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
             }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "LeatherArmor",
       "Name": "LeatherName",
       "Description": "LeatherDescription",
@@ -5184,53 +5111,49 @@
       "StartsVisible": true,
       "Power": "2",
       "EntityType": "Armor",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
-        }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
             }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "PlateArmor",
       "Name": "PlateName",
       "Description": "PlateDescription",
@@ -5255,8 +5178,7 @@
       "StartsVisible": true,
       "Power": "1d2",
       "EntityType": "Weapon",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "MeleeWeaponAttackName",
           "Description": "JavelinMeleeAttackDescription",
@@ -5451,32 +5373,29 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
             }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "Javelin",
       "Name": "JavelinName",
       "Description": "JavelinDescription",
@@ -5501,55 +5420,54 @@
       "StartsVisible": true,
       "Power": "1d3",
       "EntityType": "Weapon",
-      "OnTurnStartActions": [
-        {
-          "Name": "HPNerf",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ApplyStatAlteration",
-            "Params": [
-              {
-                "ParamName": "id",
-                "Value": "{this}"
-              },
-              {
-                "ParamName": "target",
-                "Value": "target"
-              },
-              {
-                "ParamName": "stat",
-                "Value": "maxhp"
-              },
-              {
-                "ParamName": "chance",
-                "Value": "100"
-              },
-              {
-                "ParamName": "amount",
-                "Value": "-5"
-              },
-              {
-                "ParamName": "turnlength",
-                "Value": "1"
-              },
-              {
-                "ParamName": "displayonlog",
-                "Value": "false"
-              },
-              {
-                "ParamName": "canbestacked",
-                "Value": "false"
-              }
-            ]
-          }
+      "OnTurnStart": {
+        "Name": "HPNerf",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ApplyStatAlteration",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "{this}"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "stat",
+              "Value": "maxhp"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            },
+            {
+              "ParamName": "amount",
+              "Value": "-5"
+            },
+            {
+              "ParamName": "turnlength",
+              "Value": "1"
+            },
+            {
+              "ParamName": "displayonlog",
+              "Value": "false"
+            },
+            {
+              "ParamName": "canbestacked",
+              "Value": "false"
+            }
+          ]
         }
-      ],
-      "OnAttackActions": [
+      },
+      "OnAttack": [
         {
           "Name": "StaffOfMagusName",
           "Description": "StaffOfMagusDescription",
@@ -5821,51 +5739,48 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
-        }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Equip",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectEquippedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "Equip",
-              "Params": []
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
             }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
           }
         }
-      ],
+      },
       "Id": "MagicStaff",
       "Name": "MagicStaffName",
       "Description": "MagicStaffDescription",
@@ -5890,8 +5805,7 @@
       "StartsVisible": true,
       "Power": "0",
       "EntityType": "Consumable",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [
+      "OnAttack": [
         {
           "Name": "ScrollOfDestructionName",
           "Description": "ScrollOfDestructionAttackDescription",
@@ -5972,28 +5886,25 @@
           }
         }
       ],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ]
         }
-      ],
-      "OnItemUseActions": [],
+      },
       "Id": "ScrollOfDestruction",
       "Name": "ScrollOfDestructionName",
       "Description": "ScrollOfDestructionDescription",
@@ -6018,97 +5929,79 @@
       "StartsVisible": true,
       "Power": "1d4",
       "EntityType": "Consumable",
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnItemSteppedActions": [
-        {
-          "Name": "PrintStepped",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
-              }
-            ]
-          }
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ]
         }
-      ],
-      "OnItemUseActions": [
-        {
-          "Name": "Heal",
-          "Description": "",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "TargetTypes": [],
-          "UseCondition": "{target.MP} \u003C {target.MaxMP}",
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      },
+      "OnUse": {
+        "Name": "Heal",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "{target.MP} \u003C {target.MaxMP}",
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplenishMP",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectDrunkText"
+                "ParamName": "Source",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Power",
+                "Value": "{source.Power}"
               }
             ],
-            "Then": {
-              "EffectName": "ReplenishMP",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "Source",
-                  "Value": "source"
-                },
-                {
                   "ParamName": "Target",
-                  "Value": "target"
+                  "Value": "this"
                 },
                 {
-                  "ParamName": "Power",
-                  "Value": "{source.Power}"
+                  "ParamName": "Chance",
+                  "Value": "100"
                 }
               ],
-              "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "Target",
-                    "Value": "this"
-                  },
-                  {
-                    "ParamName": "Chance",
-                    "Value": "100"
-                  }
-                ],
-                "Then": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "Text",
-                      "Value": "ObjectDisappearedText"
-                    },
-                    {
-                      "ParamName": "Color",
-                      "Value": "255,255,255,255"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
+              "Then": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "Text",
-                    "Value": "ObjectNotUsedText"
+                    "Value": "ObjectDisappearedText"
                   },
                   {
                     "ParamName": "Color",
@@ -6116,10 +6009,23 @@
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "Text",
+                  "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "Color",
+                  "Value": "255,255,255,255"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "MagicPotion",
       "Name": "MagicPotionName",
       "Description": "MagicPotionDescription",
@@ -6144,82 +6050,81 @@
     {
       "StartsVisible": false,
       "Power": "1",
-      "OnItemSteppedActions": [
-        {
-          "Name": "TrapActivate",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnStepped": {
+        "Name": "TrapActivate",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
+                "ParamName": "accuracy",
+                "Value": "80"
+              },
+              {
+                "ParamName": "attacker",
+                "Value": "source"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "attack",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "defense",
+                "Value": "0"
               }
             ],
-            "Then": {
-              "EffectName": "DealDamage",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "accuracy",
-                  "Value": "80"
-                },
-                {
-                  "ParamName": "attacker",
-                  "Value": "source"
+                  "ParamName": "chance",
+                  "Value": "40"
                 },
                 {
                   "ParamName": "target",
-                  "Value": "target"
-                },
-                {
-                  "ParamName": "attack",
-                  "Value": "{this.Power}"
-                },
-                {
-                  "ParamName": "defense",
-                  "Value": "0"
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "chance",
-                    "Value": "40"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
-                  }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "text",
-                    "Value": "ObjectNotActivatedText"
+                    "Value": "ObjectDisappearedText"
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotActivatedText"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "SpikeTrap",
       "Name": "SpikeTrapName",
       "Description": "SpikeTrapDescription",
@@ -6242,48 +6147,47 @@
     {
       "StartsVisible": true,
       "Power": "",
-      "OnItemSteppedActions": [
-        {
-          "Name": "TrapActivate",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnStepped": {
+        "Name": "TrapActivate",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "CleanseStatAlterations",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
+                "ParamName": "chance",
+                "Value": "100"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
               }
             ],
-            "Then": {
-              "EffectName": "CleanseStatAlterations",
+            "OnFailure": {
+              "EffectName": "PrintText",
               "Params": [
                 {
-                  "ParamName": "chance",
-                  "Value": "100"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
+                  "ParamName": "text",
+                  "Value": "WonderTileFailedText"
                 }
-              ],
-              "OnFailure": {
-                "EffectName": "PrintText",
-                "Params": [
-                  {
-                    "ParamName": "text",
-                    "Value": "WonderTileFailedText"
-                  }
-                ]
-              }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "WonderTile",
       "Name": "WonderTileName",
       "Description": "WonderTileDescription",
@@ -6305,82 +6209,81 @@
     },
     {
       "StartsVisible": false,
-      "OnItemSteppedActions": [
-        {
-          "Name": "TrapActivate",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnStepped": {
+        "Name": "TrapActivate",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "ApplyAlteredStatus",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
+                "ParamName": "id",
+                "Value": "frozen"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "chance",
+                "Value": "40"
+              },
+              {
+                "ParamName": "power",
+                "Value": "0"
+              },
+              {
+                "ParamName": "turnlength",
+                "Value": "4"
               }
             ],
-            "Then": {
-              "EffectName": "ApplyAlteredStatus",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "id",
-                  "Value": "frozen"
+                  "ParamName": "chance",
+                  "Value": "100"
                 },
                 {
                   "ParamName": "target",
-                  "Value": "target"
-                },
-                {
-                  "ParamName": "chance",
-                  "Value": "40"
-                },
-                {
-                  "ParamName": "power",
-                  "Value": "0"
-                },
-                {
-                  "ParamName": "turnlength",
-                  "Value": "4"
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  {
-                    "ParamName": "chance",
-                    "Value": "100"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
-                  }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
-              },
-              "OnFailure": {
                 "EffectName": "PrintText",
                 "Params": [
                   {
                     "ParamName": "text",
-                    "Value": "ObjectNotActivatedText"
+                    "Value": "ObjectDisappearedText"
                   }
                 ]
               }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotActivatedText"
+                }
+              ]
             }
           }
         }
-      ],
+      },
       "Id": "IceTrap",
       "Name": "IceTrapName",
       "Description": "IceTrapDescription",
@@ -6402,61 +6305,60 @@
     },
     {
       "StartsVisible": false,
-      "OnItemSteppedActions": [
-        {
-          "Name": "TrapActivate",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnStepped": {
+        "Name": "TrapActivate",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Teleport",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "ObjectSteppedText"
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "chance",
+                "Value": "100"
               }
             ],
-            "Then": {
-              "EffectName": "Teleport",
+            "OnSuccess": {
+              "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "target",
-                  "Value": "target"
+                  "ParamName": "chance",
+                  "Value": "15"
                 },
                 {
-                  "ParamName": "chance",
-                  "Value": "100"
+                  "ParamName": "target",
+                  "Value": "this"
                 }
               ],
               "OnSuccess": {
-                "EffectName": "Remove",
+                "EffectName": "PrintText",
                 "Params": [
                   {
-                    "ParamName": "chance",
-                    "Value": "15"
-                  },
-                  {
-                    "ParamName": "target",
-                    "Value": "this"
+                    "ParamName": "text",
+                    "Value": "ObjectDisappearedText"
                   }
-                ],
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    {
-                      "ParamName": "text",
-                      "Value": "ObjectDisappearedText"
-                    }
-                  ]
-                }
+                ]
               }
             }
           }
         }
-      ],
+      },
       "Id": "TeleportTrap",
       "Name": "TeleportTrapName",
       "Description": "TeleportTrapDescription",
@@ -6479,59 +6381,57 @@
   ],
   "AlteredStatuses": [
     {
-      "OnTurnStartActions": [],
       "CanStack": false,
       "CanOverwrite": false,
       "CleanseOnFloorChange": false,
       "CleansedByCleanseActions": true,
-      "OnStatusApplyActions": [
-        {
-          "Name": "Buff",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ApplyStatAlteration",
-            "Params": [
-              {
-                "ParamName": "id",
-                "Value": "{this}"
-              },
-              {
-                "ParamName": "target",
-                "Value": "target"
-              },
-              {
-                "ParamName": "stat",
-                "Value": "attack"
-              },
-              {
-                "ParamName": "chance",
-                "Value": "100"
-              },
-              {
-                "ParamName": "amount",
-                "Value": "{this.Power}"
-              },
-              {
-                "ParamName": "turnlength",
-                "Value": "{this.TurnLength}"
-              },
-              {
-                "ParamName": "displayonlog",
-                "Value": "true"
-              },
-              {
-                "ParamName": "canbestacked",
-                "Value": "true"
-              }
-            ]
-          }
+      "OnApply": {
+        "Name": "Buff",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ApplyStatAlteration",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "{this}"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "stat",
+              "Value": "attack"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            },
+            {
+              "ParamName": "amount",
+              "Value": "{this.Power}"
+            },
+            {
+              "ParamName": "turnlength",
+              "Value": "{this.TurnLength}"
+            },
+            {
+              "ParamName": "displayonlog",
+              "Value": "true"
+            },
+            {
+              "ParamName": "canbestacked",
+              "Value": "true"
+            }
+          ]
         }
-      ],
+      },
       "Id": "Invigorated",
       "Name": "InvigoratedName",
       "Description": "InvigoratedDescription",
@@ -6552,56 +6452,54 @@
       }
     },
     {
-      "OnTurnStartActions": [
-        {
-          "Name": "Poison",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 28,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 28,
-          "Effect": {
-            "EffectName": "PrintText",
+      "OnTurnStart": {
+        "Name": "Poison",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 28,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 28,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "PoisonedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
             "Params": [
               {
-                "ParamName": "text",
-                "Value": "PoisonedText"
+                "ParamName": "accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "attacker",
+                "Value": "source"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "attack",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "defense",
+                "Value": "0"
               }
-            ],
-            "Then": {
-              "EffectName": "DealDamage",
-              "Params": [
-                {
-                  "ParamName": "accuracy",
-                  "Value": "100"
-                },
-                {
-                  "ParamName": "attacker",
-                  "Value": "source"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                },
-                {
-                  "ParamName": "attack",
-                  "Value": "{this.Power}"
-                },
-                {
-                  "ParamName": "defense",
-                  "Value": "0"
-                }
-              ]
-            }
+            ]
           }
         }
-      ],
+      },
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
       "CleansedByCleanseActions": true,
-      "OnStatusApplyActions": [],
       "Id": "Poisoned",
       "Name": "PoisonedName",
       "Description": "PoisonedDescription",
@@ -6622,83 +6520,81 @@
       }
     },
     {
-      "OnTurnStartActions": [
-        {
-          "Name": "Burn",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 5,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 5,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "BurnedText"
-              }
-            ],
-            "Then": {
-              "EffectName": "DealDamage",
-              "Params": [
-                {
-                  "ParamName": "accuracy",
-                  "Value": "100"
-                },
-                {
-                  "ParamName": "attacker",
-                  "Value": "source"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                },
-                {
-                  "ParamName": "attack",
-                  "Value": "{this.Power}"
-                },
-                {
-                  "ParamName": "defense",
-                  "Value": "0"
-                }
-              ]
+      "OnTurnStart": {
+        "Name": "Burn",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 5,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 5,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "BurnedText"
             }
-          }
-        }
-      ],
-      "CanStack": false,
-      "CanOverwrite": true,
-      "CleanseOnFloorChange": true,
-      "CleansedByCleanseActions": true,
-      "OnStatusApplyActions": [
-        {
-          "Name": "RemoveFreeze",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "CleanseAlteredStatus",
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
             "Params": [
               {
-                "ParamName": "id",
-                "Value": "frozen"
+                "ParamName": "accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "attacker",
+                "Value": "source"
               },
               {
                 "ParamName": "target",
                 "Value": "target"
               },
               {
-                "ParamName": "chance",
-                "Value": "100"
+                "ParamName": "attack",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "defense",
+                "Value": "0"
               }
             ]
           }
         }
-      ],
+      },
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnApply": {
+        "Name": "RemoveFreeze",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "frozen"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            }
+          ]
+        }
+      },
       "Id": "Burning",
       "Name": "BurningName",
       "Description": "BurningDescription",
@@ -6719,84 +6615,82 @@
       }
     },
     {
-      "OnTurnStartActions": [
-        {
-          "Name": "Freeze",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "PrintText",
-            "Params": [
-              {
-                "ParamName": "text",
-                "Value": "FrozenText"
-              }
-            ],
-            "Then": {
-              "EffectName": "ForceSkipTurn",
-              "Params": [
-                {
-                  "ParamName": "chance",
-                  "Value": "100"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                }
-              ]
+      "OnTurnStart": {
+        "Name": "Freeze",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "FrozenText"
             }
-          }
-        }
-      ],
-      "CanStack": false,
-      "CanOverwrite": true,
-      "CleanseOnFloorChange": true,
-      "CleansedByCleanseActions": true,
-      "OnStatusApplyActions": [
-        {
-          "Name": "RemoveBurn",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "CleanseAlteredStatus",
+          ],
+          "Then": {
+            "EffectName": "ForceSkipTurn",
             "Params": [
               {
-                "ParamName": "id",
-                "Value": "burning"
+                "ParamName": "chance",
+                "Value": "100"
               },
               {
                 "ParamName": "target",
                 "Value": "target"
-              },
+              }
+            ]
+          }
+        }
+      },
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnApply": {
+        "Name": "RemoveBurn",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "burning"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            }
+          ],
+          "Then": {
+            "EffectName": "ForceSkipTurn",
+            "Params": [
               {
                 "ParamName": "chance",
                 "Value": "100"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
               }
-            ],
-            "Then": {
-              "EffectName": "ForceSkipTurn",
-              "Params": [
-                {
-                  "ParamName": "chance",
-                  "Value": "100"
-                },
-                {
-                  "ParamName": "target",
-                  "Value": "target"
-                }
-              ]
-            }
+            ]
           }
         }
-      ],
+      },
       "Id": "Frozen",
       "Name": "FrozenName",
       "Description": "FrozenDescription",
@@ -6817,59 +6711,57 @@
       }
     },
     {
-      "OnTurnStartActions": [],
       "CanStack": false,
       "CanOverwrite": true,
       "CleanseOnFloorChange": true,
       "CleansedByCleanseActions": false,
-      "OnStatusApplyActions": [
-        {
-          "Name": "Nerf",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
-          "CooldownBetweenUses": 0,
-          "MaximumUses": 0,
-          "MPCost": 0,
-          "StartingCooldown": 0,
-          "Effect": {
-            "EffectName": "ApplyStatAlteration",
-            "Params": [
-              {
-                "ParamName": "id",
-                "Value": "{this}"
-              },
-              {
-                "ParamName": "target",
-                "Value": "target"
-              },
-              {
-                "ParamName": "stat",
-                "Value": "hpregeneration"
-              },
-              {
-                "ParamName": "chance",
-                "Value": "100"
-              },
-              {
-                "ParamName": "amount",
-                "Value": "-{target.hpregeneration}"
-              },
-              {
-                "ParamName": "turnlength",
-                "Value": "-1"
-              },
-              {
-                "ParamName": "displayonlog",
-                "Value": "false"
-              },
-              {
-                "ParamName": "canbestacked",
-                "Value": "true"
-              }
-            ]
-          }
+      "OnApply": {
+        "Name": "Nerf",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ApplyStatAlteration",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "{this}"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "stat",
+              "Value": "hpregeneration"
+            },
+            {
+              "ParamName": "chance",
+              "Value": "100"
+            },
+            {
+              "ParamName": "amount",
+              "Value": "-{target.hpregeneration}"
+            },
+            {
+              "ParamName": "turnlength",
+              "Value": "-1"
+            },
+            {
+              "ParamName": "displayonlog",
+              "Value": "false"
+            },
+            {
+              "ParamName": "canbestacked",
+              "Value": "true"
+            }
+          ]
         }
-      ],
+      },
       "Id": "RegenBlock",
       "Name": "RegenBlockName",
       "Description": "RegenBlockDescription",

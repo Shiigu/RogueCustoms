@@ -212,9 +212,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            foreach (var onFloorStartAction in floorJson.OnFloorStartActions.ConvertAll(ofsa => new ActionWithEffects(ofsa)))
+            var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+            floorAsInstance.GenerateDummyMap();
+
+            if (floorJson.OnFloorStart != null)
             {
-                messages.AddRange(ActionValidator.Validate(onFloorStartAction, dungeonJson, sampleDungeon));
+                messages.AddRange(ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
             }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

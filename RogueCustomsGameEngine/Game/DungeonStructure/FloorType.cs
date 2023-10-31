@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly List<GeneratorAlgorithm> PossibleGeneratorAlgorithms;
 
-        public readonly List<ActionWithEffects> OnFloorStartActions;
+        public readonly ActionWithEffects OnFloorStart;
 
         public FloorType(FloorInfo floorInfo)
         {
@@ -70,8 +70,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 Rows = pga.Rows,
                 Columns = pga.Columns
             }));
-            OnFloorStartActions = new List<ActionWithEffects>();
-            MapActions(OnFloorStartActions, floorInfo.OnFloorStartActions);
+            OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart);
 
             if (!PossibleGeneratorAlgorithms.Any())
                 throw new InvalidDataException("There's no valid generator algorithms for the current floor");
@@ -126,7 +125,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         protected void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
         {
-            actionInfoList.ForEach(aa => actionList.Add(new ActionWithEffects(aa)));
+            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
         }
     }
 
