@@ -324,19 +324,19 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 modificationsThatMightBeNeutralized.AddRange(new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>
                 {
-                    (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false)
+                    (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false)
                 });
 
                 foreach (var alteredStatus in AlteredStatuses)
                 {
-                    if (AlteredStatuses.Any(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 0))
-                        alteredStatusesThatMightBeNeutralized.Add((AlteredStatuses.Where(als => als.ClassId.Equals(alteredStatus.ClassId)).ToList(), alteredStatus.Name, !AlteredStatuses.Any(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 1)));
+                    if (AlteredStatuses.Exists(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 0))
+                        alteredStatusesThatMightBeNeutralized.Add((AlteredStatuses.Where(als => als.ClassId.Equals(alteredStatus.ClassId)).ToList(), alteredStatus.Name, !AlteredStatuses.Exists(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 1)));
                 }
             }
             RefreshCooldownsAndUpdateTurnLength();
@@ -344,12 +344,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
-                if (mightBeNeutralized && modificationList?.All(mhm => mhm.RemainingTurns == 0) == true)
+                if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
             }
             foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
-                if (mightBeNeutralized && alteredStatusList?.All(mhm => mhm.RemainingTurns == 0) == true)
+                if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
             }
             TryRegenerateHP();

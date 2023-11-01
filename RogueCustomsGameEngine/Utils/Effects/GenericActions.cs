@@ -97,7 +97,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusTarget = paramsObject.Target as Character;
             if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
-                var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Any(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
+                var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Exists(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
                 var statusPower = (decimal) paramsObject.Power;
                 var turnlength = (int)paramsObject.TurnLength;
                 var success = statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
@@ -164,7 +164,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (statValue >= statCap)
                 return false;
-            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Any(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
                 var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
@@ -214,7 +214,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to remove an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
             var statusToRemove = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase));
             if (!statusToRemove.CleansedByCleanseActions) throw new InvalidOperationException($"Attempted to remove {statusToRemove.Name} with a Cleanse action when it can't be cleansed that way.");
-            if (c.AlteredStatuses.Any(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 c.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(statusToRemove.ClassId));
                 c.MaxHPModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));

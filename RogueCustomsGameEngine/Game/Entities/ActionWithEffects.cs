@@ -82,7 +82,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool CanBeUsedOn(Character target, Map map)
         {
-            if (target == null && !TargetTypes.Any(tt => tt == TargetType.Room || tt == TargetType.Floor)) return false;
+            if (target == null && !TargetTypes.Exists(tt => tt == TargetType.Room || tt == TargetType.Floor)) return false;
 
             Character character = null;
 
@@ -116,7 +116,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return character.ContainingRoom == target.ContainingRoom ||
                 (character.ContainingTile.Type == TileType.Hallway &&
                     map.Tiles.GetElementsWithinDistanceWhere(character.Position.Y, character.Position.X, MaximumRange, true, t => t.IsWalkable)
-                        .Any(t => t.Position.Equals(target.Position)));
+                        .Exists(t => t.Position.Equals(target.Position)));
         }
 
         public string GetDescriptionWithUsageNotes(Character target)

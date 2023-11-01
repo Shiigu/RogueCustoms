@@ -25,7 +25,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else
             {
-                var localesWithKey = dungeonJson.Locales.Where(ls => ls.LocaleStrings.Any(ls => ls.Key.Equals(localeStringKey)));
+                var localesWithKey = dungeonJson.Locales.Where(ls => ls.LocaleStrings.Exists(ls => ls.Key.Equals(localeStringKey)));
 
                 if (localesWithKey.Any())
                 {

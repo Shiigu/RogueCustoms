@@ -30,7 +30,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 messages.AddError("Character does not have a faction.");
             }
-            else if (!dungeonJson.FactionInfos.Any(fi => characterJson.Faction.Equals(fi.Id)))
+            else if (!dungeonJson.FactionInfos.Exists(fi => characterJson.Faction.Equals(fi.Id)))
             {
                 messages.AddError($"Faction {characterJson.Faction} could not be found.");
             }
@@ -119,9 +119,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)
                 messages.AddWarning("Inventory Size is 0. It won't be able to carry any items.");
-            if (string.IsNullOrWhiteSpace(characterJson.StartingWeapon) || !dungeonJson.Items.Any(c => c.EntityType == "Weapon" && c.Id.Equals(characterJson.StartingWeapon)))
+            if (string.IsNullOrWhiteSpace(characterJson.StartingWeapon) || !dungeonJson.Items.Exists(c => c.EntityType == "Weapon" && c.Id.Equals(characterJson.StartingWeapon)))
                 messages.AddError($"Starting Weapon, {characterJson.StartingWeapon}, is not valid.");
-            if (string.IsNullOrWhiteSpace(characterJson.StartingArmor) || !dungeonJson.Items.Any(c => c.EntityType == "Armor" && c.Id.Equals(characterJson.StartingArmor)))
+            if (string.IsNullOrWhiteSpace(characterJson.StartingArmor) || !dungeonJson.Items.Exists(c => c.EntityType == "Armor" && c.Id.Equals(characterJson.StartingArmor)))
                 messages.AddError($"Starting Armor, {characterJson.StartingArmor}, is not valid.");
             if (characterJson.MaxLevel < 1)
                 messages.AddError("Max Level must be 1 or higher.");
@@ -151,7 +151,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError("Character has more items in the Starting Inventory than what the Inventory Size allows.");
                 foreach (var item in characterJson.StartingInventory)
                 {
-                    if(!dungeonJson.Items.Any(i => i.Id.Equals(item)))
+                    if(!dungeonJson.Items.Exists(i => i.Id.Equals(item)))
                         messages.AddError($"Character has invalid item {item} in Starting Inventory.");
                 }
             }

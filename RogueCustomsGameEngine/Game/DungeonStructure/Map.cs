@@ -14,6 +14,7 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Immutable;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -79,7 +80,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
 
-        public readonly List<AlteredStatus> PossibleStatuses;
+        public ImmutableList<AlteredStatus> PossibleStatuses { get; private set; }
 
         public readonly RngHandler Rng;
         private (Point TopLeftCorner, Point BottomRightCorner)[,] RoomLimitsTable { get; set; }
@@ -87,7 +88,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Tile[,] Tiles { get; private set; }
 
         public List<Room> Rooms { get; private set; }
-        private RoomConnectionType?[,] RoomAdjacencyMatrix;
+        private RoomConnectionType[,] RoomAdjacencyMatrix;
 
         public List<Flag> Flags { get; set; }
 
@@ -112,8 +113,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ConsoleRepresentation.EmptyTile = TileSet.Empty;
             GeneratorAlgorithmToUse = FloorConfigurationToUse.PossibleGeneratorAlgorithms[Rng.NextInclusive(FloorConfigurationToUse.PossibleGeneratorAlgorithms.Count - 1)];
 
-            PossibleStatuses = new List<AlteredStatus>();
-            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            PossibleStatuses = ImmutableList.Create<AlteredStatus>();
+            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses = PossibleStatuses.Add(new AlteredStatus(alsc, this)));
 
             AttackActions.Rng = Rng;
             AttackActions.Map = this;
@@ -148,7 +149,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             NewTurn();
         }
 
-        private Room GetRoomByRowAndColumn(int row, int column) => Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
+        private Room? GetRoomByRowAndColumn(int row, int column) => Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
 
         public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent));
         public void AppendMessage(string message, Color foregroundColor) => AppendMessage(message, new GameColor(foregroundColor));
@@ -381,7 +382,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 for (var column = 0; column < RoomCountColumns; column++)
                 {
-                    if (normalRooms.Any(nr => nr.Row == row && nr.Column == column))
+                    if (normalRooms.Exists(nr => nr.Row == row && nr.Column == column))
                     {
                         var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(row, column);
                         var rngX1 = Rng.NextInclusive(MinX, MaxX - MinRoomWidth);
@@ -393,7 +394,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         Rooms.Add(new Room(this, new Point(rngX1, rngY1), row, column, roomWidth, roomHeight));
                         normalRoomsCount++;
                     }
-                    else if (dummyRooms.Any(fd => fd.Row == row && fd.Column == column))
+                    else if (dummyRooms.Exists(fd => fd.Row == row && fd.Column == column))
                     {
                         var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(row, column);
                         var rngX = Rng.NextInclusive(MinX + 1, MaxX - 1);
@@ -852,7 +853,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
             var entitiesInTile = GetEntitiesFromCoordinates(Player.Position);
-            if (entitiesInTile.Any(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
+            if (entitiesInTile.Exists(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
             {
                 AppendMessage(Locale["TilesIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
             }
@@ -1105,7 +1106,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            if (tile.Items.Any(i => i.Visible))
+            if (tile.Items.Exists(i => i.Visible))
                 return tile.Items.Find(i => i.Visible).ConsoleRepresentation;
             if (tile.Trap != null && tile.Trap.Visible)
                 return tile.Trap.ConsoleRepresentation;
@@ -1118,10 +1119,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         #endregion
 
         #region Room Connections
-        private RoomConnectionType?[,] SetPossibleRoomConnections(bool removeRandomEdges)
+        private RoomConnectionType[,] SetPossibleRoomConnections(bool removeRandomEdges)
         {
             int normalRoomCount = 0, connectionCount = 0, minimumConnections;
-            var temporaryRoomConnectionMatrix = new RoomConnectionType?[Rooms.Count, Rooms.Count];
+            var temporaryRoomConnectionMatrix = new RoomConnectionType[Rooms.Count, Rooms.Count];
 
             normalRoomCount = Rooms.Count(r => r.Width > 1 && r.Height > 1);
             minimumConnections = normalRoomCount - 1;
@@ -1132,7 +1133,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             for (int i = 0; i < roomsAsList.Count; i++)
             {
-                temporaryRoomConnectionMatrix[i, i] = null;
+                temporaryRoomConnectionMatrix[i, i] = RoomConnectionType.None;
                 if (roomsAsList[i] == null) continue;
                 for (int j = 0; j < roomsAsList.Count; j++)
                 {
@@ -1147,7 +1148,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (removeRandomEdges)
             {
-                var testMatrix = new RoomConnectionType?[Rooms.Count, Rooms.Count];
+                var testMatrix = new RoomConnectionType[Rooms.Count, Rooms.Count];
                 for (int y = 0; y < temporaryRoomConnectionMatrix.GetLength(1); y++)
                 {
                     for (int x = 0; x < temporaryRoomConnectionMatrix.GetLength(0); x++)
@@ -1163,10 +1164,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     for (int y = 0; y < temporaryRoomConnectionMatrix.GetLength(1); y++)
                     {
                         if (x == y) continue;
-                        if (testMatrix[x, y] != null && Rng.NextInclusive(1, 100).Between(1, 30))
+                        if (testMatrix[x, y] != RoomConnectionType.None && Rng.NextInclusive(1, 100).Between(1, 30))
                         {
-                            testMatrix[x, y] = null;
-                            if (testMatrix.IsFullyConnectedAdjacencyMatrix(r => r != null))
+                            testMatrix[x, y] = RoomConnectionType.None;
+                            if (testMatrix.IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None))
                             {
                                 for (int i = 0; i < testMatrix.GetLength(0); i++)
                                 {
@@ -1250,8 +1251,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             for (int i = 0; i < Rooms.Count; i++)
             {
-                if (RoomAdjacencyMatrix[indexOfRoom, i] != null)
-                    adjacentRooms.Add((Rooms[i], RoomAdjacencyMatrix[indexOfRoom, i].Value));
+                if (RoomAdjacencyMatrix[indexOfRoom, i] != RoomConnectionType.None)
+                    adjacentRooms.Add((Rooms[i], RoomAdjacencyMatrix[indexOfRoom, i]));
             }
 
             return adjacentRooms;
@@ -1303,7 +1304,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if(!componentPositions.Contains(sourcePosition))
                 componentPositions.Add(sourcePosition);
 
-            if (!componentPositions.Any(p => p.Equals(sourcePosition)))
+            if (!componentPositions.Exists(p => p.Equals(sourcePosition)))
                 return new List<Tile>();
 
             return componentPositions.OrderBy(p => Point.Distance(p, sourcePosition))
@@ -1635,7 +1636,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool HasFlag(string key)
         {
-            return Flags.Any(f => f.Key.Equals(key));
+            return Flags.Exists(f => f.Key.Equals(key));
         }
 
         public int GetFlagValue(string key)

@@ -46,7 +46,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError($"Experience Payout formula is invalid: {ex.Message}.");
             }
 
-            if(!dungeonJson.FloorInfos.Any(fi => fi.PossibleMonsters.Any(pm => pm.ClassId.Equals(npcJson.Id))))
+            if(!dungeonJson.FloorInfos.Exists(fi => fi.PossibleMonsters.Exists(pm => pm.ClassId.Equals(npcJson.Id))))
                 messages.AddWarning("Character is an NPC but does not show up in any list of PossibleMonsters. It will never be spawned. Consider adding it to a PossibleMonsters list.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

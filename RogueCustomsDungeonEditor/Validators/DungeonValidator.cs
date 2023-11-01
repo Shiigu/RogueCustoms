@@ -90,14 +90,14 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !MessageValidationMessages.HasErrors
                 && !IdValidationMessages.HasErrors
                 && !FloorPlanValidationMessages.HasErrors
-                && !FloorGroupValidationMessages.Any(ftvm => ftvm.ValidationMessages.HasErrors)
-                && !FactionValidationMessages.Any(fvm => fvm.ValidationMessages.HasErrors)
-                && !NPCValidationMessages.Any(cvm => cvm.ValidationMessages.HasErrors)
-                && !ItemValidationMessages.Any(ivm => ivm.ValidationMessages.HasErrors)
-                && !TrapValidationMessages.Any(tvm => tvm.ValidationMessages.HasErrors)
-                && !AlteredStatusValidationMessages.Any(asvm => asvm.ValidationMessages.HasErrors)
+                && !FloorGroupValidationMessages.Exists(ftvm => ftvm.ValidationMessages.HasErrors)
+                && !FactionValidationMessages.Exists(fvm => fvm.ValidationMessages.HasErrors)
+                && !NPCValidationMessages.Exists(cvm => cvm.ValidationMessages.HasErrors)
+                && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
+                && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
+                && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)
                 && !DefaultLocaleValidationMessages.HasErrors
-                && !LocaleStringValidationMessages.Any(lsvm => lsvm.ValidationMessages.HasErrors);
+                && !LocaleStringValidationMessages.Exists(lsvm => lsvm.ValidationMessages.HasErrors);
         }
     }
 }

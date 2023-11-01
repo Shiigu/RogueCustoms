@@ -89,7 +89,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 nudAlgorithmColumns.Enabled = false;
                 nudAlgorithmRows.Enabled = false;
             }
-            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Any(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
+            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Exists(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -131,12 +131,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void nudAlgorithmColumns_ValueChanged(object sender, EventArgs e)
         {
-            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Any(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
+            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Exists(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
         }
 
         private void nudAlgorithmRows_ValueChanged(object sender, EventArgs e)
         {
-            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Any(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
+            fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Exists(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
         }
     }
 }

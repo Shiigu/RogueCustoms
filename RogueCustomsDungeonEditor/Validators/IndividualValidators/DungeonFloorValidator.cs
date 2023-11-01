@@ -56,7 +56,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!floorJson.GenerateStairsOnStart)
                 messages.AddWarning("GenerateStairsOnStart is false. Make sure at least one Character/Item/Trap calls GenerateStairs, or the Dungeon won't be able to be completed.");
 
-            if(!dungeonJson.TileSetInfos.Any(tsi => tsi.Id.Equals(floorJson.TileSetId)))
+            if(!dungeonJson.TileSetInfos.Exists(tsi => tsi.Id.Equals(floorJson.TileSetId)))
                 messages.AddError($"{floorJson.TileSetId} is not a recognized TileSet.");
 
             if (floorJson.PossibleMonsters.Any())
@@ -64,7 +64,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var totalChanceForPossibleMonsters = 0;
                 foreach (var possibleMonster in floorJson.PossibleMonsters)
                 {
-                    if(!dungeonJson.NPCs.Any(c => c.Id.Equals(possibleMonster.ClassId)))
+                    if(!dungeonJson.NPCs.Exists(c => c.Id.Equals(possibleMonster.ClassId)))
                         messages.AddError($"{possibleMonster.ClassId} is in the PossibleMonsters list but it's not an NPC.");
                     if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel 
                                                         && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn 
@@ -111,7 +111,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var totalChanceForPossibleItems = 0;
                 foreach (var possibleItem in floorJson.PossibleItems)
                 {
-                    if (!dungeonJson.Items.Any(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
+                    if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
                         messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
                     if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId)) > 1)
                         messages.AddError($"{possibleItem.ClassId} shows up as a duplicate PossibleItem in the current Floor Type.");
@@ -142,7 +142,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var totalChanceForPossibleTraps = 0;
                 foreach (var possibleTrap in floorJson.PossibleTraps)
                 {
-                    if (!dungeonJson.Traps.Any(c => c.Id.Equals(possibleTrap.ClassId)))
+                    if (!dungeonJson.Traps.Exists(c => c.Id.Equals(possibleTrap.ClassId)))
                         messages.AddError($"{possibleTrap.ClassId} is in the PossibleTraps list but it's not a Trap.");
                     if (floorJson.PossibleTraps.Count(pm => pm.ClassId.Equals(possibleTrap.ClassId)) > 1)
                         messages.AddError($"{possibleTrap.ClassId} shows up as a duplicate PossibleTrap in the current Floor Type.");
@@ -176,14 +176,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("MaxConnectionsBetweenRooms is higher than 1 but OddsForExtraConnections is 0. No extra connections will be generated.");
             else if (floorJson.MaxConnectionsBetweenRooms == 1 && floorJson.OddsForExtraConnections > 0)
                 messages.AddWarning("MaxConnectionsBetweenRooms is 1 but OddsForExtraConnections is higher than 0. No extra connections will be generated.");
-            else if (floorJson.MaxConnectionsBetweenRooms > 0 && floorJson.PossibleGeneratorAlgorithms.Any(pga => pga.Name == "OneBigRoom"))
+            else if (floorJson.MaxConnectionsBetweenRooms > 0 && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
                 messages.AddWarning("MaxConnectionsBetweenRooms is higher than 0 but OneBigRoom is a possible generator. No extra connections will be generated for OneBigRoom.");
-            else if (floorJson.OddsForExtraConnections > 0 && floorJson.PossibleGeneratorAlgorithms.Any(pga => pga.Name == "OneBigRoom"))
+            else if (floorJson.OddsForExtraConnections > 0 && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
                 messages.AddWarning("OddsForExtraConnections is higher than 0 but OneBigRoom is a possible generator. No extra connections will be generated for OneBigRoom.");
 
             if (!floorJson.RoomFusionOdds.Between(0, 100))
                 messages.AddError("RoomFusionOdds must be an integer number between 0 and 100.");
-            else if (floorJson.RoomFusionOdds.Between(1, 100) && floorJson.PossibleGeneratorAlgorithms.Any(pga => pga.Name == "OneBigRoom"))
+            else if (floorJson.RoomFusionOdds.Between(1, 100) && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
                 messages.AddWarning("RoomFusionOdds is higher than 0 but OneBigRoom is a possible generator. No rooms will be fused for OneBigRoom.");
 
             foreach (var possibleGeneratorAlgorithm in floorJson.PossibleGeneratorAlgorithms)

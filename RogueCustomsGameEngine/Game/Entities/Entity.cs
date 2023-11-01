@@ -28,8 +28,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionWithEffects OwnOnAttacked { get; set; }
         public ActionWithEffects OwnOnDeath { get; set; }
 
-        protected Entity(EntityClass entityClass, Map map)
+        public Entity(EntityClass entityClass, Map map)
         {
+            if (entityClass == null) throw new ArgumentException("Cannot create an Entity from a null EntityClass");
             Map = map;
             Name = entityClass.Name;
             ClassId = entityClass.Id;

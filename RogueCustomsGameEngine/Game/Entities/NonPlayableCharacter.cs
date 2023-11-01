@@ -46,8 +46,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = null;
                 if (Rng.NextInclusive(1, 100) <= AIOddsToUseActionsOnSelf)
                 {
-                    var hasUsableAttacksOnSelf = OnAttack.Any(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
-                    var hasUsableItemsOnSelf = Inventory?.Any(i => i.EntityType == EntityType.Consumable && (i.OnUse != LastUsedActionOnSelf && i.OnUse.MayBeUsed)) == true;
+                    var hasUsableAttacksOnSelf = OnAttack.Exists(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
+                    var hasUsableItemsOnSelf = Inventory?.Exists(i => i.EntityType == EntityType.Consumable && (i.OnUse != LastUsedActionOnSelf && i.OnUse.MayBeUsed)) == true;
                     if(hasUsableAttacksOnSelf || hasUsableItemsOnSelf)
                     {
                         CurrentTarget = this;
@@ -265,11 +265,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override void DropItem(Item item)
         {
             Tile pickedEmptyTile = null;
-            if (!ContainingTile.Items.Any(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+            if (!ContainingTile.Items.Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
                 pickedEmptyTile = ContainingTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.Items.Any(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.Items.Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => Point.Distance(t.Position, Position)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => Point.Distance(t.Position, Position) <= closestDistance);
                 if (closestEmptyTiles.Any())

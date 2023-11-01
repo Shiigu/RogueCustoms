@@ -63,7 +63,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Tiles = new List<TileDto>();
             }
             var playerEntity = map.Player;
-            var tileIsOccupied = map.GetEntitiesFromCoordinates(playerEntity.Position).Any(e => e.Passable
+            var tileIsOccupied = map.GetEntitiesFromCoordinates(playerEntity.Position).Exists(e => e.Passable
                     && (e.EntityType == EntityType.Weapon || e.EntityType == EntityType.Armor || e.EntityType == EntityType.Consumable)
                     && e.ExistenceStatus != EntityExistenceStatus.Gone);
             map.Entities

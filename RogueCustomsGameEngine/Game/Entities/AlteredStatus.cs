@@ -37,8 +37,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool ApplyTo(Character target, decimal power, int turnLength)
         {
-            if (!CanOverwrite && !CanStack && target.AlteredStatuses.Any(als => als.ClassId.Equals(ClassId))) return false;
-            if (CanOverwrite && !CanStack && target.AlteredStatuses.Any(als => als.ClassId.Equals(ClassId)))
+            if (!CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId))) return false;
+            if (CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId)))
             {
                 target.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(ClassId));
             }

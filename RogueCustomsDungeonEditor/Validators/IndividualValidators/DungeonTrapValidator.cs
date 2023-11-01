@@ -35,7 +35,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Trap doesn't have any OnStepped.");
             }
 
-            if (!dungeonJson.FloorInfos.Any(fi => fi.PossibleTraps.Any(pm => pm.ClassId.Equals(trapJson.Id))))
+            if (!dungeonJson.FloorInfos.Exists(fi => fi.PossibleTraps.Exists(pm => pm.ClassId.Equals(trapJson.Id))))
                 messages.AddWarning("Trap does not show up in any list of PossibleTraps. It will never be spawned. Consider adding it to a PossibleTraps list.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

@@ -560,7 +560,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     var fellowRequiredEncountered = 0;
                     foreach (var paramName in parameterData.OptionalIfFieldsHaveValue)
                     {
-                        if (!paramsAndValues.Any(pav => pav.ParamName.Equals(paramName))) break;
+                        if (!paramsAndValues.Exists(pav => pav.ParamName.Equals(paramName))) break;
                         fellowRequiredEncountered++;
                         var paramValue = paramsAndValues.Find(pav => pav.ParamName.Equals(paramName)).Value;
                         if (!string.IsNullOrWhiteSpace(paramValue))

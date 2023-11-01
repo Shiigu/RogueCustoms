@@ -14,9 +14,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private string Language { get; set; }
         private List<LocaleString> LocaleStrings { get; set; }
 
-        public bool ContainsKey(string key) => LocaleStrings.Any(ls => ls.Key == key);
+        public bool ContainsKey(string key) => LocaleStrings.Exists(ls => ls.Key == key);
 
-        public bool IsValueInAKey(string value) => LocaleStrings.Any(ls => ls.Value == value);
+        public bool IsValueInAKey(string value) => LocaleStrings.Exists(ls => ls.Value == value);
 
         public string this[string key]
         {

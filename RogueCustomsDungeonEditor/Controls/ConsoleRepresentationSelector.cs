@@ -90,7 +90,7 @@ namespace RogueCustomsDungeonEditor.Controls
             characterMapForm.ShowDialog();
             if (characterMapForm.Saved)
             {
-                Character = (char) characterMapForm.CharacterToSave;
+                Character = characterMapForm.CharacterToSave ?? ' ';
             }
         }
 

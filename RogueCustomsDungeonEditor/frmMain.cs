@@ -1085,7 +1085,7 @@ namespace RogueCustomsDungeonEditor
                           .GroupBy(ck => ck.Key)
                           .Select(ck => ck.First())
                           .ToList();
-            var missingCustomEntries = customEntriesList.Where(ck => !localeInfo.LocaleStrings.Any(ls => ls.Key.Equals(ck.Key))).ToList();
+            var missingCustomEntries = customEntriesList.Where(ck => !localeInfo.LocaleStrings.Exists(ls => ls.Key.Equals(ck.Key))).ToList();
             foreach (var missingEntry in missingCustomEntries)
             {
                 var customLocaleEntry = customEntriesList.Find(ck => ck.Key.Equals(missingEntry.Key));
@@ -1155,7 +1155,7 @@ namespace RogueCustomsDungeonEditor
         {
             if (!AutomatedChange) DirtyEntry = true;
             var locale = (LocaleInfo)dgvLocales.Tag;
-            var keyExistsInLocale = locale.LocaleStrings.Any(ls => ls.Key == txtLocaleEntryKey.Text);
+            var keyExistsInLocale = locale.LocaleStrings.Exists(ls => ls.Key == txtLocaleEntryKey.Text);
             btnDeleteLocale.Enabled = !MandatoryLocaleKeys.Contains(txtLocaleEntryKey.Text) && keyExistsInLocale;
             btnAddLocale.Enabled = !keyExistsInLocale;
             btnUpdateLocale.Enabled = keyExistsInLocale;
@@ -1165,7 +1165,7 @@ namespace RogueCustomsDungeonEditor
                 var missingLanguages = new List<string>();
                 foreach (var localeToCheck in ActiveDungeon.Locales)
                 {
-                    if (!localeToCheck.Language.Equals(locale.Language) && !localeToCheck.LocaleStrings.Any(ls => ls.Key == txtLocaleEntryKey.Text))
+                    if (!localeToCheck.Language.Equals(locale.Language) && !localeToCheck.LocaleStrings.Exists(ls => ls.Key == txtLocaleEntryKey.Text))
                     {
                         missingLanguages.Add(localeToCheck.Language);
                     }
@@ -1445,7 +1445,7 @@ namespace RogueCustomsDungeonEditor
             tileSet.Stairs = csrStairs.ConsoleRepresentation;
             tileSet.Empty = csrEmpty.ConsoleRepresentation;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.TileSetInfos.Any(tsi => tsi.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(id)))
             {
                 ActiveDungeon.TileSetInfos.Add(tileSet);
                 MessageBox.Show(
@@ -1489,7 +1489,7 @@ namespace RogueCustomsDungeonEditor
             if (inputBoxResult != null)
             {
                 var saveResult = false;
-                if (ActiveDungeon.TileSetInfos.Any(tsi => tsi.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"A Tileset with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -1940,7 +1940,7 @@ namespace RogueCustomsDungeonEditor
             {
                 lvFloorAlgorithms.Items.Add($"{generationAlgorithm.Name}\n{generationAlgorithm.Columns}c x {generationAlgorithm.Rows}r", generationAlgorithm.Name);
             }
-            nudMaxRoomConnections.Enabled = algorithmList.Any(pga => pga.Columns > 1 || pga.Rows > 1);
+            nudMaxRoomConnections.Enabled = algorithmList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
             if (nudMaxRoomConnections.Enabled)
             {
                 nudMaxRoomConnections.Minimum = 1;
@@ -2265,7 +2265,7 @@ namespace RogueCustomsDungeonEditor
                     enemyFaction.EnemiesWith.Add(faction.Id);
             }
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.FactionInfos.Any(fi => fi.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(id)))
             {
                 ActiveDungeon.FactionInfos.Add(faction);
                 MessageBox.Show(
@@ -2308,7 +2308,7 @@ namespace RogueCustomsDungeonEditor
             var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As");
             if (inputBoxResult != null)
             {
-                if (ActiveDungeon.FactionInfos.Any(fi => fi.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"A faction with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -2325,7 +2325,7 @@ namespace RogueCustomsDungeonEditor
                 else
                 {
                     SaveFaction(inputBoxResult);
-                    if (ActiveDungeon.FactionInfos.Any(fi => fi.Id.Equals(inputBoxResult)))
+                    if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
                         SelectNodeIfExists(inputBoxResult, "Factions");
                 }
                 return true;
@@ -2725,7 +2725,7 @@ namespace RogueCustomsDungeonEditor
             if (!string.IsNullOrWhiteSpace(onDeathAction?.Effect?.EffectName))
                 playerClass.OnDeath = onDeathAction;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.PlayerClasses.Any(p => p.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.PlayerClasses.Exists(p => p.Id.Equals(id)))
             {
                 ActiveDungeon.PlayerClasses.Add(playerClass);
                 MessageBox.Show(
@@ -2770,7 +2770,7 @@ namespace RogueCustomsDungeonEditor
             if (inputBoxResult != null)
             {
                 var saveResult = false;
-                if (ActiveDungeon.PlayerClasses.Any(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.PlayerClasses.Exists(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"A Player Class with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -3379,7 +3379,7 @@ namespace RogueCustomsDungeonEditor
                 npc.OnDeath = onDeathAction;
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Any(n => n.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Exists(n => n.Id.Equals(id)))
             {
                 ActiveDungeon.NPCs.Add(npc);
                 MessageBox.Show(
@@ -3423,7 +3423,7 @@ namespace RogueCustomsDungeonEditor
             var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As");
             if (inputBoxResult != null)
             {
-                if (ActiveDungeon.NPCs.Any(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.NPCs.Exists(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An NPC with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -3948,7 +3948,7 @@ namespace RogueCustomsDungeonEditor
             if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
                 item.OnStepped = onSteppedAction;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Any(i => i.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Exists(i => i.Id.Equals(id)))
             {
                 ActiveDungeon.Items.Add(item);
                 MessageBox.Show(
@@ -3993,7 +3993,7 @@ namespace RogueCustomsDungeonEditor
             if (inputBoxResult != null)
             {
                 var saveResult = false;
-                if (ActiveDungeon.Items.Any(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.Items.Exists(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Item with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -4325,7 +4325,7 @@ namespace RogueCustomsDungeonEditor
             if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
                 trap.OnStepped = onSteppedAction;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Traps.Any(t => t.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Traps.Exists(t => t.Id.Equals(id)))
             {
                 ActiveDungeon.Traps.Add(trap);
                 MessageBox.Show(
@@ -4370,7 +4370,7 @@ namespace RogueCustomsDungeonEditor
             if (inputBoxResult != null)
             {
                 var saveResult = false;
-                if (ActiveDungeon.Traps.Any(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.Traps.Exists(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Trap with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
@@ -4569,7 +4569,7 @@ namespace RogueCustomsDungeonEditor
             if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
                 alteredStatus.OnTurnStart = onTurnStartAction;
 
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Any(als => als.Id.Equals(id)))
+            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(id)))
             {
                 ActiveDungeon.AlteredStatuses.Add(alteredStatus);
                 MessageBox.Show(
@@ -4614,7 +4614,7 @@ namespace RogueCustomsDungeonEditor
             if (inputBoxResult != null)
             {
                 var saveResult = false;
-                if (ActiveDungeon.AlteredStatuses.Any(als => als.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Altered Status with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",

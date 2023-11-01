@@ -15,7 +15,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 {
     public static class ActionHelpers
     {
-        private static List<string> FieldsToConsider = new List<string>
+        private readonly static List<string> FieldsToConsider = new()
         {
             "Id",
             "ClassId",
@@ -38,7 +38,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "Power",
             "TurnLength"
         };
-        public static Map Map;
+        public static Map Map { get; set; }
 
         public static ExpandoObject ParseParams(Entity This, Entity Source, Entity Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
         {
@@ -290,7 +290,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             if (e == null) return parsedArg;
 
             var regex = new Regex(@"HasStatus\(([^,]+),\s*([^)]+)\)|DoesNotHaveStatus\(([^,]+),\s*([^)]+)\)", RegexOptions.IgnoreCase);
-            bool regexWasParsed = false;
             if (regex.IsMatch(parsedArg))
             {
                 var logicalOperators = new string[] { "&&", "||" };
@@ -313,13 +312,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
                         var statusName = (isNot) ? match.Groups[4].Value : match.Groups[2].Value;
 
-                        if (!Map.PossibleStatuses.Any(als => als.ClassId.Equals(statusName))) continue;
+                        if (!Map.PossibleStatuses.Exists(als => als.ClassId.Equals(statusName))) continue;
 
                         if (e is Character character)
                         {
-                            regexWasParsed = true;
-
-                            var statusExists = character.AlteredStatuses.Any(als => als.ClassId.Equals(statusName, StringComparison.InvariantCultureIgnoreCase));
+                            var statusExists = character.AlteredStatuses.Exists(als => als.ClassId.Equals(statusName, StringComparison.InvariantCultureIgnoreCase));
 
                             if (isNot)
                             {
