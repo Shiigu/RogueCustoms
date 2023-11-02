@@ -274,9 +274,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         public static void ForEach<T>(this T[,] array, Action<T> action)
         {
             for (int i = 0; i < array.GetLength(0); i++)
+            {
                 for (int j = 0; j < array.GetLength(1); j++)
                     if (array[i, j] != null)
                         action(array[i, j]);
+            }
         }
         public static List<T> Where<T>(this T[,] array, Func<T, bool> predicate)
         {

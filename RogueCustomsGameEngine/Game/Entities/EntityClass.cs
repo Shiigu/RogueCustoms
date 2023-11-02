@@ -242,7 +242,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        protected void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
+        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
         {
             actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
         }

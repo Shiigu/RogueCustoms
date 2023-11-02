@@ -14,10 +14,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
     public class DungeonConsole : GameSubConsole
     {
         private readonly BicolorBlink SelectionBlink;
-        private (int X, int Y) cursorLocation;
-        public (int X, int Y) CursorLocation {
-            get => cursorLocation;
-            set => cursorLocation = value; }
+        public (int X, int Y) CursorLocation { get; set; }
         public bool WithCursor { get; set; }
         private bool UpdateCursorDisplay { get; set; }
 
@@ -34,7 +31,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
             RefreshOnlyOnStatusUpdate = true;
-            cursorLocation = default;
+            CursorLocation = default;
             LatestCursorLocation = default;
             WithCursor = false;
             UpdateCursorDisplay = false;
@@ -47,7 +44,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             if (playerEntity != null)
             {
                 WithCursor = true;
-                cursorLocation = (playerEntity.X, playerEntity.Y);
+                CursorLocation = (playerEntity.X, playerEntity.Y);
                 this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, SelectionBlink);
             }
         }
@@ -55,7 +52,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public void MoveCursor(CoordinateInput input)
         {
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
-            (int X, int Y) newCoordinates = (cursorLocation.X + input.X, cursorLocation.Y + input.Y);
+            (int X, int Y) newCoordinates = (CursorLocation.X + input.X, CursorLocation.Y + input.Y);
 
             if (newCoordinates.X < 0 || newCoordinates.X >= dungeonStatus.Width) return;
             if (newCoordinates.Y < 0 || newCoordinates.Y >= dungeonStatus.Height) return;
@@ -64,15 +61,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 
             if (!tile.Targetable) return;
 
-            LatestCursorLocation = cursorLocation;
-            cursorLocation = newCoordinates;
+            LatestCursorLocation = CursorLocation;
+            CursorLocation = newCoordinates;
         }
 
         public void RemoveCursor()
         {
-            this.SetEffect(cursorLocation.X, cursorLocation.Y, null);
+            this.SetEffect(CursorLocation.X, CursorLocation.Y, null);
             this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
-            LatestCursorLocation = cursorLocation = default;
+            LatestCursorLocation = CursorLocation = default;
             RefreshOnlyOnStatusUpdate = true;
             WithCursor = false;
             UpdateCursorDisplay = false;
@@ -84,9 +81,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             var dungeonStatus = ParentContainer.LatestDungeonStatus;
             if (dungeonStatus == null) return;
 
-            UpdateCursorDisplay = WithCursor && !cursorLocation.Equals(LatestCursorLocation);
+            UpdateCursorDisplay = WithCursor && !CursorLocation.Equals(LatestCursorLocation);
 
-            if (WithCursor && !cursorLocation.Equals(LatestCursorLocation))
+            if (WithCursor && !CursorLocation.Equals(LatestCursorLocation))
             {
                 this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
                 LatestCursorLocation = default;
@@ -121,8 +118,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             {
                 int minRetrieveX = 0, minRetrieveY = 0, minDisplayX = 1, minDisplayY = 1, widthToDisplay = 0, heightToDisplay = 0;
 
-                int cursorX = cursorLocation != default ? cursorLocation.X : playerEntity.X;
-                int cursorY = cursorLocation != default ? cursorLocation.Y : playerEntity.Y;
+                int cursorX = CursorLocation != default ? CursorLocation.X : playerEntity.X;
+                int cursorY = CursorLocation != default ? CursorLocation.Y : playerEntity.Y;
 
                 if (dungeonStatus.Width == GameConsoleConstants.MapDisplayWidth)
                 {
@@ -177,9 +174,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                                                            tileInCoordinates.BackgroundColor.ToSadRogueColor(),
                                                            tileInCoordinates.Character.ToGlyph());
                         this.SetGlyph(xScreenCoord, yScreenCoord, displayCell);
-                        if (UpdateCursorDisplay && (x, y).Equals(cursorLocation))
+                        if (UpdateCursorDisplay && (x, y).Equals(CursorLocation))
                         {
-                            LatestCursorLocation = cursorLocation;
+                            LatestCursorLocation = CursorLocation;
                             this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
                             this.SetEffect(xScreenCoord, yScreenCoord, SelectionBlink);
                         }

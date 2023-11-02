@@ -10,7 +10,7 @@ namespace RogueCustomsConsoleClient.EngineHandling
 {
     #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    public class BackendHandler
+    public sealed class BackendHandler
     {
         private readonly ServerCaller ServerHandler;
         private readonly DungeonManager LocalHandler;

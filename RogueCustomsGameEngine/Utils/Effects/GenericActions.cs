@@ -131,7 +131,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statAlterationTarget = paramsObject.Target as Character;
             if ((string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase) || string.Equals(paramsObject.StatName, "mp", StringComparison.InvariantCultureIgnoreCase))
                 && !statAlterationTarget.UsesMP)
+            {
                 return false;
+            }
+
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             var statCap = 0m;
             var statValue = 0m;

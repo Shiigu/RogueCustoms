@@ -46,7 +46,7 @@ namespace RogueCustomsGameEngine.Management
             }
         }
 
-        private DungeonInfo? GetDungeonInfoFromFile(string path)
+        private static DungeonInfo? GetDungeonInfoFromFile(string path)
         {
             var jsonString = File.ReadAllText(path);
             return JsonSerializer.Deserialize<DungeonInfo>(jsonString, new JsonSerializerOptions

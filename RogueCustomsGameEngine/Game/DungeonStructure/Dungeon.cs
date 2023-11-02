@@ -104,8 +104,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             foreach (var entityClass in Classes)
             {
                 if (!string.IsNullOrWhiteSpace(entityClass.FactionId))
+                {
                     entityClass.Faction = Factions.Find(f => f.Id.Equals(entityClass.FactionId))
                                 ?? throw new InvalidDataException($"There's no faction with id {entityClass.FactionId}");
+                }
             }
         }
 
