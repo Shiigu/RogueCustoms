@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Utils.JsonImports
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public class ActionWithEffectsInfo
     {
@@ -40,4 +41,5 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string ParamName { get; set; }
         public string Value { get; set; }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

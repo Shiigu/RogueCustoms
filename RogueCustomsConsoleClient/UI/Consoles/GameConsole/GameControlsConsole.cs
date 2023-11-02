@@ -7,6 +7,7 @@ using System;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class GameControlsConsole : GameSubConsole
     {
         private string MoveModeNormalControlsString, MoveModeOnStairsControlsString, MoveModeImmobilizedControlsString, MoveModeCannotActControlsString, MoveModeControlsSubString, ActionModeControlsString, ViewModeControlsString;
@@ -16,7 +17,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
             MoveModeNormalControlsString = LocalizationManager.GetString("MoveModeNormalControlsText").ToAscii();
@@ -34,8 +35,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public override void Update(TimeSpan delta)
         {
             this.Clear();
-            string textToRender = null;
-            string subtextToRender = null;
+            var textToRender = string.Empty;
+            var subtextToRender = string.Empty;
             switch (ParentContainer.ControlMode)
             {
                 case ControlMode.NormalMove:
@@ -73,4 +74,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Update(delta);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

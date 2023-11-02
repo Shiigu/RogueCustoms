@@ -79,7 +79,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddRange(ActionValidator.Validate(itemAsInstance.OnStepped, dungeonJson, sampleDungeon));
             }
 
-
             if (itemJson.OnUse != null)
             {
                 messages.AddRange(ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
@@ -93,9 +92,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("Consumable Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
             }
 
-            if (!dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pm => pm.ClassId.Equals(itemJson.Id))))
+            if (!dungeonJson.FloorInfos.Exists(fi => fi.PossibleItems.Exists(pm => pm.ClassId.Equals(itemJson.Id))))
             {
-                if(itemJson.EntityType == "Consumable" || !dungeonJson.NPCs.Any(c => c.StartingWeapon.Equals(itemJson.Id) || c.StartingArmor.Equals(itemJson.Id)))
+                if(itemJson.EntityType == "Consumable" || !dungeonJson.NPCs.Exists(c => c.StartingWeapon.Equals(itemJson.Id) || c.StartingArmor.Equals(itemJson.Id)))
                 {
                     messages.AddWarning("Item does not show up in any list of PossibleItems. It will never be spawned. Consider adding it to a PossibleItems list.");
                 }

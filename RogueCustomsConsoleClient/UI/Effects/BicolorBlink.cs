@@ -3,7 +3,6 @@ using SadRogue.Primitives;
 
 namespace SadConsole.Effects
 {
-
     /// <summary>
     /// Blinks the foreground and background colors of a cell with the specified colors.
     /// </summary>
@@ -91,7 +90,6 @@ namespace SadConsole.Effects
             return cell.Foreground != oldForeColor || cell.Background != oldBackColor;
         }
 
-
         /// <inheritdoc />
         public override void Update(System.TimeSpan delta)
         {
@@ -136,7 +134,6 @@ namespace SadConsole.Effects
 
             base.Restart();
         }
-
 
         /// <inheritdoc />
         public override ICellEffect Clone() => new BicolorBlink()

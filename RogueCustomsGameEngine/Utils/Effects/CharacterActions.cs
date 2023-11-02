@@ -8,11 +8,19 @@ using System.Linq;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
+    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     // Represents Actions that are only expected to be used by Characters.
     public static class CharacterActions
     {
-        public static RngHandler Rng;
-        public static Map Map;
+        private static RngHandler Rng;
+        private static Map Map;
+
+        public static void SetActionParams(RngHandler rng, Map map)
+        {
+            Rng = rng;
+            Map = map;
+        }
 
         public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
@@ -43,6 +51,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if(stealableItems.Any())
                 {
                     var itemToSteal = stealableItems.TakeRandomElement(Rng);
+                    if (itemToSteal == null) return false;
                     t.Inventory.Remove(itemToSteal);
                     s.Inventory.Add(itemToSteal);
                     itemToSteal.Owner = s;
@@ -59,4 +68,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
     }
+    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

@@ -12,7 +12,9 @@ using System.Linq;
 
 namespace RogueCustomsConsoleClient.UI.Windows
 {
-    public class PromptBox : Window
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+    public sealed class PromptBox : Window
     {
         private Button AffirmativeButton { get; set; }
         private Button NegativeButton { get; set; }
@@ -32,8 +34,9 @@ namespace RogueCustomsConsoleClient.UI.Windows
             return true;
         }
 
-        public static Window Show(ColoredString message, string affirmativeButtonText, string negativeButtonText, string titleText, Color windowColor, Action affirmativeCallback = null, Action negativeCallback = null)
+        public static Window? Show(ColoredString message, string affirmativeButtonText, string negativeButtonText, string titleText, Color windowColor, Action affirmativeCallback = null, Action negativeCallback = null)
         {
+            if (string.IsNullOrWhiteSpace(message.ToString())) return null;
             var messageAsString = message.ToString();
             string[] linesInMessage;
             if (messageAsString.Contains("\r\n"))
@@ -62,13 +65,15 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 Text = negativeButtonText.ToAscii(),
             };
 
-            var window = new PromptBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + affirmativeButton.Surface.Height);
-            window.MessageLines = linesInMessage;
-            window.TitleCaption = titleText.ToAscii();
-            window.AffirmativeButton = affirmativeButton;
-            window.NegativeButton = negativeButton;
-            window.WindowColor = windowColor;
-            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
+            var window = new PromptBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + affirmativeButton.Surface.Height)
+            {
+                MessageLines = linesInMessage,
+                TitleCaption = titleText.ToAscii(),
+                AffirmativeButton = affirmativeButton,
+                NegativeButton = negativeButton,
+                WindowColor = windowColor,
+                Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font")
+            };
 
             message.IgnoreBackground = true;
 
@@ -98,7 +103,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             window.Controls.Add(negativeButton);
             affirmativeButton.IsFocused = true;
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -108,7 +113,8 @@ namespace RogueCustomsConsoleClient.UI.Windows
         {
             if (!ds.IsDirty) return;
 
-            var window = ((ds.Parent as ControlHost).ParentConsole) as Console;
+            if (ds.Parent is not ControlHost host) return;
+            if (host.ParentConsole is not Console window) return;
 
             var square = new Rectangle(0, 0, window.Width, window.Height);
 
@@ -124,4 +130,6 @@ namespace RogueCustomsConsoleClient.UI.Windows
             ds.IsFocused = true;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

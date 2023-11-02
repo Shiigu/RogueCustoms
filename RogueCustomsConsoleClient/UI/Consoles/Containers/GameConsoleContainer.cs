@@ -13,8 +13,6 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using RogueCustomsGameEngine.Game.Entities;
-using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
@@ -22,11 +20,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
     {
         new private readonly List<GameSubConsole> Consoles;
 
-        public bool RequiresRefreshingDungeonState;
+        public bool RequiresRefreshingDungeonState { get; set; }
 
         private int LastTurnCount;
-        public bool HasSetupPlayerData;
-        public DungeonDto? LatestDungeonStatus;
+        public bool HasSetupPlayerData { get; set; }
+        public DungeonDto? LatestDungeonStatus { get; set; }
         public ControlMode ControlMode { get; set; }
 
         public (int X, int Y) CursorLocation => DungeonConsole.CursorLocation;
@@ -37,7 +35,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         private readonly ButtonsConsole ButtonsConsole;
         private readonly ExperienceBarConsole ExperienceBarConsole;
         private readonly GameControlsConsole GameControlsConsole;
-        public Window ActiveWindow;
+        public Window? ActiveWindow { get; set; }
 
         public GameConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
@@ -195,7 +193,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             try
             {
-
                 if (RequiresRefreshingDungeonState)
                 {
                     LatestDungeonStatus = BackendHandler.Instance.GetDungeonStatus();
@@ -275,8 +272,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         {
             try
             {
-                if(this != (Parent as RootScreen).ActiveContainer)
-                    return (Parent as RootScreen).ActiveContainer.ProcessKeyboard(keyboard);
+                if(this != (Parent as RootScreen)?.ActiveContainer)
+                    return (Parent as RootScreen)?.ActiveContainer.ProcessKeyboard(keyboard) ?? false;
                 if (LatestDungeonStatus == null) return true;
                 if (ControlMode == ControlMode.NormalMove || ControlMode == ControlMode.OnStairs || ControlMode == ControlMode.Immobilized || ControlMode == ControlMode.CannotAct)
                     return ProcessMoveModeKeyboard(keyboard);
@@ -285,7 +282,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 if (ControlMode == ControlMode.None)
                     return ProcessNoneModeKeyboard(keyboard);
             }
-            catch (Exception ex)
+            catch
             {
                 LatestDungeonStatus = null;
                 ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
@@ -372,10 +369,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             if (keyboard.IsKeyPressed(Keys.I) && keyboard.KeysPressed.Count == 1)
             {
                 var inventory = BackendHandler.Instance.GetPlayerInventory();
-                if (inventory != null && inventory.InventoryItems.Any())
+                if (inventory?.InventoryItems.Any() == true)
                     ActiveWindow = InventoryWindow.Show(this, inventory, !LatestDungeonStatus.PlayerEntity.CanTakeAction);
-                handled = true;
-                return handled;
+                return true;
             }
 
             if (keyboard.IsKeyPressed(Keys.M) && keyboard.KeysPressed.Count == 1)
@@ -470,15 +466,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     return handled;
                 }
             }
-            else if (ControlMode == ControlMode.ViewTargeting)
+            else if (ControlMode == ControlMode.ViewTargeting && (keyboard.IsKeyPressed(Keys.V) || keyboard.IsKeyPressed(Keys.Enter)) && keyboard.KeysPressed.Count == 1)
             {
-                if ((keyboard.IsKeyPressed(Keys.V) || keyboard.IsKeyPressed(Keys.Enter)) && keyboard.KeysPressed.Count == 1)
-                {
-                    var entityDetails = BackendHandler.Instance.GetDetailsOfEntity(CursorLocation.X, CursorLocation.Y);
-                    if (entityDetails != null)
-                        ActiveWindow = EntityDetailWindow.Show(entityDetails);
-                    return handled;
-                }
+                var entityDetails = BackendHandler.Instance.GetDetailsOfEntity(CursorLocation.X, CursorLocation.Y);
+                if (entityDetails != null)
+                    ActiveWindow = EntityDetailWindow.Show(entityDetails);
+                return handled;
             }
 
             if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
@@ -488,7 +481,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             }
 
             return handled;
-
         }
     }
 

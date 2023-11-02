@@ -8,27 +8,27 @@ using RogueCustomsConsoleClient.UI.Windows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class ButtonsConsole : GameSubConsole
     {
-        private string ExitButtonText;
-        public Button ExitButton;
+        public Button ExitButton { get; private set; }
 
         public ButtonsConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.ButtonsCellWidth, GameConsoleConstants.ButtonsCellHeight)
         {
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
             DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             UseMouse = true;
             RefreshOnlyOnStatusUpdate = false;
-            ExitButtonText = LocalizationManager.GetString("ExitButtonText").ToAscii();
-            ExitButton = new Button(ExitButtonText.Length + 2)
+            var exitButtonText = LocalizationManager.GetString("ExitButtonText").ToAscii();
+            ExitButton = new Button(exitButtonText.Length + 2)
             {
-                Text = ExitButtonText
+                Text = exitButtonText
             };
             ExitButton.Click += ExitButton_Click;
             ExitButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - ExitButton.Surface.Width) / 2, 10);
@@ -53,4 +53,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                                                 () => ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Main));
         }
     }
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

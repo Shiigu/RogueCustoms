@@ -12,7 +12,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonTilesetValidator
     {
-
         public static DungeonValidationMessages Validate(TileSetInfo tileSet, DungeonInfo dungeonJson)
         {
             var messages = new DungeonValidationMessages();
@@ -102,7 +101,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError(errorMessage);
             }
 
-            if(!dungeonJson.FloorInfos.Any(fi => fi.TileSetId.Equals(tileSet.Id)))
+            if(!dungeonJson.FloorInfos.Exists(fi => fi.TileSetId.Equals(tileSet.Id)))
                 messages.AddWarning($"{tileSet.Id} is not set as Tileset in any Floor Group. Check if this is valid.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

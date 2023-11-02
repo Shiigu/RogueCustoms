@@ -13,6 +13,8 @@ using System.IO;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public abstract class Character : Entity, IHasActions, IKillable
     {
         public Faction Faction { get; set; }
@@ -100,14 +102,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal HPRegenerationIncreasePerLevel;
         public List<StatModification> HPRegenerationModifications { get; set; }
         public decimal TotalHPRegenerationIncrements => HPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal HPRegeneration => Math.Min(BaseHPRegeneration + HPRegenerationIncreasePerLevel * (Level - 1) + TotalHPRegenerationIncrements, Constants.REGEN_STAT_CAP);
+        public decimal HPRegeneration => Math.Min(BaseHPRegeneration + (HPRegenerationIncreasePerLevel * (Level - 1)) + TotalHPRegenerationIncrements, Constants.REGEN_STAT_CAP);
         private decimal CarriedHPRegeneration;
 
         public readonly decimal BaseMPRegeneration;
         public readonly decimal MPRegenerationIncreasePerLevel;
         public List<StatModification> MPRegenerationModifications { get; set; }
         public decimal TotalMPRegenerationIncrements => MPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal MPRegeneration => Math.Min(BaseMPRegeneration + MPRegenerationIncreasePerLevel * (Level - 1) + TotalMPRegenerationIncrements, Constants.REGEN_STAT_CAP);
+        public decimal MPRegeneration => Math.Min(BaseMPRegeneration + (MPRegenerationIncreasePerLevel * (Level - 1)) + TotalMPRegenerationIncrements, Constants.REGEN_STAT_CAP);
         private decimal CarriedMPRegeneration;
 
         public readonly int BaseSightRange;
@@ -130,7 +132,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnTurnStart);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnTurnStart != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                    if (i?.OwnOnTurnStart != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
                         actionList.Add(i.OwnOnTurnStart);
                 });
                 return actionList;
@@ -149,7 +151,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.AddRange(Armor.OwnOnAttack);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttack != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                    if (i?.OwnOnAttack != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
                         actionList.AddRange(i.OwnOnAttack);
                 });
                 return actionList;
@@ -168,7 +170,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnAttacked);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttacked != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                    if (i?.OwnOnAttacked != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
                         actionList.Add(i.OwnOnAttacked);
                 });
                 return actionList;
@@ -187,7 +189,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnDeath);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnDeath != null && i?.EntityType != EntityType.Weapon && i?.EntityType != EntityType.Armor)
+                    if (i?.OwnOnDeath != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
                         actionList.Add(i.OwnOnDeath);
                 });
                 return actionList;
@@ -204,7 +206,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             set { _fovTiles = value; }
         }
 
-        public Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
+        protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
             Faction = entityClass.Faction;
             StartingWeaponId = entityClass.StartingWeaponId;
@@ -324,32 +326,36 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 modificationsThatMightBeNeutralized.AddRange(new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>
                 {
-                    (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false),
-                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Any(mhm => mhm.RemainingTurns > 1) == false)
+                    (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false)
                 });
 
-                foreach (var alteredStatus in AlteredStatuses)
-                {
-                    if (AlteredStatuses.Any(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 0))
-                        alteredStatusesThatMightBeNeutralized.Add((AlteredStatuses.Where(als => als.ClassId.Equals(alteredStatus.ClassId)).ToList(), alteredStatus.Name, !AlteredStatuses.Any(als => als.ClassId.Equals(alteredStatus.ClassId) && als.RemainingTurns > 1)));
-                }
+                alteredStatusesThatMightBeNeutralized = AlteredStatuses
+                    .Where(als => als.RemainingTurns > 0)
+                    .GroupBy(als => als.ClassId)
+                    .Select(group => (
+                        group.ToList(),
+                        group.Key,
+                        !group.Any(als => als.RemainingTurns > 1)
+                    ))
+                    .ToList();
             }
             RefreshCooldownsAndUpdateTurnLength();
             OnTurnStart.Where(otsa => otsa.MayBeUsed).ForEach(otsa => otsa?.Do(otsa.User, this));
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
-                if (mightBeNeutralized && modificationList?.All(mhm => mhm.RemainingTurns == 0) == true)
+                if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
             }
             foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
-                if (mightBeNeutralized && alteredStatusList?.All(mhm => mhm.RemainingTurns == 0) == true)
+                if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
             }
             TryRegenerateHP();
@@ -415,8 +421,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return entity.Visible
                 && entity.Position != null
-                && entity.ContainingTile != null
-                && entity.ContainingTile.Discovered
+                && entity.ContainingTile?.Discovered == true
                 && entity.ContainingTile.Visible
                 && ComputeFOVTiles().Contains(entity.ContainingTile);
         }

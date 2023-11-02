@@ -17,7 +17,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         {
             var messages = new DungeonValidationMessages();
 
-            if (!dungeonJson.Locales.Any(l => l.Language.Equals(dungeonJson.DefaultLocale)))
+            if (!dungeonJson.Locales.Exists(l => l.Language.Equals(dungeonJson.DefaultLocale)))
                 messages.AddError($"Dungeon's Default Locale, {dungeonJson.DefaultLocale}, isn't present in the Locale field.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
@@ -32,13 +32,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             foreach (var requiredLocale in requiredLocales)
             {
-                if (!locale.LocaleStrings.Any(ls => ls.Key.Equals(requiredLocale)))
+                if (!locale.LocaleStrings.Exists(ls => ls.Key.Equals(requiredLocale)))
                     messages.AddError($"Locale lacks the in-engine Locale Key {requiredLocale}.");
             }
 
             foreach (var optionalLocale in optionalLocales)
             {
-                if (!locale.LocaleStrings.Any(ls => ls.Key.Equals(optionalLocale)))
+                if (!locale.LocaleStrings.Exists(ls => ls.Key.Equals(optionalLocale)))
                     messages.AddWarning($"Locale lacks the dungeon-specific Locale Key {optionalLocale}. Consider adding it.");
             }
 

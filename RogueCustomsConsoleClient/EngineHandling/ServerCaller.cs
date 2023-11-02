@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsConsoleClient.EngineHandling
 {
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public sealed class ServerCaller
     {
         private readonly HttpClient client;
-        public string Address;
+        public string Address { get; set; }
 
         public ServerCaller(string address)
         {
@@ -128,4 +129,5 @@ namespace RogueCustomsConsoleClient.EngineHandling
             await client.PostAsync($"{Address}/api/PlayerAttackTargetWith/{dungeonId}", content);
         }
     }
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
 }

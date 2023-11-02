@@ -30,7 +30,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("AIOddsToUseActionsOnSelf is 0 but Inventory Size is above 0. It won't be able to use any items it carries.");
             else if (npcJson.AIOddsToUseActionsOnSelf > 0 && npcJson.InventorySize == 0)
                 messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Inventory Size is 0. Unable to carry any items, AIOddsToUseActionsOnSelf won't have any effect.");
-            
 
             try
             {
@@ -46,7 +45,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError($"Experience Payout formula is invalid: {ex.Message}.");
             }
 
-            if(!dungeonJson.FloorInfos.Any(fi => fi.PossibleMonsters.Any(pm => pm.ClassId.Equals(npcJson.Id))))
+            if(!dungeonJson.FloorInfos.Exists(fi => fi.PossibleMonsters.Exists(pm => pm.ClassId.Equals(npcJson.Id))))
                 messages.AddWarning("Character is an NPC but does not show up in any list of PossibleMonsters. It will never be spawned. Consider adding it to a PossibleMonsters list.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

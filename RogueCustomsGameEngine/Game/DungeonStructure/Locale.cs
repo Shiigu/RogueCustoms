@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class Locale
     {
         [MaxLength(2)]
         private string Language { get; set; }
         private List<LocaleString> LocaleStrings { get; set; }
 
-        public bool ContainsKey(string key) => LocaleStrings.Any(ls => ls.Key == key);
+        public bool ContainsKey(string key) => LocaleStrings.Exists(ls => ls.Key == key);
 
-        public bool IsValueInAKey(string value) => LocaleStrings.Any(ls => ls.Value == value);
+        public bool IsValueInAKey(string value) => LocaleStrings.Exists(ls => ls.Value == value);
 
         public string this[string key]
         {
@@ -44,4 +45,5 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public string Key { get; set; }
         public string Value { get; set; }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

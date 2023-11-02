@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Validators
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class DungeonValidationMessages
     {
         public List<DungeonValidationMessage> ValidationMessages { get; set; } = new List<DungeonValidationMessage>();
@@ -51,8 +52,8 @@ namespace RogueCustomsDungeonEditor.Validators
             ValidationMessages.AddRange(messages);
         }
 
-        public bool HasWarnings => ValidationMessages.Any(vm => vm.Type == DungeonValidationMessageType.Warning);
-        public bool HasErrors => ValidationMessages.Any(vm => vm.Type == DungeonValidationMessageType.Error);
+        public bool HasWarnings => ValidationMessages.Exists(vm => vm.Type == DungeonValidationMessageType.Warning);
+        public bool HasErrors => ValidationMessages.Exists(vm => vm.Type == DungeonValidationMessageType.Error);
 
         public bool Any()
         {
@@ -73,4 +74,5 @@ namespace RogueCustomsDungeonEditor.Validators
         Error,
         Warning
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

@@ -11,6 +11,8 @@ using System;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public class DungeonDto
     {
@@ -63,10 +65,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Tiles = new List<TileDto>();
             }
             var playerEntity = map.Player;
-            var tileIsOccupied = map.GetEntitiesFromCoordinates(playerEntity.Position).Any(e => e.Passable
-                    && (e.EntityType == EntityType.Weapon || e.EntityType == EntityType.Armor || e.EntityType == EntityType.Consumable)
-                    && e.ExistenceStatus != EntityExistenceStatus.Gone);
-            map.Entities
+            map.GetEntities()
                 .Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone && playerEntity?.CanSee(e) == true)
                 .ForEach(e => Entities.Add(new EntityDto(e, map)));
             playerEntity.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDto(als)));
@@ -236,4 +235,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         PickableObject = 2,
         Trap = 3
     }
+#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

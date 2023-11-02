@@ -18,9 +18,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
         {
             ControlsContainer = new Console(1, height);
 
-            ScrollBar = new ScrollBar(Orientation.Vertical, height);
-            ScrollBar.IsVisible = true;
-            ScrollBar.IsEnabled = false;
+            ScrollBar = new ScrollBar(Orientation.Vertical, height)
+            {
+                IsVisible = true,
+                IsEnabled = false
+            };
             ScrollBar.ValueChanged += ScrollBar_ValueChanged;
 
             var controlHost = new SadConsole.UI.ControlHost();
@@ -44,7 +46,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
         {
             this.Clear();
             Cursor.Position = new Point(0, 0);
-            
+
             for (int i = 0; i < textList.Count; i++)
             {
                 Cursor.Print(textList[i].ToAscii());

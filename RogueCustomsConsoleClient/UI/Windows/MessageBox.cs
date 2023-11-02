@@ -12,7 +12,9 @@ using System.Linq;
 
 namespace RogueCustomsConsoleClient.UI.Windows
 {
-    public class MessageBox : Window
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+    public sealed class MessageBox : Window
     {
         private Button CloseButton { get; set; }
         private string TitleCaption { get; set; }
@@ -54,12 +56,14 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 Text = closeButtonText.ToAscii(),
             };
 
-            var window = new MessageBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + closeButton.Surface.Height);
-            window.MessageLines = linesInMessage;
-            window.TitleCaption = titleText.ToAscii();
-            window.CloseButton = closeButton;
-            window.WindowColor = windowColor;
-            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
+            var window = new MessageBox(Math.Max(width, titleText.Length), 3 + linesInMessage.Length + closeButton.Surface.Height)
+            {
+                MessageLines = linesInMessage,
+                TitleCaption = titleText.ToAscii(),
+                CloseButton = closeButton,
+                WindowColor = windowColor,
+                Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font")
+            };
 
             message.IgnoreBackground = true;
 
@@ -79,7 +83,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             window.Controls.Add(closeButton);
             closeButton.IsFocused = true;
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -89,7 +93,8 @@ namespace RogueCustomsConsoleClient.UI.Windows
         {
             if (!ds.IsDirty) return;
 
-            var window = ((ds.Parent as ControlHost).ParentConsole) as Console;
+            if (ds.Parent is not ControlHost host) return;
+            if (host.ParentConsole is not Console window) return;
 
             var square = new Rectangle(0, 0, window.Width, window.Height);
 
@@ -105,4 +110,6 @@ namespace RogueCustomsConsoleClient.UI.Windows
             ds.IsFocused = true;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

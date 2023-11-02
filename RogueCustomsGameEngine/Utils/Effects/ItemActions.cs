@@ -5,10 +5,17 @@ using System;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public static class ItemActions
     {
-        public static RngHandler Rng;
-        public static Map Map;
+        private static RngHandler Rng;
+        private static Map Map;
+        public static void SetActionParams(RngHandler rng, Map map)
+        {
+            Rng = rng;
+            Map = map;
+        }
 
         public static bool Equip(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
@@ -35,7 +42,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Item i)
                 throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name} as if it were an item, which it isn't.");
 
-
             if (Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
                 i.Owner?.Inventory?.Remove(i);
@@ -49,4 +55,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

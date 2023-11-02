@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
+    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
     public static class DungeonInfoConversionHelpers
     {
         public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, string dungeonJson, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
@@ -30,7 +33,6 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     case "1.1":
                         dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
                         break;
-                    case "1.0":
                     default:
                         V10to11Dungeon = V10to11Dungeon.ConvertDungeonInfoToV11();
                         break;
@@ -523,19 +525,20 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
         {
             if (info == null) return null;
 
-            var clonedAction = new ActionWithEffectsInfo();
-
-            clonedAction.Name = info.Name;
-            clonedAction.Description = info.Description;
-            clonedAction.CooldownBetweenUses = info.CooldownBetweenUses;
-            clonedAction.StartingCooldown = info.StartingCooldown;
-            clonedAction.MinimumRange = info.MinimumRange;
-            clonedAction.MaximumRange = info.MaximumRange;
-            clonedAction.MaximumUses = info.MaximumUses;
-            clonedAction.MPCost = info.MPCost;
-            clonedAction.UseCondition = info.UseCondition;
-            clonedAction.TargetTypes = new List<string>(info.TargetTypes ?? new List<string>());
-            clonedAction.Effect = info.Effect.CloneToV12();
+            var clonedAction = new ActionWithEffectsInfo
+            {
+                Name = info.Name,
+                Description = info.Description,
+                CooldownBetweenUses = info.CooldownBetweenUses,
+                StartingCooldown = info.StartingCooldown,
+                MinimumRange = info.MinimumRange,
+                MaximumRange = info.MaximumRange,
+                MaximumUses = info.MaximumUses,
+                MPCost = info.MPCost,
+                UseCondition = info.UseCondition,
+                TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
+                Effect = info.Effect.CloneToV12()
+            };
 
             return clonedAction;
         }
@@ -571,4 +574,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         #endregion
     }
+    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
 }

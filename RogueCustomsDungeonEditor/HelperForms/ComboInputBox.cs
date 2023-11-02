@@ -19,7 +19,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             InitializeComponent();
         }
 
-        public static string Show(string prompt, string title, List<string> options, string defaultOption = "")
+        public static string? Show(string prompt, string title, List<string> options, string defaultOption = "")
         {
             using var comboInputBox = new ComboInputBox();
             comboInputBox.Text = title;

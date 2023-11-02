@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public abstract class Entity
     {
         public int Id { get; set; }
@@ -30,6 +32,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         protected Entity(EntityClass entityClass, Map map)
         {
+            if (entityClass == null) throw new ArgumentException("Cannot create an Entity from a null EntityClass");
             Map = map;
             Name = entityClass.Name;
             ClassId = entityClass.Id;
@@ -89,4 +92,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         Dead,
         Gone
     }
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

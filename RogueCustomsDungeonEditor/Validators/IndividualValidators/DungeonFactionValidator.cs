@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
-    public class DungeonFactionValidator
+    public static class DungeonFactionValidator
     {
         public static DungeonValidationMessages Validate(Dungeon dungeon)
         {
@@ -50,8 +50,16 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     errorsToAdd.Add($"Faction {faction.Id}'s Name is empty.");
                 if (name != null && !dungeon.LocaleToUse.ContainsKey(name) && !dungeon.LocaleToUse.IsValueInAKey(name))
                     warningsToAdd.Add($"Faction {faction.Id}'s Name isn't in the Locales dictionary. It's not localizable.");
-                if (name != null && !name.CanBeEncodedToIBM437())
+                if (name?.CanBeEncodedToIBM437() == false)
                     warningsToAdd.Add($"Faction {faction.Id}'s Name cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
+                if (description == null)
+                    errorsToAdd.Add($"Faction {faction.Id} does not have a Description.");
+                else if (string.IsNullOrWhiteSpace(description))
+                    errorsToAdd.Add($"Faction {faction.Id}'s Description is empty.");
+                if (description != null && !dungeon.LocaleToUse.ContainsKey(description) && !dungeon.LocaleToUse.IsValueInAKey(description))
+                    warningsToAdd.Add($"Faction {faction.Id}'s Description isn't in the Locales dictionary. It's not localizable.");
+                if (description?.CanBeEncodedToIBM437() == false)
+                    warningsToAdd.Add($"Faction {faction.Id}'s Description cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
             }
 
             if (!errorsToAdd.Any() && !messages.HasErrors)

@@ -14,15 +14,14 @@ using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
+    #pragma warning disable S4144 // Methods should not have identical implementations
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class OptionsConsole : MenuSubConsole
     {
-        private string WindowHeaderText, RadioButtonHeaderText, LocalRadioButtonText, ServerRadioButtonText, LanguageListHeaderText, ServerAddressTextBoxHeaderText, SaveButtonText, ReturnButtonText;
-
-        private Label WindowHeader, RadioButtonHeader, ServerAddressTextBoxHeader, LanguageTextBoxHeader;
+        private Label RadioButtonHeader, ServerAddressTextBoxHeader, LanguageTextBoxHeader;
         private RadioButton LocalRadioButton, ServerRadioButton;
         private TextBox ServerAddressTextBox;
         private Button SaveButton, ReturnButton;
-        private ControlsConsole WindowHeaderConsole;
         private ListBox LanguageListBox;
 
         private List<string> LanguageList;
@@ -32,45 +31,45 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
-            WindowHeaderText = LocalizationManager.GetString("OptionsHeaderText").ToAscii();
-            RadioButtonHeaderText = LocalizationManager.GetString("RadioButtonHeaderText").ToAscii();
-            LocalRadioButtonText = LocalizationManager.GetString("LocalRadioButtonText").ToAscii();
-            ServerRadioButtonText = LocalizationManager.GetString("ServerRadioButtonText").ToAscii();
-            LanguageListHeaderText = LocalizationManager.GetString("LanguageListHeaderText").ToAscii();
-            ServerAddressTextBoxHeaderText = LocalizationManager.GetString("ServerAddressTextBoxHeaderText").ToAscii();
-            SaveButtonText = LocalizationManager.GetString("SaveButtonText").ToAscii();
-            ReturnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
+            var windowHeaderText = LocalizationManager.GetString("OptionsHeaderText").ToAscii();
+            var radioButtonHeaderText = LocalizationManager.GetString("RadioButtonHeaderText").ToAscii();
+            var localRadioButtonText = LocalizationManager.GetString("LocalRadioButtonText").ToAscii();
+            var serverRadioButtonText = LocalizationManager.GetString("ServerRadioButtonText").ToAscii();
+            var languageListHeaderText = LocalizationManager.GetString("LanguageListHeaderText").ToAscii();
+            var serverAddressTextBoxHeaderText = LocalizationManager.GetString("ServerAddressTextBoxHeaderText").ToAscii();
+            var saveButtonText = LocalizationManager.GetString("SaveButtonText").ToAscii();
+            var returnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
 
-            WindowHeaderConsole = new ControlsConsole(Width, 5)
+            var windowHeaderConsole = new ControlsConsole(Width, 5)
             {
                 Position = new Point(0, 0),
                 FontSize = Font.GetFontSize(IFont.Sizes.Four)
             };
 
-            WindowHeader = new Label(WindowHeaderText.Length)
+            var windowHeader = new Label(windowHeaderText.Length)
             {
-                DisplayText = WindowHeaderText
+                DisplayText = windowHeaderText
             };
-            WindowHeader.Position = new Point(WindowHeader.Width / 2 + 1, 3);
-            WindowHeaderConsole.Controls.Add(WindowHeader);
-            Children.Add(WindowHeaderConsole);
+            windowHeader.Position = new Point((windowHeader.Width / 2) + 1, 3);
+            windowHeaderConsole.Controls.Add(windowHeader);
+            Children.Add(windowHeaderConsole);
 
-            RadioButtonHeader = new Label(RadioButtonHeaderText.Length)
+            RadioButtonHeader = new Label(radioButtonHeaderText.Length)
             {
-                DisplayText = RadioButtonHeaderText,
-                TextColor = Color.Yellow
+                DisplayText = radioButtonHeaderText,
+                TextColor = Color.Yellow,
+                Position = new Point(3, 15)
             };
-            RadioButtonHeader.Position = new Point(3, 15);
             Controls.Add(RadioButtonHeader);
 
-            LocalRadioButton = new RadioButton(LocalRadioButtonText.Length + 5, 1)
+            LocalRadioButton = new RadioButton(localRadioButtonText.Length + 5, 1)
             {
-                Text = LocalRadioButtonText,
+                Text = localRadioButtonText,
                 GroupName = "ServerOptions",
                 TabIndex = 0
             };
@@ -78,9 +77,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             LocalRadioButton.Position = new Point(3, 17);
             Controls.Add(LocalRadioButton);
 
-            ServerRadioButton = new RadioButton(ServerRadioButtonText.Length + 5, 1)
+            ServerRadioButton = new RadioButton(serverRadioButtonText.Length + 5, 1)
             {
-                Text = ServerRadioButtonText,
+                Text = serverRadioButtonText,
                 GroupName = "ServerOptions",
                 TabIndex = 1
             };
@@ -88,12 +87,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerRadioButton.Position = new Point(3, 18);
             Controls.Add(ServerRadioButton);
 
-            LanguageTextBoxHeader = new Label(LanguageListHeaderText.Length)
+            LanguageTextBoxHeader = new Label(languageListHeaderText.Length)
             {
-                DisplayText = LanguageListHeaderText,
+                DisplayText = languageListHeaderText,
                 TextColor = Color.Yellow
             };
-            LanguageTextBoxHeader.Position = new Point(Width / 2 - LanguageTextBoxHeader.Width / 2 - 13, 15);
+            LanguageTextBoxHeader.Position = new Point((Width / 2) - (LanguageTextBoxHeader.Width / 2) - 13, 15);
             Controls.Add(LanguageTextBoxHeader);
 
             LanguageListBox = new ListBox(15, 5)
@@ -101,9 +100,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 VisibleItemsMax = 5,
                 IsScrollBarVisible = true,
                 FocusOnClick = false,
-                TabIndex = 2
+                TabIndex = 2,
+                Position = new Point((Width / 2) - (LanguageTextBoxHeader.Width / 2) - 18, 17)
             };
-            LanguageListBox.Position = new Point(Width / 2 - LanguageTextBoxHeader.Width / 2 - 18, 17);
 
             LanguageList = new List<string>();
             foreach (var language in LocalizationManager.GetLocalizationDisplayData())
@@ -115,12 +114,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             }
             Controls.Add(LanguageListBox);
 
-            ServerAddressTextBoxHeader = new Label(ServerAddressTextBoxHeaderText.Length)
+            ServerAddressTextBoxHeader = new Label(serverAddressTextBoxHeaderText.Length)
             {
-                DisplayText = ServerAddressTextBoxHeaderText,
+                DisplayText = serverAddressTextBoxHeaderText,
                 TextColor = Color.Yellow
             };
-            ServerAddressTextBoxHeader.Position = new Point(Width / 4 - ServerAddressTextBoxHeader.Width / 2 - 8, 26);
+            ServerAddressTextBoxHeader.Position = new Point((Width / 4) - (ServerAddressTextBoxHeader.Width / 2) - 8, 26);
             Controls.Add(ServerAddressTextBoxHeader);
 
             ServerAddressTextBox = new TextBox(30);
@@ -129,22 +128,22 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ServerAddressTextBox.TabIndex = 3;
             Controls.Add(ServerAddressTextBox);
 
-            SaveButton = new Button(SaveButtonText.Length + 2)
+            SaveButton = new Button(saveButtonText.Length + 2)
             {
-                Text = SaveButtonText,
+                Text = saveButtonText,
                 TabIndex = 4
             };
-            SaveButton.Position = new Point(Width / 4 - SaveButton.Width / 2, Height / 2 - 4);
+            SaveButton.Position = new Point((Width / 4) - (SaveButton.Width / 2), (Height / 2) - 4);
             SaveButton.Click += PickButton_Click;
             Controls.Add(SaveButton);
 
-            ReturnButton = new Button(ReturnButtonText.Length + 2)
+            ReturnButton = new Button(returnButtonText.Length + 2)
             {
-                Text = ReturnButtonText,
+                Text = returnButtonText,
                 IsEnabled = true,
                 TabIndex = 5
             };
-            ReturnButton.Position = new Point(Width / 4 - ReturnButton.Width / 2, Height / 2 - 2);
+            ReturnButton.Position = new Point((Width / 4) - (ReturnButton.Width / 2), (Height / 2) - 2);
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
         }
@@ -160,7 +159,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 RadioButtonHeader.TextColor = Color.Yellow;
             }
-            
+
             if (Controls.FocusedControl == LanguageListBox)
             {
                 LanguageTextBoxHeader.TextColor = Color.White;
@@ -268,4 +267,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ParentContainer.MoveToConsole(MenuConsoles.Main);
         }
     }
+    #pragma warning restore S4144 // Methods should not have identical implementations
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

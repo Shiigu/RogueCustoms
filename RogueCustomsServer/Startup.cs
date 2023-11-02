@@ -59,10 +59,7 @@ namespace RogueCustomsServer
             app.UseAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<DungeonMiddleware>();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

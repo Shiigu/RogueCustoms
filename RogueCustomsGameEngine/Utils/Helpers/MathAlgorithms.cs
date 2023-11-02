@@ -7,7 +7,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 {
     public static class MathAlgorithms
     {
-
         public static IEnumerable<T> BresenhamLine<T>(T p1, T p2, Func<T, int> xFunc, Func<T, int> yFunc, Func<int, int, T> coordToTFunc, Func<T, bool> predicate)
         {
             var (x1, y1) = (xFunc(p1), yFunc(p1));
@@ -45,7 +44,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             int y = y0;
             for (int x = x0; x <= x1; x++)
             {
-                var tValue = coordToTFunc((steep ? y : x), (steep ? x : y));
+                var tValue = coordToTFunc(steep ? y : x, steep ? x : y);
                 yield return tValue;
                 if ((x != x0 || y != y0) && !predicate(tValue)) break;
                 error -= dy;
@@ -131,6 +130,5 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 currentDistance = distanceFunc(coordToTFunc(x1, y1), p1);
             }
         }
-
     }
 }

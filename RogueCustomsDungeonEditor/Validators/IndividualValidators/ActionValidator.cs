@@ -14,6 +14,8 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8601 // Posible asignación de referencia nula
     public static class ActionValidator
     {
         public static DungeonValidationMessages Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
@@ -22,84 +24,84 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             var owner = action.User;
             var name = action.Name;
-            var description = action.Description;
             var ownerName = owner != null ? owner.ClassId : "The Floor Type";
 
             if(!string.IsNullOrWhiteSpace(action.UseCondition))
             {
                 if(action.UseCondition.IsBooleanExpression() && action.UseCondition.TestBooleanExpression(out _))
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
                 else
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
+                    messages.AddError($"Action {name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
             }
 
             if (owner != null)
             {
                 messages.AddRange(dungeonJson.ValidateString(action.NameLocaleKey, $"An Action of {ownerName}", "Name", true));
-                messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {action.Name ?? "NULL"}", "Description", false));
+                messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {name ?? "NULL"}", "Description", false));
 
                 var duplicateTargetTypes = action.TargetTypes.GroupBy(tt => tt).Where(gtt => gtt.Count() > 1);
                 foreach (var targetType in duplicateTargetTypes.Select(gtt => gtt.Key))
                 {
-                    messages.AddError($"Action {action.Name ?? "NULL"} has {targetType} as a duplicate TargetType.");
+                    messages.AddError($"Action {name ?? "NULL"} has {targetType} as a duplicate TargetType.");
                 }
 
                 if (action.MinimumRange < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
-                else if (action.MinimumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Any(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
-                else if (action.MinimumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.All(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
+                else if (action.MinimumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
+                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
+                else if (action.MinimumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
+                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
                 if (action.MaximumRange < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
-                else if (action.MaximumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Any(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
-                else if (action.MaximumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.All(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
+                else if (action.MaximumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
+                else if (action.MaximumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
 
                 if (action.MinimumRange > action.MaximumRange)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MinimumRange higher than its MaximumRange.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange higher than its MaximumRange.");
 
                 if (action.CooldownBetweenUses < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
 
                 if (action.StartingCooldown < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
                 else if (action.CooldownBetweenUses < action.StartingCooldown)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a StartingCooldown higher than its CooldownBetweenUses.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a StartingCooldown higher than its CooldownBetweenUses.");
 
                 if (action.MaximumUses < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
             }
             else
             {
                 if (action.MinimumRange < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
                 else if (action.MinimumRange > 0)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a MinimumRange above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a MinimumRange above 0, which will be ignored by the game. Consider removing it.");
                 if (action.MaximumRange < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
                 else if (action.MaximumRange > 0)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a MaximumRange above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a MaximumRange above 0, which will be ignored by the game. Consider removing it.");
                 if (action.CooldownBetweenUses < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
                 else if (action.CooldownBetweenUses > 0)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a CooldownBetweenUses above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a CooldownBetweenUses above 0, which will be ignored by the game. Consider removing it.");
                 if (action.StartingCooldown < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
                 else if (action.StartingCooldown > 0)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a StartingCooldown above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a StartingCooldown above 0, which will be ignored by the game. Consider removing it.");
                 if (action.MaximumUses < 0)
-                    messages.AddError($"Action {action.Name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
                 else if (action.MaximumUses > 0)
-                    messages.AddWarning($"Action {action.Name ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
             }
 
-
             Entity source;
-            Character target = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
-            target.EquippedWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor);
-            target.EquippedArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor);
+            Character target = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor)
+            {
+                EquippedWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor),
+                EquippedArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
+            };
 
             foreach (var als in sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.AlteredStatus && (owner == null || ec.Id != owner.ClassId)))
             {
@@ -111,17 +113,21 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 });
             }
 
-            if (owner != null && owner is Character c)
+            if (owner is Character c)
             {
                 source = c;
-                if(source.OwnOnAttack.Contains(action))
+                if (source.OwnOnAttack.Contains(action))
                 {
-                    (source as Character).Faction = sampleDungeon.Factions.First();
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor);
-                    fillerWeapon.Owner = source as Character;
+                    (source as Character).Faction = sampleDungeon.Factions[0];
+                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as Character
+                    };
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor);
-                    fillerArmor.Owner = source as Character;
+                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as Character
+                    };
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
@@ -131,23 +137,32 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 (owner as Item).Owner = source as NonPlayableCharacter;
                 if (owner.EntityType == EntityType.Weapon)
                 {
-                    (source as Character).EquippedWeapon = (owner as Item);
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor);
-                    fillerArmor.Owner = source as NonPlayableCharacter;
+                    (source as Character).EquippedWeapon = owner as Item;
+                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as NonPlayableCharacter
+                    };
                     (source as Character).EquippedArmor = fillerArmor;
                 }
                 else if (owner.EntityType == EntityType.Armor)
                 {
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor);
-                    fillerWeapon.Owner = source as NonPlayableCharacter;
+                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as NonPlayableCharacter
+                    };
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = (owner as Item);
+                    (source as Character).EquippedArmor = owner as Item;
                 }
             }
             else if (owner == null)
+            {
                 source = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+            }
             else
+            {
                 source = owner;
+            }
+
             target.Position = sampleDungeon.CurrentFloor.Tiles.Find(t => t.IsWalkable).Position;
             if (source is Character)
             {
@@ -177,13 +192,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var pendingEffects = new List<Effect>();
 
             if (currentEffect == null)
-                messages.AddError($"Action {action.Name ?? "NULL"} has no function chain programmed to it.");
+                messages.AddError($"Action {name ?? "NULL"} has no function chain programmed to it.");
             else
                 pendingEffects.Add(currentEffect);
 
-            while (pendingEffects.Any(pe => pe != null) && !errorOnActionChain)
+            while (pendingEffects.Exists(pe => pe != null) && !errorOnActionChain)
             {
-                var nextEffect = pendingEffects.FirstOrDefault(pe => pe != null);
+                var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
                 if(nextEffect.Function != null)
@@ -200,7 +215,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"Action {action.Name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
+                        messages.AddError($"Action {name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
                     }
 
                     try
@@ -208,15 +223,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target, sampleDungeon.CurrentFloor, out bool flagsAreInvolved))
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has parameters that haven't been parsed.");
+                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has parameters that haven't been parsed.");
                         }
                         if(flagsAreInvolved)
-                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
+                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
                     }
                     catch (Exception ex)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
+                        messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
                     }
 
                     if (!errorOnActionChain)
@@ -260,7 +275,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 });
                             }
                             else
+                            {
                                 defenseTestModification.Amount = target.BaseDefense * -1; // Defense is turned into 0
+                            }
+
                             target.AlteredStatuses.Add(new AlteredStatus(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.AlteredStatus), sampleDungeon.CurrentFloor)
                             {
                                 RemainingTurns = -1,
@@ -291,49 +309,49 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 if (target.TotalMaxHPIncrements > 1000000)
                                 {
                                     if(!excessiveTargetHPWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.MaxHPModifications.Clear();
                                     excessiveTargetHPWarning = true;
                                 }
                                 if (target.TotalMaxMPIncrements > 1000000)
                                 {
                                     if (!excessiveTargetMPWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.MaxMPModifications.Clear();
                                     excessiveTargetMPWarning = true;
                                 }
                                 if (target.TotalAttackIncrements > 1000000)
                                 {
                                     if(!excessiveTargetAttackWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.AttackModifications.Clear();
                                     excessiveTargetAttackWarning = true;
                                 }
                                 if (target.TotalDefenseIncrements > 1000000)
                                 {
                                     if(!excessiveTargetDefenseWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.DefenseModifications.Clear();
                                     excessiveTargetDefenseWarning = true;
                                 }
                                 if (target.TotalMovementIncrements > 1000000)
                                 {
                                     if(!excessiveTargetMovementWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.MovementModifications.Clear();
                                     excessiveTargetMovementWarning = true;
                                 }
                                 if (target.TotalHPRegenerationIncrements > 1000000)
                                 {
                                     if(!excessiveTargetHPRegenerationWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.HPRegenerationModifications.Clear();
                                     excessiveTargetHPRegenerationWarning = true;
                                 }
                                 if (target.TotalMPRegenerationIncrements > 1000000)
                                 {
                                     if (!excessiveTargetMPRegenerationWarning)
-                                        messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Target's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                        messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Target's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                     target.MPRegenerationModifications.Clear();
                                     excessiveTargetMPRegenerationWarning = true;
                                 }
@@ -342,49 +360,49 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                     if (s.TotalMaxHPIncrements > 1000000)
                                     {
                                         if(!excessiveSourceHPWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.MaxHPModifications.Clear();
                                         excessiveSourceHPWarning = true;
                                     }
                                     if (s.TotalMaxMPIncrements > 1000000)
                                     {
                                         if (!excessiveSourceMPWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.MaxMPModifications.Clear();
                                         excessiveSourceMPWarning = true;
                                     }
                                     if (s.TotalAttackIncrements > 1000000)
                                     {
                                         if(!excessiveSourceAttackWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.AttackModifications.Clear();
                                         excessiveSourceAttackWarning = true;
                                     }
                                     if (s.TotalDefenseIncrements > 1000000)
                                     {
                                         if(!excessiveSourceDefenseWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.DefenseModifications.Clear();
                                         excessiveSourceDefenseWarning = true;
                                     }
                                     if (s.TotalMovementIncrements > 1000000)
                                     {
                                         if(!excessiveSourceMovementWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.MovementModifications.Clear();
                                         excessiveSourceMovementWarning = true;
                                     }
                                     if (s.TotalHPRegenerationIncrements > 1000000)
                                     {
                                         if(!excessiveSourceHPRegenerationWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.HPRegenerationModifications.Clear();
                                         excessiveSourceHPRegenerationWarning = true;
                                     }
                                     if (s.TotalMPRegenerationIncrements > 1000000)
                                     {
                                         if (!excessiveSourceMPRegenerationWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent Source's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent Source's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         s.MPRegenerationModifications.Clear();
                                         excessiveSourceMPRegenerationWarning = true;
                                     }
@@ -394,49 +412,49 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                     if (o.TotalMaxHPIncrements > 1000000)
                                     {
                                         if (!excessiveThisHPWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's HP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.MaxHPModifications.Clear();
                                         excessiveThisHPWarning = true;
                                     }
                                     if (o.TotalMaxMPIncrements > 1000000)
                                     {
                                         if (!excessiveThisMPWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's MP stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.MaxMPModifications.Clear();
                                         excessiveThisMPWarning = true;
                                     }
                                     if (o.TotalAttackIncrements > 1000000)
                                     {
                                         if (!excessiveThisAttackWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's Attack stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.AttackModifications.Clear();
                                         excessiveThisAttackWarning = true;
                                     }
                                     if (o.TotalDefenseIncrements > 1000000)
                                     {
                                         if (!excessiveThisDefenseWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's Defense stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.DefenseModifications.Clear();
                                         excessiveThisDefenseWarning = true;
                                     }
                                     if (o.TotalMovementIncrements > 1000000)
                                     {
                                         if (!excessiveThisMovementWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's Movement stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.MovementModifications.Clear();
                                         excessiveThisMovementWarning = true;
                                     }
                                     if (o.TotalHPRegenerationIncrements > 1000000)
                                     {
                                         if (!excessiveThisHPRegenerationWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's HP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.HPRegenerationModifications.Clear();
                                         excessiveThisHPRegenerationWarning = true;
                                     }
                                     if (o.TotalMPRegenerationIncrements > 1000000)
                                     {
                                         if (!excessiveThisMPRegenerationWarning)
-                                            messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has sent This's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
+                                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has sent This's MP Regeneration stat above 1000000 after {i} attempts. Check if this is expected, as it might cause an Integer overflow.");
                                         o.MPRegenerationModifications.Clear();
                                         excessiveThisMPRegenerationWarning = true;
                                     }
@@ -446,7 +464,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         catch (Exception ex)
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {action.Name ?? "NULL"} has thrown an Exception when running: {ex.Message}.");
+                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running: {ex.Message}.");
                         }
 
                         if (!errorOnActionChain)
@@ -454,17 +472,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             if (nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                             {
                                 if (amountOfSuccesses == 0)
-                                    messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
                                 else if (amountOfFailures == 0)
-                                    messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess != null && nextEffect.OnFailure == null && amountOfSuccesses == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess == null && nextEffect.OnFailure != null && amountOfFailures == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {action.Name ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
 
                             if (nextEffect.Then != null)
@@ -481,11 +499,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
                 else
                 {
-                    messages.AddError($"Action {action.Name ?? "NULL"} attempts to call an undefined function.");
+                    messages.AddError($"Action {name ?? "NULL"} attempts to call an undefined function.");
                 }
             }
 
             return messages;
         }
     }
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
 }

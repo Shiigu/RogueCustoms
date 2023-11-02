@@ -12,13 +12,18 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable IDE1006 // Estilos de nombres
+    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmObjectGeneration : Form
     {
-        private FloorInfo ActiveFloorGroup;
-        private EntityTypeForForm TypeToUse;
+        private readonly FloorInfo ActiveFloorGroup;
+        private readonly EntityTypeForForm TypeToUse;
         public ObjectGenerationParams ObjectGenerationParams { get; private set; }
         public bool Saved { get; private set; }
-        private List<string> ValidObjectClasses;
+        private readonly List<string> ValidObjectClasses;
 
         public frmObjectGeneration(FloorInfo floorGroupToUse, int minFloorLevel, int maxFloorLevel, ObjectGenerationParams objectGenerationParams, EntityTypeForForm typeToUse, DungeonInfo activeDungeon)
         {
@@ -40,19 +45,33 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 });
             }
             TypeToUse = typeToUse;
+            string objectText;
             if (typeToUse == EntityTypeForForm.Item)
             {
-                this.Text = "Item Generation for Floor Group";
-                btnSave.Text = "Save Item Generation Data";
-                ValidObjectClasses = activeDungeon.Items.ConvertAll(item => item.Id);
-                dgvObjectTable.Columns[0].HeaderText = "Item Class";
+                objectText = "Item";
             }
             else if (typeToUse == EntityTypeForForm.Trap)
             {
-                this.Text = "Trap Generation for Floor Group";
-                btnSave.Text = "Save Trap Generation Data";
+                objectText = "Trap";
+            }
+            else
+            {
+                throw new ArgumentException($"A Type of {typeToUse} is not valid for an Object Generation form");
+            }
+
+            if (minFloorLevel != maxFloorLevel)
+                this.Text = $"{objectText} Generation for Floor Levels {ActiveFloorGroup.MinFloorLevel} to {ActiveFloorGroup.MaxFloorLevel}:";
+            else
+                this.Text = $"{objectText} Generation for Floor Level {ActiveFloorGroup.MinFloorLevel}:";
+            btnSave.Text = $"Save {objectText} Generation Data";
+            dgvObjectTable.Columns[0].HeaderText = $"{objectText} Class";
+            if (typeToUse == EntityTypeForForm.Item)
+            {
+                ValidObjectClasses = activeDungeon.Items.ConvertAll(item => item.Id);
+            }
+            else if (typeToUse == EntityTypeForForm.Trap)
+            {
                 ValidObjectClasses = activeDungeon.Traps.ConvertAll(trap => trap.Id);
-                dgvObjectTable.Columns[0].HeaderText = "Trap Class";
             }
             var classIdColumn = (DataGridViewComboBoxColumn)dgvObjectTable.Columns["ClassId"];
             classIdColumn.DataSource = ValidObjectClasses;
@@ -89,10 +108,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     if (!row.IsNewRow)
                     {
-                        var objectRow = new ClassInFloorInfo();
-                        objectRow.ClassId = row.Cells["ClassId"].Value?.ToString();
-                        objectRow.SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString());
-                        objectRow.ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString());
+                        var objectRow = new ClassInFloorInfo
+                        {
+                            ClassId = row.Cells["ClassId"].Value?.ToString(),
+                            SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString()),
+                            ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString())
+                        };
                         objectList.Add(objectRow);
                     }
                 }
@@ -187,4 +208,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public int MinInFloor { get; set; }
         public int MaxInFloor { get; set; }
     }
+    #pragma warning restore IDE1006 // Estilos de nombres
+    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

@@ -10,6 +10,9 @@ using SadConsole.UI;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
+    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public class MenuConsoleContainer : ConsoleContainer
     {
         private MenuSubConsole ActiveConsole;
@@ -17,21 +20,27 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         private readonly MainMenuConsole MainMenuConsole;
         private readonly PickDungeonConsole PickDungeonConsole;
         private readonly OptionsConsole OptionsConsole;
-        public Window ActiveWindow;
+        public Window ActiveWindow { get; set; }
 
-        public DungeonListDto PossibleDungeonsInfo;
+        public DungeonListDto PossibleDungeonsInfo { get; set; }
 
         public MenuConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
-            MainMenuConsole = new MainMenuConsole(this, Width, Height);
-            MainMenuConsole.IsVisible = false;
-            MainMenuConsole.IsEnabled = false;
-            PickDungeonConsole = new PickDungeonConsole(this, Width, Height);
-            PickDungeonConsole.IsVisible = false;
-            PickDungeonConsole.IsEnabled = false;
-            OptionsConsole = new OptionsConsole(this, Width, Height);
-            OptionsConsole.IsVisible = false;
-            OptionsConsole.IsEnabled = false;
+            MainMenuConsole = new MainMenuConsole(this, Width, Height)
+            {
+                IsVisible = false,
+                IsEnabled = false
+            };
+            PickDungeonConsole = new PickDungeonConsole(this, Width, Height)
+            {
+                IsVisible = false,
+                IsEnabled = false
+            };
+            OptionsConsole = new OptionsConsole(this, Width, Height)
+            {
+                IsVisible = false,
+                IsEnabled = false
+            };
 
             UseKeyboard = false;
             UseMouse = false;
@@ -108,4 +117,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         PickDungeon,
         Options
     }
+    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

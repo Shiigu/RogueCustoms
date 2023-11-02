@@ -35,7 +35,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         else
                             messages.AddWarning($"Character is a Player whose name in locale {locale.Language} exceeds 13 characters. Console Clients may display the name incorrectly");
                     }
-
                 }
                 if (!foundNameInLocales && playerClassJson.Name.Length > 13)
                 {
@@ -47,9 +46,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             var startingWeaponId = playerClassJson.StartingWeapon;
             var startingArmorId = playerClassJson.StartingArmor;
-            if (dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pi => pi.ClassId.Equals(startingWeaponId))))
+            if (dungeonJson.FloorInfos.Exists(fi => fi.PossibleItems.Exists(pi => pi.ClassId.Equals(startingWeaponId))))
                 messages.AddWarning($"Character is a Player whose Starting Weapon, {startingWeaponId}, can spawn as a pickable item in a floor. This might cause unintended behaviour.");
-            if (dungeonJson.FloorInfos.Any(fi => fi.PossibleItems.Any(pi => pi.ClassId.Equals(startingArmorId))))
+            if (dungeonJson.FloorInfos.Exists(fi => fi.PossibleItems.Exists(pi => pi.ClassId.Equals(startingArmorId))))
                 messages.AddWarning($"Character is a Player whose Starting Armor, {startingArmorId}, can spawn as a pickable item in a floor. This might cause unintended behaviour.");
             if (!playerClassJson.CanGainExperience)
                 messages.AddWarning("Character is set as a Player Class, but is not allowed to gain any experience points. Reconsider this.");

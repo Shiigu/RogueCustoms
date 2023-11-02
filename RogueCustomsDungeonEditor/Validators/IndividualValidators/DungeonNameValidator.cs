@@ -27,7 +27,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 errorsToAdd.Add("Dungeon's Name is empty.");
             if (name != null && !dungeon.LocaleToUse.ContainsKey(name) && !dungeon.LocaleToUse.IsValueInAKey(name))
                 warningsToAdd.Add($"Dungeon's Name isn't in the Locales dictionary. It's not localizable.");
-            if (name != null && !name.CanBeEncodedToIBM437())
+            if (name?.CanBeEncodedToIBM437() == false)
                 warningsToAdd.Add($"Dungeon's Name cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
             if (!errorsToAdd.Any())
                 successesToAdd.Add("NAME VALIDATION SUCCESSFUL");

@@ -21,6 +21,7 @@ using RogueCustomsConsoleClient.UI.Consoles.GameConsole;
 
 namespace RogueCustomsConsoleClient.UI.Windows
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class EntityDetailWindow : Window
     {
         private Button CloseButton { get; set; }
@@ -39,7 +40,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             return true;
         }
 
-        public static Window Show(EntityDetailDto entityDetail)
+        public static Window? Show(EntityDetailDto entityDetail)
         {
             if (entityDetail == null) return null;
 
@@ -66,13 +67,15 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 Text = okButtonText.ToAscii(),
             };
 
-            var window = new EntityDetailWindow(Math.Max(width, titleText.Length), 7 + splitWrappedDescription.Count + okButton.Surface.Height);
-            window.DescriptionLines = splitWrappedDescription.ToArray();
-            window.TitleCaption = titleText.ToAscii();
-            window.CloseButton = okButton;
-            window.WindowColor = Color.Green;
-            window.Details = entityDetail;
-            window.Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
+            var window = new EntityDetailWindow(Math.Max(width, titleText.Length), 7 + splitWrappedDescription.Count + okButton.Surface.Height)
+            {
+                DescriptionLines = splitWrappedDescription.ToArray(),
+                TitleCaption = titleText.ToAscii(),
+                CloseButton = okButton,
+                WindowColor = Color.Green,
+                Details = entityDetail,
+                Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font")
+            };
 
             var printArea = new DrawingArea(window.Width, window.Height);
             printArea.OnDraw += window.DrawWindow;
@@ -89,7 +92,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
             window.Controls.Add(okButton);
             okButton.IsFocused = true;
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -99,7 +102,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
         {
             if (!ds.IsDirty) return;
 
-            var window = ((ds.Parent as ControlHost).ParentConsole) as Console;
+            var window = ((ds.Parent as ControlHost)?.ParentConsole) as Console;
 
             var square = new Rectangle(0, 0, window.Width, window.Height);
 
@@ -121,4 +124,5 @@ namespace RogueCustomsConsoleClient.UI.Windows
             ds.IsFocused = true;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

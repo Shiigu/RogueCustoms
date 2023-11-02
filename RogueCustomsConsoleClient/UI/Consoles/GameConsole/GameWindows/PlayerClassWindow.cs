@@ -23,7 +23,8 @@ using RogueCustomsGameEngine.Game.Entities;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
-    public class PlayerClassWindow : Window
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    public sealed class PlayerClassWindow : Window
     {
         private readonly string SelectButtonText = LocalizationManager.GetString("SelectButtonText").ToAscii();
         private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
@@ -46,11 +47,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, PlayerClassSelectionOutput playerClassSelectionData)
+        public static Window? Show(GameConsoleContainer parent, PlayerClassSelectionOutput playerClassSelectionData)
         {
             if (!playerClassSelectionData.CharacterClasses.Any()) return null;
-            var width = 65;
-            var height = 30;
+            const int width = 65;
+            const int height = 30;
 
             var window = new PlayerClassWindow(width, height);
 
@@ -58,17 +59,17 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             {
                 Text = window.LeftButtonText,
                 TextAlignment = HorizontalAlignment.Center,
-                Theme = new ButtonLinesTheme()
+                Theme = new ButtonLinesTheme(),
+                Position = new Point(1, 1)
             };
-            leftButton.Position = new Point(1, 1);
 
             var rightButton = new Button(window.RightButtonText.Length + 2, 3)
             {
                 Text = window.RightButtonText,
                 TextAlignment = HorizontalAlignment.Center,
-                Theme = new ButtonLinesTheme()
+                Theme = new ButtonLinesTheme(),
+                Position = new Point(width - 5, 1)
             };
-            rightButton.Position = new Point(width - 5, 1);
 
             var selectButton = new Button(window.SelectButtonText.Length + 4, 1)
             {
@@ -113,10 +114,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Position = new Point(width - 2, square.Y - 1)
             };
 
-            scrollBar.ValueChanged += (o, e) =>
-            {
-                textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
-            };
+            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
 
             window.ScrollBar = scrollBar;
             window.Controls.Add(scrollBar);
@@ -158,7 +156,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 window.DrawingArea.IsDirty = true;
             };
 
-            cancelButton.Position = new Point((window.Width - cancelButton.Surface.Width) - 2, window.Height - cancelButton.Surface.Height);
+            cancelButton.Position = new Point(window.Width - cancelButton.Surface.Width - 2, window.Height - cancelButton.Surface.Height);
             cancelButton.Click += (o, e) => {
                 parent.ActiveWindow = PromptBox.Show(new ColoredString(LocalizationManager.GetString("ExitPromptText")), LocalizationManager.GetString("YesButtonText"), LocalizationManager.GetString("NoButtonText"), LocalizationManager.GetString("PlayerClassWindowTitleText"), Color.Red,
                                                 () => {
@@ -178,7 +176,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.Controls.Add(cancelButton);
 
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -207,7 +205,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             if (!ds.IsDirty) return;
 
-            var window = (ds.Parent as ControlHost).ParentConsole as Console;
+            if (ds.Parent is not ControlHost host) return;
+            if (host.ParentConsole is not Console window) return;
 
             TextAreaSubConsole.Clear();
             TextAreaSubConsole.Cursor.Position = new Point(0, 0);
@@ -377,4 +376,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             return base.ProcessMouse(state);
         }
     }
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

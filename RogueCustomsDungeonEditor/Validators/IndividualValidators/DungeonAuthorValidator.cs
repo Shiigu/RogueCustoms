@@ -27,7 +27,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 errorsToAdd.Add("Dungeon does not have an Author.");
             else if (string.IsNullOrWhiteSpace(author))
                 errorsToAdd.Add("Dungeon's Author name is empty.");
-            if (author != null && !author.CanBeEncodedToIBM437())
+            if (author?.CanBeEncodedToIBM437() == false)
                 warningsToAdd.Add($"Dungeon's Author cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
             if (!errorsToAdd.Any())
                 successesToAdd.Add("AUTHOR VALIDATION SUCCESSFUL");
@@ -63,7 +63,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.Add("Dungeon does not have an Author.", DungeonValidationMessageType.Error);
             else if (string.IsNullOrWhiteSpace(author))
                 messages.Add("Dungeon's Author name is empty.", DungeonValidationMessageType.Error);
-            if (author != null && !author.CanBeEncodedToIBM437())
+            if (author?.CanBeEncodedToIBM437() == false)
                 messages.Add("Dungeon's Author cannot be properly encoded to IBM437. Console clients may display it incorrectly.", DungeonValidationMessageType.Warning);
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

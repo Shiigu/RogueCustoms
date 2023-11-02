@@ -19,6 +19,8 @@ using System;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
     public class ActionWindow : Window
     {
         private readonly string DoButtonText = LocalizationManager.GetString("DoButtonText").ToAscii();
@@ -36,11 +38,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, ActionListDto actionListData)
+        public static Window? Show(GameConsoleContainer parent, ActionListDto actionListData)
         {
             if (!actionListData.Actions.Any()) return null;
-            var width = GameConsoleConstants.SelectionWindowWidth;
-            var height = GameConsoleConstants.SelectionWindowHeight;
+            const int width = GameConsoleConstants.SelectionWindowWidth;
+            const int height = GameConsoleConstants.SelectionWindowHeight;
 
             var window = new ActionWindow(width, height);
 
@@ -95,7 +97,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             };
             doButton.Theme = null;
 
-            cancelButton.Position = new Point((window.Width - cancelButton.Surface.Width) - 2, window.Height - cancelButton.Surface.Height);
+            cancelButton.Position = new Point(window.Width - cancelButton.Surface.Width - 2, window.Height - cancelButton.Surface.Height);
             cancelButton.Click += (o, e) => { parent.ControlMode = ControlMode.NormalMove; window.Hide(); };
             cancelButton.Theme = null;
 
@@ -105,7 +107,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.Controls.Add(cancelButton);
 
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -115,9 +117,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             if (!ds.IsDirty) return;
 
-            var window = (ds.Parent as ControlHost).ParentConsole as Console;
-
-            var square = new Rectangle(0, 0, Width, Height);
+            var window = (ds.Parent as ControlHost)?.ParentConsole as Console;
 
             ds.Surface.Clear();
             ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
@@ -131,9 +131,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             ds.Surface.Print((Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption.ToAscii()} ", Color.White, Color.DarkRed);
 
             var action = ActionItems.ElementAtOrDefault(ActionSelectedIndex);
-            var initialIndexToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, ActionItems.IndexOf(action));
+            var initialIndexToShow = CurrentlyShownActionItems?.Contains(action) == true ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, ActionItems.IndexOf(action));
             CurrentlyShownFirstIndex = initialIndexToShow;
-            var actionItemsToShow = CurrentlyShownActionItems != null && CurrentlyShownActionItems.Contains(action) ? CurrentlyShownActionItems : ActionItems.Skip(initialIndexToShow).Take(30).ToList();
+            var actionItemsToShow = CurrentlyShownActionItems?.Contains(action) == true ? CurrentlyShownActionItems : ActionItems.Skip(initialIndexToShow).Take(30).ToList();
             CurrentlyShownActionItems = actionItemsToShow;
 
             for (int i = 0; i < actionItemsToShow.Count; i++)
@@ -147,22 +147,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             DoButton.IsEnabled = action.CanBeUsed;
 
-            if (action != null)
+            DoButton.IsEnabled = action.CanBeUsed;
+
+            ds.Surface.Print(41, 2, action.Name.ToAscii(), Color.White, Color.Black);
+
+            var linesInDescription = action.Description.Split(
+                new[] { "\r\n", "\n" }, StringSplitOptions.None
+                );
+            var splitWrappedDescription = linesInDescription.SplitByLengthWithWholeWords(GameConsoleConstants.DescriptionWindowMaxLength).ToList();
+
+            for (int i = 0; i < splitWrappedDescription.Count; i++)
             {
-                DoButton.IsEnabled = action.CanBeUsed;
-
-                ds.Surface.Print(41, 2, action.Name.ToAscii(), Color.White, Color.Black);
-
-                var descriptionAsString = action.Description.Wrap(30);
-                var linesInDescription = action.Description.Split(
-                    new[] { "\r\n", "\n" }, StringSplitOptions.None
-                    );
-                var splitWrappedDescription = linesInDescription.SplitByLengthWithWholeWords(GameConsoleConstants.DescriptionWindowMaxLength).ToList();
-
-                for (int i = 0; i < splitWrappedDescription.Count; i++)
-                {
-                    ds.Surface.Print(41, 4 + i, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
-                }
+                ds.Surface.Print(41, 4 + i, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
             }
             ds.IsDirty = true;
             ds.IsFocused = true;
@@ -182,7 +178,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 ActionSelectedIndex = Math.Min(ActionItems.Count - 1, ActionSelectedIndex + 1);
                 DrawingArea.IsDirty = true;
             }
-            else if (((info.IsKeyPressed(Keys.A) || info.IsKeyPressed(Keys.D) || info.IsKeyPressed(Keys.Enter)) && action.CanBeUsed) && info.KeysPressed.Count == 1)
+            else if ((info.IsKeyPressed(Keys.A) || info.IsKeyPressed(Keys.D) || info.IsKeyPressed(Keys.Enter)) && action.CanBeUsed && info.KeysPressed.Count == 1)
             {
                 DoButton.InvokeClick();
             }
@@ -194,4 +190,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             return true;
         }
     }
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

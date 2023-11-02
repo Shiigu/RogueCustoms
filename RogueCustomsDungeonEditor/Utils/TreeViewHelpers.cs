@@ -18,7 +18,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             foreach (TreeNode node in nodes)
             {
-                if (node.Tag != null && node.Tag.Equals(tagToFind))
+                if (node.Tag?.Equals(tagToFind) == true)
                 {
                     treeView.SelectedNode = node;
                     return;

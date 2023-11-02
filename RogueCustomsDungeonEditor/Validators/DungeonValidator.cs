@@ -12,9 +12,10 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Validators
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class DungeonValidator
     {
-        private DungeonInfo DungeonJson;
+        private readonly DungeonInfo DungeonJson;
 
         public DungeonValidationMessages NameValidationMessages { get; private set; }
         public DungeonValidationMessages AuthorValidationMessages { get; private set; }
@@ -44,11 +45,11 @@ namespace RogueCustomsDungeonEditor.Validators
 
             foreach (var locale in DungeonJson.Locales)
             {
-                foreach (var localeString in locale.LocaleStrings)
-                {
-                    if (!requiredLocaleStrings.Contains(localeString.Key) && !dungeonSpecificLocaleStringsToExpect.Contains(localeString.Key))
-                        dungeonSpecificLocaleStringsToExpect.Add(localeString.Key);
-                }
+                dungeonSpecificLocaleStringsToExpect.AddRange(
+                        locale.LocaleStrings
+                            .Where(localeString => !requiredLocaleStrings.Contains(localeString.Key)
+                                                && !dungeonSpecificLocaleStringsToExpect.Contains(localeString.Key))
+                            .Select(localeString => localeString.Key));
             }
             var sampleDungeon = new Dungeon(0, DungeonJson, DungeonJson.DefaultLocale);
             sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
@@ -81,23 +82,21 @@ namespace RogueCustomsDungeonEditor.Validators
                 AlteredStatusValidationMessages.Add((alteredStatusInfo.Id, DungeonAlteredStatusValidator.Validate(alteredStatusInfo, DungeonJson, sampleDungeon)));
 
             DefaultLocaleValidationMessages = DungeonLocaleValidator.ValidateDefaultLocale(DungeonJson);
-
-            foreach (var locale in DungeonJson.Locales)
-                LocaleStringValidationMessages.Add((locale.Language, DungeonLocaleValidator.ValidateLocaleStrings(DungeonJson, locale.Language, requiredLocaleStrings, dungeonSpecificLocaleStringsToExpect)));
-
+            LocaleStringValidationMessages.AddRange(DungeonJson.Locales.Select(locale => (locale.Language, DungeonLocaleValidator.ValidateLocaleStrings(DungeonJson, locale.Language, requiredLocaleStrings, dungeonSpecificLocaleStringsToExpect))));
             return !NameValidationMessages.HasErrors
                 && !AuthorValidationMessages.HasErrors
                 && !MessageValidationMessages.HasErrors
                 && !IdValidationMessages.HasErrors
                 && !FloorPlanValidationMessages.HasErrors
-                && !FloorGroupValidationMessages.Any(ftvm => ftvm.ValidationMessages.HasErrors)
-                && !FactionValidationMessages.Any(fvm => fvm.ValidationMessages.HasErrors)
-                && !NPCValidationMessages.Any(cvm => cvm.ValidationMessages.HasErrors)
-                && !ItemValidationMessages.Any(ivm => ivm.ValidationMessages.HasErrors)
-                && !TrapValidationMessages.Any(tvm => tvm.ValidationMessages.HasErrors)
-                && !AlteredStatusValidationMessages.Any(asvm => asvm.ValidationMessages.HasErrors)
+                && !FloorGroupValidationMessages.Exists(ftvm => ftvm.ValidationMessages.HasErrors)
+                && !FactionValidationMessages.Exists(fvm => fvm.ValidationMessages.HasErrors)
+                && !NPCValidationMessages.Exists(cvm => cvm.ValidationMessages.HasErrors)
+                && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
+                && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
+                && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)
                 && !DefaultLocaleValidationMessages.HasErrors
-                && !LocaleStringValidationMessages.Any(lsvm => lsvm.ValidationMessages.HasErrors);
+                && !LocaleStringValidationMessages.Exists(lsvm => lsvm.ValidationMessages.HasErrors);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

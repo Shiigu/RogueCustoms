@@ -10,7 +10,6 @@ namespace RogueCustomsDungeonEditor.Utils
 {
     public static class TextboxHelpers
     {
-
         public static void ToggleEntryInLocaleWarning(this TextBox textBox, DungeonInfo activeDungeon, Control warningControl)
         {
             if (warningControl == null) return;

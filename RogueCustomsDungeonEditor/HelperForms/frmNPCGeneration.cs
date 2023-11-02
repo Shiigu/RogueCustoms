@@ -12,6 +12,10 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable S101 // Types should be named in PascalCase
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmNPCGeneration : Form
     {
         private FloorInfo ActiveFloorGroup;
@@ -60,7 +64,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             nudMinNPCSpawnsAtStart.Value = npcGenerationParams.MinNPCSpawnsAtStart;
             nudSimultaneousMaxNPCs.Value = npcGenerationParams.SimultaneousMaxNPCs;
             nudTurnsPerNPCGeneration.Value = npcGenerationParams.TurnsPerNPCGeneration;
-            if (minFloorLevel != maxFloorLevel)
+            if (ActiveFloorGroup.MinFloorLevel != ActiveFloorGroup.MaxFloorLevel)
                 lblFloorGroupTitle.Text = $"For Floor Levels {minFloorLevel} to {maxFloorLevel}:";
             else
                 lblFloorGroupTitle.Text = $"For Floor Level {minFloorLevel}:";
@@ -76,22 +80,23 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     if (!row.IsNewRow)
                     {
-                        var npcRow = new ClassInFloorInfo();
-                        npcRow.ClassId = row.Cells["ClassId"].Value?.ToString();
-                        npcRow.MinLevel = int.Parse(row.Cells["MinLevel"].Value?.ToString());
-                        npcRow.MaxLevel = int.Parse(row.Cells["MaxLevel"].Value?.ToString());
-                        npcRow.SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString());
-                        npcRow.OverallMaxForKindInFloor = int.Parse(row.Cells["OverallMaxForKindInFloor"].Value?.ToString());
-                        npcRow.ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString());
-                        npcRow.CanSpawnOnFirstTurn = bool.Parse(row.Cells["CanSpawnOnFirstTurn"].Value?.ToString());
-                        npcRow.CanSpawnAfterFirstTurn = bool.Parse(row.Cells["CanSpawnAfterFirstTurn"].Value?.ToString());
+                        var npcRow = new ClassInFloorInfo
+                        {
+                            ClassId = row.Cells["ClassId"].Value?.ToString(),
+                            MinLevel = int.Parse(row.Cells["MinLevel"].Value?.ToString()),
+                            MaxLevel = int.Parse(row.Cells["MaxLevel"].Value?.ToString()),
+                            SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString()),
+                            OverallMaxForKindInFloor = int.Parse(row.Cells["OverallMaxForKindInFloor"].Value?.ToString()),
+                            ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString()),
+                            CanSpawnOnFirstTurn = bool.Parse(row.Cells["CanSpawnOnFirstTurn"].Value?.ToString()),
+                            CanSpawnAfterFirstTurn = bool.Parse(row.Cells["CanSpawnAfterFirstTurn"].Value?.ToString())
+                        };
                         npcList.Add(npcRow);
                     }
                 }
 
                 if (npcList.Count > 0)
                 {
-
                     var groupedConditionNpcs = npcList.GroupBy(npc => new
                     {
                         npc.ClassId,
@@ -202,4 +207,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public int SimultaneousMaxNPCs { get; set; }
         public int TurnsPerNPCGeneration { get; set; }
     }
+    #pragma warning restore S101 // Types should be named in PascalCase
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

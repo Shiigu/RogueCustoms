@@ -108,9 +108,13 @@ namespace RogueCustomsDungeonEditor.Utils
                     {
                         if (propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
                             || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
+                        {
                             parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                        }
                         else
+                        {
                             parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                        }
                     }
                 }
             }
@@ -139,7 +143,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
                         var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
 
-                        var entityName = (isNot) ? match.Groups[3].Value : match.Groups[1].Value;
+                        var entityName = isNot ? match.Groups[3].Value : match.Groups[1].Value;
 
                         if (!entityName.Equals(eName)) continue;
 
@@ -256,7 +260,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, 0, effect.Params);
 
-            var paramsObjectAsDictionary = ((IDictionary<string, object>)paramsObject);
+            var paramsObjectAsDictionary = (IDictionary<string, object>)paramsObject;
 
             return paramsObjectAsDictionary.Count >= effect.Params.Length;
         }

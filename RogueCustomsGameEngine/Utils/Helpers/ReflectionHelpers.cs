@@ -7,7 +7,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 {
     public class ReflectionHelpers
     {
-
         public static List<Type> GetTypesInNamespace(Assembly assembly, string nameSpace)
         {
             return

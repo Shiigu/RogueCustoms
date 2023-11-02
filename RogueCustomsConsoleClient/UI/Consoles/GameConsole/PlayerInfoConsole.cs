@@ -12,28 +12,28 @@ using SadConsole.UI;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class PlayerInfoConsole : GameSubConsole
     {
-        private string DetailsButtonText;
         private ProgressBar HPBar;
         private ProgressBar MPBar;
-        public Button DetailsButton;
+        public Button DetailsButton { get; set; }
 
         public PlayerInfoConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.PlayerInfoCellWidth, GameConsoleConstants.PlayerInfoCellHeight)
         {
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
-            DetailsButtonText = $" {LocalizationManager.GetString("DetailsButtonText")} ".ToAscii();
-            DetailsButton = new Button(DetailsButtonText.Length, 1)
+            var detailsButtonText = $" {LocalizationManager.GetString("DetailsButtonText")} ".ToAscii();
+            DetailsButton = new Button(detailsButtonText.Length, 1)
             {
-                Position = new Point((Width - DetailsButtonText.Length) / 2, 39),
-                Text = DetailsButtonText
+                Position = new Point((Width - detailsButtonText.Length) / 2, 39),
+                Text = detailsButtonText
             };
             DetailsButton.Click += DetailsButton_Click;
 
@@ -83,7 +83,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             try
             {
                 var playerInfo = BackendHandler.Instance.GetPlayerDetailInfo();
-                ParentContainer.ActiveWindow = PlayerCharacterDetailWindow.Show(ParentContainer, playerInfo);
+                ParentContainer.ActiveWindow = PlayerCharacterDetailWindow.Show(playerInfo);
             }
             catch (Exception)
             {
@@ -152,12 +152,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                     foreach (var als in dungeonStatus.AlteredStatuses)
                     {
                         var index = dungeonStatus.AlteredStatuses.IndexOf(als);
-                        if (statusBaseRowIndex + (int)(index / statusesPerRow) == DetailsButton.Position.Y - 2)
+                        if (statusBaseRowIndex + (index / statusesPerRow) == DetailsButton.Position.Y - 2)
                         {
-                            this.Print(2, statusBaseRowIndex + (int)(index / statusesPerRow), LocalizationManager.GetString("PlayerInfoTooManyStatusesText"), true);
+                            this.Print(2, statusBaseRowIndex + (index / statusesPerRow), LocalizationManager.GetString("PlayerInfoTooManyStatusesText"), true);
                             break;
                         }
-                        this.Print(statusBaseColumnIndex + (index % statusesPerRow), statusBaseRowIndex + (int)(index / statusesPerRow), als.ConsoleRepresentation.Character.ToString().ToAscii(), als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor());
+                        this.Print(statusBaseColumnIndex + (index % statusesPerRow), statusBaseRowIndex + (index / statusesPerRow), als.ConsoleRepresentation.Character.ToString().ToAscii(), als.ConsoleRepresentation.ForegroundColor.ToSadRogueColor(), als.ConsoleRepresentation.BackgroundColor.ToSadRogueColor());
                     }
                 }
                 else
@@ -168,4 +168,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Update(delta);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

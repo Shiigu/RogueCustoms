@@ -5,16 +5,17 @@ using System;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class MessageConsoleContainer : ConsoleContainer
     {
         private readonly MessageConsole MessageConsole;
-        public ConsoleContainers ContainerToShiftTo;
-        public string Message;
-        public string Title;
+        public ConsoleContainers ContainerToShiftTo { get; set; }
+        public string Message { get; set; }
+        public string Title { get; set; }
 
         public MessageConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
-            MessageConsole = new MessageConsole(this, Width, Height);
+            MessageConsole = new MessageConsole(Width, Height);
 
             Children.Add(MessageConsole);
 
@@ -36,9 +37,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             MessageConsole.DisplayMessage();
         }
 
-        public override bool ProcessKeyboard(Keyboard info)
+        public override bool ProcessKeyboard(Keyboard keyboard)
         {
-            if (info.IsKeyPressed(Keys.Enter) && info.KeysPressed.Count == 1)
+            if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
             {
                 ChangeConsoleContainerTo(ContainerToShiftTo);
             }
@@ -46,4 +47,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             return true;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

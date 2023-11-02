@@ -17,15 +17,14 @@ using RogueCustomsConsoleClient.Helpers;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
+    #pragma warning disable IDE0037 // Usar nombre de miembro inferido
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8622 // La nulabilidad de los tipos de referencia del tipo de parámetro no coincide con el delegado de destino (posiblemente debido a los atributos de nulabilidad).
     public class MainMenuConsole : MenuSubConsole
     {
-        private string GameNameText, SelectFileText, OptionsText, ExitText;
-
-        private Label GameName;
-        private Button SelectFileButton, OptionsButton, ExitButton;
+        private Button ExitButton;
         private List<Button> Buttons;
         private int CurrentFocusedIndex;
-        private ControlsConsole LogoConsole;
         private string GameVersionString;
 
         public MainMenuConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
@@ -33,80 +32,80 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
-            GameNameText = LocalizationManager.GetString("GameTitle").ToUpperInvariant().ToAscii();
-            SelectFileText = LocalizationManager.GetString("SelectFileText").ToAscii();
-            OptionsText = LocalizationManager.GetString("OptionsText").ToAscii();
-            ExitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
+            var gameNameText = LocalizationManager.GetString("GameTitle").ToUpperInvariant().ToAscii();
+            var selectFileText = LocalizationManager.GetString("SelectFileText").ToAscii();
+            var optionsText = LocalizationManager.GetString("OptionsText").ToAscii();
+            var exitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
             GameVersionString = LocalizationManager.GetString("GameVersionText").Format(new { GameVersion = GlobalConstants.GameVersion }).ToAscii();
 
-            LogoConsole = new ControlsConsole(Width, 8)
+            var logoConsole = new ControlsConsole(Width, 8)
             {
                 Position = new Point(0, 0),
                 FontSize = Font.GetFontSize(IFont.Sizes.Four),
                 FocusedMode = FocusBehavior.None,
                 UseMouse = false,
-                UseKeyboard = false
+                UseKeyboard = false,
+                IsFocused = false
             };
-            LogoConsole.IsFocused = false;
-            LogoConsole.Controls.DisableControlFocusing = true;
+            logoConsole.Controls.DisableControlFocusing = true;
 
-            GameName = new Label(GameNameText.Length)
+            var gameName = new Label(gameNameText.Length)
             {
-                DisplayText = GameNameText,
+                DisplayText = gameNameText,
                 IsEnabled = false
             };
-            GameName.Position = new Point(GameName.Width / 2 + 2, 4);
+            gameName.Position = new Point((gameName.Width / 2) + 2, 4);
 
-            LogoConsole.Controls.Add(GameName);
+            logoConsole.Controls.Add(gameName);
 
-            GameName.IsFocused = false;
+            gameName.IsFocused = false;
 
-            SelectFileButton = new Button(SelectFileText.Length + 2)
+            var selectFileButton = new Button(selectFileText.Length + 2)
             {
-                Text = SelectFileText
+                Text = selectFileText
             };
-            SelectFileButton.Position = new Point(Width / 4 - SelectFileButton.Width / 2, 20);
-            SelectFileButton.MouseMove += (_, _) => ChangeFocusTo(0);
-            SelectFileButton.Click += SelectFileButton_Click;
-            SelectFileButton.IsFocused = true;
+            selectFileButton.Position = new Point((Width / 4) - (selectFileButton.Width / 2), 20);
+            selectFileButton.MouseMove += (_, _) => ChangeFocusTo(0);
+            selectFileButton.Click += SelectFileButton_Click;
+            selectFileButton.IsFocused = true;
 
-            OptionsButton = new Button(OptionsText.Length + 2)
+            var optionsButton = new Button(optionsText.Length + 2)
             {
-                Text = OptionsText
+                Text = optionsText
             };
-            OptionsButton.Position = new Point(Width / 4 - OptionsButton.Width / 2, 25);
-            OptionsButton.MouseEnter += (_, _) => ChangeFocusTo(1);
-            OptionsButton.Click += OptionsButton_Click;
+            optionsButton.Position = new Point((Width / 4) - (optionsButton.Width / 2), 25);
+            optionsButton.MouseEnter += (_, _) => ChangeFocusTo(1);
+            optionsButton.Click += OptionsButton_Click;
 
-            ExitButton = new Button(ExitText.Length + 2)
+            ExitButton = new Button(exitText.Length + 2)
             {
-                Text = ExitText
+                Text = exitText
             };
-            ExitButton.Position = new Point(Width / 4 - ExitButton.Width / 2, 30);
+            ExitButton.Position = new Point((Width / 4) - (ExitButton.Width / 2), 30);
             ExitButton.MouseEnter += (_, _) => ChangeFocusTo(2);
             ExitButton.Click += ExitButton_Click;
 
-            Children.Add(LogoConsole);
-            Controls.Add(SelectFileButton);
-            Controls.Add(OptionsButton);
+            Children.Add(logoConsole);
+            Controls.Add(selectFileButton);
+            Controls.Add(optionsButton);
             Controls.Add(ExitButton);
 
-            Buttons = new List<Button> { SelectFileButton, OptionsButton, ExitButton };
+            Buttons = new List<Button> { selectFileButton, optionsButton, ExitButton };
 
             CurrentFocusedIndex = 0;
-            SelectFileButton.IsFocused = true;
+            selectFileButton.IsFocused = true;
             this.IsFocused = true;
         }
 
         public override void Update(TimeSpan delta)
         {
             this.IsFocused = true;
-            this.Print(Width / 2 - GameVersionString.Length, Height / 2 - 1, GameVersionString);
+            this.Print((Width / 2) - GameVersionString.Length, (Height / 2) - 1, GameVersionString);
             base.Update(delta);
         }
 
@@ -188,4 +187,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             Environment.Exit(0);
         }
     }
+    #pragma warning restore IDE0037 // Usar nombre de miembro inferido
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8622 // La nulabilidad de los tipos de referencia del tipo de parámetro no coincide con el delegado de destino (posiblemente debido a los atributos de nulabilidad).
 }

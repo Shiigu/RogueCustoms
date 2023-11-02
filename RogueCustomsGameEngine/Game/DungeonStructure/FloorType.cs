@@ -3,11 +3,13 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class FloorType
     {
         public readonly int MinFloorLevel;
@@ -38,7 +40,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int OddsForExtraConnections;
         public readonly int RoomFusionOdds;
 
-        public readonly List<GeneratorAlgorithm> PossibleGeneratorAlgorithms;
+        public ImmutableList<GeneratorAlgorithm> PossibleGeneratorAlgorithms { get; private set; }
 
         public readonly ActionWithEffects OnFloorStart;
 
@@ -63,8 +65,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MaxConnectionsBetweenRooms = floorInfo.MaxConnectionsBetweenRooms;
             OddsForExtraConnections = floorInfo.OddsForExtraConnections;
             RoomFusionOdds = floorInfo.RoomFusionOdds;
-            PossibleGeneratorAlgorithms = new List<GeneratorAlgorithm>();
-            floorInfo.PossibleGeneratorAlgorithms.ForEach(pga => PossibleGeneratorAlgorithms.Add(new GeneratorAlgorithm
+            PossibleGeneratorAlgorithms = ImmutableList.Create<GeneratorAlgorithm>();
+            floorInfo.PossibleGeneratorAlgorithms.ForEach(pga => PossibleGeneratorAlgorithms = PossibleGeneratorAlgorithms.Add(new GeneratorAlgorithm
             {
                 Type = (GeneratorAlgorithmTypes)Enum.Parse(typeof(GeneratorAlgorithmTypes), pga.Name),
                 Rows = pga.Rows,
@@ -145,4 +147,5 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

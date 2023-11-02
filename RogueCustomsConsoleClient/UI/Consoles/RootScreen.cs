@@ -6,11 +6,11 @@ using SadConsole.Input;
 
 namespace RogueCustomsConsoleClient.UI.Consoles
 {
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public class RootScreen : ScreenObject
     {
         private readonly ScreenSurface _map;
-        private readonly List<ConsoleContainer> Containers;
-        public ConsoleContainer ActiveContainer;
+        public ConsoleContainer ActiveContainer { get; set; }
 
         public readonly MenuConsoleContainer MenuConsoleContainer;
         public readonly GameConsoleContainer GameConsoleContainer;
@@ -35,8 +35,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles
                 IsEnabled = false,
                 IsVisible = false
             };
-
-            Containers = new List<ConsoleContainer> { MenuConsoleContainer, GameConsoleContainer, MessageConsoleContainer };
 
             ActiveContainer = MenuConsoleContainer;
         }
@@ -83,4 +81,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles
         Game,
         Message
     }
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

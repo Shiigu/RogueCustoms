@@ -16,6 +16,10 @@ using static RogueCustomsGameEngine.Game.Entities.Effect;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public partial class frmActionEdit : Form
     {
         public ActionWithEffectsInfo ActionToSave { get; set; }
@@ -40,24 +44,24 @@ namespace RogueCustomsDungeonEditor.HelperForms
             InitializeComponent();
             ActionToSave = actionToSave.Clone();
             ActiveDungeon = activeDungeon;
+            ClassId = classId;
             if (actionToSave == null || actionToSave.Effect == null)
             {
                 this.Text = "Action Editor - [New Action]";
-                if (!string.IsNullOrWhiteSpace(classId))
-                    lblTitle.Text = $"Create {actionTypeText} for {classId}";
+                if (!string.IsNullOrWhiteSpace(ClassId))
+                    lblTitle.Text = $"Create {actionTypeText} for {ClassId}";
                 else
                     lblTitle.Text = $"Create {actionTypeText} for Floor Group";
             }
             else
             {
                 this.Text = $"Action Editor - [{actionToSave.Name}]";
-                if (!string.IsNullOrWhiteSpace(classId))
-                    lblTitle.Text = $"Edit {actionTypeText} for {classId}";
+                if (!string.IsNullOrWhiteSpace(ClassId))
+                    lblTitle.Text = $"Edit {actionTypeText} for {ClassId}";
                 else
                     lblTitle.Text = $"Edit {actionTypeText} for Floor Group";
             }
             btnSaveAs.Enabled = requiresActionName;
-            ClassId = classId;
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
             RequiresCondition = requiresCondition;
@@ -70,7 +74,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (RequiresDescription)
             {
                 txtActionDescription.Enabled = true;
-                txtActionDescription.Text = actionToSave.Description;
+                txtActionDescription.Text = ActionToSave.Description;
             }
             else
             {
@@ -81,7 +85,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (RequiresCondition)
             {
                 txtActionCondition.Enabled = true;
-                txtActionCondition.Text = actionToSave.UseCondition;
+                txtActionCondition.Text = ActionToSave.UseCondition;
                 fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
             }
             else
@@ -143,17 +147,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 Tag = tag
             };
             var tooltipBuilder = new StringBuilder();
-            tooltipBuilder.AppendLine($"Description: {effectDto.Description}\n\nParameters:");
+            tooltipBuilder.Append("Description: ").Append(effectDto.Description).AppendLine("\n\nParameters:");
 
             if (effectDto.Parameters.Any())
             {
                 foreach (var parameter in effectDto.Parameters)
                 {
-                    tooltipBuilder.AppendLine($"- {parameter.DisplayName}: {parameter.Value}");
+                    tooltipBuilder.Append("- ").Append(parameter.DisplayName).Append(": ").AppendLine(parameter.Value);
                 }
             }
             else
+            {
                 tooltipBuilder.AppendLine("None");
+            }
 
             effectNode.ToolTipText = tooltipBuilder.ToString();
 
@@ -223,14 +229,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 var selectedEffect = (EffectInfo)SelectedNode.Tag;
                 var selectedEffectData = SelectableEffects.Find(se => se.InternalName.Equals(selectedEffect?.EffectName));
-                foreach (TreeNode node in SelectedNode.Nodes)
-                {
-                    if (node.Text.Contains("THEN"))
-                    {
-                        HasThenChildNode = true;
-                        break;
-                    }
-                }
+                HasThenChildNode = SelectedNode.Nodes.Cast<TreeNode>().Any(node => node.Text.Contains("THEN"));
+
                 if (!HasThenChildNode)
                 {
                     foreach (TreeNode node in SelectedNode.Nodes)
@@ -589,22 +589,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private bool ValidateStepsBeforeSave(out List<string> errorMessages)
         {
             errorMessages = new List<string>();
-            if (UsageCriteria != UsageCriteria.AnyTargetAnyTime)
+            if (UsageCriteria != UsageCriteria.AnyTargetAnyTime && UsageCriteria != UsageCriteria.AnyTarget)
             {
-                if (UsageCriteria != UsageCriteria.AnyTarget)
+                if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
                 {
-                    if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
-                    {
-                        errorMessages.Add("Action is not set to be targetable to anyone.");
-                    }
-                    else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
-                    {
-                        errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
-                    }
-                    else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
-                    {
-                        errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
-                    }
+                    errorMessages.Add("Action is not set to be targetable to anyone.");
+                }
+                else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
+                {
+                    errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
+                }
+                else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
+                {
+                    errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
                 }
             }
             if (RequiresDescription && string.IsNullOrWhiteSpace(txtActionDescription.Text))
@@ -679,7 +676,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     Description = "No behaviour has been currently set for this step.";
                 }
             }
-            catch { }
+            catch
+            {
+                // Ignore. Unmatchable effects will be skipped altogether.
+            }
         }
     }
 
@@ -689,4 +689,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         AnyTarget,
         FullConditions
     }
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

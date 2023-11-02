@@ -7,6 +7,9 @@ using System.Text;
 
 namespace RogueCustomsConsoleClient.Helpers
 {
+    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable S4456 // Parameter validation in yielding methods should be wrapped
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class StringHelpers
     {
         private static readonly Encoding ExtendedASCII = Encoding.GetEncoding("IBM437");
@@ -36,14 +39,14 @@ namespace RogueCustomsConsoleClient.Helpers
             return input;
         }
 
-        public static string[] SplitByLengthWithWholeWords(this string[] inputArray, int maxLength)
+        public static string[] SplitByLengthWithWholeWords(this string[]? inputArray, int maxLength)
         {
             if (inputArray == null || inputArray.Length == 0 || maxLength <= 0)
             {
                 return inputArray; // Return the original array as-is.
             }
 
-            List<string> result = new List<string>();
+            List<string> result = new();
 
             foreach (string input in inputArray)
             {
@@ -54,32 +57,36 @@ namespace RogueCustomsConsoleClient.Helpers
                 }
 
                 string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                string currentLine = "";
+                var currentLine = new StringBuilder();
 
                 foreach (string word in words)
                 {
-                    if ((currentLine + " " + word).Length <= maxLength)
+                    if (currentLine.Length + word.Length + 1 <= maxLength)
                     {
-                        if (!string.IsNullOrEmpty(currentLine))
+                        if (currentLine.Length > 0)
                         {
-                            currentLine += " ";
+                            currentLine.Append(' ');
                         }
-                        currentLine += word;
+                        currentLine.Append(word);
                     }
                     else
                     {
-                        result.Add(currentLine);
-                        currentLine = word;
+                        result.Add(currentLine.ToString());
+                        currentLine.Clear();
+                        currentLine.Append(word);
                     }
                 }
 
-                if (!string.IsNullOrEmpty(currentLine))
+                if (currentLine.Length > 0)
                 {
-                    result.Add(currentLine);
+                    result.Add(currentLine.ToString());
                 }
             }
 
             return result.ToArray();
         }
     }
+    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore S4456 // Parameter validation in yielding methods should be wrapped
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
 }
