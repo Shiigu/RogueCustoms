@@ -13,6 +13,9 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using SadConsole.Effects;
+using RogueCustomsGameEngine.Game.Entities;
+using MathNet.Numerics.Distributions;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 {
@@ -21,9 +24,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         new private readonly List<GameSubConsole> Consoles;
 
         public bool RequiresRefreshingDungeonState { get; set; }
+        private readonly BicolorBlink DamageFlash, HealFlash, MPBurnFlash, MPReplenishFlash;
 
         private int LastTurnCount;
         public bool HasSetupPlayerData { get; set; }
+        public bool Flashing { get; set; }
         public DungeonDto? LatestDungeonStatus { get; set; }
         public ControlMode ControlMode { get; set; }
 
@@ -35,11 +40,17 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         private readonly ButtonsConsole ButtonsConsole;
         private readonly ExperienceBarConsole ExperienceBarConsole;
         private readonly GameControlsConsole GameControlsConsole;
+
+        private readonly TimeSpan FlashDuration = TimeSpan.FromSeconds(1 / 24d);
         public Window? ActiveWindow { get; set; }
 
         public GameConsoleContainer(RootScreen parent) : base(parent, Game.Instance.ScreenCellsX, Game.Instance.ScreenCellsY)
         {
             RequiresRefreshingDungeonState = false;
+            DamageFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Red, BlinkOutBackgroundColor = Color.Red, RemoveOnFinished = true };
+            HealFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Green, BlinkOutBackgroundColor = Color.Green, RemoveOnFinished = true };
+            MPBurnFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.DarkViolet, BlinkOutBackgroundColor = Color.DarkViolet, RemoveOnFinished = true };
+            MPReplenishFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.BlueViolet, BlinkOutBackgroundColor = Color.BlueViolet, RemoveOnFinished = true };
 
             DungeonConsole = new DungeonConsole(this)
             {
@@ -128,18 +139,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             if (HasSetupPlayerData)
             {
-                DungeonConsole.IsVisible = true;
-                DungeonConsole.IsEnabled = true;
-                MessageLogConsole.IsVisible = true;
-                MessageLogConsole.IsEnabled = true;
-                PlayerInfoConsole.IsVisible = true;
-                PlayerInfoConsole.IsEnabled = true;
-                ButtonsConsole.IsVisible = true;
-                ButtonsConsole.IsEnabled = true;
-                ExperienceBarConsole.IsVisible = true;
-                ExperienceBarConsole.IsEnabled = true;
-                GameControlsConsole.IsVisible = true;
-                GameControlsConsole.IsEnabled = true;
                 InGameUpdate(delta);
                 if (ActiveWindow is PlayerClassWindow)
                 {
@@ -232,18 +231,99 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
             Consoles.ForEach(console =>
             {
+                if (!console.IsVisible) return;
                 if (LatestDungeonStatus != null && (RequiresRefreshingDungeonState || !console.RefreshOnlyOnStatusUpdate))
                     console.Update(delta);
             });
 
             Children.ToList().ForEach(c =>
             {
+                if (!c.IsVisible) return;
                 if (!Consoles.Contains(c))
                     c.Update(delta);
             });
 
+            if (!Flashing && LatestDungeonStatus.PlayerTookDamage)
+            {
+                ApplyFlashEffect(DamageFlash);
+            }
+            if (!Flashing && LatestDungeonStatus.PlayerGotHealed)
+            {
+                ApplyFlashEffect(HealFlash);
+            }
+            if (!Flashing && LatestDungeonStatus.PlayerGotMPBurned)
+            {
+                ApplyFlashEffect(MPBurnFlash);
+            }
+            if (!Flashing && LatestDungeonStatus.PlayerGotMPReplenished)
+            {
+                ApplyFlashEffect(MPReplenishFlash);
+            }
+
+            if (Flashing)
+            {
+                if (DamageFlash.IsFinished && LatestDungeonStatus.PlayerTookDamage)
+                {
+                    RemoveFlashEffect();
+                }
+                else if (HealFlash.IsFinished && LatestDungeonStatus.PlayerGotHealed)
+                {
+                    RemoveFlashEffect();
+                }
+                else if (MPBurnFlash.IsFinished && LatestDungeonStatus.PlayerGotMPBurned)
+                {
+                    RemoveFlashEffect();
+                }
+                else if (MPReplenishFlash.IsFinished && LatestDungeonStatus.PlayerGotMPReplenished)
+                {
+                    RemoveFlashEffect();
+                }
+                if (!LatestDungeonStatus.PlayerTookDamage && !LatestDungeonStatus.PlayerGotHealed
+                 && !LatestDungeonStatus.PlayerGotMPBurned && !LatestDungeonStatus.PlayerGotMPReplenished)
+                {
+                    Flashing = false;
+                    ChangeSubConsolesRenderState(true);
+                }
+            }
+
+            Surface.Effects.UpdateEffects(delta);
             RequiresRefreshingDungeonState = false;
         }
+
+        public void ChangeSubConsolesRenderState(bool state)
+        {
+            RequiresRefreshingDungeonState = state;
+            DungeonConsole.IsVisible = state;
+            DungeonConsole.IsEnabled = state;
+            MessageLogConsole.IsVisible = state;
+            MessageLogConsole.IsEnabled = state;
+            PlayerInfoConsole.IsVisible = state;
+            PlayerInfoConsole.IsEnabled = state;
+            ButtonsConsole.IsVisible = state;
+            ButtonsConsole.IsEnabled = state;
+            ExperienceBarConsole.IsVisible = state;
+            ExperienceBarConsole.IsEnabled = state;
+            GameControlsConsole.IsVisible = state;
+            GameControlsConsole.IsEnabled = state;
+        }
+
+        private void RemoveFlashEffect()
+        {
+            Surface.Effects.RemoveAll();
+            LatestDungeonStatus.PlayerTookDamage = false;
+            LatestDungeonStatus.PlayerGotHealed = false;
+            LatestDungeonStatus.PlayerGotMPBurned = false;
+            LatestDungeonStatus.PlayerGotMPReplenished = false;
+        }
+
+        private void ApplyFlashEffect(ICellEffect effect)
+        {
+            Flashing = true;
+            ChangeSubConsolesRenderState(false);
+            this.SetEffect(this.GetCells(new Rectangle(0, 0, Width, Height)), effect);
+            effect.Restart();
+        }
+
         private void SendClassSelection(PlayerClassSelectionInput selectionInput)
         {
             try
@@ -251,7 +331,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 BackendHandler.Instance.SetPlayerClassSelection(selectionInput);
                 ControlMode = ControlMode.NormalMove;
                 HasSetupPlayerData = true;
-                RequiresRefreshingDungeonState = true;
+                ChangeSubConsolesRenderState(true);
             }
             catch (Exception)
             {

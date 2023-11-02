@@ -152,7 +152,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (CurrentFloor == null)
                 NewMap();
-            return new DungeonDto(this, CurrentFloor);
+            var dungeonStatus = new DungeonDto(this, CurrentFloor);
+            CurrentFloor.PlayerTookDamage = false;
+            CurrentFloor.PlayerGotHealed = false;
+            CurrentFloor.PlayerGotMPBurned = false;
+            CurrentFloor.PlayerGotMPReplenished = false;
+            return dungeonStatus;
         }
 
         public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)

@@ -77,6 +77,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int MinRoomHeight { get; set; }
         private int MaxRoomHeight { get; set; }
         public bool StairsAreSet { get; set; } = false;
+        public bool PlayerTookDamage { get; set; } = false;
+        public bool PlayerGotHealed { get; set; } = false;
+        public bool PlayerGotMPBurned { get; set; } = false;
+        public bool PlayerGotMPReplenished { get; set; } = false;
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }

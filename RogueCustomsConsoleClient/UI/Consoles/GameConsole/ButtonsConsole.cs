@@ -40,6 +40,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         {
             this.Clear();
 
+            if(!IsEnabled || !IsVisible) return;
+
             var square = new Rectangle(0, 0, Width, Height);
 
             this.DrawBox(square, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Black, 178)));
