@@ -190,6 +190,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 ParentConsole.ControlMode = ControlMode.NormalMove;
                 ParentConsole.HasSetupPlayerData = true;
                 ParentConsole.RequiresRefreshingDungeonState = true;
+                ParentConsole.ChangeSubConsolesRenderState(true);
             }
             catch (Exception)
             {

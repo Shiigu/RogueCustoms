@@ -74,6 +74,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = paramsObject.Target.Name, HealAmount = healAmount.ToString(), CharacterHPStat = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue);
             }
+
+            if (paramsObject.Target.EntityType == EntityType.Player)
+                Map.PlayerGotHealed = true;
             return true;
         }
 
@@ -433,6 +436,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeMP"].Format(new { CharacterName = paramsObject.Target.Name, ReplenishAmount = replenishAmount.ToString(), CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
             }
+
+            if (paramsObject.Target.EntityType == EntityType.Player)
+                Map.PlayerGotMPReplenished = true;
             return true;
         }
     }

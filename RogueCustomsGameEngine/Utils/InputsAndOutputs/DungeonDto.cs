@@ -33,6 +33,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public EntityDto PlayerEntity => Entities.Find(e => e.Type == EntityDtoType.Player);
         public bool IsAlive => PlayerEntity.HP > 0;
+        public bool PlayerTookDamage { get; set; }
+        public bool PlayerGotHealed { get; set; }
+        public bool PlayerGotMPBurned { get; set; }
+        public bool PlayerGotMPReplenished { get; set; }
 
         public DungeonDto() { }
 
@@ -48,7 +52,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Entities = new List<EntityDto>();
             var _tiles = new ConcurrentBag<TileDto>();
             AlteredStatuses = new List<AlteredStatusDto>();
-            if(DungeonStatus != DungeonStatus.Completed)
+            PlayerTookDamage = map.PlayerTookDamage;
+            PlayerGotHealed = map.PlayerGotHealed;
+            PlayerGotMPBurned = map.PlayerGotMPBurned;
+            PlayerGotMPReplenished = map.PlayerGotMPReplenished;
+            if (DungeonStatus != DungeonStatus.Completed)
             {
                 Parallel.For(0, map.Tiles.GetLength(0), y =>
                 {

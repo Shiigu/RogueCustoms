@@ -116,7 +116,7 @@ namespace SadConsole.Effects
                     {
                         _blinkCounter += 1;
 
-                        if (BlinkCount != -1 && _blinkCounter > (BlinkCount * 2))
+                        if (BlinkCount != -1 && _blinkCounter > (BlinkCount))
                             IsFinished = true;
                     }
                 }

@@ -46,6 +46,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"] }), forecolorToUse);
+                if (c.EntityType == EntityType.Player)
+                    Map.PlayerTookDamage = true;
             }
             c.HP = Math.Max(0, c.HP - damageDealt);
             if (c.HP == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
@@ -84,6 +86,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), forecolorToUse);
+                if (c.EntityType == EntityType.Player)
+                    Map.PlayerGotMPBurned = true;
             }
             c.MP = Math.Max(0, c.MP - burnAmount);
             return true;

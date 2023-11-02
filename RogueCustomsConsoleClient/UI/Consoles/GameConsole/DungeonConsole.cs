@@ -45,6 +45,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             {
                 WithCursor = true;
                 CursorLocation = (playerEntity.X, playerEntity.Y);
+                this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, null);
                 this.SetEffect(LatestCursorLocation.X, LatestCursorLocation.Y, SelectionBlink);
             }
         }
