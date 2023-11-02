@@ -69,7 +69,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel
                                                         && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn
                                                         && pm.CanSpawnAfterFirstTurn == possibleMonster.CanSpawnAfterFirstTurn) > 1)
+                    {
                         messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate PossibleMonster in the current Floor Type.");
+                    }
+
                     if (!possibleMonster.ChanceToPick.Between(1, 100))
                         messages.AddError($"{possibleMonster.ClassId}'s ChanceToPick must be an integer number between 1 and 100.");
                     else

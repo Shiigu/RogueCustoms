@@ -332,7 +332,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void CreateRoomsWithRandomizedConfig()
         {
             var normalRoomsCount = 0;
-            (int Row, int Column) lastPossibleNormalRoomIndex = (RoomCountRows - 1, RoomCountColumns - 1);
+            (int LastPossibleNormalRow, int LastPossibleNormalColumn) = (RoomCountRows - 1, RoomCountColumns - 1);
             GetPossibleRoomData();
             do
             {
@@ -343,7 +343,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         var rngRoom = Rng.NextInclusive(1, 100);
                         // Force generation of a normal room if it's the last possible location and no normal Room was created yet
-                        if ((normalRoomsCount == 0 && row == lastPossibleNormalRoomIndex.Row && column == lastPossibleNormalRoomIndex.Column) || !rngRoom.Between(71, 100))
+                        if ((normalRoomsCount == 0 && row == LastPossibleNormalRow && column == LastPossibleNormalColumn) || !rngRoom.Between(71, 100))
                         {
                             var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(row, column);
                             var rngX1 = Rng.NextInclusive(MinX, MaxX - MinRoomWidth);
@@ -818,7 +818,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (GetEntitiesFromCoordinates(Player.Position.X, Player.Position.Y)
                 .Find(e => (e.EntityType == EntityType.Consumable || e.EntityType == EntityType.Weapon || e.EntityType == EntityType.Armor)
                     && e.ExistenceStatus == EntityExistenceStatus.Alive && e.Passable) is not Item usableItem)
+            {
                 return;
+            }
+
             PlayerUseItem(usableItem);
         }
         public void PlayerPickUpItemInFloor()
@@ -905,10 +908,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string name, int x, int y)
         {
-            var action = Player.OnAttack.Find(oaa => oaa.Name.Equals(name));
-
-            if (action == null) throw new ArgumentException("Player attempted use a non-existent action.");
-
+            var action = Player.OnAttack.Find(oaa => oaa.Name.Equals(name)) ?? throw new ArgumentException("Player attempted use a non-existent action.");
             var characterInTile = GetTileFromCoordinates(x, y).Character;
 
             if (characterInTile != null)
@@ -1076,8 +1076,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public ConsoleRepresentation GetConsoleRepresentationForCoordinates(int x, int y)
         {
-            var tile = GetTileFromCoordinates(x, y);
-            if (tile == null) throw new ArgumentException("Tile does not exist");
+            var tile = GetTileFromCoordinates(x, y) ?? throw new ArgumentException("Tile does not exist");
             if (!tile.Discovered)
                 return ConsoleRepresentation.EmptyTile;
             var tileBaseConsoleRepresentation = new ConsoleRepresentation
@@ -1616,7 +1615,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        private bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
+        private static bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             if (!tilesToConvert.Any()) return false;
 
@@ -1629,7 +1628,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return true;
         }
 
-        private void BuildHallwayTiles(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
+        private static void BuildHallwayTiles(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             foreach (var tile in tilesToConvert)
             {

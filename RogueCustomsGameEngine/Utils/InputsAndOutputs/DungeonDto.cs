@@ -135,7 +135,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int ExperienceToLevelUp { get; set; }
         public int CurrentExperiencePercentage { get; set; }
 
-        private int CalculateExperienceBarPercentage(Character entity)
+        private static int CalculateExperienceBarPercentage(Character entity)
         {
             var experienceInCurrentLevel = entity.Experience - entity.LastLevelUpExperience;
             var experienceBetweenLevels = entity.ExperienceToLevelUp - entity.LastLevelUpExperience;

@@ -1312,12 +1312,14 @@ namespace RogueCustomsDungeonEditor
                 inputBoxResult = InputBox.Show("Indicate the Locale Identifier. It must be exactly two characters long.\n\n(For example, \"en\" or \"es\")", "Save Locale As");
                 if (inputBoxResult == null) return false;
                 if (inputBoxResult.Length > 2)
+                {
                     MessageBox.Show(
                         $"{inputBoxResult} is too long of a name for a locale.\n\nIt must be exactly two characters long.",
                         "Create new Locale",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Hand
                     );
+                }
             }
             while (inputBoxResult.Length > 2);
             if (!string.IsNullOrWhiteSpace(inputBoxResult))

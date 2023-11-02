@@ -83,9 +83,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleMonsters = new List<ClassInFloor>();
             PossibleMonstersInfo.ForEach(pmi =>
             {
-                var classForMonster = classList.Find(c => c.Id.Equals(pmi.ClassId) && c.EntityType == EntityType.NPC);
-                if (classForMonster == null)
-                    throw new InvalidDataException($"There's no class matching for {pmi.ClassId}!");
+                var classForMonster = classList.Find(c => c.Id.Equals(pmi.ClassId) && c.EntityType == EntityType.NPC) ?? throw new InvalidDataException($"There's no class matching for {pmi.ClassId}!");
                 PossibleMonsters.Add(new ClassInFloor
                 {
                     Class = classForMonster,
@@ -101,9 +99,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleItems = new List<ClassInFloor>();
             PossibleItemsInfo.ForEach(pii =>
             {
-                var classForItem = classList.Find(c => c.Id.Equals(pii.ClassId) && (c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable));
-                if (classForItem == null)
-                    throw new InvalidDataException($"There's no class matching for {pii.ClassId}!");
+                var classForItem = classList.Find(c => c.Id.Equals(pii.ClassId) && (c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable)) ?? throw new InvalidDataException($"There's no class matching for {pii.ClassId}!");
                 PossibleItems.Add(new ClassInFloor
                 {
                     Class = classForItem,
@@ -114,9 +110,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleTraps = new List<ClassInFloor>();
             PossibleTrapsInfo.ForEach(pti =>
             {
-                var classForTrap = classList.Find(c => c.Id.Equals(pti.ClassId) && c.EntityType == EntityType.Trap);
-                if (classForTrap == null)
-                    throw new InvalidDataException($"There's no class matching for {pti.ClassId}!");
+                var classForTrap = classList.Find(c => c.Id.Equals(pti.ClassId) && c.EntityType == EntityType.Trap) ?? throw new InvalidDataException($"There's no class matching for {pti.ClassId}!");
                 PossibleTraps.Add(new ClassInFloor
                 {
                     Class = classForTrap,
@@ -125,7 +119,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 });
             });
         }
-        protected void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
+        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
         {
             actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
         }

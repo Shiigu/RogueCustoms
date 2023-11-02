@@ -12,12 +12,13 @@ using org.matheval;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable IDE0037 // Usar nombre de miembro inferido
     #pragma warning disable CS8601 // Posible asignación de referencia nula
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    public class ActionWithEffects
+    public sealed class ActionWithEffects
     {
         public string NameLocaleKey { get; set; }
         public string Name { get; set; }
@@ -368,6 +369,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             };
         }
     }
+    #pragma warning restore IDE0037 // Usar nombre de miembro inferido
     #pragma warning restore CS8601 // Posible asignación de referencia nula
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning restore CS8604 // Posible argumento de referencia nulo
