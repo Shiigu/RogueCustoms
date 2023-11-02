@@ -66,8 +66,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if(!dungeonJson.NPCs.Exists(c => c.Id.Equals(possibleMonster.ClassId)))
                         messages.AddError($"{possibleMonster.ClassId} is in the PossibleMonsters list but it's not an NPC.");
-                    if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel 
-                                                        && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn 
+                    if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel
+                                                        && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn
                                                         && pm.CanSpawnAfterFirstTurn == possibleMonster.CanSpawnAfterFirstTurn) > 1)
                         messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate PossibleMonster in the current Floor Type.");
                     if (!possibleMonster.ChanceToPick.Between(1, 100))

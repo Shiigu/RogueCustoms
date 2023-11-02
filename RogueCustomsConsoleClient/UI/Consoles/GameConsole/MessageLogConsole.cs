@@ -10,17 +10,18 @@ using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class MessageLogConsole : GameSubConsole
     {
         private ScrollableMessageSubConsole ScrollableMessageLogSubConsole;
-        private string TitleCaption, MessageLogWindowButtonText;
-        public Button MessageLogWindowButton;
+        private string TitleCaption;
+        public Button MessageLogWindowButton { get; set; }
         public MessageLogConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.MessageLogCellWidth, GameConsoleConstants.MessageLogCellHeight)
         {
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
             TitleCaption = LocalizationManager.GetString("MessageHeaderText").ToAscii();
@@ -32,11 +33,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 Position = new Point(1, 1)
             };
             Children.Add(ScrollableMessageLogSubConsole);
-            MessageLogWindowButtonText = $" {LocalizationManager.GetString("MessageLogButtonText")} ".ToAscii();
-            MessageLogWindowButton = new Button(MessageLogWindowButtonText.Length, 1)
+            var messageLogWindowButtonText = $" {LocalizationManager.GetString("MessageLogButtonText")} ".ToAscii();
+            MessageLogWindowButton = new Button(messageLogWindowButtonText.Length, 1)
             {
-                Position = new Point((Width - MessageLogWindowButtonText.Length) / 2, Height - 1),
-                Text = MessageLogWindowButtonText
+                Position = new Point((Width - messageLogWindowButtonText.Length) / 2, Height - 1),
+                Text = messageLogWindowButtonText
             };
             MessageLogWindowButton.Click += MessageLogWindowButton_Click;
             Controls.Add(MessageLogWindowButton);
@@ -46,7 +47,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         {
             try
             {
-                ParentContainer.ActiveWindow = MessageLogWindow.Show(ParentContainer, ParentContainer.LatestDungeonStatus.LogMessages);
+                ParentContainer.ActiveWindow = MessageLogWindow.Show(ParentContainer.LatestDungeonStatus.LogMessages);
             }
             catch (Exception)
             {
@@ -75,4 +76,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Update(delta);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

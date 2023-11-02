@@ -11,18 +11,26 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8619 // La nulabilidad de los tipos de referencia del valor no coincide con el tipo de destino
+    #pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public class NonPlayableCharacter : Character, IAIControlled
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
-        
+
         // This is used to prevent continuous paying attention to themselves rather than on others
         private ActionWithEffects LastUsedActionOnSelf;
         // This is used to prevent continuous shuffling between tiles if it does not find an open path
         public Point LastPosition { get; set; }
 
         private Character CurrentTarget;
-        private bool KnowsAllCharacterPositions;
-        private int AIOddsToUseActionsOnSelf;
+        private readonly bool KnowsAllCharacterPositions;
+        private readonly int AIOddsToUseActionsOnSelf;
         private (Point Destination, List<Tile> Route) PathToUse;
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
@@ -47,7 +55,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (Rng.NextInclusive(1, 100) <= AIOddsToUseActionsOnSelf)
                 {
                     var hasUsableAttacksOnSelf = OnAttack.Exists(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
-                    var hasUsableItemsOnSelf = Inventory?.Exists(i => i.EntityType == EntityType.Consumable && (i.OnUse != LastUsedActionOnSelf && i.OnUse.MayBeUsed)) == true;
+                    var hasUsableItemsOnSelf = Inventory?.Exists(i => i.EntityType == EntityType.Consumable && i.OnUse != LastUsedActionOnSelf && i.OnUse.MayBeUsed) == true;
                     if(hasUsableAttacksOnSelf || hasUsableItemsOnSelf)
                     {
                         CurrentTarget = this;
@@ -88,7 +96,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                                         .Where(t => t.IsWalkable && !t.IsOccupied && Point.Distance(t.Position, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange));
                         var paths = possibleDestinations.Select(pd => Map.GetPathBetweenTiles(Position, pd.Position)).Where(p => p.Any()).ToList();
                         var minLength = paths.Min(p => p.Count);
-                        destination = paths.First(p => p.Count == minLength).Last().Position;
+                        var pathWithMinLength = paths.First(p => p.Count == minLength);
+                        destination = pathWithMinLength[pathWithMinLength.Count - 1].Position;
                     }
                 }
 
@@ -128,7 +137,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             else
             {
                 var possibleActionsOnSelf = new List<(ActionWithEffects action, Item item)>();
-                ActionWithEffects possibleAttackAction = null;
                 foreach (var onAttackAction in OnAttack.Where(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map)))
                 {
                     possibleActionsOnSelf.Add((onAttackAction, null));
@@ -185,7 +193,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnownCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
             if(KnowsAllCharacterPositions)
             {
-                foreach (var characterInMap in Map.Characters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive))
+                foreach (var characterInMap in Map.GetCharacters().Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive))
                 {
                     if(!KnownCharacters.Select(kc => kc.Character).Contains(characterInMap))
                         KnownCharacters.Add((characterInMap, CalculateTargetTypeFor(characterInMap)));
@@ -265,11 +273,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override void DropItem(Item item)
         {
             Tile pickedEmptyTile = null;
-            if (!ContainingTile.Items.Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+            if (!ContainingTile.GetItems().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
                 pickedEmptyTile = ContainingTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.Items.Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetItems().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => Point.Distance(t.Position, Position)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => Point.Distance(t.Position, Position) <= closestDistance);
                 if (closestEmptyTiles.Any())
@@ -294,4 +302,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
     }
+    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8619 // La nulabilidad de los tipos de referencia del valor no coincide con el tipo de destino
+    #pragma warning restore CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

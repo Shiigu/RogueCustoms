@@ -14,6 +14,8 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmFloorGeneratorAlgorithm : Form
     {
         public GeneratorAlgorithmInfo AlgorithmToSave { get; private set; }
@@ -27,9 +29,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             InitializeComponent();
             CurrentFloorGroup = floorGroupToUse;
-            var algorithmIcons = new ImageList();
-            algorithmIcons.ImageSize = new Size(64, 64);
-            algorithmIcons.ColorDepth = ColorDepth.Depth32Bit;
+            var algorithmIcons = new ImageList
+            {
+                ImageSize = new Size(64, 64),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
             FloorTypeData = floorTypeData;
             lvFloorAlgorithms.Items.Clear();
             foreach (var algorithm in floorTypeData)
@@ -139,4 +143,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblRedundantAlgorithm.Visible = CurrentFloorGroup.PossibleGeneratorAlgorithms.Exists(pga => pga != AlgorithmToSave && pga.Name.Equals(CurrentAlgorithmName) && pga.Rows == (int)nudAlgorithmRows.Value && pga.Columns == (int)nudAlgorithmColumns.Value);
         }
     }
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

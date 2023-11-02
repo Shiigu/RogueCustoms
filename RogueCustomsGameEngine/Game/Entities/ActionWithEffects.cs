@@ -12,6 +12,11 @@ using org.matheval;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public class ActionWithEffects
     {
         public string NameLocaleKey { get; set; }
@@ -122,7 +127,20 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string GetDescriptionWithUsageNotes(Character target)
         {
             var descriptionWithUsageNotes = new StringBuilder(Map.Locale[Description]);
-            var character = User is Character ? User as Character : User is Item i ? i.Owner : null;
+            Character character;
+            if (User is Character)
+            {
+                character = User as Character;
+            }
+            else if (User is Item i)
+            {
+                character = i.Owner;
+            }
+            else
+            {
+                throw new ArgumentException("Attempted to get Usage Notes without a Target.");
+            }
+
             var cannotBeUsedString = Locale["CannotBeUsed"];
 
             if (character == null) return "";
@@ -131,27 +149,27 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (MaximumRange == 0)
             {
-                descriptionWithUsageNotes.Append($"\n{Locale["SelfRange"]}");
+                descriptionWithUsageNotes.Append('\n').Append(Locale["SelfRange"]);
             }
             else if (MaximumRange == 1)
             {
                 if (MinimumRange == 1)
-                    descriptionWithUsageNotes.Append($"\n{Locale["MeleeRange"]}");
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["MeleeRange"]);
                 else if (MinimumRange == 0)
-                    descriptionWithUsageNotes.Append($"\n{Locale["SelfOrMeleeRange"]}");
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["SelfOrMeleeRange"]);
             }
             else if (MaximumRange > 1)
             {
                 var tilesRange = (MinimumRange != MaximumRange) ? $"{MinimumRange}-{MaximumRange}" : $"{MaximumRange}";
                 if (MinimumRange > 0)
-                    descriptionWithUsageNotes.Append($"\n{Locale["MeleeRange"].Format(new { TilesRange = tilesRange })}");
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["MeleeRange"].Format(new { TilesRange = tilesRange }));
                 else if (MinimumRange == 0)
-                    descriptionWithUsageNotes.Append($"\n{Locale["SelfOrMeleeRange"].Format(new { TilesRange = tilesRange })}");
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["SelfOrMeleeRange"].Format(new { TilesRange = tilesRange }));
             }
 
             if (MPCost > 0)
             {
-                descriptionWithUsageNotes.Append($"\n{Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost })}");
+                descriptionWithUsageNotes.Append('\n').Append(Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost }));
             }
 
             var distance = target != null ? (int)Point.Distance(target.Position, character.Position) : -1;
@@ -159,7 +177,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (CurrentCooldown > 0)
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                    descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                 descriptionWithUsageNotes.AppendLine(Locale["OnCooldown"].Format(new { CurrentCooldown = CurrentCooldown.ToString() }));
             }
 
@@ -168,13 +186,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (CurrentUses == MaximumUses)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     descriptionWithUsageNotes.AppendLine(Locale["MaximumUses"]);
                 }
                 else
                 {
                     var remainingUses = MaximumUses - CurrentUses;
-                    descriptionWithUsageNotes.AppendLine($"\n\n{Locale["RemainingUseCount"].Format(new { RemainingUses = remainingUses.ToString() })}");
+                    descriptionWithUsageNotes.Append("\n\n").AppendLine(Locale["RemainingUseCount"].Format(new { RemainingUses = remainingUses.ToString() }));
                 }
             }
 
@@ -183,13 +201,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (distance < MinimumRange)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooClose"]);
                 }
                 else if (distance > MaximumRange)
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
                 }
 
@@ -197,7 +215,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (!TargetTypes.Contains(targetType))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
                     var usableTargetTypesString = string.Join('/', usableTargetTypes);
                     descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
@@ -210,7 +228,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (!ActionHelpers.CalculateBooleanExpression(parsedCondition))
                     {
                         if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                            descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                            descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                         descriptionWithUsageNotes.AppendLine(Locale["TargetDoesNotFulfillConditions"]);
                     }
                 }
@@ -218,14 +236,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     descriptionWithUsageNotes.AppendLine(Locale["NotEnoughMP"].Format(new { MPStat = Map.Locale["CharacterMPStat"].ToUpperInvariant() }));
                 }
             }
             else
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                    descriptionWithUsageNotes.AppendLine($"\n\n{cannotBeUsedString}\n");
+                    descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                 descriptionWithUsageNotes.AppendLine(Locale["RequiresATarget"]);
             }
 
@@ -233,7 +251,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                     descriptionWithUsageNotes.AppendLine();
-                descriptionWithUsageNotes.AppendLine($"\n{Locale["FromSource"].Format(new { SourceName = User.Name })}");
+                descriptionWithUsageNotes.Append('\n').AppendLine(Locale["FromSource"].Format(new { SourceName = User.Name }));
             }
 
             return descriptionWithUsageNotes.ToString();
@@ -260,7 +278,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 MPCost = MPCost
             };
         }
-
     }
 
     public class Effect
@@ -305,7 +322,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (info.OnFailure != null)
                         OnFailure = new Effect(info.OnFailure);
                 }
-                catch { }
+                catch
+                {
+                    // Ignore. Don't call anything at all.
+                }
             }
         }
 
@@ -348,4 +368,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             };
         }
     }
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

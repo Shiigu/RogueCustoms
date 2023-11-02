@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Helpers
 {
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning disable S2368 // Public methods should not have multidimensional array parameters
+
     public static class ArrayHelpers
     {
-        private class AStarNodeData<T> where T : class
+        private sealed class AStarNodeData<T> where T : class
         {
             public T Node;
             public AStarNodeData<T> PrecedingNode;
@@ -21,7 +25,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static double GetSquaredEuclideanDistanceBetweenCells(int x1, int y1, int x2, int y2) => Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2);
         public static double GetManhattanDistanceBetweenCells(int x1, int y1, int x2, int y2) => Math.Abs(x2 - x1) + Math.Abs(y2 - y1);
-
         public static List<T> GetShortestPathBetween<T>(this T[,] grid, (int X, int Y) source, (int X, int Y) target, bool includeDiagonals, Func<T, int> XDataFunction, Func<T, int> YDataFunction, Func<int, int, int, int, double> GFunction, Func<int, int, int, int, double> HFunction, Func<T, bool> validCellPredicate) where T : class
         {
             if (!validCellPredicate(grid[source.Y, source.X])) throw new ArgumentException("Cannot find a path from an invalid node!");
@@ -87,7 +90,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return path.ToList();
         }
 
-
         private static AStarNodeData<T> GetAStarNodeData<T>(this T[,] grid, int X, int Y, T source, T target, AStarNodeData<T> precedingNode, Func<T, int> XDataFunction, Func<T, int> YDataFunction, Func<int, int, int, int, double> GFunction, Func<int, int, int, int, double> HFunction) where T : class
         {
             var nodeData = new AStarNodeData<T>()
@@ -138,7 +140,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         public static List<T> GetElementsWithinDistanceWhere<T>(this T[,] grid, int i, int j, int maxDistance, bool includeDiagonals, Func<T, bool> predicate)
         {
             var nearbyElements = new List<T>();
-            var directions = (includeDiagonals) ? new List<(int, int)>
+            var directions = includeDiagonals ? new List<(int, int)>
             {
                 (-1, -1), (-1, 0), (-1, 1),
                 (0, -1) ,          (0, 1),
@@ -174,44 +176,16 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         var newX = x + dx;
                         var newY = y + dy;
 
-                        if (dx == 0 || dy == 0 || (IsValidTile(newX, y) && IsValidTile(x, newY)))
+                        if ((dx == 0 || dy == 0 || (IsValidTile(newX, y) && IsValidTile(x, newY))) && IsValidTile(newX, newY) && !visited.Contains((newX, newY)))
                         {
-                            if(IsValidTile(newX, newY) && !visited.Contains((newX, newY)))
-                            {
-                                visited.Add((newX, newY));
-                                queue.Enqueue((newX, newY, distance + 1));
-                            }
+                            visited.Add((newX, newY));
+                            queue.Enqueue((newX, newY, distance + 1));
                         }
                     }
                 }
             }
 
             return nearbyElements;
-        }
-
-        private static void SetDistancesFromCenter<T>(T[,] grid, int[,] visitedDistances, int stepsLeft, bool includeDiagonals, int i, int j, Func<T, bool> predicate)
-        {
-            if (i < 0 || i >= grid.GetLength(0)) return;
-            if (j < 0 || j >= grid.GetLength(1)) return;
-            if (visitedDistances[i, j] > stepsLeft) return;
-            if (!predicate(grid[i, j])) return;
-            visitedDistances[i, j] = stepsLeft;
-            if (stepsLeft < 0) return;
-            SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i + 1, j, predicate);
-            SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i - 1, j, predicate);
-            SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i, j + 1, predicate);
-            SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i, j - 1, predicate);
-            if (includeDiagonals)
-            {
-                if (i > 0 && j > 0 && visitedDistances[i - 1, j] >= 0 && visitedDistances[i, j - 1] >= 0)
-                    SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i - 1, j - 1, predicate);
-                if (i > 0 && j < (grid.GetLength(1) - 1) && visitedDistances[i - 1, j] >= 0 && visitedDistances[i, j + 1] >= 0)
-                    SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i - 1, j + 1, predicate);
-                if (i < (grid.GetLength(0) - 1) && j > 0 && visitedDistances[i + 1, j] >= 0 && visitedDistances[i, j - 1] >= 0)
-                    SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i + 1, j - 1, predicate);
-                if (i < (grid.GetLength(0) - 1) && j < (grid.GetLength(1) - 1) && visitedDistances[i + 1, j] >= 0 && visitedDistances[i, j + 1] >= 0)
-                    SetDistancesFromCenter(grid, visitedDistances, stepsLeft - 1, includeDiagonals, i + 1, j + 1, predicate);
-            }
         }
 
         public static bool IsFullyConnected<T>(this T[,] grid, Func<T, bool> predicate)
@@ -315,11 +289,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         }
         public static int Count<T>(this T[,] array)
         {
-            return array.ToList().Count();
+            return array.ToList().Count;
         }
         public static int Count<T>(this T[,] array, Func<T, bool> predicate)
         {
-            return array.Where(predicate).Count();
+            return array.Count(predicate);
         }
 
         public static T? Find<T>(this T[,] array, Func<T, bool> predicate)
@@ -356,4 +330,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return arrayString.ToString();
         }
     }
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning restore S2368 // Public methods should not have multidimensional array parameters
 }

@@ -11,11 +11,19 @@ using org.matheval;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
+    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     // Represents Actions that are not expected to be used by any type of Entity in particular. Free to use by everyone.
     public static class GenericActions
     {
-        public static RngHandler Rng;
-        public static Map Map;
+        private static RngHandler Rng;
+        private static Map Map;
+        public static void SetActionParams(RngHandler rng, Map map)
+        {
+            Rng = rng;
+            Map = map;
+        }
 
         public static bool PrintText(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
@@ -23,7 +31,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             _ = 0;
             var entityTypesForVisibilityCheck = new List<EntityType> { EntityType.Player, EntityType.NPC };
 
-            if (entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source)
+            if ((entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source))
                 || (Target != null && entityTypesForVisibilityCheck.Contains(Target.EntityType) && Map.Player.CanSee(Target)))
             {
                 if(ExpandoObjectHelper.HasProperty(paramsObject, "Color"))
@@ -73,7 +81,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             output = 0;
             if (Target == null) return false;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);            
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character || !paramsObject.Target.CanGainExperience) return false;
             if (paramsObject.Target.Level == paramsObject.Target.MaxLevel) return false;
             if (Target.EntityType == EntityType.Player
@@ -124,7 +132,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if ((string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase) || string.Equals(paramsObject.StatName, "mp", StringComparison.InvariantCultureIgnoreCase))
                 && !statAlterationTarget.UsesMP)
                 return false;
-            var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
+            var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             var statCap = 0m;
             var statValue = 0m;
             switch (paramsObject.StatName.ToLowerInvariant())
@@ -240,7 +248,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
-            var statAlterations = (paramsObject.StatAlterationList) as List<StatModification>;
+            var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
 
             if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
             {
@@ -425,4 +433,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
     }
+    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

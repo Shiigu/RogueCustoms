@@ -17,43 +17,41 @@ using RogueCustomsConsoleClient.UI.Windows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
+    #pragma warning disable IDE0037 // Usar nombre de miembro inferido
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class PickDungeonConsole : MenuSubConsole
     {
-        private string WindowHeaderText, PickButtonText, ReturnButtonText;
-
-        private Label WindowHeader;
         private ListBox DungeonListBox;
         private Button PickButton, ReturnButton;
-        private ControlsConsole WindowHeaderConsole;
 
         public PickDungeonConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
-            WindowHeaderText = LocalizationManager.GetString("PickDungeonHeaderText").ToAscii();
-            PickButtonText = LocalizationManager.GetString("PickButtonText").ToAscii();
-            ReturnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
+            var windowHeaderText = LocalizationManager.GetString("PickDungeonHeaderText").ToAscii();
+            var pickButtonText = LocalizationManager.GetString("PickButtonText").ToAscii();
+            var returnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
-            WindowHeaderConsole = new ControlsConsole(Width, 1)
+            var windowHeaderConsole = new ControlsConsole(Width, 1)
             {
                 Position = new Point(0, 1),
                 FontSize = Font.GetFontSize(IFont.Sizes.Four)
             };
 
-            WindowHeader = new Label(WindowHeaderText.Length)
+            var windowHeader = new Label(windowHeaderText.Length)
             {
-                DisplayText = WindowHeaderText
+                DisplayText = windowHeaderText
             };
-            WindowHeader.Position = new Point(WindowHeader.Width / 2, 0);
-            WindowHeaderConsole.Controls.Add(WindowHeader);
-            Children.Add(WindowHeaderConsole);
+            windowHeader.Position = new Point(windowHeader.Width / 2, 0);
+            windowHeaderConsole.Controls.Add(windowHeader);
+            Children.Add(windowHeaderConsole);
 
-            DungeonListBox = new ListBox(Width / 2 - 2, 20)
+            DungeonListBox = new ListBox((Width / 2) - 2, 20)
             {
                 Position = new Point(1, 6),
                 VisibleItemsMax = 20,
@@ -63,21 +61,21 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             DungeonListBox.SelectedItemChanged += DungeonListBox_SelectedItemChanged;
             Controls.Add(DungeonListBox);
 
-            PickButton = new Button(PickButtonText.Length + 2)
+            PickButton = new Button(pickButtonText.Length + 2)
             {
-                Text = PickButtonText,
+                Text = pickButtonText,
                 IsEnabled = false
             };
-            PickButton.Position = new Point(Width / 4 - PickButton.Width / 2, Height / 2 - 4);
+            PickButton.Position = new Point((Width / 4) - (PickButton.Width / 2), (Height / 2) - 4);
             PickButton.Click += PickButton_Click;
             Controls.Add(PickButton);
 
-            ReturnButton = new Button(ReturnButtonText.Length + 2)
+            ReturnButton = new Button(returnButtonText.Length + 2)
             {
-                Text = ReturnButtonText,
+                Text = returnButtonText,
                 IsEnabled = true
             };
-            ReturnButton.Position = new Point(Width / 4 - ReturnButton.Width / 2, Height / 2 - 2);
+            ReturnButton.Position = new Point((Width / 4) - (ReturnButton.Width / 2), (Height / 2) - 2);
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
         }
@@ -90,14 +88,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
         public override bool ProcessKeyboard(Keyboard keyboard)
         {
-            bool handled = false;
             if (keyboard.IsKeyPressed(Keys.Up) && keyboard.KeysPressed.Count == 1)
             {
                 if (DungeonListBox.SelectedIndex == 0)
                     DungeonListBox.SelectedIndex = DungeonListBox.Items.Count - 1;
                 else
                     DungeonListBox.SelectedIndex--;
-                handled = true;
+                return true;
             }
             else if (keyboard.IsKeyPressed(Keys.Down) && keyboard.KeysPressed.Count == 1)
             {
@@ -105,19 +102,19 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                     DungeonListBox.SelectedIndex = 0;
                 else
                     DungeonListBox.SelectedIndex++;
-                handled = true;
+                return true;
             }
             else if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
             {
                 PickButton.InvokeClick();
-                handled = true;
+                return true;
             }
             else if (keyboard.IsKeyPressed(Keys.Escape) && keyboard.KeysPressed.Count == 1)
             {
                 ReturnButton.InvokeClick();
-                handled = true;
+                return true;
             }
-            return handled;
+            return false;
         }
 
         public void FillList()
@@ -195,4 +192,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             }
         }
     }
+
+    #pragma warning restore IDE0037 // Usar nombre de miembro inferido
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

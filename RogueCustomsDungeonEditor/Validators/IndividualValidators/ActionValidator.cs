@@ -14,6 +14,8 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8601 // Posible asignación de referencia nula
     public static class ActionValidator
     {
         public static DungeonValidationMessages Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
@@ -94,11 +96,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddWarning($"Action {name ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
             }
 
-
             Entity source;
-            Character target = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
-            target.EquippedWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor);
-            target.EquippedArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor);
+            Character target = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor)
+            {
+                EquippedWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor),
+                EquippedArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
+            };
 
             foreach (var als in sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.AlteredStatus && (owner == null || ec.Id != owner.ClassId)))
             {
@@ -113,14 +116,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (owner is Character c)
             {
                 source = c;
-                if(source.OwnOnAttack.Contains(action))
+                if (source.OwnOnAttack.Contains(action))
                 {
-                    (source as Character).Faction = sampleDungeon.Factions.First();
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor);
-                    fillerWeapon.Owner = source as Character;
+                    (source as Character).Faction = sampleDungeon.Factions[0];
+                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as Character
+                    };
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor);
-                    fillerArmor.Owner = source as Character;
+                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as Character
+                    };
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
@@ -130,23 +137,32 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 (owner as Item).Owner = source as NonPlayableCharacter;
                 if (owner.EntityType == EntityType.Weapon)
                 {
-                    (source as Character).EquippedWeapon = (owner as Item);
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor);
-                    fillerArmor.Owner = source as NonPlayableCharacter;
+                    (source as Character).EquippedWeapon = owner as Item;
+                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as NonPlayableCharacter
+                    };
                     (source as Character).EquippedArmor = fillerArmor;
                 }
                 else if (owner.EntityType == EntityType.Armor)
                 {
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor);
-                    fillerWeapon.Owner = source as NonPlayableCharacter;
+                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor)
+                    {
+                        Owner = source as NonPlayableCharacter
+                    };
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = (owner as Item);
+                    (source as Character).EquippedArmor = owner as Item;
                 }
             }
             else if (owner == null)
+            {
                 source = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+            }
             else
+            {
                 source = owner;
+            }
+
             target.Position = sampleDungeon.CurrentFloor.Tiles.Find(t => t.IsWalkable).Position;
             if (source is Character)
             {
@@ -182,7 +198,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             while (pendingEffects.Exists(pe => pe != null) && !errorOnActionChain)
             {
-                var nextEffect = pendingEffects.FirstOrDefault(pe => pe != null);
+                var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
                 if(nextEffect.Function != null)
@@ -259,7 +275,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 });
                             }
                             else
+                            {
                                 defenseTestModification.Amount = target.BaseDefense * -1; // Defense is turned into 0
+                            }
+
                             target.AlteredStatuses.Add(new AlteredStatus(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.AlteredStatus), sampleDungeon.CurrentFloor)
                             {
                                 RemainingTurns = -1,
@@ -487,4 +506,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             return messages;
         }
     }
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
 }

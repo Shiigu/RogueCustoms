@@ -12,7 +12,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonTilesetValidator
     {
-
         public static DungeonValidationMessages Validate(TileSetInfo tileSet, DungeonInfo dungeonJson)
         {
             var messages = new DungeonValidationMessages();

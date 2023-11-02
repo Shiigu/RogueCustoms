@@ -8,19 +8,21 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsConsoleClient.EngineHandling
 {
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public class BackendHandler
     {
         private readonly ServerCaller ServerHandler;
         private readonly DungeonManager LocalHandler;
 
-        public bool IsLocal;
+        public bool IsLocal { get; set; }
         private string serverAddress;
         private readonly string LogFilePath;
 
         private int DungeonId;
 
-        public static BackendHandler Instance { get; private set; }
-        public string ServerAddress { 
+        public static BackendHandler Instance { get; private set; } = null!;
+        public string ServerAddress {
             get { return serverAddress; }
             set {
                 serverAddress = value;
@@ -364,7 +366,6 @@ namespace RogueCustomsConsoleClient.EngineHandling
             }
         }
 
-
         public InventoryDto GetPlayerInventory()
         {
             try
@@ -399,4 +400,6 @@ namespace RogueCustomsConsoleClient.EngineHandling
             }
         }
     }
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
 }

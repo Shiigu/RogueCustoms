@@ -26,6 +26,12 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 
 namespace RogueCustomsDungeonEditor
 {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public partial class frmMain : Form
     {
         private readonly Dictionary<TabTypes, TabPage> TabsForNodeTypes = new();
@@ -100,9 +106,11 @@ namespace RogueCustomsDungeonEditor
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
-            var algorithmIcons = new ImageList();
-            algorithmIcons.ImageSize = new Size(64, 64);
-            algorithmIcons.ColorDepth = ColorDepth.Depth32Bit;
+            var algorithmIcons = new ImageList
+            {
+                ImageSize = new Size(64, 64),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
             foreach (var algorithm in BaseGeneratorAlgorithms)
             {
                 algorithm.PreviewImage = Image.FromFile(algorithm.ImagePath);
@@ -133,7 +141,9 @@ namespace RogueCustomsDungeonEditor
                     Application.Exit();
                 }
                 else
+                {
                     e.Cancel = true;
+                }
             }
         }
 
@@ -192,7 +202,7 @@ namespace RogueCustomsDungeonEditor
                 }
                 tbTabs.TabPages.Insert(0, TabsForNodeTypes[tag.TabToOpen]);
                 tbTabs.SelectedIndex = 0;
-                var matchingNodes = tvDungeonInfo.Nodes.Find(e.Node.Text, true).Where(n => (n.Parent == null && e.Node.Parent == null) || (n.Parent.Text.Equals(e.Node.Parent.Text))).ToList();
+                var matchingNodes = tvDungeonInfo.Nodes.Find(e.Node.Text, true).Where(n => (n.Parent == null && e.Node.Parent == null) || n.Parent.Text.Equals(e.Node.Parent.Text)).ToList();
                 if (matchingNodes.Any())
                 {
                     matchingNodes[0].Parent?.Expand();
@@ -397,7 +407,7 @@ namespace RogueCustomsDungeonEditor
         private void SelectNodeIfExists(string nodeText, string parentNodeText)
         {
             if (ReselectingNode) return;
-            var matchingNodes = tvDungeonInfo.Nodes.Find(nodeText, true).Where(n => (n.Parent == null && string.IsNullOrWhiteSpace(parentNodeText)) || (n.Parent.Text.Equals(parentNodeText))).ToList();
+            var matchingNodes = tvDungeonInfo.Nodes.Find(nodeText, true).Where(n => (n.Parent == null && string.IsNullOrWhiteSpace(parentNodeText)) || n.Parent.Text.Equals(parentNodeText)).ToList();
             if (matchingNodes.Any())
             {
                 matchingNodes[0].Parent?.Expand();
@@ -422,7 +432,9 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxIcon.Warning
                 );
                 if (messageBoxResult == DialogResult.Cancel)
+                {
                     return;
+                }
                 else if (messageBoxResult == DialogResult.Yes)
                 {
                     tsbSaveDungeon_Click(null, EventArgs.Empty);
@@ -457,7 +469,9 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxIcon.Warning
                 );
                 if (messageBoxResult == DialogResult.Cancel)
+                {
                     return;
+                }
                 else if (messageBoxResult == DialogResult.Yes)
                 {
                     tsbSaveDungeon_Click(null, EventArgs.Empty);
@@ -502,7 +516,9 @@ namespace RogueCustomsDungeonEditor
                         DirtyDungeon = true;
                     }
                     else
+                    {
                         DirtyDungeon = false;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -539,20 +555,20 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Warning
                     );
-                    if (messageBoxResult == DialogResult.Yes)
+                    if (messageBoxResult == DialogResult.Yes && !SaveElement())
                     {
-                        if (!SaveElement())
-                            MessageBox.Show($"The currently-opened Element could not be saved due to errors. Please check it.\n\nThe Dungeon saving process will proceed nonetheless.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show($"The currently-opened Element could not be saved due to errors. Please check it.\n\nThe Dungeon saving process will proceed nonetheless.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 File.WriteAllText(filePath, string.Empty);
-                using FileStream createStream = File.OpenWrite(filePath);
-                JsonSerializer.Serialize(createStream, ActiveDungeon, new JsonSerializerOptions
+                using (var createStream = File.OpenWrite(filePath))
                 {
-                    WriteIndented = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                });
-                createStream.Dispose();
+                    JsonSerializer.Serialize(createStream, ActiveDungeon, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                    });
+                }
                 if (PassedValidation)
                     MessageBox.Show($"Dungeon has been successfully saved to {filePath}.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
@@ -574,7 +590,9 @@ namespace RogueCustomsDungeonEditor
         {
             var tabToOpen = TabTypes.BasicInfo;
             if (tvDungeonInfo.SelectedNode?.Tag != null)
+            {
                 tabToOpen = ActiveNodeTag.TabToOpen;
+            }
             else
             {
                 switch (tvDungeonInfo.SelectedNode.Text)
@@ -814,7 +832,10 @@ namespace RogueCustomsDungeonEditor
                             TabsForNodeTypes[tag.TabToOpen].Text = $"Floor Group - {tagFloorGroup.MinFloorLevel}";
                     }
                     else
+                    {
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Floor Group";
+                    }
+
                     break;
                 case TabTypes.FactionInfo:
                     var tagFaction = (FactionInfo)tag.DungeonElement;
@@ -920,9 +941,9 @@ namespace RogueCustomsDungeonEditor
 
         private void OpenActionEditScreenForListBox(ListBox actionListBox, string actionTypeText, bool isNewAction, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
         {
-            var action = (isNewAction)
+            var action = isNewAction
                             ? new ActionWithEffectsInfo()
-                            : (actionListBox.SelectedItem as ListBoxItem).Tag as ActionWithEffectsInfo;
+                            : (actionListBox.SelectedItem as ListBoxItem)?.Tag as ActionWithEffectsInfo;
             var classId = ((ClassInfo)ActiveNodeTag.DungeonElement).Id;
             var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresCondition, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
             frmActionEdit.ShowDialog();
@@ -958,7 +979,6 @@ namespace RogueCustomsDungeonEditor
                 DirtyTab = true;
             }
         }
-
 
         #endregion
 
@@ -1334,7 +1354,7 @@ namespace RogueCustomsDungeonEditor
         private void DeleteLocale()
         {
             var activeLocale = (LocaleInfo)dgvLocales.Tag;
-            var deleteLocalePrompt = (IsNewElement)
+            var deleteLocalePrompt = IsNewElement
                 ? "Do you want to remove this unsaved Locale?"
                 : $"Do you want to PERMANENTLY delete Locale \"{activeLocale.Language}\"?";
             var messageBoxResult = MessageBox.Show(
@@ -1343,7 +1363,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -1548,7 +1567,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteTileSet()
         {
             var activeTileSet = (TileSetInfo)ActiveNodeTag.DungeonElement;
-            var deleteTileSetPrompt = (IsNewElement)
+            var deleteTileSetPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Tileset?"
                 : $"Do you want to PERMANENTLY delete Tileset {activeTileSet.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -1557,7 +1576,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -1728,11 +1746,12 @@ namespace RogueCustomsDungeonEditor
                 MaxInFloor = floorGroup.MaxTrapsInFloor
             };
             cmbTilesets.Items.Clear();
-            foreach (var tileSet in ActiveDungeon.TileSetInfos)
+            cmbTilesets.Items.AddRange(ActiveDungeon.TileSetInfos.Select(tileSet => tileSet.Id).ToArray());
+
+            var selectedTilesetId = floorGroup.TileSetId;
+            if (ActiveDungeon.TileSetInfos.Any(tileSet => tileSet.Id.Equals(selectedTilesetId)))
             {
-                cmbTilesets.Items.Add(tileSet.Id);
-                if (floorGroup.TileSetId.Equals(tileSet.Id))
-                    cmbTilesets.Text = tileSet.Id;
+                cmbTilesets.Text = selectedTilesetId;
             }
             btnOnFloorStartAction.Tag = floorGroup.OnFloorStart ?? new ActionWithEffectsInfo();
             chkGenerateStairsOnStart.Checked = floorGroup.GenerateStairsOnStart;
@@ -1742,7 +1761,6 @@ namespace RogueCustomsDungeonEditor
             nudExtraRoomConnectionOdds.Value = floorGroup.OddsForExtraConnections;
             nudRoomFusionOdds.Value = floorGroup.RoomFusionOdds;
         }
-
 
         private bool ValidateFloorGroupDataForSave(out List<string> errorMessages)
         {
@@ -1818,7 +1836,6 @@ namespace RogueCustomsDungeonEditor
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
-
             }
 
             if (messageBoxResult == DialogResult.Yes)
@@ -1890,14 +1907,13 @@ namespace RogueCustomsDungeonEditor
             return false;
         }
 
-
         private void DeleteFloorGroup()
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
             var floorLevelString = (activeFloorGroup.MinFloorLevel != activeFloorGroup.MaxFloorLevel)
                     ? $"{activeFloorGroup.MinFloorLevel}-{activeFloorGroup.MaxFloorLevel}"
-                    : activeFloorGroup.MinFloorLevel.ToString(); ;
-            var deleteFloorGroupPrompt = (IsNewElement)
+                    : activeFloorGroup.MinFloorLevel.ToString();
+            var deleteFloorGroupPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Floor Group?"
                 : $"Do you want to PERMANENTLY delete Floor Group {floorLevelString}?";
             var messageBoxResult = MessageBox.Show(
@@ -1906,7 +1922,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -2054,7 +2069,7 @@ namespace RogueCustomsDungeonEditor
 
         private void btnOnFloorStartAction_Click(object sender, EventArgs e)
         {
-            var floorGroup = ((FloorInfo)ActiveNodeTag.DungeonElement);
+            var floorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnOnFloorStartAction, "Turn Start", string.Empty, false, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -2065,8 +2080,7 @@ namespace RogueCustomsDungeonEditor
             frmAlgorithmWindow.ShowDialog();
             if (frmAlgorithmWindow.Saved)
             {
-                var generatorAlgorithms = lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>;
-                if (generatorAlgorithms == null)
+                if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms)
                 {
                     generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
                     generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
@@ -2108,8 +2122,7 @@ namespace RogueCustomsDungeonEditor
         private void btnRemoveAlgorithm_Click(object sender, EventArgs e)
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var generatorAlgorithms = lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>;
-            if (generatorAlgorithms == null)
+            if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms)
             {
                 generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
                 generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
@@ -2146,7 +2159,9 @@ namespace RogueCustomsDungeonEditor
                 nudExtraRoomConnectionOdds.Value = 0;
             }
             else
+            {
                 nudExtraRoomConnectionOdds.Enabled = true;
+            }
         }
 
         private void nudRoomConnectionOdds_ValueChanged(object sender, EventArgs e)
@@ -2158,7 +2173,9 @@ namespace RogueCustomsDungeonEditor
                 nudMaxRoomConnections.Value = 1;
             }
             else
+            {
                 nudMaxRoomConnections.Enabled = true;
+            }
         }
 
         private void nudRoomFusionOdds_ValueChanged(object sender, EventArgs e)
@@ -2336,7 +2353,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteFaction()
         {
             var activeFaction = (FactionInfo)ActiveNodeTag.DungeonElement;
-            var deleteFactionPrompt = (IsNewElement)
+            var deleteFactionPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Faction?"
                 : $"Do you want to PERMANENTLY delete Faction {activeFaction.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2345,7 +2362,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -2520,7 +2536,7 @@ namespace RogueCustomsDungeonEditor
                 crsPlayer.BackgroundColor = playerClass.ConsoleRepresentation.BackgroundColor;
                 crsPlayer.ForegroundColor = playerClass.ConsoleRepresentation.ForegroundColor;
             }
-            catch (Exception ex)
+            catch
             {
                 crsPlayer.Character = '\0';
                 crsPlayer.BackgroundColor = new GameColor(Color.Black);
@@ -2569,7 +2585,7 @@ namespace RogueCustomsDungeonEditor
                 {
                     nudPlayerFlatSightRange.Value = int.Parse(playerClass.BaseSightRange);
                 }
-                catch (Exception ex)
+                catch
                 {
                     nudPlayerFlatSightRange.Value = 1;
                 }
@@ -2827,7 +2843,7 @@ namespace RogueCustomsDungeonEditor
         public void DeletePlayerClass()
         {
             var activePlayerClass = (PlayerClassInfo)ActiveNodeTag.DungeonElement;
-            var deletePlayerClassPrompt = (IsNewElement)
+            var deletePlayerClassPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Player Class?"
                 : $"Do you want to PERMANENTLY delete Player Class {activePlayerClass.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2836,7 +2852,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -3067,7 +3082,7 @@ namespace RogueCustomsDungeonEditor
 
         private void btnPlayerOnTurnStartAction_Click(object sender, EventArgs e)
         {
-            var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, "Turn Start", playerClass.Id, false, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -3080,7 +3095,6 @@ namespace RogueCustomsDungeonEditor
         private void btnAddPlayerOnAttackAction_Click(object sender, EventArgs e)
         {
             OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", true, true, true, true, string.Empty, UsageCriteria.FullConditions);
-
         }
 
         private void btnEditPlayerOnAttackAction_Click(object sender, EventArgs e)
@@ -3106,13 +3120,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnPlayerOnAttackedAction_Click(object sender, EventArgs e)
         {
-            var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnPlayerOnAttackedAction, "Interacted", playerClass.Id, false, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnPlayerOnDeathAction_Click(object sender, EventArgs e)
         {
-            var playerClass = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
         }
         private void nudPlayerBaseMP_ValueChanged(object sender, EventArgs e)
@@ -3170,7 +3184,7 @@ namespace RogueCustomsDungeonEditor
                 crsNPC.BackgroundColor = npc.ConsoleRepresentation.BackgroundColor;
                 crsNPC.ForegroundColor = npc.ConsoleRepresentation.ForegroundColor;
             }
-            catch (Exception ex)
+            catch
             {
                 crsNPC.Character = '\0';
                 crsNPC.BackgroundColor = new GameColor(Color.Black);
@@ -3229,7 +3243,7 @@ namespace RogueCustomsDungeonEditor
                 {
                     nudNPCFlatSightRange.Value = int.Parse(npc.BaseSightRange);
                 }
-                catch (Exception ex)
+                catch
                 {
                     nudNPCFlatSightRange.Value = 1;
                 }
@@ -3477,7 +3491,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteNPC()
         {
             var activeNPC = (NPCInfo)ActiveNodeTag.DungeonElement;
-            var deleteNPCPrompt = (IsNewElement)
+            var deleteNPCPrompt = IsNewElement
                 ? "Do you want to remove this unsaved NPC?"
                 : $"Do you want to PERMANENTLY delete NPC {activeNPC.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -3486,7 +3500,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -3753,7 +3766,7 @@ namespace RogueCustomsDungeonEditor
 
         private void btnNPCOnTurnStartAction_Click(object sender, EventArgs e)
         {
-            var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnNPCOnTurnStartAction, "Turn Start", NPC.Id, false, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -3791,13 +3804,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnNPCOnAttackedAction_Click(object sender, EventArgs e)
         {
-            var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnNPCOnAttackedAction, "Interacted", NPC.Id, false, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnNPCOnDeathAction_Click(object sender, EventArgs e)
         {
-            var NPC = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -3855,7 +3868,7 @@ namespace RogueCustomsDungeonEditor
                 crsItem.BackgroundColor = item.ConsoleRepresentation.BackgroundColor;
                 crsItem.ForegroundColor = item.ConsoleRepresentation.ForegroundColor;
             }
-            catch (Exception ex)
+            catch
             {
                 crsItem.Character = '\0';
                 crsItem.BackgroundColor = new GameColor(Color.Black);
@@ -4042,7 +4055,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteItem()
         {
             var activeItem = (ItemInfo)ActiveNodeTag.DungeonElement;
-            var deleteItemPrompt = (IsNewElement)
+            var deleteItemPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Item?"
                 : $"Do you want to PERMANENTLY delete Item {activeItem.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -4051,7 +4064,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -4146,7 +4158,7 @@ namespace RogueCustomsDungeonEditor
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((PreviousItemType.Equals("Consumable") && (cmbItemType.Text.Equals("Weapon") || cmbItemType.Text.Equals("Armor")))
-                || (PreviousItemType.Equals("Weapon") || PreviousItemType.Equals("Armor")) && (cmbItemType.Text.Equals("Consumable")))
+                || ((PreviousItemType.Equals("Weapon") || PreviousItemType.Equals("Armor")) && cmbItemType.Text.Equals("Consumable")))
             {
                 var changeItemTypePrompt = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
                     ? "Changing an Item Type from Consumable to Equippable will delete some saved Actions.\n\nNOTE: This is NOT reversible."
@@ -4218,13 +4230,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnItemOnSteppedAction_Click(object sender, EventArgs e)
         {
-            var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnItemOnSteppedAction, "Stepped On", item.Id, false, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnUseAction_Click(object sender, EventArgs e)
         {
-            var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnItemOnUseAction, "Used", item.Id, true, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -4262,13 +4274,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnItemOnTurnStartAction_Click(object sender, EventArgs e)
         {
-            var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnItemOnTurnStartAction, "Owner Turn Start", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnItemOnAttackedAction_Click(object sender, EventArgs e)
         {
-            var item = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnItemOnAttackedAction, "Owner Interacted", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         #endregion
@@ -4285,7 +4297,7 @@ namespace RogueCustomsDungeonEditor
                 crsTrap.BackgroundColor = trap.ConsoleRepresentation.BackgroundColor;
                 crsTrap.ForegroundColor = trap.ConsoleRepresentation.ForegroundColor;
             }
-            catch (Exception ex)
+            catch
             {
                 crsTrap.Character = '\0';
                 crsTrap.BackgroundColor = new GameColor(Color.Black);
@@ -4417,7 +4429,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteTrap()
         {
             var activeTrap = (TrapInfo)ActiveNodeTag.DungeonElement;
-            var deleteTrapPrompt = (IsNewElement)
+            var deleteTrapPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Trap?"
                 : $"Do you want to PERMANENTLY delete Trap {activeTrap.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -4426,7 +4438,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -4506,7 +4517,7 @@ namespace RogueCustomsDungeonEditor
 
         private void btnTrapOnSteppedAction_Click(object sender, EventArgs e)
         {
-            var trap = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var trap = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnTrapOnSteppedAction, "Stepped On", trap.Id, false, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
         }
 
@@ -4524,7 +4535,7 @@ namespace RogueCustomsDungeonEditor
                 crsAlteredStatus.BackgroundColor = alteredStatus.ConsoleRepresentation.BackgroundColor;
                 crsAlteredStatus.ForegroundColor = alteredStatus.ConsoleRepresentation.ForegroundColor;
             }
-            catch (Exception ex)
+            catch
             {
                 crsAlteredStatus.Character = '\0';
                 crsAlteredStatus.BackgroundColor = new GameColor(Color.Black);
@@ -4659,7 +4670,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteAlteredStatus()
         {
             var activeAlteredStatus = (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
-            var deleteAlteredStatusPrompt = (IsNewElement)
+            var deleteAlteredStatusPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Altered Status?"
                 : $"Do you want to PERMANENTLY delete Altered Status {activeAlteredStatus.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -4668,7 +4679,6 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
-
 
             if (messageBoxResult == DialogResult.Yes)
             {
@@ -4713,13 +4723,13 @@ namespace RogueCustomsDungeonEditor
 
         private void btnAlteredStatusOnApplyAction_Click(object sender, EventArgs e)
         {
-            var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var alteredStatus = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, "Apply Status", alteredStatus.Id, false, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAlteredStatusOnTurnStartAction_Click(object sender, EventArgs e)
         {
-            var alteredStatus = ((ClassInfo)ActiveNodeTag.DungeonElement);
+            var alteredStatus = (ClassInfo)ActiveNodeTag.DungeonElement;
             OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, "Inflicted Turn Start", alteredStatus.Id, false, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
         private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
@@ -4907,4 +4917,10 @@ namespace RogueCustomsDungeonEditor
         AlteredStatus,
         Validator
     }
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning restore CS8601 // Posible asignación de referencia nula
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

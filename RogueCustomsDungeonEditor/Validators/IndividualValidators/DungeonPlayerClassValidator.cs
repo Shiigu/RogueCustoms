@@ -35,7 +35,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         else
                             messages.AddWarning($"Character is a Player whose name in locale {locale.Language} exceeds 13 characters. Console Clients may display the name incorrectly");
                     }
-
                 }
                 if (!foundNameInLocales && playerClassJson.Name.Length > 13)
                 {

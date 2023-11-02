@@ -21,7 +21,9 @@ using RogueCustomsGameEngine.Utils.Helpers;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
-    public class InventoryWindow : Window
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    public sealed class InventoryWindow : Window
     {
         private readonly string UseButtonText = LocalizationManager.GetString("UseButtonText").ToAscii();
         private readonly string EquipButtonText = LocalizationManager.GetString("EquipButtonText").ToAscii();
@@ -44,11 +46,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, InventoryDto inventory, bool readOnly)
+        public static Window? Show(GameConsoleContainer parent, InventoryDto inventory, bool readOnly)
         {
-            if (inventory == null || !inventory.InventoryItems.Any()) return null;
-            var width = GameConsoleConstants.SelectionWindowWidth;
-            var height = GameConsoleConstants.SelectionWindowHeight;
+            if (inventory?.InventoryItems.Any() != true) return null;
+            const int width = GameConsoleConstants.SelectionWindowWidth;
+            const int height = GameConsoleConstants.SelectionWindowHeight;
 
             var window = new InventoryWindow(width, height);
 
@@ -121,7 +123,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             };
             dropOrSwapButton.Theme = null;
 
-            cancelButton.Position = new Point((window.Width - cancelButton.Surface.Width) - 2, window.Height - cancelButton.Surface.Height);
+            cancelButton.Position = new Point(window.Width - cancelButton.Surface.Width - 2, window.Height - cancelButton.Surface.Height);
             cancelButton.Click += (o, e) => window.Hide();
             cancelButton.Theme = null;
 
@@ -133,7 +135,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.Controls.Add(cancelButton);
 
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -143,9 +145,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             if (!ds.IsDirty) return;
 
-            var window = (ds.Parent as ControlHost).ParentConsole as Console;
-
-            var square = new Rectangle(0, 0, Width, Height);
+            if (ds.Parent is not ControlHost host) return;
+            if (host.ParentConsole is not Console window) return;
 
             ds.Surface.Clear();
             ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
@@ -160,9 +161,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             var item = Inventory.InventoryItems.ElementAtOrDefault(InventorySelectedIndex);
 
-            var initialIndexToShow = CurrentlyShownInventoryItems != null && CurrentlyShownInventoryItems.Contains(item) ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, Inventory.InventoryItems.IndexOf(item));
+            var initialIndexToShow = CurrentlyShownInventoryItems?.Contains(item) == true ? CurrentlyShownFirstIndex : Math.Min(CurrentlyShownFirstIndex + 1, Inventory.InventoryItems.IndexOf(item));
             CurrentlyShownFirstIndex = initialIndexToShow;
-            var inventoryItemsToShow = CurrentlyShownInventoryItems != null && CurrentlyShownInventoryItems.Contains(item) ? CurrentlyShownInventoryItems : Inventory.InventoryItems.Skip(initialIndexToShow).Take(30).ToList();
+            var inventoryItemsToShow = CurrentlyShownInventoryItems?.Contains(item) == true ? CurrentlyShownInventoryItems : Inventory.InventoryItems.Skip(initialIndexToShow).Take(30).ToList();
             CurrentlyShownInventoryItems = inventoryItemsToShow;
 
             for (int i = 0; i < inventoryItemsToShow.Count; i++)
@@ -182,7 +183,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             }
             TileIsOccupied = Inventory.TileIsOccupied;
             ItemIsEquippable = item.IsEquippable;
-            
+
             if(item.IsEquipped)
             {
                 UseOrEquipButton.IsEnabled = false;
@@ -205,7 +206,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 DropOrSwapButton.IsVisible = true;
                 DropOrSwapButton.Text = TileIsOccupied ? SwapButtonText : DropButtonText;
             }
-            DropOrSwapButton.Position = new Point(ds.Surface.Area.Center.X - DropOrSwapButton.Text.Length / 2, Height - DropOrSwapButton.Surface.Height);
+            DropOrSwapButton.Position = new Point(ds.Surface.Area.Center.X - (DropOrSwapButton.Text.Length / 2), Height - DropOrSwapButton.Surface.Height);
             if (item != null)
             {
                 UseOrEquipButton.IsEnabled = !item.IsEquipped && item.CanBeUsed;
@@ -218,11 +219,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
                 if (item.IsInFloor)
                 {
-                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("FloorItemDescriptionText")}");
+                    descriptionToDisplay.Append("\n\n").Append(LocalizationManager.GetString("FloorItemDescriptionText"));
                 }
                 else if (item.IsEquipped)
                 {
-                    descriptionToDisplay.Append($"\n\n{LocalizationManager.GetString("EquippedItemDescriptionText")}");
+                    descriptionToDisplay.Append("\n\n").Append(LocalizationManager.GetString("EquippedItemDescriptionText"));
                     if (TileIsOccupied)
                         descriptionToDisplay.Append(LocalizationManager.GetString("OccupiedTileDescriptionText"));
                 }
@@ -239,7 +240,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                     lastPrintedLine++;
                     ds.Surface.Print(41, lastPrintedLine, splitWrappedDescription[i].Trim().ToAscii(), Color.White, Color.Black);
                 }
-
             }
             ds.IsDirty = true;
             ds.IsFocused = true;
@@ -258,15 +258,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 DrawingArea.IsDirty = true;
             }
             else if (UseOrEquipButton.IsEnabled
-                && ((info.IsKeyPressed(Keys.Enter)
+                && (info.IsKeyPressed(Keys.Enter)
                 || (info.IsKeyPressed(Keys.E) && ItemIsEquippable)
-                || (info.IsKeyPressed(Keys.U) && !ItemIsEquippable))) && info.KeysPressed.Count == 1)
+                || (info.IsKeyPressed(Keys.U) && !ItemIsEquippable)) && info.KeysPressed.Count == 1)
             {
                 UseOrEquipButton.InvokeClick();
             }
             else if (DropOrSwapButton.IsEnabled
-                && (((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
-                || (info.IsKeyPressed(Keys.S) && TileIsOccupied))) && info.KeysPressed.Count == 1)
+                && ((info.IsKeyPressed(Keys.D) && !TileIsOccupied)
+                || (info.IsKeyPressed(Keys.S) && TileIsOccupied)) && info.KeysPressed.Count == 1)
             {
                 DropOrSwapButton.InvokeClick();
             }
@@ -278,4 +278,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             return true;
         }
     }
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable IDE1006 // Estilos de nombres
     public partial class InputBox : Form
     {
         public string PromptText => txtPromptText.Text;
@@ -19,7 +20,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             InitializeComponent();
         }
 
-        public static string Show(string prompt, string title, string defaultText = "")
+        public static string? Show(string prompt, string title, string defaultText = "")
         {
             using var inputBox = new InputBox();
             inputBox.Text = title;
@@ -46,4 +47,5 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Close();
         }
     }
+    #pragma warning restore IDE1006 // Estilos de nombres
 }

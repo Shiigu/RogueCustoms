@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class Locale
     {
         [MaxLength(2)]
@@ -44,4 +45,5 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public string Key { get; set; }
         public string Value { get; set; }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

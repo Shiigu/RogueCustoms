@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
     public partial class CharacterMapInputBox : Form
     {
         public char? CharacterToSave { get; private set; }
@@ -61,16 +62,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 tlpCharacters.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             }
-
         }
         private void CharacterLabel_Click(object? sender, EventArgs e)
         {
-            if (SelectedCell != null)
-            {
-                var previousLabel = tlpCharacters.GetControlFromPosition(SelectedCell.Column, SelectedCell.Row) as Label;
-                previousLabel.BackColor = Color.White;
-            }
-
+            var previousLabel = tlpCharacters.GetControlFromPosition(SelectedCell.Column, SelectedCell.Row) as Label;
+            previousLabel.BackColor = Color.White;
             var clickedLabel = sender as Label;
             SelectedCell = tlpCharacters.GetPositionFromControl(clickedLabel);
             CharacterToSave = clickedLabel.Text[0];
@@ -89,4 +85,5 @@ namespace RogueCustomsDungeonEditor.HelperForms
             this.Close();
         }
     }
+    #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
 }

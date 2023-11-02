@@ -7,10 +7,17 @@ using System.Drawing;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public static class AttackActions
     {
-        public static RngHandler Rng;
-        public static Map Map;
+        private static RngHandler Rng;
+        private static Map Map;
+
+        public static void SetActionParams(RngHandler rng, Map map)
+        {
+            Rng = rng;
+            Map = map;
+        }
 
         public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {

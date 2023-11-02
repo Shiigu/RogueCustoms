@@ -8,9 +8,12 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.IO;
+using System.Collections.Immutable;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class Dungeon
     {
         public int Id { get; set; }
@@ -38,7 +41,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<FloorType> FloorTypes { get; set; }
         public List<EntityClass> Classes { get; set; }
 
-        public readonly List<Faction> Factions;
+        public ImmutableList<Faction> Factions { get; private set; }
         #endregion
 
         public Dungeon(int id, DungeonInfo dungeonInfo, string localeLanguage)
@@ -64,11 +67,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi)));
             FloorTypes.ForEach(ft => {
-                ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId));
+                ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId))
+                    ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");
                 ft.FillPossibleClassLists(Classes);
             });
-            Factions = new List<Faction>();
-            dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
+            Factions = ImmutableList.Create<Faction>();
+            dungeonInfo.FactionInfos.ForEach(fi => Factions = Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
             Messages = new List<MessageDto>();
             MessageBoxes = new List<MessageBoxDto>();
@@ -111,14 +115,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (CurrentFloorLevel > 1)
             {
                 Messages.Clear();
-                foreach (var status in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
-                {
-                    PlayerCharacter.MaxHPModifications?.RemoveAll(a => a.Id.Equals(status.Name));
-                    PlayerCharacter.AttackModifications?.RemoveAll(a => a.Id.Equals(status.Name));
-                    PlayerCharacter.DefenseModifications?.RemoveAll(a => a.Id.Equals(status.Name));
-                    PlayerCharacter.MovementModifications?.RemoveAll(a => a.Id.Equals(status.Name));
-                    PlayerCharacter.HPRegenerationModifications?.RemoveAll(a => a.Id.Equals(status.Name));
-                }
+                var statusNamesToRemove = PlayerCharacter.AlteredStatuses
+                    .Where(als => als.CleanseOnFloorChange)
+                    .Select(status => status.Name)
+                    .ToList();
+
+                PlayerCharacter.MaxHPModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                PlayerCharacter.AttackModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                PlayerCharacter.DefenseModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                PlayerCharacter.MovementModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                PlayerCharacter.HPRegenerationModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+
                 PlayerCharacter.AlteredStatuses.RemoveAll(als => als.CleanseOnFloorChange);
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
@@ -201,7 +208,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MessageBoxes.Clear();
             CurrentFloor.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
-        
+
         public PlayerInfoDto GetPlayerDetailInfo()
         {
             return CurrentFloor.GetPlayerDetailInfo();
@@ -234,4 +241,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloor.PlayerUseStairs();
         }
     }
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

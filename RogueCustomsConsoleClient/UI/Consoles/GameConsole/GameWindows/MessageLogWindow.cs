@@ -17,7 +17,8 @@ using System.Linq;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
-    public class MessageLogWindow : Window
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    public sealed class MessageLogWindow : Window
     {
         private Button CloseButton;
         private string TitleCaption { get; set; }
@@ -30,11 +31,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
         }
 
-        public static Window Show(GameConsoleContainer parent, List<MessageDto> messages)
+        public static Window? Show(List<MessageDto> messages)
         {
-            if (messages?.Any() == false) return null;
-            var width = 65;
-            var height = 30;
+            if (messages?.Any() != true) return null;
+            const int width = 65;
+            const int height = 30;
 
             var window = new MessageLogWindow(width, height);
 
@@ -79,10 +80,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Position = new Point(square.X + square.Width - 1, square.Y - 1)
             };
 
-            scrollBar.ValueChanged += (o, e) =>
-            {
-                textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
-            };
+            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
 
             window.ScrollBar = scrollBar;
             window.Controls.Add(scrollBar);
@@ -95,7 +93,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             window.Controls.Add(closeButton);
 
             window.Show(true);
-            window.Parent = (window.Parent as RootScreen).ActiveContainer;
+            window.Parent = (window.Parent as RootScreen)?.ActiveContainer;
             window.Center();
 
             return window;
@@ -105,7 +103,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         {
             if (!ds.IsDirty) return;
 
-            var window = (ds.Parent as ControlHost).ParentConsole as Console;
+            if (ds.Parent is not ControlHost host) return;
+            if (host.ParentConsole is not Console window) return;
 
             ScrollBar.Maximum = Math.Max(0, TextAreaSubConsole.Cursor.Position.Y - TextAreaSubConsole.ViewHeight);
             ScrollBar.IsEnabled = TextAreaSubConsole.Cursor.Position.Y > TextAreaSubConsole.ViewHeight;
@@ -157,4 +156,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             return base.ProcessMouse(state);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

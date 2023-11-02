@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class PlayerInfoDto
     {
         public string Name { get; set; }
@@ -23,7 +24,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ItemDetailDto WeaponInfo { get; set; }
         public ItemDetailDto ArmorInfo { get; set; }
 
-        public PlayerInfoDto() { } 
+        public PlayerInfoDto() { }
 
         public PlayerInfoDto(PlayerCharacter character, Map map)
         {
@@ -180,4 +181,5 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ConsoleRepresentation = als.ConsoleRepresentation;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

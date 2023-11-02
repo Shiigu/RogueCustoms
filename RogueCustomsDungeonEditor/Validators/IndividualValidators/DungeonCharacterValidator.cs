@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
-    public class DungeonCharacterValidator
+    public static class DungeonCharacterValidator
     {
         public static DungeonValidationMessages Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
@@ -83,7 +83,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("Base HP Regeneration is lower than 0. The Character might spontaneously die under normal circumnstances.");
             else if (characterJson.BaseHPRegeneration == 0)
                 messages.AddWarning("Base HP Regeneration is 0. Under normal circumnstances, it won't be able to regenerate HP at all.");
-            var seesWholeMap = false;
             if(int.TryParse(characterJson.BaseSightRange, out int sightRange))
             {
                 if (sightRange < 0)
@@ -99,8 +98,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     case "fullmap":
                     case "whole map":
                     case "wholemap":
-                        seesWholeMap = true;
-                        break;
                     case "full room":
                     case "fullroom":
                     case "whole room":
@@ -155,7 +152,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"Character has invalid item {item} in Starting Inventory.");
                 }
             }
-            
 
             if (characterAsInstance.OwnOnAttack.Any())
             {

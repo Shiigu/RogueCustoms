@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class PlayerClassSelectionOutput
     {
         public List<CharacterClassDto> CharacterClasses { get; set; } = new List<CharacterClassDto>();
@@ -145,4 +147,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsIntegerStat { get; set; }
         public bool Visible { get; set; }
     }
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

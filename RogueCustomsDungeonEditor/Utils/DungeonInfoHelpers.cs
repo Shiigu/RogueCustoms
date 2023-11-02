@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
+    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public static class DungeonInfoHelpers
     {
         public static DungeonInfo CreateEmptyDungeonTemplate(LocaleInfo localeTemplate, List<string> baseLocaleLanguages)
@@ -61,36 +64,6 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.DefaultLocale = baseLocaleLanguages[0];
 
             return templateDungeon;
-        }
-
-        public static LocaleInfo Clone(this LocaleInfo localeInfo, List<string> mandatoryLocaleKeys)
-        {
-            var newLocale = new LocaleInfo
-            {
-                Language = localeInfo.Language,
-                LocaleStrings = new()
-            };
-            foreach (var mandatoryKey in mandatoryLocaleKeys)
-            {
-                var localeEntry = localeInfo.LocaleStrings.Find(ls => mandatoryKey.Equals(ls.Key));
-                if(localeEntry != null)
-                {
-                    newLocale.LocaleStrings.Add(new LocaleInfoString
-                    {
-                        Key = localeEntry.Key,
-                        Value = localeEntry.Value
-                    });
-                }
-            }
-            foreach (var localeEntry in localeInfo.LocaleStrings.Where(ls => !mandatoryLocaleKeys.Contains(ls.Key)))
-            {
-                newLocale.LocaleStrings.Add(new LocaleInfoString
-                {
-                    Key = localeEntry.Key,
-                    Value = localeEntry.Value
-                });
-            }
-            return newLocale;
         }
 
         public static TileSetInfo CreateDefaultTileSet()
@@ -592,103 +565,78 @@ namespace RogueCustomsDungeonEditor.Utils
             return false;
         }
 
+        public static LocaleInfo Clone(this LocaleInfo localeInfo, List<string> mandatoryLocaleKeys)
+        {
+            var newLocale = new LocaleInfo
+            {
+                Language = localeInfo.Language,
+                LocaleStrings = new()
+            };
+            foreach (var mandatoryKey in mandatoryLocaleKeys)
+            {
+                var localeEntry = localeInfo.LocaleStrings.Find(ls => mandatoryKey.Equals(ls.Key));
+                if (localeEntry != null)
+                {
+                    newLocale.LocaleStrings.Add(new LocaleInfoString
+                    {
+                        Key = localeEntry.Key,
+                        Value = localeEntry.Value
+                    });
+                }
+            }
+            foreach (var localeEntry in localeInfo.LocaleStrings.Where(ls => !mandatoryLocaleKeys.Contains(ls.Key)))
+            {
+                newLocale.LocaleStrings.Add(new LocaleInfoString
+                {
+                    Key = localeEntry.Key,
+                    Value = localeEntry.Value
+                });
+            }
+            return newLocale;
+        }
+
         public static FloorInfo Clone(this FloorInfo info)
         {
             if (info == null) return null;
 
-            var clonedFloor = new FloorInfo();
-
-            clonedFloor.MinFloorLevel = info.MinFloorLevel;
-            clonedFloor.MaxFloorLevel = info.MaxFloorLevel;
-            clonedFloor.Width = info.Width;
-            clonedFloor.Height = info.Height;
-            clonedFloor.GenerateStairsOnStart = info.GenerateStairsOnStart;
-            clonedFloor.PossibleMonsters = new List<ClassInFloorInfo>(info.PossibleMonsters);
-            clonedFloor.PossibleItems = new List<ClassInFloorInfo>(info.PossibleItems);
-            clonedFloor.PossibleTraps = new List<ClassInFloorInfo>(info.PossibleTraps);
-            clonedFloor.PossibleGeneratorAlgorithms = new List<GeneratorAlgorithmInfo>(info.PossibleGeneratorAlgorithms);
-            clonedFloor.MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms;
-            clonedFloor.OddsForExtraConnections = info.OddsForExtraConnections;
-            clonedFloor.RoomFusionOdds = info.RoomFusionOdds;
-            clonedFloor.OnFloorStart = info.OnFloorStart.Clone();
+            var clonedFloor = new FloorInfo
+            {
+                MinFloorLevel = info.MinFloorLevel,
+                MaxFloorLevel = info.MaxFloorLevel,
+                Width = info.Width,
+                Height = info.Height,
+                GenerateStairsOnStart = info.GenerateStairsOnStart,
+                PossibleMonsters = new List<ClassInFloorInfo>(info.PossibleMonsters),
+                PossibleItems = new List<ClassInFloorInfo>(info.PossibleItems),
+                PossibleTraps = new List<ClassInFloorInfo>(info.PossibleTraps),
+                PossibleGeneratorAlgorithms = new List<GeneratorAlgorithmInfo>(info.PossibleGeneratorAlgorithms),
+                MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms,
+                OddsForExtraConnections = info.OddsForExtraConnections,
+                RoomFusionOdds = info.RoomFusionOdds,
+                OnFloorStart = info.OnFloorStart.Clone()
+            };
 
             return clonedFloor;
-        }
-
-        public static void PruneNullActions(this DungeonInfo dungeonInfo)
-        {
-            foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => string.IsNullOrWhiteSpace(floorInfo.OnFloorStart?.Name)))
-            {
-                floorInfo.OnFloorStart = null;
-            }
-
-            foreach (var playerClass in dungeonInfo.PlayerClasses)
-            {
-                if (string.IsNullOrWhiteSpace(playerClass?.OnTurnStart?.Name))
-                    playerClass.OnTurnStart = null;
-                playerClass.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(playerClass?.OnAttacked?.Name))
-                    playerClass.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(playerClass?.OnDeath?.Name))
-                    playerClass.OnDeath = null;
-            }
-
-            foreach (var npc in dungeonInfo.NPCs)
-            {
-                if (string.IsNullOrWhiteSpace(npc?.OnTurnStart?.Name))
-                    npc.OnTurnStart = null;
-                npc.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(npc?.OnAttacked?.Name))
-                    npc.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(npc?.OnDeath?.Name))
-                    npc.OnDeath = null;
-            }
-
-            foreach (var item in dungeonInfo.Items)
-            {
-                if (string.IsNullOrWhiteSpace(item?.OnTurnStart?.Name))
-                    item.OnTurnStart = null;
-                item.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(item?.OnAttacked?.Name))
-                    item.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(item?.OnUse?.Name))
-                    item.OnUse = null;
-                if (string.IsNullOrWhiteSpace(item?.OnStepped?.Name))
-                    item.OnStepped = null;
-            }
-
-            foreach (var trap in dungeonInfo.Traps)
-            {
-                if (string.IsNullOrWhiteSpace(trap?.OnStepped?.Name))
-                    trap.OnStepped = null;
-            }
-
-            foreach (var alteredStatus in dungeonInfo.AlteredStatuses)
-            {
-                if (string.IsNullOrWhiteSpace(alteredStatus?.OnTurnStart?.Name))
-                    alteredStatus.OnTurnStart = null;
-                if (string.IsNullOrWhiteSpace(alteredStatus?.OnApply?.Name))
-                    alteredStatus.OnApply = null;
-            }
         }
 
         public static ActionWithEffectsInfo Clone(this ActionWithEffectsInfo info)
         {
             if (info == null) return null;
 
-            var clonedAction = new ActionWithEffectsInfo();
-
-            clonedAction.Name = info.Name;
-            clonedAction.Description = info.Description;
-            clonedAction.CooldownBetweenUses = info.CooldownBetweenUses;
-            clonedAction.StartingCooldown = info.StartingCooldown;
-            clonedAction.MinimumRange = info.MinimumRange;
-            clonedAction.MaximumRange = info.MaximumRange;
-            clonedAction.MaximumUses = info.MaximumUses;
-            clonedAction.MPCost = info.MPCost;
-            clonedAction.TargetTypes = new List<string>(info.TargetTypes ?? new List<string>());
-            clonedAction.Effect = info.Effect.Clone();
-            clonedAction.UseCondition = info.UseCondition;
+            var clonedAction = new ActionWithEffectsInfo
+            {
+                Name = info.Name,
+                Description = info.Description,
+                CooldownBetweenUses = info.CooldownBetweenUses,
+                StartingCooldown = info.StartingCooldown,
+                MinimumRange = info.MinimumRange,
+                MaximumRange = info.MaximumRange,
+                MaximumUses = info.MaximumUses,
+                MPCost = info.MPCost,
+                TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
+                Effect = info.Effect.Clone(),
+                UseCondition = info.UseCondition
+            };
 
             return clonedAction;
         }
@@ -722,6 +670,68 @@ namespace RogueCustomsDungeonEditor.Utils
             return clonedEffect;
         }
 
+        public static void PruneNullActions(this DungeonInfo dungeonInfo)
+        {
+            foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => string.IsNullOrWhiteSpace(floorInfo.OnFloorStart?.Name)))
+            {
+                floorInfo.OnFloorStart = null;
+            }
+
+            foreach (var playerClass in dungeonInfo.PlayerClasses)
+            {
+                if (playerClass == null) continue;
+                if (string.IsNullOrWhiteSpace(playerClass?.OnTurnStart?.Name))
+                    playerClass.OnTurnStart = null;
+                playerClass.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(playerClass?.OnAttacked?.Name))
+                    playerClass.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(playerClass?.OnDeath?.Name))
+                    playerClass.OnDeath = null;
+            }
+
+            foreach (var npc in dungeonInfo.NPCs)
+            {
+                if (npc == null) continue;
+                if (string.IsNullOrWhiteSpace(npc?.OnTurnStart?.Name))
+                    npc.OnTurnStart = null;
+                npc.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(npc?.OnAttacked?.Name))
+                    npc.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(npc?.OnDeath?.Name))
+                    npc.OnDeath = null;
+            }
+
+            foreach (var item in dungeonInfo.Items)
+            {
+                if (item == null) continue;
+                if (string.IsNullOrWhiteSpace(item?.OnTurnStart?.Name))
+                    item.OnTurnStart = null;
+                item.OnAttack.RemoveAll(oa => oa == null);
+                if (string.IsNullOrWhiteSpace(item?.OnAttacked?.Name))
+                    item.OnAttacked = null;
+                if (string.IsNullOrWhiteSpace(item?.OnUse?.Name))
+                    item.OnUse = null;
+                if (string.IsNullOrWhiteSpace(item?.OnStepped?.Name))
+                    item.OnStepped = null;
+            }
+
+            foreach (var trap in dungeonInfo.Traps)
+            {
+                if (trap == null) continue;
+                if (string.IsNullOrWhiteSpace(trap?.OnStepped?.Name))
+                    trap.OnStepped = null;
+            }
+
+            foreach (var alteredStatus in dungeonInfo.AlteredStatuses)
+            {
+                if (alteredStatus == null) continue;
+                if (string.IsNullOrWhiteSpace(alteredStatus?.OnTurnStart?.Name))
+                    alteredStatus.OnTurnStart = null;
+                if (string.IsNullOrWhiteSpace(alteredStatus?.OnApply?.Name))
+                    alteredStatus.OnApply = null;
+            }
+        }
+
         public static bool AddMissingMandatoryLocalesIfNeeded(this LocaleInfo localeInfo, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
             var localeKeys = localeInfo.LocaleStrings.Select(x => x.Key).ToList();
@@ -738,4 +748,7 @@ namespace RogueCustomsDungeonEditor.Utils
             return missingMandatoryKeys.Any();
         }
     }
+    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

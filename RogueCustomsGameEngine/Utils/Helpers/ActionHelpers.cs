@@ -13,6 +13,10 @@ using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Utils.Helpers
 {
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class ActionHelpers
     {
         private readonly static List<string> FieldsToConsider = new()
@@ -38,7 +42,15 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "Power",
             "TurnLength"
         };
-        public static Map Map { get; set; }
+
+        private static RngHandler Rng;
+        private static Map Map;
+
+        public static void SetActionParams(RngHandler rng, Map map)
+        {
+            Rng = rng;
+            Map = map;
+        }
 
         public static ExpandoObject ParseParams(Entity This, Entity Source, Entity Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
         {
@@ -306,11 +318,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
                         var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
 
-                        var entityName = (isNot) ? match.Groups[3].Value : match.Groups[1].Value;
+                        var entityName = isNot ? match.Groups[3].Value : match.Groups[1].Value;
 
                         if (!entityName.Equals(eName)) continue;
 
-                        var statusName = (isNot) ? match.Groups[4].Value : match.Groups[2].Value;
+                        var statusName = isNot ? match.Groups[4].Value : match.Groups[2].Value;
 
                         if (!Map.PossibleStatuses.Exists(als => als.ClassId.Equals(statusName))) continue;
 
@@ -348,7 +360,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         throw new ArgumentException($"Invalid rng({x},{y}) expression: first parameter cannot be greater than the second.");
                     }
 
-                    int randomValue = Map.Rng.Next(x, y + 1);
+                    int randomValue = Rng.Next(x, y + 1);
                     parsedArg = parsedArg.Replace(match.Value, randomValue.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 }
             }
@@ -410,4 +422,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             }
         }
     }
+#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

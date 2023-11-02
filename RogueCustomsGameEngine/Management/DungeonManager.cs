@@ -34,6 +34,7 @@ namespace RogueCustomsGameEngine.Management
             foreach (var file in Directory.GetFiles("./JSON/", "*.json"))
             {
                 var dungeonInfo = GetDungeonInfoFromFile(file);
+                if (dungeonInfo == null) continue;
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 dungeonsInNewRetrieval.Add(fileName);
                 AvailableDungeonInfos[fileName] = dungeonInfo;
@@ -45,7 +46,7 @@ namespace RogueCustomsGameEngine.Management
             }
         }
 
-        private DungeonInfo GetDungeonInfoFromFile(string path)
+        private DungeonInfo? GetDungeonInfoFromFile(string path)
         {
             var jsonString = File.ReadAllText(path);
             return JsonSerializer.Deserialize<DungeonInfo>(jsonString, new JsonSerializerOptions
@@ -66,8 +67,10 @@ namespace RogueCustomsGameEngine.Management
         {
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
-            var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo, locale);
-            dungeon.LastAccessTime = DateTime.UtcNow;
+            var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo, locale)
+            {
+                LastAccessTime = DateTime.UtcNow
+            };
             Dungeons.Add(dungeon);
             CurrentDungeonId++;
             return dungeon.Id;
@@ -86,7 +89,6 @@ namespace RogueCustomsGameEngine.Management
             var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * Constants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
             Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
         }
-
 
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
         {

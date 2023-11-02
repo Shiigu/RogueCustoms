@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsConsoleClient.Resources.Localization
 {
-    public class LocalizationManager
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    public static class LocalizationManager
     {
-        private static List<Localization> Localizations = new List<Localization>();
+        private readonly static List<Localization> Localizations = new();
         private static Localization Instance => Localizations.Find(l => l.Name.Equals(Settings.Default.Language));
 
         public static string CurrentLocale => Instance.Locale;
@@ -83,4 +85,6 @@ namespace RogueCustomsConsoleClient.Resources.Localization
         public string Key { get; set; }
         public string Value { get; set; }
     }
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

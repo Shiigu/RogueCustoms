@@ -18,6 +18,11 @@ using System.Collections.Immutable;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class Map
     {
         #region Fields
@@ -50,8 +55,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private readonly GeneratorAlgorithm GeneratorAlgorithmToUse;
         public TileSet TileSet => FloorConfigurationToUse.TileSet;
 
-
-
         public string FloorName => Locale["FloorName"].Format(new {
                                                                 DungeonName = Dungeon.Name.ToUpperInvariant(),
                                                                 FloorLevel = FloorLevel.ToString()
@@ -66,16 +69,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private int TotalMonstersInFloor => AICharacters.Where(e => e.ExistenceStatus == EntityExistenceStatus.Alive).Count();
-        private int TotalItemsInFloor => Items.Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone).Count();
-        private int TotalTrapsInFloor => Traps.Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone).Count();
+        private int TotalMonstersInFloor => AICharacters.Count(e => e.ExistenceStatus == EntityExistenceStatus.Alive);
+        private int TotalItemsInFloor => Items.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
+        private int TotalTrapsInFloor => Traps.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int MinRoomWidth { get; set; }
         private int MaxRoomWidth { get; set; }
         private int MinRoomHeight { get; set; }
         private int MaxRoomHeight { get; set; }
         public bool StairsAreSet { get; set; } = false;
-        public List<Entity> Entities => Characters.Cast<Entity>().Union(Items.Cast<Entity>()).Union(Traps.Cast<Entity>()).Where(e => e != null).ToList();
-        public List<Character> Characters => AICharacters.Cast<Character>().Append(Player).ToList();
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
@@ -116,16 +117,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleStatuses = ImmutableList.Create<AlteredStatus>();
             Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses = PossibleStatuses.Add(new AlteredStatus(alsc, this)));
 
-            AttackActions.Rng = Rng;
-            AttackActions.Map = this;
-            CharacterActions.Rng = Rng;
-            CharacterActions.Map = this;
-            ItemActions.Rng = Rng;
-            ItemActions.Map = this;
-            GenericActions.Rng = Rng;
-            GenericActions.Map = this;
-
-            ActionHelpers.Map = this;
+            AttackActions.SetActionParams(Rng, this);
+            CharacterActions.SetActionParams(Rng, this);
+            ItemActions.SetActionParams(Rng, this);
+            GenericActions.SetActionParams(Rng, this);
+            ActionHelpers.SetActionParams(Rng, this);
         }
 
         public void Generate()
@@ -347,7 +343,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         var rngRoom = Rng.NextInclusive(1, 100);
                         // Force generation of a normal room if it's the last possible location and no normal Room was created yet
-                        if (normalRoomsCount == 0 && row == lastPossibleNormalRoomIndex.Row && column == lastPossibleNormalRoomIndex.Column || !rngRoom.Between(71, 100))
+                        if ((normalRoomsCount == 0 && row == lastPossibleNormalRoomIndex.Row && column == lastPossibleNormalRoomIndex.Column) || !rngRoom.Between(71, 100))
                         {
                             var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(row, column);
                             var rngX1 = Rng.NextInclusive(MinX, MaxX - MinRoomWidth);
@@ -369,7 +365,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                 }
             }
-            while (!SetPossibleRoomConnections(false).IsFullyConnectedAdjacencyMatrix(r => r != null));
+            while (!SetPossibleRoomConnections(false).IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None));
         }
 
         private void CreateRoomsWithSpecificLayout(List<(int Row, int Column)> normalRooms, List<(int Row, int Column)> dummyRooms)
@@ -408,7 +404,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private bool ConnectRoomsOrTurnIntoDefaultIfNotPossible()
         {
             RoomAdjacencyMatrix = SetPossibleRoomConnections(true);
-            var success = RoomAdjacencyMatrix.IsFullyConnectedAdjacencyMatrix(r => r != null);
+            var success = RoomAdjacencyMatrix.IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None);
             if (success)
             {
                 FuseRoomsIfNeeded();
@@ -437,10 +433,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (!isInInventory)
                 entity.Position = PickEmptyPosition(TurnCount == 0);
             if (entity is PlayerCharacter pc)
+            {
                 Dungeon.PlayerCharacter = pc;
+            }
             else if (entity is NonPlayableCharacter npc)
+            {
                 AICharacters.Add(npc);
-            else if(entity is Item i)
+            }
+            else if (entity is Item i)
             {
                 if (i.EntityType != EntityType.Trap)
                     Items.Add(i);
@@ -581,7 +581,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     List<ClassInFloor> usableMonsterGenerators = new();
                     FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
                     {
-                        if (!pm.CanSpawnOnFirstTurn || pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor) return;
+                        if (!pm.CanSpawnOnFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
                         var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive);
                         if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                         usableMonsterGenerators.Add(pm);
@@ -592,7 +592,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     while (TotalMonstersInFloor < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor && totalMonsterGeneratorChance > 0 && generationAttempts < generationsToTry)
                     {
                         AddEnemy(usableMonsterGenerators, totalMonsterGeneratorChance);
-                        usableMonsterGenerators.RemoveAll(mg => mg.SimultaneousMaxForKindInFloor > 0 && AICharacters.Count(e => e.ClassId.Equals(mg.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive) >= mg.SimultaneousMaxForKindInFloor || mg.OverallMaxForKindInFloor > 0 && mg.TotalGeneratedInFloor >= mg.OverallMaxForKindInFloor);
+                        usableMonsterGenerators.RemoveAll(mg => (mg.SimultaneousMaxForKindInFloor > 0 && AICharacters.Count(e => e.ClassId.Equals(mg.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive) >= mg.SimultaneousMaxForKindInFloor) || (mg.OverallMaxForKindInFloor > 0 && mg.TotalGeneratedInFloor >= mg.OverallMaxForKindInFloor));
                         totalMonsterGeneratorChance = usableMonsterGenerators.Sum(mg => mg.ChanceToPick);
                         generationAttempts++;
                     }
@@ -691,7 +691,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             List<ClassInFloor> usableMonsterGenerators = new();
             FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
             {
-                if (!pm.CanSpawnAfterFirstTurn || pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor) return;
+                if (!pm.CanSpawnAfterFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
                 var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                 usableMonsterGenerators.Add(pm);
@@ -725,7 +725,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void ProcessTurn()
         {
             Player.UpdateVisibility();
-            if (Player.RemainingMovement > 0 && (Player.CanTakeAction && !Player.TookAction)) return;
+            if (Player.RemainingMovement > 0 && Player.CanTakeAction && !Player.TookAction) return;
             var aiCharactersThatCanAct = AICharacters.Where(c => c.CanTakeAction && !c.TookAction);
             Parallel.ForEach(aiCharactersThatCanAct, aictca => aictca.PickTargetAndPath());
             aiCharactersThatCanAct.ForEach(aictca => aictca.AttackOrMove());
@@ -767,7 +767,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool TryMoveCharacter(Character character, Tile targetTile)
         {
-            var characterInTargetTile = Characters.Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
+            var characterInTargetTile = GetCharacters().Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
             if (characterInTargetTile != null)
             {
                 if (((characterInTargetTile.Visible && character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) || !characterInTargetTile.Visible) && characterInTargetTile.CanTakeAction && characterInTargetTile.Movement > 0)
@@ -788,9 +788,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             character.Position = targetTile.Position;
 
-            targetTile.Items?.ForEach(i => character.TryToPickItem(i));
-            if (targetTile.Trap != null)
-                targetTile.Trap.Stepped(character);
+            targetTile.GetItems().ForEach(i => character.TryToPickItem(i));
+            targetTile.Trap?.Stepped(character);
 
             character.RemainingMovement--;
 
@@ -826,7 +825,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBePickedUp = GetEntitiesFromCoordinates(Player.Position.X, Player.Position.Y)
                 .ConvertAll(e => e as Item)
-                .Find(e => e?.ExistenceStatus == EntityExistenceStatus.Alive && e?.CanBePickedUp == true);
+                .Find(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive && e.CanBePickedUp);
             if (itemThatCanBePickedUp == null)
                 return;
             if (Player.Inventory.Count == Player.InventorySize)
@@ -938,13 +937,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.Character;
-            if (characterInTile != null && characterInTile.Visible)
+            if (characterInTile?.Visible == true)
                 return new EntityDetailDto(characterInTile);
-            var itemInTile = tile.Items.FirstOrDefault();
-            if(itemInTile != null && itemInTile.Visible)
+            var itemInTile = tile.GetItems().FirstOrDefault();
+            if(itemInTile?.Visible == true)
                 return new EntityDetailDto(itemInTile);
             var trapInTile = tile.Trap;
-            if (trapInTile != null && trapInTile.Visible)
+            if (trapInTile?.Visible == true)
                 return new EntityDetailDto(trapInTile);
             return null;
         }
@@ -968,7 +967,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Tile tileToCheck;
             bool hasLaterallyAdjacentHallways;
             var playerRoom = Player?.Position != null ? GetRoomInCoordinates(Player.Position.X, Player.Position.Y) : null;
-            if(nonDummyRooms.Count > 1 && !allowPlayerRoom)
+            if(nonDummyRooms.Count > 1 && playerRoom != null && !allowPlayerRoom)
                 nonDummyRooms.Remove(playerRoom);
             do
             {
@@ -981,7 +980,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             || GetTileFromCoordinates(rngX, rngY - 1)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(rngX, rngY + 1)?.Type == TileType.Hallway;
             }
-            while (!tileToCheck.IsWalkable || tileToCheck.Type == TileType.Stairs || tileToCheck.Character != null || tileToCheck.Items?.Any() == true || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
+            while (!tileToCheck.IsWalkable || tileToCheck.Type == TileType.Stairs || tileToCheck.Character != null || tileToCheck.GetItems().Any() || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
             return new Point(rngX, rngY);
         }
 
@@ -999,8 +998,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (MaxRoomHeight < Constants.MinRoomWidthOrHeight)
                 throw new InvalidDataException("Combination of floor Height and Rows prevents generating 5x5 rooms (the bare minimum)");
             MinRoomHeight = Math.Max(MaxRoomHeight / 4, Constants.MinRoomWidthOrHeight);
-            var widthGap = (Width - MaxRoomWidth * RoomCountColumns) / 2;
-            var heightGap = (Height - MaxRoomHeight * RoomCountRows) / 2;
+            var widthGap = (Width - (MaxRoomWidth * RoomCountColumns)) / 2;
+            var heightGap = (Height - (MaxRoomHeight * RoomCountRows)) / 2;
             RoomLimitsTable = new (Point topLeftCorner, Point bottomRightCorner)[RoomCountRows, RoomCountColumns];
             var minX = widthGap;
             var maxX = Width - widthGap;
@@ -1012,8 +1011,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     var topLeftCorner = new Point
                     {
-                        X = minX + MaxRoomWidth * j,
-                        Y = minY + MaxRoomHeight * i
+                        X = minX + (MaxRoomWidth * j),
+                        Y = minY + (MaxRoomHeight * i)
                     };
                     var bottomRightCorner = new Point
                     {
@@ -1050,9 +1049,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return GetEntitiesFromCoordinates(point.X, point.Y);
         }
 
+        public List<Entity> GetEntities()
+        {
+            return GetCharacters().Cast<Entity>().Union(Items.Cast<Entity>()).Union(Traps.Cast<Entity>()).Where(e => e != null).ToList();
+        }
+        public List<Character> GetCharacters()
+        {
+            return AICharacters.Cast<Character>().Append(Player).ToList();
+        }
+
         private List<Entity> GetEntitiesFromCoordinates(int x, int y)
         {
-            return Entities.Where(t => t != null && t.Position != null && t.Position.X == x && t.Position.Y == y).ToList();
+            return GetEntities().Where(t => t?.Position != null && t.Position.X == x && t.Position.Y == y).ToList();
         }
 
         public Room GetRoomInCoordinates(int x, int y)
@@ -1102,13 +1110,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     return characterBaseConsoleRepresentation;
                 }
                 else if (tile.Character.Visible)
+                {
                     return characterBaseConsoleRepresentation;
+                }
             }
             if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            if (tile.Items.Exists(i => i.Visible))
-                return tile.Items.Find(i => i.Visible).ConsoleRepresentation;
-            if (tile.Trap != null && tile.Trap.Visible)
+            if (tile.GetItems().Exists(i => i.Visible))
+                return tile.GetItems().Find(i => i.Visible).ConsoleRepresentation;
+            if (tile.Trap?.Visible == true)
                 return tile.Trap.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
             if (deadEntityInCoordinates != null)
@@ -1204,7 +1214,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                     var roomsToFuseWithThis = new List<Room>();
 
-                    Room fusedRoom = null;
+                    Room? fusedRoom = null;
 
                     foreach (var adjacentRoom in adjacentRooms)
                     {
@@ -1235,7 +1245,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 Rooms[i] = fusedRoom;
                         }
                     }
-
                 }
             }
         }
@@ -1351,7 +1360,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
             }
         }
-                
+
         private void CreateHallway((Room Source, Room Target, RoomConnectionType Tag) edge)
         {
             var roomA = edge.Source;
@@ -1374,9 +1383,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CreateVerticalHallway(roomB, roomA);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-
+                // If cannot build Hallway, pretend we never tried.
             }
         }
 
@@ -1542,7 +1551,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        private (Point? InBetweenConnectorPosition, Point ConnectorAPosition, Point ConnectorBPosition) CalculateConnectionPosition(Tile connectorA, Tile connectorB, RoomConnectionType connectionType)
+        private (Point? InBetweenConnectorPosition, Point? ConnectorAPosition, Point? ConnectorBPosition) CalculateConnectionPosition(Tile connectorA, Tile connectorB, RoomConnectionType connectionType)
         {
             int minX = 0, maxX = -1, minY = 0, maxY = -1;
             var connectorAPosition = new Point(connectorA.Position.X, connectorA.Position.Y);
@@ -1667,4 +1676,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         #endregion
     }
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

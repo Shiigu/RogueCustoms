@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Utils.JsonImports
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public class FloorInfo
     {
@@ -50,7 +51,6 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         #endregion
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
-
     }
 
     [Serializable]
@@ -60,4 +60,5 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int Rows { get; set; }
         public int Columns { get; set; }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

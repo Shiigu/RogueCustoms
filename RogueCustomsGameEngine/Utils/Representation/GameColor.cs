@@ -1,9 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Utils.Representation
 {
-    public class GameColor
+    public sealed class GameColor : IEquatable<GameColor?>
     {
         public byte R { get; set; }
         public byte G { get; set; }
@@ -42,6 +44,30 @@ namespace RogueCustomsGameEngine.Utils.Representation
             if(obj is GameColor gc)
                 return R == gc.R && G == gc.G && B == gc.B && A == gc.A;
             return false;
+        }
+
+        public bool Equals(GameColor? other)
+        {
+            return other is not null &&
+                   R == other.R &&
+                   G == other.G &&
+                   B == other.B &&
+                   A == other.A;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(R, G, B, A);
+        }
+
+        public static bool operator ==(GameColor? left, GameColor? right)
+        {
+            return EqualityComparer<GameColor>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(GameColor? left, GameColor? right)
+        {
+            return !(left == right);
         }
     }
 }

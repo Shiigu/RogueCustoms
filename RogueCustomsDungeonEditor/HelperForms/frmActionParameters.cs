@@ -27,6 +27,16 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+    #pragma warning disable IDE1006 // Estilos de nombres
+    #pragma warning disable RCS1077 // Optimize LINQ method call.
+    #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
+    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning disable CS8601 // Posible asignación de referencia nula
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
     public partial class frmActionParameters : Form
     {
         public EffectInfo EffectToSave { get; private set; }
@@ -34,7 +44,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public List<string> ValidAlteredStatuses { get; private set; }
         public EffectTypeData EffectTypeData { get; private set; }
 
-        private DungeonInfo ActiveDungeon;
+        private readonly DungeonInfo ActiveDungeon;
         private string PreviousTextBoxValue;
 
         private readonly List<ParameterType> TypesThatAlwaysHoldAValue = new()
@@ -51,13 +61,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (paramsData.InternalName.Equals(effectToSave?.EffectName))
             {
                 EffectToSave = effectToSave.Clone();
-                if (EffectToSave.Params.Count() != paramsData.Parameters.Count)
+                if (EffectToSave.Params.Length != paramsData.Parameters.Count)
                 {
                     var newParamsList = new Parameter[paramsData.Parameters.Count];
                     for (int i = 0; i < EffectToSave.Params.Length; i++)
                     {
-                        newParamsList[i] = new Parameter();
-                        newParamsList[i].ParamName = paramsData.Parameters[i].InternalName;
+                        newParamsList[i] = new Parameter
+                        {
+                            ParamName = paramsData.Parameters[i].InternalName
+                        };
                         var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
                         newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
                     }
@@ -65,14 +77,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else
             {
-                EffectToSave = new EffectInfo();
-                EffectToSave.EffectName = paramsData.InternalName;
-                EffectToSave.Params = new Parameter[paramsData.Parameters.Count];
+                EffectToSave = new EffectInfo
+                {
+                    EffectName = paramsData.InternalName,
+                    Params = new Parameter[paramsData.Parameters.Count]
+                };
                 for (int i = 0; i < EffectToSave.Params.Length; i++)
                 {
-                    EffectToSave.Params[i] = new Parameter();
-                    EffectToSave.Params[i].ParamName = paramsData.Parameters[i].InternalName;
-                    EffectToSave.Params[i].Value = paramsData.Parameters[i].Default;
+                    EffectToSave.Params[i] = new Parameter
+                    {
+                        ParamName = paramsData.Parameters[i].InternalName,
+                        Value = paramsData.Parameters[i].Default
+                    };
                 }
             }
             EffectTypeData = paramsData;
@@ -89,7 +105,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 tlpParameters.Width -= widthChange;
                 llblWikiAction.Width -= widthChange;
                 btnSave.Width -= widthChange / 2;
-                btnCancel.Location = new Point(btnCancel.Location.X - widthChange / 2, btnCancel.Location.Y);
+                btnCancel.Location = new Point(btnCancel.Location.X - (widthChange / 2), btnCancel.Location.Y);
                 btnCancel.Width -= widthChange / 2;
                 this.Width -= widthChange;
             }
@@ -118,8 +134,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
 
                 Control control = null;
-
-                var originalValue = (isActionEdit) ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
+                var originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
 
                 switch (parameter.Type)
                 {
@@ -138,9 +153,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 comboBox.Text = valueOfKey;
                             }
                             else
+                            {
                                 comboBox.Text = parameter.Default;
+                            }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             comboBox.Text = parameter.Default;
                         }
@@ -152,7 +169,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
-                            var valueToValidate = (sender as TextBox)?.Text;
+                            if (sender is not TextBox textBox) return;
+                            var valueToValidate = textBox.Text;
                             if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
                             {
                                 MessageBox.Show(
@@ -161,7 +179,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error
                                 );
-                                (sender as TextBox).Text = PreviousTextBoxValue;
+                                textBox.Text = PreviousTextBoxValue;
                             }
                         };
                         break;
@@ -247,13 +265,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 colorButton.BackColor = parameter.Default.ToColor();
                                 ((TextBox)control).Text = parameter.Default;
                             }
-                            catch (Exception ex)
-                            { }
+                            catch
+                            {
+                                // Ignore invalid colors.
+                            }
                         }
                         colorButton.Tag = control;
                         colorButton.Click += (sender, e) =>
                         {
-                            var textColor = (colorButton.Tag as TextBox).Text;
+                            var textColor = (colorButton.Tag as TextBox)?.Text;
                             var colorDialog = new ColorDialog();
                             try
                             {
@@ -263,7 +283,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                     colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
                                 }
                             }
-                            catch { }
+                            catch
+                            {
+                                // Ignore invalid colors.
+                            }
                             if (colorDialog.ShowDialog() == DialogResult.OK)
                             {
                                 ((TextBox)colorButton.Tag).Text = new GameColor(colorDialog.Color).ToString();
@@ -273,23 +296,23 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
-                            var valueToValidate = (sender as TextBox).Text;
+                            var textBox = sender as TextBox;
+                            var valueToValidate = textBox.Text;
                             if (!string.IsNullOrWhiteSpace(valueToValidate))
                             {
                                 try
                                 {
-                                    var textBox = sender as TextBox;
                                     colorButton.BackColor = valueToValidate.ToColor();
                                 }
                                 catch
                                 {
                                     MessageBox.Show(
-                                        $"You have entered an invalid color.",
+                                        "You have entered an invalid color.",
                                         "Invalid parameter data",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error
                                     );
-                                    (sender as TextBox).Text = PreviousTextBoxValue;
+                                    textBox.Text = PreviousTextBoxValue;
                                 }
                             }
                             colorButton.BackColor = SystemColors.ButtonFace;
@@ -353,8 +376,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control = textBoxPanel;
                         break;
                     case ParameterType.AlteredStatus:
-                        var alteredStatusComboBox = new ComboBox();
-                        alteredStatusComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                        var alteredStatusComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
                         foreach (var alteredStatus in ValidAlteredStatuses)
                         {
                             alteredStatusComboBox.Items.Add(alteredStatus);
@@ -367,9 +392,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 alteredStatusComboBox.Text = valueOfKey;
                             }
                             else
+                            {
                                 alteredStatusComboBox.Text = parameter.Default;
+                            }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             alteredStatusComboBox.Text = parameter.Default;
                         }
@@ -381,7 +408,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
-                            var valueToValidate = (sender as TextBox)?.Text;
+                            if (sender is not TextBox textBox) return;
+                            var valueToValidate = textBox.Text;
                             if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out string errorMessage))
                             {
                                 MessageBox.Show(
@@ -390,7 +418,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error
                                 );
-                                (sender as TextBox).Text = PreviousTextBoxValue;
+                                textBox.Text = PreviousTextBoxValue;
                             }
                         };
                         break;
@@ -400,7 +428,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
                         control.Leave += (sender, e) =>
                         {
-                            var valueToValidate = (sender as TextBox)?.Text;
+                            if (sender is not TextBox textBox) return;
+                            var valueToValidate = textBox.Text;
                             if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out string errorMessage))
                             {
                                 MessageBox.Show(
@@ -409,7 +438,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error
                                 );
-                                (sender as TextBox).Text = PreviousTextBoxValue;
+                                textBox.Text = PreviousTextBoxValue;
                             }
                         };
                         break;
@@ -459,7 +488,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             llblWikiParameters.LinkVisited = true;
             Process.Start(new ProcessStartInfo
             {
-                FileName = $"https://github.com/Shiigu/RogueCustoms/wiki/Effect-Parameters",
+                FileName = "https://github.com/Shiigu/RogueCustoms/wiki/Effect-Parameters",
                 UseShellExecute = true
             });
         }
@@ -490,29 +519,29 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 switch (parameterData.Type)
                 {
                     case ParameterType.ComboBox:
-                        valueToValidate = (controlToValidate as ComboBox).Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !(controlToValidate as ComboBox).Items.Contains(valueToValidate))
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid value.");
+                        valueToValidate = (controlToValidate as ComboBox)?.Text;
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");
                         else
                             valueToValidate = parameterData.ValidValues.Find(vv => vv.Value.Equals(valueToValidate)).Key;
                         break;
                     case ParameterType.AlteredStatus:
-                        valueToValidate = (controlToValidate as ComboBox).Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !(controlToValidate as ComboBox).Items.Contains(valueToValidate))
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid value.");
+                        valueToValidate = (controlToValidate as ComboBox)?.Text;
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");
                         break;
                     case ParameterType.Formula:
-                        valueToValidate = (controlToValidate as TextBox).Text;
+                        valueToValidate = (controlToValidate as TextBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid formula: {errorMessage}.");
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid formula: ").Append(errorMessage).AppendLine(".");
                         break;
                     case ParameterType.Character:
-                        valueToValidate = (controlToValidate as Label).Text;
+                        valueToValidate = (controlToValidate as Label)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.CanBeEncodedToIBM437())
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a IBM437 character.");
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a IBM437 character.");
                         break;
                     case ParameterType.Color:
-                        valueToValidate = (controlToValidate as TextBox).Text;
+                        valueToValidate = (controlToValidate as TextBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate))
                         {
                             try
@@ -521,29 +550,29 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             }
                             catch
                             {
-                                errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid color.");
+                                errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid color.");
                             }
                         }
                         break;
                     case ParameterType.Text:
                     case ParameterType.Key:
-                        valueToValidate = (controlToValidate as TextBox).Text;
+                        valueToValidate = (controlToValidate as TextBox)?.Text;
                         break;
                     case ParameterType.Number:
-                        valueToValidate = (controlToValidate as TextBox).Text;
+                        valueToValidate = (controlToValidate as TextBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out errorMessage))
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid value: {errorMessage}.");
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid value: ").Append(errorMessage).AppendLine(".");
                         break;
                     case ParameterType.Odds:
-                        valueToValidate = (controlToValidate as NumericUpDown).Value.ToString();
+                        valueToValidate = (controlToValidate as NumericUpDown)?.Value.ToString();
                         break;
                     case ParameterType.Boolean:
-                        valueToValidate = (controlToValidate as CheckBox).Checked.ToString();
+                        valueToValidate = (controlToValidate as CheckBox)?.Checked.ToString();
                         break;
                     case ParameterType.BooleanExpression:
-                        valueToValidate = (controlToValidate as TextBox).Text;
+                        valueToValidate = (controlToValidate as TextBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out errorMessage))
-                            errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" does not contain a valid expression: {errorMessage}.");
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid expression: ").Append(errorMessage).AppendLine(".");
                         break;
                 }
 
@@ -551,7 +580,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
                 if (parameterData.Required && !parameterData.OptionalIfFieldsHaveValue.Any() && string.IsNullOrWhiteSpace(valueToValidate))
                 {
-                    errorMessageStringBuilder.AppendLine($"Parameter \"{parameterData.DisplayName}\" is required.");
+                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" is required.");
                 }
                 if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Any() && string.IsNullOrWhiteSpace(valueToValidate))
                 {
@@ -570,7 +599,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                     }
                     if (!fellowRequiredGroupHasValue && fellowRequiredEncountered == fellowRequiredCount)
-                        errorMessageStringBuilder.AppendLine($"At least one of parameters ({parameterData.DisplayName}, {string.Join(", ", parameterData.OptionalIfFieldsHaveValue)}) is required.");
+                        errorMessageStringBuilder.Append("At least one of parameters (").Append(parameterData.DisplayName).Append(", ").AppendJoin(", ", parameterData.OptionalIfFieldsHaveValue).AppendLine(") is required.");
                 }
             }
             var errorMessages = errorMessageStringBuilder.ToString();
@@ -587,19 +616,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (string.IsNullOrWhiteSpace(EffectToSave.EffectName))
                     EffectToSave.EffectName = EffectTypeData.InternalName;
-                foreach (var param in paramsAndValues)
+                foreach (var (ParamName, Value) in paramsAndValues)
                 {
-                    var paramToSave = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(param.ParamName, StringComparison.InvariantCultureIgnoreCase));
+                    var paramToSave = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(ParamName, StringComparison.InvariantCultureIgnoreCase));
                     if (paramToSave != null)                 // This should always be true
                     {
-                        paramToSave.Value = param.Value;
+                        paramToSave.Value = Value;
                     }
                     else
                     {
                         EffectToSave.Params = EffectToSave.Params.Append(new Parameter
                         {
-                            ParamName = param.ParamName,
-                            Value = param.Value
+                            ParamName = ParamName,
+                            Value = Value
                         }).ToArray();
                     }
                 }
@@ -608,4 +637,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
         }
     }
+    #pragma warning restore IDE1006 // Estilos de nombres
+    #pragma warning restore RCS1077 // Optimize LINQ method call.
+    #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
+    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+    #pragma warning restore CS8601 // Posible asignación de referencia nula
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    #pragma warning restore CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
 }

@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class AlteredStatus : Entity, IHasActions
     {
         private readonly EntityClass Class;
@@ -57,7 +58,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return new AlteredStatus(Class, Map);
         }
 
-        public string ToString() => $"{Name} ({Description}) - {TurnLength - RemainingTurns} turns left";
+        public override string ToString() => $"{Name} ({Description}) - {TurnLength - RemainingTurns} turns left";
 
         public void PerformOnTurnStartActions()
         {
@@ -70,8 +71,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
                 OwnOnTurnStart.CurrentCooldown--;
-            if(RemainingTurns > 0)
+            if (RemainingTurns > 0)
                 RemainingTurns--;
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

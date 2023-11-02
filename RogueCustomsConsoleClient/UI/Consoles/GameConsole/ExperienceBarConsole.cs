@@ -9,6 +9,7 @@ using System;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class ExperienceBarConsole : GameSubConsole
     {
         private ProgressBar ExperienceBar;
@@ -18,7 +19,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             Build();
         }
 
-        public void Build()
+        public new void Build()
         {
             base.Build();
             DefaultBackground = Color.Black;
@@ -68,4 +69,5 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             base.Update(delta);
         }
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

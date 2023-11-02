@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11
 {
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public abstract class CharacterInfoV11 : ClassInfoV11
     {
@@ -39,4 +40,5 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11
         public List<ActionWithEffectsInfoV11> OnAttackedActions { get; set; } = new List<ActionWithEffectsInfoV11>();
         public List<ActionWithEffectsInfoV11> OnDeathActions { get; set; } = new List<ActionWithEffectsInfoV11>();
     }
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }
