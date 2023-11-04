@@ -2523,70 +2523,27 @@ namespace RogueCustomsDungeonEditor
                     cmbPlayerFaction.Text = factionId;
             }
             chkPlayerStartsVisible.Checked = playerClass.StartsVisible;
-            nudPlayerBaseHP.Value = playerClass.BaseHP;
-            nudPlayerHPPerLevelUp.Value = playerClass.MaxHPIncreasePerLevel;
-            nudPlayerBaseMP.Value = playerClass.BaseMP;
-            nudPlayerMPPerLevelUp.Value = playerClass.MaxMPIncreasePerLevel;
-            nudPlayerBaseAttack.Value = playerClass.BaseAttack;
-            nudPlayerAttackPerLevelUp.Value = playerClass.AttackIncreasePerLevel;
-            nudPlayerBaseDefense.Value = playerClass.BaseDefense;
-            nudPlayerDefensePerLevelUp.Value = playerClass.DefenseIncreasePerLevel;
-            nudPlayerBaseMovement.Value = playerClass.BaseMovement;
-            nudPlayerMovementPerLevelUp.Value = playerClass.MovementIncreasePerLevel;
-            nudPlayerBaseHPRegeneration.Value = playerClass.BaseHPRegeneration;
-            nudPlayerHPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
-            nudPlayerBaseMPRegeneration.Value = playerClass.BaseHPRegeneration;
-            nudPlayerMPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
-            cmbPlayerSightRange.Items.Clear();
-            cmbPlayerSightRange.Text = "";
-            chkPlayerUsesMP.Checked = playerClass.UsesMP;
-            TogglePlayerMPControls();
-            foreach (var sightRange in BaseSightRangeDisplayNames)
-            {
-                cmbPlayerSightRange.Items.Add(sightRange.Value);
-                if (sightRange.Key.Equals(playerClass.BaseSightRange))
-                    cmbPlayerSightRange.Text = sightRange.Value;
-            }
-            if (string.IsNullOrWhiteSpace(cmbPlayerSightRange.Text))
-            {
-                cmbPlayerSightRange.Text = BaseSightRangeDisplayNames["FlatNumber"];
-                lblPlayerSightRangeText.Visible = true;
-                nudPlayerFlatSightRange.Visible = true;
-                nudPlayerFlatSightRange.Enabled = true;
-                try
-                {
-                    nudPlayerFlatSightRange.Value = int.Parse(playerClass.BaseSightRange);
-                }
-                catch
-                {
-                    nudPlayerFlatSightRange.Value = 1;
-                }
-            }
-            else
-            {
-                lblPlayerSightRangeText.Visible = false;
-                nudPlayerFlatSightRange.Visible = false;
-                nudPlayerFlatSightRange.Enabled = false;
-                nudPlayerFlatSightRange.Value = 1;
-            }
-            chkPlayerCanGainExperience.Checked = playerClass.CanGainExperience;
-            nudPlayerMaxLevel.Value = playerClass.MaxLevel;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (playerClass.CanGainExperience || playerClass.MaxLevel > 1)
-            {
-                txtPlayerLevelUpFormula.Text = playerClass.ExperienceToLevelUpFormula;
-            }
-            else
-            {
-                txtPlayerLevelUpFormula.Text = "";
-            }
+            ssPlayer.StatsChanged += (_, _) => DirtyTab = true;
+            ssPlayer.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
+            ssPlayer.BaseHP = playerClass.BaseHP;
+            ssPlayer.HPPerLevelUp = playerClass.MaxHPIncreasePerLevel;
+            ssPlayer.BaseHPRegeneration = playerClass.BaseHPRegeneration;
+            ssPlayer.HPRegenerationPerLevelUp = playerClass.HPRegenerationIncreasePerLevel;
+            ssPlayer.UsesMP = playerClass.UsesMP;
+            ssPlayer.BaseMP = playerClass.BaseMP;
+            ssPlayer.MPPerLevelUp = playerClass.MaxMPIncreasePerLevel;
+            ssPlayer.BaseMPRegeneration = playerClass.BaseMPRegeneration;
+            ssPlayer.MPRegenerationPerLevelUp = playerClass.MPRegenerationIncreasePerLevel;
+            ssPlayer.BaseAttack = playerClass.BaseAttack;
+            ssPlayer.AttackPerLevelUp = playerClass.AttackIncreasePerLevel;
+            ssPlayer.BaseDefense = playerClass.BaseDefense;
+            ssPlayer.DefensePerLevelUp = playerClass.DefenseIncreasePerLevel;
+            ssPlayer.BaseMovement = playerClass.BaseMovement;
+            ssPlayer.MovementPerLevelUp = playerClass.MovementIncreasePerLevel;
+            ssPlayer.BaseSightRange = playerClass.BaseSightRange;
+            ssPlayer.CanGainExperience = playerClass.CanGainExperience;
+            ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
+            ssPlayer.MaxLevel = playerClass.MaxLevel;
             cmbPlayerStartingWeapon.Items.Clear();
             cmbPlayerStartingWeapon.Text = "";
             foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
@@ -2635,34 +2592,25 @@ namespace RogueCustomsDungeonEditor
             playerClass.ConsoleRepresentation = crsPlayer.ConsoleRepresentation;
             playerClass.Faction = cmbPlayerFaction.Text;
             playerClass.StartsVisible = chkPlayerStartsVisible.Checked;
-            playerClass.UsesMP = chkPlayerUsesMP.Checked;
-            playerClass.BaseHP = (int)nudPlayerBaseHP.Value;
-            playerClass.BaseMP = (int)nudPlayerBaseMP.Value;
-            playerClass.BaseAttack = (int)nudPlayerBaseAttack.Value;
-            playerClass.BaseDefense = (int)nudPlayerBaseDefense.Value;
-            playerClass.BaseMovement = (int)nudPlayerBaseMovement.Value;
-            playerClass.BaseHPRegeneration = nudPlayerBaseHPRegeneration.Value;
-            playerClass.BaseMPRegeneration = nudPlayerBaseMPRegeneration.Value;
-
-            if (cmbPlayerSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                playerClass.BaseSightRange = ((int)nudPlayerFlatSightRange.Value).ToString();
-            }
-            else
-            {
-                playerClass.BaseSightRange = BaseSightRangeDisplayNames.FirstOrDefault(bsrdn => bsrdn.Value.Equals(cmbPlayerSightRange.Text)).Key;
-            }
-
-            playerClass.CanGainExperience = chkPlayerCanGainExperience.Checked;
-            playerClass.MaxLevel = (int)nudPlayerMaxLevel.Value;
-            playerClass.ExperienceToLevelUpFormula = txtPlayerLevelUpFormula.Text;
-            playerClass.MaxHPIncreasePerLevel = nudPlayerHPPerLevelUp.Value;
-            playerClass.MaxMPIncreasePerLevel = nudPlayerMPPerLevelUp.Value;
-            playerClass.AttackIncreasePerLevel = nudPlayerAttackPerLevelUp.Value;
-            playerClass.DefenseIncreasePerLevel = nudPlayerDefensePerLevelUp.Value;
-            playerClass.MovementIncreasePerLevel = nudPlayerMovementPerLevelUp.Value;
-            playerClass.HPRegenerationIncreasePerLevel = nudPlayerHPRegenerationPerLevelUp.Value;
-            playerClass.MPRegenerationIncreasePerLevel = nudPlayerMPRegenerationPerLevelUp.Value;
+            playerClass.BaseHP = ssPlayer.BaseHP;
+            playerClass.UsesMP = ssPlayer.UsesMP;
+            playerClass.BaseMP = ssPlayer.BaseMP;
+            playerClass.BaseAttack = ssPlayer.BaseAttack;
+            playerClass.BaseDefense = ssPlayer.BaseDefense;
+            playerClass.BaseMovement = ssPlayer.BaseMovement;
+            playerClass.BaseHPRegeneration = ssPlayer.BaseHPRegeneration;
+            playerClass.BaseMPRegeneration = ssPlayer.BaseMPRegeneration;
+            playerClass.BaseSightRange = ssPlayer.BaseSightRange;
+            playerClass.CanGainExperience = ssPlayer.CanGainExperience;
+            playerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
+            playerClass.MaxHPIncreasePerLevel = ssPlayer.HPPerLevelUp;
+            playerClass.MaxMPIncreasePerLevel = ssPlayer.MPPerLevelUp;
+            playerClass.AttackIncreasePerLevel = ssPlayer.AttackPerLevelUp;
+            playerClass.DefenseIncreasePerLevel = ssPlayer.DefensePerLevelUp;
+            playerClass.MovementIncreasePerLevel = ssPlayer.MovementPerLevelUp;
+            playerClass.HPRegenerationIncreasePerLevel = ssPlayer.HPRegenerationPerLevelUp;
+            playerClass.MPRegenerationIncreasePerLevel = ssPlayer.MPRegenerationPerLevelUp;
+            playerClass.MaxLevel = ssPlayer.MaxLevel;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
@@ -2758,7 +2706,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter a Player Class Description first.");
             if (crsPlayer.ConsoleRepresentation.Character == '\0')
                 errorMessages.Add("This Player Class does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerSightRange.Text))
+            if (string.IsNullOrWhiteSpace(ssPlayer.BaseSightRange))
                 errorMessages.Add("This Player Class does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbPlayerFaction.Text))
                 errorMessages.Add("This Player Class does not have a Faction.");
@@ -2766,9 +2714,9 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This Player Class does not have an Emergency Weapon.");
             if (string.IsNullOrWhiteSpace(cmbPlayerStartingArmor.Text))
                 errorMessages.Add("This Player Class does not have an Emergency Armor.");
-            if (chkPlayerCanGainExperience.Checked && string.IsNullOrWhiteSpace(txtPlayerLevelUpFormula.Text))
+            if (ssPlayer.CanGainExperience && string.IsNullOrWhiteSpace(ssPlayer.ExperienceToLevelUpFormula))
                 errorMessages.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
-            if (chkPlayerCanGainExperience.Checked && (int)nudPlayerMaxLevel.Value == 1)
+            if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
                 errorMessages.Add("This Player Class can gain experience, but cannot level up.");
 
             return !errorMessages.Any();
@@ -2859,178 +2807,6 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void nudPlayerBaseHP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseAttack_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseDefense_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseMovement_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseHPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerFlatSightRange_ValueChanged(object sender, EventArgs e)
-        {
-            if (nudPlayerFlatSightRange.Visible)
-                DirtyTab = true;
-        }
-
-        private void cmbPlayerSightRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (cmbPlayerSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                lblPlayerSightRangeText.Visible = true;
-                nudPlayerFlatSightRange.Visible = true;
-                nudPlayerFlatSightRange.Enabled = true;
-            }
-            else
-            {
-                lblPlayerSightRangeText.Visible = false;
-                nudPlayerFlatSightRange.Visible = false;
-                nudPlayerFlatSightRange.Enabled = false;
-            }
-        }
-
-        private void chkPlayerCanGainExperience_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-        }
-
-        private void txtPlayerLevelUpFormula_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtPlayerLevelUpFormula.Text;
-        }
-
-        private void txtPlayerLevelUpFormula_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.PlayerClass])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtPlayerLevelUpFormula.Text))
-            {
-                var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
-
-                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
-                {
-                    MessageBox.Show(
-                        $"You have entered an invalid Experience Formula: {errorMessage}",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtPlayerLevelUpFormula.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void nudPlayerMaxLevel_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-        }
-
-        private void nudPlayerHPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerAttackPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerDefensePerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMovementPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerHPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-        private void nudPlayerBaseMP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkPlayerUsesMP_CheckedChanged(object sender, EventArgs e)
-        {
-            TogglePlayerMPControls();
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void TogglePlayerMPControls()
-        {
-            nudPlayerBaseMP.Enabled = chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerBaseMP.Value = 0;
-            nudPlayerBaseMPRegeneration.Enabled = chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerBaseMPRegeneration.Value = 0;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerMPPerLevelUp.Value = 0;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerMPRegenerationPerLevelUp.Value = 0;
-        }
-
         #endregion
 
         #region NPC
@@ -3061,70 +2837,28 @@ namespace RogueCustomsDungeonEditor
             chkNPCStartsVisible.Checked = npc.StartsVisible;
             chkNPCKnowsAllCharacterPositions.Checked = npc.KnowsAllCharacterPositions;
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
-            nudNPCBaseHP.Value = npc.BaseHP;
-            nudNPCHPPerLevelUp.Value = npc.MaxHPIncreasePerLevel;
-            nudNPCBaseMP.Value = npc.BaseMP;
-            nudNPCMPPerLevelUp.Value = npc.MaxMPIncreasePerLevel;
-            nudNPCBaseAttack.Value = npc.BaseAttack;
-            nudNPCAttackPerLevelUp.Value = npc.AttackIncreasePerLevel;
-            nudNPCBaseDefense.Value = npc.BaseDefense;
-            nudNPCDefensePerLevelUp.Value = npc.DefenseIncreasePerLevel;
-            nudNPCBaseMovement.Value = npc.BaseMovement;
-            nudNPCMovementPerLevelUp.Value = npc.MovementIncreasePerLevel;
-            nudNPCBaseHPRegeneration.Value = npc.BaseHPRegeneration;
-            nudNPCHPRegenerationPerLevelUp.Value = npc.HPRegenerationIncreasePerLevel;
-            nudNPCBaseMPRegeneration.Value = npc.BaseMPRegeneration;
-            nudNPCMPRegenerationPerLevelUp.Value = npc.MPRegenerationIncreasePerLevel;
-            chkNPCUsesMP.Checked = npc.UsesMP;
-            ToggleNPCMPControls();
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            cmbNPCSightRange.Items.Clear();
-            cmbNPCSightRange.Text = "";
-            foreach (var sightRange in BaseSightRangeDisplayNames)
-            {
-                cmbNPCSightRange.Items.Add(sightRange.Value);
-                if (sightRange.Key.Equals(npc.BaseSightRange))
-                    cmbNPCSightRange.Text = sightRange.Value;
-            }
-            if (string.IsNullOrWhiteSpace(cmbNPCSightRange.Text))
-            {
-                cmbNPCSightRange.Text = BaseSightRangeDisplayNames["FlatNumber"];
-                lblNPCSightRangeText.Visible = true;
-                nudNPCFlatSightRange.Visible = true;
-                nudNPCFlatSightRange.Enabled = true;
-                try
-                {
-                    nudNPCFlatSightRange.Value = int.Parse(npc.BaseSightRange);
-                }
-                catch
-                {
-                    nudNPCFlatSightRange.Value = 1;
-                }
-            }
-            else
-            {
-                lblNPCSightRangeText.Visible = false;
-                nudNPCFlatSightRange.Visible = false;
-                nudNPCFlatSightRange.Enabled = false;
-                nudNPCFlatSightRange.Value = 1;
-            }
-            chkNPCCanGainExperience.Checked = npc.CanGainExperience;
-            nudNPCMaxLevel.Value = npc.MaxLevel;
-            if (npc.CanGainExperience || npc.MaxLevel > 1)
-            {
-                txtNPCLevelUpFormula.Text = npc.ExperienceToLevelUpFormula;
-            }
-            else
-            {
-                txtNPCLevelUpFormula.Text = "";
-            }
+
+            ssNPC.StatsChanged += (_, _) => DirtyTab = true;
+            ssNPC.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
+            ssNPC.BaseHP = npc.BaseHP;
+            ssNPC.HPPerLevelUp = npc.MaxHPIncreasePerLevel;
+            ssNPC.BaseHPRegeneration = npc.BaseHPRegeneration;
+            ssNPC.HPRegenerationPerLevelUp = npc.HPRegenerationIncreasePerLevel;
+            ssNPC.UsesMP = npc.UsesMP;
+            ssNPC.BaseMP = npc.BaseMP;
+            ssNPC.MPPerLevelUp = npc.MaxMPIncreasePerLevel;
+            ssNPC.BaseMPRegeneration = npc.BaseMPRegeneration;
+            ssNPC.MPRegenerationPerLevelUp = npc.MPRegenerationIncreasePerLevel;
+            ssNPC.BaseAttack = npc.BaseAttack;
+            ssNPC.AttackPerLevelUp = npc.AttackIncreasePerLevel;
+            ssNPC.BaseDefense = npc.BaseDefense;
+            ssNPC.DefensePerLevelUp = npc.DefenseIncreasePerLevel;
+            ssNPC.BaseMovement = npc.BaseMovement;
+            ssNPC.MovementPerLevelUp = npc.MovementIncreasePerLevel;
+            ssNPC.BaseSightRange = npc.BaseSightRange;
+            ssNPC.CanGainExperience = npc.CanGainExperience;
+            ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
+            ssNPC.MaxLevel = npc.MaxLevel;
             cmbNPCStartingWeapon.Items.Clear();
             cmbNPCStartingWeapon.Text = "";
             foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
@@ -3174,34 +2908,25 @@ namespace RogueCustomsDungeonEditor
             npc.Faction = cmbNPCFaction.Text;
             npc.StartsVisible = chkNPCStartsVisible.Checked;
             npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
-            npc.ExperienceToLevelUpFormula = txtNPCLevelUpFormula.Text;
             npc.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
-            npc.UsesMP = chkNPCUsesMP.Checked;
-            npc.BaseHP = (int)nudNPCBaseHP.Value;
-            npc.BaseMP = (int)nudNPCBaseMP.Value;
-            npc.BaseAttack = (int)nudNPCBaseAttack.Value;
-            npc.BaseDefense = (int)nudNPCBaseDefense.Value;
-            npc.BaseMovement = (int)nudNPCBaseMovement.Value;
-            npc.BaseHPRegeneration = nudNPCBaseHPRegeneration.Value;
-            npc.BaseMPRegeneration = nudNPCBaseMPRegeneration.Value;
-
-            if (cmbNPCSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                npc.BaseSightRange = ((int)nudNPCFlatSightRange.Value).ToString();
-            }
-            else
-            {
-                npc.BaseSightRange = BaseSightRangeDisplayNames.FirstOrDefault(bsrdn => bsrdn.Value.Equals(cmbNPCSightRange.Text)).Key;
-            }
-
-            npc.CanGainExperience = chkNPCCanGainExperience.Checked;
-            npc.MaxHPIncreasePerLevel = nudNPCHPPerLevelUp.Value;
-            npc.MaxMPIncreasePerLevel = nudNPCMPPerLevelUp.Value;
-            npc.AttackIncreasePerLevel = nudNPCAttackPerLevelUp.Value;
-            npc.DefenseIncreasePerLevel = nudNPCDefensePerLevelUp.Value;
-            npc.MovementIncreasePerLevel = nudNPCMovementPerLevelUp.Value;
-            npc.HPRegenerationIncreasePerLevel = nudNPCHPRegenerationPerLevelUp.Value;
-            npc.MPRegenerationIncreasePerLevel = nudNPCMPRegenerationPerLevelUp.Value;
+            npc.BaseHP = ssNPC.BaseHP;
+            npc.UsesMP = ssNPC.UsesMP;
+            npc.BaseMP = ssNPC.BaseMP;
+            npc.BaseAttack = ssNPC.BaseAttack;
+            npc.BaseDefense = ssNPC.BaseDefense;
+            npc.BaseMovement = ssNPC.BaseMovement;
+            npc.BaseHPRegeneration = ssNPC.BaseHPRegeneration;
+            npc.BaseMPRegeneration = ssNPC.BaseMPRegeneration;
+            npc.BaseSightRange = ssNPC.BaseSightRange;
+            npc.CanGainExperience = ssNPC.CanGainExperience;
+            npc.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
+            npc.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
+            npc.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
+            npc.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;
+            npc.DefenseIncreasePerLevel = ssNPC.DefensePerLevelUp;
+            npc.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
+            npc.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
+            npc.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
@@ -3290,7 +3015,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an NPC Description first.");
             if (crsNPC.Character == '\0')
                 errorMessages.Add("This NPC does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(cmbNPCSightRange.Text))
+            if (string.IsNullOrWhiteSpace(ssNPC.BaseSightRange))
                 errorMessages.Add("This NPC does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbNPCFaction.Text))
                 errorMessages.Add("This NPC does not have a Faction.");
@@ -3300,11 +3025,11 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC does not have an Emergency Armor.");
             if (string.IsNullOrWhiteSpace(txtNPCExperiencePayout.Text))
                 errorMessages.Add("This NPC does not have an Experience Payout Formula.");
-            if (chkNPCCanGainExperience.Checked && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
+            if (ssNPC.CanGainExperience && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC can gain experience, but does not have a Level Up Formula.");
-            if (chkNPCCanGainExperience.Checked && (int)nudNPCMaxLevel.Value == 1)
+            if (ssNPC.CanGainExperience && ssNPC.MaxLevel == 1)
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
-            if ((int)nudNPCMaxLevel.Value > 1 && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
+            if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
 
             return !errorMessages.Any();
@@ -3429,179 +3154,6 @@ namespace RogueCustomsDungeonEditor
         private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             DirtyTab = true;
-        }
-
-        private void nudNPCBaseHP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseAttack_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseDefense_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseMovement_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseHPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCFlatSightRange_ValueChanged(object sender, EventArgs e)
-        {
-            if (nudNPCFlatSightRange.Visible)
-                DirtyTab = true;
-        }
-
-        private void cmbNPCSightRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (cmbNPCSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                lblNPCSightRangeText.Visible = true;
-                nudNPCFlatSightRange.Visible = true;
-                nudNPCFlatSightRange.Enabled = true;
-            }
-            else
-            {
-                lblNPCSightRangeText.Visible = false;
-                nudNPCFlatSightRange.Visible = false;
-                nudNPCFlatSightRange.Enabled = false;
-            }
-        }
-
-        private void chkNPCCanGainExperience_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-        }
-
-        private void txtNPCLevelUpFormula_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtNPCLevelUpFormula.Text;
-        }
-
-        private void txtNPCLevelUpFormula_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtNPCLevelUpFormula.Text))
-            {
-                var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
-
-                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
-                {
-                    MessageBox.Show(
-                        $"You have entered an invalid Experience Formula: {errorMessage}",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtNPCLevelUpFormula.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void nudNPCMaxLevel_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-        }
-
-        private void nudNPCHPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCAttackPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCDefensePerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMovementPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCHPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseMP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkNPCUsesMP_CheckedChanged(object sender, EventArgs e)
-        {
-            ToggleNPCMPControls();
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void ToggleNPCMPControls()
-        {
-            nudNPCBaseMP.Enabled = chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCBaseMP.Value = 0;
-            nudNPCBaseMPRegeneration.Enabled = chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCBaseMPRegeneration.Value = 0;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCMPPerLevelUp.Value = 0;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCMPRegenerationPerLevelUp.Value = 0;
         }
         #endregion
 
