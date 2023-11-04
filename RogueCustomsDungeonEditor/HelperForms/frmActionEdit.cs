@@ -39,13 +39,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private string ClassId;
         private string PlaceholderActionName;
         private string PreviousTextBoxValue;
-        public frmActionEdit(ActionWithEffectsInfo actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
+        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects)
         {
             InitializeComponent();
-            ActionToSave = actionToSave.Clone();
+            if (!actionToSave.IsNullOrEmpty())
+                ActionToSave = actionToSave.Clone();
+            else
+                actionToSave = new ActionWithEffectsInfo();
             ActiveDungeon = activeDungeon;
             ClassId = classId;
-            if (actionToSave == null || actionToSave.Effect == null)
+            if (actionToSave.IsNullOrEmpty())
             {
                 this.Text = "Action Editor - [New Action]";
                 if (!string.IsNullOrWhiteSpace(ClassId))
@@ -74,7 +77,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (RequiresDescription)
             {
                 txtActionDescription.Enabled = true;
-                txtActionDescription.Text = ActionToSave.Description;
+                txtActionDescription.Text = ActionToSave?.Description;
             }
             else
             {
@@ -85,7 +88,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (RequiresCondition)
             {
                 txtActionCondition.Enabled = true;
-                txtActionCondition.Text = ActionToSave.UseCondition;
+                txtActionCondition.Text = ActionToSave?.UseCondition;
                 fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
             }
             else
@@ -114,15 +117,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else
             {
-                chkAllies.Checked = ActionToSave.TargetTypes?.Contains("Ally", StringComparer.InvariantCultureIgnoreCase) == true;
-                chkEnemies.Checked = ActionToSave.TargetTypes?.Contains("Enemy", StringComparer.InvariantCultureIgnoreCase) == true;
-                chkSelf.Checked = ActionToSave.TargetTypes?.Contains("Self", StringComparer.InvariantCultureIgnoreCase) == true;
-                nudMinRange.Value = ActionToSave.MinimumRange;
-                nudMaxRange.Value = ActionToSave.MaximumRange;
-                nudCooldown.Value = ActionToSave.CooldownBetweenUses;
-                nudInitialCooldown.Value = ActionToSave.StartingCooldown;
-                nudMaximumUses.Value = ActionToSave.MaximumUses;
-                nudMPCost.Value = ActionToSave.MPCost;
+                chkAllies.Checked = ActionToSave?.TargetTypes?.Contains("Ally", StringComparer.InvariantCultureIgnoreCase) == true;
+                chkEnemies.Checked = ActionToSave?.TargetTypes?.Contains("Enemy", StringComparer.InvariantCultureIgnoreCase) == true;
+                chkSelf.Checked = ActionToSave?.TargetTypes?.Contains("Self", StringComparer.InvariantCultureIgnoreCase) == true;
+                nudMinRange.Value = ActionToSave?.MinimumRange ?? 0;
+                nudMaxRange.Value = ActionToSave?.MaximumRange ?? 0;
+                nudCooldown.Value = ActionToSave?.CooldownBetweenUses ?? 0;
+                nudInitialCooldown.Value = ActionToSave?.StartingCooldown ?? 0;
+                nudMaximumUses.Value = ActionToSave?.MaximumUses ?? 0;
+                nudMPCost.Value = ActionToSave?.MPCost ?? 0;
                 lblNoCooldown.Visible = nudCooldown.Value < 2;
                 lblInfiniteUse.Visible = nudMaximumUses.Value == 0;
             }
@@ -132,9 +135,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             tvEffectSequence.SelectedNode = null;
             tvEffectSequence.Nodes.Clear();
-            if (ActionToSave == null)
+            if (ActionToSave.IsNullOrEmpty())
                 ActionToSave = new ActionWithEffectsInfo();
-            if (ActionToSave.Effect == null)
+            if (ActionToSave.Effect.IsNullOrEmpty())
                 ActionToSave.Effect = new EffectInfo();
             AddActionNode(new EffectInfoDto(ActionToSave.Effect, null, SelectableEffects), null, ActionToSave.Effect);
             tvEffectSequence.ExpandAll();
@@ -262,7 +265,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var currentEffect = (EffectInfo)SelectedNode.Tag;
             var parentEffect = SelectedNode.Parent != null ? (EffectInfo)SelectedNode.Parent.Tag : null;
             var currentEffectDisplayName = SelectableEffects.Find(se => se.InternalName.Equals(currentEffect?.EffectName))?.DisplayName;
-            var inputBoxPrompt = currentEffect?.EffectName != ""
+            var inputBoxPrompt = currentEffect.IsNullOrEmpty()
                 ? "You may change the function if you wish.\n\nAll parameters will display as default if you do, however."
                 : "Please indicate the function that will be executed in this step.";
             var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", SelectableEffects.Where(se => se.InternalName != "Equip").Select(se => se.DisplayName).ToList(), currentEffectDisplayName);
@@ -299,7 +302,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             frmActionParameter.ShowDialog();
             if (frmActionParameter.Saved)
             {
-                if (parentEffect != null)
+                if (!parentEffect.IsNullOrEmpty())
                 {
                     if (SelectedNode.Text.Contains("THEN"))
                         parentEffect.Then = frmActionParameter.EffectToSave;
@@ -397,7 +400,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     parentEffect = (EffectInfo)SelectedNode.Parent.Tag;
                 RemoveEffect(selectedEffect, parentEffect);
 
-                if (parentEffect == null)
+                if (parentEffect.IsNullOrEmpty())
                 {
                     ActionToSave.Effect = new EffectInfo();
                 }
@@ -411,7 +414,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 btnNewThen.Enabled = false;
                 btnNewOnSuccessFailure.Enabled = false;
 
-                if (parentEffect != null)
+                if (!parentEffect.IsNullOrEmpty())
                     tvEffectSequence.SelectNodeByTag(parentEffect);
             }
         }
@@ -424,7 +427,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 RemoveEffect(effect.OnSuccess, effect);
             if (effect.OnFailure != null)
                 RemoveEffect(effect.OnFailure, effect);
-            if (parentEffect != null)
+            if (!parentEffect.IsNullOrEmpty())
             {
                 if (parentEffect.Then == effect)
                     parentEffect.Then = null;
@@ -443,7 +446,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ScrubNullEffects(effect.OnSuccess, effect);
             if (effect.OnFailure != null)
                 ScrubNullEffects(effect.OnFailure, effect);
-            if (parentEffect != null)
+            if (!parentEffect.IsNullOrEmpty())
             {
                 if (parentEffect.Then == effect && string.IsNullOrWhiteSpace(effect.EffectName))
                     parentEffect.Then = null;
@@ -473,7 +476,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 else
                 {
-                    if (ActionToSave == null || ActionToSave.Effect == null || string.IsNullOrWhiteSpace(ActionToSave.Effect.EffectName))
+                    if (ActionToSave.IsNullOrEmpty())
                     {
                         var messageBoxResult = MessageBox.Show(
                             "This Action has NO steps. If saved, it will be completely erased!\n\nAre you sure you want to continue?",
@@ -532,7 +535,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else
             {
-                if (ActionToSave == null || ActionToSave.Effect == null || string.IsNullOrWhiteSpace(ActionToSave.Effect.EffectName))
+                if (ActionToSave.IsNullOrEmpty())
                 {
                     var messageBoxResult = MessageBox.Show(
                         "This Action has NO steps. Proceeding means it will not be saved.\n\nAre you sure you want to continue?",
@@ -647,7 +650,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var effectData = selectableEffects.Find(se => se.InternalName.Equals(info.EffectName));
             try
             {
-                if (parentEffect == null)
+                if (parentEffect.IsNullOrEmpty())
                 {
                     Moment = "INITIAL";
                 }

@@ -747,6 +747,16 @@ namespace RogueCustomsDungeonEditor.Utils
             }
             return missingMandatoryKeys.Any();
         }
+
+        public static bool IsNullOrEmpty(this ActionWithEffectsInfo? action)
+        {
+            return action == null || action.Effect.IsNullOrEmpty();
+        }
+
+        public static bool IsNullOrEmpty(this EffectInfo? effect)
+        {
+            return effect == null || string.IsNullOrWhiteSpace(effect.EffectName);
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
