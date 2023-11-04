@@ -234,6 +234,14 @@
         dX/dtfQp6AAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="sisPlayerStartingInventory.Inventory" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAEAQAAAH9TeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5MaXN0YDFbW1N5
+        c3RlbS5TdHJpbmcsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVi
+        bGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24GAAAI
+        CAkCAAAAAAAAAAAAAAARAgAAAAAAAAAL
+</value>
+  </data>
   <data name="maePlayerOnAttack.Actions" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNi4x
@@ -265,6 +273,14 @@
         w7Ke81QpYYOUiMFGjuTg2RE40NdcW0oFiLGZkCvSRWBkeL0ilhzkinQTGDfjXZ+IJQe5Ij0FxtV4lxZ2
         yIlY7OSK5F6gpUW1AsUWtQy5VqA4ZPdt6v6hIdejwuR62CH349rEq9pMSuBTbUtODIsd4fLL/AWF8AXC
         dX/dtfQp6AAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="sisNPCStartingInventory.Inventory" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAEAQAAAH9TeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5MaXN0YDFbW1N5
+        c3RlbS5TdHJpbmcsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVi
+        bGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24GAAAI
+        CAkCAAAAAAAAAAAAAAARAgAAAAAAAAAL
 </value>
   </data>
   <data name="maeNPCOnAttack.Actions" mimetype="application/x-microsoft.net.object.binary.base64">

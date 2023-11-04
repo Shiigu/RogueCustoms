@@ -2604,19 +2604,10 @@ namespace RogueCustomsDungeonEditor
                     cmbPlayerStartingArmor.Text = armorId;
             }
             nudPlayerInventorySize.Value = playerClass.InventorySize;
-            cmbPlayerInventoryItemChoices.Items.Clear();
-            cmbPlayerInventoryItemChoices.Text = "";
-            foreach (var itemId in ActiveDungeon.Items.Select(i => i.Id))
-            {
-                cmbPlayerInventoryItemChoices.Items.Add(itemId);
-            }
-            lbPlayerStartingInventory.Items.Clear();
-            foreach (var itemId in playerClass.StartingInventory)
-            {
-                lbPlayerStartingInventory.Items.Add(itemId);
-            }
-            btnPlayerAddItem.Enabled = false;
-            btnPlayerRemoveItem.Enabled = false;
+            sisPlayerStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
+            sisPlayerStartingInventory.InventorySize = playerClass.InventorySize;
+            sisPlayerStartingInventory.Inventory = playerClass.StartingInventory;
+            sisPlayerStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
             SetSingleActionEditorParams(saePlayerOnTurnStart, playerClass.Id, playerClass.OnTurnStart);
             SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
             SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
@@ -2677,11 +2668,7 @@ namespace RogueCustomsDungeonEditor
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
 
             playerClass.InventorySize = (int)nudPlayerInventorySize.Value;
-            playerClass.StartingInventory = new();
-            foreach (string inventoryItemId in lbPlayerStartingInventory.Items)
-            {
-                playerClass.StartingInventory.Add(inventoryItemId);
-            }
+            playerClass.StartingInventory = sisPlayerStartingInventory.Inventory;
 
             playerClass.OnTurnStart = saePlayerOnTurnStart.Action;
             playerClass.OnAttack = maePlayerOnAttack.Actions;
@@ -2864,31 +2851,7 @@ namespace RogueCustomsDungeonEditor
         private void nudPlayerInventorySize_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-        }
-
-        private void cmbPlayerInventoryItemChoices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-        }
-
-        private void btnPlayerAddItem_Click(object sender, EventArgs e)
-        {
-            lbPlayerStartingInventory.Items.Add(cmbPlayerInventoryItemChoices.Text);
-            cmbPlayerInventoryItemChoices.SelectedItem = null;
-            DirtyTab = true;
-        }
-
-        private void btnPlayerRemoveItem_Click(object sender, EventArgs e)
-        {
-            lbPlayerStartingInventory.Items.Remove(lbPlayerStartingInventory.SelectedItem);
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-            DirtyTab = true;
-        }
-
-        private void lbPlayerStartingInventory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnPlayerRemoveItem.Enabled = lbPlayerStartingInventory.SelectedItem != null;
+            sisPlayerStartingInventory.InventorySize = (int)nudPlayerInventorySize.Value;
         }
 
         private void crsPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -3179,19 +3142,10 @@ namespace RogueCustomsDungeonEditor
                     cmbNPCStartingArmor.Text = armorId;
             }
             nudNPCInventorySize.Value = npc.InventorySize;
-            cmbNPCInventoryItemChoices.Items.Clear();
-            cmbNPCInventoryItemChoices.Text = "";
-            foreach (var itemId in ActiveDungeon.Items.Select(i => i.Id))
-            {
-                cmbNPCInventoryItemChoices.Items.Add(itemId);
-            }
-            lbNPCStartingInventory.Items.Clear();
-            foreach (var itemId in npc.StartingInventory)
-            {
-                lbNPCStartingInventory.Items.Add(itemId);
-            }
-            btnNPCAddItem.Enabled = false;
-            btnNPCRemoveItem.Enabled = false;
+            sisNPCStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
+            sisNPCStartingInventory.InventorySize = npc.InventorySize;
+            sisNPCStartingInventory.Inventory = npc.StartingInventory;
+            sisNPCStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
             SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
             SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
@@ -3253,11 +3207,7 @@ namespace RogueCustomsDungeonEditor
             npc.StartingArmor = cmbNPCStartingArmor.Text;
 
             npc.InventorySize = (int)nudNPCInventorySize.Value;
-            npc.StartingInventory = new();
-            foreach (string inventoryItemId in lbNPCStartingInventory.Items)
-            {
-                npc.StartingInventory.Add(inventoryItemId);
-            }
+            npc.StartingInventory = sisNPCStartingInventory.Inventory;
 
             npc.OnTurnStart = saeNPCOnTurnStart.Action;
             npc.OnAttack = maeNPCOnAttack.Actions;
@@ -3473,31 +3423,7 @@ namespace RogueCustomsDungeonEditor
         private void nudNPCInventorySize_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-        }
-
-        private void cmbNPCInventoryItemChoices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-        }
-
-        private void btnNPCAddItem_Click(object sender, EventArgs e)
-        {
-            lbNPCStartingInventory.Items.Add(cmbNPCInventoryItemChoices.Text);
-            cmbNPCInventoryItemChoices.SelectedItem = null;
-            DirtyTab = true;
-        }
-
-        private void btnNPCRemoveItem_Click(object sender, EventArgs e)
-        {
-            lbNPCStartingInventory.Items.Remove(lbNPCStartingInventory.SelectedItem);
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-            DirtyTab = true;
-        }
-
-        private void lbNPCStartingInventory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnNPCRemoveItem.Enabled = lbNPCStartingInventory.SelectedItem != null;
+            sisNPCStartingInventory.InventorySize = (int)nudNPCInventorySize.Value;
         }
 
         private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)

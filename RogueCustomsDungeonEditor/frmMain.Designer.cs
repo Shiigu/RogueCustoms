@@ -229,6 +229,7 @@ namespace RogueCustomsDungeonEditor
             this.txtFactionName = (new global::System.Windows.Forms.TextBox());
             this.label21 = (new global::System.Windows.Forms.Label());
             this.tpPlayerClass = (new global::System.Windows.Forms.TabPage());
+            this.sisPlayerStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
             this.saePlayerOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saePlayerOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saePlayerOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
@@ -250,11 +251,6 @@ namespace RogueCustomsDungeonEditor
             this.label57 = (new global::System.Windows.Forms.Label());
             this.cmbPlayerStartingWeapon = (new global::System.Windows.Forms.ComboBox());
             this.label56 = (new global::System.Windows.Forms.Label());
-            this.lbPlayerStartingInventory = (new global::System.Windows.Forms.ListBox());
-            this.btnPlayerRemoveItem = (new global::System.Windows.Forms.Button());
-            this.btnPlayerAddItem = (new global::System.Windows.Forms.Button());
-            this.cmbPlayerInventoryItemChoices = (new global::System.Windows.Forms.ComboBox());
-            this.label55 = (new global::System.Windows.Forms.Label());
             this.label54 = (new global::System.Windows.Forms.Label());
             this.nudPlayerInventorySize = (new global::System.Windows.Forms.NumericUpDown());
             this.label53 = (new global::System.Windows.Forms.Label());
@@ -335,11 +331,6 @@ namespace RogueCustomsDungeonEditor
             this.label70 = (new global::System.Windows.Forms.Label());
             this.cmbNPCStartingWeapon = (new global::System.Windows.Forms.ComboBox());
             this.label71 = (new global::System.Windows.Forms.Label());
-            this.lbNPCStartingInventory = (new global::System.Windows.Forms.ListBox());
-            this.btnNPCRemoveItem = (new global::System.Windows.Forms.Button());
-            this.btnNPCAddItem = (new global::System.Windows.Forms.Button());
-            this.cmbNPCInventoryItemChoices = (new global::System.Windows.Forms.ComboBox());
-            this.label72 = (new global::System.Windows.Forms.Label());
             this.label73 = (new global::System.Windows.Forms.Label());
             this.nudNPCInventorySize = (new global::System.Windows.Forms.NumericUpDown());
             this.label74 = (new global::System.Windows.Forms.Label());
@@ -445,6 +436,7 @@ namespace RogueCustomsDungeonEditor
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
             this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
+            this.sisNPCStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
@@ -2317,6 +2309,7 @@ namespace RogueCustomsDungeonEditor
             // tpPlayerClass
             // 
             this.tpPlayerClass.AutoScroll = (true);
+            this.tpPlayerClass.Controls.Add(this.sisPlayerStartingInventory);
             this.tpPlayerClass.Controls.Add(this.saePlayerOnDeath);
             this.tpPlayerClass.Controls.Add(this.saePlayerOnAttacked);
             this.tpPlayerClass.Controls.Add(this.saePlayerOnTurnStart);
@@ -2338,11 +2331,6 @@ namespace RogueCustomsDungeonEditor
             this.tpPlayerClass.Controls.Add(this.label57);
             this.tpPlayerClass.Controls.Add(this.cmbPlayerStartingWeapon);
             this.tpPlayerClass.Controls.Add(this.label56);
-            this.tpPlayerClass.Controls.Add(this.lbPlayerStartingInventory);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerRemoveItem);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerAddItem);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerInventoryItemChoices);
-            this.tpPlayerClass.Controls.Add(this.label55);
             this.tpPlayerClass.Controls.Add(this.label54);
             this.tpPlayerClass.Controls.Add(this.nudPlayerInventorySize);
             this.tpPlayerClass.Controls.Add(this.label53);
@@ -2403,6 +2391,16 @@ namespace RogueCustomsDungeonEditor
             this.tpPlayerClass.Text = ("Player Class");
             this.tpPlayerClass.UseVisualStyleBackColor = (true);
             // 
+            // sisPlayerStartingInventory
+            // 
+            this.sisPlayerStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisPlayerStartingInventory.Inventory")));
+            this.sisPlayerStartingInventory.InventorySize = (0);
+            this.sisPlayerStartingInventory.Location = (new global::System.Drawing.Point(13, 168));
+            this.sisPlayerStartingInventory.Name = ("sisPlayerStartingInventory");
+            this.sisPlayerStartingInventory.SelectableItems = (null);
+            this.sisPlayerStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
+            this.sisPlayerStartingInventory.TabIndex = (128);
+            // 
             // saePlayerOnDeath
             // 
             this.saePlayerOnDeath.Action = (null);
@@ -2414,7 +2412,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.ClassId = (null);
             this.saePlayerOnDeath.Dungeon = (null);
             this.saePlayerOnDeath.EffectParamData = (null);
-            this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 686));
+            this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 458));
             this.saePlayerOnDeath.Name = ("saePlayerOnDeath");
             this.saePlayerOnDeath.PlaceholderActionName = ("Death");
             this.saePlayerOnDeath.RequiresActionName = (false);
@@ -2435,7 +2433,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.ClassId = (null);
             this.saePlayerOnAttacked.Dungeon = (null);
             this.saePlayerOnAttacked.EffectParamData = (null);
-            this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 648));
+            this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 420));
             this.saePlayerOnAttacked.Name = ("saePlayerOnAttacked");
             this.saePlayerOnAttacked.PlaceholderActionName = ("Interacted");
             this.saePlayerOnAttacked.RequiresActionName = (false);
@@ -2456,7 +2454,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.ClassId = (null);
             this.saePlayerOnTurnStart.Dungeon = (null);
             this.saePlayerOnTurnStart.EffectParamData = (null);
-            this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 510));
+            this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 282));
             this.saePlayerOnTurnStart.Name = ("saePlayerOnTurnStart");
             this.saePlayerOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saePlayerOnTurnStart.RequiresActionName = (false);
@@ -2475,7 +2473,7 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.ClassId = (null);
             this.maePlayerOnAttack.Dungeon = (null);
             this.maePlayerOnAttack.EffectParamData = (null);
-            this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 548));
+            this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 320));
             this.maePlayerOnAttack.Name = ("maePlayerOnAttack");
             this.maePlayerOnAttack.PlaceholderActionName = (null);
             this.maePlayerOnAttack.RequiresActionName = (true);
@@ -2488,7 +2486,7 @@ namespace RogueCustomsDungeonEditor
             // label122
             // 
             this.label122.AutoSize = (true);
-            this.label122.Location = (new global::System.Drawing.Point(403, 725));
+            this.label122.Location = (new global::System.Drawing.Point(403, 497));
             this.label122.Name = ("label122");
             this.label122.Size = (new global::System.Drawing.Size(54, 15));
             this.label122.TabIndex = (122);
@@ -2497,7 +2495,7 @@ namespace RogueCustomsDungeonEditor
             // label123
             // 
             this.label123.AutoSize = (true);
-            this.label123.Location = (new global::System.Drawing.Point(517, 727));
+            this.label123.Location = (new global::System.Drawing.Point(517, 499));
             this.label123.Name = ("label123");
             this.label123.Size = (new global::System.Drawing.Size(169, 15));
             this.label123.TabIndex = (121);
@@ -2506,7 +2504,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerMPRegenerationPerLevelUp
             // 
             this.nudPlayerMPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 723));
+            this.nudPlayerMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 495));
             this.nudPlayerMPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerMPRegenerationPerLevelUp.Name = ("nudPlayerMPRegenerationPerLevelUp");
             this.nudPlayerMPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2516,7 +2514,7 @@ namespace RogueCustomsDungeonEditor
             // label121
             // 
             this.label121.AutoSize = (true);
-            this.label121.Location = (new global::System.Drawing.Point(459, 582));
+            this.label121.Location = (new global::System.Drawing.Point(459, 354));
             this.label121.Name = ("label121");
             this.label121.Size = (new global::System.Drawing.Size(124, 15));
             this.label121.TabIndex = (119);
@@ -2525,7 +2523,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerMPPerLevelUp
             // 
             this.nudPlayerMPPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMPPerLevelUp.Location = (new global::System.Drawing.Point(403, 579));
+            this.nudPlayerMPPerLevelUp.Location = (new global::System.Drawing.Point(403, 351));
             this.nudPlayerMPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerMPPerLevelUp.Name = ("nudPlayerMPPerLevelUp");
             this.nudPlayerMPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2535,7 +2533,7 @@ namespace RogueCustomsDungeonEditor
             // label119
             // 
             this.label119.AutoSize = (true);
-            this.label119.Location = (new global::System.Drawing.Point(642, 228));
+            this.label119.Location = (new global::System.Drawing.Point(642, 0));
             this.label119.Name = ("label119");
             this.label119.Size = (new global::System.Drawing.Size(70, 15));
             this.label119.TabIndex = (117);
@@ -2544,7 +2542,7 @@ namespace RogueCustomsDungeonEditor
             // label120
             // 
             this.label120.AutoSize = (true);
-            this.label120.Location = (new global::System.Drawing.Point(527, 226));
+            this.label120.Location = (new global::System.Drawing.Point(527, -2));
             this.label120.Name = ("label120");
             this.label120.Size = (new global::System.Drawing.Size(54, 15));
             this.label120.TabIndex = (116);
@@ -2553,7 +2551,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerBaseMPRegeneration
             // 
             this.nudPlayerBaseMPRegeneration.DecimalPlaces = (4);
-            this.nudPlayerBaseMPRegeneration.Location = (new global::System.Drawing.Point(582, 224));
+            this.nudPlayerBaseMPRegeneration.Location = (new global::System.Drawing.Point(582, -4));
             this.nudPlayerBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerBaseMPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudPlayerBaseMPRegeneration.Name = ("nudPlayerBaseMPRegeneration");
@@ -2565,7 +2563,7 @@ namespace RogueCustomsDungeonEditor
             // chkPlayerUsesMP
             // 
             this.chkPlayerUsesMP.AutoSize = (true);
-            this.chkPlayerUsesMP.Location = (new global::System.Drawing.Point(615, 198));
+            this.chkPlayerUsesMP.Location = (new global::System.Drawing.Point(615, -30));
             this.chkPlayerUsesMP.Name = ("chkPlayerUsesMP");
             this.chkPlayerUsesMP.Size = (new global::System.Drawing.Size(71, 19));
             this.chkPlayerUsesMP.TabIndex = (114);
@@ -2576,7 +2574,7 @@ namespace RogueCustomsDungeonEditor
             // label110
             // 
             this.label110.AutoSize = (true);
-            this.label110.Location = (new global::System.Drawing.Point(584, 199));
+            this.label110.Location = (new global::System.Drawing.Point(584, -29));
             this.label110.Name = ("label110");
             this.label110.Size = (new global::System.Drawing.Size(25, 15));
             this.label110.TabIndex = (113);
@@ -2584,7 +2582,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerBaseMP
             // 
-            this.nudPlayerBaseMP.Location = (new global::System.Drawing.Point(527, 195));
+            this.nudPlayerBaseMP.Location = (new global::System.Drawing.Point(527, -33));
             this.nudPlayerBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudPlayerBaseMP.Name = ("nudPlayerBaseMP");
             this.nudPlayerBaseMP.Size = (new global::System.Drawing.Size(55, 23));
@@ -2596,7 +2594,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.label58.AutoSize = (true);
             this.label58.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label58.Location = (new global::System.Drawing.Point(141, 483));
+            this.label58.Location = (new global::System.Drawing.Point(141, 255));
             this.label58.Name = ("label58");
             this.label58.Size = (new global::System.Drawing.Size(67, 21));
             this.label58.TabIndex = (104);
@@ -2605,7 +2603,7 @@ namespace RogueCustomsDungeonEditor
             // label62
             // 
             this.label62.AutoSize = (true);
-            this.label62.Location = (new global::System.Drawing.Point(393, 317));
+            this.label62.Location = (new global::System.Drawing.Point(393, 89));
             this.label62.Name = ("label62");
             this.label62.Size = (new global::System.Drawing.Size(291, 30));
             this.label62.TabIndex = (102);
@@ -2616,7 +2614,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.cmbPlayerStartingArmor.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbPlayerStartingArmor.FormattingEnabled = (true);
-            this.cmbPlayerStartingArmor.Location = (new global::System.Drawing.Point(146, 331));
+            this.cmbPlayerStartingArmor.Location = (new global::System.Drawing.Point(146, 103));
             this.cmbPlayerStartingArmor.Name = ("cmbPlayerStartingArmor");
             this.cmbPlayerStartingArmor.Size = (new global::System.Drawing.Size(158, 23));
             this.cmbPlayerStartingArmor.TabIndex = (81);
@@ -2625,7 +2623,7 @@ namespace RogueCustomsDungeonEditor
             // label57
             // 
             this.label57.AutoSize = (true);
-            this.label57.Location = (new global::System.Drawing.Point(13, 334));
+            this.label57.Location = (new global::System.Drawing.Point(13, 106));
             this.label57.Name = ("label57");
             this.label57.Size = (new global::System.Drawing.Size(131, 15));
             this.label57.TabIndex = (80);
@@ -2635,7 +2633,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.cmbPlayerStartingWeapon.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbPlayerStartingWeapon.FormattingEnabled = (true);
-            this.cmbPlayerStartingWeapon.Location = (new global::System.Drawing.Point(139, 300));
+            this.cmbPlayerStartingWeapon.Location = (new global::System.Drawing.Point(139, 72));
             this.cmbPlayerStartingWeapon.Name = ("cmbPlayerStartingWeapon");
             this.cmbPlayerStartingWeapon.Size = (new global::System.Drawing.Size(165, 23));
             this.cmbPlayerStartingWeapon.TabIndex = (79);
@@ -2644,67 +2642,16 @@ namespace RogueCustomsDungeonEditor
             // label56
             // 
             this.label56.AutoSize = (true);
-            this.label56.Location = (new global::System.Drawing.Point(13, 303));
+            this.label56.Location = (new global::System.Drawing.Point(13, 75));
             this.label56.Name = ("label56");
             this.label56.Size = (new global::System.Drawing.Size(123, 15));
             this.label56.TabIndex = (78);
             this.label56.Text = ("When unarmed, wield");
             // 
-            // lbPlayerStartingInventory
-            // 
-            this.lbPlayerStartingInventory.FormattingEnabled = (true);
-            this.lbPlayerStartingInventory.ItemHeight = (15);
-            this.lbPlayerStartingInventory.Location = (new global::System.Drawing.Point(156, 392));
-            this.lbPlayerStartingInventory.Name = ("lbPlayerStartingInventory");
-            this.lbPlayerStartingInventory.Size = (new global::System.Drawing.Size(148, 79));
-            this.lbPlayerStartingInventory.TabIndex = (77);
-            this.lbPlayerStartingInventory.SelectedIndexChanged += (this.lbPlayerStartingInventory_SelectedIndexChanged);
-            // 
-            // btnPlayerRemoveItem
-            // 
-            this.btnPlayerRemoveItem.Enabled = (false);
-            this.btnPlayerRemoveItem.Location = (new global::System.Drawing.Point(75, 444));
-            this.btnPlayerRemoveItem.Name = ("btnPlayerRemoveItem");
-            this.btnPlayerRemoveItem.Size = (new global::System.Drawing.Size(59, 23));
-            this.btnPlayerRemoveItem.TabIndex = (76);
-            this.btnPlayerRemoveItem.Text = ("Remove");
-            this.btnPlayerRemoveItem.UseVisualStyleBackColor = (true);
-            this.btnPlayerRemoveItem.Click += (this.btnPlayerRemoveItem_Click);
-            // 
-            // btnPlayerAddItem
-            // 
-            this.btnPlayerAddItem.Enabled = (false);
-            this.btnPlayerAddItem.Location = (new global::System.Drawing.Point(13, 444));
-            this.btnPlayerAddItem.Name = ("btnPlayerAddItem");
-            this.btnPlayerAddItem.Size = (new global::System.Drawing.Size(56, 23));
-            this.btnPlayerAddItem.TabIndex = (75);
-            this.btnPlayerAddItem.Text = ("Add");
-            this.btnPlayerAddItem.UseVisualStyleBackColor = (true);
-            this.btnPlayerAddItem.Click += (this.btnPlayerAddItem_Click);
-            // 
-            // cmbPlayerInventoryItemChoices
-            // 
-            this.cmbPlayerInventoryItemChoices.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerInventoryItemChoices.FormattingEnabled = (true);
-            this.cmbPlayerInventoryItemChoices.Location = (new global::System.Drawing.Point(13, 415));
-            this.cmbPlayerInventoryItemChoices.Name = ("cmbPlayerInventoryItemChoices");
-            this.cmbPlayerInventoryItemChoices.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbPlayerInventoryItemChoices.TabIndex = (74);
-            this.cmbPlayerInventoryItemChoices.SelectedIndexChanged += (this.cmbPlayerInventoryItemChoices_SelectedIndexChanged);
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = (true);
-            this.label55.Location = (new global::System.Drawing.Point(13, 392));
-            this.label55.Name = ("label55");
-            this.label55.Size = (new global::System.Drawing.Size(92, 15));
-            this.label55.TabIndex = (73);
-            this.label55.Text = ("Initial Inventory:");
-            // 
             // label54
             // 
             this.label54.AutoSize = (true);
-            this.label54.Location = (new global::System.Drawing.Point(172, 364));
+            this.label54.Location = (new global::System.Drawing.Point(172, 136));
             this.label54.Name = ("label54");
             this.label54.Size = (new global::System.Drawing.Size(36, 15));
             this.label54.TabIndex = (72);
@@ -2712,7 +2659,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerInventorySize
             // 
-            this.nudPlayerInventorySize.Location = (new global::System.Drawing.Point(121, 359));
+            this.nudPlayerInventorySize.Location = (new global::System.Drawing.Point(121, 131));
             this.nudPlayerInventorySize.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerInventorySize.Name = ("nudPlayerInventorySize");
             this.nudPlayerInventorySize.Size = (new global::System.Drawing.Size(45, 23));
@@ -2722,7 +2669,7 @@ namespace RogueCustomsDungeonEditor
             // label53
             // 
             this.label53.AutoSize = (true);
-            this.label53.Location = (new global::System.Drawing.Point(13, 362));
+            this.label53.Location = (new global::System.Drawing.Point(13, 134));
             this.label53.Name = ("label53");
             this.label53.Size = (new global::System.Drawing.Size(109, 15));
             this.label53.TabIndex = (70);
@@ -2731,7 +2678,7 @@ namespace RogueCustomsDungeonEditor
             // label52
             // 
             this.label52.AutoSize = (true);
-            this.label52.Location = (new global::System.Drawing.Point(403, 696));
+            this.label52.Location = (new global::System.Drawing.Point(403, 468));
             this.label52.Name = ("label52");
             this.label52.Size = (new global::System.Drawing.Size(54, 15));
             this.label52.TabIndex = (69);
@@ -2740,7 +2687,7 @@ namespace RogueCustomsDungeonEditor
             // label47
             // 
             this.label47.AutoSize = (true);
-            this.label47.Location = (new global::System.Drawing.Point(391, 505));
+            this.label47.Location = (new global::System.Drawing.Point(391, 277));
             this.label47.Name = ("label47");
             this.label47.Size = (new global::System.Drawing.Size(325, 30));
             this.label47.TabIndex = (68);
@@ -2750,7 +2697,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.label51.AutoSize = (true);
             this.label51.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label51.Location = (new global::System.Drawing.Point(404, 476));
+            this.label51.Location = (new global::System.Drawing.Point(404, 248));
             this.label51.Name = ("label51");
             this.label51.Size = (new global::System.Drawing.Size(115, 15));
             this.label51.TabIndex = (67);
@@ -2759,7 +2706,7 @@ namespace RogueCustomsDungeonEditor
             // chkPlayerCanGainExperience
             // 
             this.chkPlayerCanGainExperience.AutoSize = (true);
-            this.chkPlayerCanGainExperience.Location = (new global::System.Drawing.Point(403, 384));
+            this.chkPlayerCanGainExperience.Location = (new global::System.Drawing.Point(403, 156));
             this.chkPlayerCanGainExperience.Name = ("chkPlayerCanGainExperience");
             this.chkPlayerCanGainExperience.Size = (new global::System.Drawing.Size(169, 19));
             this.chkPlayerCanGainExperience.TabIndex = (66);
@@ -2769,7 +2716,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerMaxLevel
             // 
-            this.nudPlayerMaxLevel.Location = (new global::System.Drawing.Point(509, 436));
+            this.nudPlayerMaxLevel.Location = (new global::System.Drawing.Point(509, 208));
             this.nudPlayerMaxLevel.Name = ("nudPlayerMaxLevel");
             this.nudPlayerMaxLevel.Size = (new global::System.Drawing.Size(44, 23));
             this.nudPlayerMaxLevel.TabIndex = (65);
@@ -2779,7 +2726,7 @@ namespace RogueCustomsDungeonEditor
             // label50
             // 
             this.label50.AutoSize = (true);
-            this.label50.Location = (new global::System.Drawing.Point(400, 439));
+            this.label50.Location = (new global::System.Drawing.Point(400, 211));
             this.label50.Name = ("label50");
             this.label50.Size = (new global::System.Drawing.Size(103, 15));
             this.label50.TabIndex = (64);
@@ -2787,7 +2734,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // txtPlayerLevelUpFormula
             // 
-            this.txtPlayerLevelUpFormula.Location = (new global::System.Drawing.Point(530, 408));
+            this.txtPlayerLevelUpFormula.Location = (new global::System.Drawing.Point(530, 180));
             this.txtPlayerLevelUpFormula.Name = ("txtPlayerLevelUpFormula");
             this.txtPlayerLevelUpFormula.Size = (new global::System.Drawing.Size(180, 23));
             this.txtPlayerLevelUpFormula.TabIndex = (63);
@@ -2797,7 +2744,7 @@ namespace RogueCustomsDungeonEditor
             // label49
             // 
             this.label49.AutoSize = (true);
-            this.label49.Location = (new global::System.Drawing.Point(400, 411));
+            this.label49.Location = (new global::System.Drawing.Point(400, 183));
             this.label49.Name = ("label49");
             this.label49.Size = (new global::System.Drawing.Size(126, 15));
             this.label49.TabIndex = (62);
@@ -2807,7 +2754,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.label48.AutoSize = (true);
             this.label48.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label48.Location = (new global::System.Drawing.Point(498, 354));
+            this.label48.Location = (new global::System.Drawing.Point(498, 126));
             this.label48.Name = ("label48");
             this.label48.Size = (new global::System.Drawing.Size(101, 21));
             this.label48.TabIndex = (61);
@@ -2815,7 +2762,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerFlatSightRange
             // 
-            this.nudPlayerFlatSightRange.Location = (new global::System.Drawing.Point(576, 283));
+            this.nudPlayerFlatSightRange.Location = (new global::System.Drawing.Point(576, 55));
             this.nudPlayerFlatSightRange.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerFlatSightRange.Name = ("nudPlayerFlatSightRange");
             this.nudPlayerFlatSightRange.Size = (new global::System.Drawing.Size(54, 23));
@@ -2827,7 +2774,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.cmbPlayerSightRange.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbPlayerSightRange.FormattingEnabled = (true);
-            this.cmbPlayerSightRange.Location = (new global::System.Drawing.Point(443, 283));
+            this.cmbPlayerSightRange.Location = (new global::System.Drawing.Point(443, 55));
             this.cmbPlayerSightRange.Name = ("cmbPlayerSightRange");
             this.cmbPlayerSightRange.Size = (new global::System.Drawing.Size(121, 23));
             this.cmbPlayerSightRange.TabIndex = (58);
@@ -2836,7 +2783,7 @@ namespace RogueCustomsDungeonEditor
             // label43
             // 
             this.label43.AutoSize = (true);
-            this.label43.Location = (new global::System.Drawing.Point(393, 286));
+            this.label43.Location = (new global::System.Drawing.Point(393, 58));
             this.label43.Name = ("label43");
             this.label43.Size = (new global::System.Drawing.Size(48, 15));
             this.label43.TabIndex = (57);
@@ -2845,7 +2792,7 @@ namespace RogueCustomsDungeonEditor
             // label44
             // 
             this.label44.AutoSize = (true);
-            this.label44.Location = (new global::System.Drawing.Point(637, 170));
+            this.label44.Location = (new global::System.Drawing.Point(637, -58));
             this.label44.Name = ("label44");
             this.label44.Size = (new global::System.Drawing.Size(68, 15));
             this.label44.TabIndex = (56);
@@ -2854,7 +2801,7 @@ namespace RogueCustomsDungeonEditor
             // label45
             // 
             this.label45.AutoSize = (true);
-            this.label45.Location = (new global::System.Drawing.Point(522, 168));
+            this.label45.Location = (new global::System.Drawing.Point(522, -60));
             this.label45.Name = ("label45");
             this.label45.Size = (new global::System.Drawing.Size(54, 15));
             this.label45.TabIndex = (55);
@@ -2863,7 +2810,7 @@ namespace RogueCustomsDungeonEditor
             // label46
             // 
             this.label46.AutoSize = (true);
-            this.label46.Location = (new global::System.Drawing.Point(517, 698));
+            this.label46.Location = (new global::System.Drawing.Point(517, 470));
             this.label46.Name = ("label46");
             this.label46.Size = (new global::System.Drawing.Size(167, 15));
             this.label46.TabIndex = (54);
@@ -2872,7 +2819,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerHPRegenerationPerLevelUp
             // 
             this.nudPlayerHPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 694));
+            this.nudPlayerHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 466));
             this.nudPlayerHPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerHPRegenerationPerLevelUp.Name = ("nudPlayerHPRegenerationPerLevelUp");
             this.nudPlayerHPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2882,7 +2829,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerBaseHPRegeneration
             // 
             this.nudPlayerBaseHPRegeneration.DecimalPlaces = (4);
-            this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 166));
+            this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, -62));
             this.nudPlayerBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerBaseHPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
             this.nudPlayerBaseHPRegeneration.Name = ("nudPlayerBaseHPRegeneration");
@@ -2894,7 +2841,7 @@ namespace RogueCustomsDungeonEditor
             // label42
             // 
             this.label42.AutoSize = (true);
-            this.label42.Location = (new global::System.Drawing.Point(403, 667));
+            this.label42.Location = (new global::System.Drawing.Point(403, 439));
             this.label42.Name = ("label42");
             this.label42.Size = (new global::System.Drawing.Size(61, 15));
             this.label42.TabIndex = (51);
@@ -2903,7 +2850,7 @@ namespace RogueCustomsDungeonEditor
             // label41
             // 
             this.label41.AutoSize = (true);
-            this.label41.Location = (new global::System.Drawing.Point(513, 258));
+            this.label41.Location = (new global::System.Drawing.Point(513, 30));
             this.label41.Name = ("label41");
             this.label41.Size = (new global::System.Drawing.Size(73, 15));
             this.label41.TabIndex = (50);
@@ -2912,7 +2859,7 @@ namespace RogueCustomsDungeonEditor
             // label40
             // 
             this.label40.AutoSize = (true);
-            this.label40.Location = (new global::System.Drawing.Point(392, 256));
+            this.label40.Location = (new global::System.Drawing.Point(392, 28));
             this.label40.Name = ("label40");
             this.label40.Size = (new global::System.Drawing.Size(61, 15));
             this.label40.TabIndex = (49);
@@ -2921,7 +2868,7 @@ namespace RogueCustomsDungeonEditor
             // label39
             // 
             this.label39.AutoSize = (true);
-            this.label39.Location = (new global::System.Drawing.Point(521, 668));
+            this.label39.Location = (new global::System.Drawing.Point(521, 440));
             this.label39.Name = ("label39");
             this.label39.Size = (new global::System.Drawing.Size(174, 15));
             this.label39.TabIndex = (48);
@@ -2930,7 +2877,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerMovementPerLevelUp
             // 
             this.nudPlayerMovementPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMovementPerLevelUp.Location = (new global::System.Drawing.Point(464, 665));
+            this.nudPlayerMovementPerLevelUp.Location = (new global::System.Drawing.Point(464, 437));
             this.nudPlayerMovementPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerMovementPerLevelUp.Name = ("nudPlayerMovementPerLevelUp");
             this.nudPlayerMovementPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2939,7 +2886,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerBaseMovement
             // 
-            this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(453, 254));
+            this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(453, 26));
             this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
             this.nudPlayerBaseMovement.Name = ("nudPlayerBaseMovement");
             this.nudPlayerBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
@@ -2950,7 +2897,7 @@ namespace RogueCustomsDungeonEditor
             // label37
             // 
             this.label37.AutoSize = (true);
-            this.label37.Location = (new global::System.Drawing.Point(459, 638));
+            this.label37.Location = (new global::System.Drawing.Point(459, 410));
             this.label37.Name = ("label37");
             this.label37.Size = (new global::System.Drawing.Size(148, 15));
             this.label37.TabIndex = (44);
@@ -2959,7 +2906,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerDefensePerLevelUp
             // 
             this.nudPlayerDefensePerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerDefensePerLevelUp.Location = (new global::System.Drawing.Point(403, 635));
+            this.nudPlayerDefensePerLevelUp.Location = (new global::System.Drawing.Point(403, 407));
             this.nudPlayerDefensePerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerDefensePerLevelUp.Name = ("nudPlayerDefensePerLevelUp");
             this.nudPlayerDefensePerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -2969,7 +2916,7 @@ namespace RogueCustomsDungeonEditor
             // label38
             // 
             this.label38.AutoSize = (true);
-            this.label38.Location = (new global::System.Drawing.Point(459, 229));
+            this.label38.Location = (new global::System.Drawing.Point(459, 1));
             this.label38.Name = ("label38");
             this.label38.Size = (new global::System.Drawing.Size(49, 15));
             this.label38.TabIndex = (42);
@@ -2977,7 +2924,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerBaseDefense
             // 
-            this.nudPlayerBaseDefense.Location = (new global::System.Drawing.Point(402, 225));
+            this.nudPlayerBaseDefense.Location = (new global::System.Drawing.Point(402, -3));
             this.nudPlayerBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudPlayerBaseDefense.Name = ("nudPlayerBaseDefense");
             this.nudPlayerBaseDefense.Size = (new global::System.Drawing.Size(55, 23));
@@ -2987,7 +2934,7 @@ namespace RogueCustomsDungeonEditor
             // label36
             // 
             this.label36.AutoSize = (true);
-            this.label36.Location = (new global::System.Drawing.Point(394, 124));
+            this.label36.Location = (new global::System.Drawing.Point(394, -104));
             this.label36.Name = ("label36");
             this.label36.Size = (new global::System.Drawing.Size(325, 30));
             this.label36.TabIndex = (40);
@@ -2996,7 +2943,7 @@ namespace RogueCustomsDungeonEditor
             // label34
             // 
             this.label34.AutoSize = (true);
-            this.label34.Location = (new global::System.Drawing.Point(459, 611));
+            this.label34.Location = (new global::System.Drawing.Point(459, 383));
             this.label34.Name = ("label34");
             this.label34.Size = (new global::System.Drawing.Size(140, 15));
             this.label34.TabIndex = (39);
@@ -3005,7 +2952,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerAttackPerLevelUp
             // 
             this.nudPlayerAttackPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerAttackPerLevelUp.Location = (new global::System.Drawing.Point(403, 608));
+            this.nudPlayerAttackPerLevelUp.Location = (new global::System.Drawing.Point(403, 380));
             this.nudPlayerAttackPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerAttackPerLevelUp.Name = ("nudPlayerAttackPerLevelUp");
             this.nudPlayerAttackPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -3015,7 +2962,7 @@ namespace RogueCustomsDungeonEditor
             // label35
             // 
             this.label35.AutoSize = (true);
-            this.label35.Location = (new global::System.Drawing.Point(459, 200));
+            this.label35.Location = (new global::System.Drawing.Point(459, -28));
             this.label35.Name = ("label35");
             this.label35.Size = (new global::System.Drawing.Size(41, 15));
             this.label35.TabIndex = (37);
@@ -3023,7 +2970,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerBaseAttack
             // 
-            this.nudPlayerBaseAttack.Location = (new global::System.Drawing.Point(402, 196));
+            this.nudPlayerBaseAttack.Location = (new global::System.Drawing.Point(402, -32));
             this.nudPlayerBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
             this.nudPlayerBaseAttack.Name = ("nudPlayerBaseAttack");
             this.nudPlayerBaseAttack.Size = (new global::System.Drawing.Size(55, 23));
@@ -3033,7 +2980,7 @@ namespace RogueCustomsDungeonEditor
             // label33
             // 
             this.label33.AutoSize = (true);
-            this.label33.Location = (new global::System.Drawing.Point(459, 553));
+            this.label33.Location = (new global::System.Drawing.Point(459, 325));
             this.label33.Name = ("label33");
             this.label33.Size = (new global::System.Drawing.Size(122, 15));
             this.label33.TabIndex = (35);
@@ -3042,7 +2989,7 @@ namespace RogueCustomsDungeonEditor
             // nudPlayerHPPerLevelUp
             // 
             this.nudPlayerHPPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPPerLevelUp.Location = (new global::System.Drawing.Point(403, 550));
+            this.nudPlayerHPPerLevelUp.Location = (new global::System.Drawing.Point(403, 322));
             this.nudPlayerHPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
             this.nudPlayerHPPerLevelUp.Name = ("nudPlayerHPPerLevelUp");
             this.nudPlayerHPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
@@ -3052,7 +2999,7 @@ namespace RogueCustomsDungeonEditor
             // label32
             // 
             this.label32.AutoSize = (true);
-            this.label32.Location = (new global::System.Drawing.Point(459, 170));
+            this.label32.Location = (new global::System.Drawing.Point(459, -58));
             this.label32.Name = ("label32");
             this.label32.Size = (new global::System.Drawing.Size(23, 15));
             this.label32.TabIndex = (33);
@@ -3060,7 +3007,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // nudPlayerBaseHP
             // 
-            this.nudPlayerBaseHP.Location = (new global::System.Drawing.Point(402, 166));
+            this.nudPlayerBaseHP.Location = (new global::System.Drawing.Point(402, -62));
             this.nudPlayerBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
             this.nudPlayerBaseHP.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.nudPlayerBaseHP.Name = ("nudPlayerBaseHP");
@@ -3073,7 +3020,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.label31.AutoSize = (true);
             this.label31.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label31.Location = (new global::System.Drawing.Point(477, 100));
+            this.label31.Location = (new global::System.Drawing.Point(477, -128));
             this.label31.Name = ("label31");
             this.label31.Size = (new global::System.Drawing.Size(155, 21));
             this.label31.TabIndex = (31);
@@ -3082,7 +3029,7 @@ namespace RogueCustomsDungeonEditor
             // label30
             // 
             this.label30.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label30.Location = (new global::System.Drawing.Point(370, 19));
+            this.label30.Location = (new global::System.Drawing.Point(370, -209));
             this.label30.Name = ("label30");
             this.label30.Size = (new global::System.Drawing.Size(131, 52));
             this.label30.TabIndex = (26);
@@ -3092,7 +3039,7 @@ namespace RogueCustomsDungeonEditor
             // chkPlayerStartsVisible
             // 
             this.chkPlayerStartsVisible.AutoSize = (true);
-            this.chkPlayerStartsVisible.Location = (new global::System.Drawing.Point(13, 272));
+            this.chkPlayerStartsVisible.Location = (new global::System.Drawing.Point(13, 44));
             this.chkPlayerStartsVisible.Name = ("chkPlayerStartsVisible");
             this.chkPlayerStartsVisible.Size = (new global::System.Drawing.Size(102, 19));
             this.chkPlayerStartsVisible.TabIndex = (25);
@@ -3104,7 +3051,7 @@ namespace RogueCustomsDungeonEditor
             // 
             this.cmbPlayerFaction.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
             this.cmbPlayerFaction.FormattingEnabled = (true);
-            this.cmbPlayerFaction.Location = (new global::System.Drawing.Point(65, 241));
+            this.cmbPlayerFaction.Location = (new global::System.Drawing.Point(65, 13));
             this.cmbPlayerFaction.Name = ("cmbPlayerFaction");
             this.cmbPlayerFaction.Size = (new global::System.Drawing.Size(146, 23));
             this.cmbPlayerFaction.TabIndex = (24);
@@ -3113,7 +3060,7 @@ namespace RogueCustomsDungeonEditor
             // label29
             // 
             this.label29.AutoSize = (true);
-            this.label29.Location = (new global::System.Drawing.Point(13, 244));
+            this.label29.Location = (new global::System.Drawing.Point(13, 16));
             this.label29.Name = ("label29");
             this.label29.Size = (new global::System.Drawing.Size(46, 15));
             this.label29.TabIndex = (23);
@@ -3122,7 +3069,7 @@ namespace RogueCustomsDungeonEditor
             // chkRequirePlayerPrompt
             // 
             this.chkRequirePlayerPrompt.AutoSize = (true);
-            this.chkRequirePlayerPrompt.Location = (new global::System.Drawing.Point(13, 107));
+            this.chkRequirePlayerPrompt.Location = (new global::System.Drawing.Point(13, -121));
             this.chkRequirePlayerPrompt.Name = ("chkRequirePlayerPrompt");
             this.chkRequirePlayerPrompt.Size = (new global::System.Drawing.Size(287, 19));
             this.chkRequirePlayerPrompt.TabIndex = (22);
@@ -3137,7 +3084,7 @@ namespace RogueCustomsDungeonEditor
             this.fklblPlayerClassDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
             this.fklblPlayerClassDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblPlayerClassDescriptionLocale.Image")));
             this.fklblPlayerClassDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblPlayerClassDescriptionLocale.Location = (new global::System.Drawing.Point(13, 185));
+            this.fklblPlayerClassDescriptionLocale.Location = (new global::System.Drawing.Point(13, -43));
             this.fklblPlayerClassDescriptionLocale.Name = ("fklblPlayerClassDescriptionLocale");
             this.fklblPlayerClassDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
             this.fklblPlayerClassDescriptionLocale.TabIndex = (21);
@@ -3149,7 +3096,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // txtPlayerClassDescription
             // 
-            this.txtPlayerClassDescription.Location = (new global::System.Drawing.Point(13, 156));
+            this.txtPlayerClassDescription.Location = (new global::System.Drawing.Point(13, -72));
             this.txtPlayerClassDescription.Name = ("txtPlayerClassDescription");
             this.txtPlayerClassDescription.Size = (new global::System.Drawing.Size(350, 23));
             this.txtPlayerClassDescription.TabIndex = (20);
@@ -3158,7 +3105,7 @@ namespace RogueCustomsDungeonEditor
             // label28
             // 
             this.label28.AutoSize = (true);
-            this.label28.Location = (new global::System.Drawing.Point(13, 138));
+            this.label28.Location = (new global::System.Drawing.Point(13, -90));
             this.label28.Name = ("label28");
             this.label28.Size = (new global::System.Drawing.Size(67, 15));
             this.label28.TabIndex = (19);
@@ -3171,7 +3118,7 @@ namespace RogueCustomsDungeonEditor
             this.fklblPlayerClassNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
             this.fklblPlayerClassNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblPlayerClassNameLocale.Image")));
             this.fklblPlayerClassNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblPlayerClassNameLocale.Location = (new global::System.Drawing.Point(13, 55));
+            this.fklblPlayerClassNameLocale.Location = (new global::System.Drawing.Point(13, -173));
             this.fklblPlayerClassNameLocale.Name = ("fklblPlayerClassNameLocale");
             this.fklblPlayerClassNameLocale.Size = (new global::System.Drawing.Size(331, 42));
             this.fklblPlayerClassNameLocale.TabIndex = (18);
@@ -3183,7 +3130,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // txtPlayerClassName
             // 
-            this.txtPlayerClassName.Location = (new global::System.Drawing.Point(13, 26));
+            this.txtPlayerClassName.Location = (new global::System.Drawing.Point(13, -202));
             this.txtPlayerClassName.Name = ("txtPlayerClassName");
             this.txtPlayerClassName.Size = (new global::System.Drawing.Size(350, 23));
             this.txtPlayerClassName.TabIndex = (17);
@@ -3192,7 +3139,7 @@ namespace RogueCustomsDungeonEditor
             // label27
             // 
             this.label27.AutoSize = (true);
-            this.label27.Location = (new global::System.Drawing.Point(13, 8));
+            this.label27.Location = (new global::System.Drawing.Point(13, -220));
             this.label27.Name = ("label27");
             this.label27.Size = (new global::System.Drawing.Size(80, 15));
             this.label27.TabIndex = (16);
@@ -3201,7 +3148,7 @@ namespace RogueCustomsDungeonEditor
             // lblPlayerSightRangeText
             // 
             this.lblPlayerSightRangeText.AutoSize = (true);
-            this.lblPlayerSightRangeText.Location = (new global::System.Drawing.Point(639, 286));
+            this.lblPlayerSightRangeText.Location = (new global::System.Drawing.Point(639, 58));
             this.lblPlayerSightRangeText.Name = ("lblPlayerSightRangeText");
             this.lblPlayerSightRangeText.Size = (new global::System.Drawing.Size(28, 15));
             this.lblPlayerSightRangeText.TabIndex = (60);
@@ -3221,7 +3168,7 @@ namespace RogueCustomsDungeonEditor
             gameColor44.G = ((global::System.Byte)(255));
             gameColor44.R = ((global::System.Byte)(255));
             this.crsPlayer.ForegroundColor = (gameColor44);
-            this.crsPlayer.Location = (new global::System.Drawing.Point(504, 8));
+            this.crsPlayer.Location = (new global::System.Drawing.Point(504, -220));
             this.crsPlayer.Name = ("crsPlayer");
             this.crsPlayer.Size = (new global::System.Drawing.Size(211, 83));
             this.crsPlayer.TabIndex = (123);
@@ -3230,6 +3177,7 @@ namespace RogueCustomsDungeonEditor
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
+            this.tpNPC.Controls.Add(this.sisNPCStartingInventory);
             this.tpNPC.Controls.Add(this.saeNPCOnDeath);
             this.tpNPC.Controls.Add(this.saeNPCOnAttacked);
             this.tpNPC.Controls.Add(this.saeNPCOnTurnStart);
@@ -3256,11 +3204,6 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.Controls.Add(this.label70);
             this.tpNPC.Controls.Add(this.cmbNPCStartingWeapon);
             this.tpNPC.Controls.Add(this.label71);
-            this.tpNPC.Controls.Add(this.lbNPCStartingInventory);
-            this.tpNPC.Controls.Add(this.btnNPCRemoveItem);
-            this.tpNPC.Controls.Add(this.btnNPCAddItem);
-            this.tpNPC.Controls.Add(this.cmbNPCInventoryItemChoices);
-            this.tpNPC.Controls.Add(this.label72);
             this.tpNPC.Controls.Add(this.label73);
             this.tpNPC.Controls.Add(this.nudNPCInventorySize);
             this.tpNPC.Controls.Add(this.label74);
@@ -3612,57 +3555,6 @@ namespace RogueCustomsDungeonEditor
             this.label71.Size = (new global::System.Drawing.Size(123, 15));
             this.label71.TabIndex = (172);
             this.label71.Text = ("When unarmed, wield");
-            // 
-            // lbNPCStartingInventory
-            // 
-            this.lbNPCStartingInventory.FormattingEnabled = (true);
-            this.lbNPCStartingInventory.ItemHeight = (15);
-            this.lbNPCStartingInventory.Location = (new global::System.Drawing.Point(156, 423));
-            this.lbNPCStartingInventory.Name = ("lbNPCStartingInventory");
-            this.lbNPCStartingInventory.Size = (new global::System.Drawing.Size(148, 79));
-            this.lbNPCStartingInventory.TabIndex = (171);
-            this.lbNPCStartingInventory.SelectedIndexChanged += (this.lbNPCStartingInventory_SelectedIndexChanged);
-            // 
-            // btnNPCRemoveItem
-            // 
-            this.btnNPCRemoveItem.Enabled = (false);
-            this.btnNPCRemoveItem.Location = (new global::System.Drawing.Point(75, 475));
-            this.btnNPCRemoveItem.Name = ("btnNPCRemoveItem");
-            this.btnNPCRemoveItem.Size = (new global::System.Drawing.Size(59, 23));
-            this.btnNPCRemoveItem.TabIndex = (170);
-            this.btnNPCRemoveItem.Text = ("Remove");
-            this.btnNPCRemoveItem.UseVisualStyleBackColor = (true);
-            this.btnNPCRemoveItem.Click += (this.btnNPCRemoveItem_Click);
-            // 
-            // btnNPCAddItem
-            // 
-            this.btnNPCAddItem.Enabled = (false);
-            this.btnNPCAddItem.Location = (new global::System.Drawing.Point(13, 475));
-            this.btnNPCAddItem.Name = ("btnNPCAddItem");
-            this.btnNPCAddItem.Size = (new global::System.Drawing.Size(56, 23));
-            this.btnNPCAddItem.TabIndex = (169);
-            this.btnNPCAddItem.Text = ("Add");
-            this.btnNPCAddItem.UseVisualStyleBackColor = (true);
-            this.btnNPCAddItem.Click += (this.btnNPCAddItem_Click);
-            // 
-            // cmbNPCInventoryItemChoices
-            // 
-            this.cmbNPCInventoryItemChoices.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCInventoryItemChoices.FormattingEnabled = (true);
-            this.cmbNPCInventoryItemChoices.Location = (new global::System.Drawing.Point(13, 446));
-            this.cmbNPCInventoryItemChoices.Name = ("cmbNPCInventoryItemChoices");
-            this.cmbNPCInventoryItemChoices.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbNPCInventoryItemChoices.TabIndex = (168);
-            this.cmbNPCInventoryItemChoices.SelectedIndexChanged += (this.cmbNPCInventoryItemChoices_SelectedIndexChanged);
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = (true);
-            this.label72.Location = (new global::System.Drawing.Point(13, 423));
-            this.label72.Name = ("label72");
-            this.label72.Size = (new global::System.Drawing.Size(92, 15));
-            this.label72.TabIndex = (167);
-            this.label72.Text = ("Initial Inventory:");
             // 
             // label73
             // 
@@ -4867,6 +4759,16 @@ namespace RogueCustomsDungeonEditor
             this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
             this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
             // 
+            // sisNPCStartingInventory
+            // 
+            this.sisNPCStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisNPCStartingInventory.Inventory")));
+            this.sisNPCStartingInventory.InventorySize = (0);
+            this.sisNPCStartingInventory.Location = (new global::System.Drawing.Point(13, 432));
+            this.sisNPCStartingInventory.Name = ("sisNPCStartingInventory");
+            this.sisNPCStartingInventory.SelectableItems = (null);
+            this.sisNPCStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
+            this.sisNPCStartingInventory.TabIndex = (129);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = (new global::System.Drawing.SizeF(7F, 15F));
@@ -5075,11 +4977,6 @@ namespace RogueCustomsDungeonEditor
         private Label label57;
         private ComboBox cmbPlayerStartingWeapon;
         private Label label56;
-        private ListBox lbPlayerStartingInventory;
-        private Button btnPlayerRemoveItem;
-        private Button btnPlayerAddItem;
-        private ComboBox cmbPlayerInventoryItemChoices;
-        private Label label55;
         private Label label54;
         private NumericUpDown nudPlayerInventorySize;
         private Label label53;
@@ -5132,11 +5029,6 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Label label70;
         private global::System.Windows.Forms.ComboBox cmbNPCStartingWeapon;
         private global::System.Windows.Forms.Label label71;
-        private global::System.Windows.Forms.ListBox lbNPCStartingInventory;
-        private global::System.Windows.Forms.Button btnNPCRemoveItem;
-        private global::System.Windows.Forms.Button btnNPCAddItem;
-        private global::System.Windows.Forms.ComboBox cmbNPCInventoryItemChoices;
-        private global::System.Windows.Forms.Label label72;
         private global::System.Windows.Forms.Label label73;
         private global::System.Windows.Forms.NumericUpDown nudNPCInventorySize;
         private global::System.Windows.Forms.Label label74;
@@ -5319,5 +5211,7 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeTrapOnStepped;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnTurnStart;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnApply;
+        private global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector sisPlayerStartingInventory;
+        private global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector sisNPCStartingInventory;
     }
 }
