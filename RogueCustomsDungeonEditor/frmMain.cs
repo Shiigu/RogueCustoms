@@ -23,6 +23,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsDungeonEditor.Controls;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -937,51 +938,6 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
-        #region Shared between tabs
-
-        private void OpenActionEditScreenForListBox(ListBox actionListBox, string actionTypeText, bool isNewAction, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
-        {
-            var action = isNewAction
-                            ? new ActionWithEffectsInfo()
-                            : (actionListBox.SelectedItem as ListBoxItem)?.Tag as ActionWithEffectsInfo;
-            var classId = ((ClassInfo)ActiveNodeTag.DungeonElement).Id;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresCondition, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
-            frmActionEdit.ShowDialog();
-            if (frmActionEdit.Saved)
-            {
-                if (frmActionEdit.IsNewAction && !string.IsNullOrWhiteSpace(frmActionEdit.ActionToSave?.Effect?.EffectName))
-                {
-                    actionListBox.Items.Add(new ListBoxItem
-                    {
-                        Text = frmActionEdit.ActionToSave.Name,
-                        Tag = frmActionEdit.ActionToSave
-                    });
-                }
-                else
-                {
-                    if (!string.IsNullOrWhiteSpace(frmActionEdit.ActionToSave?.Effect?.EffectName))
-                        (actionListBox.SelectedItem as ListBoxItem).Tag = frmActionEdit.ActionToSave;
-                    else
-                        actionListBox.Items.Remove(actionListBox.SelectedItem);
-                }
-                DirtyTab = true;
-            }
-        }
-
-        private void OpenActionEditScreenForButton(Button actionButton, string actionTypeText, string classId, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria)
-        {
-            var action = actionButton.Tag as ActionWithEffectsInfo;
-            var frmActionEdit = new frmActionEdit(action, ActiveDungeon, classId, actionTypeText, requiresCondition, requiresDescription, requiresActionName, placeholderActionNameIfNeeded, usageCriteria, ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList(), EffectParamData);
-            frmActionEdit.ShowDialog();
-            if (frmActionEdit.Saved)
-            {
-                actionButton.Tag = frmActionEdit.ActionToSave;
-                DirtyTab = true;
-            }
-        }
-
-        #endregion
-
         #region Basic Information
 
         private void LoadBasicInfo()
@@ -1053,6 +1009,27 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = false;
             PassedValidation = false;
             return true;
+        }
+
+        #endregion
+
+        #region Shared Between Tabs
+
+        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
+        {
+            sae.Action = action;
+            sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            sae.Dungeon = ActiveDungeon;
+            sae.EffectParamData = EffectParamData;
+            sae.ActionContentsChanged += (_, _) => DirtyTab = true;
+        }
+        private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
+        {
+            mae.Actions = actions;
+            mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            mae.Dungeon = ActiveDungeon;
+            mae.EffectParamData = EffectParamData;
+            mae.ActionContentsChanged += (_, _) => DirtyTab = true;
         }
 
         #endregion
@@ -1755,7 +1732,8 @@ namespace RogueCustomsDungeonEditor
             {
                 cmbTilesets.Text = selectedTilesetId;
             }
-            btnOnFloorStartAction.Tag = floorGroup.OnFloorStart ?? new ActionWithEffectsInfo();
+            SetSingleActionEditorParams(saeOnFloorStart, string.Empty, floorGroup.OnFloorStart);
+
             chkGenerateStairsOnStart.Checked = floorGroup.GenerateStairsOnStart;
             fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
             RefreshGenerationAlgorithmList();
@@ -1870,9 +1848,7 @@ namespace RogueCustomsDungeonEditor
                 floorGroup.MaxConnectionsBetweenRooms = (int)nudMaxRoomConnections.Value;
                 floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
                 floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
-                var onFloorStartAction = btnOnFloorStartAction.Tag as ActionWithEffectsInfo;
-                if (!string.IsNullOrWhiteSpace(onFloorStartAction?.Effect?.EffectName))
-                    floorGroup.OnFloorStart = onFloorStartAction;
+                floorGroup.OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null;
 
                 if (saveAsNew)
                 {
@@ -2067,12 +2043,6 @@ namespace RogueCustomsDungeonEditor
                 btnTrapGenerator.Tag = frmGeneratorWindow.ObjectGenerationParams;
                 DirtyTab = true;
             }
-        }
-
-        private void btnOnFloorStartAction_Click(object sender, EventArgs e)
-        {
-            var floorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnOnFloorStartAction, "Turn Start", string.Empty, false, false, false, "FloorTurnStart", UsageCriteria.AnyTargetAnyTime);
         }
 
         private void btnAddAlgorithm_Click(object sender, EventArgs e)
@@ -2553,70 +2523,27 @@ namespace RogueCustomsDungeonEditor
                     cmbPlayerFaction.Text = factionId;
             }
             chkPlayerStartsVisible.Checked = playerClass.StartsVisible;
-            nudPlayerBaseHP.Value = playerClass.BaseHP;
-            nudPlayerHPPerLevelUp.Value = playerClass.MaxHPIncreasePerLevel;
-            nudPlayerBaseMP.Value = playerClass.BaseMP;
-            nudPlayerMPPerLevelUp.Value = playerClass.MaxMPIncreasePerLevel;
-            nudPlayerBaseAttack.Value = playerClass.BaseAttack;
-            nudPlayerAttackPerLevelUp.Value = playerClass.AttackIncreasePerLevel;
-            nudPlayerBaseDefense.Value = playerClass.BaseDefense;
-            nudPlayerDefensePerLevelUp.Value = playerClass.DefenseIncreasePerLevel;
-            nudPlayerBaseMovement.Value = playerClass.BaseMovement;
-            nudPlayerMovementPerLevelUp.Value = playerClass.MovementIncreasePerLevel;
-            nudPlayerBaseHPRegeneration.Value = playerClass.BaseHPRegeneration;
-            nudPlayerHPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
-            nudPlayerBaseMPRegeneration.Value = playerClass.BaseHPRegeneration;
-            nudPlayerMPRegenerationPerLevelUp.Value = playerClass.HPRegenerationIncreasePerLevel;
-            cmbPlayerSightRange.Items.Clear();
-            cmbPlayerSightRange.Text = "";
-            chkPlayerUsesMP.Checked = playerClass.UsesMP;
-            TogglePlayerMPControls();
-            foreach (var sightRange in BaseSightRangeDisplayNames)
-            {
-                cmbPlayerSightRange.Items.Add(sightRange.Value);
-                if (sightRange.Key.Equals(playerClass.BaseSightRange))
-                    cmbPlayerSightRange.Text = sightRange.Value;
-            }
-            if (string.IsNullOrWhiteSpace(cmbPlayerSightRange.Text))
-            {
-                cmbPlayerSightRange.Text = BaseSightRangeDisplayNames["FlatNumber"];
-                lblPlayerSightRangeText.Visible = true;
-                nudPlayerFlatSightRange.Visible = true;
-                nudPlayerFlatSightRange.Enabled = true;
-                try
-                {
-                    nudPlayerFlatSightRange.Value = int.Parse(playerClass.BaseSightRange);
-                }
-                catch
-                {
-                    nudPlayerFlatSightRange.Value = 1;
-                }
-            }
-            else
-            {
-                lblPlayerSightRangeText.Visible = false;
-                nudPlayerFlatSightRange.Visible = false;
-                nudPlayerFlatSightRange.Enabled = false;
-                nudPlayerFlatSightRange.Value = 1;
-            }
-            chkPlayerCanGainExperience.Checked = playerClass.CanGainExperience;
-            nudPlayerMaxLevel.Value = playerClass.MaxLevel;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (playerClass.CanGainExperience || playerClass.MaxLevel > 1)
-            {
-                txtPlayerLevelUpFormula.Text = playerClass.ExperienceToLevelUpFormula;
-            }
-            else
-            {
-                txtPlayerLevelUpFormula.Text = "";
-            }
+            ssPlayer.StatsChanged += (_, _) => DirtyTab = true;
+            ssPlayer.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
+            ssPlayer.BaseHP = playerClass.BaseHP;
+            ssPlayer.HPPerLevelUp = playerClass.MaxHPIncreasePerLevel;
+            ssPlayer.BaseHPRegeneration = playerClass.BaseHPRegeneration;
+            ssPlayer.HPRegenerationPerLevelUp = playerClass.HPRegenerationIncreasePerLevel;
+            ssPlayer.UsesMP = playerClass.UsesMP;
+            ssPlayer.BaseMP = playerClass.BaseMP;
+            ssPlayer.MPPerLevelUp = playerClass.MaxMPIncreasePerLevel;
+            ssPlayer.BaseMPRegeneration = playerClass.BaseMPRegeneration;
+            ssPlayer.MPRegenerationPerLevelUp = playerClass.MPRegenerationIncreasePerLevel;
+            ssPlayer.BaseAttack = playerClass.BaseAttack;
+            ssPlayer.AttackPerLevelUp = playerClass.AttackIncreasePerLevel;
+            ssPlayer.BaseDefense = playerClass.BaseDefense;
+            ssPlayer.DefensePerLevelUp = playerClass.DefenseIncreasePerLevel;
+            ssPlayer.BaseMovement = playerClass.BaseMovement;
+            ssPlayer.MovementPerLevelUp = playerClass.MovementIncreasePerLevel;
+            ssPlayer.BaseSightRange = playerClass.BaseSightRange;
+            ssPlayer.CanGainExperience = playerClass.CanGainExperience;
+            ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
+            ssPlayer.MaxLevel = playerClass.MaxLevel;
             cmbPlayerStartingWeapon.Items.Clear();
             cmbPlayerStartingWeapon.Text = "";
             foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
@@ -2634,35 +2561,14 @@ namespace RogueCustomsDungeonEditor
                     cmbPlayerStartingArmor.Text = armorId;
             }
             nudPlayerInventorySize.Value = playerClass.InventorySize;
-            cmbPlayerInventoryItemChoices.Items.Clear();
-            cmbPlayerInventoryItemChoices.Text = "";
-            foreach (var itemId in ActiveDungeon.Items.Select(i => i.Id))
-            {
-                cmbPlayerInventoryItemChoices.Items.Add(itemId);
-            }
-            lbPlayerStartingInventory.Items.Clear();
-            foreach (var itemId in playerClass.StartingInventory)
-            {
-                lbPlayerStartingInventory.Items.Add(itemId);
-            }
-            btnPlayerAddItem.Enabled = false;
-            btnPlayerRemoveItem.Enabled = false;
-            btnPlayerOnTurnStartAction.Tag = playerClass.OnTurnStart ?? new ActionWithEffectsInfo();
-            lbPlayerOnAttackActions.Items.Clear();
-            lbPlayerOnAttackActions.DisplayMember = "Text";
-            foreach (var action in playerClass.OnAttack)
-            {
-                var actionItem = new ListBoxItem
-                {
-                    Text = action.Name,
-                    Tag = action
-                };
-                lbPlayerOnAttackActions.Items.Add(actionItem);
-            }
-            btnEditPlayerOnAttackAction.Enabled = false;
-            btnRemovePlayerOnAttackAction.Enabled = false;
-            btnPlayerOnAttackedAction.Tag = playerClass.OnAttacked ?? new ActionWithEffectsInfo();
-            btnPlayerOnDeathAction.Tag = playerClass.OnDeath ?? new ActionWithEffectsInfo();
+            sisPlayerStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
+            sisPlayerStartingInventory.InventorySize = playerClass.InventorySize;
+            sisPlayerStartingInventory.Inventory = playerClass.StartingInventory;
+            sisPlayerStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
+            SetSingleActionEditorParams(saePlayerOnTurnStart, playerClass.Id, playerClass.OnTurnStart);
+            SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
+            SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
+            SetSingleActionEditorParams(saePlayerOnDeath, playerClass.Id, playerClass.OnDeath);
         }
 
         private bool SavePlayerClass(string id)
@@ -2686,62 +2592,36 @@ namespace RogueCustomsDungeonEditor
             playerClass.ConsoleRepresentation = crsPlayer.ConsoleRepresentation;
             playerClass.Faction = cmbPlayerFaction.Text;
             playerClass.StartsVisible = chkPlayerStartsVisible.Checked;
-            playerClass.UsesMP = chkPlayerUsesMP.Checked;
-            playerClass.BaseHP = (int)nudPlayerBaseHP.Value;
-            playerClass.BaseMP = (int)nudPlayerBaseMP.Value;
-            playerClass.BaseAttack = (int)nudPlayerBaseAttack.Value;
-            playerClass.BaseDefense = (int)nudPlayerBaseDefense.Value;
-            playerClass.BaseMovement = (int)nudPlayerBaseMovement.Value;
-            playerClass.BaseHPRegeneration = nudPlayerBaseHPRegeneration.Value;
-            playerClass.BaseMPRegeneration = nudPlayerBaseMPRegeneration.Value;
-
-            if (cmbPlayerSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                playerClass.BaseSightRange = ((int)nudPlayerFlatSightRange.Value).ToString();
-            }
-            else
-            {
-                playerClass.BaseSightRange = BaseSightRangeDisplayNames.FirstOrDefault(bsrdn => bsrdn.Value.Equals(cmbPlayerSightRange.Text)).Key;
-            }
-
-            playerClass.CanGainExperience = chkPlayerCanGainExperience.Checked;
-            playerClass.MaxLevel = (int)nudPlayerMaxLevel.Value;
-            playerClass.ExperienceToLevelUpFormula = txtPlayerLevelUpFormula.Text;
-            playerClass.MaxHPIncreasePerLevel = nudPlayerHPPerLevelUp.Value;
-            playerClass.MaxMPIncreasePerLevel = nudPlayerMPPerLevelUp.Value;
-            playerClass.AttackIncreasePerLevel = nudPlayerAttackPerLevelUp.Value;
-            playerClass.DefenseIncreasePerLevel = nudPlayerDefensePerLevelUp.Value;
-            playerClass.MovementIncreasePerLevel = nudPlayerMovementPerLevelUp.Value;
-            playerClass.HPRegenerationIncreasePerLevel = nudPlayerHPRegenerationPerLevelUp.Value;
-            playerClass.MPRegenerationIncreasePerLevel = nudPlayerMPRegenerationPerLevelUp.Value;
+            playerClass.BaseHP = ssPlayer.BaseHP;
+            playerClass.UsesMP = ssPlayer.UsesMP;
+            playerClass.BaseMP = ssPlayer.BaseMP;
+            playerClass.BaseAttack = ssPlayer.BaseAttack;
+            playerClass.BaseDefense = ssPlayer.BaseDefense;
+            playerClass.BaseMovement = ssPlayer.BaseMovement;
+            playerClass.BaseHPRegeneration = ssPlayer.BaseHPRegeneration;
+            playerClass.BaseMPRegeneration = ssPlayer.BaseMPRegeneration;
+            playerClass.BaseSightRange = ssPlayer.BaseSightRange;
+            playerClass.CanGainExperience = ssPlayer.CanGainExperience;
+            playerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
+            playerClass.MaxHPIncreasePerLevel = ssPlayer.HPPerLevelUp;
+            playerClass.MaxMPIncreasePerLevel = ssPlayer.MPPerLevelUp;
+            playerClass.AttackIncreasePerLevel = ssPlayer.AttackPerLevelUp;
+            playerClass.DefenseIncreasePerLevel = ssPlayer.DefensePerLevelUp;
+            playerClass.MovementIncreasePerLevel = ssPlayer.MovementPerLevelUp;
+            playerClass.HPRegenerationIncreasePerLevel = ssPlayer.HPRegenerationPerLevelUp;
+            playerClass.MPRegenerationIncreasePerLevel = ssPlayer.MPRegenerationPerLevelUp;
+            playerClass.MaxLevel = ssPlayer.MaxLevel;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
 
             playerClass.InventorySize = (int)nudPlayerInventorySize.Value;
-            playerClass.StartingInventory = new();
-            foreach (string inventoryItemId in lbPlayerStartingInventory.Items)
-            {
-                playerClass.StartingInventory.Add(inventoryItemId);
-            }
+            playerClass.StartingInventory = sisPlayerStartingInventory.Inventory;
 
-            var onTurnStartAction = btnPlayerOnTurnStartAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                playerClass.OnTurnStart = onTurnStartAction;
-
-            playerClass.OnAttack = new();
-            foreach (ListBoxItem onAttackActionListItem in lbPlayerOnAttackActions.Items)
-            {
-                playerClass.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
-            }
-
-            var onAttackedAction = btnPlayerOnAttackedAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                playerClass.OnAttacked = onAttackedAction;
-
-            var onDeathAction = btnPlayerOnDeathAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onDeathAction?.Effect?.EffectName))
-                playerClass.OnDeath = onDeathAction;
+            playerClass.OnTurnStart = saePlayerOnTurnStart.Action;
+            playerClass.OnAttack = maePlayerOnAttack.Actions;
+            playerClass.OnAttacked = saePlayerOnAttacked.Action;
+            playerClass.OnDeath = saePlayerOnDeath.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.PlayerClasses.Exists(p => p.Id.Equals(id)))
             {
@@ -2826,7 +2706,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter a Player Class Description first.");
             if (crsPlayer.ConsoleRepresentation.Character == '\0')
                 errorMessages.Add("This Player Class does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerSightRange.Text))
+            if (string.IsNullOrWhiteSpace(ssPlayer.BaseSightRange))
                 errorMessages.Add("This Player Class does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbPlayerFaction.Text))
                 errorMessages.Add("This Player Class does not have a Faction.");
@@ -2834,9 +2714,9 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This Player Class does not have an Emergency Weapon.");
             if (string.IsNullOrWhiteSpace(cmbPlayerStartingArmor.Text))
                 errorMessages.Add("This Player Class does not have an Emergency Armor.");
-            if (chkPlayerCanGainExperience.Checked && string.IsNullOrWhiteSpace(txtPlayerLevelUpFormula.Text))
+            if (ssPlayer.CanGainExperience && string.IsNullOrWhiteSpace(ssPlayer.ExperienceToLevelUpFormula))
                 errorMessages.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
-            if (chkPlayerCanGainExperience.Checked && (int)nudPlayerMaxLevel.Value == 1)
+            if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
                 errorMessages.Add("This Player Class can gain experience, but cannot level up.");
 
             return !errorMessages.Any();
@@ -2919,258 +2799,12 @@ namespace RogueCustomsDungeonEditor
         private void nudPlayerInventorySize_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-        }
-
-        private void cmbPlayerInventoryItemChoices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-        }
-
-        private void btnPlayerAddItem_Click(object sender, EventArgs e)
-        {
-            lbPlayerStartingInventory.Items.Add(cmbPlayerInventoryItemChoices.Text);
-            cmbPlayerInventoryItemChoices.SelectedItem = null;
-            DirtyTab = true;
-        }
-
-        private void btnPlayerRemoveItem_Click(object sender, EventArgs e)
-        {
-            lbPlayerStartingInventory.Items.Remove(lbPlayerStartingInventory.SelectedItem);
-            btnPlayerAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbPlayerInventoryItemChoices.Text) && lbPlayerStartingInventory.Items.Count < nudPlayerInventorySize.Value;
-            DirtyTab = true;
-        }
-
-        private void lbPlayerStartingInventory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnPlayerRemoveItem.Enabled = lbPlayerStartingInventory.SelectedItem != null;
+            sisPlayerStartingInventory.InventorySize = (int)nudPlayerInventorySize.Value;
         }
 
         private void crsPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             DirtyTab = true;
-        }
-
-        private void nudPlayerBaseHP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseAttack_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseDefense_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseMovement_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseHPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerFlatSightRange_ValueChanged(object sender, EventArgs e)
-        {
-            if (nudPlayerFlatSightRange.Visible)
-                DirtyTab = true;
-        }
-
-        private void cmbPlayerSightRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (cmbPlayerSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                lblPlayerSightRangeText.Visible = true;
-                nudPlayerFlatSightRange.Visible = true;
-                nudPlayerFlatSightRange.Enabled = true;
-            }
-            else
-            {
-                lblPlayerSightRangeText.Visible = false;
-                nudPlayerFlatSightRange.Visible = false;
-                nudPlayerFlatSightRange.Enabled = false;
-            }
-        }
-
-        private void chkPlayerCanGainExperience_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-        }
-
-        private void txtPlayerLevelUpFormula_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtPlayerLevelUpFormula.Text;
-        }
-
-        private void txtPlayerLevelUpFormula_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.PlayerClass])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtPlayerLevelUpFormula.Text))
-            {
-                var parsedLevelUpFormula = Regex.Replace(txtPlayerLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
-
-                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
-                {
-                    MessageBox.Show(
-                        $"You have entered an invalid Experience Formula: {errorMessage}",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtPlayerLevelUpFormula.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void nudPlayerMaxLevel_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtPlayerLevelUpFormula.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            nudPlayerAttackPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerDefensePerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMovementPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerHPRegenerationPerLevelUp.Enabled = chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-        }
-
-        private void nudPlayerHPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerAttackPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerDefensePerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMovementPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerHPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void btnPlayerOnTurnStartAction_Click(object sender, EventArgs e)
-        {
-            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnPlayerOnTurnStartAction, "Turn Start", playerClass.Id, false, false, false, "PlayerClassTurnStart", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void lbPlayerOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnEditPlayerOnAttackAction.Enabled = lbPlayerOnAttackActions.SelectedItem != null;
-            btnRemovePlayerOnAttackAction.Enabled = lbPlayerOnAttackActions.SelectedItem != null;
-        }
-
-        private void btnAddPlayerOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", true, true, true, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnEditPlayerOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbPlayerOnAttackActions, "Interact", false, true, true, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnRemovePlayerOnAttackAction_Click(object sender, EventArgs e)
-        {
-            var messageBoxResult = MessageBox.Show(
-                "Do you want to delete the currently-selected Interaction Action?\n\nNote: This is NOT reversible.",
-                "Delete Action",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                lbPlayerOnAttackActions.Items.Remove(lbPlayerOnAttackActions.SelectedItem);
-                lbPlayerOnAttackActions.SelectedItem = null;
-            }
-        }
-
-        private void btnPlayerOnAttackedAction_Click(object sender, EventArgs e)
-        {
-            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnPlayerOnAttackedAction, "Interacted", playerClass.Id, false, false, false, "PlayerClassAttacked", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void btnPlayerOnDeathAction_Click(object sender, EventArgs e)
-        {
-            var playerClass = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnPlayerOnDeathAction, "Death", playerClass.Id, false, false, false, "PlayerClassDeath", UsageCriteria.AnyTargetAnyTime);
-        }
-        private void nudPlayerBaseMP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkPlayerUsesMP_CheckedChanged(object sender, EventArgs e)
-        {
-            TogglePlayerMPControls();
-            DirtyTab = true;
-        }
-
-        private void nudPlayerBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void TogglePlayerMPControls()
-        {
-            nudPlayerBaseMP.Enabled = chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerBaseMP.Value = 0;
-            nudPlayerBaseMPRegeneration.Enabled = chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerBaseMPRegeneration.Value = 0;
-            nudPlayerMPPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerMPPerLevelUp.Value = 0;
-            nudPlayerMPRegenerationPerLevelUp.Enabled = (chkPlayerCanGainExperience.Checked || nudPlayerMaxLevel.Value > 1) && chkPlayerUsesMP.Checked;
-            if (!chkPlayerUsesMP.Checked)
-                nudPlayerMPRegenerationPerLevelUp.Value = 0;
         }
 
         #endregion
@@ -3203,70 +2837,28 @@ namespace RogueCustomsDungeonEditor
             chkNPCStartsVisible.Checked = npc.StartsVisible;
             chkNPCKnowsAllCharacterPositions.Checked = npc.KnowsAllCharacterPositions;
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
-            nudNPCBaseHP.Value = npc.BaseHP;
-            nudNPCHPPerLevelUp.Value = npc.MaxHPIncreasePerLevel;
-            nudNPCBaseMP.Value = npc.BaseMP;
-            nudNPCMPPerLevelUp.Value = npc.MaxMPIncreasePerLevel;
-            nudNPCBaseAttack.Value = npc.BaseAttack;
-            nudNPCAttackPerLevelUp.Value = npc.AttackIncreasePerLevel;
-            nudNPCBaseDefense.Value = npc.BaseDefense;
-            nudNPCDefensePerLevelUp.Value = npc.DefenseIncreasePerLevel;
-            nudNPCBaseMovement.Value = npc.BaseMovement;
-            nudNPCMovementPerLevelUp.Value = npc.MovementIncreasePerLevel;
-            nudNPCBaseHPRegeneration.Value = npc.BaseHPRegeneration;
-            nudNPCHPRegenerationPerLevelUp.Value = npc.HPRegenerationIncreasePerLevel;
-            nudNPCBaseMPRegeneration.Value = npc.BaseMPRegeneration;
-            nudNPCMPRegenerationPerLevelUp.Value = npc.MPRegenerationIncreasePerLevel;
-            chkNPCUsesMP.Checked = npc.UsesMP;
-            ToggleNPCMPControls();
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            cmbNPCSightRange.Items.Clear();
-            cmbNPCSightRange.Text = "";
-            foreach (var sightRange in BaseSightRangeDisplayNames)
-            {
-                cmbNPCSightRange.Items.Add(sightRange.Value);
-                if (sightRange.Key.Equals(npc.BaseSightRange))
-                    cmbNPCSightRange.Text = sightRange.Value;
-            }
-            if (string.IsNullOrWhiteSpace(cmbNPCSightRange.Text))
-            {
-                cmbNPCSightRange.Text = BaseSightRangeDisplayNames["FlatNumber"];
-                lblNPCSightRangeText.Visible = true;
-                nudNPCFlatSightRange.Visible = true;
-                nudNPCFlatSightRange.Enabled = true;
-                try
-                {
-                    nudNPCFlatSightRange.Value = int.Parse(npc.BaseSightRange);
-                }
-                catch
-                {
-                    nudNPCFlatSightRange.Value = 1;
-                }
-            }
-            else
-            {
-                lblNPCSightRangeText.Visible = false;
-                nudNPCFlatSightRange.Visible = false;
-                nudNPCFlatSightRange.Enabled = false;
-                nudNPCFlatSightRange.Value = 1;
-            }
-            chkNPCCanGainExperience.Checked = npc.CanGainExperience;
-            nudNPCMaxLevel.Value = npc.MaxLevel;
-            if (npc.CanGainExperience || npc.MaxLevel > 1)
-            {
-                txtNPCLevelUpFormula.Text = npc.ExperienceToLevelUpFormula;
-            }
-            else
-            {
-                txtNPCLevelUpFormula.Text = "";
-            }
+
+            ssNPC.StatsChanged += (_, _) => DirtyTab = true;
+            ssNPC.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
+            ssNPC.BaseHP = npc.BaseHP;
+            ssNPC.HPPerLevelUp = npc.MaxHPIncreasePerLevel;
+            ssNPC.BaseHPRegeneration = npc.BaseHPRegeneration;
+            ssNPC.HPRegenerationPerLevelUp = npc.HPRegenerationIncreasePerLevel;
+            ssNPC.UsesMP = npc.UsesMP;
+            ssNPC.BaseMP = npc.BaseMP;
+            ssNPC.MPPerLevelUp = npc.MaxMPIncreasePerLevel;
+            ssNPC.BaseMPRegeneration = npc.BaseMPRegeneration;
+            ssNPC.MPRegenerationPerLevelUp = npc.MPRegenerationIncreasePerLevel;
+            ssNPC.BaseAttack = npc.BaseAttack;
+            ssNPC.AttackPerLevelUp = npc.AttackIncreasePerLevel;
+            ssNPC.BaseDefense = npc.BaseDefense;
+            ssNPC.DefensePerLevelUp = npc.DefenseIncreasePerLevel;
+            ssNPC.BaseMovement = npc.BaseMovement;
+            ssNPC.MovementPerLevelUp = npc.MovementIncreasePerLevel;
+            ssNPC.BaseSightRange = npc.BaseSightRange;
+            ssNPC.CanGainExperience = npc.CanGainExperience;
+            ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
+            ssNPC.MaxLevel = npc.MaxLevel;
             cmbNPCStartingWeapon.Items.Clear();
             cmbNPCStartingWeapon.Text = "";
             foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
@@ -3284,35 +2876,14 @@ namespace RogueCustomsDungeonEditor
                     cmbNPCStartingArmor.Text = armorId;
             }
             nudNPCInventorySize.Value = npc.InventorySize;
-            cmbNPCInventoryItemChoices.Items.Clear();
-            cmbNPCInventoryItemChoices.Text = "";
-            foreach (var itemId in ActiveDungeon.Items.Select(i => i.Id))
-            {
-                cmbNPCInventoryItemChoices.Items.Add(itemId);
-            }
-            lbNPCStartingInventory.Items.Clear();
-            foreach (var itemId in npc.StartingInventory)
-            {
-                lbNPCStartingInventory.Items.Add(itemId);
-            }
-            btnNPCAddItem.Enabled = false;
-            btnNPCRemoveItem.Enabled = false;
-            btnNPCOnTurnStartAction.Tag = npc.OnTurnStart ?? new ActionWithEffectsInfo();
-            lbNPCOnAttackActions.Items.Clear();
-            lbNPCOnAttackActions.DisplayMember = "Text";
-            foreach (var action in npc.OnAttack)
-            {
-                var actionItem = new ListBoxItem
-                {
-                    Text = action.Name,
-                    Tag = action
-                };
-                lbNPCOnAttackActions.Items.Add(actionItem);
-            }
-            btnEditNPCOnAttackAction.Enabled = false;
-            btnRemoveNPCOnAttackAction.Enabled = false;
-            btnNPCOnAttackedAction.Tag = npc.OnAttacked ?? new ActionWithEffectsInfo();
-            btnNPCOnDeathAction.Tag = npc.OnDeath ?? new ActionWithEffectsInfo();
+            sisNPCStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
+            sisNPCStartingInventory.InventorySize = npc.InventorySize;
+            sisNPCStartingInventory.Inventory = npc.StartingInventory;
+            sisNPCStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
+            SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
+            SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
+            SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
+            SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
         }
 
@@ -3337,62 +2908,36 @@ namespace RogueCustomsDungeonEditor
             npc.Faction = cmbNPCFaction.Text;
             npc.StartsVisible = chkNPCStartsVisible.Checked;
             npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
-            npc.ExperienceToLevelUpFormula = txtNPCLevelUpFormula.Text;
             npc.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
-            npc.UsesMP = chkNPCUsesMP.Checked;
-            npc.BaseHP = (int)nudNPCBaseHP.Value;
-            npc.BaseMP = (int)nudNPCBaseMP.Value;
-            npc.BaseAttack = (int)nudNPCBaseAttack.Value;
-            npc.BaseDefense = (int)nudNPCBaseDefense.Value;
-            npc.BaseMovement = (int)nudNPCBaseMovement.Value;
-            npc.BaseHPRegeneration = nudNPCBaseHPRegeneration.Value;
-            npc.BaseMPRegeneration = nudNPCBaseMPRegeneration.Value;
-
-            if (cmbNPCSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                npc.BaseSightRange = ((int)nudNPCFlatSightRange.Value).ToString();
-            }
-            else
-            {
-                npc.BaseSightRange = BaseSightRangeDisplayNames.FirstOrDefault(bsrdn => bsrdn.Value.Equals(cmbNPCSightRange.Text)).Key;
-            }
-
-            npc.CanGainExperience = chkNPCCanGainExperience.Checked;
-            npc.MaxHPIncreasePerLevel = nudNPCHPPerLevelUp.Value;
-            npc.MaxMPIncreasePerLevel = nudNPCMPPerLevelUp.Value;
-            npc.AttackIncreasePerLevel = nudNPCAttackPerLevelUp.Value;
-            npc.DefenseIncreasePerLevel = nudNPCDefensePerLevelUp.Value;
-            npc.MovementIncreasePerLevel = nudNPCMovementPerLevelUp.Value;
-            npc.HPRegenerationIncreasePerLevel = nudNPCHPRegenerationPerLevelUp.Value;
-            npc.MPRegenerationIncreasePerLevel = nudNPCMPRegenerationPerLevelUp.Value;
+            npc.BaseHP = ssNPC.BaseHP;
+            npc.UsesMP = ssNPC.UsesMP;
+            npc.BaseMP = ssNPC.BaseMP;
+            npc.BaseAttack = ssNPC.BaseAttack;
+            npc.BaseDefense = ssNPC.BaseDefense;
+            npc.BaseMovement = ssNPC.BaseMovement;
+            npc.BaseHPRegeneration = ssNPC.BaseHPRegeneration;
+            npc.BaseMPRegeneration = ssNPC.BaseMPRegeneration;
+            npc.BaseSightRange = ssNPC.BaseSightRange;
+            npc.CanGainExperience = ssNPC.CanGainExperience;
+            npc.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
+            npc.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
+            npc.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
+            npc.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;
+            npc.DefenseIncreasePerLevel = ssNPC.DefensePerLevelUp;
+            npc.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
+            npc.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
+            npc.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
 
             npc.InventorySize = (int)nudNPCInventorySize.Value;
-            npc.StartingInventory = new();
-            foreach (string inventoryItemId in lbNPCStartingInventory.Items)
-            {
-                npc.StartingInventory.Add(inventoryItemId);
-            }
+            npc.StartingInventory = sisNPCStartingInventory.Inventory;
 
-            var onTurnStartAction = btnNPCOnTurnStartAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                npc.OnTurnStart = onTurnStartAction;
-
-            npc.OnAttack = new();
-            foreach (ListBoxItem onAttackActionListItem in lbNPCOnAttackActions.Items)
-            {
-                npc.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
-            }
-
-            var onAttackedAction = btnNPCOnAttackedAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                npc.OnAttacked = onAttackedAction;
-
-            var onDeathAction = btnNPCOnDeathAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onDeathAction?.Effect?.EffectName))
-                npc.OnDeath = onDeathAction;
+            npc.OnTurnStart = saeNPCOnTurnStart.Action;
+            npc.OnAttack = maeNPCOnAttack.Actions;
+            npc.OnAttacked = saeNPCOnAttacked.Action;
+            npc.OnDeath = saeNPCOnDeath.Action;
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Exists(n => n.Id.Equals(id)))
@@ -3470,7 +3015,7 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("Enter an NPC Description first.");
             if (crsNPC.Character == '\0')
                 errorMessages.Add("This NPC does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(cmbNPCSightRange.Text))
+            if (string.IsNullOrWhiteSpace(ssNPC.BaseSightRange))
                 errorMessages.Add("This NPC does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbNPCFaction.Text))
                 errorMessages.Add("This NPC does not have a Faction.");
@@ -3480,11 +3025,11 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC does not have an Emergency Armor.");
             if (string.IsNullOrWhiteSpace(txtNPCExperiencePayout.Text))
                 errorMessages.Add("This NPC does not have an Experience Payout Formula.");
-            if (chkNPCCanGainExperience.Checked && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
+            if (ssNPC.CanGainExperience && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC can gain experience, but does not have a Level Up Formula.");
-            if (chkNPCCanGainExperience.Checked && (int)nudNPCMaxLevel.Value == 1)
+            if (ssNPC.CanGainExperience && ssNPC.MaxLevel == 1)
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
-            if ((int)nudNPCMaxLevel.Value > 1 && string.IsNullOrWhiteSpace(txtNPCLevelUpFormula.Text))
+            if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
 
             return !errorMessages.Any();
@@ -3603,259 +3148,12 @@ namespace RogueCustomsDungeonEditor
         private void nudNPCInventorySize_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-        }
-
-        private void cmbNPCInventoryItemChoices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-        }
-
-        private void btnNPCAddItem_Click(object sender, EventArgs e)
-        {
-            lbNPCStartingInventory.Items.Add(cmbNPCInventoryItemChoices.Text);
-            cmbNPCInventoryItemChoices.SelectedItem = null;
-            DirtyTab = true;
-        }
-
-        private void btnNPCRemoveItem_Click(object sender, EventArgs e)
-        {
-            lbNPCStartingInventory.Items.Remove(lbNPCStartingInventory.SelectedItem);
-            btnNPCAddItem.Enabled = !string.IsNullOrWhiteSpace(cmbNPCInventoryItemChoices.Text) && lbNPCStartingInventory.Items.Count < nudNPCInventorySize.Value;
-            DirtyTab = true;
-        }
-
-        private void lbNPCStartingInventory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnNPCRemoveItem.Enabled = lbNPCStartingInventory.SelectedItem != null;
+            sisNPCStartingInventory.InventorySize = (int)nudNPCInventorySize.Value;
         }
 
         private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             DirtyTab = true;
-        }
-
-        private void nudNPCBaseHP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseAttack_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseDefense_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseMovement_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseHPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCFlatSightRange_ValueChanged(object sender, EventArgs e)
-        {
-            if (nudNPCFlatSightRange.Visible)
-                DirtyTab = true;
-        }
-
-        private void cmbNPCSightRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (cmbNPCSightRange.Text.Equals(BaseSightRangeDisplayNames["FlatNumber"]))
-            {
-                lblNPCSightRangeText.Visible = true;
-                nudNPCFlatSightRange.Visible = true;
-                nudNPCFlatSightRange.Enabled = true;
-            }
-            else
-            {
-                lblNPCSightRangeText.Visible = false;
-                nudNPCFlatSightRange.Visible = false;
-                nudNPCFlatSightRange.Enabled = false;
-            }
-        }
-
-        private void chkNPCCanGainExperience_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-        }
-
-        private void txtNPCLevelUpFormula_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtNPCLevelUpFormula.Text;
-        }
-
-        private void txtNPCLevelUpFormula_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtNPCLevelUpFormula.Text))
-            {
-                var parsedLevelUpFormula = Regex.Replace(txtNPCLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
-
-                if (!string.IsNullOrWhiteSpace(parsedLevelUpFormula) && !parsedLevelUpFormula.TestNumericExpression(false, out string errorMessage))
-                {
-                    MessageBox.Show(
-                        $"You have entered an invalid Experience Formula: {errorMessage}",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtNPCLevelUpFormula.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void nudNPCMaxLevel_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            txtNPCLevelUpFormula.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCAttackPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCDefensePerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMovementPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCHPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-            nudNPCMPRegenerationPerLevelUp.Enabled = chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1;
-        }
-
-        private void nudNPCHPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCAttackPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCDefensePerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMovementPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCHPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void btnNPCOnTurnStartAction_Click(object sender, EventArgs e)
-        {
-            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnNPCOnTurnStartAction, "Turn Start", NPC.Id, false, false, false, "NPCTurnStart", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void lbNPCOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnEditNPCOnAttackAction.Enabled = lbNPCOnAttackActions.SelectedItem != null;
-            btnRemoveNPCOnAttackAction.Enabled = lbNPCOnAttackActions.SelectedItem != null;
-        }
-
-        private void btnAddNPCOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", true, true, false, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnEditNPCOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbNPCOnAttackActions, "Interact", false, true, false, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnRemoveNPCOnAttackAction_Click(object sender, EventArgs e)
-        {
-            var messageBoxResult = MessageBox.Show(
-                "Do you want to delete the currently-selected Interaction Action?\n\nNote: This is NOT reversible.",
-                "Delete Action",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                lbNPCOnAttackActions.Items.Remove(lbNPCOnAttackActions.SelectedItem);
-                lbNPCOnAttackActions.SelectedItem = null;
-            }
-        }
-
-        private void btnNPCOnAttackedAction_Click(object sender, EventArgs e)
-        {
-            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnNPCOnAttackedAction, "Interacted", NPC.Id, false, false, false, "NPCAttacked", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void btnNPCOnDeathAction_Click(object sender, EventArgs e)
-        {
-            var NPC = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnNPCOnDeathAction, "Death", NPC.Id, false, false, false, "NPCDeath", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void nudNPCBaseMP_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkNPCUsesMP_CheckedChanged(object sender, EventArgs e)
-        {
-            ToggleNPCMPControls();
-            DirtyTab = true;
-        }
-
-        private void nudNPCBaseMPRegeneration_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMPPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCMPRegenerationPerLevelUp_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void ToggleNPCMPControls()
-        {
-            nudNPCBaseMP.Enabled = chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCBaseMP.Value = 0;
-            nudNPCBaseMPRegeneration.Enabled = chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCBaseMPRegeneration.Value = 0;
-            nudNPCMPPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCMPPerLevelUp.Value = 0;
-            nudNPCMPRegenerationPerLevelUp.Enabled = (chkNPCCanGainExperience.Checked || nudNPCMaxLevel.Value > 1) && chkNPCUsesMP.Checked;
-            if (!chkNPCUsesMP.Checked)
-                nudNPCMPRegenerationPerLevelUp.Value = 0;
         }
         #endregion
 
@@ -3893,23 +3191,11 @@ namespace RogueCustomsDungeonEditor
             txtItemPower.Text = item.Power;
             chkItemStartsVisible.Checked = item.StartsVisible;
             chkItemCanBePickedUp.Checked = item.CanBePickedUp;
-            btnItemOnSteppedAction.Tag = item.OnStepped ?? new ActionWithEffectsInfo();
-            btnItemOnUseAction.Tag = item.OnUse ?? new ActionWithEffectsInfo();
-            btnItemOnTurnStartAction.Tag = item.OnTurnStart ?? new ActionWithEffectsInfo();
-            btnItemOnAttackedAction.Tag = item.OnAttacked ?? new ActionWithEffectsInfo();
-            lbItemOnAttackActions.Items.Clear();
-            lbItemOnAttackActions.DisplayMember = "Text";
-            foreach (var action in item.OnAttack)
-            {
-                var actionItem = new ListBoxItem
-                {
-                    Text = action.Name,
-                    Tag = action
-                };
-                lbItemOnAttackActions.Items.Add(actionItem);
-            }
-            btnEditItemOnAttackAction.Enabled = false;
-            btnRemoveItemOnAttackAction.Enabled = false;
+            SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
+            SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
+            SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
+            SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
+            SetSingleActionEditorParams(saeItemOnStepped, item.Id, item.OnStepped);
         }
 
         private bool SaveItem(string id)
@@ -3935,33 +3221,22 @@ namespace RogueCustomsDungeonEditor
             item.EntityType = cmbItemType.Text;
             item.Power = txtItemPower.Text;
 
-            item.OnAttack = new();
+            item.OnTurnStart = null;
+            item.OnAttacked = null;
 
             if (item.EntityType == "Weapon" || item.EntityType == "Armor")
             {
-                var onTurnStartAction = btnItemOnTurnStartAction.Tag as ActionWithEffectsInfo;
-                if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                    item.OnTurnStart = onTurnStartAction;
-                var onAttackedAction = btnItemOnAttackedAction.Tag as ActionWithEffectsInfo;
-                if (!string.IsNullOrWhiteSpace(onAttackedAction?.Effect?.EffectName))
-                    item.OnAttacked = onAttackedAction;
+                item.OnTurnStart = saeItemOnTurnStart.Action;
+                item.OnAttacked = saeItemOnTurnStart.Action;
                 item.OnUse = DungeonInfoHelpers.CreateEquipAction();
             }
             else if (item.EntityType == "Consumable")
             {
-                var onUseAction = btnItemOnUseAction.Tag as ActionWithEffectsInfo;
-                if (!string.IsNullOrWhiteSpace(onUseAction?.Effect?.EffectName))
-                    item.OnUse = onUseAction;
+                item.OnUse = saeItemOnUse.Action;
             }
 
-            foreach (ListBoxItem onAttackActionListItem in lbItemOnAttackActions.Items)
-            {
-                item.OnAttack.Add(onAttackActionListItem.Tag as ActionWithEffectsInfo);
-            }
-
-            var onSteppedAction = btnItemOnSteppedAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
-                item.OnStepped = onSteppedAction;
+            item.OnAttack = maeItemOnAttack.Actions;
+            item.OnStepped = saeItemOnStepped.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Exists(i => i.Id.Equals(id)))
             {
@@ -4105,55 +3380,38 @@ namespace RogueCustomsDungeonEditor
 
         private void ToggleItemTypeControlsVisibility()
         {
+            maeItemOnAttack.RequiresDescription = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor");
             if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
             {
-                lblItemOnUseAction.Visible = false;
-                btnItemOnUseAction.Visible = false;
-                btnItemOnUseAction.Tag = null;
-                lblItemOnTurnStartAction.Visible = true;
-                btnItemOnTurnStartAction.Visible = true;
-                lblItemOnAttackActions.Visible = true;
-                lblItemOnAttackActions.Text = "Someone equipping it can\ninteract with someone else\nwith the following:";
-                lbItemOnAttackActions.Visible = true;
-                btnAddItemOnAttackAction.Visible = true;
-                btnEditItemOnAttackAction.Visible = true;
-                btnRemoveItemOnAttackAction.Visible = true;
-                lblItemOnAttackedAction.Visible = true;
-                btnItemOnAttackedAction.Visible = true;
+                saeItemOnUse.Visible = false;
+                saeItemOnUse.Action = null;
+                saeItemOnTurnStart.Visible = true;
+                maeItemOnAttack.Visible = true;
+                maeItemOnAttack.ActionDescription = "The Item's Owner can\ninteract with someone else\nwith the following:";
+                saeItemOnAttacked.Visible = true;
             }
             else if (cmbItemType.Text == "Consumable")
             {
-                lblItemOnUseAction.Visible = true;
-                btnItemOnUseAction.Visible = true;
-                lblItemOnTurnStartAction.Visible = false;
-                btnItemOnTurnStartAction.Visible = false;
-                btnItemOnTurnStartAction.Tag = null;
-                lblItemOnAttackActions.Visible = true;
-                lblItemOnAttackActions.Text = "Someone can use it to\ninteract with someone else\nwith the following:";
-                lbItemOnAttackActions.Visible = true;
-                btnAddItemOnAttackAction.Visible = true;
-                btnEditItemOnAttackAction.Visible = true;
-                btnRemoveItemOnAttackAction.Visible = true;
-                lblItemOnAttackedAction.Visible = false;
-                btnItemOnAttackedAction.Visible = false;
-                btnItemOnAttackedAction.Tag = null;
+                saeItemOnUse.Visible = true;
+                saeItemOnTurnStart.Visible = false;
+                saeItemOnTurnStart.Action = null;
+                maeItemOnAttack.Visible = true;
+                maeItemOnAttack.ActionDescription = "Someone can use it to\ninteract with someone else\nwith the following:";
+                saeItemOnAttacked.Visible = false;
+                saeItemOnAttacked.Action = null;
             }
             else
             {
-                lblItemOnUseAction.Visible = false;
-                btnItemOnUseAction.Visible = false;
-                btnItemOnUseAction.Tag = null;
-                lblItemOnTurnStartAction.Visible = false;
-                btnItemOnTurnStartAction.Visible = false;
-                btnItemOnTurnStartAction.Tag = null;
-                lblItemOnAttackActions.Visible = false;
-                lbItemOnAttackActions.Visible = false;
-                btnAddItemOnAttackAction.Visible = false;
-                btnEditItemOnAttackAction.Visible = false;
-                btnRemoveItemOnAttackAction.Visible = false;
-                lblItemOnAttackedAction.Visible = false;
-                btnItemOnAttackedAction.Visible = false;
-                btnItemOnAttackedAction.Tag = null;
+                saeItemOnUse.Visible = false;
+                saeItemOnUse.Action = null;
+                saeItemOnTurnStart.Visible = false;
+                saeItemOnTurnStart.Action = null;
+                maeItemOnAttack.Visible = false;
+                maeItemOnAttack.ActionDescription = "You shouldn't see this.";
+                saeItemOnAttacked.Visible = false;
+                saeItemOnAttacked.Action = null;
+                saeItemOnStepped.Visible = false;
+                saeItemOnStepped.Action = null;
             }
         }
 
@@ -4229,62 +3487,6 @@ namespace RogueCustomsDungeonEditor
         {
             DirtyTab = true;
         }
-
-        private void btnItemOnSteppedAction_Click(object sender, EventArgs e)
-        {
-            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnItemOnSteppedAction, "Stepped On", item.Id, false, false, false, "ItemStepped", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void btnItemOnUseAction_Click(object sender, EventArgs e)
-        {
-            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnItemOnUseAction, "Used", item.Id, true, cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor", false, "ItemUse", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void lbItemOnAttackActions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnEditItemOnAttackAction.Enabled = lbItemOnAttackActions.SelectedItem != null;
-            btnRemoveItemOnAttackAction.Enabled = lbItemOnAttackActions.SelectedItem != null;
-        }
-
-        private void btnAddItemOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", true, true, true, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnEditItemOnAttackAction_Click(object sender, EventArgs e)
-        {
-            OpenActionEditScreenForListBox(lbItemOnAttackActions, "Owner Interact", false, true, true, true, string.Empty, UsageCriteria.FullConditions);
-        }
-
-        private void btnRemoveItemOnAttackAction_Click(object sender, EventArgs e)
-        {
-            var messageBoxResult = MessageBox.Show(
-                "Do you want to delete the currently-selected Interaction Action?\n\nNote: This is NOT reversible.",
-                "Delete Action",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                lbItemOnAttackActions.Items.Remove(lbItemOnAttackActions.SelectedItem);
-                lbItemOnAttackActions.SelectedItem = null;
-            }
-        }
-
-        private void btnItemOnTurnStartAction_Click(object sender, EventArgs e)
-        {
-            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnItemOnTurnStartAction, "Owner Turn Start", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void btnItemOnAttackedAction_Click(object sender, EventArgs e)
-        {
-            var item = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnItemOnAttackedAction, "Owner Interacted", item.Id, false, false, false, "ItemTurnStart", UsageCriteria.AnyTargetAnyTime);
-        }
         #endregion
 
         #region Trap
@@ -4309,7 +3511,7 @@ namespace RogueCustomsDungeonEditor
             chkTrapStartsVisible.Checked = trap.StartsVisible;
             var toolTip = new ToolTip();
             toolTip.SetToolTip(chkTrapStartsVisible, "The 'spirit' of a Trap is that it spawns invisible.\n\nHowever, it can be enabled for debugging purposes.");
-            btnTrapOnSteppedAction.Tag = trap.OnStepped ?? new ActionWithEffectsInfo();
+            SetSingleActionEditorParams(saeTrapOnStepped, trap.Id, trap.OnStepped);
         }
 
         private bool SaveTrap(string id)
@@ -4333,11 +3535,7 @@ namespace RogueCustomsDungeonEditor
             trap.StartsVisible = chkTrapStartsVisible.Checked;
             trap.Power = txtTrapPower.Text;
 
-            trap.OnStepped = new();
-
-            var onSteppedAction = btnTrapOnSteppedAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onSteppedAction?.Effect?.EffectName))
-                trap.OnStepped = onSteppedAction;
+            trap.OnStepped = saeTrapOnStepped.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Traps.Exists(t => t.Id.Equals(id)))
             {
@@ -4517,12 +3715,6 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void btnTrapOnSteppedAction_Click(object sender, EventArgs e)
-        {
-            var trap = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnTrapOnSteppedAction, "Stepped On", trap.Id, false, false, false, "TrapStepped", UsageCriteria.AnyTargetAnyTime);
-        }
-
         #endregion
 
         #region Altered Status
@@ -4547,8 +3739,8 @@ namespace RogueCustomsDungeonEditor
             chkAlteredStatusCanOverwrite.Checked = alteredStatus.CanOverwrite;
             chkAlteredStatusCleanseOnFloorChange.Checked = alteredStatus.CleanseOnFloorChange;
             chkAlteredStatusCleansedOnCleanseActions.Checked = alteredStatus.CleansedByCleanseActions;
-            btnAlteredStatusOnApplyAction.Tag = alteredStatus.OnApply ?? new ActionWithEffectsInfo();
-            btnAlteredStatusOnTurnStartAction.Tag = alteredStatus.OnTurnStart ?? new ActionWithEffectsInfo();
+            SetSingleActionEditorParams(saeAlteredStatusOnApply, alteredStatus.Id, alteredStatus.OnApply);
+            SetSingleActionEditorParams(saeAlteredStatusOnTurnStart, alteredStatus.Id, alteredStatus.OnTurnStart);
         }
 
         private bool SaveAlteredStatus(string id)
@@ -4574,13 +3766,8 @@ namespace RogueCustomsDungeonEditor
             alteredStatus.CleanseOnFloorChange = chkAlteredStatusCleanseOnFloorChange.Checked;
             alteredStatus.CleansedByCleanseActions = chkAlteredStatusCleansedOnCleanseActions.Checked;
 
-            var onStatusApplyAction = btnAlteredStatusOnApplyAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onStatusApplyAction?.Effect?.EffectName))
-                alteredStatus.OnApply = onStatusApplyAction;
-
-            var onTurnStartAction = btnAlteredStatusOnTurnStartAction.Tag as ActionWithEffectsInfo;
-            if (!string.IsNullOrWhiteSpace(onTurnStartAction?.Effect?.EffectName))
-                alteredStatus.OnTurnStart = onTurnStartAction;
+            alteredStatus.OnApply = saeAlteredStatusOnApply.Action;
+            alteredStatus.OnTurnStart = saeAlteredStatusOnTurnStart.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(id)))
             {
@@ -4723,17 +3910,6 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = true;
         }
 
-        private void btnAlteredStatusOnApplyAction_Click(object sender, EventArgs e)
-        {
-            var alteredStatus = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnAlteredStatusOnApplyAction, "Apply Status", alteredStatus.Id, false, false, false, "StatusApply", UsageCriteria.AnyTargetAnyTime);
-        }
-
-        private void btnAlteredStatusOnTurnStartAction_Click(object sender, EventArgs e)
-        {
-            var alteredStatus = (ClassInfo)ActiveNodeTag.DungeonElement;
-            OpenActionEditScreenForButton(btnAlteredStatusOnTurnStartAction, "Inflicted Turn Start", alteredStatus.Id, false, false, false, "StatusTurnStart", UsageCriteria.AnyTargetAnyTime);
-        }
         private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
         {
             if (chkAlteredStatusCanStack.Checked)
@@ -4889,14 +4065,6 @@ namespace RogueCustomsDungeonEditor
         }
 
         #endregion
-    }
-
-    public class ListBoxItem
-    {
-        public string Text { get; set; }
-        public object Tag { get; set; }
-
-        public override string ToString() => Text;
     }
 
     public class NodeTag

@@ -175,10 +175,9 @@ namespace RogueCustomsDungeonEditor
             this.label130 = (new global::System.Windows.Forms.Label());
             this.csrTopLeftWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpFloorInfos = (new global::System.Windows.Forms.TabPage());
+            this.saeOnFloorStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.cmbTilesets = (new global::System.Windows.Forms.ComboBox());
             this.label155 = (new global::System.Windows.Forms.Label());
-            this.btnOnFloorStartAction = (new global::System.Windows.Forms.Button());
-            this.label20 = (new global::System.Windows.Forms.Label());
             this.nudRoomFusionOdds = (new global::System.Windows.Forms.NumericUpDown());
             this.label19 = (new global::System.Windows.Forms.Label());
             this.nudExtraRoomConnectionOdds = (new global::System.Windows.Forms.NumericUpDown());
@@ -230,79 +229,19 @@ namespace RogueCustomsDungeonEditor
             this.txtFactionName = (new global::System.Windows.Forms.TextBox());
             this.label21 = (new global::System.Windows.Forms.Label());
             this.tpPlayerClass = (new global::System.Windows.Forms.TabPage());
-            this.label122 = (new global::System.Windows.Forms.Label());
-            this.label123 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerMPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label121 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerMPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label119 = (new global::System.Windows.Forms.Label());
-            this.label120 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerBaseMPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
-            this.chkPlayerUsesMP = (new global::System.Windows.Forms.CheckBox());
-            this.label110 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerBaseMP = (new global::System.Windows.Forms.NumericUpDown());
-            this.btnPlayerOnDeathAction = (new global::System.Windows.Forms.Button());
-            this.label63 = (new global::System.Windows.Forms.Label());
-            this.btnPlayerOnAttackedAction = (new global::System.Windows.Forms.Button());
-            this.label61 = (new global::System.Windows.Forms.Label());
-            this.btnPlayerOnTurnStartAction = (new global::System.Windows.Forms.Button());
-            this.label60 = (new global::System.Windows.Forms.Label());
+            this.sisPlayerStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
+            this.saePlayerOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saePlayerOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saePlayerOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.maePlayerOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
             this.label58 = (new global::System.Windows.Forms.Label());
-            this.label62 = (new global::System.Windows.Forms.Label());
-            this.btnRemovePlayerOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnEditPlayerOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnAddPlayerOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.lbPlayerOnAttackActions = (new global::System.Windows.Forms.ListBox());
-            this.label59 = (new global::System.Windows.Forms.Label());
             this.cmbPlayerStartingArmor = (new global::System.Windows.Forms.ComboBox());
             this.label57 = (new global::System.Windows.Forms.Label());
             this.cmbPlayerStartingWeapon = (new global::System.Windows.Forms.ComboBox());
             this.label56 = (new global::System.Windows.Forms.Label());
-            this.lbPlayerStartingInventory = (new global::System.Windows.Forms.ListBox());
-            this.btnPlayerRemoveItem = (new global::System.Windows.Forms.Button());
-            this.btnPlayerAddItem = (new global::System.Windows.Forms.Button());
-            this.cmbPlayerInventoryItemChoices = (new global::System.Windows.Forms.ComboBox());
-            this.label55 = (new global::System.Windows.Forms.Label());
             this.label54 = (new global::System.Windows.Forms.Label());
             this.nudPlayerInventorySize = (new global::System.Windows.Forms.NumericUpDown());
             this.label53 = (new global::System.Windows.Forms.Label());
-            this.label52 = (new global::System.Windows.Forms.Label());
-            this.label47 = (new global::System.Windows.Forms.Label());
-            this.label51 = (new global::System.Windows.Forms.Label());
-            this.chkPlayerCanGainExperience = (new global::System.Windows.Forms.CheckBox());
-            this.nudPlayerMaxLevel = (new global::System.Windows.Forms.NumericUpDown());
-            this.label50 = (new global::System.Windows.Forms.Label());
-            this.txtPlayerLevelUpFormula = (new global::System.Windows.Forms.TextBox());
-            this.label49 = (new global::System.Windows.Forms.Label());
-            this.label48 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerFlatSightRange = (new global::System.Windows.Forms.NumericUpDown());
-            this.cmbPlayerSightRange = (new global::System.Windows.Forms.ComboBox());
-            this.label43 = (new global::System.Windows.Forms.Label());
-            this.label44 = (new global::System.Windows.Forms.Label());
-            this.label45 = (new global::System.Windows.Forms.Label());
-            this.label46 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerHPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.nudPlayerBaseHPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
-            this.label42 = (new global::System.Windows.Forms.Label());
-            this.label41 = (new global::System.Windows.Forms.Label());
-            this.label40 = (new global::System.Windows.Forms.Label());
-            this.label39 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerMovementPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.nudPlayerBaseMovement = (new global::System.Windows.Forms.NumericUpDown());
-            this.label37 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerDefensePerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label38 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerBaseDefense = (new global::System.Windows.Forms.NumericUpDown());
-            this.label36 = (new global::System.Windows.Forms.Label());
-            this.label34 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerAttackPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label35 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerBaseAttack = (new global::System.Windows.Forms.NumericUpDown());
-            this.label33 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerHPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label32 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerBaseHP = (new global::System.Windows.Forms.NumericUpDown());
-            this.label31 = (new global::System.Windows.Forms.Label());
             this.label30 = (new global::System.Windows.Forms.Label());
             this.chkPlayerStartsVisible = (new global::System.Windows.Forms.CheckBox());
             this.cmbPlayerFaction = (new global::System.Windows.Forms.ComboBox());
@@ -314,87 +253,27 @@ namespace RogueCustomsDungeonEditor
             this.fklblPlayerClassNameLocale = (new global::System.Windows.Forms.Button());
             this.txtPlayerClassName = (new global::System.Windows.Forms.TextBox());
             this.label27 = (new global::System.Windows.Forms.Label());
-            this.lblPlayerSightRangeText = (new global::System.Windows.Forms.Label());
             this.crsPlayer = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpNPC = (new global::System.Windows.Forms.TabPage());
-            this.label128 = (new global::System.Windows.Forms.Label());
-            this.label129 = (new global::System.Windows.Forms.Label());
-            this.nudNPCMPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label127 = (new global::System.Windows.Forms.Label());
-            this.nudNPCMPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label124 = (new global::System.Windows.Forms.Label());
-            this.label125 = (new global::System.Windows.Forms.Label());
-            this.nudNPCBaseMPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
-            this.chkNPCUsesMP = (new global::System.Windows.Forms.CheckBox());
-            this.label126 = (new global::System.Windows.Forms.Label());
-            this.nudNPCBaseMP = (new global::System.Windows.Forms.NumericUpDown());
+            this.ssNPC = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
+            this.sisNPCStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
+            this.saeNPCOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeNPCOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeNPCOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.maeNPCOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
             this.nudNPCOddsToTargetSelf = (new global::System.Windows.Forms.NumericUpDown());
             this.label104 = (new global::System.Windows.Forms.Label());
             this.txtNPCExperiencePayout = (new global::System.Windows.Forms.TextBox());
             this.label103 = (new global::System.Windows.Forms.Label());
             this.chkNPCKnowsAllCharacterPositions = (new global::System.Windows.Forms.CheckBox());
-            this.btnNPCOnDeathAction = (new global::System.Windows.Forms.Button());
-            this.label64 = (new global::System.Windows.Forms.Label());
-            this.btnNPCOnAttackedAction = (new global::System.Windows.Forms.Button());
-            this.label65 = (new global::System.Windows.Forms.Label());
-            this.btnNPCOnTurnStartAction = (new global::System.Windows.Forms.Button());
-            this.label66 = (new global::System.Windows.Forms.Label());
             this.label67 = (new global::System.Windows.Forms.Label());
-            this.label68 = (new global::System.Windows.Forms.Label());
-            this.btnRemoveNPCOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnEditNPCOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnAddNPCOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.lbNPCOnAttackActions = (new global::System.Windows.Forms.ListBox());
-            this.label69 = (new global::System.Windows.Forms.Label());
             this.cmbNPCStartingArmor = (new global::System.Windows.Forms.ComboBox());
             this.label70 = (new global::System.Windows.Forms.Label());
             this.cmbNPCStartingWeapon = (new global::System.Windows.Forms.ComboBox());
             this.label71 = (new global::System.Windows.Forms.Label());
-            this.lbNPCStartingInventory = (new global::System.Windows.Forms.ListBox());
-            this.btnNPCRemoveItem = (new global::System.Windows.Forms.Button());
-            this.btnNPCAddItem = (new global::System.Windows.Forms.Button());
-            this.cmbNPCInventoryItemChoices = (new global::System.Windows.Forms.ComboBox());
-            this.label72 = (new global::System.Windows.Forms.Label());
             this.label73 = (new global::System.Windows.Forms.Label());
             this.nudNPCInventorySize = (new global::System.Windows.Forms.NumericUpDown());
             this.label74 = (new global::System.Windows.Forms.Label());
-            this.label75 = (new global::System.Windows.Forms.Label());
-            this.label76 = (new global::System.Windows.Forms.Label());
-            this.label77 = (new global::System.Windows.Forms.Label());
-            this.chkNPCCanGainExperience = (new global::System.Windows.Forms.CheckBox());
-            this.nudNPCMaxLevel = (new global::System.Windows.Forms.NumericUpDown());
-            this.label78 = (new global::System.Windows.Forms.Label());
-            this.txtNPCLevelUpFormula = (new global::System.Windows.Forms.TextBox());
-            this.label79 = (new global::System.Windows.Forms.Label());
-            this.label80 = (new global::System.Windows.Forms.Label());
-            this.nudNPCFlatSightRange = (new global::System.Windows.Forms.NumericUpDown());
-            this.cmbNPCSightRange = (new global::System.Windows.Forms.ComboBox());
-            this.label81 = (new global::System.Windows.Forms.Label());
-            this.label82 = (new global::System.Windows.Forms.Label());
-            this.label83 = (new global::System.Windows.Forms.Label());
-            this.label84 = (new global::System.Windows.Forms.Label());
-            this.nudNPCHPRegenerationPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.nudNPCBaseHPRegeneration = (new global::System.Windows.Forms.NumericUpDown());
-            this.label85 = (new global::System.Windows.Forms.Label());
-            this.label86 = (new global::System.Windows.Forms.Label());
-            this.label87 = (new global::System.Windows.Forms.Label());
-            this.label88 = (new global::System.Windows.Forms.Label());
-            this.nudNPCMovementPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.nudNPCBaseMovement = (new global::System.Windows.Forms.NumericUpDown());
-            this.label89 = (new global::System.Windows.Forms.Label());
-            this.nudNPCDefensePerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label90 = (new global::System.Windows.Forms.Label());
-            this.nudNPCBaseDefense = (new global::System.Windows.Forms.NumericUpDown());
-            this.label91 = (new global::System.Windows.Forms.Label());
-            this.label92 = (new global::System.Windows.Forms.Label());
-            this.nudNPCAttackPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label93 = (new global::System.Windows.Forms.Label());
-            this.nudNPCBaseAttack = (new global::System.Windows.Forms.NumericUpDown());
-            this.label94 = (new global::System.Windows.Forms.Label());
-            this.nudNPCHPPerLevelUp = (new global::System.Windows.Forms.NumericUpDown());
-            this.label95 = (new global::System.Windows.Forms.Label());
-            this.nudNPCBaseHP = (new global::System.Windows.Forms.NumericUpDown());
-            this.label96 = (new global::System.Windows.Forms.Label());
             this.label98 = (new global::System.Windows.Forms.Label());
             this.chkNPCStartsVisible = (new global::System.Windows.Forms.CheckBox());
             this.cmbNPCFaction = (new global::System.Windows.Forms.ComboBox());
@@ -405,22 +284,13 @@ namespace RogueCustomsDungeonEditor
             this.fklblNPCNameLocale = (new global::System.Windows.Forms.Button());
             this.txtNPCName = (new global::System.Windows.Forms.TextBox());
             this.label101 = (new global::System.Windows.Forms.Label());
-            this.lblNPCSightRangeText = (new global::System.Windows.Forms.Label());
             this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpItem = (new global::System.Windows.Forms.TabPage());
-            this.btnItemOnTurnStartAction = (new global::System.Windows.Forms.Button());
-            this.lblItemOnTurnStartAction = (new global::System.Windows.Forms.Label());
-            this.btnItemOnAttackedAction = (new global::System.Windows.Forms.Button());
-            this.lblItemOnAttackedAction = (new global::System.Windows.Forms.Label());
-            this.btnRemoveItemOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnEditItemOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.btnAddItemOnAttackAction = (new global::System.Windows.Forms.Button());
-            this.lbItemOnAttackActions = (new global::System.Windows.Forms.ListBox());
-            this.lblItemOnAttackActions = (new global::System.Windows.Forms.Label());
-            this.btnItemOnUseAction = (new global::System.Windows.Forms.Button());
-            this.lblItemOnUseAction = (new global::System.Windows.Forms.Label());
-            this.btnItemOnSteppedAction = (new global::System.Windows.Forms.Button());
-            this.lblItemOnSteppedAction = (new global::System.Windows.Forms.Label());
+            this.saeItemOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeItemOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.maeItemOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
+            this.saeItemOnUse = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeItemOnStepped = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.txtItemPower = (new global::System.Windows.Forms.TextBox());
             this.label108 = (new global::System.Windows.Forms.Label());
             this.chkItemCanBePickedUp = (new global::System.Windows.Forms.CheckBox());
@@ -436,8 +306,7 @@ namespace RogueCustomsDungeonEditor
             this.label106 = (new global::System.Windows.Forms.Label());
             this.crsItem = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpTrap = (new global::System.Windows.Forms.TabPage());
-            this.btnTrapOnSteppedAction = (new global::System.Windows.Forms.Button());
-            this.label112 = (new global::System.Windows.Forms.Label());
+            this.saeTrapOnStepped = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.txtTrapPower = (new global::System.Windows.Forms.TextBox());
             this.label113 = (new global::System.Windows.Forms.Label());
             this.chkTrapStartsVisible = (new global::System.Windows.Forms.CheckBox());
@@ -450,13 +319,11 @@ namespace RogueCustomsDungeonEditor
             this.label118 = (new global::System.Windows.Forms.Label());
             this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpAlteredStatus = (new global::System.Windows.Forms.TabPage());
-            this.btnAlteredStatusOnTurnStartAction = (new global::System.Windows.Forms.Button());
-            this.label109 = (new global::System.Windows.Forms.Label());
+            this.saeAlteredStatusOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeAlteredStatusOnApply = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.chkAlteredStatusCleansedOnCleanseActions = (new global::System.Windows.Forms.CheckBox());
             this.chkAlteredStatusCleanseOnFloorChange = (new global::System.Windows.Forms.CheckBox());
             this.chkAlteredStatusCanOverwrite = (new global::System.Windows.Forms.CheckBox());
-            this.btnAlteredStatusOnApplyAction = (new global::System.Windows.Forms.Button());
-            this.label97 = (new global::System.Windows.Forms.Label());
             this.chkAlteredStatusCanStack = (new global::System.Windows.Forms.CheckBox());
             this.label111 = (new global::System.Windows.Forms.Label());
             this.fklblAlteredStatusDescriptionLocale = (new global::System.Windows.Forms.Button());
@@ -471,6 +338,7 @@ namespace RogueCustomsDungeonEditor
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
             this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
+            this.ssPlayer = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
@@ -488,42 +356,10 @@ namespace RogueCustomsDungeonEditor
             ((global::System.ComponentModel.ISupportInitialize)(this.nudMinFloorLevel)).BeginInit();
             this.tpFactionInfos.SuspendLayout();
             this.tpPlayerClass.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPRegenerationPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMPRegeneration)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMP)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMaxLevel)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerFlatSightRange)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerHPRegenerationPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHPRegeneration)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMovementPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMovement)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerDefensePerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseDefense)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerAttackPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseAttack)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerHPPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHP)).BeginInit();
             this.tpNPC.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPRegenerationPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMPRegeneration)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMP)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMaxLevel)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCFlatSightRange)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCHPRegenerationPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseHPRegeneration)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMovementPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMovement)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCDefensePerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseDefense)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCAttackPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseAttack)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCHPPerLevelUp)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseHP)).BeginInit();
             this.tpItem.SuspendLayout();
             this.tpTrap.SuspendLayout();
             this.tpAlteredStatus.SuspendLayout();
@@ -1733,10 +1569,9 @@ namespace RogueCustomsDungeonEditor
             // tpFloorInfos
             // 
             this.tpFloorInfos.AutoScroll = (true);
+            this.tpFloorInfos.Controls.Add(this.saeOnFloorStart);
             this.tpFloorInfos.Controls.Add(this.cmbTilesets);
             this.tpFloorInfos.Controls.Add(this.label155);
-            this.tpFloorInfos.Controls.Add(this.btnOnFloorStartAction);
-            this.tpFloorInfos.Controls.Add(this.label20);
             this.tpFloorInfos.Controls.Add(this.nudRoomFusionOdds);
             this.tpFloorInfos.Controls.Add(this.label19);
             this.tpFloorInfos.Controls.Add(this.nudExtraRoomConnectionOdds);
@@ -1772,6 +1607,27 @@ namespace RogueCustomsDungeonEditor
             this.tpFloorInfos.Text = ("Floor Group");
             this.tpFloorInfos.UseVisualStyleBackColor = (true);
             // 
+            // saeOnFloorStart
+            // 
+            this.saeOnFloorStart.Action = (null);
+            this.saeOnFloorStart.ActionDescription = ("When the floor starts...");
+            this.saeOnFloorStart.ActionTypeText = ("Floor Start");
+            this.saeOnFloorStart.AlteredStatuses = (null);
+            this.saeOnFloorStart.AutoSize = (true);
+            this.saeOnFloorStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeOnFloorStart.ClassId = (null);
+            this.saeOnFloorStart.Dungeon = (null);
+            this.saeOnFloorStart.EffectParamData = (null);
+            this.saeOnFloorStart.Location = (new global::System.Drawing.Point(370, 307));
+            this.saeOnFloorStart.Name = ("saeOnFloorStart");
+            this.saeOnFloorStart.PlaceholderActionName = ("FloorStart");
+            this.saeOnFloorStart.RequiresActionName = (false);
+            this.saeOnFloorStart.RequiresCondition = (false);
+            this.saeOnFloorStart.RequiresDescription = (false);
+            this.saeOnFloorStart.Size = (new global::System.Drawing.Size(260, 32));
+            this.saeOnFloorStart.TabIndex = (40);
+            this.saeOnFloorStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            // 
             // cmbTilesets
             // 
             this.cmbTilesets.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
@@ -1790,26 +1646,6 @@ namespace RogueCustomsDungeonEditor
             this.label155.Size = (new global::System.Drawing.Size(40, 15));
             this.label155.TabIndex = (38);
             this.label155.Text = ("Tileset");
-            // 
-            // btnOnFloorStartAction
-            // 
-            this.btnOnFloorStartAction.Location = (new global::System.Drawing.Point(528, 310));
-            this.btnOnFloorStartAction.Name = ("btnOnFloorStartAction");
-            this.btnOnFloorStartAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnOnFloorStartAction.TabIndex = (37);
-            this.btnOnFloorStartAction.Text = ("... do this!");
-            this.btnOnFloorStartAction.UseVisualStyleBackColor = (true);
-            this.btnOnFloorStartAction.Click += (this.btnOnFloorStartAction_Click);
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = (true);
-            this.label20.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label20.Location = (new global::System.Drawing.Point(369, 314));
-            this.label20.Name = ("label20");
-            this.label20.Size = (new global::System.Drawing.Size(153, 15));
-            this.label20.TabIndex = (36);
-            this.label20.Text = ("When a Floor is generated...");
             // 
             // nudRoomFusionOdds
             // 
@@ -2343,79 +2179,20 @@ namespace RogueCustomsDungeonEditor
             // tpPlayerClass
             // 
             this.tpPlayerClass.AutoScroll = (true);
-            this.tpPlayerClass.Controls.Add(this.label122);
-            this.tpPlayerClass.Controls.Add(this.label123);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerMPRegenerationPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.label121);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerMPPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.label119);
-            this.tpPlayerClass.Controls.Add(this.label120);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMPRegeneration);
-            this.tpPlayerClass.Controls.Add(this.chkPlayerUsesMP);
-            this.tpPlayerClass.Controls.Add(this.label110);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMP);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerOnDeathAction);
-            this.tpPlayerClass.Controls.Add(this.label63);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerOnAttackedAction);
-            this.tpPlayerClass.Controls.Add(this.label61);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerOnTurnStartAction);
-            this.tpPlayerClass.Controls.Add(this.label60);
+            this.tpPlayerClass.Controls.Add(this.ssPlayer);
+            this.tpPlayerClass.Controls.Add(this.sisPlayerStartingInventory);
+            this.tpPlayerClass.Controls.Add(this.saePlayerOnDeath);
+            this.tpPlayerClass.Controls.Add(this.saePlayerOnAttacked);
+            this.tpPlayerClass.Controls.Add(this.saePlayerOnTurnStart);
+            this.tpPlayerClass.Controls.Add(this.maePlayerOnAttack);
             this.tpPlayerClass.Controls.Add(this.label58);
-            this.tpPlayerClass.Controls.Add(this.label62);
-            this.tpPlayerClass.Controls.Add(this.btnRemovePlayerOnAttackAction);
-            this.tpPlayerClass.Controls.Add(this.btnEditPlayerOnAttackAction);
-            this.tpPlayerClass.Controls.Add(this.btnAddPlayerOnAttackAction);
-            this.tpPlayerClass.Controls.Add(this.lbPlayerOnAttackActions);
-            this.tpPlayerClass.Controls.Add(this.label59);
             this.tpPlayerClass.Controls.Add(this.cmbPlayerStartingArmor);
             this.tpPlayerClass.Controls.Add(this.label57);
             this.tpPlayerClass.Controls.Add(this.cmbPlayerStartingWeapon);
             this.tpPlayerClass.Controls.Add(this.label56);
-            this.tpPlayerClass.Controls.Add(this.lbPlayerStartingInventory);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerRemoveItem);
-            this.tpPlayerClass.Controls.Add(this.btnPlayerAddItem);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerInventoryItemChoices);
-            this.tpPlayerClass.Controls.Add(this.label55);
             this.tpPlayerClass.Controls.Add(this.label54);
             this.tpPlayerClass.Controls.Add(this.nudPlayerInventorySize);
             this.tpPlayerClass.Controls.Add(this.label53);
-            this.tpPlayerClass.Controls.Add(this.label52);
-            this.tpPlayerClass.Controls.Add(this.label47);
-            this.tpPlayerClass.Controls.Add(this.label51);
-            this.tpPlayerClass.Controls.Add(this.chkPlayerCanGainExperience);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerMaxLevel);
-            this.tpPlayerClass.Controls.Add(this.label50);
-            this.tpPlayerClass.Controls.Add(this.txtPlayerLevelUpFormula);
-            this.tpPlayerClass.Controls.Add(this.label49);
-            this.tpPlayerClass.Controls.Add(this.label48);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerFlatSightRange);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerSightRange);
-            this.tpPlayerClass.Controls.Add(this.label43);
-            this.tpPlayerClass.Controls.Add(this.label44);
-            this.tpPlayerClass.Controls.Add(this.label45);
-            this.tpPlayerClass.Controls.Add(this.label46);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerHPRegenerationPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseHPRegeneration);
-            this.tpPlayerClass.Controls.Add(this.label42);
-            this.tpPlayerClass.Controls.Add(this.label41);
-            this.tpPlayerClass.Controls.Add(this.label40);
-            this.tpPlayerClass.Controls.Add(this.label39);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerMovementPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseMovement);
-            this.tpPlayerClass.Controls.Add(this.label37);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerDefensePerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.label38);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseDefense);
-            this.tpPlayerClass.Controls.Add(this.label36);
-            this.tpPlayerClass.Controls.Add(this.label34);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerAttackPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.label35);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseAttack);
-            this.tpPlayerClass.Controls.Add(this.label33);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerHPPerLevelUp);
-            this.tpPlayerClass.Controls.Add(this.label32);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerBaseHP);
-            this.tpPlayerClass.Controls.Add(this.label31);
             this.tpPlayerClass.Controls.Add(this.label30);
             this.tpPlayerClass.Controls.Add(this.chkPlayerStartsVisible);
             this.tpPlayerClass.Controls.Add(this.cmbPlayerFaction);
@@ -2427,7 +2204,6 @@ namespace RogueCustomsDungeonEditor
             this.tpPlayerClass.Controls.Add(this.fklblPlayerClassNameLocale);
             this.tpPlayerClass.Controls.Add(this.txtPlayerClassName);
             this.tpPlayerClass.Controls.Add(this.label27);
-            this.tpPlayerClass.Controls.Add(this.lblPlayerSightRangeText);
             this.tpPlayerClass.Controls.Add(this.crsPlayer);
             this.tpPlayerClass.Location = (new global::System.Drawing.Point(4, 24));
             this.tpPlayerClass.Name = ("tpPlayerClass");
@@ -2436,172 +2212,97 @@ namespace RogueCustomsDungeonEditor
             this.tpPlayerClass.Text = ("Player Class");
             this.tpPlayerClass.UseVisualStyleBackColor = (true);
             // 
-            // label122
+            // sisPlayerStartingInventory
             // 
-            this.label122.AutoSize = (true);
-            this.label122.Location = (new global::System.Drawing.Point(403, 725));
-            this.label122.Name = ("label122");
-            this.label122.Size = (new global::System.Drawing.Size(54, 15));
-            this.label122.TabIndex = (122);
-            this.label122.Text = ("Recovers");
+            this.sisPlayerStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisPlayerStartingInventory.Inventory")));
+            this.sisPlayerStartingInventory.InventorySize = (0);
+            this.sisPlayerStartingInventory.Location = (new global::System.Drawing.Point(13, 396));
+            this.sisPlayerStartingInventory.Name = ("sisPlayerStartingInventory");
+            this.sisPlayerStartingInventory.SelectableItems = (null);
+            this.sisPlayerStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
+            this.sisPlayerStartingInventory.TabIndex = (128);
             // 
-            // label123
+            // saePlayerOnDeath
             // 
-            this.label123.AutoSize = (true);
-            this.label123.Location = (new global::System.Drawing.Point(517, 727));
-            this.label123.Name = ("label123");
-            this.label123.Size = (new global::System.Drawing.Size(169, 15));
-            this.label123.TabIndex = (121);
-            this.label123.Text = ("more MP per turn per Level Up");
+            this.saePlayerOnDeath.Action = (null);
+            this.saePlayerOnDeath.ActionDescription = ("When they die...                   ");
+            this.saePlayerOnDeath.ActionTypeText = ("On Death");
+            this.saePlayerOnDeath.AlteredStatuses = (null);
+            this.saePlayerOnDeath.AutoSize = (true);
+            this.saePlayerOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saePlayerOnDeath.ClassId = (null);
+            this.saePlayerOnDeath.Dungeon = (null);
+            this.saePlayerOnDeath.EffectParamData = (null);
+            this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 686));
+            this.saePlayerOnDeath.Name = ("saePlayerOnDeath");
+            this.saePlayerOnDeath.PlaceholderActionName = ("Death");
+            this.saePlayerOnDeath.RequiresActionName = (false);
+            this.saePlayerOnDeath.RequiresCondition = (false);
+            this.saePlayerOnDeath.RequiresDescription = (false);
+            this.saePlayerOnDeath.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnDeath.TabIndex = (127);
+            this.saePlayerOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // nudPlayerMPRegenerationPerLevelUp
+            // saePlayerOnAttacked
             // 
-            this.nudPlayerMPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 723));
-            this.nudPlayerMPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerMPRegenerationPerLevelUp.Name = ("nudPlayerMPRegenerationPerLevelUp");
-            this.nudPlayerMPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerMPRegenerationPerLevelUp.TabIndex = (120);
-            this.nudPlayerMPRegenerationPerLevelUp.ValueChanged += (this.nudPlayerMPRegenerationPerLevelUp_ValueChanged);
+            this.saePlayerOnAttacked.Action = (null);
+            this.saePlayerOnAttacked.ActionDescription = ("When they get interacted...");
+            this.saePlayerOnAttacked.ActionTypeText = ("Interacted");
+            this.saePlayerOnAttacked.AlteredStatuses = (null);
+            this.saePlayerOnAttacked.AutoSize = (true);
+            this.saePlayerOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saePlayerOnAttacked.ClassId = (null);
+            this.saePlayerOnAttacked.Dungeon = (null);
+            this.saePlayerOnAttacked.EffectParamData = (null);
+            this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 648));
+            this.saePlayerOnAttacked.Name = ("saePlayerOnAttacked");
+            this.saePlayerOnAttacked.PlaceholderActionName = ("Interacted");
+            this.saePlayerOnAttacked.RequiresActionName = (false);
+            this.saePlayerOnAttacked.RequiresCondition = (false);
+            this.saePlayerOnAttacked.RequiresDescription = (false);
+            this.saePlayerOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnAttacked.TabIndex = (126);
+            this.saePlayerOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // label121
+            // saePlayerOnTurnStart
             // 
-            this.label121.AutoSize = (true);
-            this.label121.Location = (new global::System.Drawing.Point(459, 582));
-            this.label121.Name = ("label121");
-            this.label121.Size = (new global::System.Drawing.Size(124, 15));
-            this.label121.TabIndex = (119);
-            this.label121.Text = ("more MP per Level Up");
+            this.saePlayerOnTurnStart.Action = (null);
+            this.saePlayerOnTurnStart.ActionDescription = ("When the next turn starts...");
+            this.saePlayerOnTurnStart.ActionTypeText = ("Turn Start");
+            this.saePlayerOnTurnStart.AlteredStatuses = (null);
+            this.saePlayerOnTurnStart.AutoSize = (true);
+            this.saePlayerOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saePlayerOnTurnStart.ClassId = (null);
+            this.saePlayerOnTurnStart.Dungeon = (null);
+            this.saePlayerOnTurnStart.EffectParamData = (null);
+            this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 510));
+            this.saePlayerOnTurnStart.Name = ("saePlayerOnTurnStart");
+            this.saePlayerOnTurnStart.PlaceholderActionName = ("TurnStart");
+            this.saePlayerOnTurnStart.RequiresActionName = (false);
+            this.saePlayerOnTurnStart.RequiresCondition = (false);
+            this.saePlayerOnTurnStart.RequiresDescription = (false);
+            this.saePlayerOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnTurnStart.TabIndex = (125);
+            this.saePlayerOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // nudPlayerMPPerLevelUp
+            // maePlayerOnAttack
             // 
-            this.nudPlayerMPPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMPPerLevelUp.Location = (new global::System.Drawing.Point(403, 579));
-            this.nudPlayerMPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerMPPerLevelUp.Name = ("nudPlayerMPPerLevelUp");
-            this.nudPlayerMPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerMPPerLevelUp.TabIndex = (118);
-            this.nudPlayerMPPerLevelUp.ValueChanged += (this.nudPlayerMPPerLevelUp_ValueChanged);
-            // 
-            // label119
-            // 
-            this.label119.AutoSize = (true);
-            this.label119.Location = (new global::System.Drawing.Point(642, 228));
-            this.label119.Name = ("label119");
-            this.label119.Size = (new global::System.Drawing.Size(70, 15));
-            this.label119.TabIndex = (117);
-            this.label119.Text = ("MP per turn");
-            // 
-            // label120
-            // 
-            this.label120.AutoSize = (true);
-            this.label120.Location = (new global::System.Drawing.Point(527, 226));
-            this.label120.Name = ("label120");
-            this.label120.Size = (new global::System.Drawing.Size(54, 15));
-            this.label120.TabIndex = (116);
-            this.label120.Text = ("Recovers");
-            // 
-            // nudPlayerBaseMPRegeneration
-            // 
-            this.nudPlayerBaseMPRegeneration.DecimalPlaces = (4);
-            this.nudPlayerBaseMPRegeneration.Location = (new global::System.Drawing.Point(582, 224));
-            this.nudPlayerBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerBaseMPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
-            this.nudPlayerBaseMPRegeneration.Name = ("nudPlayerBaseMPRegeneration");
-            this.nudPlayerBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseMPRegeneration.TabIndex = (115);
-            this.nudPlayerBaseMPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseMPRegeneration.ValueChanged += (this.nudPlayerBaseMPRegeneration_ValueChanged);
-            // 
-            // chkPlayerUsesMP
-            // 
-            this.chkPlayerUsesMP.AutoSize = (true);
-            this.chkPlayerUsesMP.Location = (new global::System.Drawing.Point(615, 198));
-            this.chkPlayerUsesMP.Name = ("chkPlayerUsesMP");
-            this.chkPlayerUsesMP.Size = (new global::System.Drawing.Size(71, 19));
-            this.chkPlayerUsesMP.TabIndex = (114);
-            this.chkPlayerUsesMP.Text = ("Uses MP");
-            this.chkPlayerUsesMP.UseVisualStyleBackColor = (true);
-            this.chkPlayerUsesMP.CheckedChanged += (this.chkPlayerUsesMP_CheckedChanged);
-            // 
-            // label110
-            // 
-            this.label110.AutoSize = (true);
-            this.label110.Location = (new global::System.Drawing.Point(584, 199));
-            this.label110.Name = ("label110");
-            this.label110.Size = (new global::System.Drawing.Size(25, 15));
-            this.label110.TabIndex = (113);
-            this.label110.Text = ("MP");
-            // 
-            // nudPlayerBaseMP
-            // 
-            this.nudPlayerBaseMP.Location = (new global::System.Drawing.Point(527, 195));
-            this.nudPlayerBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
-            this.nudPlayerBaseMP.Name = ("nudPlayerBaseMP");
-            this.nudPlayerBaseMP.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseMP.TabIndex = (112);
-            this.nudPlayerBaseMP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseMP.ValueChanged += (this.nudPlayerBaseMP_ValueChanged);
-            // 
-            // btnPlayerOnDeathAction
-            // 
-            this.btnPlayerOnDeathAction.Location = (new global::System.Drawing.Point(168, 679));
-            this.btnPlayerOnDeathAction.Name = ("btnPlayerOnDeathAction");
-            this.btnPlayerOnDeathAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnPlayerOnDeathAction.TabIndex = (110);
-            this.btnPlayerOnDeathAction.Text = ("... do this!");
-            this.btnPlayerOnDeathAction.UseVisualStyleBackColor = (true);
-            this.btnPlayerOnDeathAction.Click += (this.btnPlayerOnDeathAction_Click);
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = (true);
-            this.label63.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label63.Location = (new global::System.Drawing.Point(13, 683));
-            this.label63.Name = ("label63");
-            this.label63.Size = (new global::System.Drawing.Size(92, 15));
-            this.label63.TabIndex = (109);
-            this.label63.Text = ("When they die...");
-            // 
-            // btnPlayerOnAttackedAction
-            // 
-            this.btnPlayerOnAttackedAction.Location = (new global::System.Drawing.Point(168, 648));
-            this.btnPlayerOnAttackedAction.Name = ("btnPlayerOnAttackedAction");
-            this.btnPlayerOnAttackedAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnPlayerOnAttackedAction.TabIndex = (108);
-            this.btnPlayerOnAttackedAction.Text = ("... do this!");
-            this.btnPlayerOnAttackedAction.UseVisualStyleBackColor = (true);
-            this.btnPlayerOnAttackedAction.Click += (this.btnPlayerOnAttackedAction_Click);
-            // 
-            // label61
-            // 
-            this.label61.AutoSize = (true);
-            this.label61.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label61.Location = (new global::System.Drawing.Point(13, 652));
-            this.label61.Name = ("label61");
-            this.label61.Size = (new global::System.Drawing.Size(149, 15));
-            this.label61.TabIndex = (107);
-            this.label61.Text = ("When they get interacted...");
-            // 
-            // btnPlayerOnTurnStartAction
-            // 
-            this.btnPlayerOnTurnStartAction.Location = (new global::System.Drawing.Point(168, 514));
-            this.btnPlayerOnTurnStartAction.Name = ("btnPlayerOnTurnStartAction");
-            this.btnPlayerOnTurnStartAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnPlayerOnTurnStartAction.TabIndex = (106);
-            this.btnPlayerOnTurnStartAction.Text = ("... do this!");
-            this.btnPlayerOnTurnStartAction.UseVisualStyleBackColor = (true);
-            this.btnPlayerOnTurnStartAction.Click += (this.btnPlayerOnTurnStartAction_Click);
-            // 
-            // label60
-            // 
-            this.label60.AutoSize = (true);
-            this.label60.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label60.Location = (new global::System.Drawing.Point(13, 518));
-            this.label60.Name = ("label60");
-            this.label60.Size = (new global::System.Drawing.Size(149, 15));
-            this.label60.TabIndex = (105);
-            this.label60.Text = ("When the next turn starts...");
+            this.maePlayerOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
+            this.maePlayerOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maePlayerOnAttack.Actions")));
+            this.maePlayerOnAttack.ActionTypeText = ("Interact");
+            this.maePlayerOnAttack.AlteredStatuses = (null);
+            this.maePlayerOnAttack.ClassId = (null);
+            this.maePlayerOnAttack.Dungeon = (null);
+            this.maePlayerOnAttack.EffectParamData = (null);
+            this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 548));
+            this.maePlayerOnAttack.Name = ("maePlayerOnAttack");
+            this.maePlayerOnAttack.PlaceholderActionName = (null);
+            this.maePlayerOnAttack.RequiresActionName = (true);
+            this.maePlayerOnAttack.RequiresCondition = (true);
+            this.maePlayerOnAttack.RequiresDescription = (true);
+            this.maePlayerOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maePlayerOnAttack.TabIndex = (124);
+            this.maePlayerOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // label58
             // 
@@ -2612,65 +2313,6 @@ namespace RogueCustomsDungeonEditor
             this.label58.Size = (new global::System.Drawing.Size(67, 21));
             this.label58.TabIndex = (104);
             this.label58.Text = ("Actions");
-            // 
-            // label62
-            // 
-            this.label62.AutoSize = (true);
-            this.label62.Location = (new global::System.Drawing.Point(393, 317));
-            this.label62.Name = ("label62");
-            this.label62.Size = (new global::System.Drawing.Size(291, 30));
-            this.label62.TabIndex = (102);
-            this.label62.Text = ("NOTE: When not The Whole Map, Sight is significantly\r\nreduced in hallways");
-            this.label62.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            // 
-            // btnRemovePlayerOnAttackAction
-            // 
-            this.btnRemovePlayerOnAttackAction.Location = (new global::System.Drawing.Point(271, 607));
-            this.btnRemovePlayerOnAttackAction.Name = ("btnRemovePlayerOnAttackAction");
-            this.btnRemovePlayerOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnRemovePlayerOnAttackAction.TabIndex = (91);
-            this.btnRemovePlayerOnAttackAction.Text = ("Remove");
-            this.btnRemovePlayerOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnRemovePlayerOnAttackAction.Click += (this.btnRemovePlayerOnAttackAction_Click);
-            // 
-            // btnEditPlayerOnAttackAction
-            // 
-            this.btnEditPlayerOnAttackAction.Location = (new global::System.Drawing.Point(271, 578));
-            this.btnEditPlayerOnAttackAction.Name = ("btnEditPlayerOnAttackAction");
-            this.btnEditPlayerOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnEditPlayerOnAttackAction.TabIndex = (90);
-            this.btnEditPlayerOnAttackAction.Text = ("Edit");
-            this.btnEditPlayerOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnEditPlayerOnAttackAction.Click += (this.btnEditPlayerOnAttackAction_Click);
-            // 
-            // btnAddPlayerOnAttackAction
-            // 
-            this.btnAddPlayerOnAttackAction.Location = (new global::System.Drawing.Point(271, 549));
-            this.btnAddPlayerOnAttackAction.Name = ("btnAddPlayerOnAttackAction");
-            this.btnAddPlayerOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnAddPlayerOnAttackAction.TabIndex = (89);
-            this.btnAddPlayerOnAttackAction.Text = ("Add");
-            this.btnAddPlayerOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnAddPlayerOnAttackAction.Click += (this.btnAddPlayerOnAttackAction_Click);
-            // 
-            // lbPlayerOnAttackActions
-            // 
-            this.lbPlayerOnAttackActions.FormattingEnabled = (true);
-            this.lbPlayerOnAttackActions.ItemHeight = (15);
-            this.lbPlayerOnAttackActions.Location = (new global::System.Drawing.Point(168, 543));
-            this.lbPlayerOnAttackActions.Name = ("lbPlayerOnAttackActions");
-            this.lbPlayerOnAttackActions.Size = (new global::System.Drawing.Size(97, 94));
-            this.lbPlayerOnAttackActions.TabIndex = (88);
-            this.lbPlayerOnAttackActions.SelectedIndexChanged += (this.lbPlayerOnAttackActions_SelectedIndexChanged);
-            // 
-            // label59
-            // 
-            this.label59.AutoSize = (true);
-            this.label59.Location = (new global::System.Drawing.Point(13, 568));
-            this.label59.Name = ("label59");
-            this.label59.Size = (new global::System.Drawing.Size(132, 30));
-            this.label59.TabIndex = (87);
-            this.label59.Text = ("Can do the following to\r\ninteract with someone:");
             // 
             // cmbPlayerStartingArmor
             // 
@@ -2710,57 +2352,6 @@ namespace RogueCustomsDungeonEditor
             this.label56.TabIndex = (78);
             this.label56.Text = ("When unarmed, wield");
             // 
-            // lbPlayerStartingInventory
-            // 
-            this.lbPlayerStartingInventory.FormattingEnabled = (true);
-            this.lbPlayerStartingInventory.ItemHeight = (15);
-            this.lbPlayerStartingInventory.Location = (new global::System.Drawing.Point(156, 392));
-            this.lbPlayerStartingInventory.Name = ("lbPlayerStartingInventory");
-            this.lbPlayerStartingInventory.Size = (new global::System.Drawing.Size(148, 79));
-            this.lbPlayerStartingInventory.TabIndex = (77);
-            this.lbPlayerStartingInventory.SelectedIndexChanged += (this.lbPlayerStartingInventory_SelectedIndexChanged);
-            // 
-            // btnPlayerRemoveItem
-            // 
-            this.btnPlayerRemoveItem.Enabled = (false);
-            this.btnPlayerRemoveItem.Location = (new global::System.Drawing.Point(75, 444));
-            this.btnPlayerRemoveItem.Name = ("btnPlayerRemoveItem");
-            this.btnPlayerRemoveItem.Size = (new global::System.Drawing.Size(59, 23));
-            this.btnPlayerRemoveItem.TabIndex = (76);
-            this.btnPlayerRemoveItem.Text = ("Remove");
-            this.btnPlayerRemoveItem.UseVisualStyleBackColor = (true);
-            this.btnPlayerRemoveItem.Click += (this.btnPlayerRemoveItem_Click);
-            // 
-            // btnPlayerAddItem
-            // 
-            this.btnPlayerAddItem.Enabled = (false);
-            this.btnPlayerAddItem.Location = (new global::System.Drawing.Point(13, 444));
-            this.btnPlayerAddItem.Name = ("btnPlayerAddItem");
-            this.btnPlayerAddItem.Size = (new global::System.Drawing.Size(56, 23));
-            this.btnPlayerAddItem.TabIndex = (75);
-            this.btnPlayerAddItem.Text = ("Add");
-            this.btnPlayerAddItem.UseVisualStyleBackColor = (true);
-            this.btnPlayerAddItem.Click += (this.btnPlayerAddItem_Click);
-            // 
-            // cmbPlayerInventoryItemChoices
-            // 
-            this.cmbPlayerInventoryItemChoices.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerInventoryItemChoices.FormattingEnabled = (true);
-            this.cmbPlayerInventoryItemChoices.Location = (new global::System.Drawing.Point(13, 415));
-            this.cmbPlayerInventoryItemChoices.Name = ("cmbPlayerInventoryItemChoices");
-            this.cmbPlayerInventoryItemChoices.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbPlayerInventoryItemChoices.TabIndex = (74);
-            this.cmbPlayerInventoryItemChoices.SelectedIndexChanged += (this.cmbPlayerInventoryItemChoices_SelectedIndexChanged);
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = (true);
-            this.label55.Location = (new global::System.Drawing.Point(13, 392));
-            this.label55.Name = ("label55");
-            this.label55.Size = (new global::System.Drawing.Size(92, 15));
-            this.label55.TabIndex = (73);
-            this.label55.Text = ("Initial Inventory:");
-            // 
             // label54
             // 
             this.label54.AutoSize = (true);
@@ -2787,357 +2378,6 @@ namespace RogueCustomsDungeonEditor
             this.label53.Size = (new global::System.Drawing.Size(109, 15));
             this.label53.TabIndex = (70);
             this.label53.Text = ("Inventory Capacity:");
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = (true);
-            this.label52.Location = (new global::System.Drawing.Point(403, 696));
-            this.label52.Name = ("label52");
-            this.label52.Size = (new global::System.Drawing.Size(54, 15));
-            this.label52.TabIndex = (69);
-            this.label52.Text = ("Recovers");
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = (true);
-            this.label47.Location = (new global::System.Drawing.Point(391, 505));
-            this.label47.Name = ("label47");
-            this.label47.Size = (new global::System.Drawing.Size(325, 30));
-            this.label47.TabIndex = (68);
-            this.label47.Text = ("NOTE: HP, Attack, Defense, Movement and HP Regeneration\r\nare internal names. Display Names depend on Locales.");
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = (true);
-            this.label51.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label51.Location = (new global::System.Drawing.Point(404, 476));
-            this.label51.Name = ("label51");
-            this.label51.Size = (new global::System.Drawing.Size(115, 15));
-            this.label51.TabIndex = (67);
-            this.label51.Text = ("After Leveling Up...");
-            // 
-            // chkPlayerCanGainExperience
-            // 
-            this.chkPlayerCanGainExperience.AutoSize = (true);
-            this.chkPlayerCanGainExperience.Location = (new global::System.Drawing.Point(403, 384));
-            this.chkPlayerCanGainExperience.Name = ("chkPlayerCanGainExperience");
-            this.chkPlayerCanGainExperience.Size = (new global::System.Drawing.Size(169, 19));
-            this.chkPlayerCanGainExperience.TabIndex = (66);
-            this.chkPlayerCanGainExperience.Text = ("Can gain Experience Points");
-            this.chkPlayerCanGainExperience.UseVisualStyleBackColor = (true);
-            this.chkPlayerCanGainExperience.CheckedChanged += (this.chkPlayerCanGainExperience_CheckedChanged);
-            // 
-            // nudPlayerMaxLevel
-            // 
-            this.nudPlayerMaxLevel.Location = (new global::System.Drawing.Point(509, 436));
-            this.nudPlayerMaxLevel.Name = ("nudPlayerMaxLevel");
-            this.nudPlayerMaxLevel.Size = (new global::System.Drawing.Size(44, 23));
-            this.nudPlayerMaxLevel.TabIndex = (65);
-            this.nudPlayerMaxLevel.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerMaxLevel.ValueChanged += (this.nudPlayerMaxLevel_ValueChanged);
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = (true);
-            this.label50.Location = (new global::System.Drawing.Point(400, 439));
-            this.label50.Name = ("label50");
-            this.label50.Size = (new global::System.Drawing.Size(103, 15));
-            this.label50.TabIndex = (64);
-            this.label50.Text = ("Maximum Level is");
-            // 
-            // txtPlayerLevelUpFormula
-            // 
-            this.txtPlayerLevelUpFormula.Location = (new global::System.Drawing.Point(530, 408));
-            this.txtPlayerLevelUpFormula.Name = ("txtPlayerLevelUpFormula");
-            this.txtPlayerLevelUpFormula.Size = (new global::System.Drawing.Size(180, 23));
-            this.txtPlayerLevelUpFormula.TabIndex = (63);
-            this.txtPlayerLevelUpFormula.Enter += (this.txtPlayerLevelUpFormula_Enter);
-            this.txtPlayerLevelUpFormula.Leave += (this.txtPlayerLevelUpFormula_Leave);
-            // 
-            // label49
-            // 
-            this.label49.AutoSize = (true);
-            this.label49.Location = (new global::System.Drawing.Point(400, 411));
-            this.label49.Name = ("label49");
-            this.label49.Size = (new global::System.Drawing.Size(126, 15));
-            this.label49.TabIndex = (62);
-            this.label49.Text = ("Experience to Level Up");
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = (true);
-            this.label48.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label48.Location = (new global::System.Drawing.Point(498, 354));
-            this.label48.Name = ("label48");
-            this.label48.Size = (new global::System.Drawing.Size(101, 21));
-            this.label48.TabIndex = (61);
-            this.label48.Text = ("Leveling Up");
-            // 
-            // nudPlayerFlatSightRange
-            // 
-            this.nudPlayerFlatSightRange.Location = (new global::System.Drawing.Point(576, 283));
-            this.nudPlayerFlatSightRange.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerFlatSightRange.Name = ("nudPlayerFlatSightRange");
-            this.nudPlayerFlatSightRange.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerFlatSightRange.TabIndex = (59);
-            this.nudPlayerFlatSightRange.Visible = (false);
-            this.nudPlayerFlatSightRange.ValueChanged += (this.nudPlayerFlatSightRange_ValueChanged);
-            // 
-            // cmbPlayerSightRange
-            // 
-            this.cmbPlayerSightRange.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerSightRange.FormattingEnabled = (true);
-            this.cmbPlayerSightRange.Location = (new global::System.Drawing.Point(443, 283));
-            this.cmbPlayerSightRange.Name = ("cmbPlayerSightRange");
-            this.cmbPlayerSightRange.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbPlayerSightRange.TabIndex = (58);
-            this.cmbPlayerSightRange.SelectedIndexChanged += (this.cmbPlayerSightRange_SelectedIndexChanged);
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = (true);
-            this.label43.Location = (new global::System.Drawing.Point(393, 286));
-            this.label43.Name = ("label43");
-            this.label43.Size = (new global::System.Drawing.Size(48, 15));
-            this.label43.TabIndex = (57);
-            this.label43.Text = ("Can see");
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = (true);
-            this.label44.Location = (new global::System.Drawing.Point(637, 170));
-            this.label44.Name = ("label44");
-            this.label44.Size = (new global::System.Drawing.Size(68, 15));
-            this.label44.TabIndex = (56);
-            this.label44.Text = ("HP per turn");
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = (true);
-            this.label45.Location = (new global::System.Drawing.Point(522, 168));
-            this.label45.Name = ("label45");
-            this.label45.Size = (new global::System.Drawing.Size(54, 15));
-            this.label45.TabIndex = (55);
-            this.label45.Text = ("Recovers");
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = (true);
-            this.label46.Location = (new global::System.Drawing.Point(517, 698));
-            this.label46.Name = ("label46");
-            this.label46.Size = (new global::System.Drawing.Size(167, 15));
-            this.label46.TabIndex = (54);
-            this.label46.Text = ("more HP per turn per Level Up");
-            // 
-            // nudPlayerHPRegenerationPerLevelUp
-            // 
-            this.nudPlayerHPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(460, 694));
-            this.nudPlayerHPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerHPRegenerationPerLevelUp.Name = ("nudPlayerHPRegenerationPerLevelUp");
-            this.nudPlayerHPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerHPRegenerationPerLevelUp.TabIndex = (53);
-            this.nudPlayerHPRegenerationPerLevelUp.ValueChanged += (this.nudPlayerHPRegenerationPerLevelUp_ValueChanged);
-            // 
-            // nudPlayerBaseHPRegeneration
-            // 
-            this.nudPlayerBaseHPRegeneration.DecimalPlaces = (4);
-            this.nudPlayerBaseHPRegeneration.Location = (new global::System.Drawing.Point(577, 166));
-            this.nudPlayerBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerBaseHPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
-            this.nudPlayerBaseHPRegeneration.Name = ("nudPlayerBaseHPRegeneration");
-            this.nudPlayerBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseHPRegeneration.TabIndex = (52);
-            this.nudPlayerBaseHPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseHPRegeneration.ValueChanged += (this.nudPlayerBaseHPRegeneration_ValueChanged);
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = (true);
-            this.label42.Location = (new global::System.Drawing.Point(403, 667));
-            this.label42.Name = ("label42");
-            this.label42.Size = (new global::System.Drawing.Size(61, 15));
-            this.label42.TabIndex = (51);
-            this.label42.Text = ("Can move");
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = (true);
-            this.label41.Location = (new global::System.Drawing.Point(513, 258));
-            this.label41.Name = ("label41");
-            this.label41.Size = (new global::System.Drawing.Size(73, 15));
-            this.label41.TabIndex = (50);
-            this.label41.Text = ("tiles per turn");
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = (true);
-            this.label40.Location = (new global::System.Drawing.Point(392, 256));
-            this.label40.Name = ("label40");
-            this.label40.Size = (new global::System.Drawing.Size(61, 15));
-            this.label40.TabIndex = (49);
-            this.label40.Text = ("Can move");
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = (true);
-            this.label39.Location = (new global::System.Drawing.Point(521, 668));
-            this.label39.Name = ("label39");
-            this.label39.Size = (new global::System.Drawing.Size(174, 15));
-            this.label39.TabIndex = (48);
-            this.label39.Text = ("more Tiles per turn per Level Up");
-            // 
-            // nudPlayerMovementPerLevelUp
-            // 
-            this.nudPlayerMovementPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerMovementPerLevelUp.Location = (new global::System.Drawing.Point(464, 665));
-            this.nudPlayerMovementPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerMovementPerLevelUp.Name = ("nudPlayerMovementPerLevelUp");
-            this.nudPlayerMovementPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerMovementPerLevelUp.TabIndex = (47);
-            this.nudPlayerMovementPerLevelUp.ValueChanged += (this.nudPlayerMovementPerLevelUp_ValueChanged);
-            // 
-            // nudPlayerBaseMovement
-            // 
-            this.nudPlayerBaseMovement.Location = (new global::System.Drawing.Point(453, 254));
-            this.nudPlayerBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
-            this.nudPlayerBaseMovement.Name = ("nudPlayerBaseMovement");
-            this.nudPlayerBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseMovement.TabIndex = (45);
-            this.nudPlayerBaseMovement.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseMovement.ValueChanged += (this.nudPlayerBaseMovement_ValueChanged);
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = (true);
-            this.label37.Location = (new global::System.Drawing.Point(459, 638));
-            this.label37.Name = ("label37");
-            this.label37.Size = (new global::System.Drawing.Size(148, 15));
-            this.label37.TabIndex = (44);
-            this.label37.Text = ("more Defense per Level Up");
-            // 
-            // nudPlayerDefensePerLevelUp
-            // 
-            this.nudPlayerDefensePerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerDefensePerLevelUp.Location = (new global::System.Drawing.Point(403, 635));
-            this.nudPlayerDefensePerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerDefensePerLevelUp.Name = ("nudPlayerDefensePerLevelUp");
-            this.nudPlayerDefensePerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerDefensePerLevelUp.TabIndex = (43);
-            this.nudPlayerDefensePerLevelUp.ValueChanged += (this.nudPlayerDefensePerLevelUp_ValueChanged);
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = (true);
-            this.label38.Location = (new global::System.Drawing.Point(459, 229));
-            this.label38.Name = ("label38");
-            this.label38.Size = (new global::System.Drawing.Size(49, 15));
-            this.label38.TabIndex = (42);
-            this.label38.Text = ("Defense");
-            // 
-            // nudPlayerBaseDefense
-            // 
-            this.nudPlayerBaseDefense.Location = (new global::System.Drawing.Point(402, 225));
-            this.nudPlayerBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
-            this.nudPlayerBaseDefense.Name = ("nudPlayerBaseDefense");
-            this.nudPlayerBaseDefense.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseDefense.TabIndex = (41);
-            this.nudPlayerBaseDefense.ValueChanged += (this.nudPlayerBaseDefense_ValueChanged);
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = (true);
-            this.label36.Location = (new global::System.Drawing.Point(394, 124));
-            this.label36.Name = ("label36");
-            this.label36.Size = (new global::System.Drawing.Size(325, 30));
-            this.label36.TabIndex = (40);
-            this.label36.Text = ("NOTE: HP, Attack, Defense, Movement and HP Regeneration\r\nare internal names. Display Names depend on Locales.");
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = (true);
-            this.label34.Location = (new global::System.Drawing.Point(459, 611));
-            this.label34.Name = ("label34");
-            this.label34.Size = (new global::System.Drawing.Size(140, 15));
-            this.label34.TabIndex = (39);
-            this.label34.Text = ("more Attack per Level Up");
-            // 
-            // nudPlayerAttackPerLevelUp
-            // 
-            this.nudPlayerAttackPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerAttackPerLevelUp.Location = (new global::System.Drawing.Point(403, 608));
-            this.nudPlayerAttackPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerAttackPerLevelUp.Name = ("nudPlayerAttackPerLevelUp");
-            this.nudPlayerAttackPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerAttackPerLevelUp.TabIndex = (38);
-            this.nudPlayerAttackPerLevelUp.ValueChanged += (this.nudPlayerAttackPerLevelUp_ValueChanged);
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = (true);
-            this.label35.Location = (new global::System.Drawing.Point(459, 200));
-            this.label35.Name = ("label35");
-            this.label35.Size = (new global::System.Drawing.Size(41, 15));
-            this.label35.TabIndex = (37);
-            this.label35.Text = ("Attack");
-            // 
-            // nudPlayerBaseAttack
-            // 
-            this.nudPlayerBaseAttack.Location = (new global::System.Drawing.Point(402, 196));
-            this.nudPlayerBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
-            this.nudPlayerBaseAttack.Name = ("nudPlayerBaseAttack");
-            this.nudPlayerBaseAttack.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseAttack.TabIndex = (36);
-            this.nudPlayerBaseAttack.ValueChanged += (this.nudPlayerBaseAttack_ValueChanged);
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = (true);
-            this.label33.Location = (new global::System.Drawing.Point(459, 553));
-            this.label33.Name = ("label33");
-            this.label33.Size = (new global::System.Drawing.Size(122, 15));
-            this.label33.TabIndex = (35);
-            this.label33.Text = ("more HP per Level Up");
-            // 
-            // nudPlayerHPPerLevelUp
-            // 
-            this.nudPlayerHPPerLevelUp.DecimalPlaces = (4);
-            this.nudPlayerHPPerLevelUp.Location = (new global::System.Drawing.Point(403, 550));
-            this.nudPlayerHPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerHPPerLevelUp.Name = ("nudPlayerHPPerLevelUp");
-            this.nudPlayerHPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudPlayerHPPerLevelUp.TabIndex = (34);
-            this.nudPlayerHPPerLevelUp.ValueChanged += (this.nudPlayerHPPerLevelUp_ValueChanged);
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = (true);
-            this.label32.Location = (new global::System.Drawing.Point(459, 170));
-            this.label32.Name = ("label32");
-            this.label32.Size = (new global::System.Drawing.Size(23, 15));
-            this.label32.TabIndex = (33);
-            this.label32.Text = ("HP");
-            // 
-            // nudPlayerBaseHP
-            // 
-            this.nudPlayerBaseHP.Location = (new global::System.Drawing.Point(402, 166));
-            this.nudPlayerBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
-            this.nudPlayerBaseHP.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseHP.Name = ("nudPlayerBaseHP");
-            this.nudPlayerBaseHP.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudPlayerBaseHP.TabIndex = (32);
-            this.nudPlayerBaseHP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudPlayerBaseHP.ValueChanged += (this.nudPlayerBaseHP_ValueChanged);
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = (true);
-            this.label31.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label31.Location = (new global::System.Drawing.Point(477, 100));
-            this.label31.Name = ("label31");
-            this.label31.Size = (new global::System.Drawing.Size(155, 21));
-            this.label31.TabIndex = (31);
-            this.label31.Text = ("Base Stats (Level 1)");
             // 
             // label30
             // 
@@ -3258,16 +2498,6 @@ namespace RogueCustomsDungeonEditor
             this.label27.TabIndex = (16);
             this.label27.Text = ("Default Name");
             // 
-            // lblPlayerSightRangeText
-            // 
-            this.lblPlayerSightRangeText.AutoSize = (true);
-            this.lblPlayerSightRangeText.Location = (new global::System.Drawing.Point(639, 286));
-            this.lblPlayerSightRangeText.Name = ("lblPlayerSightRangeText");
-            this.lblPlayerSightRangeText.Size = (new global::System.Drawing.Size(28, 15));
-            this.lblPlayerSightRangeText.TabIndex = (60);
-            this.lblPlayerSightRangeText.Text = ("tiles");
-            this.lblPlayerSightRangeText.Visible = (false);
-            // 
             // crsPlayer
             // 
             gameColor43.A = ((global::System.Byte)(255));
@@ -3290,84 +2520,25 @@ namespace RogueCustomsDungeonEditor
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
-            this.tpNPC.Controls.Add(this.label128);
-            this.tpNPC.Controls.Add(this.label129);
-            this.tpNPC.Controls.Add(this.nudNPCMPRegenerationPerLevelUp);
-            this.tpNPC.Controls.Add(this.label127);
-            this.tpNPC.Controls.Add(this.nudNPCMPPerLevelUp);
-            this.tpNPC.Controls.Add(this.label124);
-            this.tpNPC.Controls.Add(this.label125);
-            this.tpNPC.Controls.Add(this.nudNPCBaseMPRegeneration);
-            this.tpNPC.Controls.Add(this.chkNPCUsesMP);
-            this.tpNPC.Controls.Add(this.label126);
-            this.tpNPC.Controls.Add(this.nudNPCBaseMP);
+            this.tpNPC.Controls.Add(this.ssNPC);
+            this.tpNPC.Controls.Add(this.sisNPCStartingInventory);
+            this.tpNPC.Controls.Add(this.saeNPCOnDeath);
+            this.tpNPC.Controls.Add(this.saeNPCOnAttacked);
+            this.tpNPC.Controls.Add(this.saeNPCOnTurnStart);
+            this.tpNPC.Controls.Add(this.maeNPCOnAttack);
             this.tpNPC.Controls.Add(this.nudNPCOddsToTargetSelf);
             this.tpNPC.Controls.Add(this.label104);
             this.tpNPC.Controls.Add(this.txtNPCExperiencePayout);
             this.tpNPC.Controls.Add(this.label103);
             this.tpNPC.Controls.Add(this.chkNPCKnowsAllCharacterPositions);
-            this.tpNPC.Controls.Add(this.btnNPCOnDeathAction);
-            this.tpNPC.Controls.Add(this.label64);
-            this.tpNPC.Controls.Add(this.btnNPCOnAttackedAction);
-            this.tpNPC.Controls.Add(this.label65);
-            this.tpNPC.Controls.Add(this.btnNPCOnTurnStartAction);
-            this.tpNPC.Controls.Add(this.label66);
             this.tpNPC.Controls.Add(this.label67);
-            this.tpNPC.Controls.Add(this.label68);
-            this.tpNPC.Controls.Add(this.btnRemoveNPCOnAttackAction);
-            this.tpNPC.Controls.Add(this.btnEditNPCOnAttackAction);
-            this.tpNPC.Controls.Add(this.btnAddNPCOnAttackAction);
-            this.tpNPC.Controls.Add(this.lbNPCOnAttackActions);
-            this.tpNPC.Controls.Add(this.label69);
             this.tpNPC.Controls.Add(this.cmbNPCStartingArmor);
             this.tpNPC.Controls.Add(this.label70);
             this.tpNPC.Controls.Add(this.cmbNPCStartingWeapon);
             this.tpNPC.Controls.Add(this.label71);
-            this.tpNPC.Controls.Add(this.lbNPCStartingInventory);
-            this.tpNPC.Controls.Add(this.btnNPCRemoveItem);
-            this.tpNPC.Controls.Add(this.btnNPCAddItem);
-            this.tpNPC.Controls.Add(this.cmbNPCInventoryItemChoices);
-            this.tpNPC.Controls.Add(this.label72);
             this.tpNPC.Controls.Add(this.label73);
             this.tpNPC.Controls.Add(this.nudNPCInventorySize);
             this.tpNPC.Controls.Add(this.label74);
-            this.tpNPC.Controls.Add(this.label75);
-            this.tpNPC.Controls.Add(this.label76);
-            this.tpNPC.Controls.Add(this.label77);
-            this.tpNPC.Controls.Add(this.chkNPCCanGainExperience);
-            this.tpNPC.Controls.Add(this.nudNPCMaxLevel);
-            this.tpNPC.Controls.Add(this.label78);
-            this.tpNPC.Controls.Add(this.txtNPCLevelUpFormula);
-            this.tpNPC.Controls.Add(this.label79);
-            this.tpNPC.Controls.Add(this.label80);
-            this.tpNPC.Controls.Add(this.nudNPCFlatSightRange);
-            this.tpNPC.Controls.Add(this.cmbNPCSightRange);
-            this.tpNPC.Controls.Add(this.label81);
-            this.tpNPC.Controls.Add(this.label82);
-            this.tpNPC.Controls.Add(this.label83);
-            this.tpNPC.Controls.Add(this.label84);
-            this.tpNPC.Controls.Add(this.nudNPCHPRegenerationPerLevelUp);
-            this.tpNPC.Controls.Add(this.nudNPCBaseHPRegeneration);
-            this.tpNPC.Controls.Add(this.label85);
-            this.tpNPC.Controls.Add(this.label86);
-            this.tpNPC.Controls.Add(this.label87);
-            this.tpNPC.Controls.Add(this.label88);
-            this.tpNPC.Controls.Add(this.nudNPCMovementPerLevelUp);
-            this.tpNPC.Controls.Add(this.nudNPCBaseMovement);
-            this.tpNPC.Controls.Add(this.label89);
-            this.tpNPC.Controls.Add(this.nudNPCDefensePerLevelUp);
-            this.tpNPC.Controls.Add(this.label90);
-            this.tpNPC.Controls.Add(this.nudNPCBaseDefense);
-            this.tpNPC.Controls.Add(this.label91);
-            this.tpNPC.Controls.Add(this.label92);
-            this.tpNPC.Controls.Add(this.nudNPCAttackPerLevelUp);
-            this.tpNPC.Controls.Add(this.label93);
-            this.tpNPC.Controls.Add(this.nudNPCBaseAttack);
-            this.tpNPC.Controls.Add(this.label94);
-            this.tpNPC.Controls.Add(this.nudNPCHPPerLevelUp);
-            this.tpNPC.Controls.Add(this.label95);
-            this.tpNPC.Controls.Add(this.nudNPCBaseHP);
-            this.tpNPC.Controls.Add(this.label96);
             this.tpNPC.Controls.Add(this.label98);
             this.tpNPC.Controls.Add(this.chkNPCStartsVisible);
             this.tpNPC.Controls.Add(this.cmbNPCFaction);
@@ -3378,7 +2549,6 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.Controls.Add(this.fklblNPCNameLocale);
             this.tpNPC.Controls.Add(this.txtNPCName);
             this.tpNPC.Controls.Add(this.label101);
-            this.tpNPC.Controls.Add(this.lblNPCSightRangeText);
             this.tpNPC.Controls.Add(this.crsNPC);
             this.tpNPC.Location = (new global::System.Drawing.Point(4, 24));
             this.tpNPC.Name = ("tpNPC");
@@ -3387,116 +2557,129 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.Text = ("NPC");
             this.tpNPC.UseVisualStyleBackColor = (true);
             // 
-            // label128
+            // ssNPC
             // 
-            this.label128.AutoSize = (true);
-            this.label128.Location = (new global::System.Drawing.Point(406, 727));
-            this.label128.Name = ("label128");
-            this.label128.Size = (new global::System.Drawing.Size(54, 15));
-            this.label128.TabIndex = (206);
-            this.label128.Text = ("Recovers");
+            this.ssNPC.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.AutoSize = (true);
+            this.ssNPC.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.ssNPC.BaseAttack = (0);
+            this.ssNPC.BaseDefense = (0);
+            this.ssNPC.BaseHP = (1);
+            this.ssNPC.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.ssNPC.BaseMovement = (1);
+            this.ssNPC.BaseMP = (0);
+            this.ssNPC.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssNPC.BaseSightRangeDisplayNames")));
+            this.ssNPC.CanGainExperience = (false);
+            this.ssNPC.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.ExperienceToLevelUpFormula = ("");
+            this.ssNPC.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.Location = (new global::System.Drawing.Point(385, 94));
+            this.ssNPC.MaxLevel = (1);
+            this.ssNPC.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssNPC.Name = ("ssNPC");
+            this.ssNPC.Size = (new global::System.Drawing.Size(330, 653));
+            this.ssNPC.TabIndex = (212);
+            this.ssNPC.UsesMP = (false);
             // 
-            // label129
+            // sisNPCStartingInventory
             // 
-            this.label129.AutoSize = (true);
-            this.label129.Location = (new global::System.Drawing.Point(520, 729));
-            this.label129.Name = ("label129");
-            this.label129.Size = (new global::System.Drawing.Size(169, 15));
-            this.label129.TabIndex = (205);
-            this.label129.Text = ("more MP per turn per Level Up");
+            this.sisNPCStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisNPCStartingInventory.Inventory")));
+            this.sisNPCStartingInventory.InventorySize = (0);
+            this.sisNPCStartingInventory.Location = (new global::System.Drawing.Point(13, 432));
+            this.sisNPCStartingInventory.Name = ("sisNPCStartingInventory");
+            this.sisNPCStartingInventory.SelectableItems = (null);
+            this.sisNPCStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
+            this.sisNPCStartingInventory.TabIndex = (129);
             // 
-            // nudNPCMPRegenerationPerLevelUp
+            // saeNPCOnDeath
             // 
-            this.nudNPCMPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCMPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(463, 725));
-            this.nudNPCMPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCMPRegenerationPerLevelUp.Name = ("nudNPCMPRegenerationPerLevelUp");
-            this.nudNPCMPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCMPRegenerationPerLevelUp.TabIndex = (204);
-            this.nudNPCMPRegenerationPerLevelUp.ValueChanged += (this.nudNPCMPRegenerationPerLevelUp_ValueChanged);
+            this.saeNPCOnDeath.Action = (null);
+            this.saeNPCOnDeath.ActionDescription = ("When they die...                   ");
+            this.saeNPCOnDeath.ActionTypeText = ("On Death");
+            this.saeNPCOnDeath.AlteredStatuses = (null);
+            this.saeNPCOnDeath.AutoSize = (true);
+            this.saeNPCOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeNPCOnDeath.ClassId = (null);
+            this.saeNPCOnDeath.Dungeon = (null);
+            this.saeNPCOnDeath.EffectParamData = (null);
+            this.saeNPCOnDeath.Location = (new global::System.Drawing.Point(13, 721));
+            this.saeNPCOnDeath.Name = ("saeNPCOnDeath");
+            this.saeNPCOnDeath.PlaceholderActionName = ("Death");
+            this.saeNPCOnDeath.RequiresActionName = (false);
+            this.saeNPCOnDeath.RequiresCondition = (false);
+            this.saeNPCOnDeath.RequiresDescription = (false);
+            this.saeNPCOnDeath.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnDeath.TabIndex = (211);
+            this.saeNPCOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // label127
+            // saeNPCOnAttacked
             // 
-            this.label127.AutoSize = (true);
-            this.label127.Location = (new global::System.Drawing.Point(462, 588));
-            this.label127.Name = ("label127");
-            this.label127.Size = (new global::System.Drawing.Size(124, 15));
-            this.label127.TabIndex = (203);
-            this.label127.Text = ("more MP per Level Up");
+            this.saeNPCOnAttacked.Action = (null);
+            this.saeNPCOnAttacked.ActionDescription = ("When they get interacted...");
+            this.saeNPCOnAttacked.ActionTypeText = ("Interacted");
+            this.saeNPCOnAttacked.AlteredStatuses = (null);
+            this.saeNPCOnAttacked.AutoSize = (true);
+            this.saeNPCOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeNPCOnAttacked.ClassId = (null);
+            this.saeNPCOnAttacked.Dungeon = (null);
+            this.saeNPCOnAttacked.EffectParamData = (null);
+            this.saeNPCOnAttacked.Location = (new global::System.Drawing.Point(13, 681));
+            this.saeNPCOnAttacked.Name = ("saeNPCOnAttacked");
+            this.saeNPCOnAttacked.PlaceholderActionName = ("Interacted");
+            this.saeNPCOnAttacked.RequiresActionName = (false);
+            this.saeNPCOnAttacked.RequiresCondition = (false);
+            this.saeNPCOnAttacked.RequiresDescription = (false);
+            this.saeNPCOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnAttacked.TabIndex = (210);
+            this.saeNPCOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // nudNPCMPPerLevelUp
+            // saeNPCOnTurnStart
             // 
-            this.nudNPCMPPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCMPPerLevelUp.Location = (new global::System.Drawing.Point(406, 585));
-            this.nudNPCMPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCMPPerLevelUp.Name = ("nudNPCMPPerLevelUp");
-            this.nudNPCMPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCMPPerLevelUp.TabIndex = (202);
-            this.nudNPCMPPerLevelUp.ValueChanged += (this.nudNPCMPPerLevelUp_ValueChanged);
+            this.saeNPCOnTurnStart.Action = (null);
+            this.saeNPCOnTurnStart.ActionDescription = ("When the next turn starts...");
+            this.saeNPCOnTurnStart.ActionTypeText = ("Turn Start");
+            this.saeNPCOnTurnStart.AlteredStatuses = (null);
+            this.saeNPCOnTurnStart.AutoSize = (true);
+            this.saeNPCOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeNPCOnTurnStart.ClassId = (null);
+            this.saeNPCOnTurnStart.Dungeon = (null);
+            this.saeNPCOnTurnStart.EffectParamData = (null);
+            this.saeNPCOnTurnStart.Location = (new global::System.Drawing.Point(13, 543));
+            this.saeNPCOnTurnStart.Name = ("saeNPCOnTurnStart");
+            this.saeNPCOnTurnStart.PlaceholderActionName = ("TurnStart");
+            this.saeNPCOnTurnStart.RequiresActionName = (false);
+            this.saeNPCOnTurnStart.RequiresCondition = (false);
+            this.saeNPCOnTurnStart.RequiresDescription = (false);
+            this.saeNPCOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnTurnStart.TabIndex = (209);
+            this.saeNPCOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // label124
+            // maeNPCOnAttack
             // 
-            this.label124.AutoSize = (true);
-            this.label124.Location = (new global::System.Drawing.Point(636, 230));
-            this.label124.Name = ("label124");
-            this.label124.Size = (new global::System.Drawing.Size(70, 15));
-            this.label124.TabIndex = (201);
-            this.label124.Text = ("MP per turn");
-            // 
-            // label125
-            // 
-            this.label125.AutoSize = (true);
-            this.label125.Location = (new global::System.Drawing.Point(521, 228));
-            this.label125.Name = ("label125");
-            this.label125.Size = (new global::System.Drawing.Size(54, 15));
-            this.label125.TabIndex = (200);
-            this.label125.Text = ("Recovers");
-            // 
-            // nudNPCBaseMPRegeneration
-            // 
-            this.nudNPCBaseMPRegeneration.DecimalPlaces = (4);
-            this.nudNPCBaseMPRegeneration.Location = (new global::System.Drawing.Point(576, 226));
-            this.nudNPCBaseMPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCBaseMPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
-            this.nudNPCBaseMPRegeneration.Name = ("nudNPCBaseMPRegeneration");
-            this.nudNPCBaseMPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseMPRegeneration.TabIndex = (199);
-            this.nudNPCBaseMPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseMPRegeneration.ValueChanged += (this.nudNPCBaseMPRegeneration_ValueChanged);
-            // 
-            // chkNPCUsesMP
-            // 
-            this.chkNPCUsesMP.AutoSize = (true);
-            this.chkNPCUsesMP.Location = (new global::System.Drawing.Point(609, 200));
-            this.chkNPCUsesMP.Name = ("chkNPCUsesMP");
-            this.chkNPCUsesMP.Size = (new global::System.Drawing.Size(71, 19));
-            this.chkNPCUsesMP.TabIndex = (198);
-            this.chkNPCUsesMP.Text = ("Uses MP");
-            this.chkNPCUsesMP.UseVisualStyleBackColor = (true);
-            this.chkNPCUsesMP.CheckedChanged += (this.chkNPCUsesMP_CheckedChanged);
-            // 
-            // label126
-            // 
-            this.label126.AutoSize = (true);
-            this.label126.Location = (new global::System.Drawing.Point(578, 201));
-            this.label126.Name = ("label126");
-            this.label126.Size = (new global::System.Drawing.Size(25, 15));
-            this.label126.TabIndex = (197);
-            this.label126.Text = ("MP");
-            // 
-            // nudNPCBaseMP
-            // 
-            this.nudNPCBaseMP.Location = (new global::System.Drawing.Point(521, 197));
-            this.nudNPCBaseMP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
-            this.nudNPCBaseMP.Name = ("nudNPCBaseMP");
-            this.nudNPCBaseMP.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseMP.TabIndex = (196);
-            this.nudNPCBaseMP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseMP.ValueChanged += (this.nudNPCBaseMP_ValueChanged);
+            this.maeNPCOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
+            this.maeNPCOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnAttack.Actions")));
+            this.maeNPCOnAttack.ActionTypeText = ("Interact");
+            this.maeNPCOnAttack.AlteredStatuses = (null);
+            this.maeNPCOnAttack.ClassId = (null);
+            this.maeNPCOnAttack.Dungeon = (null);
+            this.maeNPCOnAttack.EffectParamData = (null);
+            this.maeNPCOnAttack.Location = (new global::System.Drawing.Point(13, 581));
+            this.maeNPCOnAttack.Name = ("maeNPCOnAttack");
+            this.maeNPCOnAttack.PlaceholderActionName = (null);
+            this.maeNPCOnAttack.RequiresActionName = (true);
+            this.maeNPCOnAttack.RequiresCondition = (true);
+            this.maeNPCOnAttack.RequiresDescription = (false);
+            this.maeNPCOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maeNPCOnAttack.TabIndex = (208);
+            this.maeNPCOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // nudNPCOddsToTargetSelf
             // 
-            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 744));
+            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 754));
             this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
             this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
             this.nudNPCOddsToTargetSelf.TabIndex = (195);
@@ -3505,7 +2688,7 @@ namespace RogueCustomsDungeonEditor
             // label104
             // 
             this.label104.AutoSize = (true);
-            this.label104.Location = (new global::System.Drawing.Point(13, 746));
+            this.label104.Location = (new global::System.Drawing.Point(13, 756));
             this.label104.Name = ("label104");
             this.label104.Size = (new global::System.Drawing.Size(334, 15));
             this.label104.TabIndex = (194);
@@ -3540,66 +2723,6 @@ namespace RogueCustomsDungeonEditor
             this.chkNPCKnowsAllCharacterPositions.UseVisualStyleBackColor = (true);
             this.chkNPCKnowsAllCharacterPositions.CheckedChanged += (this.chkNPCKnowsAllCharacterPositions_CheckedChanged);
             // 
-            // btnNPCOnDeathAction
-            // 
-            this.btnNPCOnDeathAction.Location = (new global::System.Drawing.Point(168, 710));
-            this.btnNPCOnDeathAction.Name = ("btnNPCOnDeathAction");
-            this.btnNPCOnDeathAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnNPCOnDeathAction.TabIndex = (188);
-            this.btnNPCOnDeathAction.Text = ("... do this!");
-            this.btnNPCOnDeathAction.UseVisualStyleBackColor = (true);
-            this.btnNPCOnDeathAction.Click += (this.btnNPCOnDeathAction_Click);
-            // 
-            // label64
-            // 
-            this.label64.AutoSize = (true);
-            this.label64.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label64.Location = (new global::System.Drawing.Point(13, 714));
-            this.label64.Name = ("label64");
-            this.label64.Size = (new global::System.Drawing.Size(92, 15));
-            this.label64.TabIndex = (187);
-            this.label64.Text = ("When they die...");
-            // 
-            // btnNPCOnAttackedAction
-            // 
-            this.btnNPCOnAttackedAction.Location = (new global::System.Drawing.Point(168, 679));
-            this.btnNPCOnAttackedAction.Name = ("btnNPCOnAttackedAction");
-            this.btnNPCOnAttackedAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnNPCOnAttackedAction.TabIndex = (186);
-            this.btnNPCOnAttackedAction.Text = ("... do this!");
-            this.btnNPCOnAttackedAction.UseVisualStyleBackColor = (true);
-            this.btnNPCOnAttackedAction.Click += (this.btnNPCOnAttackedAction_Click);
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = (true);
-            this.label65.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label65.Location = (new global::System.Drawing.Point(13, 683));
-            this.label65.Name = ("label65");
-            this.label65.Size = (new global::System.Drawing.Size(149, 15));
-            this.label65.TabIndex = (185);
-            this.label65.Text = ("When they get interacted...");
-            // 
-            // btnNPCOnTurnStartAction
-            // 
-            this.btnNPCOnTurnStartAction.Location = (new global::System.Drawing.Point(168, 545));
-            this.btnNPCOnTurnStartAction.Name = ("btnNPCOnTurnStartAction");
-            this.btnNPCOnTurnStartAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnNPCOnTurnStartAction.TabIndex = (184);
-            this.btnNPCOnTurnStartAction.Text = ("... do this!");
-            this.btnNPCOnTurnStartAction.UseVisualStyleBackColor = (true);
-            this.btnNPCOnTurnStartAction.Click += (this.btnNPCOnTurnStartAction_Click);
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = (true);
-            this.label66.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label66.Location = (new global::System.Drawing.Point(13, 549));
-            this.label66.Name = ("label66");
-            this.label66.Size = (new global::System.Drawing.Size(149, 15));
-            this.label66.TabIndex = (183);
-            this.label66.Text = ("When the next turn starts...");
-            // 
             // label67
             // 
             this.label67.AutoSize = (true);
@@ -3609,65 +2732,6 @@ namespace RogueCustomsDungeonEditor
             this.label67.Size = (new global::System.Drawing.Size(67, 21));
             this.label67.TabIndex = (182);
             this.label67.Text = ("Actions");
-            // 
-            // label68
-            // 
-            this.label68.AutoSize = (true);
-            this.label68.Location = (new global::System.Drawing.Point(401, 318));
-            this.label68.Name = ("label68");
-            this.label68.Size = (new global::System.Drawing.Size(291, 30));
-            this.label68.TabIndex = (181);
-            this.label68.Text = ("NOTE: When not The Whole Map, Sight is significantly\r\nreduced in hallways");
-            this.label68.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            // 
-            // btnRemoveNPCOnAttackAction
-            // 
-            this.btnRemoveNPCOnAttackAction.Location = (new global::System.Drawing.Point(271, 638));
-            this.btnRemoveNPCOnAttackAction.Name = ("btnRemoveNPCOnAttackAction");
-            this.btnRemoveNPCOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnRemoveNPCOnAttackAction.TabIndex = (180);
-            this.btnRemoveNPCOnAttackAction.Text = ("Remove");
-            this.btnRemoveNPCOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnRemoveNPCOnAttackAction.Click += (this.btnRemoveNPCOnAttackAction_Click);
-            // 
-            // btnEditNPCOnAttackAction
-            // 
-            this.btnEditNPCOnAttackAction.Location = (new global::System.Drawing.Point(271, 609));
-            this.btnEditNPCOnAttackAction.Name = ("btnEditNPCOnAttackAction");
-            this.btnEditNPCOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnEditNPCOnAttackAction.TabIndex = (179);
-            this.btnEditNPCOnAttackAction.Text = ("Edit");
-            this.btnEditNPCOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnEditNPCOnAttackAction.Click += (this.btnEditNPCOnAttackAction_Click);
-            // 
-            // btnAddNPCOnAttackAction
-            // 
-            this.btnAddNPCOnAttackAction.Location = (new global::System.Drawing.Point(271, 580));
-            this.btnAddNPCOnAttackAction.Name = ("btnAddNPCOnAttackAction");
-            this.btnAddNPCOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnAddNPCOnAttackAction.TabIndex = (178);
-            this.btnAddNPCOnAttackAction.Text = ("Add");
-            this.btnAddNPCOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnAddNPCOnAttackAction.Click += (this.btnAddNPCOnAttackAction_Click);
-            // 
-            // lbNPCOnAttackActions
-            // 
-            this.lbNPCOnAttackActions.FormattingEnabled = (true);
-            this.lbNPCOnAttackActions.ItemHeight = (15);
-            this.lbNPCOnAttackActions.Location = (new global::System.Drawing.Point(168, 574));
-            this.lbNPCOnAttackActions.Name = ("lbNPCOnAttackActions");
-            this.lbNPCOnAttackActions.Size = (new global::System.Drawing.Size(97, 94));
-            this.lbNPCOnAttackActions.TabIndex = (177);
-            this.lbNPCOnAttackActions.SelectedIndexChanged += (this.lbNPCOnAttackActions_SelectedIndexChanged);
-            // 
-            // label69
-            // 
-            this.label69.AutoSize = (true);
-            this.label69.Location = (new global::System.Drawing.Point(13, 599));
-            this.label69.Name = ("label69");
-            this.label69.Size = (new global::System.Drawing.Size(132, 30));
-            this.label69.TabIndex = (176);
-            this.label69.Text = ("Can do the following to\r\ninteract with someone:");
             // 
             // cmbNPCStartingArmor
             // 
@@ -3707,57 +2771,6 @@ namespace RogueCustomsDungeonEditor
             this.label71.TabIndex = (172);
             this.label71.Text = ("When unarmed, wield");
             // 
-            // lbNPCStartingInventory
-            // 
-            this.lbNPCStartingInventory.FormattingEnabled = (true);
-            this.lbNPCStartingInventory.ItemHeight = (15);
-            this.lbNPCStartingInventory.Location = (new global::System.Drawing.Point(156, 423));
-            this.lbNPCStartingInventory.Name = ("lbNPCStartingInventory");
-            this.lbNPCStartingInventory.Size = (new global::System.Drawing.Size(148, 79));
-            this.lbNPCStartingInventory.TabIndex = (171);
-            this.lbNPCStartingInventory.SelectedIndexChanged += (this.lbNPCStartingInventory_SelectedIndexChanged);
-            // 
-            // btnNPCRemoveItem
-            // 
-            this.btnNPCRemoveItem.Enabled = (false);
-            this.btnNPCRemoveItem.Location = (new global::System.Drawing.Point(75, 475));
-            this.btnNPCRemoveItem.Name = ("btnNPCRemoveItem");
-            this.btnNPCRemoveItem.Size = (new global::System.Drawing.Size(59, 23));
-            this.btnNPCRemoveItem.TabIndex = (170);
-            this.btnNPCRemoveItem.Text = ("Remove");
-            this.btnNPCRemoveItem.UseVisualStyleBackColor = (true);
-            this.btnNPCRemoveItem.Click += (this.btnNPCRemoveItem_Click);
-            // 
-            // btnNPCAddItem
-            // 
-            this.btnNPCAddItem.Enabled = (false);
-            this.btnNPCAddItem.Location = (new global::System.Drawing.Point(13, 475));
-            this.btnNPCAddItem.Name = ("btnNPCAddItem");
-            this.btnNPCAddItem.Size = (new global::System.Drawing.Size(56, 23));
-            this.btnNPCAddItem.TabIndex = (169);
-            this.btnNPCAddItem.Text = ("Add");
-            this.btnNPCAddItem.UseVisualStyleBackColor = (true);
-            this.btnNPCAddItem.Click += (this.btnNPCAddItem_Click);
-            // 
-            // cmbNPCInventoryItemChoices
-            // 
-            this.cmbNPCInventoryItemChoices.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCInventoryItemChoices.FormattingEnabled = (true);
-            this.cmbNPCInventoryItemChoices.Location = (new global::System.Drawing.Point(13, 446));
-            this.cmbNPCInventoryItemChoices.Name = ("cmbNPCInventoryItemChoices");
-            this.cmbNPCInventoryItemChoices.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbNPCInventoryItemChoices.TabIndex = (168);
-            this.cmbNPCInventoryItemChoices.SelectedIndexChanged += (this.cmbNPCInventoryItemChoices_SelectedIndexChanged);
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = (true);
-            this.label72.Location = (new global::System.Drawing.Point(13, 423));
-            this.label72.Name = ("label72");
-            this.label72.Size = (new global::System.Drawing.Size(92, 15));
-            this.label72.TabIndex = (167);
-            this.label72.Text = ("Initial Inventory:");
-            // 
             // label73
             // 
             this.label73.AutoSize = (true);
@@ -3784,356 +2797,6 @@ namespace RogueCustomsDungeonEditor
             this.label74.Size = (new global::System.Drawing.Size(109, 15));
             this.label74.TabIndex = (164);
             this.label74.Text = ("Inventory Capacity:");
-            // 
-            // label75
-            // 
-            this.label75.AutoSize = (true);
-            this.label75.Location = (new global::System.Drawing.Point(406, 700));
-            this.label75.Name = ("label75");
-            this.label75.Size = (new global::System.Drawing.Size(54, 15));
-            this.label75.TabIndex = (163);
-            this.label75.Text = ("Recovers");
-            // 
-            // label76
-            // 
-            this.label76.AutoSize = (true);
-            this.label76.Location = (new global::System.Drawing.Point(394, 512));
-            this.label76.Name = ("label76");
-            this.label76.Size = (new global::System.Drawing.Size(325, 30));
-            this.label76.TabIndex = (162);
-            this.label76.Text = ("NOTE: HP, Attack, Defense, Movement and HP Regeneration\r\nare internal names. Display Names depend on Locales.");
-            // 
-            // label77
-            // 
-            this.label77.AutoSize = (true);
-            this.label77.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label77.Location = (new global::System.Drawing.Point(407, 483));
-            this.label77.Name = ("label77");
-            this.label77.Size = (new global::System.Drawing.Size(115, 15));
-            this.label77.TabIndex = (161);
-            this.label77.Text = ("After Leveling Up...");
-            // 
-            // chkNPCCanGainExperience
-            // 
-            this.chkNPCCanGainExperience.AutoSize = (true);
-            this.chkNPCCanGainExperience.Location = (new global::System.Drawing.Point(406, 391));
-            this.chkNPCCanGainExperience.Name = ("chkNPCCanGainExperience");
-            this.chkNPCCanGainExperience.Size = (new global::System.Drawing.Size(169, 19));
-            this.chkNPCCanGainExperience.TabIndex = (160);
-            this.chkNPCCanGainExperience.Text = ("Can gain Experience Points");
-            this.chkNPCCanGainExperience.UseVisualStyleBackColor = (true);
-            this.chkNPCCanGainExperience.CheckedChanged += (this.chkNPCCanGainExperience_CheckedChanged);
-            // 
-            // nudNPCMaxLevel
-            // 
-            this.nudNPCMaxLevel.Location = (new global::System.Drawing.Point(512, 443));
-            this.nudNPCMaxLevel.Name = ("nudNPCMaxLevel");
-            this.nudNPCMaxLevel.Size = (new global::System.Drawing.Size(44, 23));
-            this.nudNPCMaxLevel.TabIndex = (159);
-            this.nudNPCMaxLevel.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCMaxLevel.ValueChanged += (this.nudNPCMaxLevel_ValueChanged);
-            // 
-            // label78
-            // 
-            this.label78.AutoSize = (true);
-            this.label78.Location = (new global::System.Drawing.Point(403, 446));
-            this.label78.Name = ("label78");
-            this.label78.Size = (new global::System.Drawing.Size(103, 15));
-            this.label78.TabIndex = (158);
-            this.label78.Text = ("Maximum Level is");
-            // 
-            // txtNPCLevelUpFormula
-            // 
-            this.txtNPCLevelUpFormula.Location = (new global::System.Drawing.Point(533, 415));
-            this.txtNPCLevelUpFormula.Name = ("txtNPCLevelUpFormula");
-            this.txtNPCLevelUpFormula.Size = (new global::System.Drawing.Size(180, 23));
-            this.txtNPCLevelUpFormula.TabIndex = (157);
-            this.txtNPCLevelUpFormula.Enter += (this.txtNPCLevelUpFormula_Enter);
-            this.txtNPCLevelUpFormula.Leave += (this.txtNPCLevelUpFormula_Leave);
-            // 
-            // label79
-            // 
-            this.label79.AutoSize = (true);
-            this.label79.Location = (new global::System.Drawing.Point(403, 418));
-            this.label79.Name = ("label79");
-            this.label79.Size = (new global::System.Drawing.Size(126, 15));
-            this.label79.TabIndex = (156);
-            this.label79.Text = ("Experience to Level Up");
-            // 
-            // label80
-            // 
-            this.label80.AutoSize = (true);
-            this.label80.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label80.Location = (new global::System.Drawing.Point(501, 361));
-            this.label80.Name = ("label80");
-            this.label80.Size = (new global::System.Drawing.Size(101, 21));
-            this.label80.TabIndex = (155);
-            this.label80.Text = ("Leveling Up");
-            // 
-            // nudNPCFlatSightRange
-            // 
-            this.nudNPCFlatSightRange.Location = (new global::System.Drawing.Point(587, 284));
-            this.nudNPCFlatSightRange.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCFlatSightRange.Name = ("nudNPCFlatSightRange");
-            this.nudNPCFlatSightRange.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCFlatSightRange.TabIndex = (153);
-            this.nudNPCFlatSightRange.Visible = (false);
-            this.nudNPCFlatSightRange.ValueChanged += (this.nudNPCFlatSightRange_ValueChanged);
-            // 
-            // cmbNPCSightRange
-            // 
-            this.cmbNPCSightRange.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCSightRange.FormattingEnabled = (true);
-            this.cmbNPCSightRange.Location = (new global::System.Drawing.Point(451, 284));
-            this.cmbNPCSightRange.Name = ("cmbNPCSightRange");
-            this.cmbNPCSightRange.Size = (new global::System.Drawing.Size(121, 23));
-            this.cmbNPCSightRange.TabIndex = (152);
-            this.cmbNPCSightRange.SelectedIndexChanged += (this.cmbNPCSightRange_SelectedIndexChanged);
-            // 
-            // label81
-            // 
-            this.label81.AutoSize = (true);
-            this.label81.Location = (new global::System.Drawing.Point(401, 287));
-            this.label81.Name = ("label81");
-            this.label81.Size = (new global::System.Drawing.Size(48, 15));
-            this.label81.TabIndex = (151);
-            this.label81.Text = ("Can see");
-            // 
-            // label82
-            // 
-            this.label82.AutoSize = (true);
-            this.label82.Location = (new global::System.Drawing.Point(634, 172));
-            this.label82.Name = ("label82");
-            this.label82.Size = (new global::System.Drawing.Size(68, 15));
-            this.label82.TabIndex = (150);
-            this.label82.Text = ("HP per turn");
-            // 
-            // label83
-            // 
-            this.label83.AutoSize = (true);
-            this.label83.Location = (new global::System.Drawing.Point(519, 170));
-            this.label83.Name = ("label83");
-            this.label83.Size = (new global::System.Drawing.Size(54, 15));
-            this.label83.TabIndex = (149);
-            this.label83.Text = ("Recovers");
-            // 
-            // label84
-            // 
-            this.label84.AutoSize = (true);
-            this.label84.Location = (new global::System.Drawing.Point(520, 702));
-            this.label84.Name = ("label84");
-            this.label84.Size = (new global::System.Drawing.Size(167, 15));
-            this.label84.TabIndex = (148);
-            this.label84.Text = ("more HP per turn per Level Up");
-            // 
-            // nudNPCHPRegenerationPerLevelUp
-            // 
-            this.nudNPCHPRegenerationPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCHPRegenerationPerLevelUp.Location = (new global::System.Drawing.Point(463, 698));
-            this.nudNPCHPRegenerationPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCHPRegenerationPerLevelUp.Name = ("nudNPCHPRegenerationPerLevelUp");
-            this.nudNPCHPRegenerationPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCHPRegenerationPerLevelUp.TabIndex = (147);
-            // 
-            // nudNPCBaseHPRegeneration
-            // 
-            this.nudNPCBaseHPRegeneration.DecimalPlaces = (4);
-            this.nudNPCBaseHPRegeneration.Location = (new global::System.Drawing.Point(574, 168));
-            this.nudNPCBaseHPRegeneration.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCBaseHPRegeneration.Minimum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, global::System.Int32.MinValue }));
-            this.nudNPCBaseHPRegeneration.Name = ("nudNPCBaseHPRegeneration");
-            this.nudNPCBaseHPRegeneration.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseHPRegeneration.TabIndex = (146);
-            this.nudNPCBaseHPRegeneration.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseHPRegeneration.ValueChanged += (this.nudNPCBaseHPRegeneration_ValueChanged);
-            // 
-            // label85
-            // 
-            this.label85.AutoSize = (true);
-            this.label85.Location = (new global::System.Drawing.Point(406, 673));
-            this.label85.Name = ("label85");
-            this.label85.Size = (new global::System.Drawing.Size(61, 15));
-            this.label85.TabIndex = (145);
-            this.label85.Text = ("Can move");
-            // 
-            // label86
-            // 
-            this.label86.AutoSize = (true);
-            this.label86.Location = (new global::System.Drawing.Point(523, 259));
-            this.label86.Name = ("label86");
-            this.label86.Size = (new global::System.Drawing.Size(73, 15));
-            this.label86.TabIndex = (144);
-            this.label86.Text = ("tiles per turn");
-            // 
-            // label87
-            // 
-            this.label87.AutoSize = (true);
-            this.label87.Location = (new global::System.Drawing.Point(402, 257));
-            this.label87.Name = ("label87");
-            this.label87.Size = (new global::System.Drawing.Size(61, 15));
-            this.label87.TabIndex = (143);
-            this.label87.Text = ("Can move");
-            // 
-            // label88
-            // 
-            this.label88.AutoSize = (true);
-            this.label88.Location = (new global::System.Drawing.Point(524, 674));
-            this.label88.Name = ("label88");
-            this.label88.Size = (new global::System.Drawing.Size(174, 15));
-            this.label88.TabIndex = (142);
-            this.label88.Text = ("more Tiles per turn per Level Up");
-            // 
-            // nudNPCMovementPerLevelUp
-            // 
-            this.nudNPCMovementPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCMovementPerLevelUp.Location = (new global::System.Drawing.Point(467, 671));
-            this.nudNPCMovementPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCMovementPerLevelUp.Name = ("nudNPCMovementPerLevelUp");
-            this.nudNPCMovementPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCMovementPerLevelUp.TabIndex = (141);
-            this.nudNPCMovementPerLevelUp.ValueChanged += (this.nudNPCMovementPerLevelUp_ValueChanged);
-            // 
-            // nudNPCBaseMovement
-            // 
-            this.nudNPCBaseMovement.Location = (new global::System.Drawing.Point(463, 255));
-            this.nudNPCBaseMovement.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
-            this.nudNPCBaseMovement.Name = ("nudNPCBaseMovement");
-            this.nudNPCBaseMovement.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseMovement.TabIndex = (140);
-            this.nudNPCBaseMovement.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseMovement.ValueChanged += (this.nudNPCBaseMovement_ValueChanged);
-            // 
-            // label89
-            // 
-            this.label89.AutoSize = (true);
-            this.label89.Location = (new global::System.Drawing.Point(462, 644));
-            this.label89.Name = ("label89");
-            this.label89.Size = (new global::System.Drawing.Size(148, 15));
-            this.label89.TabIndex = (139);
-            this.label89.Text = ("more Defense per Level Up");
-            // 
-            // nudNPCDefensePerLevelUp
-            // 
-            this.nudNPCDefensePerLevelUp.DecimalPlaces = (4);
-            this.nudNPCDefensePerLevelUp.Location = (new global::System.Drawing.Point(406, 641));
-            this.nudNPCDefensePerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCDefensePerLevelUp.Name = ("nudNPCDefensePerLevelUp");
-            this.nudNPCDefensePerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCDefensePerLevelUp.TabIndex = (138);
-            this.nudNPCDefensePerLevelUp.ValueChanged += (this.nudNPCDefensePerLevelUp_ValueChanged);
-            // 
-            // label90
-            // 
-            this.label90.AutoSize = (true);
-            this.label90.Location = (new global::System.Drawing.Point(459, 229));
-            this.label90.Name = ("label90");
-            this.label90.Size = (new global::System.Drawing.Size(49, 15));
-            this.label90.TabIndex = (137);
-            this.label90.Text = ("Defense");
-            // 
-            // nudNPCBaseDefense
-            // 
-            this.nudNPCBaseDefense.Location = (new global::System.Drawing.Point(402, 225));
-            this.nudNPCBaseDefense.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
-            this.nudNPCBaseDefense.Name = ("nudNPCBaseDefense");
-            this.nudNPCBaseDefense.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseDefense.TabIndex = (136);
-            this.nudNPCBaseDefense.ValueChanged += (this.nudNPCBaseDefense_ValueChanged);
-            // 
-            // label91
-            // 
-            this.label91.AutoSize = (true);
-            this.label91.Location = (new global::System.Drawing.Point(394, 124));
-            this.label91.Name = ("label91");
-            this.label91.Size = (new global::System.Drawing.Size(325, 30));
-            this.label91.TabIndex = (135);
-            this.label91.Text = ("NOTE: HP, Attack, Defense, Movement and HP Regeneration\r\nare internal names. Display Names depend on Locales.");
-            // 
-            // label92
-            // 
-            this.label92.AutoSize = (true);
-            this.label92.Location = (new global::System.Drawing.Point(462, 617));
-            this.label92.Name = ("label92");
-            this.label92.Size = (new global::System.Drawing.Size(140, 15));
-            this.label92.TabIndex = (134);
-            this.label92.Text = ("more Attack per Level Up");
-            // 
-            // nudNPCAttackPerLevelUp
-            // 
-            this.nudNPCAttackPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCAttackPerLevelUp.Location = (new global::System.Drawing.Point(406, 614));
-            this.nudNPCAttackPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCAttackPerLevelUp.Name = ("nudNPCAttackPerLevelUp");
-            this.nudNPCAttackPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCAttackPerLevelUp.TabIndex = (133);
-            this.nudNPCAttackPerLevelUp.ValueChanged += (this.nudNPCAttackPerLevelUp_ValueChanged);
-            // 
-            // label93
-            // 
-            this.label93.AutoSize = (true);
-            this.label93.Location = (new global::System.Drawing.Point(459, 200));
-            this.label93.Name = ("label93");
-            this.label93.Size = (new global::System.Drawing.Size(41, 15));
-            this.label93.TabIndex = (132);
-            this.label93.Text = ("Attack");
-            // 
-            // nudNPCBaseAttack
-            // 
-            this.nudNPCBaseAttack.Location = (new global::System.Drawing.Point(402, 196));
-            this.nudNPCBaseAttack.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9999, 0, 0, 0 }));
-            this.nudNPCBaseAttack.Name = ("nudNPCBaseAttack");
-            this.nudNPCBaseAttack.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseAttack.TabIndex = (131);
-            this.nudNPCBaseAttack.ValueChanged += (this.nudNPCBaseAttack_ValueChanged);
-            // 
-            // label94
-            // 
-            this.label94.AutoSize = (true);
-            this.label94.Location = (new global::System.Drawing.Point(462, 560));
-            this.label94.Name = ("label94");
-            this.label94.Size = (new global::System.Drawing.Size(122, 15));
-            this.label94.TabIndex = (130);
-            this.label94.Text = ("more HP per Level Up");
-            // 
-            // nudNPCHPPerLevelUp
-            // 
-            this.nudNPCHPPerLevelUp.DecimalPlaces = (4);
-            this.nudNPCHPPerLevelUp.Location = (new global::System.Drawing.Point(406, 557));
-            this.nudNPCHPPerLevelUp.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCHPPerLevelUp.Name = ("nudNPCHPPerLevelUp");
-            this.nudNPCHPPerLevelUp.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudNPCHPPerLevelUp.TabIndex = (129);
-            this.nudNPCHPPerLevelUp.ValueChanged += (this.nudNPCHPPerLevelUp_ValueChanged);
-            // 
-            // label95
-            // 
-            this.label95.AutoSize = (true);
-            this.label95.Location = (new global::System.Drawing.Point(459, 170));
-            this.label95.Name = ("label95");
-            this.label95.Size = (new global::System.Drawing.Size(23, 15));
-            this.label95.TabIndex = (128);
-            this.label95.Text = ("HP");
-            // 
-            // nudNPCBaseHP
-            // 
-            this.nudNPCBaseHP.Location = (new global::System.Drawing.Point(402, 166));
-            this.nudNPCBaseHP.Maximum = (new global::System.Decimal(new global::System.Int32[] { 99999, 0, 0, 0 }));
-            this.nudNPCBaseHP.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseHP.Name = ("nudNPCBaseHP");
-            this.nudNPCBaseHP.Size = (new global::System.Drawing.Size(55, 23));
-            this.nudNPCBaseHP.TabIndex = (127);
-            this.nudNPCBaseHP.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudNPCBaseHP.ValueChanged += (this.nudNPCBaseHP_ValueChanged);
-            // 
-            // label96
-            // 
-            this.label96.AutoSize = (true);
-            this.label96.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label96.Location = (new global::System.Drawing.Point(477, 100));
-            this.label96.Name = ("label96");
-            this.label96.Size = (new global::System.Drawing.Size(155, 21));
-            this.label96.TabIndex = (126);
-            this.label96.Text = ("Base Stats (Level 1)");
             // 
             // label98
             // 
@@ -4243,16 +2906,6 @@ namespace RogueCustomsDungeonEditor
             this.label101.TabIndex = (112);
             this.label101.Text = ("Default Name");
             // 
-            // lblNPCSightRangeText
-            // 
-            this.lblNPCSightRangeText.AutoSize = (true);
-            this.lblNPCSightRangeText.Location = (new global::System.Drawing.Point(647, 287));
-            this.lblNPCSightRangeText.Name = ("lblNPCSightRangeText");
-            this.lblNPCSightRangeText.Size = (new global::System.Drawing.Size(28, 15));
-            this.lblNPCSightRangeText.TabIndex = (154);
-            this.lblNPCSightRangeText.Text = ("tiles");
-            this.lblNPCSightRangeText.Visible = (false);
-            // 
             // crsNPC
             // 
             gameColor45.A = ((global::System.Byte)(255));
@@ -4274,19 +2927,11 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpItem
             // 
-            this.tpItem.Controls.Add(this.btnItemOnTurnStartAction);
-            this.tpItem.Controls.Add(this.lblItemOnTurnStartAction);
-            this.tpItem.Controls.Add(this.btnItemOnAttackedAction);
-            this.tpItem.Controls.Add(this.lblItemOnAttackedAction);
-            this.tpItem.Controls.Add(this.btnRemoveItemOnAttackAction);
-            this.tpItem.Controls.Add(this.btnEditItemOnAttackAction);
-            this.tpItem.Controls.Add(this.btnAddItemOnAttackAction);
-            this.tpItem.Controls.Add(this.lbItemOnAttackActions);
-            this.tpItem.Controls.Add(this.lblItemOnAttackActions);
-            this.tpItem.Controls.Add(this.btnItemOnUseAction);
-            this.tpItem.Controls.Add(this.lblItemOnUseAction);
-            this.tpItem.Controls.Add(this.btnItemOnSteppedAction);
-            this.tpItem.Controls.Add(this.lblItemOnSteppedAction);
+            this.tpItem.Controls.Add(this.saeItemOnTurnStart);
+            this.tpItem.Controls.Add(this.saeItemOnAttacked);
+            this.tpItem.Controls.Add(this.maeItemOnAttack);
+            this.tpItem.Controls.Add(this.saeItemOnUse);
+            this.tpItem.Controls.Add(this.saeItemOnStepped);
             this.tpItem.Controls.Add(this.txtItemPower);
             this.tpItem.Controls.Add(this.label108);
             this.tpItem.Controls.Add(this.chkItemCanBePickedUp);
@@ -4308,134 +2953,108 @@ namespace RogueCustomsDungeonEditor
             this.tpItem.Text = ("Item");
             this.tpItem.UseVisualStyleBackColor = (true);
             // 
-            // btnItemOnTurnStartAction
+            // saeItemOnTurnStart
             // 
-            this.btnItemOnTurnStartAction.Location = (new global::System.Drawing.Point(661, 243));
-            this.btnItemOnTurnStartAction.Name = ("btnItemOnTurnStartAction");
-            this.btnItemOnTurnStartAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnItemOnTurnStartAction.TabIndex = (219);
-            this.btnItemOnTurnStartAction.Text = ("... do this!");
-            this.btnItemOnTurnStartAction.UseVisualStyleBackColor = (true);
-            this.btnItemOnTurnStartAction.Click += (this.btnItemOnTurnStartAction_Click);
+            this.saeItemOnTurnStart.Action = (null);
+            this.saeItemOnTurnStart.ActionDescription = ("When the Item's owner starts a new turn...");
+            this.saeItemOnTurnStart.ActionTypeText = ("On Death");
+            this.saeItemOnTurnStart.AlteredStatuses = (null);
+            this.saeItemOnTurnStart.AutoSize = (true);
+            this.saeItemOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeItemOnTurnStart.ClassId = (null);
+            this.saeItemOnTurnStart.Dungeon = (null);
+            this.saeItemOnTurnStart.EffectParamData = (null);
+            this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 310));
+            this.saeItemOnTurnStart.Name = ("saeItemOnTurnStart");
+            this.saeItemOnTurnStart.PlaceholderActionName = ("Death");
+            this.saeItemOnTurnStart.RequiresActionName = (false);
+            this.saeItemOnTurnStart.RequiresCondition = (false);
+            this.saeItemOnTurnStart.RequiresDescription = (false);
+            this.saeItemOnTurnStart.Size = (new global::System.Drawing.Size(362, 32));
+            this.saeItemOnTurnStart.TabIndex = (225);
+            this.saeItemOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // lblItemOnTurnStartAction
+            // saeItemOnAttacked
             // 
-            this.lblItemOnTurnStartAction.AutoSize = (true);
-            this.lblItemOnTurnStartAction.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.lblItemOnTurnStartAction.Location = (new global::System.Drawing.Point(390, 247));
-            this.lblItemOnTurnStartAction.Name = ("lblItemOnTurnStartAction");
-            this.lblItemOnTurnStartAction.Size = (new global::System.Drawing.Size(256, 15));
-            this.lblItemOnTurnStartAction.TabIndex = (218);
-            this.lblItemOnTurnStartAction.Text = ("When someone equipping it starts a new turn...");
+            this.saeItemOnAttacked.Action = (null);
+            this.saeItemOnAttacked.ActionDescription = ("When the Item's owner gets interacted...   ");
+            this.saeItemOnAttacked.ActionTypeText = ("Interacted");
+            this.saeItemOnAttacked.AlteredStatuses = (null);
+            this.saeItemOnAttacked.AutoSize = (true);
+            this.saeItemOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeItemOnAttacked.ClassId = (null);
+            this.saeItemOnAttacked.Dungeon = (null);
+            this.saeItemOnAttacked.EffectParamData = (null);
+            this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 272));
+            this.saeItemOnAttacked.Name = ("saeItemOnAttacked");
+            this.saeItemOnAttacked.PlaceholderActionName = ("Interacted");
+            this.saeItemOnAttacked.RequiresActionName = (false);
+            this.saeItemOnAttacked.RequiresCondition = (false);
+            this.saeItemOnAttacked.RequiresDescription = (false);
+            this.saeItemOnAttacked.Size = (new global::System.Drawing.Size(362, 32));
+            this.saeItemOnAttacked.TabIndex = (224);
+            this.saeItemOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // btnItemOnAttackedAction
+            // maeItemOnAttack
             // 
-            this.btnItemOnAttackedAction.Location = (new global::System.Drawing.Point(661, 281));
-            this.btnItemOnAttackedAction.Name = ("btnItemOnAttackedAction");
-            this.btnItemOnAttackedAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnItemOnAttackedAction.TabIndex = (217);
-            this.btnItemOnAttackedAction.Text = ("... do this!");
-            this.btnItemOnAttackedAction.UseVisualStyleBackColor = (true);
-            this.btnItemOnAttackedAction.Click += (this.btnItemOnAttackedAction_Click);
+            this.maeItemOnAttack.ActionDescription = ("The Item's owner can do the following to interact with someone:");
+            this.maeItemOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeItemOnAttack.Actions")));
+            this.maeItemOnAttack.ActionTypeText = ("Interact");
+            this.maeItemOnAttack.AlteredStatuses = (null);
+            this.maeItemOnAttack.ClassId = (null);
+            this.maeItemOnAttack.Dungeon = (null);
+            this.maeItemOnAttack.EffectParamData = (null);
+            this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 172));
+            this.maeItemOnAttack.Name = ("maeItemOnAttack");
+            this.maeItemOnAttack.PlaceholderActionName = (null);
+            this.maeItemOnAttack.RequiresActionName = (true);
+            this.maeItemOnAttack.RequiresCondition = (true);
+            this.maeItemOnAttack.RequiresDescription = (true);
+            this.maeItemOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maeItemOnAttack.TabIndex = (223);
+            this.maeItemOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
-            // lblItemOnAttackedAction
+            // saeItemOnUse
             // 
-            this.lblItemOnAttackedAction.AutoSize = (true);
-            this.lblItemOnAttackedAction.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.lblItemOnAttackedAction.Location = (new global::System.Drawing.Point(390, 285));
-            this.lblItemOnAttackedAction.Name = ("lblItemOnAttackedAction");
-            this.lblItemOnAttackedAction.Size = (new global::System.Drawing.Size(273, 15));
-            this.lblItemOnAttackedAction.TabIndex = (216);
-            this.lblItemOnAttackedAction.Text = ("When someone equipping it gets interacted with...");
+            this.saeItemOnUse.Action = (null);
+            this.saeItemOnUse.ActionDescription = ("When someone uses it on     \r\nthemselves...");
+            this.saeItemOnUse.ActionTypeText = ("Item Use");
+            this.saeItemOnUse.AlteredStatuses = (null);
+            this.saeItemOnUse.AutoSize = (true);
+            this.saeItemOnUse.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeItemOnUse.ClassId = (null);
+            this.saeItemOnUse.Dungeon = (null);
+            this.saeItemOnUse.EffectParamData = (null);
+            this.saeItemOnUse.Location = (new global::System.Drawing.Point(13, 316));
+            this.saeItemOnUse.Name = ("saeItemOnUse");
+            this.saeItemOnUse.PlaceholderActionName = ("ItemUse");
+            this.saeItemOnUse.RequiresActionName = (false);
+            this.saeItemOnUse.RequiresCondition = (true);
+            this.saeItemOnUse.RequiresDescription = (true);
+            this.saeItemOnUse.Size = (new global::System.Drawing.Size(292, 32));
+            this.saeItemOnUse.TabIndex = (222);
+            this.saeItemOnUse.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // btnRemoveItemOnAttackAction
+            // saeItemOnStepped
             // 
-            this.btnRemoveItemOnAttackAction.Location = (new global::System.Drawing.Point(661, 204));
-            this.btnRemoveItemOnAttackAction.Name = ("btnRemoveItemOnAttackAction");
-            this.btnRemoveItemOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnRemoveItemOnAttackAction.TabIndex = (215);
-            this.btnRemoveItemOnAttackAction.Text = ("Remove");
-            this.btnRemoveItemOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnRemoveItemOnAttackAction.Click += (this.btnRemoveItemOnAttackAction_Click);
-            // 
-            // btnEditItemOnAttackAction
-            // 
-            this.btnEditItemOnAttackAction.Location = (new global::System.Drawing.Point(661, 175));
-            this.btnEditItemOnAttackAction.Name = ("btnEditItemOnAttackAction");
-            this.btnEditItemOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnEditItemOnAttackAction.TabIndex = (214);
-            this.btnEditItemOnAttackAction.Text = ("Edit");
-            this.btnEditItemOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnEditItemOnAttackAction.Click += (this.btnEditItemOnAttackAction_Click);
-            // 
-            // btnAddItemOnAttackAction
-            // 
-            this.btnAddItemOnAttackAction.Location = (new global::System.Drawing.Point(661, 146));
-            this.btnAddItemOnAttackAction.Name = ("btnAddItemOnAttackAction");
-            this.btnAddItemOnAttackAction.Size = (new global::System.Drawing.Size(68, 23));
-            this.btnAddItemOnAttackAction.TabIndex = (213);
-            this.btnAddItemOnAttackAction.Text = ("Add");
-            this.btnAddItemOnAttackAction.UseVisualStyleBackColor = (true);
-            this.btnAddItemOnAttackAction.Click += (this.btnAddItemOnAttackAction_Click);
-            // 
-            // lbItemOnAttackActions
-            // 
-            this.lbItemOnAttackActions.FormattingEnabled = (true);
-            this.lbItemOnAttackActions.ItemHeight = (15);
-            this.lbItemOnAttackActions.Location = (new global::System.Drawing.Point(558, 140));
-            this.lbItemOnAttackActions.Name = ("lbItemOnAttackActions");
-            this.lbItemOnAttackActions.Size = (new global::System.Drawing.Size(97, 94));
-            this.lbItemOnAttackActions.TabIndex = (212);
-            this.lbItemOnAttackActions.SelectedIndexChanged += (this.lbItemOnAttackActions_SelectedIndexChanged);
-            // 
-            // lblItemOnAttackActions
-            // 
-            this.lblItemOnAttackActions.AutoSize = (true);
-            this.lblItemOnAttackActions.Location = (new global::System.Drawing.Point(390, 165));
-            this.lblItemOnAttackActions.Name = ("lblItemOnAttackActions");
-            this.lblItemOnAttackActions.Size = (new global::System.Drawing.Size(132, 30));
-            this.lblItemOnAttackActions.TabIndex = (211);
-            this.lblItemOnAttackActions.Text = ("Can do the following to\r\ninteract with someone:");
-            // 
-            // btnItemOnUseAction
-            // 
-            this.btnItemOnUseAction.Location = (new global::System.Drawing.Point(235, 316));
-            this.btnItemOnUseAction.Name = ("btnItemOnUseAction");
-            this.btnItemOnUseAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnItemOnUseAction.TabIndex = (210);
-            this.btnItemOnUseAction.Text = ("... do this!");
-            this.btnItemOnUseAction.UseVisualStyleBackColor = (true);
-            this.btnItemOnUseAction.Click += (this.btnItemOnUseAction_Click);
-            // 
-            // lblItemOnUseAction
-            // 
-            this.lblItemOnUseAction.AutoSize = (true);
-            this.lblItemOnUseAction.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.lblItemOnUseAction.Location = (new global::System.Drawing.Point(15, 320));
-            this.lblItemOnUseAction.Name = ("lblItemOnUseAction");
-            this.lblItemOnUseAction.Size = (new global::System.Drawing.Size(214, 15));
-            this.lblItemOnUseAction.TabIndex = (209);
-            this.lblItemOnUseAction.Text = ("When someone uses it on themselves...");
-            // 
-            // btnItemOnSteppedAction
-            // 
-            this.btnItemOnSteppedAction.Location = (new global::System.Drawing.Point(235, 285));
-            this.btnItemOnSteppedAction.Name = ("btnItemOnSteppedAction");
-            this.btnItemOnSteppedAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnItemOnSteppedAction.TabIndex = (208);
-            this.btnItemOnSteppedAction.Text = ("... do this!");
-            this.btnItemOnSteppedAction.UseVisualStyleBackColor = (true);
-            this.btnItemOnSteppedAction.Click += (this.btnItemOnSteppedAction_Click);
-            // 
-            // lblItemOnSteppedAction
-            // 
-            this.lblItemOnSteppedAction.AutoSize = (true);
-            this.lblItemOnSteppedAction.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.lblItemOnSteppedAction.Location = (new global::System.Drawing.Point(15, 289));
-            this.lblItemOnSteppedAction.Name = ("lblItemOnSteppedAction");
-            this.lblItemOnSteppedAction.Size = (new global::System.Drawing.Size(156, 15));
-            this.lblItemOnSteppedAction.TabIndex = (207);
-            this.lblItemOnSteppedAction.Text = ("When someone steps on it...");
+            this.saeItemOnStepped.Action = (null);
+            this.saeItemOnStepped.ActionDescription = ("When someone steps on it...");
+            this.saeItemOnStepped.ActionTypeText = ("Stepped");
+            this.saeItemOnStepped.AlteredStatuses = (null);
+            this.saeItemOnStepped.AutoSize = (true);
+            this.saeItemOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeItemOnStepped.ClassId = (null);
+            this.saeItemOnStepped.Dungeon = (null);
+            this.saeItemOnStepped.EffectParamData = (null);
+            this.saeItemOnStepped.Location = (new global::System.Drawing.Point(15, 278));
+            this.saeItemOnStepped.Name = ("saeItemOnStepped");
+            this.saeItemOnStepped.PlaceholderActionName = ("Stepped");
+            this.saeItemOnStepped.RequiresActionName = (false);
+            this.saeItemOnStepped.RequiresCondition = (false);
+            this.saeItemOnStepped.RequiresDescription = (false);
+            this.saeItemOnStepped.Size = (new global::System.Drawing.Size(290, 32));
+            this.saeItemOnStepped.TabIndex = (221);
+            this.saeItemOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtItemPower
             // 
@@ -4595,8 +3214,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpTrap
             // 
-            this.tpTrap.Controls.Add(this.btnTrapOnSteppedAction);
-            this.tpTrap.Controls.Add(this.label112);
+            this.tpTrap.Controls.Add(this.saeTrapOnStepped);
             this.tpTrap.Controls.Add(this.txtTrapPower);
             this.tpTrap.Controls.Add(this.label113);
             this.tpTrap.Controls.Add(this.chkTrapStartsVisible);
@@ -4615,25 +3233,26 @@ namespace RogueCustomsDungeonEditor
             this.tpTrap.Text = ("Trap");
             this.tpTrap.UseVisualStyleBackColor = (true);
             // 
-            // btnTrapOnSteppedAction
+            // saeTrapOnStepped
             // 
-            this.btnTrapOnSteppedAction.Location = (new global::System.Drawing.Point(175, 276));
-            this.btnTrapOnSteppedAction.Name = ("btnTrapOnSteppedAction");
-            this.btnTrapOnSteppedAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnTrapOnSteppedAction.TabIndex = (238);
-            this.btnTrapOnSteppedAction.Text = ("... do this!");
-            this.btnTrapOnSteppedAction.UseVisualStyleBackColor = (true);
-            this.btnTrapOnSteppedAction.Click += (this.btnTrapOnSteppedAction_Click);
-            // 
-            // label112
-            // 
-            this.label112.AutoSize = (true);
-            this.label112.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label112.Location = (new global::System.Drawing.Point(13, 280));
-            this.label112.Name = ("label112");
-            this.label112.Size = (new global::System.Drawing.Size(156, 15));
-            this.label112.TabIndex = (237);
-            this.label112.Text = ("When someone steps on it...");
+            this.saeTrapOnStepped.Action = (null);
+            this.saeTrapOnStepped.ActionDescription = ("When someone steps on it...");
+            this.saeTrapOnStepped.ActionTypeText = ("Stepped");
+            this.saeTrapOnStepped.AlteredStatuses = (null);
+            this.saeTrapOnStepped.AutoSize = (true);
+            this.saeTrapOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeTrapOnStepped.ClassId = (null);
+            this.saeTrapOnStepped.Dungeon = (null);
+            this.saeTrapOnStepped.EffectParamData = (null);
+            this.saeTrapOnStepped.Location = (new global::System.Drawing.Point(13, 272));
+            this.saeTrapOnStepped.Name = ("saeTrapOnStepped");
+            this.saeTrapOnStepped.PlaceholderActionName = ("Stepped");
+            this.saeTrapOnStepped.RequiresActionName = (false);
+            this.saeTrapOnStepped.RequiresCondition = (false);
+            this.saeTrapOnStepped.RequiresDescription = (false);
+            this.saeTrapOnStepped.Size = (new global::System.Drawing.Size(290, 32));
+            this.saeTrapOnStepped.TabIndex = (240);
+            this.saeTrapOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtTrapPower
             // 
@@ -4763,13 +3382,11 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpAlteredStatus
             // 
-            this.tpAlteredStatus.Controls.Add(this.btnAlteredStatusOnTurnStartAction);
-            this.tpAlteredStatus.Controls.Add(this.label109);
+            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnTurnStart);
+            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnApply);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCleansedOnCleanseActions);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCleanseOnFloorChange);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCanOverwrite);
-            this.tpAlteredStatus.Controls.Add(this.btnAlteredStatusOnApplyAction);
-            this.tpAlteredStatus.Controls.Add(this.label97);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCanStack);
             this.tpAlteredStatus.Controls.Add(this.label111);
             this.tpAlteredStatus.Controls.Add(this.fklblAlteredStatusDescriptionLocale);
@@ -4786,25 +3403,47 @@ namespace RogueCustomsDungeonEditor
             this.tpAlteredStatus.Text = ("Altered Status");
             this.tpAlteredStatus.UseVisualStyleBackColor = (true);
             // 
-            // btnAlteredStatusOnTurnStartAction
+            // saeAlteredStatusOnTurnStart
             // 
-            this.btnAlteredStatusOnTurnStartAction.Location = (new global::System.Drawing.Point(657, 153));
-            this.btnAlteredStatusOnTurnStartAction.Name = ("btnAlteredStatusOnTurnStartAction");
-            this.btnAlteredStatusOnTurnStartAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnAlteredStatusOnTurnStartAction.TabIndex = (259);
-            this.btnAlteredStatusOnTurnStartAction.Text = ("... do this!");
-            this.btnAlteredStatusOnTurnStartAction.UseVisualStyleBackColor = (true);
-            this.btnAlteredStatusOnTurnStartAction.Click += (this.btnAlteredStatusOnTurnStartAction_Click);
+            this.saeAlteredStatusOnTurnStart.Action = (null);
+            this.saeAlteredStatusOnTurnStart.ActionDescription = ("When someone afflicted\r\nby it begins a new turn...");
+            this.saeAlteredStatusOnTurnStart.ActionTypeText = ("Turn Start");
+            this.saeAlteredStatusOnTurnStart.AlteredStatuses = (null);
+            this.saeAlteredStatusOnTurnStart.AutoSize = (true);
+            this.saeAlteredStatusOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeAlteredStatusOnTurnStart.ClassId = (null);
+            this.saeAlteredStatusOnTurnStart.Dungeon = (null);
+            this.saeAlteredStatusOnTurnStart.EffectParamData = (null);
+            this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(390, 153));
+            this.saeAlteredStatusOnTurnStart.Name = ("saeAlteredStatusOnTurnStart");
+            this.saeAlteredStatusOnTurnStart.PlaceholderActionName = ("TurnStart");
+            this.saeAlteredStatusOnTurnStart.RequiresActionName = (false);
+            this.saeAlteredStatusOnTurnStart.RequiresCondition = (false);
+            this.saeAlteredStatusOnTurnStart.RequiresDescription = (false);
+            this.saeAlteredStatusOnTurnStart.Size = (new global::System.Drawing.Size(270, 32));
+            this.saeAlteredStatusOnTurnStart.TabIndex = (262);
+            this.saeAlteredStatusOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
-            // label109
+            // saeAlteredStatusOnApply
             // 
-            this.label109.AutoSize = (true);
-            this.label109.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label109.Location = (new global::System.Drawing.Point(389, 157));
-            this.label109.Name = ("label109");
-            this.label109.Size = (new global::System.Drawing.Size(268, 15));
-            this.label109.TabIndex = (258);
-            this.label109.Text = ("When someone afflicted by it begins a new turn...");
+            this.saeAlteredStatusOnApply.Action = (null);
+            this.saeAlteredStatusOnApply.ActionDescription = ("When someone gets this\r\nAltered Status inflicted...");
+            this.saeAlteredStatusOnApply.ActionTypeText = ("On Status Apply");
+            this.saeAlteredStatusOnApply.AlteredStatuses = (null);
+            this.saeAlteredStatusOnApply.AutoSize = (true);
+            this.saeAlteredStatusOnApply.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeAlteredStatusOnApply.ClassId = (null);
+            this.saeAlteredStatusOnApply.Dungeon = (null);
+            this.saeAlteredStatusOnApply.EffectParamData = (null);
+            this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(390, 115));
+            this.saeAlteredStatusOnApply.Name = ("saeAlteredStatusOnApply");
+            this.saeAlteredStatusOnApply.PlaceholderActionName = ("StatusApply");
+            this.saeAlteredStatusOnApply.RequiresActionName = (false);
+            this.saeAlteredStatusOnApply.RequiresCondition = (false);
+            this.saeAlteredStatusOnApply.RequiresDescription = (false);
+            this.saeAlteredStatusOnApply.Size = (new global::System.Drawing.Size(271, 32));
+            this.saeAlteredStatusOnApply.TabIndex = (261);
+            this.saeAlteredStatusOnApply.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // chkAlteredStatusCleansedOnCleanseActions
             // 
@@ -4838,26 +3477,6 @@ namespace RogueCustomsDungeonEditor
             this.chkAlteredStatusCanOverwrite.Text = ("Overwrites other Altered Statuses with the same Id if applied");
             this.chkAlteredStatusCanOverwrite.UseVisualStyleBackColor = (true);
             this.chkAlteredStatusCanOverwrite.CheckedChanged += (this.chkAlteredStatusCanOverwrite_CheckedChanged);
-            // 
-            // btnAlteredStatusOnApplyAction
-            // 
-            this.btnAlteredStatusOnApplyAction.Location = (new global::System.Drawing.Point(657, 124));
-            this.btnAlteredStatusOnApplyAction.Name = ("btnAlteredStatusOnApplyAction");
-            this.btnAlteredStatusOnApplyAction.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnAlteredStatusOnApplyAction.TabIndex = (254);
-            this.btnAlteredStatusOnApplyAction.Text = ("... do this!");
-            this.btnAlteredStatusOnApplyAction.UseVisualStyleBackColor = (true);
-            this.btnAlteredStatusOnApplyAction.Click += (this.btnAlteredStatusOnApplyAction_Click);
-            // 
-            // label97
-            // 
-            this.label97.AutoSize = (true);
-            this.label97.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.label97.Location = (new global::System.Drawing.Point(389, 128));
-            this.label97.Name = ("label97");
-            this.label97.Size = (new global::System.Drawing.Size(268, 15));
-            this.label97.TabIndex = (253);
-            this.label97.Text = ("When someone gets this Altered Status inflicted...");
             // 
             // chkAlteredStatusCanStack
             // 
@@ -4995,6 +3614,34 @@ namespace RogueCustomsDungeonEditor
             this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
             this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
             // 
+            // ssPlayer
+            // 
+            this.ssPlayer.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.AutoSize = (true);
+            this.ssPlayer.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.ssPlayer.BaseAttack = (0);
+            this.ssPlayer.BaseDefense = (0);
+            this.ssPlayer.BaseHP = (1);
+            this.ssPlayer.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.ssPlayer.BaseMovement = (1);
+            this.ssPlayer.BaseMP = (0);
+            this.ssPlayer.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssPlayer.BaseSightRangeDisplayNames")));
+            this.ssPlayer.CanGainExperience = (false);
+            this.ssPlayer.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.ExperienceToLevelUpFormula = ("");
+            this.ssPlayer.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.Location = (new global::System.Drawing.Point(385, 94));
+            this.ssPlayer.MaxLevel = (1);
+            this.ssPlayer.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.Name = ("ssPlayer");
+            this.ssPlayer.Size = (new global::System.Drawing.Size(330, 653));
+            this.ssPlayer.TabIndex = (129);
+            this.ssPlayer.UsesMP = (false);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = (new global::System.Drawing.SizeF(7F, 15F));
@@ -5036,43 +3683,11 @@ namespace RogueCustomsDungeonEditor
             this.tpFactionInfos.PerformLayout();
             this.tpPlayerClass.ResumeLayout(false);
             this.tpPlayerClass.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPRegenerationPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMPPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMPRegeneration)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMP)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMaxLevel)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerFlatSightRange)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerHPRegenerationPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHPRegeneration)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerMovementPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseMovement)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerDefensePerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseDefense)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerAttackPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseAttack)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerHPPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerBaseHP)).EndInit();
             this.tpNPC.ResumeLayout(false);
             this.tpNPC.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPRegenerationPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMPPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMPRegeneration)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMP)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMaxLevel)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCFlatSightRange)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCHPRegenerationPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseHPRegeneration)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCMovementPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseMovement)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCDefensePerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseDefense)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCAttackPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseAttack)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCHPPerLevelUp)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCBaseHP)).EndInit();
             this.tpItem.ResumeLayout(false);
             this.tpItem.PerformLayout();
             this.tpTrap.ResumeLayout(false);
@@ -5161,8 +3776,6 @@ namespace RogueCustomsDungeonEditor
         private Button btnRemoveAlgorithm;
         private Button btnEditAlgorithm;
         private Button btnAddAlgorithm;
-        private Button btnOnFloorStartAction;
-        private Label label20;
         private NumericUpDown nudRoomFusionOdds;
         private Label label19;
         private NumericUpDown nudExtraRoomConnectionOdds;
@@ -5201,134 +3814,25 @@ namespace RogueCustomsDungeonEditor
         private CheckBox chkRequirePlayerPrompt;
         private CheckBox chkPlayerStartsVisible;
         private Label label30;
-        private Button btnRemovePlayerOnAttackAction;
-        private Button btnEditPlayerOnAttackAction;
-        private Button btnAddPlayerOnAttackAction;
-        private ListBox lbPlayerOnAttackActions;
-        private Label label59;
         private ComboBox cmbPlayerStartingArmor;
         private Label label57;
         private ComboBox cmbPlayerStartingWeapon;
         private Label label56;
-        private ListBox lbPlayerStartingInventory;
-        private Button btnPlayerRemoveItem;
-        private Button btnPlayerAddItem;
-        private ComboBox cmbPlayerInventoryItemChoices;
-        private Label label55;
         private Label label54;
         private NumericUpDown nudPlayerInventorySize;
         private Label label53;
-        private Label label52;
-        private Label label47;
-        private Label label51;
-        private CheckBox chkPlayerCanGainExperience;
-        private NumericUpDown nudPlayerMaxLevel;
-        private Label label50;
-        private TextBox txtPlayerLevelUpFormula;
-        private Label label49;
-        private Label label48;
-        private NumericUpDown nudPlayerFlatSightRange;
-        private ComboBox cmbPlayerSightRange;
-        private Label label43;
-        private Label label44;
-        private Label label45;
-        private Label label46;
-        private NumericUpDown nudPlayerHPRegenerationPerLevelUp;
-        private NumericUpDown nudPlayerBaseHPRegeneration;
-        private Label label42;
-        private Label label41;
-        private Label label40;
-        private Label label39;
-        private NumericUpDown nudPlayerMovementPerLevelUp;
-        private NumericUpDown nudPlayerBaseMovement;
-        private Label label37;
-        private NumericUpDown nudPlayerDefensePerLevelUp;
-        private Label label38;
-        private NumericUpDown nudPlayerBaseDefense;
-        private Label label36;
-        private Label label34;
-        private NumericUpDown nudPlayerAttackPerLevelUp;
-        private Label label35;
-        private NumericUpDown nudPlayerBaseAttack;
-        private Label label33;
-        private NumericUpDown nudPlayerHPPerLevelUp;
-        private Label label32;
-        private NumericUpDown nudPlayerBaseHP;
-        private Label label31;
-        private Label lblPlayerSightRangeText;
-        private Label label62;
-        private Button btnPlayerOnDeathAction;
-        private Label label63;
-        private Button btnPlayerOnAttackedAction;
-        private Label label61;
-        private Button btnPlayerOnTurnStartAction;
-        private Label label60;
         private Label label58;
         private global::System.Windows.Forms.TextBox txtNPCExperiencePayout;
         private global::System.Windows.Forms.Label label103;
         private global::System.Windows.Forms.CheckBox chkNPCKnowsAllCharacterPositions;
-        private global::System.Windows.Forms.Button btnNPCOnDeathAction;
-        private global::System.Windows.Forms.Label label64;
-        private global::System.Windows.Forms.Button btnNPCOnAttackedAction;
-        private global::System.Windows.Forms.Label label65;
-        private global::System.Windows.Forms.Button btnNPCOnTurnStartAction;
-        private global::System.Windows.Forms.Label label66;
         private global::System.Windows.Forms.Label label67;
-        private global::System.Windows.Forms.Label label68;
-        private global::System.Windows.Forms.Button btnRemoveNPCOnAttackAction;
-        private global::System.Windows.Forms.Button btnEditNPCOnAttackAction;
-        private global::System.Windows.Forms.Button btnAddNPCOnAttackAction;
-        private global::System.Windows.Forms.ListBox lbNPCOnAttackActions;
-        private global::System.Windows.Forms.Label label69;
         private global::System.Windows.Forms.ComboBox cmbNPCStartingArmor;
         private global::System.Windows.Forms.Label label70;
         private global::System.Windows.Forms.ComboBox cmbNPCStartingWeapon;
         private global::System.Windows.Forms.Label label71;
-        private global::System.Windows.Forms.ListBox lbNPCStartingInventory;
-        private global::System.Windows.Forms.Button btnNPCRemoveItem;
-        private global::System.Windows.Forms.Button btnNPCAddItem;
-        private global::System.Windows.Forms.ComboBox cmbNPCInventoryItemChoices;
-        private global::System.Windows.Forms.Label label72;
         private global::System.Windows.Forms.Label label73;
         private global::System.Windows.Forms.NumericUpDown nudNPCInventorySize;
         private global::System.Windows.Forms.Label label74;
-        private global::System.Windows.Forms.Label label75;
-        private global::System.Windows.Forms.Label label76;
-        private global::System.Windows.Forms.Label label77;
-        private global::System.Windows.Forms.CheckBox chkNPCCanGainExperience;
-        private global::System.Windows.Forms.NumericUpDown nudNPCMaxLevel;
-        private global::System.Windows.Forms.Label label78;
-        private global::System.Windows.Forms.TextBox txtNPCLevelUpFormula;
-        private global::System.Windows.Forms.Label label79;
-        private global::System.Windows.Forms.Label label80;
-        private global::System.Windows.Forms.NumericUpDown nudNPCFlatSightRange;
-        private global::System.Windows.Forms.ComboBox cmbNPCSightRange;
-        private global::System.Windows.Forms.Label label81;
-        private global::System.Windows.Forms.Label label82;
-        private global::System.Windows.Forms.Label label83;
-        private global::System.Windows.Forms.Label label84;
-        private global::System.Windows.Forms.NumericUpDown nudNPCHPRegenerationPerLevelUp;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseHPRegeneration;
-        private global::System.Windows.Forms.Label label85;
-        private global::System.Windows.Forms.Label label86;
-        private global::System.Windows.Forms.Label label87;
-        private global::System.Windows.Forms.Label label88;
-        private global::System.Windows.Forms.NumericUpDown nudNPCMovementPerLevelUp;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseMovement;
-        private global::System.Windows.Forms.Label label89;
-        private global::System.Windows.Forms.NumericUpDown nudNPCDefensePerLevelUp;
-        private global::System.Windows.Forms.Label label90;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseDefense;
-        private global::System.Windows.Forms.Label label91;
-        private global::System.Windows.Forms.Label label92;
-        private global::System.Windows.Forms.NumericUpDown nudNPCAttackPerLevelUp;
-        private global::System.Windows.Forms.Label label93;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseAttack;
-        private global::System.Windows.Forms.Label label94;
-        private global::System.Windows.Forms.NumericUpDown nudNPCHPPerLevelUp;
-        private global::System.Windows.Forms.Label label95;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseHP;
-        private global::System.Windows.Forms.Label label96;
         private global::System.Windows.Forms.Label label98;
         private global::System.Windows.Forms.CheckBox chkNPCStartsVisible;
         private global::System.Windows.Forms.ComboBox cmbNPCFaction;
@@ -5340,7 +3844,6 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Button fklblNPCDescriptionLocale;
         private global::System.Windows.Forms.TextBox txtNPCName;
         private global::System.Windows.Forms.Label label101;
-        private global::System.Windows.Forms.Label lblNPCSightRangeText;
         private global::System.Windows.Forms.NumericUpDown nudNPCOddsToTargetSelf;
         private global::System.Windows.Forms.Label label104;
         private global::System.Windows.Forms.TextBox txtItemPower;
@@ -5356,21 +3859,6 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Button fklblItemNameLocale;
         private global::System.Windows.Forms.TextBox txtItemName;
         private global::System.Windows.Forms.Label label106;
-        private global::System.Windows.Forms.Button btnItemOnAttackedAction;
-        private global::System.Windows.Forms.Label lblItemOnAttackedAction;
-        private global::System.Windows.Forms.Button btnRemoveItemOnAttackAction;
-        private global::System.Windows.Forms.Button btnEditItemOnAttackAction;
-        private global::System.Windows.Forms.Button btnAddItemOnAttackAction;
-        private global::System.Windows.Forms.ListBox lbItemOnAttackActions;
-        private global::System.Windows.Forms.Label lblItemOnAttackActions;
-        private global::System.Windows.Forms.Button btnItemOnUseAction;
-        private global::System.Windows.Forms.Label lblItemOnUseAction;
-        private global::System.Windows.Forms.Button btnItemOnSteppedAction;
-        private global::System.Windows.Forms.Label lblItemOnSteppedAction;
-        private global::System.Windows.Forms.Button btnItemOnTurnStartAction;
-        private global::System.Windows.Forms.Label lblItemOnTurnStartAction;
-        private global::System.Windows.Forms.Button btnTrapOnSteppedAction;
-        private global::System.Windows.Forms.Label label112;
         private global::System.Windows.Forms.CheckBox chkTrapStartsVisible;
         private global::System.Windows.Forms.Label label116;
         private global::System.Windows.Forms.Button fklblTrapDescriptionLocale;
@@ -5381,8 +3869,6 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Label label118;
         private global::System.Windows.Forms.TextBox txtTrapPower;
         private global::System.Windows.Forms.Label label113;
-        private global::System.Windows.Forms.Button btnAlteredStatusOnApplyAction;
-        private global::System.Windows.Forms.Label label97;
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCanStack;
         private global::System.Windows.Forms.Label label111;
         private global::System.Windows.Forms.Button fklblAlteredStatusDescriptionLocale;
@@ -5393,32 +3879,8 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Label label115;
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCleansedOnCleanseActions;
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCanOverwrite;
-        private global::System.Windows.Forms.Button btnAlteredStatusOnTurnStartAction;
-        private global::System.Windows.Forms.Label label109;
         private global::System.Windows.Forms.TreeView tvValidationResults;
         private global::System.Windows.Forms.SaveFileDialog sfdDungeon;
-        private global::System.Windows.Forms.Label label122;
-        private global::System.Windows.Forms.Label label123;
-        private global::System.Windows.Forms.NumericUpDown nudPlayerMPRegenerationPerLevelUp;
-        private global::System.Windows.Forms.Label label121;
-        private global::System.Windows.Forms.NumericUpDown nudPlayerMPPerLevelUp;
-        private global::System.Windows.Forms.Label label119;
-        private global::System.Windows.Forms.Label label120;
-        private global::System.Windows.Forms.NumericUpDown nudPlayerBaseMPRegeneration;
-        private global::System.Windows.Forms.CheckBox chkPlayerUsesMP;
-        private global::System.Windows.Forms.Label label110;
-        private global::System.Windows.Forms.NumericUpDown nudPlayerBaseMP;
-        private global::System.Windows.Forms.Label label128;
-        private global::System.Windows.Forms.Label label129;
-        private global::System.Windows.Forms.NumericUpDown nudNPCMPRegenerationPerLevelUp;
-        private global::System.Windows.Forms.Label label127;
-        private global::System.Windows.Forms.NumericUpDown nudNPCMPPerLevelUp;
-        private global::System.Windows.Forms.Label label124;
-        private global::System.Windows.Forms.Label label125;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseMPRegeneration;
-        private global::System.Windows.Forms.CheckBox chkNPCUsesMP;
-        private global::System.Windows.Forms.Label label126;
-        private global::System.Windows.Forms.NumericUpDown nudNPCBaseMP;
         private global::System.ComponentModel.BackgroundWorker backgroundWorker1;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsPlayer;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsNPC;
@@ -5473,5 +3935,26 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector csrFloor;
         private global::System.Windows.Forms.ComboBox cmbTilesets;
         private global::System.Windows.Forms.Label label155;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeOnFloorStart;
+        private global::RogueCustomsDungeonEditor.Controls.MultiActionEditor maePlayerOnAttack;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saePlayerOnAttacked;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saePlayerOnTurnStart;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saePlayerOnDeath;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeNPCOnDeath;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeNPCOnAttacked;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeNPCOnTurnStart;
+        private global::RogueCustomsDungeonEditor.Controls.MultiActionEditor maeNPCOnAttack;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnUse;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnStepped;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnTurnStart;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnAttacked;
+        private global::RogueCustomsDungeonEditor.Controls.MultiActionEditor maeItemOnAttack;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeTrapOnStepped;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnTurnStart;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnApply;
+        private global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector sisPlayerStartingInventory;
+        private global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector sisNPCStartingInventory;
+        private global::RogueCustomsDungeonEditor.Controls.StatsSheet ssNPC;
+        private global::RogueCustomsDungeonEditor.Controls.StatsSheet ssPlayer;
     }
 }
