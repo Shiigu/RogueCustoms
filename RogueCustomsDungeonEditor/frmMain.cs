@@ -28,6 +28,7 @@ using RogueCustomsDungeonEditor.Controls;
 namespace RogueCustomsDungeonEditor
 {
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable S4144 // Methods should not have identical implementations
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning disable CS8601 // Posible asignación de referencia nula
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
@@ -1019,6 +1020,7 @@ namespace RogueCustomsDungeonEditor
         {
             sae.Action = action;
             sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            sae.ClassId = classId;
             sae.Dungeon = ActiveDungeon;
             sae.EffectParamData = EffectParamData;
             sae.ActionContentsChanged += (_, _) => DirtyTab = true;
@@ -1027,6 +1029,7 @@ namespace RogueCustomsDungeonEditor
         {
             mae.Actions = actions;
             mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            mae.ClassId = classId;
             mae.Dungeon = ActiveDungeon;
             mae.EffectParamData = EffectParamData;
             mae.ActionContentsChanged += (_, _) => DirtyTab = true;
@@ -1728,7 +1731,7 @@ namespace RogueCustomsDungeonEditor
             cmbTilesets.Items.AddRange(ActiveDungeon.TileSetInfos.Select(tileSet => tileSet.Id).ToArray());
 
             var selectedTilesetId = floorGroup.TileSetId;
-            if (ActiveDungeon.TileSetInfos.Any(tileSet => tileSet.Id.Equals(selectedTilesetId)))
+            if (ActiveDungeon.TileSetInfos.Exists(tileSet => tileSet.Id.Equals(selectedTilesetId)))
             {
                 cmbTilesets.Text = selectedTilesetId;
             }
@@ -1993,7 +1996,6 @@ namespace RogueCustomsDungeonEditor
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
-
         private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
@@ -2071,17 +2073,14 @@ namespace RogueCustomsDungeonEditor
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
             var selectedIndex = lvFloorAlgorithms.SelectedIndices[0];
-            var generatorAlgorithms = lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>;
+            if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms) return;
             var algorithmToSave = generatorAlgorithms[lvFloorAlgorithms.SelectedIndices[0]];
             var frmAlgorithmWindow = new frmFloorGeneratorAlgorithm(activeFloorGroup, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, algorithmToSave, BaseGeneratorAlgorithms);
             frmAlgorithmWindow.ShowDialog();
             if (frmAlgorithmWindow.Saved)
             {
-                if (generatorAlgorithms == null)
-                {
-                    generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
-                    generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
-                }
+                generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
+                generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
                 generatorAlgorithms[lvFloorAlgorithms.SelectedIndices[0]] = frmAlgorithmWindow.AlgorithmToSave;
                 RefreshGenerationAlgorithmList();
                 lvFloorAlgorithms.Items[selectedIndex].Selected = true;
@@ -2173,16 +2172,22 @@ namespace RogueCustomsDungeonEditor
             lbAllies.Items.Clear();
             lbEnemies.Items.Clear();
             lbNeutrals.Items.Clear();
-            foreach (var otherFaction in ActiveDungeon.FactionInfos)
-            {
-                if (faction.Id.Equals(otherFaction.Id)) continue;
-                if (faction.AlliedWith.Contains(otherFaction.Id))
-                    lbAllies.Items.Add(otherFaction.Id);
-                else if (faction.EnemiesWith.Contains(otherFaction.Id))
-                    lbEnemies.Items.Add(otherFaction.Id);
-                else
-                    lbNeutrals.Items.Add(otherFaction.Id);
-            }
+
+            var factionId = faction.Id;
+            var allies = ActiveDungeon.FactionInfos
+                .Where(otherFaction => otherFaction.Id != factionId && faction.AlliedWith.Contains(otherFaction.Id))
+                .Select(otherFaction => otherFaction.Id);
+            var enemies = ActiveDungeon.FactionInfos
+                .Where(otherFaction => otherFaction.Id != factionId && faction.EnemiesWith.Contains(otherFaction.Id))
+                .Select(otherFaction => otherFaction.Id);
+            var neutrals = ActiveDungeon.FactionInfos
+                .Where(otherFaction => otherFaction.Id != factionId && !faction.AlliedWith.Contains(otherFaction.Id) && !faction.EnemiesWith.Contains(otherFaction.Id))
+                .Select(otherFaction => otherFaction.Id);
+
+            lbAllies.Items.AddRange(allies.ToArray());
+            lbEnemies.Items.AddRange(enemies.ToArray());
+            lbNeutrals.Items.AddRange(neutrals.ToArray());
+
             btnAlliesToNeutrals.Enabled = lbAllies.Items.Count > 0;
             btnNeutralsToAllies.Enabled = lbNeutrals.Items.Count > 0;
             btnNeutralsToEnemies.Enabled = lbNeutrals.Items.Count > 0;
@@ -3178,14 +3183,12 @@ namespace RogueCustomsDungeonEditor
             cmbItemType.Items.Clear();
             cmbItemType.Items.AddRange(new string[] { "Weapon", "Armor", "Consumable" });
             PreviousItemType = "";
-            foreach (string itemType in cmbItemType.Items)
+            var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
+
+            if (itemType != null)
             {
-                if (itemType.Equals(item.EntityType))
-                {
-                    PreviousItemType = itemType;
-                    cmbItemType.Text = itemType;
-                    break;
-                }
+                PreviousItemType = itemType;
+                cmbItemType.Text = itemType;
             }
             ToggleItemTypeControlsVisibility();
             txtItemPower.Text = item.Power;
@@ -3388,6 +3391,7 @@ namespace RogueCustomsDungeonEditor
                 saeItemOnTurnStart.Visible = true;
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "The Item's Owner can\ninteract with someone else\nwith the following:";
+                maeItemOnAttack.SourceDescription = "Whoever is equipping This";
                 saeItemOnAttacked.Visible = true;
             }
             else if (cmbItemType.Text == "Consumable")
@@ -3397,6 +3401,7 @@ namespace RogueCustomsDungeonEditor
                 saeItemOnTurnStart.Action = null;
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "Someone can use it to\ninteract with someone else\nwith the following:";
+                maeItemOnAttack.SourceDescription = "Whoever is about to use This";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
             }
@@ -4088,6 +4093,7 @@ namespace RogueCustomsDungeonEditor
         Validator
     }
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning restore S4144 // Methods should not have identical implementations
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning restore CS8601 // Posible asignación de referencia nula
 #pragma warning restore CS8604 // Posible argumento de referencia nulo

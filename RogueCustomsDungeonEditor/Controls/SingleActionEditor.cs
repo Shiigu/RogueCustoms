@@ -19,6 +19,8 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Controls
 {
+    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class SingleActionEditor : UserControl
     {
         private string actionDescription = "Action Description";
@@ -57,6 +59,10 @@ namespace RogueCustomsDungeonEditor.Controls
         public List<string> AlteredStatuses { get; set; }
         public List<EffectTypeData> EffectParamData { get; set; }
 
+        public string ThisDescription { get; set; }
+        public string SourceDescription { get; set; }
+        public string TargetDescription { get; set; }
+
         public event EventHandler ActionContentsChanged;
 
 
@@ -74,7 +80,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            var frmActionEdit = new frmActionEdit(action, Dungeon, ClassId, ActionTypeText, RequiresCondition, RequiresDescription, RequiresActionName, PlaceholderActionName, UsageCriteria, AlteredStatuses, EffectParamData);
+            var frmActionEdit = new frmActionEdit(action, Dungeon, ClassId, ActionTypeText, RequiresCondition, RequiresDescription, RequiresActionName, PlaceholderActionName, UsageCriteria, AlteredStatuses, EffectParamData, ThisDescription, SourceDescription, TargetDescription);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {
@@ -129,4 +135,6 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
     }
+    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

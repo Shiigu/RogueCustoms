@@ -65,6 +65,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning = new Button();
             txtActionCondition = new TextBox();
             label7 = new Label();
+            panel1 = new Panel();
+            lblTarget = new Label();
+            lblSource = new Label();
+            lblThis = new Label();
+            label12 = new Label();
+            label11 = new Label();
+            label10 = new Label();
+            label9 = new Label();
+            pictureBox1 = new PictureBox();
             gbSelectionCriteria.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
@@ -72,6 +81,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ((System.ComponentModel.ISupportInitialize)nudCooldown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).BeginInit();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // lblTitle
@@ -97,7 +108,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(541, 406);
+            btnCancel.Location = new Point(588, 444);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -289,7 +300,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(381, 406);
+            btnSave.Location = new Point(428, 444);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -300,7 +311,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(253, 377);
+            btnEdit.Location = new Point(300, 415);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -311,7 +322,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(372, 377);
+            btnNewThen.Location = new Point(419, 415);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -322,7 +333,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(455, 377);
+            btnNewOnSuccessFailure.Location = new Point(502, 415);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -333,7 +344,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(626, 377);
+            btnRemove.Location = new Point(673, 415);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(91, 23);
             btnRemove.TabIndex = 8;
@@ -343,7 +354,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(460, 406);
+            btnSaveAs.Location = new Point(507, 444);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -420,11 +431,105 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label7.TabIndex = 22;
             label7.Text = "To be used, it must fulfill this condition first:";
             // 
+            // panel1
+            // 
+            panel1.BackColor = SystemColors.ActiveCaption;
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(lblTarget);
+            panel1.Controls.Add(lblSource);
+            panel1.Controls.Add(lblThis);
+            panel1.Controls.Add(label12);
+            panel1.Controls.Add(label11);
+            panel1.Controls.Add(label10);
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(pictureBox1);
+            panel1.Location = new Point(10, 376);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(284, 98);
+            panel1.TabIndex = 25;
+            // 
+            // lblTarget
+            // 
+            lblTarget.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTarget.Location = new Point(77, 76);
+            lblTarget.Name = "lblTarget";
+            lblTarget.Size = new Size(202, 19);
+            lblTarget.TabIndex = 7;
+            lblTarget.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblSource
+            // 
+            lblSource.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblSource.Location = new Point(77, 57);
+            lblSource.Name = "lblSource";
+            lblSource.Size = new Size(202, 19);
+            lblSource.TabIndex = 6;
+            lblSource.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblThis
+            // 
+            lblThis.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblThis.Location = new Point(77, 38);
+            lblThis.Name = "lblThis";
+            lblThis.Size = new Size(202, 19);
+            lblThis.TabIndex = 5;
+            lblThis.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label12
+            // 
+            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label12.Location = new Point(3, 76);
+            label12.Name = "label12";
+            label12.Size = new Size(68, 19);
+            label12.TabIndex = 4;
+            label12.Text = "- Target:";
+            label12.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label11
+            // 
+            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label11.Location = new Point(3, 57);
+            label11.Name = "label11";
+            label11.Size = new Size(68, 19);
+            label11.TabIndex = 3;
+            label11.Text = "- Source:";
+            label11.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label10
+            // 
+            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label10.Location = new Point(3, 38);
+            label10.Name = "label10";
+            label10.Size = new Size(68, 19);
+            label10.TabIndex = 2;
+            label10.Text = "- This:";
+            label10.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label9
+            // 
+            label9.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label9.Location = new Point(33, 3);
+            label9.Name = "label9";
+            label9.Size = new Size(210, 24);
+            label9.TabIndex = 1;
+            label9.Text = "Who is who?";
+            label9.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(3, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(24, 24);
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(950, 437);
+            ClientSize = new Size(950, 480);
+            Controls.Add(panel1);
             Controls.Add(fklblConditionWarning);
             Controls.Add(txtActionCondition);
             Controls.Add(label7);
@@ -454,6 +559,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ((System.ComponentModel.ISupportInitialize)nudCooldown).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxRange).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).EndInit();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -493,5 +600,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Label label7;
         private NumericUpDown nudMPCost;
         private Label label8;
+        private Panel panel1;
+        private Label lblTarget;
+        private Label lblSource;
+        private Label lblThis;
+        private Label label12;
+        private Label label11;
+        private Label label10;
+        private Label label9;
+        private PictureBox pictureBox1;
     }
 }
