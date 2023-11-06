@@ -119,6 +119,8 @@ namespace RogueCustomsGameEngine.Management
         {
             var dungeon = GetDungeonById(dungeonId);
             var dungeonStatus = dungeon.GetStatus();
+            // A Dungeon's Message Boxes don't have to be sent more than once
+            dungeon.MessageBoxes.Clear();
             // Remove a completed dungeon from memory to clear space
             if (dungeon.DungeonStatus == DungeonStatus.Completed)
                 Dungeons.Remove(dungeon);
