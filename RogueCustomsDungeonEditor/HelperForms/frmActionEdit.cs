@@ -16,6 +16,7 @@ using static RogueCustomsGameEngine.Game.Entities.Effect;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+#pragma warning disable S2259 // Null pointers should not be dereferenced
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -696,6 +697,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         AnyTarget,
         FullConditions
     }
+#pragma warning restore S2259 // Null pointers should not be dereferenced
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning restore CS8604 // Posible argumento de referencia nulo
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

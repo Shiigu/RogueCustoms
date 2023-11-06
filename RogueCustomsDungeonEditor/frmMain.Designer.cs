@@ -229,6 +229,7 @@ namespace RogueCustomsDungeonEditor
             this.txtFactionName = (new global::System.Windows.Forms.TextBox());
             this.label21 = (new global::System.Windows.Forms.Label());
             this.tpPlayerClass = (new global::System.Windows.Forms.TabPage());
+            this.ssPlayer = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
             this.sisPlayerStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
             this.saePlayerOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saePlayerOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
@@ -338,7 +339,6 @@ namespace RogueCustomsDungeonEditor
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
             this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
-            this.ssPlayer = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
@@ -1625,7 +1625,10 @@ namespace RogueCustomsDungeonEditor
             this.saeOnFloorStart.RequiresCondition = (false);
             this.saeOnFloorStart.RequiresDescription = (false);
             this.saeOnFloorStart.Size = (new global::System.Drawing.Size(260, 32));
+            this.saeOnFloorStart.SourceDescription = ("The player");
             this.saeOnFloorStart.TabIndex = (40);
+            this.saeOnFloorStart.TargetDescription = ("The player");
+            this.saeOnFloorStart.ThisDescription = ("None (Don't use)");
             this.saeOnFloorStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // cmbTilesets
@@ -2212,6 +2215,34 @@ namespace RogueCustomsDungeonEditor
             this.tpPlayerClass.Text = ("Player Class");
             this.tpPlayerClass.UseVisualStyleBackColor = (true);
             // 
+            // ssPlayer
+            // 
+            this.ssPlayer.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.AutoSize = (true);
+            this.ssPlayer.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.ssPlayer.BaseAttack = (0);
+            this.ssPlayer.BaseDefense = (0);
+            this.ssPlayer.BaseHP = (1);
+            this.ssPlayer.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            this.ssPlayer.BaseMovement = (1);
+            this.ssPlayer.BaseMP = (0);
+            this.ssPlayer.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssPlayer.BaseSightRangeDisplayNames")));
+            this.ssPlayer.CanGainExperience = (false);
+            this.ssPlayer.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.ExperienceToLevelUpFormula = ("");
+            this.ssPlayer.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.Location = (new global::System.Drawing.Point(385, 94));
+            this.ssPlayer.MaxLevel = (1);
+            this.ssPlayer.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
+            this.ssPlayer.Name = ("ssPlayer");
+            this.ssPlayer.Size = (new global::System.Drawing.Size(330, 653));
+            this.ssPlayer.TabIndex = (129);
+            this.ssPlayer.UsesMP = (false);
+            // 
             // sisPlayerStartingInventory
             // 
             this.sisPlayerStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisPlayerStartingInventory.Inventory")));
@@ -2240,7 +2271,10 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.RequiresCondition = (false);
             this.saePlayerOnDeath.RequiresDescription = (false);
             this.saePlayerOnDeath.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnDeath.SourceDescription = ("The player");
             this.saePlayerOnDeath.TabIndex = (127);
+            this.saePlayerOnDeath.TargetDescription = ("Whoever killed them (if any)");
+            this.saePlayerOnDeath.ThisDescription = ("The player");
             this.saePlayerOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saePlayerOnAttacked
@@ -2261,7 +2295,10 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.RequiresCondition = (false);
             this.saePlayerOnAttacked.RequiresDescription = (false);
             this.saePlayerOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnAttacked.SourceDescription = ("The player");
             this.saePlayerOnAttacked.TabIndex = (126);
+            this.saePlayerOnAttacked.TargetDescription = ("Whoever interacted with them");
+            this.saePlayerOnAttacked.ThisDescription = ("The player");
             this.saePlayerOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saePlayerOnTurnStart
@@ -2282,7 +2319,10 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.RequiresCondition = (false);
             this.saePlayerOnTurnStart.RequiresDescription = (false);
             this.saePlayerOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnTurnStart.SourceDescription = ("The player");
             this.saePlayerOnTurnStart.TabIndex = (125);
+            this.saePlayerOnTurnStart.TargetDescription = ("The player");
+            this.saePlayerOnTurnStart.ThisDescription = ("The player");
             this.saePlayerOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maePlayerOnAttack
@@ -2301,7 +2341,10 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.RequiresCondition = (true);
             this.maePlayerOnAttack.RequiresDescription = (true);
             this.maePlayerOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maePlayerOnAttack.SourceDescription = ("The player");
             this.maePlayerOnAttack.TabIndex = (124);
+            this.maePlayerOnAttack.TargetDescription = ("Whoever they are targeting");
+            this.maePlayerOnAttack.ThisDescription = ("The player");
             this.maePlayerOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // label58
@@ -2613,7 +2656,10 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnDeath.RequiresCondition = (false);
             this.saeNPCOnDeath.RequiresDescription = (false);
             this.saeNPCOnDeath.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnDeath.SourceDescription = ("The NPC");
             this.saeNPCOnDeath.TabIndex = (211);
+            this.saeNPCOnDeath.TargetDescription = ("Whoever killed them (if any)");
+            this.saeNPCOnDeath.ThisDescription = ("The NPC");
             this.saeNPCOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeNPCOnAttacked
@@ -2634,7 +2680,10 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.RequiresCondition = (false);
             this.saeNPCOnAttacked.RequiresDescription = (false);
             this.saeNPCOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnAttacked.SourceDescription = ("The NPC");
             this.saeNPCOnAttacked.TabIndex = (210);
+            this.saeNPCOnAttacked.TargetDescription = ("Whoever interacted with them");
+            this.saeNPCOnAttacked.ThisDescription = ("The NPC");
             this.saeNPCOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeNPCOnTurnStart
@@ -2655,7 +2704,10 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnTurnStart.RequiresCondition = (false);
             this.saeNPCOnTurnStart.RequiresDescription = (false);
             this.saeNPCOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnTurnStart.SourceDescription = ("The NPC");
             this.saeNPCOnTurnStart.TabIndex = (209);
+            this.saeNPCOnTurnStart.TargetDescription = ("The NPC");
+            this.saeNPCOnTurnStart.ThisDescription = ("The NPC");
             this.saeNPCOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maeNPCOnAttack
@@ -2674,12 +2726,15 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.RequiresCondition = (true);
             this.maeNPCOnAttack.RequiresDescription = (false);
             this.maeNPCOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maeNPCOnAttack.SourceDescription = ("The NPC");
             this.maeNPCOnAttack.TabIndex = (208);
+            this.maeNPCOnAttack.TargetDescription = ("Whoever they are targeting");
+            this.maeNPCOnAttack.ThisDescription = ("The NPC");
             this.maeNPCOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // nudNPCOddsToTargetSelf
             // 
-            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 754));
+            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 758));
             this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
             this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
             this.nudNPCOddsToTargetSelf.TabIndex = (195);
@@ -2688,7 +2743,7 @@ namespace RogueCustomsDungeonEditor
             // label104
             // 
             this.label104.AutoSize = (true);
-            this.label104.Location = (new global::System.Drawing.Point(13, 756));
+            this.label104.Location = (new global::System.Drawing.Point(13, 760));
             this.label104.Name = ("label104");
             this.label104.Size = (new global::System.Drawing.Size(334, 15));
             this.label104.TabIndex = (194);
@@ -2971,7 +3026,10 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.RequiresCondition = (false);
             this.saeItemOnTurnStart.RequiresDescription = (false);
             this.saeItemOnTurnStart.Size = (new global::System.Drawing.Size(362, 32));
+            this.saeItemOnTurnStart.SourceDescription = ("Whoever is equipping This");
             this.saeItemOnTurnStart.TabIndex = (225);
+            this.saeItemOnTurnStart.TargetDescription = ("Whoever is equipping This");
+            this.saeItemOnTurnStart.ThisDescription = ("The item");
             this.saeItemOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeItemOnAttacked
@@ -2992,7 +3050,10 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.RequiresCondition = (false);
             this.saeItemOnAttacked.RequiresDescription = (false);
             this.saeItemOnAttacked.Size = (new global::System.Drawing.Size(362, 32));
+            this.saeItemOnAttacked.SourceDescription = ("Whoever is equipping it");
             this.saeItemOnAttacked.TabIndex = (224);
+            this.saeItemOnAttacked.TargetDescription = ("The owner's interactor");
+            this.saeItemOnAttacked.ThisDescription = ("The item");
             this.saeItemOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maeItemOnAttack
@@ -3011,7 +3072,10 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.RequiresCondition = (true);
             this.maeItemOnAttack.RequiresDescription = (true);
             this.maeItemOnAttack.Size = (new global::System.Drawing.Size(368, 94));
+            this.maeItemOnAttack.SourceDescription = (null);
             this.maeItemOnAttack.TabIndex = (223);
+            this.maeItemOnAttack.TargetDescription = ("Whoever is being targeted");
+            this.maeItemOnAttack.ThisDescription = ("The item");
             this.maeItemOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // saeItemOnUse
@@ -3032,7 +3096,10 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.RequiresCondition = (true);
             this.saeItemOnUse.RequiresDescription = (true);
             this.saeItemOnUse.Size = (new global::System.Drawing.Size(292, 32));
+            this.saeItemOnUse.SourceDescription = ("The item");
             this.saeItemOnUse.TabIndex = (222);
+            this.saeItemOnUse.TargetDescription = ("Whoever is using it");
+            this.saeItemOnUse.ThisDescription = ("The item");
             this.saeItemOnUse.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeItemOnStepped
@@ -3053,7 +3120,10 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnStepped.RequiresCondition = (false);
             this.saeItemOnStepped.RequiresDescription = (false);
             this.saeItemOnStepped.Size = (new global::System.Drawing.Size(290, 32));
+            this.saeItemOnStepped.SourceDescription = ("The item");
             this.saeItemOnStepped.TabIndex = (221);
+            this.saeItemOnStepped.TargetDescription = ("Whoever stepped on it");
+            this.saeItemOnStepped.ThisDescription = ("The item");
             this.saeItemOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtItemPower
@@ -3251,7 +3321,10 @@ namespace RogueCustomsDungeonEditor
             this.saeTrapOnStepped.RequiresCondition = (false);
             this.saeTrapOnStepped.RequiresDescription = (false);
             this.saeTrapOnStepped.Size = (new global::System.Drawing.Size(290, 32));
+            this.saeTrapOnStepped.SourceDescription = ("The trap");
             this.saeTrapOnStepped.TabIndex = (240);
+            this.saeTrapOnStepped.TargetDescription = ("Whoever steps on it");
+            this.saeTrapOnStepped.ThisDescription = ("The trap");
             this.saeTrapOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtTrapPower
@@ -3421,7 +3494,10 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.RequiresCondition = (false);
             this.saeAlteredStatusOnTurnStart.RequiresDescription = (false);
             this.saeAlteredStatusOnTurnStart.Size = (new global::System.Drawing.Size(270, 32));
+            this.saeAlteredStatusOnTurnStart.SourceDescription = ("The Altered Status");
             this.saeAlteredStatusOnTurnStart.TabIndex = (262);
+            this.saeAlteredStatusOnTurnStart.TargetDescription = ("Whoever it's inflicting");
+            this.saeAlteredStatusOnTurnStart.ThisDescription = ("The Altered Status");
             this.saeAlteredStatusOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeAlteredStatusOnApply
@@ -3442,7 +3518,10 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.RequiresCondition = (false);
             this.saeAlteredStatusOnApply.RequiresDescription = (false);
             this.saeAlteredStatusOnApply.Size = (new global::System.Drawing.Size(271, 32));
+            this.saeAlteredStatusOnApply.SourceDescription = ("The Altered Status");
             this.saeAlteredStatusOnApply.TabIndex = (261);
+            this.saeAlteredStatusOnApply.TargetDescription = ("Whoever it's targeting");
+            this.saeAlteredStatusOnApply.ThisDescription = ("The Altered Status");
             this.saeAlteredStatusOnApply.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // chkAlteredStatusCleansedOnCleanseActions
@@ -3613,34 +3692,6 @@ namespace RogueCustomsDungeonEditor
             // 
             this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
             this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
-            // 
-            // ssPlayer
-            // 
-            this.ssPlayer.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.AutoSize = (true);
-            this.ssPlayer.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.ssPlayer.BaseAttack = (0);
-            this.ssPlayer.BaseDefense = (0);
-            this.ssPlayer.BaseHP = (1);
-            this.ssPlayer.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.ssPlayer.BaseMovement = (1);
-            this.ssPlayer.BaseMP = (0);
-            this.ssPlayer.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssPlayer.BaseSightRangeDisplayNames")));
-            this.ssPlayer.CanGainExperience = (false);
-            this.ssPlayer.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.ExperienceToLevelUpFormula = ("");
-            this.ssPlayer.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.Location = (new global::System.Drawing.Point(385, 94));
-            this.ssPlayer.MaxLevel = (1);
-            this.ssPlayer.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.Name = ("ssPlayer");
-            this.ssPlayer.Size = (new global::System.Drawing.Size(330, 653));
-            this.ssPlayer.TabIndex = (129);
-            this.ssPlayer.UsesMP = (false);
             // 
             // frmMain
             // 

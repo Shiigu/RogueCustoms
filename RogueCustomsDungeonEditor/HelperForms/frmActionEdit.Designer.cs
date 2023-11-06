@@ -108,7 +108,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(564, 448);
+            btnCancel.Location = new Point(588, 444);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -300,7 +300,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(404, 448);
+            btnSave.Location = new Point(428, 444);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -311,7 +311,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(276, 419);
+            btnEdit.Location = new Point(300, 415);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -322,7 +322,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(395, 419);
+            btnNewThen.Location = new Point(419, 415);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -333,7 +333,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(478, 419);
+            btnNewOnSuccessFailure.Location = new Point(502, 415);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -344,7 +344,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(649, 419);
+            btnRemove.Location = new Point(673, 415);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(91, 23);
             btnRemove.TabIndex = 8;
@@ -354,7 +354,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(483, 448);
+            btnSaveAs.Location = new Point(507, 444);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -433,6 +433,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // panel1
             // 
+            panel1.BackColor = SystemColors.ActiveCaption;
+            panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(lblTarget);
             panel1.Controls.Add(lblSource);
             panel1.Controls.Add(lblThis);
@@ -443,42 +445,42 @@ namespace RogueCustomsDungeonEditor.HelperForms
             panel1.Controls.Add(pictureBox1);
             panel1.Location = new Point(10, 376);
             panel1.Name = "panel1";
-            panel1.Size = new Size(246, 98);
+            panel1.Size = new Size(284, 98);
             panel1.TabIndex = 25;
             // 
             // lblTarget
             // 
-            lblTarget.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblTarget.Location = new Point(77, 75);
+            lblTarget.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTarget.Location = new Point(77, 76);
             lblTarget.Name = "lblTarget";
-            lblTarget.Size = new Size(166, 19);
+            lblTarget.Size = new Size(202, 19);
             lblTarget.TabIndex = 7;
             lblTarget.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblSource
             // 
-            lblSource.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSource.Location = new Point(77, 59);
+            lblSource.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblSource.Location = new Point(77, 57);
             lblSource.Name = "lblSource";
-            lblSource.Size = new Size(166, 19);
+            lblSource.Size = new Size(202, 19);
             lblSource.TabIndex = 6;
             lblSource.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblThis
             // 
-            lblThis.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblThis.Location = new Point(77, 40);
+            lblThis.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblThis.Location = new Point(77, 38);
             lblThis.Name = "lblThis";
-            lblThis.Size = new Size(166, 19);
+            lblThis.Size = new Size(202, 19);
             lblThis.TabIndex = 5;
             lblThis.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label12
             // 
             label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label12.Location = new Point(3, 78);
+            label12.Location = new Point(3, 76);
             label12.Name = "label12";
-            label12.Size = new Size(68, 17);
+            label12.Size = new Size(68, 19);
             label12.TabIndex = 4;
             label12.Text = "- Target:";
             label12.TextAlign = ContentAlignment.MiddleLeft;
@@ -486,7 +488,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label11
             // 
             label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.Location = new Point(3, 59);
+            label11.Location = new Point(3, 57);
             label11.Name = "label11";
             label11.Size = new Size(68, 19);
             label11.TabIndex = 3;
@@ -496,7 +498,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label10
             // 
             label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.Location = new Point(3, 40);
+            label10.Location = new Point(3, 38);
             label10.Name = "label10";
             label10.Size = new Size(68, 19);
             label10.TabIndex = 2;
