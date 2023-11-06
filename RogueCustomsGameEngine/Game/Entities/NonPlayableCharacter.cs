@@ -123,16 +123,22 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void AttackOrMove()
         {
+            if(ExistenceStatus != EntityExistenceStatus.Alive
+                || (CurrentTarget != null && CurrentTarget.ExistenceStatus != EntityExistenceStatus.Alive)
+                || CurrentTarget == null)
+            {
+                RemainingMovement = 0;
+                TookAction = true;
+                return;
+            }
+
             if(CurrentTarget != this)
             {
-                while ((RemainingMovement > 0 || (Movement == 0 && !TookAction)) && ExistenceStatus == EntityExistenceStatus.Alive && CurrentTarget != null && CurrentTarget.ExistenceStatus == EntityExistenceStatus.Alive)
-                {
-                    var validActions = OnAttack.Where(oaa => oaa.CanBeUsedOn(CurrentTarget, Map));
-                    if (validActions.Any())
-                        AttackCharacter(CurrentTarget, validActions.TakeRandomElement(Rng));
-                    else
-                        MoveTo(PathToUse.Destination);
-                }
+                var validActions = OnAttack.Where(oaa => oaa.CanBeUsedOn(CurrentTarget, Map));
+                if (validActions.Any())
+                    AttackCharacter(CurrentTarget, validActions.TakeRandomElement(Rng));
+                else
+                    MoveTo(PathToUse.Destination);
             }
             else
             {
@@ -156,7 +162,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     LastUsedActionOnSelf = action;
                 }
             }
-            LastUsedActionOnSelf = null;
+            if((RemainingMovement > 0 && Movement == 0) || TookAction)
+                LastUsedActionOnSelf = null;
         }
 
         public void MoveTo(Point p)

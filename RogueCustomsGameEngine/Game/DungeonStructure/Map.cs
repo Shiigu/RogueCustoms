@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int TurnCount { get; set; }
         private int LastMonsterGenerationTurn;
+        private int LatestPlayerRemainingMovement;
 
         public int Id { get; }
 
@@ -679,6 +680,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TurnCount++;
             _displayedTurnMessage = false;
             Player.RemainingMovement = Player.Movement;
+            LatestPlayerRemainingMovement = Player.RemainingMovement;
             Player.TookAction = false;
             Player.PerformOnTurnStartActions();
             AICharacters.Where(e => e != null).ForEach(e =>
@@ -728,12 +730,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void ProcessTurn()
         {
+            if (LatestPlayerRemainingMovement == Player.RemainingMovement && Player.CanTakeAction && !Player.TookAction) return;
             Player.UpdateVisibility();
-            if (Player.RemainingMovement > 0 && Player.CanTakeAction && !Player.TookAction) return;
-            var aiCharactersThatCanAct = AICharacters.Where(c => c.CanTakeAction && !c.TookAction);
-            Parallel.ForEach(aiCharactersThatCanAct, aictca => aictca.PickTargetAndPath());
-            aiCharactersThatCanAct.ForEach(aictca => aictca.AttackOrMove());
-            NewTurn();
+            var minRequiredMovementToAct = (Player.RemainingMovement == 0 || !Player.CanTakeAction || Player.TookAction) ? 0 : LatestPlayerRemainingMovement;
+            var aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => (c.RemainingMovement > 0 || c.Movement == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct).OrderByDescending(c => c.RemainingMovement).ToList();
+            while (aiCharactersThatCanActAlongsidePlayer.Any())
+            {
+                Parallel.ForEach(aiCharactersThatCanActAlongsidePlayer, aictca => aictca.PickTargetAndPath());
+                aiCharactersThatCanActAlongsidePlayer.ForEach(aictca => aictca.AttackOrMove());
+                aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => (c.RemainingMovement > 0 || c.Movement == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct).OrderByDescending(c => c.RemainingMovement).ToList();
+            }
+            if(GetCharacters().TrueForAll(c => (c.RemainingMovement == 0 && c.Movement > 0) || !c.CanTakeAction || c.TookAction))
+                NewTurn();
         }
 
         public PlayerInfoDto GetPlayerDetailInfo()
@@ -745,17 +753,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (DungeonStatus != DungeonStatus.Running) return;
             if (Player.ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (Player.RemainingMovement != 0)
+            if (x == 0 && y == 0) // This is only possible if the player chooses to Skip Turn.
+            {
+                Player.RemainingMovement = 0;
+                Player.TookAction = true;
+            }
+            else if (Player.RemainingMovement != 0)
             {
                 var currentTile = GetTileFromCoordinates(Player.Position)
                     ?? throw new ArgumentException("PlayerEntity is on a nonexistent Tile");
                 var targetTile = GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y + y)
                     ?? throw new ArgumentException("PlayerEntity is about to move to a nonexistent Tile");
-                if (currentTile == targetTile) // This is only possible if the player chooses to Skip Turn.
-                {
-                    Player.RemainingMovement = 0;
-                }
-                else if (Tiles.GetAdjacentElements(currentTile, true).Contains(targetTile))
+                if (Tiles.GetAdjacentElements(currentTile, true).Contains(targetTile))
                 {
                     if (!targetTile.IsWalkable) return;
                     if (x != 0 && y != 0 && (!GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y).IsWalkable
@@ -766,7 +775,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     TryMoveCharacter(Player, targetTile);
                 }
             }
-            if (Player.RemainingMovement == 0 || Player.TookAction) ProcessTurn();
+            ProcessTurn();
         }
 
         public bool TryMoveCharacter(Character character, Tile targetTile)
@@ -778,7 +787,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     // Swap positions with allies, neutrals or invisibles
                     characterInTargetTile.Position = character.Position;
-                    characterInTargetTile.RemainingMovement--;
+                    if(characterInTargetTile.RemainingMovement > 0)
+                        characterInTargetTile.RemainingMovement--;
                     if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
                         AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
                 }

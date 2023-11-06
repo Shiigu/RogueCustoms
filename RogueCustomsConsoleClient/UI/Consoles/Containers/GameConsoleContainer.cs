@@ -195,8 +195,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 if (RequiresRefreshingDungeonState)
                 {
                     LatestDungeonStatus = BackendHandler.Instance.GetDungeonStatus();
-                    if (LastTurnCount != LatestDungeonStatus.TurnCount)
-                        ShowMessagesIfNeeded(0);
+                    ShowMessagesIfNeeded();
                     LastTurnCount = LatestDungeonStatus.TurnCount;
                 }
 
@@ -339,7 +338,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             }
         }
 
-        private void ShowMessagesIfNeeded(int index)
+        private void ShowMessagesIfNeeded(int index = 0)
         {
             var messageBox = LatestDungeonStatus.MessageBoxes.ElementAtOrDefault(index);
             if (messageBox != null)
