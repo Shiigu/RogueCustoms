@@ -678,6 +678,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #endregion
             }
             TurnCount++;
+            SetFlagValue("TurnCount", TurnCount);
             _displayedTurnMessage = false;
             Player.RemainingMovement = Player.Movement;
             LatestPlayerRemainingMovement = Player.RemainingMovement;

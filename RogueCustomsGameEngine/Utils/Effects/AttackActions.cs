@@ -32,7 +32,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 damageDealt = 1;
             damageDealt = (int) damageDealt;
             output = (int) damageDealt;
-            if(damageDealt <= 0 || Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
+            Map.SetFlagValue($"DamageTaken_{c.Id}", damageDealt);
+            if (damageDealt <= 0 || Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
                 return false;
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
@@ -72,6 +73,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 burnAmount = 1;
             burnAmount = (int)burnAmount;
             output = burnAmount;
+            Map.SetFlagValue($"MPBurned_{c.Id}", burnAmount);
             if (burnAmount <= 0)
                 return false;
             if (c.EntityType == EntityType.Player
