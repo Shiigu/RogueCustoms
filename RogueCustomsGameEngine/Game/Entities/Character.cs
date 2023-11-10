@@ -116,6 +116,16 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int TotalSightRangeIncrements { get; set; } = 0;
         public int SightRange => BaseSightRange + TotalSightRangeIncrements;
 
+        public readonly int BaseAccuracy = 100;
+        public List<StatModification> AccuracyModifications { get; set; }
+        public decimal TotalAccuracyIncrements => AccuracyModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
+        public decimal Accuracy => Math.Max(Constants.MIN_ACCURACY_CAP, Math.Min(Constants.MAX_ACCURACY_CAP, BaseAccuracy + TotalAccuracyIncrements));
+
+        public readonly int BaseEvasion = 0;
+        public List<StatModification> EvasionModifications { get; set; }
+        public decimal TotalEvasionIncrements => EvasionModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
+        public decimal Evasion => Math.Max(Constants.MIN_EVASION_CAP, Math.Min(Constants.MAX_EVASION_CAP, BaseEvasion + TotalEvasionIncrements));
+
         public List<AlteredStatus> AlteredStatuses { get; set; }
 
         public readonly int InventorySize;
@@ -251,6 +261,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications = new List<StatModification>();
             HPRegenerationModifications = new List<StatModification>();
             MPRegenerationModifications = new List<StatModification>();
+            AccuracyModifications = new List<StatModification>();
+            EvasionModifications = new List<StatModification>();
 
             BaseSightRange = entityClass.BaseSightRange;
             InventorySize = entityClass.InventorySize;
@@ -520,7 +532,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             var successfulEffects = action?.Do(this, target);
             if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
-            TookAction = true;
+            if(action?.FinishesTurnWhenUsed == true)
+                TookAction = true;
             RemainingMovement = 0;
         }
 

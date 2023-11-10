@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using System;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
+using System.Linq;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -27,13 +28,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to damage {paramsObject.Target.Name} when it's not a Character.");
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
+
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+
+            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+                return false;
             var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
             if (damageDealt > 0 && damageDealt < 1)
                 damageDealt = 1;
             damageDealt = (int) damageDealt;
             output = (int) damageDealt;
-            Map.SetFlagValue($"DamageTaken_{c.Id}", damageDealt);
-            if (damageDealt <= 0 || Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
+            if (Map.Flags.Exists(f => f.Key.Equals($"DamageTaken_{c.Id}")))
+                Map.SetFlagValue($"DamageTaken_{c.Id}", damageDealt);
+            else
+                Map.CreateFlag($"DamageTaken_{c.Id}", damageDealt, true);
+            if (damageDealt <= 0)
                 return false;
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
@@ -66,14 +75,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (!c.UsesMP)
                 return false;
-            if (Rng.NextInclusive(1, 100) > paramsObject.Accuracy)
+
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+
+            if (Rng.NextInclusive(1, 100) > accuracyCheck)
                 return false;
             var burnAmount = paramsObject.Power;
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 burnAmount = 1;
             burnAmount = (int)burnAmount;
             output = burnAmount;
-            Map.SetFlagValue($"MPBurned_{c.Id}", burnAmount);
+            if (Map.Flags.Exists(f => f.Key.Equals($"MPBurned_{c.Id}")))
+                Map.SetFlagValue($"MPBurned_{c.Id}", burnAmount);
+            else
+                Map.CreateFlag($"MPBurned_{c.Id}", burnAmount, true);
             if (burnAmount <= 0)
                 return false;
             if (c.EntityType == EntityType.Player

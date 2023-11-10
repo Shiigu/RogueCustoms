@@ -54,6 +54,7 @@ namespace RogueCustomsDungeonEditor.Controls
         public bool RequiresCondition { get; set; }
         public bool RequiresDescription { get; set; }
         public bool RequiresActionName { get; set; }
+        public bool MayFinishTurnWhenUsed { get; set; }
         public string PlaceholderActionName { get; set; }
         public UsageCriteria UsageCriteria { get; set; }
         public List<string> AlteredStatuses { get; set; }
@@ -80,7 +81,22 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            var frmActionEdit = new frmActionEdit(action, Dungeon, ClassId, ActionTypeText, RequiresCondition, RequiresDescription, RequiresActionName, PlaceholderActionName, UsageCriteria, AlteredStatuses, EffectParamData, ThisDescription, SourceDescription, TargetDescription);
+            var frmActionEdit = new frmActionEdit(
+                action,
+                Dungeon,
+                ClassId,
+                ActionTypeText,
+                RequiresCondition,
+                RequiresDescription,
+                RequiresActionName,
+                MayFinishTurnWhenUsed,
+                PlaceholderActionName,
+                UsageCriteria,
+                AlteredStatuses,
+                EffectParamData,
+                ThisDescription,
+                SourceDescription,
+                TargetDescription);
             frmActionEdit.ShowDialog();
             if (frmActionEdit.Saved)
             {

@@ -635,7 +635,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 MPCost = info.MPCost,
                 TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
                 Effect = info.Effect.Clone(),
-                UseCondition = info.UseCondition
+                UseCondition = info.UseCondition,
+                FinishesTurnWhenUsed = info.FinishesTurnWhenUsed
             };
 
             return clonedAction;

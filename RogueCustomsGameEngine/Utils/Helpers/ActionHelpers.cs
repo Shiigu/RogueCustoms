@@ -37,6 +37,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "Movement",
             "HPRegeneration",
             "MPRegeneration",
+            "Accuracy",
+            "Evasion",
             "ExperiencePayout",
             "Owner",
             "Power",
@@ -113,6 +115,12 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                                 case "mpregeneration":
                                     paramsObject.StatAlterationList = c.MPRegenerationModifications;
                                     break;
+                                case "accuracy":
+                                    paramsObject.StatAlterationList = c.AccuracyModifications;
+                                    break;
+                                case "evasion":
+                                    paramsObject.StatAlterationList = c.EvasionModifications;
+                                    break;
                             }
                             break;
                         case "attack":
@@ -135,6 +143,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                             break;
                         case "turnlength":
                             paramsObject.TurnLength = CalculateDiceNotationIfNeeded(value);
+                            break;
+                        case "bypassesaccuracycheck":
+                            paramsObject.BypassesAccuracyCheck = new Expression(value).Eval<bool>();
                             break;
                         case "displayonlog":
                             paramsObject.DisplayOnLog = new Expression(value).Eval<bool>();
@@ -420,6 +431,28 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             {
                 return parameterValue.ToString();
             }
+        }
+
+        public static int CalculateAdjustedAccuracy(Entity source, Entity target, dynamic paramsObject)
+        {
+            var targetEvasion = (target is Character t) ? (int) t.Evasion : 0;
+            var sourceAccuracy = (source is Character s) ? (int) s.Accuracy : 0;
+            var baseAccuracy = (int) paramsObject.Accuracy;
+
+            int adjustedAccuracy;
+
+            if (paramsObject.BypassesAccuracyCheck)
+            {
+                adjustedAccuracy = baseAccuracy;
+            }
+            else
+            {
+                var accuracyModifier = 100 - targetEvasion;
+                var adjustedSourceAccuracy = (sourceAccuracy * accuracyModifier / 100);
+                adjustedAccuracy = baseAccuracy * adjustedSourceAccuracy / 100;
+            }
+
+            return Math.Max(0, Math.Min(100, adjustedAccuracy));
         }
     }
 #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo

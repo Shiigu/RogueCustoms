@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
     #pragma warning disable S2589 // Boolean expressions should not be gratuitous
+    #pragma warning disable S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     public static class DungeonInfoConversionHelpers
@@ -416,13 +417,15 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             };
         }
 
-        private static void UpdateReplaceConsoleRepresentationStepsToV11(this ActionWithEffectsInfoV11 actionWithEffects)
+        private static void UpdateReplaceConsoleRepresentationStepsToV11(this ActionWithEffectsInfoV11? actionWithEffects)
         {
+            if (actionWithEffects == null) return;
             actionWithEffects.Effect.UpdateReplaceConsoleRepresentationParametersToV11();
         }
 
-        private static void UpdateReplaceConsoleRepresentationParametersToV11(this EffectInfoV11 effect)
+        private static void UpdateReplaceConsoleRepresentationParametersToV11(this EffectInfoV11? effect)
         {
+            if (effect == null) return;
             if(effect.EffectName.Equals("ReplaceConsoleRepresentation"))
             {
                 foreach (var param in effect.Params.Where(param => param.ParamName.Equals("Color", StringComparison.InvariantCultureIgnoreCase)))
@@ -457,6 +460,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11FloorInfo = V11Dungeon.FloorInfos.Find(fi => fi.MinFloorLevel == floorInfo.MinFloorLevel && fi.MaxFloorLevel == floorInfo.MaxFloorLevel);
                 if (v11FloorInfo == null) continue;
                 floorInfo.OnFloorStart = v11FloorInfo.OnFloorStartActions.ElementAtOrDefault(0).CloneToV12();
+                floorInfo.OnFloorStart.UpdateChanceAndAccuracyParametersToV12();
             }
 
             foreach (var v12PlayerClass in V12Dungeon.PlayerClasses)
@@ -464,13 +468,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11PlayerClass = V11Dungeon.PlayerClasses.Find(pc => pc.Id.Equals(v12PlayerClass.Id));
                 if (v11PlayerClass == null) continue;
                 v12PlayerClass.OnTurnStart = v11PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12PlayerClass.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
                 v12PlayerClass.OnAttack = new();
                 foreach (var onAttackAction in v11PlayerClass.OnAttackActions)
                 {
-                    v12PlayerClass.OnAttack.Add(onAttackAction.CloneToV12());
+                    var convertedAction = onAttackAction.CloneToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    v12PlayerClass.OnAttack.Add(convertedAction);
                 }
                 v12PlayerClass.OnAttacked = v11PlayerClass.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12PlayerClass.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
                 v12PlayerClass.OnDeath = v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
+                v12PlayerClass.OnDeath.UpdateChanceAndAccuracyParametersToV12();
             }
 
             foreach (var v12NPC in V12Dungeon.NPCs)
@@ -478,13 +487,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11NPC = V11Dungeon.NPCs.Find(npc => npc.Id.Equals(v12NPC.Id));
                 if (v11NPC == null) continue;
                 v12NPC.OnTurnStart = v11NPC.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
                 v12NPC.OnAttack = new();
                 foreach (var onAttackAction in v11NPC.OnAttackActions)
                 {
-                    v12NPC.OnAttack.Add(onAttackAction.CloneToV12());
+                    var convertedAction = onAttackAction.CloneToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    v12NPC.OnAttack.Add(convertedAction);
                 }
                 v12NPC.OnAttacked = v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
                 v12NPC.OnDeath = v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
+                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
             }
 
             foreach (var v12Item in V12Dungeon.Items)
@@ -492,14 +506,20 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11Item = V11Dungeon.Items.Find(i => i.Id.Equals(v12Item.Id));
                 if (v11Item == null) continue;
                 v12Item.OnTurnStart = v11Item.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
                 v12Item.OnAttack = new();
                 foreach (var onAttackAction in v11Item.OnAttackActions)
                 {
-                    v12Item.OnAttack.Add(onAttackAction.CloneToV12());
+                    var convertedAction = onAttackAction.CloneToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    v12Item.OnAttack.Add(convertedAction);
                 }
                 v12Item.OnAttacked = v11Item.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
                 v12Item.OnUse = v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnUse.UpdateChanceAndAccuracyParametersToV12();
                 v12Item.OnStepped = v11Item.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
+                v12Item.OnStepped.UpdateChanceAndAccuracyParametersToV12();
             }
 
             foreach (var v12Trap in V12Dungeon.Traps)
@@ -507,6 +527,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11Trap = V11Dungeon.Traps.Find(t => t.Id.Equals(v12Trap.Id));
                 if (v11Trap == null) continue;
                 v12Trap.OnStepped = v11Trap.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
+                v12Trap.OnStepped.UpdateChanceAndAccuracyParametersToV12();
             }
 
             foreach (var v12AlteredStatus in V12Dungeon.AlteredStatuses)
@@ -514,7 +535,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11AlteredStatus = V11Dungeon.AlteredStatuses.Find(als => als.Id.Equals(v12AlteredStatus.Id));
                 if (v11AlteredStatus == null) continue;
                 v12AlteredStatus.OnApply = v11AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).CloneToV12();
+                v12AlteredStatus.OnApply.UpdateChanceAndAccuracyParametersToV12();
                 v12AlteredStatus.OnTurnStart = v11AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
+                v12AlteredStatus.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
             }
 
             V12Dungeon.Version = "1.2";
@@ -537,7 +560,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 MPCost = info.MPCost,
                 UseCondition = info.UseCondition,
                 TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
-                Effect = info.Effect.CloneToV12()
+                Effect = info.Effect.CloneToV12(),
+                FinishesTurnWhenUsed = true
             };
 
             return clonedAction;
@@ -572,9 +596,40 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             return clonedEffect;
         }
 
+        private static void UpdateChanceAndAccuracyParametersToV12(this ActionWithEffectsInfo? actionWithEffects)
+        {
+            if (actionWithEffects == null) return;
+            actionWithEffects.Effect.UpdateChanceAndAccuracyParametersToV12();
+        }
+
+        private static void UpdateChanceAndAccuracyParametersToV12(this EffectInfo? effect)
+        {
+            if (effect == null) return;
+            var hasAccuracyParameter = false;
+            foreach (var param in effect.Params.Where(param => param.ParamName.Equals("Chance", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                param.ParamName = "Accuracy";
+                hasAccuracyParameter = true;
+            }
+            if (hasAccuracyParameter || effect.Params.Any(param => param.ParamName.Equals("Accuracy", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                var paramsAsList = effect.Params.ToList();
+                paramsAsList.Add(new Parameter
+                {
+                    ParamName = "BypassesAccuracyCheck",
+                    Value = (!effect.EffectName.Equals("DealDamage") && !effect.EffectName.Equals("BurnMP")).ToString()
+                });
+                effect.Params = paramsAsList.ToArray();
+            }
+            effect.Then.UpdateChanceAndAccuracyParametersToV12();
+            effect.OnSuccess.UpdateChanceAndAccuracyParametersToV12();
+            effect.OnFailure.UpdateChanceAndAccuracyParametersToV12();
+        }
+
         #endregion
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
+    #pragma warning restore S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning restore CS8604 // Posible argumento de referencia nulo
 }

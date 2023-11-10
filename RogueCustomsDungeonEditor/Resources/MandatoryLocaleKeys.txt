@@ -52,6 +52,8 @@ CharacterSightRangeStat
 CharacterHPRegenerationStat
 CharacterMPRegenerationStat
 CharacterInventorySizeStat
+CharacterEvasionStat
+CharacterAccuracyStat
 CharacterDamageStat
 CharacterMitigationStat
 CharacterTakesDamage

@@ -67,9 +67,19 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for the Attack to land.",
+        "Description": "Indicates the odds for the Attack to land. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -134,9 +144,19 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for the Attack to land.",
+        "Description": "Indicates the odds for the Attack to land. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -166,9 +186,9 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for an Item to be stolen.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for an Item to be stolen. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -186,9 +206,19 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "CanStealConsumabes",
+        "InternalName": "CanStealConsumables",
         "DisplayName": "Can Steal Consumables?",
         "Description": "If false, the User will pretend Target has no Consumables in their inventory.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -263,11 +293,21 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to be removed.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to be removed. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -531,9 +571,9 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to receive the Altered Status, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to receive the Altered Status, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -556,6 +596,16 @@
         "Description": "Indicates how long the Altered Status will apply. Negative values indicate indefinite duration.",
         "ParameterType": "Number",
         "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -632,17 +682,35 @@
           {
             "Key": "mpRegeneration",
             "Value": "MP Regeneration"
+          },
+          {
+            "Key": "accuracy",
+            "Value": "Accuracy"
+          },
+          {
+            "Key": "evasion",
+            "Value": "Evasion"
           }
         ],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -726,11 +794,21 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -778,6 +856,14 @@
           {
             "Key": "mpRegeneration",
             "Value": "MP Regeneration"
+          },
+          {
+            "Key": "accuracy",
+            "Value": "Accuracy"
+          },
+          {
+            "Key": "evasion",
+            "Value": "Evasion"
           }
         ],
         "Required": true,
@@ -803,11 +889,21 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -841,11 +937,21 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
@@ -860,9 +966,9 @@
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -885,6 +991,16 @@
             "Value": "Target"
           }
         ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
       }
@@ -917,11 +1033,21 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
-        "InternalName": "Chance",
-        "DisplayName": "Chance",
-        "Description": "Indicates the odds for Target to have their next turn skipped.",
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to have their next turn skipped. It multiplies User's Accuracy if it's a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []

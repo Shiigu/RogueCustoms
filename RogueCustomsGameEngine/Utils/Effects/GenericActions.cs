@@ -106,7 +106,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusToApply = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase))
                                    ?? throw new ArgumentException($"Altered status {paramsObject.Id} does not exist!");
             var statusTarget = paramsObject.Target as Character;
-            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+
+            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Exists(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
                 var statusPower = (decimal) paramsObject.Power;
@@ -173,15 +175,28 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     statValue = statAlterationTarget.MPRegeneration;
                     statCap = Constants.REGEN_STAT_CAP;
                     break;
+                case "accuracy":
+                    statValue = statAlterationTarget.Accuracy;
+                    statCap = Constants.MAX_ACCURACY_CAP;
+                    break;
+                case "evasion":
+                    statValue = statAlterationTarget.Evasion;
+                    statCap = Constants.MAX_EVASION_CAP;
+                    break;
                 default:
                     throw new ArgumentException($"Unrecognized stat: {paramsObject.StatName}.");
             }
-            if (statValue >= statCap)
+            var isEvasion = string.Equals(paramsObject.StatName, "evasion", StringComparison.InvariantCultureIgnoreCase);
+            if (statValue >= statCap || (isEvasion && (Math.Abs(statValue) >= statCap)))
                 return false;
-            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
                 var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                var isAccuracyOrEvasion = string.Equals(paramsObject.StatName, "accuracy", StringComparison.InvariantCultureIgnoreCase)
+                                       || isEvasion;
                 var alterationAmount = isHPRegeneration || isMPRegeneration ? paramsObject.Amount : (int)paramsObject.Amount;
 
                 if(!isHPRegeneration && !isMPRegeneration)
@@ -210,10 +225,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
-                    if(paramsObject.Amount > 0)
-                        Map.AppendMessage(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString("0.#####") }), Color.DeepSkyBlue);
-                    else
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNerfed"].Format(new { CharacterName = statAlterationTarget.Name, StatName = Map.Locale[$"Character{statName}Stat"], Amount = Math.Abs(alterationAmount).ToString("0.#####") }), Color.DeepSkyBlue);
+                    var amountString = isAccuracyOrEvasion ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
+                    var messageKey = isAccuracyOrEvasion ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
+
+                    var message = Map.Locale[messageKey].Format(new
+                    {
+                        CharacterName = statAlterationTarget.Name,
+                        StatName = Map.Locale[$"Character{statName}Stat"],
+                        Amount = amountString
+                    });
+
+                    Map.AppendMessage(message, Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -228,7 +250,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to remove an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
             var statusToRemove = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase));
             if (!statusToRemove.CleansedByCleanseActions) throw new InvalidOperationException($"Attempted to remove {statusToRemove.Name} with a Cleanse action when it can't be cleansed that way.");
-            if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+
+            if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 c.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(statusToRemove.ClassId));
                 c.MaxHPModifications?.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
@@ -253,10 +277,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             _ = 0;
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 statAlterations.Clear();
 
@@ -284,9 +309,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
-
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
             if ((c.MaxHPModifications?.Any() == true || c.AttackModifications?.Any() == true
-                || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+                || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 c.MaxHPModifications.Clear();
                 if(c == Map.Player || Map.Player.CanSee(c))
@@ -328,7 +353,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to remove an Altered Status on {paramsObject.Target.Name} when it's not a Character.");
-            if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.AlteredStatuses?.Any() == true)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            if (Rng.NextInclusive(1, 100) <= accuracyCheck && c.AlteredStatuses?.Any() == true)
             {
                 c.AlteredStatuses.ForEach(als => {
                     if (c.EntityType == EntityType.Player
@@ -354,7 +380,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to force {paramsObject.Target.Name} to skip its turn when it's not a Character.");
-            if (Rng.NextInclusive(1, 100) <= paramsObject.Chance && c.CanTakeAction)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            if (Rng.NextInclusive(1, 100) <= accuracyCheck && c.CanTakeAction)
             {
                 c.CanTakeAction = false;
                 return true;
@@ -368,7 +395,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to teleport {paramsObject.Target.Name} when it's not a Character.");
-            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.NextInclusive(1, 100) <= paramsObject.Chance)
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))

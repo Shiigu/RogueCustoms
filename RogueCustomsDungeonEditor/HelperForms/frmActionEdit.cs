@@ -26,27 +26,31 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public ActionWithEffectsInfo ActionToSave { get; set; }
         public bool Saved { get; set; }
         public bool IsNewAction { get; set; }
-        private DungeonInfo ActiveDungeon;
-        private List<string> UsableAlteredStatusList;
-        private List<EffectTypeData> SelectableEffects;
+        private readonly DungeonInfo ActiveDungeon;
+        private readonly List<string> UsableAlteredStatusList;
+        private readonly List<EffectTypeData> SelectableEffects;
 
         private TreeNode SelectedNode;
         private bool HasThenChildNode;
         private bool HasOnSuccessFailureChildNodes;
-        private bool RequiresDescription;
-        private bool RequiresActionName;
-        private bool RequiresCondition;
-        private UsageCriteria UsageCriteria;
-        private string ClassId;
-        private string PlaceholderActionName;
+        private readonly bool RequiresDescription;
+        private readonly bool RequiresActionName;
+        private readonly bool RequiresCondition;
+        private readonly bool MayFinishTurnWhenUsed;
+        private readonly UsageCriteria UsageCriteria;
+        private readonly string ClassId;
+        private readonly string PlaceholderActionName;
         private string PreviousTextBoxValue;
-        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
+        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, bool mayFinishTurn, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
         {
             InitializeComponent();
             if (!actionToSave.IsNullOrEmpty())
                 ActionToSave = actionToSave.Clone();
             else
-                actionToSave = new ActionWithEffectsInfo();
+            {
+                ActionToSave = new ActionWithEffectsInfo();
+                ActionToSave.FinishesTurnWhenUsed = mayFinishTurn;
+            }
             ActiveDungeon = activeDungeon;
             ClassId = classId;
             if (actionToSave.IsNullOrEmpty())
@@ -69,6 +73,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
             RequiresCondition = requiresCondition;
+            MayFinishTurnWhenUsed = mayFinishTurn;
 
             lblThis.Text = thisDescription;
             lblSource.Text = sourceDescription;
@@ -101,6 +106,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 txtActionCondition.Enabled = false;
                 txtActionCondition.Text = "";
                 fklblConditionWarning.Visible = false;
+            }
+
+            if(MayFinishTurnWhenUsed)
+            {
+                chkFinishesTurn.Enabled = true;
+                chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
+            }
+            else
+            {
+                chkFinishesTurn.Enabled = false;
+                chkFinishesTurn.Checked = false;
             }
 
             UsableAlteredStatusList = alteredStatusList.Where(als => !als.Equals(classId)).ToList();
@@ -518,6 +534,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
+                        ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         this.Saved = true;
@@ -583,6 +600,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
+                        ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         ActionToSave.Name = nameToUse;
