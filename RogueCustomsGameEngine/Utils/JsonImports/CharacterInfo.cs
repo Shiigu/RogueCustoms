@@ -17,6 +17,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int BaseAttack { get; set; }
         public int BaseDefense { get; set; }
         public int BaseMovement { get; set; }
+        public int BaseAccuracy { get; set; }
+        public int BaseEvasion { get; set; }
         public decimal BaseHPRegeneration { get; set; }
         public decimal BaseMPRegeneration { get; set; }
         public string BaseSightRange { get; set; }

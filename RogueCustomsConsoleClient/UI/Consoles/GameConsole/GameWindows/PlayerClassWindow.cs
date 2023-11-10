@@ -254,6 +254,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             }
             TextAreaSubConsole.Cursor.NewLine();
             TextAreaSubConsole.Cursor.NewLine();
+            TextAreaSubConsole.Cursor.Print($"{currentClass.AccuracyName}: {currentClass.AccuracyStat}".ToAscii());
+            TextAreaSubConsole.Cursor.NewLine();
+            TextAreaSubConsole.Cursor.NewLine();
+            TextAreaSubConsole.Cursor.Print($"{currentClass.EvasionName}: {currentClass.EvasionStat}".ToAscii());
+            TextAreaSubConsole.Cursor.NewLine();
+            TextAreaSubConsole.Cursor.NewLine();
             TextAreaSubConsole.Cursor.Print($"{currentClass.SightRangeName}: {currentClass.SightRangeStat}".ToAscii());
             PrintPlayerStartingItemInfo(TextAreaSubConsole, LocalizationManager.GetString("PlayerClassStartingWeaponHeader").ToAscii(), currentClass.StartingWeapon);
             PrintPlayerStartingItemInfo(TextAreaSubConsole, LocalizationManager.GetString("PlayerClassStartingArmorHeader").ToAscii(), currentClass.StartingArmor);

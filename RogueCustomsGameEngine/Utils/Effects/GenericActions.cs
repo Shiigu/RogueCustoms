@@ -226,7 +226,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
                     var amountString = isAccuracyOrEvasion ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
-                    var messageKey = isAccuracyOrEvasion ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
+                    var messageKey = alterationAmount > 0 ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
 
                     var message = Map.Locale[messageKey].Format(new
                     {

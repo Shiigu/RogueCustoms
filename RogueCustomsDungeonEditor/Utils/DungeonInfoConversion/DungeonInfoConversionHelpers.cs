@@ -480,6 +480,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 v12PlayerClass.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
                 v12PlayerClass.OnDeath = v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
                 v12PlayerClass.OnDeath.UpdateChanceAndAccuracyParametersToV12();
+                v12PlayerClass.BaseAccuracy = 100;
+                v12PlayerClass.BaseEvasion = 0;
             }
 
             foreach (var v12NPC in V12Dungeon.NPCs)
@@ -496,9 +498,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     v12NPC.OnAttack.Add(convertedAction);
                 }
                 v12NPC.OnAttacked = v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
                 v12NPC.OnDeath = v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.OnDeath.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.BaseAccuracy = 100;
+                v12NPC.BaseEvasion = 0;
             }
 
             foreach (var v12Item in V12Dungeon.Items)

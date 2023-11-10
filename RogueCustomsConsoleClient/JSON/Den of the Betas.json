@@ -852,6 +852,10 @@
         {
           "Key": "MagicPotionDescription",
           "Value": "A mysterious beverage oozing with magic\n\nHeals up to 1d4 MP, then it disappears."
+        },
+        {
+          "Key": "ThiefSandAttackText",
+          "Value": "{this} tries to throw sand at {target}\u0027s eyes."
         }
       ]
     },
@@ -1076,11 +1080,11 @@
         },
         {
           "Key": "CharacterEvasionStat",
-          "Value": "Evasi\u00F3n"
+          "Value": "Evasion"
         },
         {
           "Key": "CharacterAccuracyStat",
-          "Value": "Precisi\u00F3n"
+          "Value": "Accuracy"
         },
         {
           "Key": "CharacterDamageStat",
@@ -1697,6 +1701,10 @@
         {
           "Key": "MagicPotionDescription",
           "Value": "Una bebida misteriosa que rebosa magia.\n\nCura hasta 1d4 PM antes de desaparecer."
+        },
+        {
+          "Key": "ThiefSandAttackText",
+          "Value": "{this} intenta arrojar arena a los ojos de {target}."
         }
       ]
     }
@@ -2586,7 +2594,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "MessageBox",
@@ -2712,7 +2720,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyAlteredStatus",
@@ -3123,15 +3131,13 @@
       ],
       "OnFloorStart": {
         "Name": "DungeonStartMessage",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "MessageBox",
@@ -3242,6 +3248,8 @@
       "BaseAttack": 4,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0.125,
       "BaseMPRegeneration": 0.250,
       "BaseSightRange": "FullMap",
@@ -3265,15 +3273,13 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3345,6 +3351,8 @@
       "BaseAttack": 2,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0.075,
       "BaseMPRegeneration": 0.1250,
       "BaseSightRange": "FullRoom",
@@ -3366,15 +3374,13 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3446,6 +3452,8 @@
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "6",
@@ -3467,15 +3475,13 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3550,6 +3556,8 @@
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
@@ -3604,7 +3612,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3690,6 +3698,8 @@
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
@@ -3719,7 +3729,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3805,6 +3815,8 @@
       "BaseAttack": 0,
       "BaseDefense": 0,
       "BaseMovement": 2,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 5,
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
@@ -3892,6 +3904,88 @@
               }
             }
           }
+        },
+        {
+          "Name": "SandAttack",
+          "Description": "",
+          "MinimumRange": 1,
+          "MaximumRange": 2,
+          "CooldownBetweenUses": 10,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Enemy"
+          ],
+          "UseCondition": "{target.Accuracy} \u003E 0",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 3,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "ThiefSandAttackText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              }
+            ],
+            "Then": {
+              "EffectName": "ApplyStatAlteration",
+              "Params": [
+                {
+                  "ParamName": "Id",
+                  "Value": "{this}"
+                },
+                {
+                  "ParamName": "Target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "Stat",
+                  "Value": "accuracy"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                },
+                {
+                  "ParamName": "Amount",
+                  "Value": "-15"
+                },
+                {
+                  "ParamName": "TurnLength",
+                  "Value": "20"
+                },
+                {
+                  "ParamName": "CanBeStacked",
+                  "Value": "True"
+                },
+                {
+                  "ParamName": "DisplayOnLog",
+                  "Value": "True"
+                }
+              ],
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  }
+                ]
+              }
+            }
+          }
         }
       ],
       "OnDeath": {
@@ -3904,7 +3998,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3990,6 +4084,8 @@
       "BaseAttack": 1,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
@@ -4042,7 +4138,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4111,6 +4207,8 @@
       "BaseAttack": 2,
       "BaseDefense": 0,
       "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": 0,
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
@@ -4165,7 +4263,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4317,29 +4415,6 @@
           }
         }
       ],
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
-        }
-      },
       "Id": "BareFists",
       "Name": "BareFistsName",
       "Description": "BareFistsDescription",
@@ -4417,15 +4492,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4538,15 +4611,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4669,15 +4740,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4917,15 +4986,13 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4943,8 +5010,9 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5110,15 +5178,13 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5136,8 +5202,9 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5180,15 +5247,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5206,8 +5271,9 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5250,15 +5316,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5276,8 +5340,9 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5927,8 +5992,8 @@
           }
         }
       ],
-      "OnAttacked": {
-        "Name": "HPNerf",
+      "OnStepped": {
+        "Name": "PrintStepped",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
@@ -5936,60 +6001,6 @@
         "TargetTypes": [],
         "MPCost": 0,
         "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "ApplyStatAlteration",
-          "Params": [
-            {
-              "ParamName": "id",
-              "Value": "{this}"
-            },
-            {
-              "ParamName": "target",
-              "Value": "target"
-            },
-            {
-              "ParamName": "stat",
-              "Value": "maxhp"
-            },
-            {
-              "ParamName": "Accuracy",
-              "Value": "100"
-            },
-            {
-              "ParamName": "amount",
-              "Value": "-5"
-            },
-            {
-              "ParamName": "turnlength",
-              "Value": "1"
-            },
-            {
-              "ParamName": "displayonlog",
-              "Value": "false"
-            },
-            {
-              "ParamName": "canbestacked",
-              "Value": "false"
-            },
-            {
-              "ParamName": "BypassesAccuracyCheck",
-              "Value": "True"
-            }
-          ]
-        }
-      },
-      "OnStepped": {
-        "Name": "PrintStepped",
-        "Description": "",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "UseCondition": "",
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6007,8 +6018,9 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6140,15 +6152,13 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6187,15 +6197,13 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6315,15 +6323,13 @@
       "Power": "1",
       "OnStepped": {
         "Name": "TrapActivate",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6420,18 +6426,16 @@
     },
     {
       "StartsVisible": true,
-      "Power": "0",
+      "Power": "",
       "OnStepped": {
         "Name": "TrapActivate",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6490,18 +6494,15 @@
     },
     {
       "StartsVisible": false,
-      "Power": "0",
       "OnStepped": {
         "Name": "TrapActivate",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6598,18 +6599,15 @@
     },
     {
       "StartsVisible": false,
-      "Power": "0",
       "OnStepped": {
         "Name": "TrapActivate",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6692,15 +6690,13 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "Buff",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyStatAlteration",
@@ -6766,15 +6762,13 @@
     {
       "OnTurnStart": {
         "Name": "Poison",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 28,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 28,
         "Effect": {
           "EffectName": "PrintText",
@@ -6841,15 +6835,13 @@
     {
       "OnTurnStart": {
         "Name": "Burn",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 5,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 5,
         "Effect": {
           "EffectName": "PrintText",
@@ -6896,15 +6888,13 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "RemoveFreeze",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "CleanseAlteredStatus",
@@ -6950,15 +6940,13 @@
     {
       "OnTurnStart": {
         "Name": "Freeze",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6993,15 +6981,13 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "RemoveBurn",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "CleanseAlteredStatus",
@@ -7068,15 +7054,13 @@
       "CleansedByCleanseActions": false,
       "OnApply": {
         "Name": "Nerf",
-        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
-        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": false,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyStatAlteration",

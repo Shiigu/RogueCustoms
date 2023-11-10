@@ -116,12 +116,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int TotalSightRangeIncrements { get; set; } = 0;
         public int SightRange => BaseSightRange + TotalSightRangeIncrements;
 
-        public readonly int BaseAccuracy = 100;
+        public readonly int BaseAccuracy;
         public List<StatModification> AccuracyModifications { get; set; }
         public decimal TotalAccuracyIncrements => AccuracyModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
         public decimal Accuracy => Math.Max(Constants.MIN_ACCURACY_CAP, Math.Min(Constants.MAX_ACCURACY_CAP, BaseAccuracy + TotalAccuracyIncrements));
 
-        public readonly int BaseEvasion = 0;
+        public readonly int BaseEvasion;
         public List<StatModification> EvasionModifications { get; set; }
         public decimal TotalEvasionIncrements => EvasionModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
         public decimal Evasion => Math.Max(Constants.MIN_EVASION_CAP, Math.Min(Constants.MAX_EVASION_CAP, BaseEvasion + TotalEvasionIncrements));
@@ -265,6 +265,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             EvasionModifications = new List<StatModification>();
 
             BaseSightRange = entityClass.BaseSightRange;
+            BaseAccuracy = entityClass.BaseAccuracy;
+            BaseEvasion = entityClass.BaseEvasion;
             InventorySize = entityClass.InventorySize;
             Inventory = new List<Item>(InventorySize);
 

@@ -101,6 +101,30 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        public int BaseAccuracy
+        {
+            get
+            {
+                return (int)nudBaseAccuracy.Value;
+            }
+            set
+            {
+                nudBaseAccuracy.Value = value;
+            }
+        }
+
+        public int BaseEvasion
+        {
+            get
+            {
+                return (int)nudBaseEvasion.Value;
+            }
+            set
+            {
+                nudBaseEvasion.Value = value;
+            }
+        }
+
         public int BaseMovement
         {
             get
@@ -296,6 +320,8 @@ namespace RogueCustomsDungeonEditor.Controls
             nudBaseAttack.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudBaseDefense.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudBaseMovement.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
+            nudBaseAccuracy.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
+            nudBaseEvasion.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudBaseHPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudBaseMPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudFlatSightRange.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);

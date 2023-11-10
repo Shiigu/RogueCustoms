@@ -75,6 +75,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Base Movement must be 0 or higher.");
             else if (characterJson.BaseMovement == 0)
                 messages.AddWarning("Base Movement is 0. Under normal circumnstances, it won't be able to move at all.");
+            if (characterJson.BaseAccuracy < 0 || characterJson.BaseAccuracy > 200)
+                messages.AddError("Base Accuracy must be between 0 and 200.");
+            else if (characterJson.BaseAccuracy == 0)
+                messages.AddWarning("Base Movement is 0. Under normal circumnstances, it won't be able to land any attacks at all.");
+            if (characterJson.BaseEvasion < -100 || characterJson.BaseEvasion > 100)
+                messages.AddError("Base Evasion must be between -100 and 100.");
+            else if (characterJson.BaseEvasion == -100)
+                messages.AddWarning("Base Evasion is -100. Under normal circumnstances, it won't be able to avoid any attacks at all.");
             if (characterJson.MovementIncreasePerLevel < 0)
                 messages.AddError("Movement Gained per level must be 0 or higher.");
             else if (characterJson.MovementIncreasePerLevel == 0)

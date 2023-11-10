@@ -338,7 +338,6 @@ namespace RogueCustomsDungeonEditor
             this.tvValidationResults = (new global::System.Windows.Forms.TreeView());
             this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
             this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
-            this.backgroundWorker1 = (new global::System.ComponentModel.BackgroundWorker());
             this.msMenu.SuspendLayout();
             this.tsButtons.SuspendLayout();
             this.tbTabs.SuspendLayout();
@@ -2221,8 +2220,10 @@ namespace RogueCustomsDungeonEditor
             this.ssPlayer.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssPlayer.AutoSize = (true);
             this.ssPlayer.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.ssPlayer.BaseAccuracy = (100);
             this.ssPlayer.BaseAttack = (0);
             this.ssPlayer.BaseDefense = (0);
+            this.ssPlayer.BaseEvasion = (0);
             this.ssPlayer.BaseHP = (1);
             this.ssPlayer.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.ssPlayer.BaseMovement = (1);
@@ -2240,7 +2241,7 @@ namespace RogueCustomsDungeonEditor
             this.ssPlayer.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssPlayer.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssPlayer.Name = ("ssPlayer");
-            this.ssPlayer.Size = (new global::System.Drawing.Size(330, 653));
+            this.ssPlayer.Size = (new global::System.Drawing.Size(331, 687));
             this.ssPlayer.TabIndex = (129);
             this.ssPlayer.UsesMP = (false);
             // 
@@ -2610,8 +2611,10 @@ namespace RogueCustomsDungeonEditor
             this.ssNPC.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssNPC.AutoSize = (true);
             this.ssNPC.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.ssNPC.BaseAccuracy = (100);
             this.ssNPC.BaseAttack = (0);
             this.ssNPC.BaseDefense = (0);
+            this.ssNPC.BaseEvasion = (0);
             this.ssNPC.BaseHP = (1);
             this.ssNPC.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
             this.ssNPC.BaseMovement = (1);
@@ -2629,7 +2632,7 @@ namespace RogueCustomsDungeonEditor
             this.ssNPC.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssNPC.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
             this.ssNPC.Name = ("ssNPC");
-            this.ssNPC.Size = (new global::System.Drawing.Size(330, 653));
+            this.ssNPC.Size = (new global::System.Drawing.Size(331, 687));
             this.ssNPC.TabIndex = (212);
             this.ssNPC.UsesMP = (false);
             // 
@@ -3949,7 +3952,6 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.CheckBox chkAlteredStatusCanOverwrite;
         private global::System.Windows.Forms.TreeView tvValidationResults;
         private global::System.Windows.Forms.SaveFileDialog sfdDungeon;
-        private global::System.ComponentModel.BackgroundWorker backgroundWorker1;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsPlayer;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsNPC;
         private global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector crsItem;
