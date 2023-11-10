@@ -104,21 +104,27 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = pickedTarget;
                 PathToUse = (Destination: destination, Route: Map.GetPathBetweenTiles(Position, destination));
             }
-            if(PathToUse.Route?.Count > 1 && PathToUse.Route?[1].IsOccupied == true)
+            // If the picked next tile is inaccessible or not visible and it does not contain the target, find another tile.
+            if(PathToUse.Route?.Count > 1 && ((PathToUse.Route?[1].IsOccupied == true && CurrentTarget != null && PathToUse.Route?[1].Character != CurrentTarget) || !FOVTiles.Contains(PathToUse.Route?[1])))
             {
-                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position).OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
-                foreach (var adjacentTile in adjacentTiles)
+                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position);
+                var visibleAdjacentTiles = FOVTiles.Intersect(adjacentTiles);
+                var orderedAdjacentTiles = visibleAdjacentTiles.OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
+                foreach (var adjacentTile in orderedAdjacentTiles)
                 {
                     if (!adjacentTile.IsWalkable || adjacentTile.IsOccupied || adjacentTile == ContainingTile || adjacentTile.Position.Equals(LastPosition)) continue;
-                    var pathToDestination = Map.GetPathBetweenTiles(Position, PathToUse.Destination);
-                    if (pathToDestination?.Any() == true)
+                    var pathToDestination = Map.GetPathBetweenTiles(adjacentTile.Position, PathToUse.Destination);
+                    if (pathToDestination?.Any() == true && pathToDestination?.Contains(ContainingTile) != true)
                     {
-                        pathToDestination.Insert(0, adjacentTile);
+                        pathToDestination.Insert(0, ContainingTile);
                         PathToUse.Route = pathToDestination;
                         break;
                     }
                 }
             }
+            // But if they still can't find anywhere to move, skip the turn.
+            if (PathToUse.Route?.Count > 1 && ((PathToUse.Route?[1].IsOccupied == true && CurrentTarget != null && PathToUse.Route?[1].Character != CurrentTarget) || !FOVTiles.Contains(PathToUse.Route?[1])))
+                RemainingMovement = 0;
         }
 
         public void AttackOrMove()

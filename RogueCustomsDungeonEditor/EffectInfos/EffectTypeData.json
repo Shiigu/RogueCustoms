@@ -1063,6 +1063,54 @@
     "Parameters": []
   },
   {
+    "InternalName": "Teleport",
+    "DisplayName": "Teleport the Target",
+    "Description": "User will teleport the Target to a random unoccupied Floor tile.\nFails if Target is in a Hallway tile.",
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be Teleported. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to be teleported. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "CheckCondition",
     "DisplayName": "Run Condition",
     "Description": "Evaluates a boolean expression.\n\nIf the expression returns true, it's a Success.\nIf the expression returns false, it's Failure.",

@@ -6323,13 +6323,15 @@
       "Power": "1",
       "OnStepped": {
         "Name": "TrapActivate",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6364,7 +6366,7 @@
               },
               {
                 "ParamName": "BypassesAccuracyCheck",
-                "Value": "False"
+                "Value": "True"
               }
             ],
             "OnSuccess": {
@@ -6762,13 +6764,15 @@
     {
       "OnTurnStart": {
         "Name": "Poison",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 28,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 28,
         "Effect": {
           "EffectName": "PrintText",
@@ -6803,7 +6807,7 @@
               },
               {
                 "ParamName": "BypassesAccuracyCheck",
-                "Value": "False"
+                "Value": "True"
               }
             ]
           }
@@ -6835,13 +6839,15 @@
     {
       "OnTurnStart": {
         "Name": "Burn",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 5,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 5,
         "Effect": {
           "EffectName": "PrintText",
@@ -6876,7 +6882,7 @@
               },
               {
                 "ParamName": "BypassesAccuracyCheck",
-                "Value": "False"
+                "Value": "True"
               }
             ]
           }

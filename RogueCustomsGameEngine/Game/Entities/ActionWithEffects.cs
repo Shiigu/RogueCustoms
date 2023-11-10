@@ -108,7 +108,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (character == null) return false;
             if (!MayBeUsed) return false;
             if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
-            if (!character.CanSee(target)) return false;
             if (TargetTypes.Any() && !TargetTypes.Contains(character.CalculateTargetTypeFor(target))) return false;
             if (!((int)Point.Distance(target.Position, character.Position)).Between(MinimumRange, MaximumRange)) return false;
             if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0)) return false;
@@ -120,10 +119,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
             }
 
-            return character.ContainingRoom == target.ContainingRoom ||
-                (character.ContainingTile.Type == TileType.Hallway &&
-                    map.Tiles.GetElementsWithinDistanceWhere(character.Position.Y, character.Position.X, MaximumRange, true, t => t.IsWalkable)
-                        .Exists(t => t.Position.Equals(target.Position)));
+            if (character.ContainingTile.Type != TileType.Hallway && character.ContainingRoom != target.ContainingRoom) return false;
+
+            if (!character.CanSee(target)) return false;
+
+            return true;
         }
 
         public string GetDescriptionWithUsageNotes(Character target)
