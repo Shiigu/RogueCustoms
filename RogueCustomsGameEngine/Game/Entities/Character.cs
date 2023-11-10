@@ -316,6 +316,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             HPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             MPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            AccuracyModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            EvasionModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
             MaxHPModifications?.RemoveAll(a => a.RemainingTurns == 0);
             MaxMPModifications?.RemoveAll(a => a.RemainingTurns == 0);
@@ -324,6 +326,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications?.RemoveAll(a => a.RemainingTurns == 0);
             HPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
             MPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
+            AccuracyModifications?.RemoveAll(a => a.RemainingTurns == 0);
+            EvasionModifications?.RemoveAll(a => a.RemainingTurns == 0);
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
@@ -346,7 +350,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                     (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
                     (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
                     (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false)
+                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (AccuracyModifications, Map.Locale["CharacterAccuracyStat"], AccuracyModifications?.Any() == true && AccuracyModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
+                    (EvasionModifications, Map.Locale["CharacterEvasionStat"], EvasionModifications?.Any() == true && EvasionModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false)
                 });
 
                 alteredStatusesThatMightBeNeutralized = AlteredStatuses
