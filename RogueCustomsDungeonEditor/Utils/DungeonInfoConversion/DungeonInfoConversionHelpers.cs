@@ -460,7 +460,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11FloorInfo = V11Dungeon.FloorInfos.Find(fi => fi.MinFloorLevel == floorInfo.MinFloorLevel && fi.MaxFloorLevel == floorInfo.MaxFloorLevel);
                 if (v11FloorInfo == null) continue;
                 floorInfo.OnFloorStart = v11FloorInfo.OnFloorStartActions.ElementAtOrDefault(0).CloneToV12();
-                floorInfo.OnFloorStart.UpdateChanceAndAccuracyParametersToV12();
+                floorInfo.OnFloorStart.UpdateChanceAndAccuracyParametersToV12(false);
             }
 
             foreach (var v12PlayerClass in V12Dungeon.PlayerClasses)
@@ -468,18 +468,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11PlayerClass = V11Dungeon.PlayerClasses.Find(pc => pc.Id.Equals(v12PlayerClass.Id));
                 if (v11PlayerClass == null) continue;
                 v12PlayerClass.OnTurnStart = v11PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12PlayerClass.OnTurnStart.UpdateChanceAndAccuracyParametersToV12(false);
                 v12PlayerClass.OnAttack = new();
                 foreach (var onAttackAction in v11PlayerClass.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
-                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12(true);
                     v12PlayerClass.OnAttack.Add(convertedAction);
                 }
                 v12PlayerClass.OnAttacked = v11PlayerClass.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
+                v12PlayerClass.OnAttacked.UpdateChanceAndAccuracyParametersToV12(false);
                 v12PlayerClass.OnDeath = v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnDeath.UpdateChanceAndAccuracyParametersToV12();
+                v12PlayerClass.OnDeath.UpdateChanceAndAccuracyParametersToV12(false);
                 v12PlayerClass.BaseAccuracy = 100;
                 v12PlayerClass.BaseEvasion = 0;
             }
@@ -489,18 +489,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11NPC = V11Dungeon.NPCs.Find(npc => npc.Id.Equals(v12NPC.Id));
                 if (v11NPC == null) continue;
                 v12NPC.OnTurnStart = v11NPC.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.OnTurnStart.UpdateChanceAndAccuracyParametersToV12(false);
                 v12NPC.OnAttack = new();
                 foreach (var onAttackAction in v11NPC.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
-                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12(true);
                     v12NPC.OnAttack.Add(convertedAction);
                 }
                 v12NPC.OnAttacked = v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.OnAttacked.UpdateChanceAndAccuracyParametersToV12(false);
                 v12NPC.OnDeath = v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnDeath.UpdateChanceAndAccuracyParametersToV12();
+                v12NPC.OnDeath.UpdateChanceAndAccuracyParametersToV12(false);
                 v12NPC.BaseAccuracy = 100;
                 v12NPC.BaseEvasion = 0;
             }
@@ -510,20 +510,20 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11Item = V11Dungeon.Items.Find(i => i.Id.Equals(v12Item.Id));
                 if (v11Item == null) continue;
                 v12Item.OnTurnStart = v11Item.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12Item.OnTurnStart.UpdateChanceAndAccuracyParametersToV12(false);
                 v12Item.OnAttack = new();
                 foreach (var onAttackAction in v11Item.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
-                    convertedAction.UpdateChanceAndAccuracyParametersToV12();
+                    convertedAction.UpdateChanceAndAccuracyParametersToV12(true);
                     v12Item.OnAttack.Add(convertedAction);
                 }
                 v12Item.OnAttacked = v11Item.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnAttacked.UpdateChanceAndAccuracyParametersToV12();
+                v12Item.OnAttacked.UpdateChanceAndAccuracyParametersToV12(false);
                 v12Item.OnUse = v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnUse.UpdateChanceAndAccuracyParametersToV12();
+                v12Item.OnUse.UpdateChanceAndAccuracyParametersToV12(false);
                 v12Item.OnStepped = v11Item.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnStepped.UpdateChanceAndAccuracyParametersToV12();
+                v12Item.OnStepped.UpdateChanceAndAccuracyParametersToV12(false);
             }
 
             foreach (var v12Trap in V12Dungeon.Traps)
@@ -531,7 +531,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11Trap = V11Dungeon.Traps.Find(t => t.Id.Equals(v12Trap.Id));
                 if (v11Trap == null) continue;
                 v12Trap.OnStepped = v11Trap.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Trap.OnStepped.UpdateChanceAndAccuracyParametersToV12();
+                v12Trap.OnStepped.UpdateChanceAndAccuracyParametersToV12(false);
             }
 
             foreach (var v12AlteredStatus in V12Dungeon.AlteredStatuses)
@@ -539,9 +539,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 var v11AlteredStatus = V11Dungeon.AlteredStatuses.Find(als => als.Id.Equals(v12AlteredStatus.Id));
                 if (v11AlteredStatus == null) continue;
                 v12AlteredStatus.OnApply = v11AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).CloneToV12();
-                v12AlteredStatus.OnApply.UpdateChanceAndAccuracyParametersToV12();
+                v12AlteredStatus.OnApply.UpdateChanceAndAccuracyParametersToV12(false);
                 v12AlteredStatus.OnTurnStart = v11AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12AlteredStatus.OnTurnStart.UpdateChanceAndAccuracyParametersToV12();
+                v12AlteredStatus.OnTurnStart.UpdateChanceAndAccuracyParametersToV12(false);
             }
 
             V12Dungeon.Version = "1.2";
@@ -600,13 +600,13 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             return clonedEffect;
         }
 
-        private static void UpdateChanceAndAccuracyParametersToV12(this ActionWithEffectsInfo? actionWithEffects)
+        private static void UpdateChanceAndAccuracyParametersToV12(this ActionWithEffectsInfo? actionWithEffects, bool bypassValueToSetIfDealDamageOrBurnMP)
         {
             if (actionWithEffects == null) return;
-            actionWithEffects.Effect.UpdateChanceAndAccuracyParametersToV12();
+            actionWithEffects.Effect.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
         }
 
-        private static void UpdateChanceAndAccuracyParametersToV12(this EffectInfo? effect)
+        private static void UpdateChanceAndAccuracyParametersToV12(this EffectInfo? effect, bool bypassValueToSetIfDealDamageOrBurnMP)
         {
             if (effect == null) return;
             var hasAccuracyParameter = false;
@@ -621,13 +621,13 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 paramsAsList.Add(new Parameter
                 {
                     ParamName = "BypassesAccuracyCheck",
-                    Value = (!effect.EffectName.Equals("DealDamage") && !effect.EffectName.Equals("BurnMP")).ToString()
+                    Value = (!effect.EffectName.Equals("DealDamage") && !effect.EffectName.Equals("BurnMP")) ? bypassValueToSetIfDealDamageOrBurnMP.ToString() : false.ToString()
                 });
                 effect.Params = paramsAsList.ToArray();
             }
-            effect.Then.UpdateChanceAndAccuracyParametersToV12();
-            effect.OnSuccess.UpdateChanceAndAccuracyParametersToV12();
-            effect.OnFailure.UpdateChanceAndAccuracyParametersToV12();
+            effect.Then.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
+            effect.OnSuccess.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
+            effect.OnFailure.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
         }
 
         #endregion
