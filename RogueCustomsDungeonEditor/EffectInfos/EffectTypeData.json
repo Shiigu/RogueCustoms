@@ -67,7 +67,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for the Attack to land. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for the Attack to land. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -144,7 +144,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for the Attack to land. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for the Attack to land. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -188,7 +188,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for an Item to be stolen. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for an Item to be stolen. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -295,7 +295,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to be removed. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to be removed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -573,7 +573,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to receive the Altered Status, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to receive the Altered Status, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -698,7 +698,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -796,7 +796,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -891,7 +891,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -939,7 +939,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to get the Altered Status removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -968,7 +968,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -1035,7 +1035,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to have their next turn skipped. It multiplies User's Accuracy if it's a Character.",
+        "Description": "Indicates the odds for Target to have their next turn skipped. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],

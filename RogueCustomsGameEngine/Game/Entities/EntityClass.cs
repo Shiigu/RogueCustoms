@@ -35,6 +35,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal BaseHPRegeneration;
         public readonly decimal BaseMPRegeneration;
         public readonly int BaseSightRange;
+        public readonly int BaseAccuracy;
+        public readonly int BaseEvasion;
         public readonly bool KnowsAllCharacterPositions;
         public readonly int InventorySize;
         public readonly int AIOddsToUseActionsOnSelf;
@@ -123,6 +125,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 HPRegenerationIncreasePerLevel = playerClassInfo.HPRegenerationIncreasePerLevel;
                 MPRegenerationIncreasePerLevel = playerClassInfo.MPRegenerationIncreasePerLevel;
                 BaseSightRange = 0;
+                BaseAccuracy = playerClassInfo.BaseAccuracy;
+                BaseEvasion = playerClassInfo.BaseEvasion;
                 if (!string.IsNullOrWhiteSpace(playerClassInfo.BaseSightRange))
                 {
                     switch (playerClassInfo.BaseSightRange.ToLower())
@@ -183,6 +187,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 HPRegenerationIncreasePerLevel = npcInfo.HPRegenerationIncreasePerLevel;
                 MPRegenerationIncreasePerLevel = npcInfo.MPRegenerationIncreasePerLevel;
                 BaseSightRange = 0;
+                BaseAccuracy = npcInfo.BaseAccuracy;
+                BaseEvasion = npcInfo.BaseEvasion;
                 if (!string.IsNullOrWhiteSpace(npcInfo.BaseSightRange))
                 {
                     switch (npcInfo.BaseSightRange.ToLower())

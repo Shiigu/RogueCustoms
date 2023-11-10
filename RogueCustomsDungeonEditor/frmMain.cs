@@ -2545,6 +2545,8 @@ namespace RogueCustomsDungeonEditor
             ssPlayer.DefensePerLevelUp = playerClass.DefenseIncreasePerLevel;
             ssPlayer.BaseMovement = playerClass.BaseMovement;
             ssPlayer.MovementPerLevelUp = playerClass.MovementIncreasePerLevel;
+            ssPlayer.BaseAccuracy = playerClass.BaseAccuracy;
+            ssPlayer.BaseEvasion = playerClass.BaseEvasion;
             ssPlayer.BaseSightRange = playerClass.BaseSightRange;
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
@@ -2603,6 +2605,8 @@ namespace RogueCustomsDungeonEditor
             playerClass.BaseAttack = ssPlayer.BaseAttack;
             playerClass.BaseDefense = ssPlayer.BaseDefense;
             playerClass.BaseMovement = ssPlayer.BaseMovement;
+            playerClass.BaseAccuracy = ssPlayer.BaseAccuracy;
+            playerClass.BaseEvasion = ssPlayer.BaseEvasion;
             playerClass.BaseHPRegeneration = ssPlayer.BaseHPRegeneration;
             playerClass.BaseMPRegeneration = ssPlayer.BaseMPRegeneration;
             playerClass.BaseSightRange = ssPlayer.BaseSightRange;
@@ -2860,6 +2864,8 @@ namespace RogueCustomsDungeonEditor
             ssNPC.DefensePerLevelUp = npc.DefenseIncreasePerLevel;
             ssNPC.BaseMovement = npc.BaseMovement;
             ssNPC.MovementPerLevelUp = npc.MovementIncreasePerLevel;
+            ssNPC.BaseAccuracy = npc.BaseAccuracy;
+            ssNPC.BaseEvasion = npc.BaseEvasion;
             ssNPC.BaseSightRange = npc.BaseSightRange;
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
@@ -2920,6 +2926,8 @@ namespace RogueCustomsDungeonEditor
             npc.BaseAttack = ssNPC.BaseAttack;
             npc.BaseDefense = ssNPC.BaseDefense;
             npc.BaseMovement = ssNPC.BaseMovement;
+            npc.BaseAccuracy = ssNPC.BaseAccuracy;
+            npc.BaseEvasion = ssNPC.BaseEvasion;
             npc.BaseHPRegeneration = ssNPC.BaseHPRegeneration;
             npc.BaseMPRegeneration = ssNPC.BaseMPRegeneration;
             npc.BaseSightRange = ssNPC.BaseSightRange;

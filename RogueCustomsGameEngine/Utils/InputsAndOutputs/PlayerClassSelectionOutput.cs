@@ -33,6 +33,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
 
         public List<CharacterClassStatDto> InitialStats { get; set; } = new List<CharacterClassStatDto>();
+        public string AccuracyName { get; set; }
+        public string AccuracyStat { get; set; }
+        public string EvasionName { get; set; }
+        public string EvasionStat { get; set; }
         public string SightRangeName { get; set; }
         public string SightRangeStat { get; set; }
         public string InventorySizeName { get; set; }
@@ -118,7 +122,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 SightRangeStat = dungeon.LocaleToUse["SightRangeStatFullRoom"];
             else
                 SightRangeStat = dungeon.LocaleToUse["SightRangeStatFlatNumber"].Format(new { SightRange = characterClass.BaseSightRange.ToString() });
-
+                        
+            AccuracyName = dungeon.LocaleToUse["CharacterAccuracyStat"];
+            AccuracyStat = $"{characterClass.BaseAccuracy}%";
+            EvasionName = dungeon.LocaleToUse["CharacterEvasionStat"];
+            EvasionStat = $"{characterClass.BaseEvasion}%";
             InventorySizeName = dungeon.LocaleToUse["CharacterInventorySizeStat"];
             InventorySizeStat = dungeon.LocaleToUse["InventorySizeStatFlatNumber"].Format(new { InventorySize = characterClass.InventorySize.ToString() });
 
@@ -145,6 +153,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public decimal Base { get; set; }
         public decimal IncreasePerLevel { get; set; }
         public bool IsDecimalStat { get; set; }
+        public bool IsPercentileStat { get; set; }
         public bool Visible { get; set; }
     }
     #pragma warning restore CS8604 // Posible argumento de referencia nulo
