@@ -293,7 +293,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             if (!stat.Visible) return;
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            if (!stat.IsIntegerStat)
+            if (stat.IsDecimalStat)
                 subConsole.Cursor.Print($"{stat.Name}: {stat.Base:0.#####}".ToAscii());
             else
                 subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Base}".ToAscii());

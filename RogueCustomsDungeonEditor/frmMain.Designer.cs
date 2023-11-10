@@ -1619,6 +1619,7 @@ namespace RogueCustomsDungeonEditor
             this.saeOnFloorStart.Dungeon = (null);
             this.saeOnFloorStart.EffectParamData = (null);
             this.saeOnFloorStart.Location = (new global::System.Drawing.Point(370, 307));
+            this.saeOnFloorStart.MayFinishTurnWhenUsed = (false);
             this.saeOnFloorStart.Name = ("saeOnFloorStart");
             this.saeOnFloorStart.PlaceholderActionName = ("FloorStart");
             this.saeOnFloorStart.RequiresActionName = (false);
@@ -2265,6 +2266,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.Dungeon = (null);
             this.saePlayerOnDeath.EffectParamData = (null);
             this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 686));
+            this.saePlayerOnDeath.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnDeath.Name = ("saePlayerOnDeath");
             this.saePlayerOnDeath.PlaceholderActionName = ("Death");
             this.saePlayerOnDeath.RequiresActionName = (false);
@@ -2289,6 +2291,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.Dungeon = (null);
             this.saePlayerOnAttacked.EffectParamData = (null);
             this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 648));
+            this.saePlayerOnAttacked.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnAttacked.Name = ("saePlayerOnAttacked");
             this.saePlayerOnAttacked.PlaceholderActionName = ("Interacted");
             this.saePlayerOnAttacked.RequiresActionName = (false);
@@ -2313,6 +2316,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.Dungeon = (null);
             this.saePlayerOnTurnStart.EffectParamData = (null);
             this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 510));
+            this.saePlayerOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnTurnStart.Name = ("saePlayerOnTurnStart");
             this.saePlayerOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saePlayerOnTurnStart.RequiresActionName = (false);
@@ -2335,6 +2339,7 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.Dungeon = (null);
             this.maePlayerOnAttack.EffectParamData = (null);
             this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 548));
+            this.maePlayerOnAttack.MayFinishTurnWhenUsed = (true);
             this.maePlayerOnAttack.Name = ("maePlayerOnAttack");
             this.maePlayerOnAttack.PlaceholderActionName = (null);
             this.maePlayerOnAttack.RequiresActionName = (true);
@@ -2650,6 +2655,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnDeath.Dungeon = (null);
             this.saeNPCOnDeath.EffectParamData = (null);
             this.saeNPCOnDeath.Location = (new global::System.Drawing.Point(13, 721));
+            this.saeNPCOnDeath.MayFinishTurnWhenUsed = (false);
             this.saeNPCOnDeath.Name = ("saeNPCOnDeath");
             this.saeNPCOnDeath.PlaceholderActionName = ("Death");
             this.saeNPCOnDeath.RequiresActionName = (false);
@@ -2674,6 +2680,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.Dungeon = (null);
             this.saeNPCOnAttacked.EffectParamData = (null);
             this.saeNPCOnAttacked.Location = (new global::System.Drawing.Point(13, 681));
+            this.saeNPCOnAttacked.MayFinishTurnWhenUsed = (false);
             this.saeNPCOnAttacked.Name = ("saeNPCOnAttacked");
             this.saeNPCOnAttacked.PlaceholderActionName = ("Interacted");
             this.saeNPCOnAttacked.RequiresActionName = (false);
@@ -2698,6 +2705,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnTurnStart.Dungeon = (null);
             this.saeNPCOnTurnStart.EffectParamData = (null);
             this.saeNPCOnTurnStart.Location = (new global::System.Drawing.Point(13, 543));
+            this.saeNPCOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saeNPCOnTurnStart.Name = ("saeNPCOnTurnStart");
             this.saeNPCOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saeNPCOnTurnStart.RequiresActionName = (false);
@@ -2720,6 +2728,7 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.Dungeon = (null);
             this.maeNPCOnAttack.EffectParamData = (null);
             this.maeNPCOnAttack.Location = (new global::System.Drawing.Point(13, 581));
+            this.maeNPCOnAttack.MayFinishTurnWhenUsed = (true);
             this.maeNPCOnAttack.Name = ("maeNPCOnAttack");
             this.maeNPCOnAttack.PlaceholderActionName = (null);
             this.maeNPCOnAttack.RequiresActionName = (true);
@@ -3020,6 +3029,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.Dungeon = (null);
             this.saeItemOnTurnStart.EffectParamData = (null);
             this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 310));
+            this.saeItemOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saeItemOnTurnStart.Name = ("saeItemOnTurnStart");
             this.saeItemOnTurnStart.PlaceholderActionName = ("Death");
             this.saeItemOnTurnStart.RequiresActionName = (false);
@@ -3044,6 +3054,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.Dungeon = (null);
             this.saeItemOnAttacked.EffectParamData = (null);
             this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 272));
+            this.saeItemOnAttacked.MayFinishTurnWhenUsed = (false);
             this.saeItemOnAttacked.Name = ("saeItemOnAttacked");
             this.saeItemOnAttacked.PlaceholderActionName = ("Interacted");
             this.saeItemOnAttacked.RequiresActionName = (false);
@@ -3066,6 +3077,7 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.Dungeon = (null);
             this.maeItemOnAttack.EffectParamData = (null);
             this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 172));
+            this.maeItemOnAttack.MayFinishTurnWhenUsed = (true);
             this.maeItemOnAttack.Name = ("maeItemOnAttack");
             this.maeItemOnAttack.PlaceholderActionName = (null);
             this.maeItemOnAttack.RequiresActionName = (true);
@@ -3090,6 +3102,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.Dungeon = (null);
             this.saeItemOnUse.EffectParamData = (null);
             this.saeItemOnUse.Location = (new global::System.Drawing.Point(13, 316));
+            this.saeItemOnUse.MayFinishTurnWhenUsed = (true);
             this.saeItemOnUse.Name = ("saeItemOnUse");
             this.saeItemOnUse.PlaceholderActionName = ("ItemUse");
             this.saeItemOnUse.RequiresActionName = (false);
@@ -3114,6 +3127,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnStepped.Dungeon = (null);
             this.saeItemOnStepped.EffectParamData = (null);
             this.saeItemOnStepped.Location = (new global::System.Drawing.Point(15, 278));
+            this.saeItemOnStepped.MayFinishTurnWhenUsed = (false);
             this.saeItemOnStepped.Name = ("saeItemOnStepped");
             this.saeItemOnStepped.PlaceholderActionName = ("Stepped");
             this.saeItemOnStepped.RequiresActionName = (false);
@@ -3315,6 +3329,7 @@ namespace RogueCustomsDungeonEditor
             this.saeTrapOnStepped.Dungeon = (null);
             this.saeTrapOnStepped.EffectParamData = (null);
             this.saeTrapOnStepped.Location = (new global::System.Drawing.Point(13, 272));
+            this.saeTrapOnStepped.MayFinishTurnWhenUsed = (false);
             this.saeTrapOnStepped.Name = ("saeTrapOnStepped");
             this.saeTrapOnStepped.PlaceholderActionName = ("Stepped");
             this.saeTrapOnStepped.RequiresActionName = (false);
@@ -3488,6 +3503,7 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.Dungeon = (null);
             this.saeAlteredStatusOnTurnStart.EffectParamData = (null);
             this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(390, 153));
+            this.saeAlteredStatusOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saeAlteredStatusOnTurnStart.Name = ("saeAlteredStatusOnTurnStart");
             this.saeAlteredStatusOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saeAlteredStatusOnTurnStart.RequiresActionName = (false);
@@ -3512,6 +3528,7 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.Dungeon = (null);
             this.saeAlteredStatusOnApply.EffectParamData = (null);
             this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(390, 115));
+            this.saeAlteredStatusOnApply.MayFinishTurnWhenUsed = (false);
             this.saeAlteredStatusOnApply.Name = ("saeAlteredStatusOnApply");
             this.saeAlteredStatusOnApply.PlaceholderActionName = ("StatusApply");
             this.saeAlteredStatusOnApply.RequiresActionName = (false);

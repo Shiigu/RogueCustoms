@@ -74,6 +74,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label10 = new Label();
             label9 = new Label();
             pictureBox1 = new PictureBox();
+            chkFinishesTurn = new CheckBox();
             gbSelectionCriteria.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
@@ -524,11 +525,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
+            // chkFinishesTurn
+            // 
+            chkFinishesTurn.AutoSize = true;
+            chkFinishesTurn.Location = new Point(300, 387);
+            chkFinishesTurn.Name = "chkFinishesTurn";
+            chkFinishesTurn.Size = new Size(265, 19);
+            chkFinishesTurn.TabIndex = 26;
+            chkFinishesTurn.Text = "Executing this action finishes the current turn";
+            chkFinishesTurn.UseVisualStyleBackColor = true;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(950, 480);
+            Controls.Add(chkFinishesTurn);
             Controls.Add(panel1);
             Controls.Add(fklblConditionWarning);
             Controls.Add(txtActionCondition);
@@ -609,5 +621,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Label label10;
         private Label label9;
         private PictureBox pictureBox1;
+        private CheckBox chkFinishesTurn;
     }
 }

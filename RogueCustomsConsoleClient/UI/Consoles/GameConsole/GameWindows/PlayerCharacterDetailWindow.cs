@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SadConsole.Ansi;
+using Newtonsoft.Json.Linq;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
@@ -154,9 +155,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         private static void PrintStatDetails(Console subConsole, StatDto stat)
         {
             string baseText = stat.HasMaxStat ? LocalizationManager.GetString("PlayerCharacterDetailMaxBaseText") : LocalizationManager.GetString("PlayerCharacterDetailBaseText");
-            string baseValue = stat.IsIntegerStat ? ((int)stat.Base).ToString() : stat.Base.ToString("0.#####");
+            string baseValue = stat.IsDecimalStat ? stat.Base.ToString("0.#####") : ((int)stat.Base).ToString();
+            string percentageIfNeeded = stat.IsPercentileStat ? "%" : "";
 
-            string statDetail = $"{baseText}: {baseValue}";
+            string statDetail = $"{baseText}: {baseValue}{percentageIfNeeded}";
 
             subConsole.Cursor.Print(statDetail.ToAscii());
         }
@@ -166,14 +168,23 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             if(!stat.Visible) return;
             subConsole.Cursor.NewLine();
             subConsole.Cursor.NewLine();
-            if (stat.HasMaxStat && stat.Max != null && stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}/{(int) stat.Max}".ToAscii());
-            else if (stat.HasMaxStat && stat.Max != null && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}".ToAscii());
-            else if (!stat.HasMaxStat && !stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}".ToAscii());
-            else if (!stat.HasMaxStat && stat.IsIntegerStat)
-                subConsole.Cursor.Print($"{stat.Name}: {(int) stat.Current}".ToAscii());
+
+            if(stat.IsPercentileStat)
+            {
+                // Percentile stats will never have a Max
+                subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Current}%".ToAscii());
+            }
+            else
+            {
+                if (stat.HasMaxStat && stat.Max != null && !stat.IsDecimalStat)
+                    subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}".ToAscii());
+                else if (stat.HasMaxStat && stat.Max != null && stat.IsDecimalStat)
+                    subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Current}/{(int)stat.Max}".ToAscii());
+                else if (!stat.HasMaxStat && stat.IsDecimalStat)
+                    subConsole.Cursor.Print($"{stat.Name}: {stat.Current:0.#####}".ToAscii());
+                else if (!stat.HasMaxStat && !stat.IsDecimalStat)
+                    subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Current}".ToAscii());
+            }
             subConsole.Cursor.NewLine();
             subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
             PrintStatDetails(subConsole, stat);
@@ -185,10 +196,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Color modificationDisplayForegroundColor = Color.White;
                 sourceDisplayText = mhm.Source;
 
-                if(stat.IsIntegerStat)
-                    modificationAmountText = $"{mhm.Amount:+0;-0;0}";
-                else
+                if(stat.IsDecimalStat)
                     modificationAmountText = $"{mhm.Amount:+0.#####;-0.#####;0}";
+                else if(stat.IsPercentileStat)
+                    modificationAmountText = $"{mhm.Amount:+0;-0;0}%";
+                else
+                    modificationAmountText = $"{mhm.Amount:+0;-0;0}";
 
                 if (mhm.Amount > 0)
                     modificationDisplayForegroundColor = Color.AnsiGreenBright;

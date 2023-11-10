@@ -678,7 +678,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #endregion
             }
             TurnCount++;
-            SetFlagValue("TurnCount", TurnCount);
+            if(Flags.Exists(f => f.Key.Equals("TurnCount")))
+                SetFlagValue("TurnCount", TurnCount);
+            else
+                CreateFlag("TurnCount", TurnCount, false);
             _displayedTurnMessage = false;
             Player.RemainingMovement = Player.Movement;
             LatestPlayerRemainingMovement = Player.RemainingMovement;
@@ -822,8 +825,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void PlayerUseItem(Item item)
         {
-            item.OnUse?.Do(item, Player);
-            Player.TookAction = true;
+            item.Used(Player);
+            if(item.OnUse?.FinishesTurnWhenUsed == true)
+                Player.TookAction = true;
             Player.RemainingMovement = 0;
             ProcessTurn();
         }

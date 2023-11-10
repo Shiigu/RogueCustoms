@@ -160,6 +160,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     else
                         action?.Do(item, this);
                     LastUsedActionOnSelf = action;
+                    if (action?.FinishesTurnWhenUsed == true)
+                        TookAction = true;
                 }
             }
             if((RemainingMovement > 0 && Movement == 0) || TookAction)

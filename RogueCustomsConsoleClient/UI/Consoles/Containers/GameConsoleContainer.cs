@@ -26,7 +26,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         public bool RequiresRefreshingDungeonState { get; set; }
         private readonly BicolorBlink DamageFlash, HealFlash, MPBurnFlash, MPReplenishFlash;
 
-        private int LastTurnCount;
         public bool HasSetupPlayerData { get; set; }
         public bool Flashing { get; set; }
         public DungeonDto? LatestDungeonStatus { get; set; }
@@ -127,7 +126,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             GameControlsConsole.IsVisible = false;
             GameControlsConsole.IsEnabled = false;
             ControlMode = ControlMode.NormalMove;
-            LastTurnCount = -1;
             RequiresRefreshingDungeonState = true;
             HasSetupPlayerData = false;
             ActiveWindow = null;
@@ -196,7 +194,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 {
                     LatestDungeonStatus = BackendHandler.Instance.GetDungeonStatus();
                     ShowMessagesIfNeeded();
-                    LastTurnCount = LatestDungeonStatus.TurnCount;
                 }
 
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)

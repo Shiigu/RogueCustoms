@@ -226,6 +226,14 @@
           "Value": "Inventory Size"
         },
         {
+          "Key": "CharacterEvasionStat",
+          "Value": "Evasion"
+        },
+        {
+          "Key": "CharacterAccuracyStat",
+          "Value": "Accuracy"
+        },
+        {
           "Key": "CharacterDamageStat",
           "Value": "Damage"
         },
@@ -599,7 +607,7 @@
         },
         {
           "Key": "PistolRangedAttackDescription",
-          "Value": "Deals normal damage with no secondary effect.\n\nRange:2-4 tiles\nAccuracy: 85%"
+          "Value": "Deals normal damage with no secondary effect.\r\n\r\nAccuracy: 85%"
         },
         {
           "Key": "PistolRangedAttackText",
@@ -691,7 +699,7 @@
         },
         {
           "Key": "StaffOfMagusDescription",
-          "Value": "Deals normal damage with no secondary effect.\n\nTotally not ripped from Divinity: Original Sin II\n\nRange: 1-2 tiles\nAccuracy: 90%"
+          "Value": "Deals normal damage with no secondary effect.\r\n\r\nTotally not ripped from Divinity: Original Sin II\r\n\r\nAccuracy: 90%"
         },
         {
           "Key": "StaffOfMagusAttackText",
@@ -703,7 +711,7 @@
         },
         {
           "Key": "FireballDescription",
-          "Value": "Hurls a ball of fire at the target. Has a 50% chance to Burn for 40 turns.\n\nRange: 1-3 tiles\nAccuracy: 90%"
+          "Value": "Hurls a ball of fire at the target. Has a 50% chance to Burn for 40 turns.\r\n\r\nAccuracy: 90%"
         },
         {
           "Key": "FireballAttackText",
@@ -715,7 +723,7 @@
         },
         {
           "Key": "IceballDescription",
-          "Value": "Hurls a ball of ice at the target. Has a 25% chance to Freeze for 3 turns, preventing enemy movement.\n\nRange: 1-3 tiles\nAccuracy: 90%"
+          "Value": "Hurls a ball of ice at the target. Has a 25% chance to Freeze for 3 turns, preventing enemy movement.\r\n\r\nAccuracy: 90%"
         },
         {
           "Key": "IceballAttackText",
@@ -727,7 +735,7 @@
         },
         {
           "Key": "HealDescription",
-          "Value": "Heals up to 2d6 damage to the target.\nCan be used on self.\n\nRange: 0-2 tiles"
+          "Value": "Heals up to 2d6 damage to the target.\r\nCan be used on self."
         },
         {
           "Key": "HealAttackText",
@@ -1065,6 +1073,14 @@
         {
           "Key": "CharacterInventorySizeStat",
           "Value": "Capacidad de Inventario"
+        },
+        {
+          "Key": "CharacterEvasionStat",
+          "Value": "Evasi\u00F3n"
+        },
+        {
+          "Key": "CharacterAccuracyStat",
+          "Value": "Precisi\u00F3n"
         },
         {
           "Key": "CharacterDamageStat",
@@ -1440,7 +1456,7 @@
         },
         {
           "Key": "PistolRangedAttackDescription",
-          "Value": "Causa da\u00F1o normal sin efecto secundario.\n\nAlcance: 2 a 4 casillas\nPrecisi\u00F3n: 85%"
+          "Value": "Causa da\u00F1o normal sin efecto secundario.\r\n\r\nPrecisi\u00F3n: 85%"
         },
         {
           "Key": "PistolRangedAttackText",
@@ -1528,7 +1544,7 @@
         },
         {
           "Key": "StaffOfMagusDescription",
-          "Value": "Causa da\u00F1o normal sin efecto secundario.\n\nTe juro que no lo rob\u00E9 de Divinity: Original Sin II\n\nAlcance: 1 a 2 casillas\nPrecisi\u00F3n: 90%"
+          "Value": "Causa da\u00F1o normal sin efecto secundario.\r\n\r\nTe juro que no lo rob\u00E9 de Divinity: Original Sin II\r\n\r\nPrecisi\u00F3n: 90%"
         },
         {
           "Key": "StaffOfMagusAttackText",
@@ -1540,7 +1556,7 @@
         },
         {
           "Key": "FireballDescription",
-          "Value": "Lanza una esfera ardiente al objetivo. 50% de posibilidades de Quemar por 40 turnos.\n\nAlcance: 1 a 3 casillas\nPrecisi\u00F3n: 90%"
+          "Value": "Lanza una esfera ardiente al objetivo. 50% de posibilidades de Quemar por 40 turnos.\r\n\r\nPrecisi\u00F3n: 90%"
         },
         {
           "Key": "FireballAttackText",
@@ -1552,7 +1568,7 @@
         },
         {
           "Key": "IceballDescription",
-          "Value": "Lanza una esfera de fr\u00EDo al objetivo. 25% de posibilidades de Congelar por 3 turnos, impidiendo el movimiento.\n\nAlcance: 1 a 3 casillas\nPrecisi\u00F3n: 90%"
+          "Value": "Lanza una esfera de fr\u00EDo al objetivo. 25% de posibilidades de Congelar por 3 turnos, impidiendo el movimiento.\r\n\r\nPrecisi\u00F3n: 90%"
         },
         {
           "Key": "IceballAttackText",
@@ -1564,7 +1580,7 @@
         },
         {
           "Key": "HealDescription",
-          "Value": "Cura hasta 2d6 damage en el objetivo.\nSe puede usar en s\u00ED mismo.\n\nAlcance: 0 a 2 casillas"
+          "Value": "Cura hasta 2d6 damage en el objetivo.\r\nSe puede usar en s\u00ED mismo."
         },
         {
           "Key": "HealAttackText",
@@ -2570,6 +2586,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "MessageBox",
@@ -2695,6 +2712,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyAlteredStatus",
@@ -2708,7 +2726,7 @@
               "Value": "target"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
             },
             {
@@ -2718,6 +2736,10 @@
             {
               "ParamName": "turnlength",
               "Value": "-1"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ],
           "Then": {
@@ -3101,12 +3123,15 @@
       ],
       "OnFloorStart": {
         "Name": "DungeonStartMessage",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "MessageBox",
@@ -3240,12 +3265,15 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3338,12 +3366,15 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3436,12 +3467,15 @@
       "OnAttack": [],
       "OnDeath": {
         "Name": "PrintDeath",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
@@ -3547,6 +3581,7 @@
           ],
           "UseCondition": "{source.HP} / {source.MaxHP} \u003E 0.8",
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3569,6 +3604,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3683,6 +3719,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3797,6 +3834,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3814,7 +3852,7 @@
                   "Value": "target"
                 },
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "40"
                 },
                 {
@@ -3824,6 +3862,10 @@
                 {
                   "ParamName": "canstealconsumables",
                   "Value": "true"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -3862,6 +3904,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -3976,6 +4019,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -3998,6 +4042,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4097,6 +4142,7 @@
           ],
           "UseCondition": "{source.HP} / {source.MaxHP} \u003E 0.9",
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4119,6 +4165,7 @@
         "TargetTypes": [],
         "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4219,6 +4266,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4250,6 +4298,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -4265,6 +4317,29 @@
           }
         }
       ],
+      "OnUse": {
+        "Name": "Equip",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEquippedText"
+            }
+          ],
+          "Then": {
+            "EffectName": "Equip",
+            "Params": []
+          }
+        }
+      },
       "Id": "BareFists",
       "Name": "BareFistsName",
       "Description": "BareFistsDescription",
@@ -4342,12 +4417,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4369,6 +4447,7 @@
         "TargetTypes": [],
         "UseCondition": "{target.HP} \u003C {target.MaxHP}",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4398,12 +4477,16 @@
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "100"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -4455,12 +4538,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4480,6 +4566,7 @@
         "MaximumUses": 0,
         "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4501,7 +4588,7 @@
                 "Value": "target"
               },
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
               },
               {
@@ -4511,18 +4598,26 @@
               {
                 "ParamName": "turnlength",
                 "Value": "75"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ],
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "100"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -4574,12 +4669,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4601,6 +4699,7 @@
         "TargetTypes": [],
         "UseCondition": "HasStatus(target,Poisoned)",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4622,20 +4721,28 @@
                 "Value": "target"
               },
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ],
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "100"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -4696,6 +4803,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4727,6 +4835,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -4752,6 +4864,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4783,6 +4896,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -4800,12 +4917,15 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4823,8 +4943,8 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
-        "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -4876,6 +4996,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4907,6 +5028,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -4932,6 +5057,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -4963,6 +5089,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -4980,12 +5110,15 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5003,8 +5136,8 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
-        "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5047,12 +5180,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5070,8 +5206,8 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
-        "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5114,12 +5250,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5137,8 +5276,8 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
-        "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5190,6 +5329,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5221,6 +5361,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -5246,6 +5390,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5277,6 +5422,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -5302,6 +5451,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5333,6 +5483,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnSuccess": {
@@ -5347,7 +5501,7 @@
                     "Value": "target"
                   },
                   {
-                    "ParamName": "chance",
+                    "ParamName": "Accuracy",
                     "Value": "50"
                   },
                   {
@@ -5357,6 +5511,10 @@
                   {
                     "ParamName": "turnlength",
                     "Value": "-1"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
                   }
                 ]
               },
@@ -5381,6 +5539,7 @@
         "MaximumUses": 0,
         "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5428,6 +5587,7 @@
         "MaximumUses": 0,
         "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyStatAlteration",
@@ -5445,7 +5605,7 @@
               "Value": "maxhp"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
             },
             {
@@ -5463,6 +5623,10 @@
             {
               "ParamName": "canbestacked",
               "Value": "false"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ]
         }
@@ -5479,6 +5643,7 @@
             "enemy"
           ],
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5510,6 +5675,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnFailure": {
@@ -5536,6 +5705,7 @@
           ],
           "UseCondition": "",
           "MPCost": 2,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5567,6 +5737,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnSuccess": {
@@ -5581,7 +5755,7 @@
                     "Value": "target"
                   },
                   {
-                    "ParamName": "chance",
+                    "ParamName": "Accuracy",
                     "Value": "50"
                   },
                   {
@@ -5591,6 +5765,10 @@
                   {
                     "ParamName": "turnlength",
                     "Value": "40"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
                   }
                 ]
               },
@@ -5618,6 +5796,7 @@
           ],
           "UseCondition": "",
           "MPCost": 3,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5649,6 +5828,10 @@
                 {
                   "ParamName": "defense",
                   "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnSuccess": {
@@ -5663,7 +5846,7 @@
                     "Value": "target"
                   },
                   {
-                    "ParamName": "chance",
+                    "ParamName": "Accuracy",
                     "Value": "25"
                   },
                   {
@@ -5673,6 +5856,10 @@
                   {
                     "ParamName": "turnlength",
                     "Value": "3"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
                   }
                 ]
               },
@@ -5701,6 +5888,7 @@
           ],
           "UseCondition": "{target.HP} \u003C {target.MaxHP}",
           "MPCost": 4,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5739,14 +5927,69 @@
           }
         }
       ],
-      "OnStepped": {
-        "Name": "PrintStepped",
+      "OnAttacked": {
+        "Name": "HPNerf",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ApplyStatAlteration",
+          "Params": [
+            {
+              "ParamName": "id",
+              "Value": "{this}"
+            },
+            {
+              "ParamName": "target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "stat",
+              "Value": "maxhp"
+            },
+            {
+              "ParamName": "Accuracy",
+              "Value": "100"
+            },
+            {
+              "ParamName": "amount",
+              "Value": "-5"
+            },
+            {
+              "ParamName": "turnlength",
+              "Value": "1"
+            },
+            {
+              "ParamName": "displayonlog",
+              "Value": "false"
+            },
+            {
+              "ParamName": "canbestacked",
+              "Value": "false"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
+            }
+          ]
+        }
+      },
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5764,8 +6007,8 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
-        "TargetTypes": [],
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5818,6 +6061,7 @@
           ],
           "UseCondition": "{target.ClassId} != \u0022Boss\u0022",
           "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
           "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
@@ -5849,18 +6093,26 @@
                 {
                   "ParamName": "defense",
                   "Value": "0"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
                 }
               ],
               "OnSuccess": {
                 "EffectName": "Remove",
                 "Params": [
                   {
-                    "ParamName": "chance",
+                    "ParamName": "Accuracy",
                     "Value": "100"
                   },
                   {
                     "ParamName": "target",
                     "Value": "this"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
                   }
                 ],
                 "OnSuccess": {
@@ -5888,12 +6140,15 @@
       ],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5932,12 +6187,15 @@
       "OnAttack": [],
       "OnStepped": {
         "Name": "PrintStepped",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5959,6 +6217,7 @@
         "TargetTypes": [],
         "UseCondition": "{target.MP} \u003C {target.MaxMP}",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -5992,8 +6251,12 @@
                   "Value": "this"
                 },
                 {
-                  "ParamName": "Chance",
+                  "ParamName": "Accuracy",
                   "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "Then": {
@@ -6052,12 +6315,15 @@
       "Power": "1",
       "OnStepped": {
         "Name": "TrapActivate",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6089,18 +6355,26 @@
               {
                 "ParamName": "defense",
                 "Value": "0"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "False"
               }
             ],
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "40"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -6146,15 +6420,18 @@
     },
     {
       "StartsVisible": true,
-      "Power": "",
+      "Power": "0",
       "OnStepped": {
         "Name": "TrapActivate",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6168,12 +6445,16 @@
             "EffectName": "CleanseStatAlterations",
             "Params": [
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
               },
               {
                 "ParamName": "target",
                 "Value": "target"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ],
             "OnFailure": {
@@ -6209,14 +6490,18 @@
     },
     {
       "StartsVisible": false,
+      "Power": "0",
       "OnStepped": {
         "Name": "TrapActivate",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6238,7 +6523,7 @@
                 "Value": "target"
               },
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "40"
               },
               {
@@ -6248,18 +6533,26 @@
               {
                 "ParamName": "turnlength",
                 "Value": "4"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ],
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "100"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -6305,14 +6598,18 @@
     },
     {
       "StartsVisible": false,
+      "Power": "0",
       "OnStepped": {
         "Name": "TrapActivate",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6330,20 +6627,28 @@
                 "Value": "target"
               },
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ],
             "OnSuccess": {
               "EffectName": "Remove",
               "Params": [
                 {
-                  "ParamName": "chance",
+                  "ParamName": "Accuracy",
                   "Value": "15"
                 },
                 {
                   "ParamName": "target",
                   "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
                 }
               ],
               "OnSuccess": {
@@ -6387,12 +6692,15 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "Buff",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyStatAlteration",
@@ -6410,7 +6718,7 @@
               "Value": "attack"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
             },
             {
@@ -6428,6 +6736,10 @@
             {
               "ParamName": "canbestacked",
               "Value": "true"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ]
         }
@@ -6454,12 +6766,15 @@
     {
       "OnTurnStart": {
         "Name": "Poison",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 28,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 28,
         "Effect": {
           "EffectName": "PrintText",
@@ -6491,6 +6806,10 @@
               {
                 "ParamName": "defense",
                 "Value": "0"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "False"
               }
             ]
           }
@@ -6522,12 +6841,15 @@
     {
       "OnTurnStart": {
         "Name": "Burn",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 5,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 5,
         "Effect": {
           "EffectName": "PrintText",
@@ -6559,6 +6881,10 @@
               {
                 "ParamName": "defense",
                 "Value": "0"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "False"
               }
             ]
           }
@@ -6570,12 +6896,15 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "RemoveFreeze",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "CleanseAlteredStatus",
@@ -6589,8 +6918,12 @@
               "Value": "target"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ]
         }
@@ -6617,12 +6950,15 @@
     {
       "OnTurnStart": {
         "Name": "Freeze",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "PrintText",
@@ -6636,12 +6972,16 @@
             "EffectName": "ForceSkipTurn",
             "Params": [
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
               },
               {
                 "ParamName": "target",
                 "Value": "target"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ]
           }
@@ -6653,12 +6993,15 @@
       "CleansedByCleanseActions": true,
       "OnApply": {
         "Name": "RemoveBurn",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "CleanseAlteredStatus",
@@ -6672,20 +7015,28 @@
               "Value": "target"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ],
           "Then": {
             "EffectName": "ForceSkipTurn",
             "Params": [
               {
-                "ParamName": "chance",
+                "ParamName": "Accuracy",
                 "Value": "100"
               },
               {
                 "ParamName": "target",
                 "Value": "target"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ]
           }
@@ -6717,12 +7068,15 @@
       "CleansedByCleanseActions": false,
       "OnApply": {
         "Name": "Nerf",
+        "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
         "TargetTypes": [],
+        "UseCondition": "",
         "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ApplyStatAlteration",
@@ -6740,7 +7094,7 @@
               "Value": "hpregeneration"
             },
             {
-              "ParamName": "chance",
+              "ParamName": "Accuracy",
               "Value": "100"
             },
             {
@@ -6758,6 +7112,10 @@
             {
               "ParamName": "canbestacked",
               "Value": "true"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
             }
           ]
         }

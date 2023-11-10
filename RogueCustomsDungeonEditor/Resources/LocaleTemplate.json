@@ -216,6 +216,14 @@
     {
       "Key": "CharacterInventorySizeStat",
       "Value": "Inventory Size"
+    },    
+    {
+      "Key": "CharacterEvasionStat",
+      "Value": "Evasion"
+    },
+    {
+      "Key": "CharacterAccuracyStat",
+      "Value": "Accuracy"
     },
     {
       "Key": "CharacterDamageStat",

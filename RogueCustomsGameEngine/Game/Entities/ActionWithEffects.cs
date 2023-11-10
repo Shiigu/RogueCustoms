@@ -28,7 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Map Map { get; set; }
 
-        #region Exclusive use for Characters
+        #region Exclusive use for Characters or Items
         public int MinimumRange { get; set; }
         public int MaximumRange { get; set; }
         public int CooldownBetweenUses { get; set; }
@@ -38,8 +38,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int CurrentUses { get; set; }
         public List<TargetType> TargetTypes { get; set; }
         public int MPCost { get; set; }
-
         public string UseCondition { get; set; }
+        public bool FinishesTurnWhenUsed { get; set; }
 
         public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
         #endregion
@@ -64,6 +64,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MaximumUses = info.MaximumUses;
             CurrentUses = 0;
             UseCondition = info.UseCondition;
+            FinishesTurnWhenUsed = info.FinishesTurnWhenUsed;
             TargetTypes = new List<TargetType>();
             MPCost = info.MPCost;
             info.TargetTypes?.ForEach(tt => TargetTypes.Add(Enum.Parse<TargetType>(tt, true)));
@@ -163,9 +164,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var tilesRange = (MinimumRange != MaximumRange) ? $"{MinimumRange}-{MaximumRange}" : $"{MaximumRange}";
                 if (MinimumRange > 0)
-                    descriptionWithUsageNotes.Append('\n').Append(Locale["MeleeRange"].Format(new { TilesRange = tilesRange }));
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["TilesRange"].Format(new { TilesRange = tilesRange }));
                 else if (MinimumRange == 0)
-                    descriptionWithUsageNotes.Append('\n').Append(Locale["SelfOrMeleeRange"].Format(new { TilesRange = tilesRange }));
+                    descriptionWithUsageNotes.Append('\n').Append(Locale["SelfOrTilesRange"].Format(new { TilesRange = tilesRange }));
             }
 
             if (MPCost > 0)

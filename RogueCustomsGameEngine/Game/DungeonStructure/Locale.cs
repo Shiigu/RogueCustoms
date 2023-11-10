@@ -12,8 +12,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     public class Locale
     {
         [MaxLength(2)]
-        private string Language { get; set; }
-        private List<LocaleString> LocaleStrings { get; set; }
+        private readonly string Language;
+        private readonly List<LocaleString> LocaleStrings = new();
 
         public bool ContainsKey(string key) => LocaleStrings.Exists(ls => ls.Key == key);
 
@@ -35,15 +35,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Locale(LocaleInfo localeInfo)
         {
             Language = localeInfo.Language;
-            LocaleStrings = new List<LocaleString>();
             localeInfo.LocaleStrings.ForEach(ls => LocaleStrings.Add(new LocaleString { Key = ls.Key, Value = ls.Value }));
         }
+
+        public override string ToString() => $"Language: {Language}; Keys: {LocaleStrings.Count}";
     }
 
     public class LocaleString
     {
         public string Key { get; set; }
         public string Value { get; set; }
+
+        public override string ToString() => $"Key: {Key}; Value: {Value}";
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }
