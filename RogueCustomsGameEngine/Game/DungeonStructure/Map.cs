@@ -87,7 +87,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
 
-        public ImmutableList<AlteredStatus> PossibleStatuses { get; private set; }
+        public List<AlteredStatus> PossibleStatuses { get; private set; }
 
         public readonly RngHandler Rng;
         private (Point TopLeftCorner, Point BottomRightCorner)[,] RoomLimitsTable { get; set; }
@@ -120,8 +120,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ConsoleRepresentation.EmptyTile = TileSet.Empty;
             GeneratorAlgorithmToUse = FloorConfigurationToUse.PossibleGeneratorAlgorithms[Rng.NextInclusive(FloorConfigurationToUse.PossibleGeneratorAlgorithms.Count - 1)];
 
-            PossibleStatuses = ImmutableList.Create<AlteredStatus>();
-            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses = PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            PossibleStatuses = new List<AlteredStatus>();
+            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
 
             AttackActions.SetActionParams(Rng, this);
             CharacterActions.SetActionParams(Rng, this);
@@ -583,7 +583,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (TurnCount == 0)
             {
-                CreateFlag("TurnCount", TurnCount, false);
+                if(!HasFlag("TurnCount"))
+                    CreateFlag("TurnCount", TurnCount, false);
                 int generationAttempts, generationsToTry;
                 #region Generate Monsters
                 if(FloorConfigurationToUse.PossibleMonsters.Any())

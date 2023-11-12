@@ -9,6 +9,9 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Immutable;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+using System.Collections;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -42,7 +45,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<FloorType> FloorTypes { get; set; }
         public List<EntityClass> Classes { get; set; }
 
-        public ImmutableList<Faction> Factions { get; private set; }
+        public List<Faction> Factions { get; private set; }
         #endregion
 
         public Dungeon(int id, DungeonInfo dungeonInfo, string localeLanguage)
@@ -72,8 +75,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");
                 ft.FillPossibleClassLists(Classes);
             });
-            Factions = ImmutableList.Create<Faction>();
-            dungeonInfo.FactionInfos.ForEach(fi => Factions = Factions.Add(new Faction(fi, LocaleToUse)));
+            Factions = new List<Faction>();
+            dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
             Messages = new List<MessageDto>();
             MessageBoxes = new List<MessageBoxDto>();

@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Utils.Representation
 {
+    [Serializable]
     public sealed class GameColor : IEquatable<GameColor?>
     {
         public byte R { get; set; }

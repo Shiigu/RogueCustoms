@@ -12,18 +12,18 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     public class ActionListDto
     {
         public string TargetName { get; set; }
-        public ImmutableList<ActionItemDto> Actions { get; private set; }
+        public readonly List<ActionItemDto> Actions;
 
         public ActionListDto(string targetName)
         {
             TargetName = targetName;
-            Actions = ImmutableList.Create<ActionItemDto>();
+            Actions = new List<ActionItemDto>();
         }
 
         public void AddAction(ActionWithEffects action, Character source, Character target, Map map, bool isPlayerAction)
         {
             var entityDescriptor = isPlayerAction ? "Player" : "Target";
-            Actions = Actions.Add(new ActionItemDto(action, source, target, map)
+            Actions.Add(new ActionItemDto(action, source, target, map)
             {
                 SelectionId = $"{entityDescriptor}_{action.ActionId}"
             });

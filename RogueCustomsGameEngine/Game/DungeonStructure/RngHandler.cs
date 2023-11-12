@@ -11,6 +11,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class RngHandler
     {
+        [NonSerialized]
         private Random Rng;
         private int _seed;
         public int Seed

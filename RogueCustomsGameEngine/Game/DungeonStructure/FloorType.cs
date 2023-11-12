@@ -41,7 +41,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int OddsForExtraConnections;
         public readonly int RoomFusionOdds;
 
-        public ImmutableList<GeneratorAlgorithm> PossibleGeneratorAlgorithms { get; private set; }
+        public List<GeneratorAlgorithm> PossibleGeneratorAlgorithms { get; private set; }
 
         public readonly ActionWithEffects OnFloorStart;
 
@@ -66,8 +66,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MaxConnectionsBetweenRooms = floorInfo.MaxConnectionsBetweenRooms;
             OddsForExtraConnections = floorInfo.OddsForExtraConnections;
             RoomFusionOdds = floorInfo.RoomFusionOdds;
-            PossibleGeneratorAlgorithms = ImmutableList.Create<GeneratorAlgorithm>();
-            floorInfo.PossibleGeneratorAlgorithms.ForEach(pga => PossibleGeneratorAlgorithms = PossibleGeneratorAlgorithms.Add(new GeneratorAlgorithm
+            PossibleGeneratorAlgorithms = new List<GeneratorAlgorithm>();
+            floorInfo.PossibleGeneratorAlgorithms.ForEach(pga => PossibleGeneratorAlgorithms.Add(new GeneratorAlgorithm
             {
                 Type = (GeneratorAlgorithmTypes)Enum.Parse(typeof(GeneratorAlgorithmTypes), pga.Name),
                 Rows = pga.Rows,

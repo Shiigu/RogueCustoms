@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using org.matheval;
+using System.Runtime.Serialization;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -18,6 +19,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+    [Serializable]
     public sealed class ActionWithEffects
     {
         public int ActionId { get; set; }                       // Dynamic, only to be used for action selections
@@ -312,11 +314,14 @@ namespace RogueCustomsGameEngine.Game.Entities
     }
 
     [Serializable]
-    public class Effect
+    public class Effect : ISerializable
     {
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");
 
         public delegate bool ActionMethod(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args);
+
+        public string EffectMethodName { get; set; }
+        public string EffectClassName { get; set; }
 
         public ActionMethod Function { get; set; }
 
@@ -345,6 +350,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 try
                 {
+                    EffectMethodName = effectMethod.Name;
+                    EffectClassName = effectMethod.DeclaringType.FullName;
                     Function = effectMethod.CreateDelegate<ActionMethod>();
                     Params = info.Params.Select(p => (p.ParamName, p.Value)).ToArray();
                     if (info.Then != null)
@@ -398,6 +405,43 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnSuccess = OnSuccess?.Clone(),
                 OnFailure = OnFailure?.Clone()
             };
+        }
+        // Explicit implementation of ISerializable
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // Serialize necessary information
+            info.AddValue("EffectMethodName", EffectMethodName);
+            info.AddValue("EffectClassName", EffectClassName);
+            info.AddValue("Params", Params);
+            info.AddValue("Then", Then);
+            info.AddValue("OnSuccess", OnSuccess);
+            info.AddValue("OnFailure", OnFailure);
+        }
+
+        // Explicit constructor for deserialization
+        protected Effect(SerializationInfo info, StreamingContext context)
+        {
+            // Deserialize information
+            EffectMethodName = info.GetString("EffectMethodName");
+            EffectClassName = info.GetString("EffectClassName");
+            Params = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
+            Then = (Effect)info.GetValue("Then", typeof(Effect));
+            OnSuccess = (Effect)info.GetValue("OnSuccess", typeof(Effect));
+            OnFailure = (Effect)info.GetValue("OnFailure", typeof(Effect));
+
+            // Rebuild the delegate during deserialization
+            if (!string.IsNullOrEmpty(EffectMethodName) && !string.IsNullOrEmpty(EffectClassName))
+            {
+                Type effectType = EffectMethodTypes.FirstOrDefault(t => t.FullName == EffectClassName);
+                if (effectType != null)
+                {
+                    MethodInfo methodInfo = effectType.GetMethod(EffectMethodName, BindingFlags.Static | BindingFlags.Public);
+                    if (methodInfo != null)
+                    {
+                        Function = methodInfo.CreateDelegate<ActionMethod>();
+                    }
+                }
+            }
         }
     }
     #pragma warning restore IDE0037 // Usar nombre de miembro inferido
