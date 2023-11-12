@@ -71,7 +71,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Text = selectDungeonText
             };
-            selectFileButton.Position = new Point((Width / 4) - (selectFileButton.Width / 2), 20);
+            selectFileButton.Position = new Point((Width / 4) - (selectFileButton.Width / 2), 18);
             selectFileButton.MouseMove += (_, _) => ChangeFocusTo(0);
             selectFileButton.Click += SelectFileButton_Click;
             selectFileButton.IsFocused = true;
@@ -80,7 +80,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Text = loadDungeonText
             };
-            loadDungeonButton.Position = new Point((Width / 4) - (loadDungeonButton.Width / 2), 23);
+            loadDungeonButton.Position = new Point((Width / 4) - (loadDungeonButton.Width / 2), 22);
             loadDungeonButton.IsEnabled = BackendHandler.Instance.HasSaveGame;
             loadDungeonButton.MouseMove += (_, _) => ChangeFocusTo(0);
             loadDungeonButton.Click += LoadDungeonButton_Click;
@@ -90,7 +90,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Text = optionsText
             };
-            optionsButton.Position = new Point((Width / 4) - (optionsButton.Width / 2), 27);
+            optionsButton.Position = new Point((Width / 4) - (optionsButton.Width / 2), 26);
             optionsButton.MouseEnter += (_, _) => ChangeFocusTo(1);
             optionsButton.Click += OptionsButton_Click;
 

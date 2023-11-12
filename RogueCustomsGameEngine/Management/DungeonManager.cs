@@ -120,8 +120,7 @@ namespace RogueCustomsGameEngine.Management
                 throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {Constants.CurrentDungeonJsonVersion}.");
             restoredDungeon.Id = CurrentDungeonId;
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
-            var rngCalls = restoredDungeon.CurrentFloor.Rng.RngCalls;
-            restoredDungeon.CurrentFloor.LoadRngState(rngSeed, rngCalls);
+            restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
             restoredDungeon.CurrentFloor.SetActionParams();
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
             Dungeons.Add(restoredDungeon);

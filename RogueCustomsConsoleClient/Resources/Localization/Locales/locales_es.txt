@@ -13,7 +13,7 @@ ReturnToMainMenuText = IR AL MENU PRINCIPAL
 ; MainMenuConsole
 GameTitle = Rogue Customs
 SelectDungeonText = INICIAR MAZMORRA
-LoadDungeonText = REANUDAR MAZMORRA GUARDADA
+LoadDungeonText = CARGAR MAZMORRA GUARDADA
 OptionsText = OPCIONES
 GameVersionText = Versión de Juego {GameVersion}
 FailedDungeonHeader = NO SE PUEDE REANUDAR LA MAZMORRA
@@ -74,7 +74,8 @@ DetailsButtonText = DETALLES
 
 ; ButtonsConsole
 ExitPromptText = ¿Quieres dejar de jugar y\nregresar al menú principal?
-SaveDungeonButtonText = GUARDAR
+ExitDungeonButtonText = SALIR
+SaveDungeonButtonText = GUARDAR JUEGO
 SuccessfulSavePromptText = Mazmorra guardada exitosamente.\n\n¿Quieres dejar de jugar\ny regresar al menú principal?
 FailedSaveText = No se pudo guardar la mazmorra.
 

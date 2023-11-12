@@ -134,12 +134,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ActionHelpers.SetActionParams(Rng, this);
         }
 
-        public void LoadRngState(int seed, int rngCalls)
+        public void LoadRngState(int seed)
         {
-            if(rngCalls > 0)
-                Rng = new RngHandler(seed, rngCalls);
-            else
-                Rng = new RngHandler(seed);
+            Rng = new RngHandler(seed);
         }
 
         public void Generate()

@@ -448,8 +448,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return entity.Visible
                 && entity.Position != null
-                && entity.ContainingTile?.Discovered == true
-                && entity.ContainingTile.Visible
                 && ComputeFOVTiles().Contains(entity.ContainingTile);
         }
 

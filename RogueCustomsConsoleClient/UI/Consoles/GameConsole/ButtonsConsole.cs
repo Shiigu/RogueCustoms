@@ -28,19 +28,19 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             UseMouse = true;
             RefreshOnlyOnStatusUpdate = false;
             var saveButtonText = LocalizationManager.GetString("SaveDungeonButtonText").ToAscii();
-            SaveButton = new Button(saveButtonText.Length + 2)
+            SaveButton = new Button(saveButtonText.Length + 2, 2)
             {
                 Text = saveButtonText
             };
             SaveButton.Click += SaveButton_Click;
-            SaveButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - SaveButton.Surface.Width) / 2, 5);
-            var exitButtonText = LocalizationManager.GetString("ExitButtonText").ToAscii();
-            ExitButton = new Button(exitButtonText.Length + 2)
+            SaveButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - SaveButton.Surface.Width) / 2, 7);
+            var exitButtonText = LocalizationManager.GetString("ExitDungeonButtonText").ToAscii();
+            ExitButton = new Button(exitButtonText.Length + 2, 2)
             {
                 Text = exitButtonText
             };
             ExitButton.Click += ExitButton_Click;
-            ExitButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - ExitButton.Surface.Width) / 2, 15);
+            ExitButton.Position = new Point((GameConsoleConstants.ButtonsCellWidth - ExitButton.Surface.Width) / 2, 11);
 
             Controls.Add(SaveButton);
             Controls.Add(ExitButton);
