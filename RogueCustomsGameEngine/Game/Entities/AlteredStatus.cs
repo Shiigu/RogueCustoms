@@ -49,7 +49,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             alteredStatusInstance.TurnLength = turnLength;
             alteredStatusInstance.RemainingTurns = turnLength;
             target.AlteredStatuses.Add(alteredStatusInstance);
-            alteredStatusInstance.OnApply?.Do(this, target);
+            alteredStatusInstance.OnApply?.Do(this, target, false);
             return true;
         }
 
@@ -63,8 +63,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void PerformOnTurnStartActions()
         {
             if (Target == null) return;
-            if (OwnOnTurnStart?.MayBeUsed == true)
-                OwnOnTurnStart.Do(this, Target);
+            if (OwnOnTurnStart?.CanBeUsedOn(Target) == true)
+                OwnOnTurnStart.Do(this, Target, false);
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()

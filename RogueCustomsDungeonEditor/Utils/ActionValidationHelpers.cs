@@ -43,11 +43,13 @@ namespace RogueCustomsDungeonEditor.Utils
 
         public static bool TestBooleanExpression(this string expression, out string errorMessage)
         {
+            errorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(expression))
+                return true;
             try
             {
                 var parsedExpression = ConvertArgsToPlaceholders(expression, "1", "\"name\"", "true");
                 _ = new Expression(parsedExpression).Eval<bool>();
-                errorMessage = string.Empty;
                 return true;
             }
             catch (Exception ex)

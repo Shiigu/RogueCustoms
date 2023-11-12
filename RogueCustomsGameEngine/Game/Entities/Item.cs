@@ -34,11 +34,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void Stepped(Entity stomper)
         {
-            OnStepped?.Do(this, stomper);
+            OnStepped?.Do(this, stomper, true);
         }
         public void Used(Entity user)
         {
-            OnUse?.Do(this, user);
+            OnUse?.Do(this, user, true);
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()
@@ -56,8 +56,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void PerformOnTurnStartActions()
         {
-            if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.CanBeUsedOn(Owner, Map))
-                OwnOnTurnStart?.Do(this, Owner);
+            if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.ChecksCondition(Owner, Owner))
+                OwnOnTurnStart?.Do(this, Owner, true);
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

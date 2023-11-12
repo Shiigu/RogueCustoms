@@ -36,12 +36,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private readonly bool RequiresDescription;
         private readonly bool RequiresActionName;
         private readonly bool RequiresCondition;
-        private readonly bool MayFinishTurnWhenUsed;
+        private readonly TurnEndCriteria TurnEndCriteria;
         private readonly UsageCriteria UsageCriteria;
         private readonly string ClassId;
         private readonly string PlaceholderActionName;
         private string PreviousTextBoxValue;
-        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, bool mayFinishTurn, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
+        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
         {
             InitializeComponent();
             if (!actionToSave.IsNullOrEmpty())
@@ -49,7 +49,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             else
             {
                 ActionToSave = new ActionWithEffectsInfo();
-                ActionToSave.FinishesTurnWhenUsed = mayFinishTurn;
+                ActionToSave.FinishesTurnWhenUsed = turnEndCriteria != HelperForms.TurnEndCriteria.CannotEndTurn;
             }
             ActiveDungeon = activeDungeon;
             ClassId = classId;
@@ -73,7 +73,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
             RequiresCondition = requiresCondition;
-            MayFinishTurnWhenUsed = mayFinishTurn;
+            TurnEndCriteria = turnEndCriteria;
 
             lblThis.Text = thisDescription;
             lblSource.Text = sourceDescription;
@@ -108,15 +108,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 fklblConditionWarning.Visible = false;
             }
 
-            if(MayFinishTurnWhenUsed)
-            {
-                chkFinishesTurn.Enabled = true;
-                chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
-            }
-            else
+            if(TurnEndCriteria == TurnEndCriteria.CannotEndTurn)
             {
                 chkFinishesTurn.Enabled = false;
                 chkFinishesTurn.Checked = false;
+            }
+            else if(TurnEndCriteria == TurnEndCriteria.MustEndTurn)
+            {
+                chkFinishesTurn.Enabled = false;
+                chkFinishesTurn.Checked = true;
+            }
+            else
+            {
+                chkFinishesTurn.Enabled = true;
+                chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
             }
 
             UsableAlteredStatusList = alteredStatusList.Where(als => !als.Equals(classId)).ToList();
@@ -707,6 +712,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 // Ignore. Unmatchable effects will be skipped altogether.
             }
         }
+    }
+
+    public enum TurnEndCriteria
+    {
+        CannotEndTurn,
+        MustEndTurn,
+        MayNotEndTurn
     }
 
     public enum UsageCriteria

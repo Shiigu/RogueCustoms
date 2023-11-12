@@ -20,6 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public sealed class ActionWithEffects
     {
+        public int ActionId { get; set; }                       // Dynamic, only to be used for action selections
         public string NameLocaleKey { get; set; }
         public string Name { get; set; }
         public string DescriptionLocaleKey { get; set; }
@@ -76,33 +77,42 @@ namespace RogueCustomsGameEngine.Game.Entities
             return info != null && !string.IsNullOrWhiteSpace(info.Name) ? new ActionWithEffects(info) : null;
         }
 
-        public List<string> Do(Entity source, Entity target)
+        public List<string> Do(Entity source, Entity target, bool turnSourceVisibleWhenDone)
         {
             var successfulEffects = Effect.Do(User, source, target);
 
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
             if (MaximumUses > 0) CurrentUses++;
-            source.Visible = true;
+
+            if(turnSourceVisibleWhenDone)
+                source.Visible = true;
 
             return successfulEffects;
         }
 
-        public bool CanBeUsedOn(Character target, Map map)
+        public bool CanBeUsedOn(Character target, Character? source = null)
         {
             if (target == null && !TargetTypes.Exists(tt => tt == TargetType.Room || tt == TargetType.Floor)) return false;
 
             Character character = null;
 
-            if (User is Character c)
+            if (source != null)
             {
-                character = c;
+                character = source;
             }
-            else if (User is Item i)
+            else
             {
-                if (i.Owner != null)
-                    character = i.Owner;
-                else if (i.Position != null && i.ContainingTile.Character != null)
-                    character = i.ContainingTile.Character;
+                if (User is Character c)
+                {
+                    character = c;
+                }
+                else if (User is Item i)
+                {
+                    if (i.Owner != null)
+                        character = i.Owner;
+                    else if (i.Position != null && i.ContainingTile.Character != null)
+                        character = i.ContainingTile.Character;
+                }
             }
 
             if (character == null) return false;
@@ -126,21 +136,29 @@ namespace RogueCustomsGameEngine.Game.Entities
             return true;
         }
 
-        public string GetDescriptionWithUsageNotes(Character target)
+        public string GetDescriptionWithUsageNotes(Character target, Character? source = null)
         {
             var descriptionWithUsageNotes = new StringBuilder(Map.Locale[Description]);
             Character character;
-            if (User is Character)
+
+            if (source != null)
             {
-                character = User as Character;
-            }
-            else if (User is Item i)
-            {
-                character = i.Owner;
+                character = source;
             }
             else
             {
-                throw new ArgumentException("Attempted to get Usage Notes without a Target.");
+                if (User is Character)
+                {
+                    character = User as Character;
+                }
+                else if (User is Item i)
+                {
+                    character = i.Owner;
+                }
+                else
+                {
+                    throw new ArgumentException("Attempted to get Usage Notes without a Target.");
+                }
             }
 
             var cannotBeUsedString = Locale["CannotBeUsed"];
@@ -257,6 +275,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
 
             return descriptionWithUsageNotes.ToString();
+        }
+
+        public bool ChecksCondition(Character character, Character target)
+        {
+            if (!string.IsNullOrWhiteSpace(UseCondition))
+            {
+                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+
+                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+            }
+            return true;
         }
 
         public ActionWithEffects Clone()

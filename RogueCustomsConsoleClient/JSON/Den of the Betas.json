@@ -856,6 +856,26 @@
         {
           "Key": "ThiefSandAttackText",
           "Value": "{this} tries to throw sand at {target}\u0027s eyes."
+        },
+        {
+          "Key": "WaveHandsName",
+          "Value": "Wave Hand"
+        },
+        {
+          "Key": "WaveHandsDescription",
+          "Value": "Wave your hand at a friend like the good player you are."
+        },
+        {
+          "Key": "SourceWaveHandText",
+          "Value": "{source} waves a hand at {target}."
+        },
+        {
+          "Key": "TargetWaveHandText",
+          "Value": "{target} waves it back at {source}."
+        },
+        {
+          "Key": "ThiefSpawnText",
+          "Value": "Some sneaky being has entered this floor."
         }
       ]
     },
@@ -1705,6 +1725,26 @@
         {
           "Key": "ThiefSandAttackText",
           "Value": "{this} intenta arrojar arena a los ojos de {target}."
+        },
+        {
+          "Key": "WaveHandsName",
+          "Value": "Ondear Mano"
+        },
+        {
+          "Key": "WaveHandsDescription",
+          "Value": "Ondea tu mano a un amigo por ser buena gente."
+        },
+        {
+          "Key": "SourceWaveHandText",
+          "Value": "{source} le ondea la mano a {target}."
+        },
+        {
+          "Key": "TargetWaveHandText",
+          "Value": "{target} se la ondea de vuelta a {source}."
+        },
+        {
+          "Key": "ThiefSpawnText",
+          "Value": "Alguien escurridizo ha ingresado a este piso."
         }
       ]
     }
@@ -3547,6 +3587,7 @@
     {
       "KnowsAllCharacterPositions": true,
       "AIOddsToUseActionsOnSelf": 0,
+      "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
@@ -3689,6 +3730,7 @@
     {
       "KnowsAllCharacterPositions": true,
       "AIOddsToUseActionsOnSelf": 0,
+      "OnInteracted": [],
       "Faction": "RangedEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
@@ -3806,6 +3848,32 @@
     {
       "KnowsAllCharacterPositions": false,
       "AIOddsToUseActionsOnSelf": 50,
+      "OnSpawn": {
+        "Name": "TurnStart",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "UseCondition": "[TurnCount] \u003E 1",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "Text",
+              "Value": "ThiefSpawnText"
+            },
+            {
+              "ParamName": "Color",
+              "Value": "255,128,64,255"
+            }
+          ]
+        }
+      },
+      "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": false,
@@ -4075,6 +4143,49 @@
     {
       "KnowsAllCharacterPositions": true,
       "AIOddsToUseActionsOnSelf": 0,
+      "OnInteracted": [
+        {
+          "Name": "WaveHandsName",
+          "Description": "WaveHandsDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 3,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Ally"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "SourceWaveHandText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              }
+            ],
+            "Then": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "Text",
+                  "Value": "TargetWaveHandText"
+                },
+                {
+                  "ParamName": "Color",
+                  "Value": "0,255,0,255"
+                }
+              ]
+            }
+          }
+        }
+      ],
       "Faction": "AlliedNPCs",
       "CanBePickedUp": false,
       "StartsVisible": true,
@@ -4198,6 +4309,7 @@
     {
       "KnowsAllCharacterPositions": false,
       "AIOddsToUseActionsOnSelf": 0,
+      "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,

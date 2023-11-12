@@ -1,4 +1,5 @@
-﻿using RogueCustomsDungeonEditor.Utils;
+﻿using MathNet.Numerics.Statistics;
+using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
@@ -97,11 +98,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
 
             Entity source;
-            Character target = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor)
-            {
-                EquippedWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor),
-                EquippedArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
-            };
+            var target = GetATestCharacter(sampleDungeon);
+
+            target.EquippedWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+            target.EquippedArmor = GetATestItem(sampleDungeon, EntityType.Armor);
 
             foreach (var als in sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.AlteredStatus && (owner == null || ec.Id != owner.ClassId)))
             {
@@ -119,44 +119,36 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if (source.OwnOnAttack.Contains(action))
                 {
                     (source as Character).Faction = sampleDungeon.Factions[0];
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon && ec.Id.Equals(c.StartingWeaponId)), sampleDungeon.CurrentFloor)
-                    {
-                        Owner = source as Character
-                    };
+                    var fillerWeapon = GetASpecificItem(sampleDungeon, c.StartingWeaponId);
+                    fillerWeapon.Owner = source as Character;
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor && ec.Id.Equals(c.StartingArmorId)), sampleDungeon.CurrentFloor)
-                    {
-                        Owner = source as Character
-                    };
+                    var fillerArmor = GetASpecificItem(sampleDungeon, c.StartingArmorId);
+                    fillerArmor.Owner = source as Character;
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
             else if (owner != null && (owner.EntityType == EntityType.Weapon || owner.EntityType == EntityType.Armor))
             {
-                source = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+                source = GetATestCharacter(sampleDungeon);
                 (owner as Item).Owner = source as NonPlayableCharacter;
                 if (owner.EntityType == EntityType.Weapon)
                 {
                     (source as Character).EquippedWeapon = owner as Item;
-                    var fillerArmor = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor), sampleDungeon.CurrentFloor)
-                    {
-                        Owner = source as NonPlayableCharacter
-                    };
+                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+                    fillerArmor.Owner = source as Character;
                     (source as Character).EquippedArmor = fillerArmor;
                 }
                 else if (owner.EntityType == EntityType.Armor)
                 {
-                    var fillerWeapon = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon), sampleDungeon.CurrentFloor)
-                    {
-                        Owner = source as NonPlayableCharacter
-                    };
+                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+                    fillerWeapon.Owner = source as Character;
                     (source as Character).EquippedWeapon = fillerWeapon;
                     (source as Character).EquippedArmor = owner as Item;
                 }
             }
             else if (owner == null)
             {
-                source = new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player || ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+                source = GetATestCharacter(sampleDungeon);
             }
             else
             {
@@ -464,7 +456,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         catch (Exception ex)
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running: {ex.Message}.");
+                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running against {target?.ClassId ?? "NULL"}: {ex.Message}.");
                         }
 
                         if (!errorOnActionChain)
@@ -504,6 +496,22 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
 
             return messages;
+        }
+
+        private static Character GetATestCharacter(Dungeon sampleDungeon)
+        {
+            return sampleDungeon.Classes.Exists(ec => ec.EntityType == EntityType.NPC)
+                ? new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor)
+                : new PlayerCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player), 1, sampleDungeon.CurrentFloor);
+        }
+        private static Item GetASpecificItem(Dungeon sampleDungeon, string classId)
+        {
+            return new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), sampleDungeon.CurrentFloor);
+        }
+
+        private static Item GetATestItem(Dungeon sampleDungeon, EntityType entityType)
+        {
+            return new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), sampleDungeon.CurrentFloor);
         }
     }
     #pragma warning restore CS8601 // Posible asignación de referencia nula
