@@ -147,6 +147,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "bypassesaccuracycheck":
                             paramsObject.BypassesAccuracyCheck = new Expression(value).Eval<bool>();
                             break;
+                        case "bypassesvisibilitycheck":
+                            paramsObject.BypassesVisibilityCheck = new Expression(value).Eval<bool>();
+                            break;
                         case "displayonlog":
                             paramsObject.DisplayOnLog = new Expression(value).Eval<bool>();
                             break;

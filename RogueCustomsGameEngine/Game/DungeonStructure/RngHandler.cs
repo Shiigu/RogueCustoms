@@ -33,6 +33,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RngHandler(int seed)
         {
             Rng = new Random(seed);
+            Seed = seed;
             _rngCalls = 0;
         }
 
