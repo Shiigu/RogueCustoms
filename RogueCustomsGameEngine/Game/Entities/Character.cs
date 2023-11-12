@@ -367,7 +367,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     .GroupBy(als => als.ClassId)
                     .Select(group => (
                         group.ToList(),
-                        group.Key,
+                        group.FirstOrDefault()?.Name ?? "",
                         !group.Any(als => als.RemainingTurns > 1)
                     ))
                     .ToList();

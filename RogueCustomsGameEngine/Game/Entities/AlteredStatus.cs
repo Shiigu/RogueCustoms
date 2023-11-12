@@ -65,7 +65,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void PerformOnTurnStartActions()
         {
             if (Target == null) return;
-            if (OwnOnTurnStart?.CanBeUsedOn(Target) == true)
+            if (OwnOnTurnStart?.ChecksCondition(Target, Target) == true)
                 OwnOnTurnStart.Do(this, Target, false);
         }
 
