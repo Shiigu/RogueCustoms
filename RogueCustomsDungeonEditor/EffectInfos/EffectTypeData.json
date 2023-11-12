@@ -317,7 +317,7 @@
   {
     "InternalName": "PrintText",
     "DisplayName": "Print Text to Message Log",
-    "Description": "If Player can see the User, text will be printed into the Message Log.",
+    "Description": "If Player can see the User (if visibility checks must apply), text will be printed into the Message Log.",
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -339,6 +339,16 @@
         "Default": "255,255,255,255",
         "ValidValues": [],
         "Required": false,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesVisibilityCheck",
+        "DisplayName": "Print even if not visible?",
+        "Description": "If true, the message will be printed even if the Player can't see the User.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
         "OptionalIfFieldsHaveValue": []
       }
     ]

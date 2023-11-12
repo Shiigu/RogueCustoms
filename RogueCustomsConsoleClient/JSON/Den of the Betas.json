@@ -3339,6 +3339,10 @@
               {
                 "ParamName": "color",
                 "Value": "255,0,0,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -3440,6 +3444,10 @@
               {
                 "ParamName": "color",
                 "Value": "255,0,0,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -3541,6 +3549,10 @@
               {
                 "ParamName": "color",
                 "Value": "255,0,0,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -3638,6 +3650,10 @@
               {
                 "ParamName": "text",
                 "Value": "MeleeEnemyStickTongueText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ]
           }
@@ -3665,6 +3681,10 @@
             {
               "ParamName": "color",
               "Value": "0,180,0,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -3783,6 +3803,10 @@
             {
               "ParamName": "color",
               "Value": "0,180,0,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -3855,6 +3879,7 @@
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "TargetTypes": [],
         "UseCondition": "[TurnCount] \u003E 1",
         "MPCost": 0,
         "FinishesTurnWhenUsed": false,
@@ -3869,6 +3894,10 @@
             {
               "ParamName": "Color",
               "Value": "255,128,64,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "True"
             }
           ]
         }
@@ -3922,6 +3951,10 @@
               {
                 "ParamName": "text",
                 "Value": "ThiefStealAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -3958,6 +3991,10 @@
                   {
                     "ParamName": "color",
                     "Value": "255,0,0,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               },
@@ -3967,6 +4004,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ThiefStealFailureText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -3997,6 +4038,10 @@
               {
                 "ParamName": "Color",
                 "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -4049,6 +4094,10 @@
                   {
                     "ParamName": "Color",
                     "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -4078,6 +4127,10 @@
             {
               "ParamName": "color",
               "Value": "0,180,0,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4168,6 +4221,10 @@
               {
                 "ParamName": "Color",
                 "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -4180,6 +4237,10 @@
                 {
                   "ParamName": "Color",
                   "Value": "0,255,0,255"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -4234,6 +4295,10 @@
               {
                 "ParamName": "text",
                 "Value": "MeleeAllyDeclareText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ]
           }
@@ -4261,6 +4326,10 @@
             {
               "ParamName": "color",
               "Value": "255,30,30,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4360,6 +4429,10 @@
               {
                 "ParamName": "text",
                 "Value": "BossAwaitText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ]
           }
@@ -4387,6 +4460,10 @@
             {
               "ParamName": "color",
               "Value": "0,255,0,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4484,6 +4561,10 @@
               {
                 "ParamName": "text",
                 "Value": "BareFistsAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -4520,6 +4601,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -4618,6 +4703,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -4640,6 +4729,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4680,6 +4773,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -4690,6 +4787,10 @@
                 {
                   "ParamName": "text",
                   "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -4737,6 +4838,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -4757,6 +4862,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4809,6 +4918,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -4819,6 +4932,10 @@
                 {
                   "ParamName": "text",
                   "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -4866,6 +4983,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -4888,6 +5009,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -4932,6 +5057,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -4942,6 +5071,10 @@
                 {
                   "ParamName": "text",
                   "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -4992,6 +5125,10 @@
               {
                 "ParamName": "text",
                 "Value": "SwordAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5028,6 +5165,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5053,6 +5194,10 @@
               {
                 "ParamName": "text",
                 "Value": "SwordAllInAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5089,6 +5234,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5112,6 +5261,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -5132,6 +5285,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -5184,6 +5341,10 @@
               {
                 "ParamName": "text",
                 "Value": "PistolMeleeAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5220,6 +5381,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5245,6 +5410,10 @@
               {
                 "ParamName": "text",
                 "Value": "PistolRangedAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5281,6 +5450,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5304,6 +5477,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -5324,6 +5501,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -5373,6 +5554,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -5393,6 +5578,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -5442,6 +5631,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -5462,6 +5655,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -5514,6 +5711,10 @@
               {
                 "ParamName": "text",
                 "Value": "JavelinMeleeAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5550,6 +5751,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5575,6 +5780,10 @@
               {
                 "ParamName": "text",
                 "Value": "JavelinNormalRangedAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5611,6 +5820,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5636,6 +5849,10 @@
               {
                 "ParamName": "text",
                 "Value": "JavelinEnvenomedRangedAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5701,6 +5918,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5724,6 +5945,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -5828,6 +6053,10 @@
               {
                 "ParamName": "text",
                 "Value": "StaffOfMagusAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5864,6 +6093,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5890,6 +6123,10 @@
               {
                 "ParamName": "text",
                 "Value": "FireballAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -5955,6 +6192,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -5981,6 +6222,10 @@
               {
                 "ParamName": "text",
                 "Value": "IceballAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -6046,6 +6291,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6073,6 +6322,10 @@
               {
                 "ParamName": "text",
                 "Value": "HealAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -6097,6 +6350,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6120,6 +6377,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -6140,6 +6401,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectEquippedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6193,6 +6458,10 @@
               {
                 "ParamName": "text",
                 "Value": "ScrollOfDestructionAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
@@ -6245,6 +6514,10 @@
                     {
                       "ParamName": "text",
                       "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
                     }
                   ]
                 }
@@ -6255,6 +6528,10 @@
                   {
                     "ParamName": "text",
                     "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6278,6 +6555,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -6323,6 +6604,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ]
         }
@@ -6345,6 +6630,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6389,6 +6678,10 @@
                   {
                     "ParamName": "Color",
                     "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6403,6 +6696,10 @@
                 {
                   "ParamName": "Color",
                   "Value": "255,255,255,255"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -6451,6 +6748,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6503,6 +6804,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6513,6 +6818,10 @@
                 {
                   "ParamName": "text",
                   "Value": "ObjectNotActivatedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -6557,6 +6866,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6581,6 +6894,10 @@
                 {
                   "ParamName": "text",
                   "Value": "WonderTileFailedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -6624,6 +6941,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6676,6 +6997,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6686,6 +7011,10 @@
                 {
                   "ParamName": "text",
                   "Value": "ObjectNotActivatedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
                 }
               ]
             }
@@ -6729,6 +7058,10 @@
             {
               "ParamName": "text",
               "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6769,6 +7102,10 @@
                   {
                     "ParamName": "text",
                     "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
                   }
                 ]
               }
@@ -6892,6 +7229,10 @@
             {
               "ParamName": "text",
               "Value": "PoisonedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -6967,6 +7308,10 @@
             {
               "ParamName": "text",
               "Value": "BurnedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {
@@ -7072,6 +7417,10 @@
             {
               "ParamName": "text",
               "Value": "FrozenText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
             }
           ],
           "Then": {

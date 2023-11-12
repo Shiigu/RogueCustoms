@@ -8,6 +8,7 @@ using System.Linq;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
 using org.matheval;
+using MathNet.Numerics.Statistics.Mcmc;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -29,12 +30,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             _ = 0;
-            var entityTypesForVisibilityCheck = new List<EntityType> { EntityType.Player, EntityType.NPC };
 
-            if ((entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source))
-                || (Target != null && entityTypesForVisibilityCheck.Contains(Target.EntityType) && Map.Player.CanSee(Target)))
+            var ignoreVisibilityChecks = ExpandoObjectHelper.HasProperty(paramsObject, "BypassesVisibilityCheck") && paramsObject.BypassesVisibilityCheck;
+            var entityTypesForVisibilityCheck = new List<EntityType> { EntityType.Player, EntityType.NPC };
+            var isSourceVisible = entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source);
+            var isTargetVisible = Target != null && entityTypesForVisibilityCheck.Contains(Target.EntityType) && Map.Player.CanSee(Target);
+
+            if (ignoreVisibilityChecks || isSourceVisible || isTargetVisible)
             {
-                if(ExpandoObjectHelper.HasProperty(paramsObject, "Color"))
+                if (ExpandoObjectHelper.HasProperty(paramsObject, "Color"))
                     Map.AppendMessage(paramsObject.Text, paramsObject.Color);
                 else
                     Map.AppendMessage(paramsObject.Text);
@@ -277,7 +281,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             _ = 0;
             if (Target == null) return false;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
+            if (paramsObject.Target is not Character) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
