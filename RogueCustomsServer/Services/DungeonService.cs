@@ -33,6 +33,16 @@ namespace Roguelike.Services
             return DungeonManager.CreateDungeon(dungeonName, locale);
         }
 
+        public DungeonSaveGameDto SaveDungeon(int dungeonId)
+        {
+            return DungeonManager.SaveDungeon(dungeonId);
+        }
+
+        public int LoadSavedDungeon(DungeonSaveGameDto input)
+        {
+            return DungeonManager.LoadSavedDungeon(input);
+        }
+
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
         {
             return DungeonManager.GetPlayerClassSelection(dungeonId);

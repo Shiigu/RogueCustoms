@@ -14,5 +14,8 @@
     <Setting Name="Language" Type="System.String" Scope="User">
       <Value Profile="(Default)">English</Value>
     </Setting>
+    <Setting Name="SaveGamePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">./savedDungeon.rcs</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

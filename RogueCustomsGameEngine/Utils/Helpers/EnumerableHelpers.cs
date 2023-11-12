@@ -29,11 +29,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return elementList.ToList()[rng.NextInclusive(elementList.Count() - 1)];
         }
 
-        public static T? TakeRandomElement<T>(this IEnumerable<T> elementList, Random rng)
-        {
-            return elementList.ToList()[rng.NextInclusive(elementList.Count() - 1)];
-        }
-
         public static T? GetWithProbability<T>(this IEnumerable<T> elementList, Func<T, int> probability, RngHandler rng, int odds = 100)
         {
             int totalProbability = 0, currentProbability = 0;
@@ -57,28 +52,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return default;
         }
 
-        public static T? GetWithProbability<T>(this IEnumerable<T> elementList, Func<T, int> probability, Random rng, int odds = 100)
-        {
-            int totalProbability = 0, currentProbability = 0;
-            foreach(var element in elementList)
-            {
-                totalProbability += probability(element);
-            }
-
-            int random = rng.NextInclusive(1, odds);
-
-            foreach (var element in elementList)
-            {
-                var maxProbability = currentProbability + probability(element);
-
-                if(random.Between(currentProbability + 1, maxProbability))
-                    return element;
-
-                currentProbability = maxProbability;
-            }
-
-            return default;
-        }
         public static void ForEach<T>(this IEnumerable<T> enumeration, Action<T> action)
         {
             foreach (T item in enumeration)

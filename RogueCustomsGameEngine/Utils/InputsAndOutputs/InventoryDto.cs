@@ -39,7 +39,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = map.Locale[item.Name];
             Description = item.Description;
             ConsoleRepresentation = item.ConsoleRepresentation;
-            CanBeUsed = item.OnUse.CanBeUsedOn(player);
+            CanBeUsed = item.OnUse?.CanBeUsedOn(player) == true;
             IsEquipped = player.EquippedWeapon == item || player.EquippedArmor == item;
             IsEquippable = item.EntityType == EntityType.Weapon || item.EntityType == EntityType.Armor;
             IsInFloor = item.Position != null && item.Owner == null;

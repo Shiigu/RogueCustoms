@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO.Compression;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Management
 {
@@ -95,7 +96,7 @@ namespace RogueCustomsGameEngine.Management
             Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
         }
 
-        private byte[] ToByteArray(int dungeonId)
+        public DungeonSaveGameDto SaveDungeon(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
 
@@ -103,16 +104,29 @@ namespace RogueCustomsGameEngine.Management
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
             var formatter = new BinaryFormatter();
             formatter.Serialize(gzipStream, dungeon);
-            return memoryStream.ToArray();
+            return new DungeonSaveGameDto
+            {
+                DungeonData = memoryStream.ToArray()
+            };
         }
 
-        private Dungeon FromByteArray(byte[] bytes)
+        public int LoadSavedDungeon(DungeonSaveGameDto dungeonSaveGame)
         {
-            using var memoryStream = new MemoryStream(bytes);
+            using var memoryStream = new MemoryStream(dungeonSaveGame.DungeonData);
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
             IFormatter formatter = new BinaryFormatter();
             var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
-            return restoredDungeon;
+            if (!restoredDungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
+                throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {Constants.CurrentDungeonJsonVersion}.");
+            restoredDungeon.Id = CurrentDungeonId;
+            var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
+            var rngCalls = restoredDungeon.CurrentFloor.Rng.RngCalls;
+            restoredDungeon.CurrentFloor.LoadRngState(rngSeed, rngCalls);
+            restoredDungeon.CurrentFloor.SetActionParams();
+            ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
+            Dungeons.Add(restoredDungeon);
+            CurrentDungeonId++;
+            return restoredDungeon.Id;
         }
 
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)

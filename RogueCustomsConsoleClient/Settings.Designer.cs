@@ -70,5 +70,17 @@ namespace RogueCustomsConsoleClient {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("./savedDungeon.rcs")]
+        public string SaveGamePath {
+            get {
+                return ((string)(this["SaveGamePath"]));
+            }
+            set {
+                this["SaveGamePath"] = value;
+            }
+        }
     }
 }

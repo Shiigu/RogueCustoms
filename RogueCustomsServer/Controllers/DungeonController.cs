@@ -61,6 +61,34 @@ namespace Roguelike.Controllers
             }
         }
 
+        [HttpPost("SaveDungeon/{dungeonId}")]
+        public DungeonSaveGameDto SaveDungeon(int dungeonId)
+        {
+            try
+            {
+                return DungeonService.SaveDungeon(dungeonId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost("LoadSavedDungeon")]
+        public int LoadSavedDungeon([FromBody] DungeonSaveGameDto input)
+        {
+            try
+            {
+                return DungeonService.LoadSavedDungeon(input);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         [HttpGet("GetPlayerClassSelection/{dungeonId}")]
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
         {

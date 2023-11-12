@@ -127,7 +127,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             GameControlsConsole.IsEnabled = false;
             ControlMode = ControlMode.NormalMove;
             RequiresRefreshingDungeonState = true;
-            HasSetupPlayerData = false;
+            if (BackendHandler.Instance.IsLoadedSaveGame)
+            {
+                HasSetupPlayerData = true;
+                ChangeSubConsolesRenderState(true);
+            }
+            else
+            {
+                HasSetupPlayerData = false;
+            }
             ActiveWindow = null;
         }
 

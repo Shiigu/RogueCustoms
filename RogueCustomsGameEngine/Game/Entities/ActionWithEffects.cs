@@ -350,8 +350,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 try
                 {
-                    EffectMethodName = effectMethod.Name;
-                    EffectClassName = effectMethod.DeclaringType.FullName;
                     Function = effectMethod.CreateDelegate<ActionMethod>();
                     Params = info.Params.Select(p => (p.ParamName, p.Value)).ToArray();
                     if (info.Then != null)
@@ -410,6 +408,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             // Serialize necessary information
+            EffectMethodName = Function.GetMethodInfo().Name;
+            EffectClassName = Function.GetMethodInfo().DeclaringType.FullName;
             info.AddValue("EffectMethodName", EffectMethodName);
             info.AddValue("EffectClassName", EffectClassName);
             info.AddValue("Params", Params);

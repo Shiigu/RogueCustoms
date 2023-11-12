@@ -44,9 +44,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public RngHandler(int seed)
         {
-            Rng = new Random(seed);
-            _seed = seed;
+            Seed = seed;
             _rngCalls = 0;
+        }
+
+        public RngHandler(int seed, int rngCalls)
+        {
+            Seed = seed;
+            RngCalls = rngCalls;
         }
 
         public override string ToString() => $"Seed: {Seed}; Calls: {RngCalls}";

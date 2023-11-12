@@ -12,9 +12,12 @@ ReturnToMainMenuText = RETURN TO MAIN MENU
 
 ; MainMenuConsole
 GameTitle = Rogue Customs
-SelectFileText = START A DUNGEON
+SelectDungeonText = START A DUNGEON
+LoadDungeonText = RESUME SAVED DUNGEON
 OptionsText = OPTIONS
 GameVersionText = Game Version {GameVersion}
+FailedDungeonHeader = CANNOT RESUME THIS DUNGEON
+FailedDungeonLoadText = This Dungeon could not be loaded.\n\nPlease check if it's a valid Dungeon savegame, and\nif it's saved with the current Dungeon File version.
 
 ; OptionsConsole
 OptionsHeaderText = SELECT OPTIONS
@@ -23,7 +26,7 @@ LocalRadioButtonText = LOCAL
 ServerRadioButtonText = IN A SERVER
 ServerAddressTextBoxHeaderText = SERVER ADDRESS
 LanguageListHeaderText = LANGUAGE
-SaveButtonText = SAVE SETTINGS
+SaveSettingsButtonText = SAVE SETTINGS
 
 ; PickDungeonConsole
 PickDungeonHeaderText = PICK A DUNGEON
@@ -71,6 +74,9 @@ DetailsButtonText = DETAILS
 
 ; ButtonsConsole
 ExitPromptText = Do you want to stop playing\nand return to the main menu?
+SaveDungeonButtonText = SAVE
+SuccessfulSavePromptText = Dungeon has been successfully saved.\n\nDo you want to stop playing and\nreturn to the main menu?
+FailedSaveText = Dungeon could not be saved.
 
 ; PlayerClassWindow
 PlayerClassWindowTitleText = Select a Class

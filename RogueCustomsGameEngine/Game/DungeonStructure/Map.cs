@@ -89,7 +89,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<AlteredStatus> PossibleStatuses { get; private set; }
 
-        public readonly RngHandler Rng;
+        public RngHandler Rng { get; private set; }
         private (Point TopLeftCorner, Point BottomRightCorner)[,] RoomLimitsTable { get; set; }
 
         public Tile[,] Tiles { get; private set; }
@@ -122,12 +122,24 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             PossibleStatuses = new List<AlteredStatus>();
             Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            SetActionParams();
+        }
 
+        public void SetActionParams()
+        {
             AttackActions.SetActionParams(Rng, this);
             CharacterActions.SetActionParams(Rng, this);
             ItemActions.SetActionParams(Rng, this);
             GenericActions.SetActionParams(Rng, this);
             ActionHelpers.SetActionParams(Rng, this);
+        }
+
+        public void LoadRngState(int seed, int rngCalls)
+        {
+            if(rngCalls > 0)
+                Rng = new RngHandler(seed, rngCalls);
+            else
+                Rng = new RngHandler(seed);
         }
 
         public void Generate()
@@ -1683,9 +1695,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private static bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             if (!tilesToConvert.Any()) return false;
-
-            var connectorARoom = connectorA.Room;
-            var connectorBRoom = connectorB.Room;
 
             foreach (var tile in tilesToConvert)
             {

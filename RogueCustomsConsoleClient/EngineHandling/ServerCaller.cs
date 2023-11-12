@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using static SadConsole.Settings;
 
 namespace RogueCustomsConsoleClient.EngineHandling
 {
@@ -31,6 +33,21 @@ namespace RogueCustomsConsoleClient.EngineHandling
         public async Task<int> CreateDungeon(string dungeonName, string locale)
         {
             var response = await client.PostAsync($"{Address}/api/CreateDungeon/{dungeonName}/{locale}", null);
+            var contents = await response.Content.ReadAsStringAsync();
+            return int.Parse(contents);
+        }
+
+        public async Task<DungeonSaveGameDto> SaveDungeon(int dungeonId)
+        {
+            var response = await client.PostAsync($"{Address}/api/SaveDungeon/{dungeonId}", null);
+            var contents = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<DungeonSaveGameDto>(contents);
+        }
+
+        public async Task<int> LoadSavedDungeon(DungeonSaveGameDto input)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{Address}/api/LoadSavedDungeon", content);
             var contents = await response.Content.ReadAsStringAsync();
             return int.Parse(contents);
         }
