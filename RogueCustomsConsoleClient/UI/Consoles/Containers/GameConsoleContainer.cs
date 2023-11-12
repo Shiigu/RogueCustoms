@@ -204,6 +204,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     ShowMessagesIfNeeded();
                 }
 
+                ButtonsConsole.SaveButton.IsEnabled = LatestDungeonStatus.DungeonStatus == DungeonStatus.Running;
+
+
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
 
@@ -467,6 +470,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             if (keyboard.IsKeyPressed(Keys.D) && keyboard.KeysPressed.Count == 1)
             {
                 PlayerInfoConsole.DetailsButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.F5) && keyboard.KeysPressed.Count == 1)
+            {
+                ButtonsConsole.SaveButton.InvokeClick();
                 handled = true;
             }
 

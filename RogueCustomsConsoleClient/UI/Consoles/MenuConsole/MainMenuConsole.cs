@@ -133,7 +133,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
                 if (index == 0)
-                    index = 2;
+                    index = Buttons.Count - 1;
                 else
                     index--;
                 changeFocus = true;
@@ -143,7 +143,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
-                if (index == 2)
+                if (index == Buttons.Count - 1)
                     index = 0;
                 else
                     index++;
