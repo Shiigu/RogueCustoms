@@ -10,8 +10,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class RngHandler
     {
-        private readonly Random Rng;
-        public int Seed { get; set; }
+        private Random Rng;
+        private int _seed;
+        public int Seed
+        {
+            get { return _seed; }
+            set
+            {
+                _seed = value;
+                Rng = new Random(value);
+                _rngCalls = 0;
+            }
+        }
 
         private int _rngCalls;
         public int RngCalls {
@@ -33,9 +43,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RngHandler(int seed)
         {
             Rng = new Random(seed);
-            Seed = seed;
+            _seed = seed;
             _rngCalls = 0;
         }
+
+        public override string ToString() => $"Seed: {Seed}; Calls: {RngCalls}";
 
         public virtual int Next()
         {
