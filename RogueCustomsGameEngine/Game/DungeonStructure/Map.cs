@@ -1441,7 +1441,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void CreateHorizontalHallway(Room leftRoom, Room rightRoom)
         {
-            Tile? leftConnector = null, rightConnector = null;
+            Tile? leftConnector = null, rightConnector = null, connectorA = null, connectorB = null;
 
             if (leftRoom.Width == 1 && leftRoom.Height == 1)
                 leftConnector = GetTileFromCoordinates(leftRoom.Position.X, leftRoom.Position.Y);
@@ -1480,9 +1480,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 var (InBetweenConnectorPosition, ConnectorAPosition, ConnectorBPosition) = CalculateConnectionPosition(leftConnector, rightConnector, RoomConnectionType.Horizontal);
 
                 if (ConnectorAPosition != null)
-                    tilesToConvert.Add(GetTileFromCoordinates(ConnectorAPosition));
+                {
+                    connectorA = GetTileFromCoordinates(ConnectorAPosition);
+                    tilesToConvert.Add(connectorA);
+                }
                 if (ConnectorBPosition != null)
-                    tilesToConvert.Add(GetTileFromCoordinates(ConnectorBPosition));
+                {
+                    connectorB = GetTileFromCoordinates(ConnectorBPosition);
+                    tilesToConvert.Add(connectorB);
+                }
 
                 if (InBetweenConnectorPosition != null)
                 {
@@ -1516,13 +1522,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (isValidHallway)
             {
-                BuildHallwayTiles(tilesToConvert, leftConnector, rightConnector);
+                BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
             }
         }
 
         private void CreateVerticalHallway(Room topRoom, Room downRoom)
         {
-            Tile? topConnector = null, downConnector = null;
+            Tile? topConnector = null, downConnector = null, connectorA = null, connectorB = null;
 
             if (topRoom.Width == 1 && topRoom.Height == 1)
                 topConnector = GetTileFromCoordinates(topRoom.Position.X, topRoom.Position.Y);
@@ -1561,9 +1567,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 var (InBetweenConnectorPosition, ConnectorAPosition, ConnectorBPosition) = CalculateConnectionPosition(topConnector, downConnector, RoomConnectionType.Vertical);
 
                 if (ConnectorAPosition != null)
-                    tilesToConvert.Add(GetTileFromCoordinates(ConnectorAPosition));
+                {
+                    connectorA = GetTileFromCoordinates(ConnectorAPosition);
+                    tilesToConvert.Add(connectorA);
+                }
                 if (ConnectorBPosition != null)
-                    tilesToConvert.Add(GetTileFromCoordinates(ConnectorBPosition));
+                {
+                    connectorB = GetTileFromCoordinates(ConnectorBPosition);
+                    tilesToConvert.Add(connectorB);
+                }
 
                 if (InBetweenConnectorPosition != null)
                 {
@@ -1597,7 +1609,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (isValidHallway)
             {
-                BuildHallwayTiles(tilesToConvert, topConnector, downConnector);
+                BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
             }
         }
 
@@ -1670,10 +1682,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (!tilesToConvert.Any()) return false;
 
+            var connectorARoom = connectorA.Room;
+            var connectorBRoom = connectorB.Room;
+
             foreach (var tile in tilesToConvert)
             {
                 if (tile == connectorA || tile == connectorB) continue;
-                if (tile.Type == TileType.Wall || tile.Type == TileType.Floor || tile.Type == TileType.Stairs)
+                if (tile.Room != null)
                     return false;
             }
             return true;
