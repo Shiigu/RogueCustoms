@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace RogueCustomsGameEngine.Utils.Helpers
 {
+    [Serializable]
     public class ReflectionHelpers
     {
         public static List<Type> GetTypesInNamespace(Assembly assembly, string nameSpace)

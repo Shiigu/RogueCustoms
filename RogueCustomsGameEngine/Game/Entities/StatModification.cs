@@ -1,6 +1,9 @@
-﻿namespace RogueCustomsGameEngine.Game.Entities
+﻿using System;
+
+namespace RogueCustomsGameEngine.Game.Entities
 {
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class StatModification
     {
         // TO DO: Include stat name for when the stat themselves become customizable

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    [Serializable]
     public class TileSet
     {
         public string Id { get; set; }

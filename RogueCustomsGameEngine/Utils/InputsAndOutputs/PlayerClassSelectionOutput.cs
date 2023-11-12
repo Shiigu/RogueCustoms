@@ -12,6 +12,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class PlayerClassSelectionOutput
     {
         public List<CharacterClassDto> CharacterClasses { get; set; } = new List<CharacterClassDto>();
@@ -24,6 +25,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class CharacterClassDto
     {
         public string ClassId { get; set; }
@@ -147,6 +149,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public CharacterClassDto() { }
     }
 
+    [Serializable]
     public class CharacterClassStatDto {
         public string Name { get; set; }
         public string StatAsString { get; set; }

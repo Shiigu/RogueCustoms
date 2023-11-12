@@ -3,6 +3,7 @@ using System;
 
 namespace RogueCustomsGameEngine.Utils.Representation
 {
+    [Serializable]
     public class Point
     {
         public Point() { }

@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Management
 {
+    [Serializable]
     public class DungeonManager
     {
         private int CurrentDungeonId;

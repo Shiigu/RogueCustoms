@@ -1,7 +1,9 @@
 ﻿using RogueCustomsGameEngine.Utils.Representation;
+using System;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    [Serializable]
     public class Room
     {
         public readonly Point Position;

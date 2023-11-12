@@ -311,6 +311,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
     }
 
+    [Serializable]
     public class Effect
     {
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");

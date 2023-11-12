@@ -1,5 +1,8 @@
-﻿namespace RogueCustomsGameEngine.Utils.Enums
+﻿
+using System;
+namespace RogueCustomsGameEngine.Utils.Enums
 {
+    [Serializable]
     public class GeneratorAlgorithm
     {
         public GeneratorAlgorithmTypes Type { get; set; }

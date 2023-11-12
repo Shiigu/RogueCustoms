@@ -4,10 +4,12 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class PlayerInfoDto
     {
         public string Name { get; set; }
@@ -167,6 +169,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class StatDto
     {
         public string Name { get; set; }
@@ -181,6 +184,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public List<StatModificationDto> Modifications { get; set; }
     }
 
+    [Serializable]
     public class StatModificationDto
     {
         public string Source { get; set; }
@@ -198,6 +202,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class AlteredStatusDetailDto
     {
         public string Name { get; set; }

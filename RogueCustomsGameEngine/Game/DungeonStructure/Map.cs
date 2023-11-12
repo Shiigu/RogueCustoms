@@ -23,6 +23,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class Map
     {
         #region Fields
