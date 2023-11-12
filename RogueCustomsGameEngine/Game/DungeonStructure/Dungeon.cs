@@ -236,10 +236,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return CurrentFloor.GetPlayerInventory();
         }
 
-        public void PlayerAttackTargetWith(string name, int x, int y)
+        public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
             MessageBoxes.Clear();
-            CurrentFloor.PlayerAttackTargetWith(name, x, y);
+            CurrentFloor.PlayerAttackTargetWith(selectionId, x, y);
         }
 
         public void PlayerTakeStairs()

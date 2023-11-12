@@ -54,7 +54,7 @@ namespace RogueCustomsDungeonEditor.Controls
         public bool RequiresCondition { get; set; }
         public bool RequiresDescription { get; set; }
         public bool RequiresActionName { get; set; }
-        public bool MayFinishTurnWhenUsed { get; set; }
+        public TurnEndCriteria TurnEndCriteria { get; set; }
         public string PlaceholderActionName { get; set; }
         public UsageCriteria UsageCriteria { get; set; }
         public List<string> AlteredStatuses { get; set; }
@@ -89,7 +89,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 RequiresCondition,
                 RequiresDescription,
                 RequiresActionName,
-                MayFinishTurnWhenUsed,
+                TurnEndCriteria,
                 PlaceholderActionName,
                 UsageCriteria,
                 AlteredStatuses,

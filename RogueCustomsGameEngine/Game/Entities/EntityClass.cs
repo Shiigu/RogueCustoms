@@ -37,9 +37,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseSightRange;
         public readonly int BaseAccuracy;
         public readonly int BaseEvasion;
-        public readonly bool KnowsAllCharacterPositions;
         public readonly int InventorySize;
-        public readonly int AIOddsToUseActionsOnSelf;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
         public ImmutableList<string> StartingInventoryIds { get; private set; }
@@ -54,6 +52,16 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal MovementIncreasePerLevel;
         public readonly decimal HPRegenerationIncreasePerLevel;
         public readonly decimal MPRegenerationIncreasePerLevel;
+
+        #endregion
+
+        #region NPC-only data
+
+        public ActionWithEffects OnSpawn { get; set; }
+        public List<ActionWithEffects> OnInteracted { get; set; }
+
+        public readonly bool KnowsAllCharacterPositions;
+        public readonly int AIOddsToUseActionsOnSelf;
 
         #endregion
 
@@ -225,6 +233,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Passable = false;
                 AIOddsToUseActionsOnSelf = npcInfo.AIOddsToUseActionsOnSelf;
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
+                OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn);
+                OnInteracted = new List<ActionWithEffects>();
+                MapActions(OnInteracted, npcInfo.OnInteracted);
             }
             else if (classInfo is TrapInfo trapInfo)
             {

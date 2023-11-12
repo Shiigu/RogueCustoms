@@ -32,6 +32,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         private readonly bool KnowsAllCharacterPositions;
         private readonly int AIOddsToUseActionsOnSelf;
         private (Point Destination, List<Tile> Route) PathToUse;
+        public ActionWithEffects OnSpawn { get; set; }
+        public List<ActionWithEffects> OnInteracted { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
@@ -41,6 +43,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             LastUsedActionOnSelf = null;
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
             AIOddsToUseActionsOnSelf = entityClass.AIOddsToUseActionsOnSelf;
+
+            OnSpawn = MapClassAction(entityClass.OnSpawn);
+            OnInteracted = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnInteracted, OnInteracted);
+
+            for (int i = 0; i < OnInteracted.Count; i++)
+            {
+                OnInteracted[i].ActionId = i;
+            }
         }
 
         public void PickTargetAndPath()
@@ -54,7 +65,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = null;
                 if (Rng.NextInclusive(1, 100) <= AIOddsToUseActionsOnSelf)
                 {
-                    var hasUsableAttacksOnSelf = OnAttack.Exists(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map));
+                    var hasUsableAttacksOnSelf = OnAttack.Exists(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this));
                     var hasUsableItemsOnSelf = Inventory?.Exists(i => i.EntityType == EntityType.Consumable && i.OnUse != LastUsedActionOnSelf && i.OnUse.MayBeUsed) == true;
                     if(hasUsableAttacksOnSelf || hasUsableItemsOnSelf)
                     {
@@ -140,7 +151,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if(CurrentTarget != this)
             {
-                var validActions = OnAttack.Where(oaa => oaa.CanBeUsedOn(CurrentTarget, Map));
+                var validActions = OnAttack.Where(oaa => oaa.CanBeUsedOn(CurrentTarget));
                 if (validActions.Any())
                     AttackCharacter(CurrentTarget, validActions.TakeRandomElement(Rng));
                 else
@@ -149,7 +160,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             else
             {
                 var possibleActionsOnSelf = new List<(ActionWithEffects action, Item item)>();
-                foreach (var onAttackAction in OnAttack.Where(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this, Map)))
+                foreach (var onAttackAction in OnAttack.Where(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this)))
                 {
                     possibleActionsOnSelf.Add((onAttackAction, null));
                 }
@@ -164,7 +175,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (item == null)
                         AttackCharacter(this, action);
                     else
-                        action?.Do(item, this);
+                        action?.Do(item, this, true);
                     LastUsedActionOnSelf = action;
                     if (action?.FinishesTurnWhenUsed == true)
                         TookAction = true;
@@ -271,7 +282,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             ExistenceStatus = EntityExistenceStatus.Dead;
             Passable = true;
             if (attacker == null || attacker is Character)
-                OnDeath?.ForEach(oda => oda?.Do(this, attacker));
+                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
             Inventory?.ForEach(i => DropItem(i));
             Inventory?.Clear();
         }

@@ -673,7 +673,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
         public static void PruneNullActions(this DungeonInfo dungeonInfo)
         {
-            foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => string.IsNullOrWhiteSpace(floorInfo.OnFloorStart?.Name)))
+            foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => floorInfo.OnFloorStart.IsNullOrEmpty()))
             {
                 floorInfo.OnFloorStart = null;
             }
@@ -681,54 +681,57 @@ namespace RogueCustomsDungeonEditor.Utils
             foreach (var playerClass in dungeonInfo.PlayerClasses)
             {
                 if (playerClass == null) continue;
-                if (string.IsNullOrWhiteSpace(playerClass?.OnTurnStart?.Name))
+                if (playerClass.OnTurnStart.IsNullOrEmpty())
                     playerClass.OnTurnStart = null;
-                playerClass.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(playerClass?.OnAttacked?.Name))
+                playerClass.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
+                if (playerClass.OnAttacked.IsNullOrEmpty())
                     playerClass.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(playerClass?.OnDeath?.Name))
+                if (playerClass.OnDeath.IsNullOrEmpty())
                     playerClass.OnDeath = null;
             }
 
             foreach (var npc in dungeonInfo.NPCs)
             {
                 if (npc == null) continue;
-                if (string.IsNullOrWhiteSpace(npc?.OnTurnStart?.Name))
+                if (npc.OnSpawn.IsNullOrEmpty())
+                    npc.OnSpawn = null;
+                if (npc.OnTurnStart.IsNullOrEmpty())
                     npc.OnTurnStart = null;
-                npc.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(npc?.OnAttacked?.Name))
+                npc.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
+                npc.OnInteracted.RemoveAll(oa => oa.IsNullOrEmpty());
+                if (npc.OnAttacked.IsNullOrEmpty())
                     npc.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(npc?.OnDeath?.Name))
+                if (npc.OnDeath.IsNullOrEmpty())
                     npc.OnDeath = null;
             }
 
             foreach (var item in dungeonInfo.Items)
             {
                 if (item == null) continue;
-                if (string.IsNullOrWhiteSpace(item?.OnTurnStart?.Name))
+                if (item.OnTurnStart.IsNullOrEmpty())
                     item.OnTurnStart = null;
-                item.OnAttack.RemoveAll(oa => oa == null);
-                if (string.IsNullOrWhiteSpace(item?.OnAttacked?.Name))
+                item.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
+                if (item.OnAttacked.IsNullOrEmpty())
                     item.OnAttacked = null;
-                if (string.IsNullOrWhiteSpace(item?.OnUse?.Name))
+                if (item.OnUse.IsNullOrEmpty())
                     item.OnUse = null;
-                if (string.IsNullOrWhiteSpace(item?.OnStepped?.Name))
+                if (item.OnStepped.IsNullOrEmpty())
                     item.OnStepped = null;
             }
 
             foreach (var trap in dungeonInfo.Traps)
             {
                 if (trap == null) continue;
-                if (string.IsNullOrWhiteSpace(trap?.OnStepped?.Name))
+                if (trap.OnStepped.IsNullOrEmpty())
                     trap.OnStepped = null;
             }
 
             foreach (var alteredStatus in dungeonInfo.AlteredStatuses)
             {
                 if (alteredStatus == null) continue;
-                if (string.IsNullOrWhiteSpace(alteredStatus?.OnTurnStart?.Name))
+                if (alteredStatus.OnTurnStart.IsNullOrEmpty())
                     alteredStatus.OnTurnStart = null;
-                if (string.IsNullOrWhiteSpace(alteredStatus?.OnApply?.Name))
+                if (alteredStatus.OnApply.IsNullOrEmpty())
                     alteredStatus.OnApply = null;
             }
         }

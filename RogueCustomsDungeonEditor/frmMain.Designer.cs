@@ -256,6 +256,8 @@ namespace RogueCustomsDungeonEditor
             this.label27 = (new global::System.Windows.Forms.Label());
             this.crsPlayer = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpNPC = (new global::System.Windows.Forms.TabPage());
+            this.maeNPCOnInteracted = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
+            this.saeNPCOnSpawn = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.ssNPC = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
             this.sisNPCStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
             this.saeNPCOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
@@ -1618,7 +1620,6 @@ namespace RogueCustomsDungeonEditor
             this.saeOnFloorStart.Dungeon = (null);
             this.saeOnFloorStart.EffectParamData = (null);
             this.saeOnFloorStart.Location = (new global::System.Drawing.Point(370, 307));
-            this.saeOnFloorStart.MayFinishTurnWhenUsed = (false);
             this.saeOnFloorStart.Name = ("saeOnFloorStart");
             this.saeOnFloorStart.PlaceholderActionName = ("FloorStart");
             this.saeOnFloorStart.RequiresActionName = (false);
@@ -1629,6 +1630,7 @@ namespace RogueCustomsDungeonEditor
             this.saeOnFloorStart.TabIndex = (40);
             this.saeOnFloorStart.TargetDescription = ("The player");
             this.saeOnFloorStart.ThisDescription = ("None (Don't use)");
+            this.saeOnFloorStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeOnFloorStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // cmbTilesets
@@ -2267,7 +2269,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.Dungeon = (null);
             this.saePlayerOnDeath.EffectParamData = (null);
             this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 686));
-            this.saePlayerOnDeath.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnDeath.Name = ("saePlayerOnDeath");
             this.saePlayerOnDeath.PlaceholderActionName = ("Death");
             this.saePlayerOnDeath.RequiresActionName = (false);
@@ -2278,6 +2279,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.TabIndex = (127);
             this.saePlayerOnDeath.TargetDescription = ("Whoever killed them (if any)");
             this.saePlayerOnDeath.ThisDescription = ("The player");
+            this.saePlayerOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saePlayerOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saePlayerOnAttacked
@@ -2292,7 +2294,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.Dungeon = (null);
             this.saePlayerOnAttacked.EffectParamData = (null);
             this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 648));
-            this.saePlayerOnAttacked.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnAttacked.Name = ("saePlayerOnAttacked");
             this.saePlayerOnAttacked.PlaceholderActionName = ("Interacted");
             this.saePlayerOnAttacked.RequiresActionName = (false);
@@ -2303,6 +2304,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.TabIndex = (126);
             this.saePlayerOnAttacked.TargetDescription = ("Whoever interacted with them");
             this.saePlayerOnAttacked.ThisDescription = ("The player");
+            this.saePlayerOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saePlayerOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saePlayerOnTurnStart
@@ -2317,7 +2319,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.Dungeon = (null);
             this.saePlayerOnTurnStart.EffectParamData = (null);
             this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 510));
-            this.saePlayerOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saePlayerOnTurnStart.Name = ("saePlayerOnTurnStart");
             this.saePlayerOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saePlayerOnTurnStart.RequiresActionName = (false);
@@ -2328,6 +2329,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.TabIndex = (125);
             this.saePlayerOnTurnStart.TargetDescription = ("The player");
             this.saePlayerOnTurnStart.ThisDescription = ("The player");
+            this.saePlayerOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saePlayerOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maePlayerOnAttack
@@ -2340,7 +2342,6 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.Dungeon = (null);
             this.maePlayerOnAttack.EffectParamData = (null);
             this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 548));
-            this.maePlayerOnAttack.MayFinishTurnWhenUsed = (true);
             this.maePlayerOnAttack.Name = ("maePlayerOnAttack");
             this.maePlayerOnAttack.PlaceholderActionName = (null);
             this.maePlayerOnAttack.RequiresActionName = (true);
@@ -2351,6 +2352,7 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.TabIndex = (124);
             this.maePlayerOnAttack.TargetDescription = ("Whoever they are targeting");
             this.maePlayerOnAttack.ThisDescription = ("The player");
+            this.maePlayerOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
             this.maePlayerOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // label58
@@ -2569,6 +2571,8 @@ namespace RogueCustomsDungeonEditor
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
+            this.tpNPC.Controls.Add(this.maeNPCOnInteracted);
+            this.tpNPC.Controls.Add(this.saeNPCOnSpawn);
             this.tpNPC.Controls.Add(this.ssNPC);
             this.tpNPC.Controls.Add(this.sisNPCStartingInventory);
             this.tpNPC.Controls.Add(this.saeNPCOnDeath);
@@ -2605,6 +2609,54 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.TabIndex = (5);
             this.tpNPC.Text = ("NPC");
             this.tpNPC.UseVisualStyleBackColor = (true);
+            // 
+            // maeNPCOnInteracted
+            // 
+            this.maeNPCOnInteracted.ActionDescription = ("Someone can interact with\r\nthem with the following:");
+            this.maeNPCOnInteracted.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnInteracted.Actions")));
+            this.maeNPCOnInteracted.ActionTypeText = ("Interact");
+            this.maeNPCOnInteracted.AlteredStatuses = (null);
+            this.maeNPCOnInteracted.ClassId = (null);
+            this.maeNPCOnInteracted.Dungeon = (null);
+            this.maeNPCOnInteracted.EffectParamData = (null);
+            this.maeNPCOnInteracted.Location = (new global::System.Drawing.Point(13, 726));
+            this.maeNPCOnInteracted.Name = ("maeNPCOnInteracted");
+            this.maeNPCOnInteracted.PlaceholderActionName = (null);
+            this.maeNPCOnInteracted.RequiresActionName = (true);
+            this.maeNPCOnInteracted.RequiresCondition = (true);
+            this.maeNPCOnInteracted.RequiresDescription = (true);
+            this.maeNPCOnInteracted.Size = (new global::System.Drawing.Size(368, 94));
+            this.maeNPCOnInteracted.SourceDescription = ("Whoever is targeting them");
+            this.maeNPCOnInteracted.TabIndex = (214);
+            this.maeNPCOnInteracted.TargetDescription = ("The NPC");
+            this.maeNPCOnInteracted.ThisDescription = ("The NPC");
+            this.maeNPCOnInteracted.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MayNotEndTurn);
+            this.maeNPCOnInteracted.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
+            // 
+            // saeNPCOnSpawn
+            // 
+            this.saeNPCOnSpawn.Action = (null);
+            this.saeNPCOnSpawn.ActionDescription = ("When spawning...                ");
+            this.saeNPCOnSpawn.ActionTypeText = ("Turn Start");
+            this.saeNPCOnSpawn.AlteredStatuses = (null);
+            this.saeNPCOnSpawn.AutoSize = (true);
+            this.saeNPCOnSpawn.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeNPCOnSpawn.ClassId = (null);
+            this.saeNPCOnSpawn.Dungeon = (null);
+            this.saeNPCOnSpawn.EffectParamData = (null);
+            this.saeNPCOnSpawn.Location = (new global::System.Drawing.Point(13, 550));
+            this.saeNPCOnSpawn.Name = ("saeNPCOnSpawn");
+            this.saeNPCOnSpawn.PlaceholderActionName = ("TurnStart");
+            this.saeNPCOnSpawn.RequiresActionName = (false);
+            this.saeNPCOnSpawn.RequiresCondition = (true);
+            this.saeNPCOnSpawn.RequiresDescription = (false);
+            this.saeNPCOnSpawn.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnSpawn.SourceDescription = ("The NPC (won't become visible)");
+            this.saeNPCOnSpawn.TabIndex = (213);
+            this.saeNPCOnSpawn.TargetDescription = ("The NPC (won't become visible)");
+            this.saeNPCOnSpawn.ThisDescription = ("The NPC (won't become visible)");
+            this.saeNPCOnSpawn.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
+            this.saeNPCOnSpawn.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // ssNPC
             // 
@@ -2657,8 +2709,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnDeath.ClassId = (null);
             this.saeNPCOnDeath.Dungeon = (null);
             this.saeNPCOnDeath.EffectParamData = (null);
-            this.saeNPCOnDeath.Location = (new global::System.Drawing.Point(13, 721));
-            this.saeNPCOnDeath.MayFinishTurnWhenUsed = (false);
+            this.saeNPCOnDeath.Location = (new global::System.Drawing.Point(13, 866));
             this.saeNPCOnDeath.Name = ("saeNPCOnDeath");
             this.saeNPCOnDeath.PlaceholderActionName = ("Death");
             this.saeNPCOnDeath.RequiresActionName = (false);
@@ -2669,6 +2720,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnDeath.TabIndex = (211);
             this.saeNPCOnDeath.TargetDescription = ("Whoever killed them (if any)");
             this.saeNPCOnDeath.ThisDescription = ("The NPC");
+            this.saeNPCOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeNPCOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeNPCOnAttacked
@@ -2682,8 +2734,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.ClassId = (null);
             this.saeNPCOnAttacked.Dungeon = (null);
             this.saeNPCOnAttacked.EffectParamData = (null);
-            this.saeNPCOnAttacked.Location = (new global::System.Drawing.Point(13, 681));
-            this.saeNPCOnAttacked.MayFinishTurnWhenUsed = (false);
+            this.saeNPCOnAttacked.Location = (new global::System.Drawing.Point(13, 826));
             this.saeNPCOnAttacked.Name = ("saeNPCOnAttacked");
             this.saeNPCOnAttacked.PlaceholderActionName = ("Interacted");
             this.saeNPCOnAttacked.RequiresActionName = (false);
@@ -2694,6 +2745,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.TabIndex = (210);
             this.saeNPCOnAttacked.TargetDescription = ("Whoever interacted with them");
             this.saeNPCOnAttacked.ThisDescription = ("The NPC");
+            this.saeNPCOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeNPCOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeNPCOnTurnStart
@@ -2707,8 +2759,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnTurnStart.ClassId = (null);
             this.saeNPCOnTurnStart.Dungeon = (null);
             this.saeNPCOnTurnStart.EffectParamData = (null);
-            this.saeNPCOnTurnStart.Location = (new global::System.Drawing.Point(13, 543));
-            this.saeNPCOnTurnStart.MayFinishTurnWhenUsed = (false);
+            this.saeNPCOnTurnStart.Location = (new global::System.Drawing.Point(13, 588));
             this.saeNPCOnTurnStart.Name = ("saeNPCOnTurnStart");
             this.saeNPCOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saeNPCOnTurnStart.RequiresActionName = (false);
@@ -2719,6 +2770,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnTurnStart.TabIndex = (209);
             this.saeNPCOnTurnStart.TargetDescription = ("The NPC");
             this.saeNPCOnTurnStart.ThisDescription = ("The NPC");
+            this.saeNPCOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeNPCOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maeNPCOnAttack
@@ -2730,8 +2782,7 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.ClassId = (null);
             this.maeNPCOnAttack.Dungeon = (null);
             this.maeNPCOnAttack.EffectParamData = (null);
-            this.maeNPCOnAttack.Location = (new global::System.Drawing.Point(13, 581));
-            this.maeNPCOnAttack.MayFinishTurnWhenUsed = (true);
+            this.maeNPCOnAttack.Location = (new global::System.Drawing.Point(13, 626));
             this.maeNPCOnAttack.Name = ("maeNPCOnAttack");
             this.maeNPCOnAttack.PlaceholderActionName = (null);
             this.maeNPCOnAttack.RequiresActionName = (true);
@@ -2742,11 +2793,12 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.TabIndex = (208);
             this.maeNPCOnAttack.TargetDescription = ("Whoever they are targeting");
             this.maeNPCOnAttack.ThisDescription = ("The NPC");
+            this.maeNPCOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
             this.maeNPCOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // nudNPCOddsToTargetSelf
             // 
-            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 758));
+            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 903));
             this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
             this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
             this.nudNPCOddsToTargetSelf.TabIndex = (195);
@@ -2755,7 +2807,7 @@ namespace RogueCustomsDungeonEditor
             // label104
             // 
             this.label104.AutoSize = (true);
-            this.label104.Location = (new global::System.Drawing.Point(13, 760));
+            this.label104.Location = (new global::System.Drawing.Point(13, 905));
             this.label104.Name = ("label104");
             this.label104.Size = (new global::System.Drawing.Size(334, 15));
             this.label104.TabIndex = (194);
@@ -3032,7 +3084,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.Dungeon = (null);
             this.saeItemOnTurnStart.EffectParamData = (null);
             this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 310));
-            this.saeItemOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saeItemOnTurnStart.Name = ("saeItemOnTurnStart");
             this.saeItemOnTurnStart.PlaceholderActionName = ("Death");
             this.saeItemOnTurnStart.RequiresActionName = (false);
@@ -3043,6 +3094,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.TabIndex = (225);
             this.saeItemOnTurnStart.TargetDescription = ("Whoever is equipping This");
             this.saeItemOnTurnStart.ThisDescription = ("The item");
+            this.saeItemOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeItemOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeItemOnAttacked
@@ -3057,7 +3109,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.Dungeon = (null);
             this.saeItemOnAttacked.EffectParamData = (null);
             this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 272));
-            this.saeItemOnAttacked.MayFinishTurnWhenUsed = (false);
             this.saeItemOnAttacked.Name = ("saeItemOnAttacked");
             this.saeItemOnAttacked.PlaceholderActionName = ("Interacted");
             this.saeItemOnAttacked.RequiresActionName = (false);
@@ -3068,6 +3119,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.TabIndex = (224);
             this.saeItemOnAttacked.TargetDescription = ("The owner's interactor");
             this.saeItemOnAttacked.ThisDescription = ("The item");
+            this.saeItemOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeItemOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // maeItemOnAttack
@@ -3080,7 +3132,6 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.Dungeon = (null);
             this.maeItemOnAttack.EffectParamData = (null);
             this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 172));
-            this.maeItemOnAttack.MayFinishTurnWhenUsed = (true);
             this.maeItemOnAttack.Name = ("maeItemOnAttack");
             this.maeItemOnAttack.PlaceholderActionName = (null);
             this.maeItemOnAttack.RequiresActionName = (true);
@@ -3091,6 +3142,7 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.TabIndex = (223);
             this.maeItemOnAttack.TargetDescription = ("Whoever is being targeted");
             this.maeItemOnAttack.ThisDescription = ("The item");
+            this.maeItemOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
             this.maeItemOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
             // saeItemOnUse
@@ -3105,7 +3157,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.Dungeon = (null);
             this.saeItemOnUse.EffectParamData = (null);
             this.saeItemOnUse.Location = (new global::System.Drawing.Point(13, 316));
-            this.saeItemOnUse.MayFinishTurnWhenUsed = (true);
             this.saeItemOnUse.Name = ("saeItemOnUse");
             this.saeItemOnUse.PlaceholderActionName = ("ItemUse");
             this.saeItemOnUse.RequiresActionName = (false);
@@ -3116,6 +3167,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.TabIndex = (222);
             this.saeItemOnUse.TargetDescription = ("Whoever is using it");
             this.saeItemOnUse.ThisDescription = ("The item");
+            this.saeItemOnUse.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
             this.saeItemOnUse.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeItemOnStepped
@@ -3130,7 +3182,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnStepped.Dungeon = (null);
             this.saeItemOnStepped.EffectParamData = (null);
             this.saeItemOnStepped.Location = (new global::System.Drawing.Point(15, 278));
-            this.saeItemOnStepped.MayFinishTurnWhenUsed = (false);
             this.saeItemOnStepped.Name = ("saeItemOnStepped");
             this.saeItemOnStepped.PlaceholderActionName = ("Stepped");
             this.saeItemOnStepped.RequiresActionName = (false);
@@ -3141,6 +3192,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnStepped.TabIndex = (221);
             this.saeItemOnStepped.TargetDescription = ("Whoever stepped on it");
             this.saeItemOnStepped.ThisDescription = ("The item");
+            this.saeItemOnStepped.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeItemOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtItemPower
@@ -3332,7 +3384,6 @@ namespace RogueCustomsDungeonEditor
             this.saeTrapOnStepped.Dungeon = (null);
             this.saeTrapOnStepped.EffectParamData = (null);
             this.saeTrapOnStepped.Location = (new global::System.Drawing.Point(13, 272));
-            this.saeTrapOnStepped.MayFinishTurnWhenUsed = (false);
             this.saeTrapOnStepped.Name = ("saeTrapOnStepped");
             this.saeTrapOnStepped.PlaceholderActionName = ("Stepped");
             this.saeTrapOnStepped.RequiresActionName = (false);
@@ -3343,6 +3394,7 @@ namespace RogueCustomsDungeonEditor
             this.saeTrapOnStepped.TabIndex = (240);
             this.saeTrapOnStepped.TargetDescription = ("Whoever steps on it");
             this.saeTrapOnStepped.ThisDescription = ("The trap");
+            this.saeTrapOnStepped.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeTrapOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // txtTrapPower
@@ -3506,7 +3558,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.Dungeon = (null);
             this.saeAlteredStatusOnTurnStart.EffectParamData = (null);
             this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(390, 153));
-            this.saeAlteredStatusOnTurnStart.MayFinishTurnWhenUsed = (false);
             this.saeAlteredStatusOnTurnStart.Name = ("saeAlteredStatusOnTurnStart");
             this.saeAlteredStatusOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saeAlteredStatusOnTurnStart.RequiresActionName = (false);
@@ -3517,6 +3568,7 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.TabIndex = (262);
             this.saeAlteredStatusOnTurnStart.TargetDescription = ("Whoever it's inflicting");
             this.saeAlteredStatusOnTurnStart.ThisDescription = ("The Altered Status");
+            this.saeAlteredStatusOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeAlteredStatusOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // saeAlteredStatusOnApply
@@ -3531,7 +3583,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.Dungeon = (null);
             this.saeAlteredStatusOnApply.EffectParamData = (null);
             this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(390, 115));
-            this.saeAlteredStatusOnApply.MayFinishTurnWhenUsed = (false);
             this.saeAlteredStatusOnApply.Name = ("saeAlteredStatusOnApply");
             this.saeAlteredStatusOnApply.PlaceholderActionName = ("StatusApply");
             this.saeAlteredStatusOnApply.RequiresActionName = (false);
@@ -3542,6 +3593,7 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.TabIndex = (261);
             this.saeAlteredStatusOnApply.TargetDescription = ("Whoever it's targeting");
             this.saeAlteredStatusOnApply.ThisDescription = ("The Altered Status");
+            this.saeAlteredStatusOnApply.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
             this.saeAlteredStatusOnApply.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
             // 
             // chkAlteredStatusCleansedOnCleanseActions
@@ -4026,5 +4078,7 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector sisNPCStartingInventory;
         private global::RogueCustomsDungeonEditor.Controls.StatsSheet ssNPC;
         private global::RogueCustomsDungeonEditor.Controls.StatsSheet ssPlayer;
+        private global::RogueCustomsDungeonEditor.Controls.MultiActionEditor maeNPCOnInteracted;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeNPCOnSpawn;
     }
 }

@@ -190,7 +190,7 @@ namespace RogueCustomsGameEngine.Management
         public void PlayerAttackTargetWith(int dungeonId, AttackInput input)
         {
             var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerAttackTargetWith(input.Name, input.X, input.Y);
+            dungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y);
         }
         public void PlayerTakeStairs(int dungeonId)
         {

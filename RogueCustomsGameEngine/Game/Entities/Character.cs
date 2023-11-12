@@ -164,6 +164,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (i?.OwnOnAttack != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
                         actionList.AddRange(i.OwnOnAttack);
                 });
+
+                for (int i = 0; i < actionList.Count; i++)
+                {
+                    actionList[i].ActionId = i;
+                }
+
                 return actionList;
             }
         }
@@ -366,7 +372,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     .ToList();
             }
             RefreshCooldownsAndUpdateTurnLength();
-            OnTurnStart.Where(otsa => otsa.MayBeUsed).ForEach(otsa => otsa?.Do(otsa.User, this));
+            OnTurnStart.Where(otsa => otsa.ChecksCondition(this, this)).ForEach(otsa => otsa?.Do(otsa.User, this, true));
             AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
@@ -537,7 +543,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (UsesMP)
                 MP = Math.Max(0, MP - action.MPCost);
-            var successfulEffects = action?.Do(this, target);
+            var successfulEffects = action?.Do(this, target, true);
             if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
             if(action?.FinishesTurnWhenUsed == true)
@@ -545,9 +551,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             RemainingMovement = 0;
         }
 
+        public void InteractWithCharacter(Character target, ActionWithEffects action)
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (UsesMP)
+                MP = Math.Max(0, MP - action.MPCost);
+            action?.Do(this, target, true);
+            if (action?.FinishesTurnWhenUsed == true)
+                TookAction = true;
+            RemainingMovement = 0;
+        }
+
         public virtual void AttackedBy(Character source)
         {
-            OnAttacked.ForEach(oaa => oaa?.Do(this, source));
+            OnAttacked.Where(oaa => oaa.ChecksCondition(this, source)).ForEach(oaa => oaa?.Do(this, source, false));
         }
 
         public TargetType CalculateTargetTypeFor(Character target)

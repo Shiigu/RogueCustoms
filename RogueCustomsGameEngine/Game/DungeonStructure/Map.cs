@@ -501,10 +501,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (entity is Character c)
             {
-                if (entity is PlayerCharacter p)
-                    Dungeon.PlayerCharacter = p;
-                else if (entity is NonPlayableCharacter npc)
-                    AICharacters.Add(npc);
                 var weaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingWeaponId))
                     ?? throw new InvalidDataException("Class does not have a valid starting weapon!");
                 c.StartingWeapon = new Item(weaponEntityClass, this)
@@ -532,6 +528,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     };
                     c.Inventory.Add(inventoryItem);
                     CurrentEntityId++;
+                }
+                if (entity is PlayerCharacter p)
+                    Dungeon.PlayerCharacter = p;
+                else if (entity is NonPlayableCharacter npc)
+                {
+                    AICharacters.Add(npc);
+                    if(npc.OnSpawn?.ChecksCondition(npc, npc) == true)
+                        npc.OnSpawn?.Do(npc, npc, false);
                 }
             }
         }
@@ -577,6 +581,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (TurnCount == 0)
             {
+                CreateFlag("TurnCount", TurnCount, false);
                 int generationAttempts, generationsToTry;
                 #region Generate Monsters
                 if(FloorConfigurationToUse.PossibleMonsters.Any())
@@ -661,7 +666,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #region Perform On Floor Start Actions
 
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
-                FloorConfigurationToUse.OnFloorStart?.Do(Player, Player);
+                FloorConfigurationToUse.OnFloorStart?.Do(Player, Player, false);
 
                 #endregion
             }
@@ -678,10 +683,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #endregion
             }
             TurnCount++;
-            if(Flags.Exists(f => f.Key.Equals("TurnCount")))
-                SetFlagValue("TurnCount", TurnCount);
-            else
-                CreateFlag("TurnCount", TurnCount, false);
+            SetFlagValue("TurnCount", TurnCount);
             _displayedTurnMessage = false;
             Player.RemainingMovement = Player.Movement;
             LatestPlayerRemainingMovement = Player.RemainingMovement;
@@ -925,15 +927,42 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return inventory;
         }
 
-        public void PlayerAttackTargetWith(string name, int x, int y)
+        public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var action = Player.OnAttack.Find(oaa => oaa.Name.Equals(name)) ?? throw new ArgumentException("Player attempted use a non-existent action.");
-            var characterInTile = GetTileFromCoordinates(x, y).Character;
+            var characterInTile = GetTileFromCoordinates(x, y).Character as NonPlayableCharacter
+                ?? throw new ArgumentException("Player attempted use an action without a valid target.");
 
-            if (characterInTile != null)
-                Player.AttackCharacter(characterInTile, action);
+            var selectionIdParts = selectionId.Split('_');
+
+            if (selectionIdParts.Length == 2)
+            {
+                var entity = selectionIdParts[0]; // "Player" or "Target"
+                var actionIdAsString = selectionIdParts[1]; // ActionId
+
+                if(!int.TryParse(actionIdAsString, out int actionId))
+                    throw new ArgumentException("Action SelectionId is not a valid number.");
+
+                if (entity.Equals("Player"))
+                {
+                    var selectedAction = Player.OnAttack.Find(oaa => oaa.ActionId == actionId)
+                        ?? throw new ArgumentException("Player attempted use a non-existent Attack action.");
+                    Player.AttackCharacter(characterInTile, selectedAction);
+                }
+                else if (entity.Equals("Target"))
+                {
+                    var selectedAction = characterInTile.OnInteracted.Find(oia => oia.ActionId == actionId)
+                        ?? throw new ArgumentException("Player attempted use a non-existent Interact action from the Target.");
+                    Player.InteractWithCharacter(characterInTile, selectedAction);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid entity in SelectionId.");
+                }
+            }
             else
-                AddMessageBox(Dungeon.Name, Locale["NoTarget"], "Ooops!", new GameColor(Color.LightGoldenrodYellow));
+            {
+                throw new ArgumentException("Invalid SelectionId format.");
+            }
 
             ProcessTurn();
         }
@@ -941,15 +970,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public ActionListDto GetPlayerAttackActions(int x, int y)
         {
             var characterInTile = GetTileFromCoordinates(x, y).Character;
-            var onAttackActionDtos = new List<ActionItemDto>();
+            var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : "<?????>");
 
-            Player.OnAttack.ForEach(oaa => onAttackActionDtos.Add(new ActionItemDto(oaa, characterInTile, this)));
+            Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, this, true));
 
-            return new ActionListDto
-            {
-                TargetName = (characterInTile != null) ? characterInTile.Name : "<?????>",
-                Actions = onAttackActionDtos
-            };
+            if(characterInTile is NonPlayableCharacter npc)
+                npc.OnInteracted?.ForEach(oia => actionList.AddAction(oia, Player, characterInTile, this, false));
+
+            if(actionList.Actions.DistinctBy(a => a.SelectionId).Count() != actionList.Actions.Count)
+                throw new ArgumentException("Duplicate Actions discovered in selection.");
+
+            return actionList;
         }
 
         public EntityDetailDto GetDetailsOfEntity(int x, int y)

@@ -2892,8 +2892,10 @@ namespace RogueCustomsDungeonEditor
             sisNPCStartingInventory.Inventory = npc.StartingInventory;
             sisNPCStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
             SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
+            SetSingleActionEditorParams(saeNPCOnSpawn, npc.Id, npc.OnSpawn);
             SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
+            SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
         }
@@ -2947,9 +2949,11 @@ namespace RogueCustomsDungeonEditor
             npc.InventorySize = (int)nudNPCInventorySize.Value;
             npc.StartingInventory = sisNPCStartingInventory.Inventory;
 
+            npc.OnSpawn = saeNPCOnSpawn.Action;
             npc.OnTurnStart = saeNPCOnTurnStart.Action;
             npc.OnAttack = maeNPCOnAttack.Actions;
             npc.OnAttacked = saeNPCOnAttacked.Action;
+            npc.OnInteracted = maeNPCOnInteracted.Actions;
             npc.OnDeath = saeNPCOnDeath.Action;
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 

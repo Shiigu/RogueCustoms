@@ -13,14 +13,34 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
-    public class DungeonNPCValidator
+    public static class DungeonNPCValidator
     {
         public static DungeonValidationMessages Validate(NPCInfo npcJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
-            if(npcJson.KnowsAllCharacterPositions)
+
+            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+
+            if (npcJson.OnSpawn != null)
+            {
+                messages.AddRange(ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
+            }
+
+            if (npcAsInstance.OnInteracted.Any())
+            {
+                foreach (var onInteractedAction in npcAsInstance.OnInteracted)
+                {
+                    messages.AddRange(ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
+                }
+            }
+            else
+            {
+                messages.AddWarning("Character does not have OnAttackActions. Make sure they have items, otherwise they cannot attack.");
+            }
+
+            if (npcJson.KnowsAllCharacterPositions)
             {
                 messages.AddWarning("KnowsAllCharacterPositions is set to true but Sight Range covers the entire map. KnowsAllCharacterPositions will have no effect.");
             }

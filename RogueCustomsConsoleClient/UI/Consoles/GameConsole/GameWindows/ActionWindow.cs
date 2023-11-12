@@ -16,6 +16,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Collections.Immutable;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 {
@@ -27,7 +28,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
         private Button DoButton, CancelButton;
         private string TitleCaption { get; set; }
-        private List<ActionItemDto> ActionItems;
+        private ImmutableList<ActionItemDto> ActionItems;
         private List<ActionItemDto> CurrentlyShownActionItems;
         private int CurrentlyShownFirstIndex;
         private int ActionSelectedIndex;
@@ -76,7 +77,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 var item = window.ActionItems.ElementAtOrDefault(window.ActionSelectedIndex);
                 var attackInput = new AttackInput
                 {
-                    Name = item.Name,
+                    SelectionId = item.SelectionId,
                     X = window.ParentConsole.CursorLocation.X,
                     Y = window.ParentConsole.CursorLocation.Y
                 };
