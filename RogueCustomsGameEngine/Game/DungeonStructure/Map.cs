@@ -526,6 +526,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         Id = CurrentEntityId,
                         Owner = c
                     };
+                    Items.Add(inventoryItem);
                     c.Inventory.Add(inventoryItem);
                     CurrentEntityId++;
                 }
