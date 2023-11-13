@@ -281,6 +281,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool ChecksCondition(Character character, Character target)
         {
+            if (!MayBeUsed) return false;
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
                 var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
