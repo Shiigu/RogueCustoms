@@ -13,8 +13,8 @@ using System.IO;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public abstract class Character : Entity, IHasActions, IKillable
     {
@@ -49,7 +49,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseMaxHP;
         public readonly decimal MaxHPIncreasePerLevel;
         public List<StatModification> MaxHPModifications { get; set; }
-        public int TotalMaxHPIncrements => MaxHPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
+        public int TotalMaxHPIncrements => MaxHPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
         public int MaxHP => Math.Min(BaseMaxHP + (int)(MaxHPIncreasePerLevel * (Level - 1)) + TotalMaxHPIncrements, Constants.RESOURCE_STAT_CAP);
         public int MP { get; set; }
 
@@ -62,13 +62,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseAttack;
         public readonly decimal AttackIncreasePerLevel;
         public List<StatModification> AttackModifications { get; set; }
-        public int TotalAttackIncrements => AttackModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
+        public int TotalAttackIncrements => AttackModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
         public int Attack => Math.Min(BaseAttack + (int)(AttackIncreasePerLevel * (Level - 1)) + TotalAttackIncrements, Constants.NORMAL_STAT_CAP);
         public string Damage
         {
             get
             {
-                if(Attack >= 0)
+                if (Attack >= 0)
                     return $"{Weapon.Power}+{Attack}";
                 return $"{Weapon.Power}-{Math.Abs(Attack)}";
             }
@@ -77,7 +77,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseDefense;
         public readonly decimal DefenseIncreasePerLevel;
         public List<StatModification> DefenseModifications { get; set; }
-        public int TotalDefenseIncrements => DefenseModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
+        public int TotalDefenseIncrements => DefenseModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
         public int Defense => Math.Min(BaseDefense + (int)(DefenseIncreasePerLevel * (Level - 1)) + TotalDefenseIncrements, Constants.NORMAL_STAT_CAP);
         public string Mitigation
         {
@@ -93,7 +93,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal MovementIncreasePerLevel;
 
         public List<StatModification> MovementModifications { get; set; }
-        public int TotalMovementIncrements => MovementModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int) a.Amount);
+        public int TotalMovementIncrements => MovementModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
         public int Movement => Math.Min(BaseMovement + (int)(MovementIncreasePerLevel * (Level - 1)) + TotalMovementIncrements, Constants.MOVEMENT_STAT_CAP);
 
         public int RemainingMovement { get; set; }
@@ -223,6 +223,28 @@ namespace RogueCustomsGameEngine.Game.Entities
             set { _fovTiles = value; }
         }
 
+        public List<(string StatName, List<StatModification> Modifications)> StatModifications
+        {
+            get
+            {
+                var modifications = new List<(string StatName, List<StatModification> Modifications)>();
+
+                modifications.Add((Map.Locale["CharacterMaxHPStat"], MaxHPModifications));
+                if(UsesMP)
+                    modifications.Add((Map.Locale["CharacterMaxMPStat"], MaxMPModifications));
+                modifications.Add((Map.Locale["CharacterAttackStat"], AttackModifications));
+                modifications.Add((Map.Locale["CharacterDefenseStat"], DefenseModifications));
+                modifications.Add((Map.Locale["CharacterMovementStat"], MovementModifications));
+                modifications.Add((Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications));
+                modifications.Add((Map.Locale["CharacterAccuracyStat"], AccuracyModifications));
+                modifications.Add((Map.Locale["CharacterEvasionStat"], EvasionModifications));
+                if (UsesMP) 
+                    modifications.Add((Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications));
+
+                return modifications;
+            }
+        }
+
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
             Faction = entityClass.Faction;
@@ -349,18 +371,10 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (this == Map.Player || Map.Player.CanSee(this))
             {
-                modificationsThatMightBeNeutralized.AddRange(new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>
+                foreach (var (statName, modifications) in StatModifications)
                 {
-                    (MaxHPModifications, Map.Locale["CharacterMaxHPStat"], MaxHPModifications?.Any() == true && MaxHPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (MaxMPModifications, Map.Locale["CharacterMaxMPStat"], MaxMPModifications?.Any() == true && MaxMPModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (AttackModifications, Map.Locale["CharacterAttackStat"], AttackModifications?.Any() == true && AttackModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (DefenseModifications, Map.Locale["CharacterDefenseStat"], DefenseModifications?.Any() == true && DefenseModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (MovementModifications, Map.Locale["CharacterMovementStat"], MovementModifications?.Any() == true && MovementModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (HPRegenerationModifications, Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications?.Any() == true && HPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (MPRegenerationModifications, Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications?.Any() == true && MPRegenerationModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (AccuracyModifications, Map.Locale["CharacterAccuracyStat"], AccuracyModifications?.Any() == true && AccuracyModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false),
-                    (EvasionModifications, Map.Locale["CharacterEvasionStat"], EvasionModifications?.Any() == true && EvasionModifications?.Exists(mhm => mhm.RemainingTurns > 1) == false)
-                });
+                    modificationsThatMightBeNeutralized.Add((modifications, statName, modifications.Any() && modifications.Exists(mhm => mhm.RemainingTurns > 1)));
+                }
 
                 alteredStatusesThatMightBeNeutralized = AlteredStatuses
                     .Where(als => als.RemainingTurns > 0)
