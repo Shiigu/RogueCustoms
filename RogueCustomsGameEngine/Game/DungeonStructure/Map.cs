@@ -83,6 +83,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool PlayerGotHealed { get; set; } = false;
         public bool PlayerGotMPBurned { get; set; } = false;
         public bool PlayerGotMPReplenished { get; set; } = false;
+        public bool PlayerGotStatusChange { get; set; } = false;
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
@@ -697,10 +698,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TurnCount++;
             SetFlagValue("TurnCount", TurnCount);
             _displayedTurnMessage = false;
-            Player.RemainingMovement = Player.Movement;
-            LatestPlayerRemainingMovement = Player.RemainingMovement;
             Player.TookAction = false;
             Player.PerformOnTurnStartActions();
+            Player.RemainingMovement = Player.Movement;
+            LatestPlayerRemainingMovement = Player.RemainingMovement;
             AICharacters.Where(e => e != null).ForEach(e =>
             {
                 e.RemainingMovement = e.Movement;
