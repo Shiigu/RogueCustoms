@@ -9,11 +9,15 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Immutable;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+using System.Collections;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class Dungeon
     {
         public int Id { get; set; }
@@ -21,6 +25,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public PlayerCharacter? PlayerCharacter { get; set; }
         public EntityClass? PlayerClass { get; set; }
         public string? PlayerName { get; set; }
+        public string Version { get; set; }
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 
@@ -41,12 +46,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<FloorType> FloorTypes { get; set; }
         public List<EntityClass> Classes { get; set; }
 
-        public ImmutableList<Faction> Factions { get; private set; }
+        public List<Faction> Factions { get; private set; }
         #endregion
 
         public Dungeon(int id, DungeonInfo dungeonInfo, string localeLanguage)
         {
             Id = id;
+            Version = dungeonInfo.Version;
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
             Classes = new List<EntityClass>();
@@ -71,8 +77,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");
                 ft.FillPossibleClassLists(Classes);
             });
-            Factions = ImmutableList.Create<Faction>();
-            dungeonInfo.FactionInfos.ForEach(fi => Factions = Factions.Add(new Faction(fi, LocaleToUse)));
+            Factions = new List<Faction>();
+            dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
             Messages = new List<MessageDto>();
             MessageBoxes = new List<MessageBoxDto>();

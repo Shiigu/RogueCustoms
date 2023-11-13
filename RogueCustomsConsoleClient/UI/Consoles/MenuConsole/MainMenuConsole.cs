@@ -10,10 +10,9 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using SadConsole.Input;
-using static SFML.Graphics.Font;
-using MathNet.Numerics;
 using RogueCustomsConsoleClient.Utils;
 using RogueCustomsConsoleClient.Helpers;
+using RogueCustomsConsoleClient.UI.Windows;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -36,7 +35,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             base.Build();
             var gameNameText = LocalizationManager.GetString("GameTitle").ToUpperInvariant().ToAscii();
-            var selectFileText = LocalizationManager.GetString("SelectFileText").ToAscii();
+            var selectDungeonText = LocalizationManager.GetString("SelectDungeonText").ToAscii();
+            var loadDungeonText = LocalizationManager.GetString("LoadDungeonText").ToAscii();
             var optionsText = LocalizationManager.GetString("OptionsText").ToAscii();
             var exitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
@@ -65,20 +65,30 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
             gameName.IsFocused = false;
 
-            var selectFileButton = new Button(selectFileText.Length + 2)
+            var selectFileButton = new Button(selectDungeonText.Length + 2)
             {
-                Text = selectFileText
+                Text = selectDungeonText
             };
-            selectFileButton.Position = new Point((Width / 4) - (selectFileButton.Width / 2), 20);
+            selectFileButton.Position = new Point((Width / 4) - (selectFileButton.Width / 2), 18);
             selectFileButton.MouseMove += (_, _) => ChangeFocusTo(0);
             selectFileButton.Click += SelectFileButton_Click;
             selectFileButton.IsFocused = true;
+
+            var loadDungeonButton = new Button(loadDungeonText.Length + 2)
+            {
+                Text = loadDungeonText
+            };
+            loadDungeonButton.Position = new Point((Width / 4) - (loadDungeonButton.Width / 2), 22);
+            loadDungeonButton.IsEnabled = BackendHandler.Instance.HasSaveGame;
+            loadDungeonButton.MouseMove += (_, _) => ChangeFocusTo(0);
+            loadDungeonButton.Click += LoadDungeonButton_Click;
+            loadDungeonButton.IsFocused = true;
 
             var optionsButton = new Button(optionsText.Length + 2)
             {
                 Text = optionsText
             };
-            optionsButton.Position = new Point((Width / 4) - (optionsButton.Width / 2), 25);
+            optionsButton.Position = new Point((Width / 4) - (optionsButton.Width / 2), 26);
             optionsButton.MouseEnter += (_, _) => ChangeFocusTo(1);
             optionsButton.Click += OptionsButton_Click;
 
@@ -92,10 +102,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
             Children.Add(logoConsole);
             Controls.Add(selectFileButton);
+            Controls.Add(loadDungeonButton);
             Controls.Add(optionsButton);
             Controls.Add(ExitButton);
 
-            Buttons = new List<Button> { selectFileButton, optionsButton, ExitButton };
+            Buttons = new List<Button> { selectFileButton, loadDungeonButton, optionsButton, ExitButton };
 
             CurrentFocusedIndex = 0;
             selectFileButton.IsFocused = true;
@@ -111,6 +122,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
         public override bool ProcessKeyboard(Keyboard keyboard)
         {
+            if (ParentContainer.ActiveWindow?.IsVisible == true) return true;
             bool handled = false;
             var changeFocus = false;
             int index = CurrentFocusedIndex;
@@ -119,7 +131,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
                 if (index == 0)
-                    index = 2;
+                    index = Buttons.Count - 1;
                 else
                     index--;
                 changeFocus = true;
@@ -129,7 +141,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
-                if (index == 2)
+                if (index == Buttons.Count - 1)
                     index = 0;
                 else
                     index++;
@@ -177,6 +189,20 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Main, LocalizationManager.GetString("ErrorMessageHeader"), LocalizationManager.GetString("ErrorText"));
             }
         }
+
+        private void LoadDungeonButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                BackendHandler.Instance.LoadSavedDungeon();
+                ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Game);
+            }
+            catch (Exception)
+            {
+                ParentContainer.ActiveWindow = MessageBox.Show(new ColoredString(LocalizationManager.GetString("FailedDungeonLoadText")), LocalizationManager.GetString("OKButtonText"), LocalizationManager.GetString("FailedDungeonHeader"), Color.Red);
+            }
+        }
+
         private void OptionsButton_Click(object sender, EventArgs args)
         {
             ParentContainer.MoveToConsole(MenuConsoles.Options);

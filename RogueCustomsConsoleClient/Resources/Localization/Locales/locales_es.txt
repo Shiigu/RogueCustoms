@@ -12,9 +12,12 @@ ReturnToMainMenuText = IR AL MENU PRINCIPAL
 
 ; MainMenuConsole
 GameTitle = Rogue Customs
-SelectFileText = INICIAR MAZMORRA
+SelectDungeonText = INICIAR MAZMORRA
+LoadDungeonText = CARGAR MAZMORRA GUARDADA
 OptionsText = OPCIONES
 GameVersionText = Versión de Juego {GameVersion}
+FailedDungeonHeader = NO SE PUEDE REANUDAR LA MAZMORRA
+FailedDungeonLoadText = No se pudo cargar esta mazmorra.\n\nPor favor comprueba si la Mazmorra es una partida válida, y\nsi está guardada con la última versión.
 
 ; OptionsConsole
 OptionsHeaderText = ELEGIR OPCIONES
@@ -23,7 +26,7 @@ LocalRadioButtonText = LOCAL
 ServerRadioButtonText = EN SERVIDOR
 ServerAddressTextBoxHeaderText = DIRECCIÓN DE SERVIDOR
 LanguageListHeaderText = IDIOMA
-SaveButtonText = GUARDAR OPCIONES
+SaveSettingsButtonText = GUARDAR OPCIONES
 
 ; PickDungeonConsole
 PickDungeonHeaderText = ELEGIR MAZMORRA
@@ -71,6 +74,10 @@ DetailsButtonText = DETALLES
 
 ; ButtonsConsole
 ExitPromptText = ¿Quieres dejar de jugar y\nregresar al menú principal?
+ExitDungeonButtonText = SALIR
+SaveDungeonButtonText = GUARDAR JUEGO
+SuccessfulSavePromptText = Mazmorra guardada exitosamente.\n\n¿Quieres dejar de jugar\ny regresar al menú principal?
+FailedSaveText = No se pudo guardar la mazmorra.
 
 ; PlayerClassWindow
 PlayerClassWindowTitleText = Elija una Clase

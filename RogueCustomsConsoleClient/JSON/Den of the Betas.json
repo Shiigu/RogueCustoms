@@ -876,6 +876,10 @@
         {
           "Key": "ThiefSpawnText",
           "Value": "Some sneaky being has entered this floor."
+        },
+        {
+          "Key": "SandAttackName",
+          "Value": "Sand Attack"
         }
       ]
     },
@@ -1100,11 +1104,11 @@
         },
         {
           "Key": "CharacterEvasionStat",
-          "Value": "Evasion"
+          "Value": "Evasi\u00F3n"
         },
         {
           "Key": "CharacterAccuracyStat",
-          "Value": "Accuracy"
+          "Value": "Precisi\u00F3n"
         },
         {
           "Key": "CharacterDamageStat",
@@ -1745,6 +1749,10 @@
         {
           "Key": "ThiefSpawnText",
           "Value": "Alguien escurridizo ha ingresado a este piso."
+        },
+        {
+          "Key": "SandAttackName",
+          "Value": "Ataque Arena"
         }
       ]
     }
@@ -4049,7 +4057,7 @@
               "Params": [
                 {
                   "ParamName": "Id",
-                  "Value": "{this}"
+                  "Value": "SandAttackName"
                 },
                 {
                   "ParamName": "Target",

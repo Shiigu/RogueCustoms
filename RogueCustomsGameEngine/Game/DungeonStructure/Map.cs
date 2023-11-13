@@ -23,6 +23,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class Map
     {
         #region Fields
@@ -86,9 +87,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
 
-        public ImmutableList<AlteredStatus> PossibleStatuses { get; private set; }
+        public List<AlteredStatus> PossibleStatuses { get; private set; }
 
-        public readonly RngHandler Rng;
+        public RngHandler Rng { get; private set; }
         private (Point TopLeftCorner, Point BottomRightCorner)[,] RoomLimitsTable { get; set; }
 
         public Tile[,] Tiles { get; private set; }
@@ -119,14 +120,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ConsoleRepresentation.EmptyTile = TileSet.Empty;
             GeneratorAlgorithmToUse = FloorConfigurationToUse.PossibleGeneratorAlgorithms[Rng.NextInclusive(FloorConfigurationToUse.PossibleGeneratorAlgorithms.Count - 1)];
 
-            PossibleStatuses = ImmutableList.Create<AlteredStatus>();
-            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses = PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            PossibleStatuses = new List<AlteredStatus>();
+            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            SetActionParams();
+        }
 
+        public void SetActionParams()
+        {
             AttackActions.SetActionParams(Rng, this);
             CharacterActions.SetActionParams(Rng, this);
             ItemActions.SetActionParams(Rng, this);
             GenericActions.SetActionParams(Rng, this);
             ActionHelpers.SetActionParams(Rng, this);
+        }
+
+        public void LoadRngState(int seed)
+        {
+            Rng = new RngHandler(seed);
         }
 
         public void Generate()
@@ -582,7 +592,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (TurnCount == 0)
             {
-                CreateFlag("TurnCount", TurnCount, false);
+                if(!HasFlag("TurnCount"))
+                    CreateFlag("TurnCount", TurnCount, false);
                 int generationAttempts, generationsToTry;
                 #region Generate Monsters
                 if(FloorConfigurationToUse.PossibleMonsters.Any())
@@ -930,7 +941,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).Character as NonPlayableCharacter
+            var characterInTile = GetTileFromCoordinates(x, y).Character
                 ?? throw new ArgumentException("Player attempted use an action without a valid target.");
 
             var selectionIdParts = selectionId.Split('_');
@@ -951,7 +962,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 else if (entity.Equals("Target"))
                 {
-                    var selectedAction = characterInTile.OnInteracted.Find(oia => oia.ActionId == actionId)
+                    if(characterInTile is not NonPlayableCharacter npc)
+                        throw new ArgumentException("Player attempted use an action without a valid target.");
+                    var selectedAction = npc.OnInteracted.Find(oia => oia.ActionId == actionId)
                         ?? throw new ArgumentException("Player attempted use a non-existent Interact action from the Target.");
                     Player.InteractWithCharacter(characterInTile, selectedAction);
                 }
@@ -1681,9 +1694,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private static bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             if (!tilesToConvert.Any()) return false;
-
-            var connectorARoom = connectorA.Room;
-            var connectorBRoom = connectorB.Room;
 
             foreach (var tile in tilesToConvert)
             {

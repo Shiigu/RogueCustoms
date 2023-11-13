@@ -1,8 +1,10 @@
 ﻿using RogueCustomsGameEngine.Utils.JsonImports;
+using System;
 using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    [Serializable]
     public class Faction
     {
         public readonly string Id;

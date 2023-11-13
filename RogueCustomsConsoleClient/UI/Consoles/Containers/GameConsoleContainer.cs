@@ -127,7 +127,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             GameControlsConsole.IsEnabled = false;
             ControlMode = ControlMode.NormalMove;
             RequiresRefreshingDungeonState = true;
-            HasSetupPlayerData = false;
+            if (BackendHandler.Instance.IsLoadedSaveGame)
+            {
+                HasSetupPlayerData = true;
+                ChangeSubConsolesRenderState(true);
+            }
+            else
+            {
+                HasSetupPlayerData = false;
+            }
             ActiveWindow = null;
         }
 
@@ -195,6 +203,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     LatestDungeonStatus = BackendHandler.Instance.GetDungeonStatus();
                     ShowMessagesIfNeeded();
                 }
+
+                ButtonsConsole.SaveButton.IsEnabled = LatestDungeonStatus.DungeonStatus == DungeonStatus.Running;
 
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
@@ -459,6 +469,12 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             if (keyboard.IsKeyPressed(Keys.D) && keyboard.KeysPressed.Count == 1)
             {
                 PlayerInfoConsole.DetailsButton.InvokeClick();
+                handled = true;
+            }
+
+            if (keyboard.IsKeyPressed(Keys.F5) && keyboard.KeysPressed.Count == 1)
+            {
+                ButtonsConsole.SaveButton.InvokeClick();
                 handled = true;
             }
 

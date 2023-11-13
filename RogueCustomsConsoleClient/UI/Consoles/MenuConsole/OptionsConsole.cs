@@ -40,7 +40,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             var serverRadioButtonText = LocalizationManager.GetString("ServerRadioButtonText").ToAscii();
             var languageListHeaderText = LocalizationManager.GetString("LanguageListHeaderText").ToAscii();
             var serverAddressTextBoxHeaderText = LocalizationManager.GetString("ServerAddressTextBoxHeaderText").ToAscii();
-            var saveButtonText = LocalizationManager.GetString("SaveButtonText").ToAscii();
+            var saveButtonText = LocalizationManager.GetString("SaveSettingsButtonText").ToAscii();
             var returnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
             Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);

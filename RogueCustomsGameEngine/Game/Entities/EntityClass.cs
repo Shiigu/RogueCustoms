@@ -11,6 +11,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 {
     #pragma warning disable CS8601 // Posible asignación de referencia nula
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class EntityClass
     {
         public readonly string Id;
@@ -40,7 +41,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int InventorySize;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
-        public ImmutableList<string> StartingInventoryIds { get; private set; }
+        public List<string> StartingInventoryIds { get; private set; }
         public readonly int MaxLevel;
         public readonly bool CanGainExperience;
         public readonly string ExperiencePayoutFormula;
@@ -166,7 +167,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath);
                 EntityType = EntityType.Player;
                 StartsVisible = playerClassInfo.StartsVisible;
-                StartingInventoryIds = ImmutableList.CreateRange(playerClassInfo.StartingInventory);
+                StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
                 Passable = false;
                 RequiresNamePrompt = playerClassInfo.RequiresNamePrompt;
             }
@@ -229,7 +230,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
                 EntityType = EntityType.NPC;
                 StartsVisible = npcInfo.StartsVisible;
-                StartingInventoryIds = ImmutableList.CreateRange(npcInfo.StartingInventory);
+                StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
                 AIOddsToUseActionsOnSelf = npcInfo.AIOddsToUseActionsOnSelf;
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;

@@ -4,13 +4,16 @@ using System.Linq;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
 using Point = RogueCustomsGameEngine.Utils.Representation.Point;
+using System;
+using System.Runtime.InteropServices.ObjectiveC;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
-    public class Tile
+    [Serializable]
+    public class Tile : IEquatable<Tile?>
     {
         public Point Position { get; set; }
 
@@ -191,6 +194,55 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Tile t) return false;
+            return t.Position.Equals(Position) && t.Type == Type;
+        }
+
+        public bool Equals(Tile? other)
+        {
+            return other is not null &&
+                   EqualityComparer<Point>.Default.Equals(Position, other.Position) &&
+                   _type == other._type &&
+                   Type == other.Type &&
+                   IsConnectorTile == other.IsConnectorTile &&
+                   IsWalkable == other.IsWalkable &&
+                   IsOccupied == other.IsOccupied &&
+                   EqualityComparer<ConsoleRepresentation>.Default.Equals(_consoleRepresentation, other._consoleRepresentation) &&
+                   EqualityComparer<ConsoleRepresentation>.Default.Equals(ConsoleRepresentation, other.ConsoleRepresentation) &&
+                   Discovered == other.Discovered &&
+                   Visible == other.Visible &&
+                   EqualityComparer<Map>.Default.Equals(Map, other.Map) &&
+                   EqualityComparer<Room>.Default.Equals(Room, other.Room) &&
+                   EqualityComparer<Character>.Default.Equals(Character, other.Character) &&
+                   EqualityComparer<Item>.Default.Equals(Trap, other.Trap);
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Position);
+            hash.Add(Type);
+            hash.Add(IsConnectorTile);
+            hash.Add(IsWalkable);
+            hash.Add(IsOccupied);
+            hash.Add(ConsoleRepresentation);
+            hash.Add(Discovered);
+            hash.Add(Visible);
+            return hash.ToHashCode();
+        }
+
+        public static bool operator ==(Tile? left, Tile? right)
+        {
+            return EqualityComparer<Tile>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Tile? left, Tile? right)
+        {
+            return !(left == right);
+        }
     }
 
     public enum TileType

@@ -28,7 +28,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
         private Button DoButton, CancelButton;
         private string TitleCaption { get; set; }
-        private ImmutableList<ActionItemDto> ActionItems;
+        private List<ActionItemDto> ActionItems;
         private List<ActionItemDto> CurrentlyShownActionItems;
         private int CurrentlyShownFirstIndex;
         private int ActionSelectedIndex;

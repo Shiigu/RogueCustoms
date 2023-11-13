@@ -6,11 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+    [Serializable]
     public class PlayerCharacter : Character
     {
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)

@@ -2,9 +2,11 @@
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
+    [Serializable]
     public class DungeonListDto
     {
         public string CurrentVersion { get; set; } = string.Empty;
@@ -23,6 +25,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class DungeonPickDto
     {
         public string InternalName { get; set; }

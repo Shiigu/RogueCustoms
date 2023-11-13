@@ -7,11 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.IO.Compression;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Management
 {
+    [Serializable]
     public class DungeonManager
     {
         private int CurrentDungeonId;
@@ -75,6 +80,7 @@ namespace RogueCustomsGameEngine.Management
             CurrentDungeonId++;
             return dungeon.Id;
         }
+
         private Dungeon GetDungeonById(int id)
         {
             var dungeon = Dungeons.Find(d => d.Id == id);
@@ -88,6 +94,38 @@ namespace RogueCustomsGameEngine.Management
                 dungeon.LastAccessTime = DateTime.UtcNow;
             var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * Constants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
             Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
+        }
+
+        public DungeonSaveGameDto SaveDungeon(int dungeonId)
+        {
+            var dungeon = GetDungeonById(dungeonId);
+
+            using var memoryStream = new MemoryStream();
+            using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(gzipStream, dungeon);
+            return new DungeonSaveGameDto
+            {
+                DungeonData = memoryStream.ToArray()
+            };
+        }
+
+        public int LoadSavedDungeon(DungeonSaveGameDto dungeonSaveGame)
+        {
+            using var memoryStream = new MemoryStream(dungeonSaveGame.DungeonData);
+            using var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
+            IFormatter formatter = new BinaryFormatter();
+            var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
+            if (!restoredDungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
+                throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {Constants.CurrentDungeonJsonVersion}.");
+            restoredDungeon.Id = CurrentDungeonId;
+            var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
+            restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
+            restoredDungeon.CurrentFloor.SetActionParams();
+            ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
+            Dungeons.Add(restoredDungeon);
+            CurrentDungeonId++;
+            return restoredDungeon.Id;
         }
 
         public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
@@ -112,18 +150,21 @@ namespace RogueCustomsGameEngine.Management
         public string GetDungeonEndingMessage(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
+            // Remove a completed dungeon from memory to clear space
+            if (dungeon.DungeonStatus == DungeonStatus.Completed)
+                Dungeons.Remove(dungeon);
             return dungeon.EndingMessage;
         }
 
         public DungeonDto GetDungeonStatus(int dungeonId)
         {
             var dungeon = GetDungeonById(dungeonId);
+
             var dungeonStatus = dungeon.GetStatus();
+
             // A Dungeon's Message Boxes don't have to be sent more than once
             dungeon.MessageBoxes.Clear();
-            // Remove a completed dungeon from memory to clear space
-            if (dungeon.DungeonStatus == DungeonStatus.Completed)
-                Dungeons.Remove(dungeon);
+
             return dungeonStatus;
         }
 

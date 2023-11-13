@@ -3,10 +3,12 @@ using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public class InventoryDto
     {
         public bool TileIsOccupied { get; set; }
@@ -18,6 +20,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         }
     }
 
+    [Serializable]
     public class InventoryItemDto
     {
         public string Name { get; set; }
@@ -36,7 +39,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = map.Locale[item.Name];
             Description = item.Description;
             ConsoleRepresentation = item.ConsoleRepresentation;
-            CanBeUsed = item.OnUse.CanBeUsedOn(player);
+            CanBeUsed = item.OnUse?.CanBeUsedOn(player) == true;
             IsEquipped = player.EquippedWeapon == item || player.EquippedArmor == item;
             IsEquippable = item.EntityType == EntityType.Weapon || item.EntityType == EntityType.Armor;
             IsInFloor = item.Position != null && item.Owner == null;

@@ -15,6 +15,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 {
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+    [Serializable]
     public abstract class Character : Entity, IHasActions, IKillable
     {
         public Faction Faction { get; set; }
@@ -366,7 +367,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     .GroupBy(als => als.ClassId)
                     .Select(group => (
                         group.ToList(),
-                        group.Key,
+                        group.FirstOrDefault()?.Name ?? "",
                         !group.Any(als => als.RemainingTurns > 1)
                     ))
                     .ToList();
@@ -447,8 +448,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return entity.Visible
                 && entity.Position != null
-                && entity.ContainingTile?.Discovered == true
-                && entity.ContainingTile.Visible
                 && ComputeFOVTiles().Contains(entity.ContainingTile);
         }
 

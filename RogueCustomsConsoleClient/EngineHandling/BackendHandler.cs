@@ -19,6 +19,10 @@ namespace RogueCustomsConsoleClient.EngineHandling
         private string serverAddress;
         private readonly string LogFilePath;
 
+        public bool HasSaveGame => File.Exists(SaveGamePath);
+        public bool IsLoadedSaveGame { get; private set; }
+        private readonly string SaveGamePath;
+
         private int DungeonId;
 
         public static BackendHandler Instance { get; private set; } = null!;
@@ -39,6 +43,7 @@ namespace RogueCustomsConsoleClient.EngineHandling
             if (!Directory.Exists(Settings.Default.LocalLogFolder))
                 Directory.CreateDirectory(Settings.Default.LocalLogFolder);
             LogFilePath = $"{Settings.Default.LocalLogFolder}/{DateTime.Now.ToString("s").Replace(":", "-")}.txt";
+            SaveGamePath = Settings.Default.SaveGamePath;
         }
 
         public static void CreateInstance(bool isLocal, string serverAddress = "")
@@ -90,6 +95,52 @@ namespace RogueCustomsConsoleClient.EngineHandling
                     DungeonId = LocalHandler.CreateDungeon(dungeonInternalName, locale);
                 else
                     Task.Run(async () => DungeonId = await ServerHandler.CreateDungeon(dungeonInternalName, locale)).Wait();
+                IsLoadedSaveGame = false;
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                throw;
+            }
+        }
+
+        public void SaveDungeon()
+        {
+            try
+            {
+                DungeonSaveGameDto output = null;
+
+                if (IsLocal)
+                    output = LocalHandler.SaveDungeon(DungeonId);
+                else
+                    Task.Run(async () => output = await ServerHandler.SaveDungeon(DungeonId)).Wait();
+
+                if (output != null)
+                {
+                    File.WriteAllBytes(SaveGamePath, output.DungeonData);
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                throw;
+            }
+        }
+
+        public void LoadSavedDungeon()
+        {
+            try
+            {
+                var input = new DungeonSaveGameDto
+                {
+                    DungeonData = File.ReadAllBytes(SaveGamePath)
+                };
+
+                if (IsLocal)
+                    DungeonId = LocalHandler.LoadSavedDungeon(input);
+                else
+                    Task.Run(async () => DungeonId = await ServerHandler.LoadSavedDungeon(input)).Wait();
+                IsLoadedSaveGame = true;
             }
             catch (Exception ex)
             {
