@@ -3,6 +3,7 @@ using D20Tek.DiceNotation.DieRoller;
 using org.matheval;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.DiceNotation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -214,7 +215,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             if (value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is a boolean expression, but is being evaluated as a number.");
             if (value.IsDiceNotation())
-                return new Dice().Roll(value, new RandomDieRoller()).Value;
+                return new Dice().Roll(value, new LCGDieRoller(Rng)).Value;
             return new Expression(value).Eval<decimal>();
         }
 

@@ -316,68 +316,75 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to alter one of {paramsObject.Target.Name}'s stats when it's not a Character.");
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if ((c.MaxHPModifications?.Any() == true || c.AttackModifications?.Any() == true
-                || c.DefenseModifications?.Any() == true || c.MovementModifications?.Any() == true || c.HPRegenerationModifications?.Any() == true) && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            var success = false;
+            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 if(c.MaxHPModifications.Any())
                 {
+                    success = true;
                     c.MaxHPModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMaxHPStat"] }), Color.DeepSkyBlue);
                 }
                 if(c.UsesMP && c.MaxMPModifications.Any())
                 {
+                    success = true;
                     c.MaxMPModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMaxMPStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.AttackModifications.Any())
                 {
+                    success = true;
                     c.AttackModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterAttackStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.DefenseModifications.Any())
                 {
+                    success = true;
                     c.DefenseModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterDefenseStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.MovementModifications.Any())
                 {
+                    success = true;
                     c.MovementModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMovementStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.HPRegenerationModifications.Any())
                 {
+                    success = true;
                     c.HPRegenerationModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterHPRegenerationStat"] }), Color.DeepSkyBlue);
                 }
                 if(c.UsesMP && c.MPRegenerationModifications.Any())
                 {
+                    success = true;
                     c.MPRegenerationModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterMPRegenerationStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.AccuracyModifications.Any())
                 {
+                    success = true;
                     c.AccuracyModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterAccuracyStat"] }), Color.DeepSkyBlue);
                 }
                 if (c.EvasionModifications.Any())
                 {
+                    success = true;
                     c.EvasionModifications.Clear();
                     if (c == Map.Player || Map.Player.CanSee(c))
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = Map.Locale["CharacterEvasionStat"] }), Color.DeepSkyBlue);
                 }
-
-                return true;
             }
 
-            return false;
+            return success;
         }
 
         public static bool CleanseAllAlteredStatuses(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)

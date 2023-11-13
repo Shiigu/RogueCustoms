@@ -941,7 +941,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).Character as NonPlayableCharacter
+            var characterInTile = GetTileFromCoordinates(x, y).Character
                 ?? throw new ArgumentException("Player attempted use an action without a valid target.");
 
             var selectionIdParts = selectionId.Split('_');
@@ -962,7 +962,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 else if (entity.Equals("Target"))
                 {
-                    var selectedAction = characterInTile.OnInteracted.Find(oia => oia.ActionId == actionId)
+                    if(characterInTile is not NonPlayableCharacter npc)
+                        throw new ArgumentException("Player attempted use an action without a valid target.");
+                    var selectedAction = npc.OnInteracted.Find(oia => oia.ActionId == actionId)
                         ?? throw new ArgumentException("Player attempted use a non-existent Interact action from the Target.");
                     Player.InteractWithCharacter(characterInTile, selectedAction);
                 }

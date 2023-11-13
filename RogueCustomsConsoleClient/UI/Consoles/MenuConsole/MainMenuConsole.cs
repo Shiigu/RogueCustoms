@@ -10,8 +10,6 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using SadConsole.Input;
-using static SFML.Graphics.Font;
-using MathNet.Numerics;
 using RogueCustomsConsoleClient.Utils;
 using RogueCustomsConsoleClient.Helpers;
 using RogueCustomsConsoleClient.UI.Windows;

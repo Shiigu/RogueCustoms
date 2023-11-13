@@ -206,7 +206,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
 
                 ButtonsConsole.SaveButton.IsEnabled = LatestDungeonStatus.DungeonStatus == DungeonStatus.Running;
 
-
                 if (LatestDungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     ControlMode = ControlMode.None;
 
