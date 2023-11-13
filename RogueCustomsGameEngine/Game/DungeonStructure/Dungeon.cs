@@ -163,6 +163,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloor.PlayerGotHealed = false;
             CurrentFloor.PlayerGotMPBurned = false;
             CurrentFloor.PlayerGotMPReplenished = false;
+            CurrentFloor.PlayerGotStatusChange = false;
             return dungeonStatus;
         }
 

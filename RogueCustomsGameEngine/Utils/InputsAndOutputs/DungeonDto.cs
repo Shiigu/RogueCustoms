@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool PlayerGotHealed { get; set; }
         public bool PlayerGotMPBurned { get; set; }
         public bool PlayerGotMPReplenished { get; set; }
+        public bool PlayerGotStatusChange { get; set; }
 
         public DungeonDto() { }
 
@@ -56,6 +57,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             PlayerGotHealed = map.PlayerGotHealed;
             PlayerGotMPBurned = map.PlayerGotMPBurned;
             PlayerGotMPReplenished = map.PlayerGotMPReplenished;
+            PlayerGotStatusChange = map.PlayerGotStatusChange;
             if (DungeonStatus != DungeonStatus.Completed)
             {
                 Parallel.For(0, map.Tiles.GetLength(0), y =>

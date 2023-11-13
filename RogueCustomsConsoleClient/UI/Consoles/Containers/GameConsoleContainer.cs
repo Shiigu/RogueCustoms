@@ -24,7 +24,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         new private readonly List<GameSubConsole> Consoles;
 
         public bool RequiresRefreshingDungeonState { get; set; }
-        private readonly BicolorBlink DamageFlash, HealFlash, MPBurnFlash, MPReplenishFlash;
+        private readonly BicolorBlink DamageFlash, StatusChangeFlash, HealFlash, MPBurnFlash, MPReplenishFlash;
 
         public bool HasSetupPlayerData { get; set; }
         public bool Flashing { get; set; }
@@ -47,9 +47,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
         {
             RequiresRefreshingDungeonState = false;
             DamageFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Red, BlinkOutBackgroundColor = Color.Red, RemoveOnFinished = true };
+            StatusChangeFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Violet, BlinkOutBackgroundColor = Color.Violet, RemoveOnFinished = true };
             HealFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Green, BlinkOutBackgroundColor = Color.Green, RemoveOnFinished = true };
-            MPBurnFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.DarkViolet, BlinkOutBackgroundColor = Color.DarkViolet, RemoveOnFinished = true };
-            MPReplenishFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.BlueViolet, BlinkOutBackgroundColor = Color.BlueViolet, RemoveOnFinished = true };
+            MPBurnFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.DarkBlue, BlinkOutBackgroundColor = Color.DarkViolet, RemoveOnFinished = true };
+            MPReplenishFlash = new BicolorBlink() { BlinkCount = 1, BlinkSpeed = FlashDuration, BlinkOutForegroundColor = Color.Blue, BlinkOutBackgroundColor = Color.BlueViolet, RemoveOnFinished = true };
 
             DungeonConsole = new DungeonConsole(this)
             {
@@ -253,6 +254,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             {
                 ApplyFlashEffect(DamageFlash);
             }
+            if (!Flashing && LatestDungeonStatus.PlayerGotStatusChange)
+            {
+                ApplyFlashEffect(StatusChangeFlash);
+            }
             if (!Flashing && LatestDungeonStatus.PlayerGotHealed)
             {
                 ApplyFlashEffect(HealFlash);
@@ -272,6 +277,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                 {
                     RemoveFlashEffect();
                 }
+                else if (StatusChangeFlash.IsFinished && LatestDungeonStatus.PlayerGotStatusChange)
+                {
+                    RemoveFlashEffect();
+                }
                 else if (HealFlash.IsFinished && LatestDungeonStatus.PlayerGotHealed)
                 {
                     RemoveFlashEffect();
@@ -285,7 +294,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
                     RemoveFlashEffect();
                 }
                 if (!LatestDungeonStatus.PlayerTookDamage && !LatestDungeonStatus.PlayerGotHealed
-                 && !LatestDungeonStatus.PlayerGotMPBurned && !LatestDungeonStatus.PlayerGotMPReplenished)
+                 && !LatestDungeonStatus.PlayerGotMPBurned && !LatestDungeonStatus.PlayerGotMPReplenished
+                  && !LatestDungeonStatus.PlayerGotStatusChange)
                 {
                     Flashing = false;
                     ChangeSubConsolesRenderState(true);
@@ -320,6 +330,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Containers
             LatestDungeonStatus.PlayerGotHealed = false;
             LatestDungeonStatus.PlayerGotMPBurned = false;
             LatestDungeonStatus.PlayerGotMPReplenished = false;
+            LatestDungeonStatus.PlayerGotStatusChange = false;
         }
 
         private void ApplyFlashEffect(ICellEffect effect)

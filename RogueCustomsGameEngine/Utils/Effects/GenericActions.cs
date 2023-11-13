@@ -126,6 +126,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     else
                         Map.AppendMessage(Map.Locale["CharacterStatusGotRefreshed"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
                 }
+                if (statusTarget == Map.Player)
+                    Map.PlayerGotStatusChange = true;
                 return success;
             }
             return false;
@@ -273,6 +275,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
                 }
+                if (c == Map.Player)
+                    Map.PlayerGotStatusChange = true;
                 return true;
             }
             return false;
@@ -416,6 +420,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     }
                 });
                 c.AlteredStatuses.Clear();
+                if (c == Map.Player)
+                    Map.PlayerGotStatusChange = true;
                 return true;
             }
             return false;
