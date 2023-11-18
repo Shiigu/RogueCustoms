@@ -457,6 +457,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.PlayerGotMPReplenished = true;
             return true;
         }
+
+        public static bool ToggleVisibility(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            _ = 0;
+            if (Target == null) return false;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c) throw new ArgumentException($"Attempted to toggle {paramsObject.Target.Name}'s visibility when it's not a Character.");
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            {
+                c.Visible = !c.Visible;
+                return true;
+            }
+            return false;
+        }
     }
     #pragma warning restore S2259 // Null pointers should not be dereferenced
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

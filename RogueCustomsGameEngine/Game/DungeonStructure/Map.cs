@@ -1169,8 +1169,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 };
                 if ((tile.Character == Player || tile.Character.Faction.AlliedWith.Contains(Player.Faction)) && !tile.Character.Visible)
                 {
-                    characterBaseConsoleRepresentation.BackgroundColor.A /= 2;
-                    characterBaseConsoleRepresentation.ForegroundColor.A /= 2;
+                    // Invisible players or allies will get their colors reversed
+                    characterBaseConsoleRepresentation.BackgroundColor = tile.Character.ConsoleRepresentation.ForegroundColor.Clone();
+                    characterBaseConsoleRepresentation.ForegroundColor = tile.Character.ConsoleRepresentation.BackgroundColor.Clone();
                     return characterBaseConsoleRepresentation;
                 }
                 else if (tile.Character.Visible)
