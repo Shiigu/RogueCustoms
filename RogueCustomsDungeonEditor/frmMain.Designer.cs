@@ -32,58 +32,6 @@ namespace RogueCustomsDungeonEditor
         {
             global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::RogueCustomsDungeonEditor.frmMain));
             global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor1 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor2 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor3 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor4 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor5 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor6 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor7 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor8 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor9 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor10 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor11 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor12 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor13 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor14 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor15 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor16 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor17 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor18 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor19 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor20 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor21 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor22 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor23 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor24 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor25 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor26 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor27 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor28 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor29 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor30 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor31 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor32 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor33 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor34 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor35 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor36 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor37 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor38 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor39 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor40 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor41 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor42 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor43 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor44 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor45 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor46 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor47 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor48 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor49 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor50 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor51 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
-            global::RogueCustomsGameEngine.Utils.Representation.GameColor gameColor52 = new global::RogueCustomsGameEngine.Utils.Representation.GameColor();
             this.msMenu = (new global::System.Windows.Forms.MenuStrip());
             this.editorToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
             this.exitToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
@@ -322,6 +270,9 @@ namespace RogueCustomsDungeonEditor
             this.label118 = (new global::System.Windows.Forms.Label());
             this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpAlteredStatus = (new global::System.Windows.Forms.TabPage());
+            this.saeAlteredStatusOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeAlteredStatusBeforeAttack = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
+            this.saeAlteredStatusOnRemove = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saeAlteredStatusOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saeAlteredStatusOnApply = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.chkAlteredStatusCleansedOnCleanseActions = (new global::System.Windows.Forms.CheckBox());
@@ -940,17 +891,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrEmpty
             // 
-            gameColor1.A = ((global::System.Byte)(255));
-            gameColor1.B = ((global::System.Byte)(0));
-            gameColor1.G = ((global::System.Byte)(0));
-            gameColor1.R = ((global::System.Byte)(0));
-            this.csrEmpty.BackgroundColor = (gameColor1);
+            this.csrEmpty.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrEmpty.BackgroundColor")));
             this.csrEmpty.Character = ('\0');
-            gameColor2.A = ((global::System.Byte)(255));
-            gameColor2.B = ((global::System.Byte)(255));
-            gameColor2.G = ((global::System.Byte)(255));
-            gameColor2.R = ((global::System.Byte)(255));
-            this.csrEmpty.ForegroundColor = (gameColor2);
+            this.csrEmpty.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrEmpty.ForegroundColor")));
             this.csrEmpty.Location = (new global::System.Drawing.Point(465, 1090));
             this.csrEmpty.Name = ("csrEmpty");
             this.csrEmpty.Size = (new global::System.Drawing.Size(211, 83));
@@ -969,17 +912,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrStairs
             // 
-            gameColor3.A = ((global::System.Byte)(255));
-            gameColor3.B = ((global::System.Byte)(0));
-            gameColor3.G = ((global::System.Byte)(0));
-            gameColor3.R = ((global::System.Byte)(0));
-            this.csrStairs.BackgroundColor = (gameColor3);
+            this.csrStairs.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrStairs.BackgroundColor")));
             this.csrStairs.Character = ('\0');
-            gameColor4.A = ((global::System.Byte)(255));
-            gameColor4.B = ((global::System.Byte)(255));
-            gameColor4.G = ((global::System.Byte)(255));
-            gameColor4.R = ((global::System.Byte)(255));
-            this.csrStairs.ForegroundColor = (gameColor4);
+            this.csrStairs.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrStairs.ForegroundColor")));
             this.csrStairs.Location = (new global::System.Drawing.Point(248, 1090));
             this.csrStairs.Name = ("csrStairs");
             this.csrStairs.Size = (new global::System.Drawing.Size(211, 83));
@@ -1008,17 +943,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrFloor
             // 
-            gameColor5.A = ((global::System.Byte)(255));
-            gameColor5.B = ((global::System.Byte)(0));
-            gameColor5.G = ((global::System.Byte)(0));
-            gameColor5.R = ((global::System.Byte)(0));
-            this.csrFloor.BackgroundColor = (gameColor5);
+            this.csrFloor.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrFloor.BackgroundColor")));
             this.csrFloor.Character = ('\0');
-            gameColor6.A = ((global::System.Byte)(255));
-            gameColor6.B = ((global::System.Byte)(255));
-            gameColor6.G = ((global::System.Byte)(255));
-            gameColor6.R = ((global::System.Byte)(255));
-            this.csrFloor.ForegroundColor = (gameColor6);
+            this.csrFloor.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrFloor.ForegroundColor")));
             this.csrFloor.Location = (new global::System.Drawing.Point(31, 1090));
             this.csrFloor.Name = ("csrFloor");
             this.csrFloor.Size = (new global::System.Drawing.Size(211, 83));
@@ -1037,17 +964,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrHorizontalHallway
             // 
-            gameColor7.A = ((global::System.Byte)(255));
-            gameColor7.B = ((global::System.Byte)(0));
-            gameColor7.G = ((global::System.Byte)(0));
-            gameColor7.R = ((global::System.Byte)(0));
-            this.csrHorizontalHallway.BackgroundColor = (gameColor7);
+            this.csrHorizontalHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalHallway.BackgroundColor")));
             this.csrHorizontalHallway.Character = ('\0');
-            gameColor8.A = ((global::System.Byte)(255));
-            gameColor8.B = ((global::System.Byte)(255));
-            gameColor8.G = ((global::System.Byte)(255));
-            gameColor8.R = ((global::System.Byte)(255));
-            this.csrHorizontalHallway.ForegroundColor = (gameColor8);
+            this.csrHorizontalHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalHallway.ForegroundColor")));
             this.csrHorizontalHallway.Location = (new global::System.Drawing.Point(454, 646));
             this.csrHorizontalHallway.Name = ("csrHorizontalHallway");
             this.csrHorizontalHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1066,17 +985,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrBottomRightHallway
             // 
-            gameColor9.A = ((global::System.Byte)(255));
-            gameColor9.B = ((global::System.Byte)(0));
-            gameColor9.G = ((global::System.Byte)(0));
-            gameColor9.R = ((global::System.Byte)(0));
-            this.csrBottomRightHallway.BackgroundColor = (gameColor9);
+            this.csrBottomRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightHallway.BackgroundColor")));
             this.csrBottomRightHallway.Character = ('\0');
-            gameColor10.A = ((global::System.Byte)(255));
-            gameColor10.B = ((global::System.Byte)(255));
-            gameColor10.G = ((global::System.Byte)(255));
-            gameColor10.R = ((global::System.Byte)(255));
-            this.csrBottomRightHallway.ForegroundColor = (gameColor10);
+            this.csrBottomRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightHallway.ForegroundColor")));
             this.csrBottomRightHallway.Location = (new global::System.Drawing.Point(237, 646));
             this.csrBottomRightHallway.Name = ("csrBottomRightHallway");
             this.csrBottomRightHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1095,17 +1006,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrBottomLeftHallway
             // 
-            gameColor11.A = ((global::System.Byte)(255));
-            gameColor11.B = ((global::System.Byte)(0));
-            gameColor11.G = ((global::System.Byte)(0));
-            gameColor11.R = ((global::System.Byte)(0));
-            this.csrBottomLeftHallway.BackgroundColor = (gameColor11);
+            this.csrBottomLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftHallway.BackgroundColor")));
             this.csrBottomLeftHallway.Character = ('\0');
-            gameColor12.A = ((global::System.Byte)(255));
-            gameColor12.B = ((global::System.Byte)(255));
-            gameColor12.G = ((global::System.Byte)(255));
-            gameColor12.R = ((global::System.Byte)(255));
-            this.csrBottomLeftHallway.ForegroundColor = (gameColor12);
+            this.csrBottomLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftHallway.ForegroundColor")));
             this.csrBottomLeftHallway.Location = (new global::System.Drawing.Point(20, 646));
             this.csrBottomLeftHallway.Name = ("csrBottomLeftHallway");
             this.csrBottomLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1124,17 +1027,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrCentralHallway
             // 
-            gameColor13.A = ((global::System.Byte)(255));
-            gameColor13.B = ((global::System.Byte)(0));
-            gameColor13.G = ((global::System.Byte)(0));
-            gameColor13.R = ((global::System.Byte)(0));
-            this.csrCentralHallway.BackgroundColor = (gameColor13);
+            this.csrCentralHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrCentralHallway.BackgroundColor")));
             this.csrCentralHallway.Character = ('\0');
-            gameColor14.A = ((global::System.Byte)(255));
-            gameColor14.B = ((global::System.Byte)(255));
-            gameColor14.G = ((global::System.Byte)(255));
-            gameColor14.R = ((global::System.Byte)(255));
-            this.csrCentralHallway.ForegroundColor = (gameColor14);
+            this.csrCentralHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrCentralHallway.ForegroundColor")));
             this.csrCentralHallway.Location = (new global::System.Drawing.Point(324, 897));
             this.csrCentralHallway.Name = ("csrCentralHallway");
             this.csrCentralHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1153,17 +1048,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrVerticalRightHallway
             // 
-            gameColor15.A = ((global::System.Byte)(255));
-            gameColor15.B = ((global::System.Byte)(0));
-            gameColor15.G = ((global::System.Byte)(0));
-            gameColor15.R = ((global::System.Byte)(0));
-            this.csrVerticalRightHallway.BackgroundColor = (gameColor15);
+            this.csrVerticalRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalRightHallway.BackgroundColor")));
             this.csrVerticalRightHallway.Character = ('\0');
-            gameColor16.A = ((global::System.Byte)(255));
-            gameColor16.B = ((global::System.Byte)(255));
-            gameColor16.G = ((global::System.Byte)(255));
-            gameColor16.R = ((global::System.Byte)(255));
-            this.csrVerticalRightHallway.ForegroundColor = (gameColor16);
+            this.csrVerticalRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalRightHallway.ForegroundColor")));
             this.csrVerticalRightHallway.Location = (new global::System.Drawing.Point(107, 897));
             this.csrVerticalRightHallway.Name = ("csrVerticalRightHallway");
             this.csrVerticalRightHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1182,17 +1069,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrVerticalLeftHallway
             // 
-            gameColor17.A = ((global::System.Byte)(255));
-            gameColor17.B = ((global::System.Byte)(0));
-            gameColor17.G = ((global::System.Byte)(0));
-            gameColor17.R = ((global::System.Byte)(0));
-            this.csrVerticalLeftHallway.BackgroundColor = (gameColor17);
+            this.csrVerticalLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalLeftHallway.BackgroundColor")));
             this.csrVerticalLeftHallway.Character = ('\0');
-            gameColor18.A = ((global::System.Byte)(255));
-            gameColor18.B = ((global::System.Byte)(255));
-            gameColor18.G = ((global::System.Byte)(255));
-            gameColor18.R = ((global::System.Byte)(255));
-            this.csrVerticalLeftHallway.ForegroundColor = (gameColor18);
+            this.csrVerticalLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalLeftHallway.ForegroundColor")));
             this.csrVerticalLeftHallway.Location = (new global::System.Drawing.Point(454, 776));
             this.csrVerticalLeftHallway.Name = ("csrVerticalLeftHallway");
             this.csrVerticalLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1211,17 +1090,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrHorizontalTopHallway
             // 
-            gameColor19.A = ((global::System.Byte)(255));
-            gameColor19.B = ((global::System.Byte)(0));
-            gameColor19.G = ((global::System.Byte)(0));
-            gameColor19.R = ((global::System.Byte)(0));
-            this.csrHorizontalTopHallway.BackgroundColor = (gameColor19);
+            this.csrHorizontalTopHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalTopHallway.BackgroundColor")));
             this.csrHorizontalTopHallway.Character = ('\0');
-            gameColor20.A = ((global::System.Byte)(255));
-            gameColor20.B = ((global::System.Byte)(255));
-            gameColor20.G = ((global::System.Byte)(255));
-            gameColor20.R = ((global::System.Byte)(255));
-            this.csrHorizontalTopHallway.ForegroundColor = (gameColor20);
+            this.csrHorizontalTopHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalTopHallway.ForegroundColor")));
             this.csrHorizontalTopHallway.Location = (new global::System.Drawing.Point(237, 776));
             this.csrHorizontalTopHallway.Name = ("csrHorizontalTopHallway");
             this.csrHorizontalTopHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1240,17 +1111,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrHorizontalBottomHallway
             // 
-            gameColor21.A = ((global::System.Byte)(255));
-            gameColor21.B = ((global::System.Byte)(0));
-            gameColor21.G = ((global::System.Byte)(0));
-            gameColor21.R = ((global::System.Byte)(0));
-            this.csrHorizontalBottomHallway.BackgroundColor = (gameColor21);
+            this.csrHorizontalBottomHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalBottomHallway.BackgroundColor")));
             this.csrHorizontalBottomHallway.Character = ('\0');
-            gameColor22.A = ((global::System.Byte)(255));
-            gameColor22.B = ((global::System.Byte)(255));
-            gameColor22.G = ((global::System.Byte)(255));
-            gameColor22.R = ((global::System.Byte)(255));
-            this.csrHorizontalBottomHallway.ForegroundColor = (gameColor22);
+            this.csrHorizontalBottomHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalBottomHallway.ForegroundColor")));
             this.csrHorizontalBottomHallway.Location = (new global::System.Drawing.Point(20, 776));
             this.csrHorizontalBottomHallway.Name = ("csrHorizontalBottomHallway");
             this.csrHorizontalBottomHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1269,17 +1132,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrVerticalHallway
             // 
-            gameColor23.A = ((global::System.Byte)(255));
-            gameColor23.B = ((global::System.Byte)(0));
-            gameColor23.G = ((global::System.Byte)(0));
-            gameColor23.R = ((global::System.Byte)(0));
-            this.csrVerticalHallway.BackgroundColor = (gameColor23);
+            this.csrVerticalHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalHallway.BackgroundColor")));
             this.csrVerticalHallway.Character = ('\0');
-            gameColor24.A = ((global::System.Byte)(255));
-            gameColor24.B = ((global::System.Byte)(255));
-            gameColor24.G = ((global::System.Byte)(255));
-            gameColor24.R = ((global::System.Byte)(255));
-            this.csrVerticalHallway.ForegroundColor = (gameColor24);
+            this.csrVerticalHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalHallway.ForegroundColor")));
             this.csrVerticalHallway.Location = (new global::System.Drawing.Point(454, 525));
             this.csrVerticalHallway.Name = ("csrVerticalHallway");
             this.csrVerticalHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1298,17 +1153,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrTopRightHallway
             // 
-            gameColor25.A = ((global::System.Byte)(255));
-            gameColor25.B = ((global::System.Byte)(0));
-            gameColor25.G = ((global::System.Byte)(0));
-            gameColor25.R = ((global::System.Byte)(0));
-            this.csrTopRightHallway.BackgroundColor = (gameColor25);
+            this.csrTopRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightHallway.BackgroundColor")));
             this.csrTopRightHallway.Character = ('\0');
-            gameColor26.A = ((global::System.Byte)(255));
-            gameColor26.B = ((global::System.Byte)(255));
-            gameColor26.G = ((global::System.Byte)(255));
-            gameColor26.R = ((global::System.Byte)(255));
-            this.csrTopRightHallway.ForegroundColor = (gameColor26);
+            this.csrTopRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightHallway.ForegroundColor")));
             this.csrTopRightHallway.Location = (new global::System.Drawing.Point(237, 525));
             this.csrTopRightHallway.Name = ("csrTopRightHallway");
             this.csrTopRightHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1337,17 +1184,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrTopLeftHallway
             // 
-            gameColor27.A = ((global::System.Byte)(255));
-            gameColor27.B = ((global::System.Byte)(0));
-            gameColor27.G = ((global::System.Byte)(0));
-            gameColor27.R = ((global::System.Byte)(0));
-            this.csrTopLeftHallway.BackgroundColor = (gameColor27);
+            this.csrTopLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftHallway.BackgroundColor")));
             this.csrTopLeftHallway.Character = ('\0');
-            gameColor28.A = ((global::System.Byte)(255));
-            gameColor28.B = ((global::System.Byte)(255));
-            gameColor28.G = ((global::System.Byte)(255));
-            gameColor28.R = ((global::System.Byte)(255));
-            this.csrTopLeftHallway.ForegroundColor = (gameColor28);
+            this.csrTopLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftHallway.ForegroundColor")));
             this.csrTopLeftHallway.Location = (new global::System.Drawing.Point(20, 525));
             this.csrTopLeftHallway.Name = ("csrTopLeftHallway");
             this.csrTopLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
@@ -1366,17 +1205,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrConnectorWall
             // 
-            gameColor29.A = ((global::System.Byte)(255));
-            gameColor29.B = ((global::System.Byte)(0));
-            gameColor29.G = ((global::System.Byte)(0));
-            gameColor29.R = ((global::System.Byte)(0));
-            this.csrConnectorWall.BackgroundColor = (gameColor29);
+            this.csrConnectorWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrConnectorWall.BackgroundColor")));
             this.csrConnectorWall.Character = ('\0');
-            gameColor30.A = ((global::System.Byte)(255));
-            gameColor30.B = ((global::System.Byte)(255));
-            gameColor30.G = ((global::System.Byte)(255));
-            gameColor30.R = ((global::System.Byte)(255));
-            this.csrConnectorWall.ForegroundColor = (gameColor30);
+            this.csrConnectorWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrConnectorWall.ForegroundColor")));
             this.csrConnectorWall.Location = (new global::System.Drawing.Point(253, 339));
             this.csrConnectorWall.Name = ("csrConnectorWall");
             this.csrConnectorWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1395,17 +1226,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrHorizontalWall
             // 
-            gameColor31.A = ((global::System.Byte)(255));
-            gameColor31.B = ((global::System.Byte)(0));
-            gameColor31.G = ((global::System.Byte)(0));
-            gameColor31.R = ((global::System.Byte)(0));
-            this.csrHorizontalWall.BackgroundColor = (gameColor31);
+            this.csrHorizontalWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalWall.BackgroundColor")));
             this.csrHorizontalWall.Character = ('\0');
-            gameColor32.A = ((global::System.Byte)(255));
-            gameColor32.B = ((global::System.Byte)(255));
-            gameColor32.G = ((global::System.Byte)(255));
-            gameColor32.R = ((global::System.Byte)(255));
-            this.csrHorizontalWall.ForegroundColor = (gameColor32);
+            this.csrHorizontalWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalWall.ForegroundColor")));
             this.csrHorizontalWall.Location = (new global::System.Drawing.Point(470, 218));
             this.csrHorizontalWall.Name = ("csrHorizontalWall");
             this.csrHorizontalWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1424,17 +1247,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrBottomRightWall
             // 
-            gameColor33.A = ((global::System.Byte)(255));
-            gameColor33.B = ((global::System.Byte)(0));
-            gameColor33.G = ((global::System.Byte)(0));
-            gameColor33.R = ((global::System.Byte)(0));
-            this.csrBottomRightWall.BackgroundColor = (gameColor33);
+            this.csrBottomRightWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightWall.BackgroundColor")));
             this.csrBottomRightWall.Character = ('\0');
-            gameColor34.A = ((global::System.Byte)(255));
-            gameColor34.B = ((global::System.Byte)(255));
-            gameColor34.G = ((global::System.Byte)(255));
-            gameColor34.R = ((global::System.Byte)(255));
-            this.csrBottomRightWall.ForegroundColor = (gameColor34);
+            this.csrBottomRightWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightWall.ForegroundColor")));
             this.csrBottomRightWall.Location = (new global::System.Drawing.Point(253, 218));
             this.csrBottomRightWall.Name = ("csrBottomRightWall");
             this.csrBottomRightWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1453,17 +1268,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrBottomLeftWall
             // 
-            gameColor35.A = ((global::System.Byte)(255));
-            gameColor35.B = ((global::System.Byte)(0));
-            gameColor35.G = ((global::System.Byte)(0));
-            gameColor35.R = ((global::System.Byte)(0));
-            this.csrBottomLeftWall.BackgroundColor = (gameColor35);
+            this.csrBottomLeftWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftWall.BackgroundColor")));
             this.csrBottomLeftWall.Character = ('\0');
-            gameColor36.A = ((global::System.Byte)(255));
-            gameColor36.B = ((global::System.Byte)(255));
-            gameColor36.G = ((global::System.Byte)(255));
-            gameColor36.R = ((global::System.Byte)(255));
-            this.csrBottomLeftWall.ForegroundColor = (gameColor36);
+            this.csrBottomLeftWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftWall.ForegroundColor")));
             this.csrBottomLeftWall.Location = (new global::System.Drawing.Point(36, 218));
             this.csrBottomLeftWall.Name = ("csrBottomLeftWall");
             this.csrBottomLeftWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1482,17 +1289,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrVerticalWall
             // 
-            gameColor37.A = ((global::System.Byte)(255));
-            gameColor37.B = ((global::System.Byte)(0));
-            gameColor37.G = ((global::System.Byte)(0));
-            gameColor37.R = ((global::System.Byte)(0));
-            this.csrVerticalWall.BackgroundColor = (gameColor37);
+            this.csrVerticalWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalWall.BackgroundColor")));
             this.csrVerticalWall.Character = ('\0');
-            gameColor38.A = ((global::System.Byte)(255));
-            gameColor38.B = ((global::System.Byte)(255));
-            gameColor38.G = ((global::System.Byte)(255));
-            gameColor38.R = ((global::System.Byte)(255));
-            this.csrVerticalWall.ForegroundColor = (gameColor38);
+            this.csrVerticalWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalWall.ForegroundColor")));
             this.csrVerticalWall.Location = (new global::System.Drawing.Point(470, 97));
             this.csrVerticalWall.Name = ("csrVerticalWall");
             this.csrVerticalWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1511,17 +1310,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrTopRightWall
             // 
-            gameColor39.A = ((global::System.Byte)(255));
-            gameColor39.B = ((global::System.Byte)(0));
-            gameColor39.G = ((global::System.Byte)(0));
-            gameColor39.R = ((global::System.Byte)(0));
-            this.csrTopRightWall.BackgroundColor = (gameColor39);
+            this.csrTopRightWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightWall.BackgroundColor")));
             this.csrTopRightWall.Character = ('\0');
-            gameColor40.A = ((global::System.Byte)(255));
-            gameColor40.B = ((global::System.Byte)(255));
-            gameColor40.G = ((global::System.Byte)(255));
-            gameColor40.R = ((global::System.Byte)(255));
-            this.csrTopRightWall.ForegroundColor = (gameColor40);
+            this.csrTopRightWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightWall.ForegroundColor")));
             this.csrTopRightWall.Location = (new global::System.Drawing.Point(253, 97));
             this.csrTopRightWall.Name = ("csrTopRightWall");
             this.csrTopRightWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -1550,17 +1341,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // csrTopLeftWall
             // 
-            gameColor41.A = ((global::System.Byte)(255));
-            gameColor41.B = ((global::System.Byte)(0));
-            gameColor41.G = ((global::System.Byte)(0));
-            gameColor41.R = ((global::System.Byte)(0));
-            this.csrTopLeftWall.BackgroundColor = (gameColor41);
+            this.csrTopLeftWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftWall.BackgroundColor")));
             this.csrTopLeftWall.Character = ('\0');
-            gameColor42.A = ((global::System.Byte)(255));
-            gameColor42.B = ((global::System.Byte)(255));
-            gameColor42.G = ((global::System.Byte)(255));
-            gameColor42.R = ((global::System.Byte)(255));
-            this.csrTopLeftWall.ForegroundColor = (gameColor42);
+            this.csrTopLeftWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftWall.ForegroundColor")));
             this.csrTopLeftWall.Location = (new global::System.Drawing.Point(36, 97));
             this.csrTopLeftWall.Name = ("csrTopLeftWall");
             this.csrTopLeftWall.Size = (new global::System.Drawing.Size(211, 83));
@@ -2285,7 +2068,7 @@ namespace RogueCustomsDungeonEditor
             // saePlayerOnAttacked
             // 
             this.saePlayerOnAttacked.Action = (null);
-            this.saePlayerOnAttacked.ActionDescription = ("When they get interacted...");
+            this.saePlayerOnAttacked.ActionDescription = ("When they get attacked...   ");
             this.saePlayerOnAttacked.ActionTypeText = ("Interacted");
             this.saePlayerOnAttacked.AlteredStatuses = (null);
             this.saePlayerOnAttacked.AutoSize = (true);
@@ -2299,7 +2082,7 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.RequiresActionName = (false);
             this.saePlayerOnAttacked.RequiresCondition = (false);
             this.saePlayerOnAttacked.RequiresDescription = (false);
-            this.saePlayerOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saePlayerOnAttacked.Size = (new global::System.Drawing.Size(284, 32));
             this.saePlayerOnAttacked.SourceDescription = ("The player");
             this.saePlayerOnAttacked.TabIndex = (126);
             this.saePlayerOnAttacked.TargetDescription = ("Whoever interacted with them");
@@ -2551,17 +2334,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // crsPlayer
             // 
-            gameColor43.A = ((global::System.Byte)(255));
-            gameColor43.B = ((global::System.Byte)(0));
-            gameColor43.G = ((global::System.Byte)(0));
-            gameColor43.R = ((global::System.Byte)(0));
-            this.crsPlayer.BackgroundColor = (gameColor43);
+            this.crsPlayer.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsPlayer.BackgroundColor")));
             this.crsPlayer.Character = ('\0');
-            gameColor44.A = ((global::System.Byte)(255));
-            gameColor44.B = ((global::System.Byte)(255));
-            gameColor44.G = ((global::System.Byte)(255));
-            gameColor44.R = ((global::System.Byte)(255));
-            this.crsPlayer.ForegroundColor = (gameColor44);
+            this.crsPlayer.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsPlayer.ForegroundColor")));
             this.crsPlayer.Location = (new global::System.Drawing.Point(504, 8));
             this.crsPlayer.Name = ("crsPlayer");
             this.crsPlayer.Size = (new global::System.Drawing.Size(211, 83));
@@ -2726,8 +2501,8 @@ namespace RogueCustomsDungeonEditor
             // saeNPCOnAttacked
             // 
             this.saeNPCOnAttacked.Action = (null);
-            this.saeNPCOnAttacked.ActionDescription = ("When they get interacted...");
-            this.saeNPCOnAttacked.ActionTypeText = ("Interacted");
+            this.saeNPCOnAttacked.ActionDescription = ("When they get attacked...  ");
+            this.saeNPCOnAttacked.ActionTypeText = ("Attacked");
             this.saeNPCOnAttacked.AlteredStatuses = (null);
             this.saeNPCOnAttacked.AutoSize = (true);
             this.saeNPCOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
@@ -2740,7 +2515,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.RequiresActionName = (false);
             this.saeNPCOnAttacked.RequiresCondition = (false);
             this.saeNPCOnAttacked.RequiresDescription = (false);
-            this.saeNPCOnAttacked.Size = (new global::System.Drawing.Size(283, 32));
+            this.saeNPCOnAttacked.Size = (new global::System.Drawing.Size(281, 32));
             this.saeNPCOnAttacked.SourceDescription = ("The NPC");
             this.saeNPCOnAttacked.TabIndex = (210);
             this.saeNPCOnAttacked.TargetDescription = ("Whoever interacted with them");
@@ -3027,17 +2802,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // crsNPC
             // 
-            gameColor45.A = ((global::System.Byte)(255));
-            gameColor45.B = ((global::System.Byte)(0));
-            gameColor45.G = ((global::System.Byte)(0));
-            gameColor45.R = ((global::System.Byte)(0));
-            this.crsNPC.BackgroundColor = (gameColor45);
+            this.crsNPC.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsNPC.BackgroundColor")));
             this.crsNPC.Character = ('\0');
-            gameColor46.A = ((global::System.Byte)(255));
-            gameColor46.B = ((global::System.Byte)(255));
-            gameColor46.G = ((global::System.Byte)(255));
-            gameColor46.R = ((global::System.Byte)(255));
-            this.crsNPC.ForegroundColor = (gameColor46);
+            this.crsNPC.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsNPC.ForegroundColor")));
             this.crsNPC.Location = (new global::System.Drawing.Point(504, 8));
             this.crsNPC.Name = ("crsNPC");
             this.crsNPC.Size = (new global::System.Drawing.Size(211, 83));
@@ -3161,7 +2928,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.PlaceholderActionName = ("ItemUse");
             this.saeItemOnUse.RequiresActionName = (false);
             this.saeItemOnUse.RequiresCondition = (true);
-            this.saeItemOnUse.RequiresDescription = (true);
+            this.saeItemOnUse.RequiresDescription = (false);
             this.saeItemOnUse.Size = (new global::System.Drawing.Size(292, 32));
             this.saeItemOnUse.SourceDescription = ("The item");
             this.saeItemOnUse.TabIndex = (222);
@@ -3334,17 +3101,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // crsItem
             // 
-            gameColor47.A = ((global::System.Byte)(255));
-            gameColor47.B = ((global::System.Byte)(0));
-            gameColor47.G = ((global::System.Byte)(0));
-            gameColor47.R = ((global::System.Byte)(0));
-            this.crsItem.BackgroundColor = (gameColor47);
+            this.crsItem.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsItem.BackgroundColor")));
             this.crsItem.Character = ('\0');
-            gameColor48.A = ((global::System.Byte)(255));
-            gameColor48.B = ((global::System.Byte)(255));
-            gameColor48.G = ((global::System.Byte)(255));
-            gameColor48.R = ((global::System.Byte)(255));
-            this.crsItem.ForegroundColor = (gameColor48);
+            this.crsItem.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsItem.ForegroundColor")));
             this.crsItem.Location = (new global::System.Drawing.Point(524, 9));
             this.crsItem.Name = ("crsItem");
             this.crsItem.Size = (new global::System.Drawing.Size(211, 83));
@@ -3506,17 +3265,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // crsTrap
             // 
-            gameColor49.A = ((global::System.Byte)(255));
-            gameColor49.B = ((global::System.Byte)(0));
-            gameColor49.G = ((global::System.Byte)(0));
-            gameColor49.R = ((global::System.Byte)(0));
-            this.crsTrap.BackgroundColor = (gameColor49);
+            this.crsTrap.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsTrap.BackgroundColor")));
             this.crsTrap.Character = ('\0');
-            gameColor50.A = ((global::System.Byte)(255));
-            gameColor50.B = ((global::System.Byte)(255));
-            gameColor50.G = ((global::System.Byte)(255));
-            gameColor50.R = ((global::System.Byte)(255));
-            this.crsTrap.ForegroundColor = (gameColor50);
+            this.crsTrap.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsTrap.ForegroundColor")));
             this.crsTrap.Location = (new global::System.Drawing.Point(524, 9));
             this.crsTrap.Name = ("crsTrap");
             this.crsTrap.Size = (new global::System.Drawing.Size(211, 83));
@@ -3525,6 +3276,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpAlteredStatus
             // 
+            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnAttacked);
+            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusBeforeAttack);
+            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnRemove);
             this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnTurnStart);
             this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnApply);
             this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCleansedOnCleanseActions);
@@ -3546,10 +3300,85 @@ namespace RogueCustomsDungeonEditor
             this.tpAlteredStatus.Text = ("Altered Status");
             this.tpAlteredStatus.UseVisualStyleBackColor = (true);
             // 
+            // saeAlteredStatusOnAttacked
+            // 
+            this.saeAlteredStatusOnAttacked.Action = (null);
+            this.saeAlteredStatusOnAttacked.ActionDescription = ("When someone afflicted  \r\nby it is attacked...");
+            this.saeAlteredStatusOnAttacked.ActionTypeText = ("On Statused Attacked");
+            this.saeAlteredStatusOnAttacked.AlteredStatuses = (null);
+            this.saeAlteredStatusOnAttacked.AutoSize = (true);
+            this.saeAlteredStatusOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeAlteredStatusOnAttacked.ClassId = (null);
+            this.saeAlteredStatusOnAttacked.Dungeon = (null);
+            this.saeAlteredStatusOnAttacked.EffectParamData = (null);
+            this.saeAlteredStatusOnAttacked.Location = (new global::System.Drawing.Point(391, 266));
+            this.saeAlteredStatusOnAttacked.Name = ("saeAlteredStatusOnAttacked");
+            this.saeAlteredStatusOnAttacked.PlaceholderActionName = ("OnAttacked");
+            this.saeAlteredStatusOnAttacked.RequiresActionName = (false);
+            this.saeAlteredStatusOnAttacked.RequiresCondition = (false);
+            this.saeAlteredStatusOnAttacked.RequiresDescription = (false);
+            this.saeAlteredStatusOnAttacked.Size = (new global::System.Drawing.Size(276, 32));
+            this.saeAlteredStatusOnAttacked.SourceDescription = ("Whoever it's inflicting");
+            this.saeAlteredStatusOnAttacked.TabIndex = (265);
+            this.saeAlteredStatusOnAttacked.TargetDescription = ("Whoever attacked them");
+            this.saeAlteredStatusOnAttacked.ThisDescription = ("The Altered Status");
+            this.saeAlteredStatusOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
+            this.saeAlteredStatusOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            // 
+            // saeAlteredStatusBeforeAttack
+            // 
+            this.saeAlteredStatusBeforeAttack.Action = (null);
+            this.saeAlteredStatusBeforeAttack.ActionDescription = ("When someone afflicted\r\nby it is about to attack...   ");
+            this.saeAlteredStatusBeforeAttack.ActionTypeText = ("Before Statused Attack");
+            this.saeAlteredStatusBeforeAttack.AlteredStatuses = (null);
+            this.saeAlteredStatusBeforeAttack.AutoSize = (true);
+            this.saeAlteredStatusBeforeAttack.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeAlteredStatusBeforeAttack.ClassId = (null);
+            this.saeAlteredStatusBeforeAttack.Dungeon = (null);
+            this.saeAlteredStatusBeforeAttack.EffectParamData = (null);
+            this.saeAlteredStatusBeforeAttack.Location = (new global::System.Drawing.Point(391, 229));
+            this.saeAlteredStatusBeforeAttack.Name = ("saeAlteredStatusBeforeAttack");
+            this.saeAlteredStatusBeforeAttack.PlaceholderActionName = ("BeforeAttack");
+            this.saeAlteredStatusBeforeAttack.RequiresActionName = (false);
+            this.saeAlteredStatusBeforeAttack.RequiresCondition = (false);
+            this.saeAlteredStatusBeforeAttack.RequiresDescription = (false);
+            this.saeAlteredStatusBeforeAttack.Size = (new global::System.Drawing.Size(276, 32));
+            this.saeAlteredStatusBeforeAttack.SourceDescription = ("Whoever it's inflicting");
+            this.saeAlteredStatusBeforeAttack.TabIndex = (264);
+            this.saeAlteredStatusBeforeAttack.TargetDescription = ("Whoever is being targeted");
+            this.saeAlteredStatusBeforeAttack.ThisDescription = ("The Altered Status");
+            this.saeAlteredStatusBeforeAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
+            this.saeAlteredStatusBeforeAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            // 
+            // saeAlteredStatusOnRemove
+            // 
+            this.saeAlteredStatusOnRemove.Action = (null);
+            this.saeAlteredStatusOnRemove.ActionDescription = ("When someone gets this\r\nAltered Status removed... ");
+            this.saeAlteredStatusOnRemove.ActionTypeText = ("On Status Remove");
+            this.saeAlteredStatusOnRemove.AlteredStatuses = (null);
+            this.saeAlteredStatusOnRemove.AutoSize = (true);
+            this.saeAlteredStatusOnRemove.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeAlteredStatusOnRemove.ClassId = (null);
+            this.saeAlteredStatusOnRemove.Dungeon = (null);
+            this.saeAlteredStatusOnRemove.EffectParamData = (null);
+            this.saeAlteredStatusOnRemove.Location = (new global::System.Drawing.Point(391, 153));
+            this.saeAlteredStatusOnRemove.Name = ("saeAlteredStatusOnRemove");
+            this.saeAlteredStatusOnRemove.PlaceholderActionName = ("OnRemove");
+            this.saeAlteredStatusOnRemove.RequiresActionName = (false);
+            this.saeAlteredStatusOnRemove.RequiresCondition = (false);
+            this.saeAlteredStatusOnRemove.RequiresDescription = (false);
+            this.saeAlteredStatusOnRemove.Size = (new global::System.Drawing.Size(276, 32));
+            this.saeAlteredStatusOnRemove.SourceDescription = ("The Altered Status");
+            this.saeAlteredStatusOnRemove.TabIndex = (263);
+            this.saeAlteredStatusOnRemove.TargetDescription = ("Whoever it's targeting");
+            this.saeAlteredStatusOnRemove.ThisDescription = ("The Altered Status");
+            this.saeAlteredStatusOnRemove.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
+            this.saeAlteredStatusOnRemove.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            // 
             // saeAlteredStatusOnTurnStart
             // 
             this.saeAlteredStatusOnTurnStart.Action = (null);
-            this.saeAlteredStatusOnTurnStart.ActionDescription = ("When someone afflicted\r\nby it begins a new turn...");
+            this.saeAlteredStatusOnTurnStart.ActionDescription = ("When someone afflicted\r\nby it begins a new turn...  ");
             this.saeAlteredStatusOnTurnStart.ActionTypeText = ("Turn Start");
             this.saeAlteredStatusOnTurnStart.AlteredStatuses = (null);
             this.saeAlteredStatusOnTurnStart.AutoSize = (true);
@@ -3557,13 +3386,13 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.ClassId = (null);
             this.saeAlteredStatusOnTurnStart.Dungeon = (null);
             this.saeAlteredStatusOnTurnStart.EffectParamData = (null);
-            this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(390, 153));
+            this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(391, 191));
             this.saeAlteredStatusOnTurnStart.Name = ("saeAlteredStatusOnTurnStart");
             this.saeAlteredStatusOnTurnStart.PlaceholderActionName = ("TurnStart");
             this.saeAlteredStatusOnTurnStart.RequiresActionName = (false);
             this.saeAlteredStatusOnTurnStart.RequiresCondition = (false);
             this.saeAlteredStatusOnTurnStart.RequiresDescription = (false);
-            this.saeAlteredStatusOnTurnStart.Size = (new global::System.Drawing.Size(270, 32));
+            this.saeAlteredStatusOnTurnStart.Size = (new global::System.Drawing.Size(276, 32));
             this.saeAlteredStatusOnTurnStart.SourceDescription = ("The Altered Status");
             this.saeAlteredStatusOnTurnStart.TabIndex = (262);
             this.saeAlteredStatusOnTurnStart.TargetDescription = ("Whoever it's inflicting");
@@ -3574,7 +3403,7 @@ namespace RogueCustomsDungeonEditor
             // saeAlteredStatusOnApply
             // 
             this.saeAlteredStatusOnApply.Action = (null);
-            this.saeAlteredStatusOnApply.ActionDescription = ("When someone gets this\r\nAltered Status inflicted...");
+            this.saeAlteredStatusOnApply.ActionDescription = ("When someone gets this\r\nAltered Status inflicted...  ");
             this.saeAlteredStatusOnApply.ActionTypeText = ("On Status Apply");
             this.saeAlteredStatusOnApply.AlteredStatuses = (null);
             this.saeAlteredStatusOnApply.AutoSize = (true);
@@ -3582,13 +3411,13 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.ClassId = (null);
             this.saeAlteredStatusOnApply.Dungeon = (null);
             this.saeAlteredStatusOnApply.EffectParamData = (null);
-            this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(390, 115));
+            this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(392, 115));
             this.saeAlteredStatusOnApply.Name = ("saeAlteredStatusOnApply");
             this.saeAlteredStatusOnApply.PlaceholderActionName = ("StatusApply");
             this.saeAlteredStatusOnApply.RequiresActionName = (false);
             this.saeAlteredStatusOnApply.RequiresCondition = (false);
             this.saeAlteredStatusOnApply.RequiresDescription = (false);
-            this.saeAlteredStatusOnApply.Size = (new global::System.Drawing.Size(271, 32));
+            this.saeAlteredStatusOnApply.Size = (new global::System.Drawing.Size(275, 32));
             this.saeAlteredStatusOnApply.SourceDescription = ("The Altered Status");
             this.saeAlteredStatusOnApply.TabIndex = (261);
             this.saeAlteredStatusOnApply.TargetDescription = ("Whoever it's targeting");
@@ -3720,17 +3549,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // crsAlteredStatus
             // 
-            gameColor51.A = ((global::System.Byte)(255));
-            gameColor51.B = ((global::System.Byte)(0));
-            gameColor51.G = ((global::System.Byte)(0));
-            gameColor51.R = ((global::System.Byte)(0));
-            this.crsAlteredStatus.BackgroundColor = (gameColor51);
+            this.crsAlteredStatus.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsAlteredStatus.BackgroundColor")));
             this.crsAlteredStatus.Character = ('\0');
-            gameColor52.A = ((global::System.Byte)(255));
-            gameColor52.B = ((global::System.Byte)(255));
-            gameColor52.G = ((global::System.Byte)(255));
-            gameColor52.R = ((global::System.Byte)(255));
-            this.crsAlteredStatus.ForegroundColor = (gameColor52);
+            this.crsAlteredStatus.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsAlteredStatus.ForegroundColor")));
             this.crsAlteredStatus.Location = (new global::System.Drawing.Point(524, 9));
             this.crsAlteredStatus.Name = ("crsAlteredStatus");
             this.crsAlteredStatus.Size = (new global::System.Drawing.Size(211, 83));
@@ -4080,5 +3901,8 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.StatsSheet ssPlayer;
         private global::RogueCustomsDungeonEditor.Controls.MultiActionEditor maeNPCOnInteracted;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeNPCOnSpawn;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnAttacked;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusBeforeAttack;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnRemove;
     }
 }

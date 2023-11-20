@@ -851,7 +851,7 @@
         },
         {
           "Key": "MagicPotionDescription",
-          "Value": "A mysterious beverage oozing with magic\n\nHeals up to 1d4 MP, then it disappears."
+          "Value": "A mysterious beverage oozing with magic.\r\n\r\nHeals up to 1d4 MP, then it disappears."
         },
         {
           "Key": "ThiefSandAttackText",
@@ -880,6 +880,22 @@
         {
           "Key": "SandAttackName",
           "Value": "Sand Attack"
+        },
+        {
+          "Key": "InvisibilityPotionName",
+          "Value": "Invisibility Potion"
+        },
+        {
+          "Key": "InvisibilityPotionDescription",
+          "Value": "A bottle whose contents you can\u0027t see.\n\nDrinking it makes you invisible for up to 20 turns.\n\n(Wears off prematurely if you attack or get attacked)"
+        },
+        {
+          "Key": "InvisibleName",
+          "Value": "Invisible"
+        },
+        {
+          "Key": "InvisibleDescription",
+          "Value": "Can\u0027t be seen. Wears off prematurely if you attack or get attacked."
         }
       ]
     },
@@ -1753,6 +1769,22 @@
         {
           "Key": "SandAttackName",
           "Value": "Ataque Arena"
+        },
+        {
+          "Key": "InvisibilityPotionName",
+          "Value": "Poci\u00F3n de Invisibilidad."
+        },
+        {
+          "Key": "InvisibilityPotionDescription",
+          "Value": "Una botella cuyo contenido no se puede ver.\r\n\r\nBeberla te har\u00E1 invisible por 20 turnos.\r\n\r\n(Se acaba antes si atacas o te atacan)"
+        },
+        {
+          "Key": "InvisibleName",
+          "Value": "Invisible"
+        },
+        {
+          "Key": "InvisibleDescription",
+          "Value": "No te pueden ver. Se acaba antes si atacas o te atacan."
         }
       ]
     }
@@ -2458,7 +2490,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 3,
-          "ChanceToPick": 25
+          "ChanceToPick": 20
         },
         {
           "ClassId": "Sword",
@@ -2549,10 +2581,20 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "InvisibilityPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 3,
-      "MaxItemsInFloor": 7,
+      "MaxItemsInFloor": 8,
       "PossibleTraps": [
         {
           "ClassId": "WonderTile",
@@ -2700,7 +2742,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 45
+          "ChanceToPick": 40
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2734,6 +2776,16 @@
         },
         {
           "ClassId": "MagicPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "InvisibilityPotion",
           "MinLevel": 0,
           "MaxLevel": 0,
           "OverallMaxForKindInFloor": 0,
@@ -2922,7 +2974,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 15
+          "ChanceToPick": 10
         },
         {
           "ClassId": "LeatherArmor",
@@ -3003,10 +3055,20 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "InvisibilityPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 3,
-      "MaxItemsInFloor": 7,
+      "MaxItemsInFloor": 8,
       "PossibleTraps": [
         {
           "ClassId": "WonderTile",
@@ -6621,7 +6683,7 @@
         }
       },
       "OnUse": {
-        "Name": "Heal",
+        "Name": "ItemUse",
         "Description": "",
         "MinimumRange": 0,
         "MaximumRange": 0,
@@ -6719,6 +6781,153 @@
       "Description": "MagicPotionDescription",
       "ConsoleRepresentation": {
         "Character": "M",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "20",
+      "EntityType": "Consumable",
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "ItemUse",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "DoesNotHaveStatus(target,Invisible)",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ],
+          "Then": {
+            "EffectName": "ApplyAlteredStatus",
+            "Params": [
+              {
+                "ParamName": "id",
+                "Value": "Invisible"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "power",
+                "Value": "0"
+              },
+              {
+                "ParamName": "turnlength",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
+              }
+            ],
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "text",
+                    "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Id": "InvisibilityPotion",
+      "Name": "InvisibilityPotionName",
+      "Description": "InvisibilityPotionDescription",
+      "ConsoleRepresentation": {
+        "Character": "I",
         "BackgroundColor": {
           "R": 0,
           "G": 0,
@@ -7592,6 +7801,158 @@
         },
         "ForegroundColor": {
           "R": 255,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    },
+    {
+      "OnAttacked": {
+        "Name": "OnAttacked",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            {
+              "ParamName": "Id",
+              "Value": "Invisible"
+            },
+            {
+              "ParamName": "Target",
+              "Value": "source"
+            },
+            {
+              "ParamName": "Accuracy",
+              "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
+            }
+          ]
+        }
+      },
+      "CanStack": false,
+      "CanOverwrite": false,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "OnApply": {
+        "Name": "StatusApply",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ToggleVisibility",
+          "Params": [
+            {
+              "ParamName": "Target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "Accuracy",
+              "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
+            }
+          ]
+        }
+      },
+      "OnRemove": {
+        "Name": "OnRemove",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ToggleVisibility",
+          "Params": [
+            {
+              "ParamName": "Target",
+              "Value": "target"
+            },
+            {
+              "ParamName": "Accuracy",
+              "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
+            }
+          ]
+        }
+      },
+      "BeforeAttack": {
+        "Name": "BeforeAttack",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "CleanseAlteredStatus",
+          "Params": [
+            {
+              "ParamName": "Id",
+              "Value": "Invisible"
+            },
+            {
+              "ParamName": "Target",
+              "Value": "source"
+            },
+            {
+              "ParamName": "Accuracy",
+              "Value": "100"
+            },
+            {
+              "ParamName": "BypassesAccuracyCheck",
+              "Value": "True"
+            }
+          ]
+        }
+      },
+      "Id": "Invisible",
+      "Name": "InvisibleName",
+      "Description": "InvisibleDescription",
+      "ConsoleRepresentation": {
+        "Character": "I",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
           "G": 0,
           "B": 0,
           "A": 255

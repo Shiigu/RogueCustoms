@@ -41,7 +41,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ConsoleRepresentation = item.ConsoleRepresentation;
             CanBeUsed = item.OnUse?.CanBeUsedOn(player) == true;
             IsEquipped = player.EquippedWeapon == item || player.EquippedArmor == item;
-            IsEquippable = item.EntityType == EntityType.Weapon || item.EntityType == EntityType.Armor;
+            IsEquippable = item.IsEquippable;
             IsInFloor = item.Position != null && item.Owner == null;
             ItemId = item.Id;
         }

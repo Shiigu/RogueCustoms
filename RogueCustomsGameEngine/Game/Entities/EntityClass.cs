@@ -86,7 +86,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool CanOverwrite;
         public readonly bool CleanseOnFloorChange;
         public readonly bool CleansedByCleanseActions;
+
+        public ActionWithEffects BeforeAttack { get; set; }
+
         public ActionWithEffects OnApply { get; set; }
+
+        public ActionWithEffects OnRemove { get; set; }
         #endregion
         public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType)
         {
@@ -257,6 +262,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CleansedByCleanseActions = alteredStatusInfo.CleansedByCleanseActions;
                 OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart);
                 OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply);
+                OnAttacked = ActionWithEffects.Create(alteredStatusInfo.OnAttacked);
+                BeforeAttack = ActionWithEffects.Create(alteredStatusInfo.BeforeAttack);
+                OnRemove = ActionWithEffects.Create(alteredStatusInfo.OnRemove);
             }
         }
 

@@ -19,22 +19,32 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CleanseOnFloorChange { get; set; }
         public bool CleansedByCleanseActions { get; set; }
 
+        public bool FlaggedToRemove { get; set; }
+
         public int RemainingTurns { get; set; }
 
         public int TurnLength { get; set; }
 
         public decimal Power { get; set; }
 
+        public ActionWithEffects BeforeAttack { get; set; }
+
         public ActionWithEffects OnApply { get; set; }
+
+        public ActionWithEffects OnRemove { get; set; }
 
         public AlteredStatus(EntityClass entityClass, Map map) : base(entityClass, map)
         {
+            FlaggedToRemove = false;
             Class = entityClass;
             CanStack = entityClass.CanStack;
             CanOverwrite = entityClass.CanOverwrite;
             CleanseOnFloorChange = entityClass.CleanseOnFloorChange;
             CleansedByCleanseActions = entityClass.CleansedByCleanseActions;
+            BeforeAttack = MapClassAction(entityClass.BeforeAttack);
+            OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             OnApply = MapClassAction(entityClass.OnApply);
+            OnRemove = MapClassAction(entityClass.OnRemove);
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
         }
 
@@ -62,7 +72,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override string ToString() => $"{Name} ({Description}) - {TurnLength - RemainingTurns} turns left";
 
-        public void PerformOnTurnStartActions()
+        public void PerformOnTurnStart()
         {
             if (Target == null) return;
             if (OwnOnTurnStart?.ChecksCondition(Target, Target) == true)

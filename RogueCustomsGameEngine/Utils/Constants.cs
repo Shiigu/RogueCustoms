@@ -23,7 +23,7 @@ namespace RogueCustomsGameEngine.Utils
         public static readonly string[] EffectsThatTriggerOnAttacked = new[]
         {
             "DealDamage", "StealItem", "ApplyAlteredStatus", "CleanseAlteredStatus", "CleanseAllAlteredStatuses",
-            "ApplyStatAlteration", "CleanseStatAlteration", "CleanseStatAlterations", "ForceSkipTurn"
+            "ApplyStatAlteration", "CleanseStatAlteration", "CleanseStatAlterations", "ForceSkipTurn", "Teleport"
         };
 
         public const int RESOURCE_STAT_CAP = 99999;

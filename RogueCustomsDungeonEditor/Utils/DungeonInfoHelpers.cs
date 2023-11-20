@@ -733,6 +733,12 @@ namespace RogueCustomsDungeonEditor.Utils
                     alteredStatus.OnTurnStart = null;
                 if (alteredStatus.OnApply.IsNullOrEmpty())
                     alteredStatus.OnApply = null;
+                if (alteredStatus.BeforeAttack.IsNullOrEmpty())
+                    alteredStatus.BeforeAttack = null;
+                if (alteredStatus.OnAttacked.IsNullOrEmpty())
+                    alteredStatus.OnAttacked = null;
+                if (alteredStatus.OnRemove.IsNullOrEmpty())
+                    alteredStatus.OnRemove = null;
             }
         }
 

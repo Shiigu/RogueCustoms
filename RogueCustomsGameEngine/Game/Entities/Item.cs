@@ -4,6 +4,8 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using static System.Collections.Specialized.BitVector32;
+using RogueCustomsGameEngine.Utils;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -12,6 +14,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class Item : Entity, IHasActions
     {
+        public bool IsEquippable => EntityType == EntityType.Weapon || EntityType == EntityType.Armor;
         public bool CanBePickedUp { get; set; }
         public string Power { get; set; }
         public Character Owner { get; set; }
@@ -34,9 +37,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
         }
 
-        public void Stepped(Entity stomper)
+        public void Stepped(Character stomper)
         {
-            OnStepped?.Do(this, stomper, true);
+            var successfulEffects = OnStepped?.Do(this, stomper, true);
+            if (Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+                stomper.AttackedBy(null);
         }
         public void Used(Entity user)
         {
@@ -56,7 +61,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnUse.CurrentCooldown--;
         }
 
-        public void PerformOnTurnStartActions()
+        public void PerformOnTurnStart()
         {
             if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.ChecksCondition(Owner, Owner))
                 OwnOnTurnStart?.Do(this, Owner, true);
