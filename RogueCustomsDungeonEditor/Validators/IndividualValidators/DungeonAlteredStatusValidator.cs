@@ -29,18 +29,35 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!alteredStatus.CleansedByCleanseActions && !alteredStatus.CleanseOnFloorChange)
                 messages.AddWarning("Altered Status has both CleansedByCleanseActions and CleanseOnFloorChange set to False, making the status unremovable if TurnLength is a negative number. Consider making one of them True.");
 
-            if (alteredStatus.OnTurnStart != null)
-            {
-                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
-            }
-
-            if (alteredStatus.OnApply != null)
-            {
-                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OnApply, dungeonJson, sampleDungeon));
-            }
-
             if (alteredStatus.OnTurnStart == null && alteredStatus.OnApply == null)
                 messages.AddError("Altered Status does not have OnTurnStart or OnApply. It needs to have at least one of them.");
+            else
+            {
+                if (alteredStatus.OnTurnStart != null)
+                {
+                    messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
+                }
+
+                if (alteredStatus.OnApply != null)
+                {
+                    messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OnApply, dungeonJson, sampleDungeon));
+                }
+            }
+
+            if (alteredStatus.BeforeAttack != null)
+            {
+                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.BeforeAttack, dungeonJson, sampleDungeon));
+            }
+
+            if (alteredStatus.OnAttacked != null)
+            {
+                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
+            }
+
+            if (alteredStatus.OnRemove != null)
+            {
+                messages.AddRange(ActionValidator.Validate(alteredStatusAsInstance.OnRemove, dungeonJson, sampleDungeon));
+            }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 

@@ -127,13 +127,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
-            else if (owner != null && (owner.EntityType == EntityType.Weapon || owner.EntityType == EntityType.Armor))
+            else if (owner is Item item && item.IsEquippable)
             {
                 source = GetATestCharacter(sampleDungeon);
-                (owner as Item).Owner = source as NonPlayableCharacter;
+                item.Owner = source as NonPlayableCharacter;
                 if (owner.EntityType == EntityType.Weapon)
                 {
-                    (source as Character).EquippedWeapon = owner as Item;
+                    (source as Character).EquippedWeapon = item;
                     var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
                     fillerArmor.Owner = source as Character;
                     (source as Character).EquippedArmor = fillerArmor;
@@ -143,8 +143,20 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
                     fillerWeapon.Owner = source as Character;
                     (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = owner as Item;
+                    (source as Character).EquippedArmor = item;
                 }
+            }
+            else if (owner is AlteredStatus alteredStatus)
+            {
+                source = GetATestCharacter(sampleDungeon);
+                var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+                fillerWeapon.Owner = source as Character;
+                (source as Character).EquippedWeapon = fillerWeapon;
+                (source as Character).EquippedArmor = owner as Item;
+                var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+                fillerArmor.Owner = source as Character;
+                (source as Character).EquippedArmor = fillerArmor;
+                (source as Character).AlteredStatuses.Add(alteredStatus);
             }
             else if (owner == null)
             {

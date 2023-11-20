@@ -124,7 +124,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
             }
 
-            UsableAlteredStatusList = alteredStatusList.Where(als => !als.Equals(classId)).ToList();
+            UsableAlteredStatusList = alteredStatusList;
             SelectableEffects = selectableEffects;
             RefreshActionSequenceTree();
 
@@ -541,6 +541,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
+                        if (!RequiresActionName)
+                            ActionToSave.Name = PlaceholderActionName;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         this.Saved = true;
                         this.Close();

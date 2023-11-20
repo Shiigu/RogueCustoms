@@ -1,4 +1,3 @@
-using MathNet.Numerics.Distributions;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.HelperForms;
@@ -11,18 +10,14 @@ using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection.Metadata;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Text.Unicode;
 using System;
 using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
-using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsDungeonEditor.Controls;
 
 namespace RogueCustomsDungeonEditor
@@ -1019,7 +1014,7 @@ namespace RogueCustomsDungeonEditor
         private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
         {
             sae.Action = action;
-            sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             sae.ClassId = classId;
             sae.Dungeon = ActiveDungeon;
             sae.EffectParamData = EffectParamData;
@@ -1028,7 +1023,7 @@ namespace RogueCustomsDungeonEditor
         private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
         {
             mae.Actions = actions;
-            mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Where(als => !als.Id.Equals(classId)).Select(als => als.Id).ToList();
+            mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             mae.ClassId = classId;
             mae.Dungeon = ActiveDungeon;
             mae.EffectParamData = EffectParamData;
@@ -1249,6 +1244,22 @@ namespace RogueCustomsDungeonEditor
 
         private bool PromptLocaleUpdate(LocaleInfo locale)
         {
+            if (DirtyEntry)
+            {
+                var updateEntryPromptResult = MessageBox.Show(
+                                $"Your currently-opened locale entry is not saved. Do you want to save before saving the entire Locale?\n\n(Clicking \"No\" will cancel the entire saving process)",
+                                "Update Locale",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning
+                            );
+
+                if (updateEntryPromptResult != DialogResult.Yes)
+                {
+                    return false;
+                }
+                btnUpdateLocale_Click(null, EventArgs.Empty);
+            }
+
             var messageBoxResult = MessageBox.Show(
                 $"Are you sure you want to overwrite the existing values in Locale {locale.Language}?",
                 "Update Locale",
@@ -3758,6 +3769,9 @@ namespace RogueCustomsDungeonEditor
             chkAlteredStatusCleansedOnCleanseActions.Checked = alteredStatus.CleansedByCleanseActions;
             SetSingleActionEditorParams(saeAlteredStatusOnApply, alteredStatus.Id, alteredStatus.OnApply);
             SetSingleActionEditorParams(saeAlteredStatusOnTurnStart, alteredStatus.Id, alteredStatus.OnTurnStart);
+            SetSingleActionEditorParams(saeAlteredStatusBeforeAttack, alteredStatus.Id, alteredStatus.BeforeAttack);
+            SetSingleActionEditorParams(saeAlteredStatusOnAttacked, alteredStatus.Id, alteredStatus.OnAttacked);
+            SetSingleActionEditorParams(saeAlteredStatusOnRemove, alteredStatus.Id, alteredStatus.OnRemove);
         }
 
         private bool SaveAlteredStatus(string id)
@@ -3785,6 +3799,9 @@ namespace RogueCustomsDungeonEditor
 
             alteredStatus.OnApply = saeAlteredStatusOnApply.Action;
             alteredStatus.OnTurnStart = saeAlteredStatusOnTurnStart.Action;
+            alteredStatus.BeforeAttack = saeAlteredStatusBeforeAttack.Action;
+            alteredStatus.OnAttacked = saeAlteredStatusOnAttacked.Action;
+            alteredStatus.OnRemove = saeAlteredStatusOnRemove.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(id)))
             {
@@ -3930,14 +3947,20 @@ namespace RogueCustomsDungeonEditor
         private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
         {
             if (chkAlteredStatusCanStack.Checked)
+            {
                 chkAlteredStatusCanOverwrite.Checked = false;
+                chkAlteredStatusCanOverwrite.Enabled = false;
+            }
             DirtyTab = true;
         }
 
         private void chkAlteredStatusCanOverwrite_CheckedChanged(object sender, EventArgs e)
         {
             if (chkAlteredStatusCanOverwrite.Checked)
+            {
                 chkAlteredStatusCanStack.Checked = false;
+                chkAlteredStatusCanStack.Enabled = false;
+            }
             DirtyTab = true;
         }
 

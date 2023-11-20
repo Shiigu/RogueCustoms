@@ -143,7 +143,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnTurnStart);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnTurnStart != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
+                    if (i?.OwnOnTurnStart != null && !i.IsEquippable)
                         actionList.Add(i.OwnOnTurnStart);
                 });
                 return actionList;
@@ -162,7 +162,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.AddRange(Armor.OwnOnAttack);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttack != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
+                    if (i?.OwnOnAttack != null && !i.IsEquippable)
                         actionList.AddRange(i.OwnOnAttack);
                 });
 
@@ -187,8 +187,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnAttacked);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttacked != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
+                    if (i?.OwnOnAttacked != null && !i.IsEquippable)
                         actionList.Add(i.OwnOnAttacked);
+                });
+                AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
+                {
+                    if (als?.OwnOnAttacked != null)
+                        actionList.Add(als.OwnOnAttacked);
                 });
                 return actionList;
             }
@@ -206,7 +211,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(Armor.OwnOnDeath);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnDeath != null && i.EntityType != EntityType.Weapon && i.EntityType != EntityType.Armor)
+                    if (i?.OwnOnDeath != null && !i.IsEquippable)
                         actionList.Add(i.OwnOnDeath);
                 });
                 return actionList;
@@ -338,30 +343,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnAttacked?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnTurnStart?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            MaxHPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            MaxMPModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            AttackModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            DefenseModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            MovementModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            HPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            MPRegenerationModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            AccuracyModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
-            EvasionModifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            foreach (var modification in StatModifications)
+            {
+                modification.Modifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);
+            }
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
-            MaxHPModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            MaxMPModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            AttackModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            DefenseModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            MovementModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            HPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            MPRegenerationModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            AccuracyModifications?.RemoveAll(a => a.RemainingTurns == 0);
-            EvasionModifications?.RemoveAll(a => a.RemainingTurns == 0);
+            foreach (var modification in StatModifications)
+            {
+                modification.Modifications?.RemoveAll(a => a.RemainingTurns == 0);
+            }
+            AlteredStatuses?.Where(a => a.RemainingTurns == 0 && !a.FlaggedToRemove).ForEach(als => als.OnRemove?.Do(als, this, false));
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
 
-        public void PerformOnTurnStartActions()
+        public void PerformOnTurnStart()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             FOVTiles = ComputeFOVTiles();
@@ -388,7 +384,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             RefreshCooldownsAndUpdateTurnLength();
             OnTurnStart.Where(otsa => otsa.ChecksCondition(this, this)).ForEach(otsa => otsa?.Do(otsa.User, this, true));
-            AlteredStatuses?.ForEach(als => als.PerformOnTurnStartActions());
+            AlteredStatuses?.ForEach(als => als.PerformOnTurnStart());
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
@@ -460,9 +456,10 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool CanSee(Entity entity)
         {
-            return entity.Visible
+            return this == entity
+                || (entity.Visible
                 && entity.Position != null
-                && ComputeFOVTiles().Contains(entity.ContainingTile);
+                && ComputeFOVTiles().Contains(entity.ContainingTile));
         }
 
         public void GainExperience(int pointsToAdd)
@@ -554,6 +551,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void AttackCharacter(Character target, ActionWithEffects action)
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            AlteredStatuses.Where(als => als.RemainingTurns > 0).ForEach(als => als.BeforeAttack?.Do(this, target, true));
             if (UsesMP)
                 MP = Math.Max(0, MP - action.MPCost);
             var successfulEffects = action?.Do(this, target, true);

@@ -699,14 +699,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             SetFlagValue("TurnCount", TurnCount);
             _displayedTurnMessage = false;
             Player.TookAction = false;
-            Player.PerformOnTurnStartActions();
+            Player.PerformOnTurnStart();
             Player.RemainingMovement = Player.Movement;
             LatestPlayerRemainingMovement = Player.RemainingMovement;
             AICharacters.Where(e => e != null).ForEach(e =>
             {
                 e.RemainingMovement = e.Movement;
                 e.TookAction = false;
-                e.PerformOnTurnStartActions();
+                e.PerformOnTurnStart();
             });
         }
 

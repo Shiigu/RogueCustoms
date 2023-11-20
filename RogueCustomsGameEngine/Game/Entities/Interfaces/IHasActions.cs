@@ -2,7 +2,7 @@
 {
     public interface IHasActions
     {
-        void PerformOnTurnStartActions();
+        void PerformOnTurnStart();
         void RefreshCooldownsAndUpdateTurnLength();
     }
 }
