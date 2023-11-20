@@ -269,6 +269,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             base.AttackedBy(source);
 
+            if (source == null) return;
+
             // If this character has a neutral relation with another's faction, they get flagged as an enemy if they get attacked by them
 
             if (CalculateTargetTypeFor(source) != TargetType.Neutral) return;
