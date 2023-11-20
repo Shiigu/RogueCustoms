@@ -802,19 +802,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTargetTile = GetCharacters().Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
             if (characterInTargetTile != null)
             {
-                if (((characterInTargetTile.Visible && character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) || !characterInTargetTile.Visible) && characterInTargetTile.CanTakeAction && characterInTargetTile.Movement > 0)
-                {
-                    // Swap positions with allies, neutrals or invisibles
-                    characterInTargetTile.Position = character.Position;
-                    if(characterInTargetTile.RemainingMovement > 0)
-                        characterInTargetTile.RemainingMovement--;
-                    if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
-                        AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
-                }
-                else
-                {
-                    return false;
-                }
+                if (character != Player) return false;
+                if (characterInTargetTile.Movement <= 0) return false;
+                if (!characterInTargetTile.CanTakeAction) return false;
+                if (!character.Visible && characterInTargetTile.Visible) return false;
+                if (characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) return false;
+                // Swap positions with allies, neutrals or invisibles
+                characterInTargetTile.Position = character.Position;
+                if (characterInTargetTile.RemainingMovement > 0)
+                    characterInTargetTile.RemainingMovement--;
+                if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
+                    AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
             }
             if (character is NonPlayableCharacter npc)
                 npc.LastPosition = character.Position;

@@ -143,6 +143,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if(ExistenceStatus != EntityExistenceStatus.Alive
                 || (CurrentTarget != null && CurrentTarget.ExistenceStatus != EntityExistenceStatus.Alive)
+                || (CurrentTarget != null && !CurrentTarget.Faction.AlliedWith.Contains(Faction) && !CurrentTarget.Visible)
                 || CurrentTarget == null)
             {
                 RemainingMovement = 0;

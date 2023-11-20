@@ -123,16 +123,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (CurrentFloorLevel > 1)
             {
                 Messages.Clear();
-                var statusNamesToRemove = PlayerCharacter.AlteredStatuses
-                    .Where(als => als.CleanseOnFloorChange)
-                    .Select(status => status.Name)
-                    .ToList();
-
-                PlayerCharacter.MaxHPModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
-                PlayerCharacter.AttackModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
-                PlayerCharacter.DefenseModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
-                PlayerCharacter.MovementModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
-                PlayerCharacter.HPRegenerationModifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                
+                var statusNamesToRemove = new List<string>();
+                foreach (var statusToRemove in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
+                {
+                    statusNamesToRemove.Add(statusToRemove.Name);
+                    statusToRemove.OnRemove?.Do(statusToRemove, PlayerCharacter, false);
+                }
+                foreach (var modification in PlayerCharacter.StatModifications)
+                {
+                   modification.Modifications?.RemoveAll(a => statusNamesToRemove.Contains(a.Id));
+                }
 
                 PlayerCharacter.AlteredStatuses.RemoveAll(als => als.CleanseOnFloorChange);
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
