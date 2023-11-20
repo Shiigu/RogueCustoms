@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void Stepped(Character stomper)
         {
             var successfulEffects = OnStepped?.Do(this, stomper, true);
-            if (Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+            if (successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 stomper.AttackedBy(null);
         }
         public void Used(Entity user)
