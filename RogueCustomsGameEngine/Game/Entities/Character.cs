@@ -369,7 +369,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 foreach (var (statName, modifications) in StatModifications)
                 {
-                    modificationsThatMightBeNeutralized.Add((modifications, statName, modifications.Any() && modifications.Exists(mhm => mhm.RemainingTurns > 1)));
+                    modificationsThatMightBeNeutralized.Add((modifications, statName, modifications.Any() && modifications.Exists(mhm => mhm.RemainingTurns == 1)));
                 }
 
                 alteredStatusesThatMightBeNeutralized = AlteredStatuses
@@ -555,7 +555,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (UsesMP)
                 MP = Math.Max(0, MP - action.MPCost);
             var successfulEffects = action?.Do(this, target, true);
-            if(Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+            if(successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
             if(action?.FinishesTurnWhenUsed == true)
                 TookAction = true;
