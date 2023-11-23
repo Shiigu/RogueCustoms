@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SadConsole.Input;
-using static SFML.Graphics.Font;
 using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
 using RogueCustomsConsoleClient.UI.Windows;
 
@@ -35,7 +34,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             var windowHeaderText = LocalizationManager.GetString("PickDungeonHeaderText").ToAscii();
             var pickButtonText = LocalizationManager.GetString("PickButtonText").ToAscii();
             var returnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
             var windowHeaderConsole = new ControlsConsole(Width, 1)
             {
@@ -56,7 +54,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 Position = new Point(1, 6),
                 VisibleItemsMax = 20,
                 IsScrollBarVisible = true,
-                FocusOnClick = false
+                FocusOnMouseClick = false
             };
             DungeonListBox.SelectedItemChanged += DungeonListBox_SelectedItemChanged;
             Controls.Add(DungeonListBox);

@@ -23,8 +23,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public new void Build()
         {
             base.Build();
-            DefaultBackground = Color.Black;
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             UseMouse = true;
             RefreshOnlyOnStatusUpdate = false;
             var saveButtonText = LocalizationManager.GetString("SaveDungeonButtonText").ToAscii();

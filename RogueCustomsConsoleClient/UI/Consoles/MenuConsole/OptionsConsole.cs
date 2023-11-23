@@ -10,7 +10,6 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using System.Collections.Generic;
 using System;
 using SadConsole.Input;
-using static SFML.Graphics.Font;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -42,7 +41,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             var serverAddressTextBoxHeaderText = LocalizationManager.GetString("ServerAddressTextBoxHeaderText").ToAscii();
             var saveButtonText = LocalizationManager.GetString("SaveSettingsButtonText").ToAscii();
             var returnButtonText = LocalizationManager.GetString("ReturnToMainMenuText").ToAscii();
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
 
             var windowHeaderConsole = new ControlsConsole(Width, 5)
@@ -99,7 +97,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 VisibleItemsMax = 5,
                 IsScrollBarVisible = true,
-                FocusOnClick = false,
+                FocusOnMouseClick = false,
                 TabIndex = 2,
                 Position = new Point((Width / 2) - (LanguageTextBoxHeader.Width / 2) - 18, 17)
             };
@@ -123,7 +121,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             Controls.Add(ServerAddressTextBoxHeader);
 
             ServerAddressTextBox = new TextBox(30);
-            ServerAddressTextBox.EditingTextChanged += ServerAddressTextBox_EditingTextChanged;
+            ServerAddressTextBox.TextChanged += ServerAddressTextBox_EditingTextChanged;
             ServerAddressTextBox.Position = new Point(ServerAddressTextBoxHeader.Position.X, 28);
             ServerAddressTextBox.TabIndex = 3;
             Controls.Add(ServerAddressTextBox);
@@ -131,6 +129,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             SaveButton = new Button(saveButtonText.Length + 2)
             {
                 Text = saveButtonText,
+                UseKeyboard = false,
                 TabIndex = 4
             };
             SaveButton.Position = new Point((Width / 4) - (SaveButton.Width / 2), (Height / 2) - 4);
@@ -141,11 +140,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             {
                 Text = returnButtonText,
                 IsEnabled = true,
+                UseKeyboard = false,
                 TabIndex = 5
             };
             ReturnButton.Position = new Point((Width / 4) - (ReturnButton.Width / 2), (Height / 2) - 2);
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
+            RadioButtonHeader.IsFocused = true;
         }
         public override void Update(TimeSpan delta)
         {
@@ -195,13 +196,11 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                     if (Controls.FocusedControl == LocalRadioButton)
                     {
                         ServerRadioButton.IsFocused = true;
-                        ServerRadioButton.Focused();
                         handled = true;
                     }
                     else if (Controls.FocusedControl == ServerRadioButton)
                     {
                         LocalRadioButton.IsFocused = true;
-                        LocalRadioButton.Focused();
                         handled = true;
                     }
                 }

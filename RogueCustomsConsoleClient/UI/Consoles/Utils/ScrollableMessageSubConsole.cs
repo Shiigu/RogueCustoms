@@ -39,7 +39,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.Utils
 
         private void ScrollBar_ValueChanged(object? sender, EventArgs e)
         {
-            View = new Rectangle(0, ScrollBar.Value, Width, ViewHeight);
+            ViewPosition = new Point(0, ScrollBar.Value);
         }
 
         public void PrintList(List<string> textList)

@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.Serialization;
 using SadRogue.Primitives;
 
 namespace SadConsole.Effects
@@ -10,61 +12,65 @@ namespace SadConsole.Effects
     public class BicolorBlink : CellEffectBase
     {
         private int _blinkCounter = 0;
+
         private bool _isOn;
-        private System.TimeSpan _duration = System.TimeSpan.Zero;
 
-        /// <summary>
-        /// In seconds, how fast the fade in and fade out each are
-        /// </summary>
+        private TimeSpan _duration = TimeSpan.Zero;
+
+        //
+        // Resumen:
+        //     How long it takes to transition from blinking in and out.
         [DataMember]
-        public System.TimeSpan BlinkSpeed { get; set; }
+        public TimeSpan BlinkSpeed { get; set; }
 
-        /// <summary>
-        /// The color to fade out to.
-        /// </summary>
+        //
+        // Resumen:
+        //     The color the foreground blinks to.
         [DataMember]
         public Color BlinkOutForegroundColor { get; set; }
 
-        /// <summary>
-        /// The color to fade out to.
-        /// </summary>
+        //
+        // Resumen:
+        //     The color the background blinks to.
         [DataMember]
         public Color BlinkOutBackgroundColor { get; set; }
 
-        /// <summary>
-        /// When <see langword="true"/>, ignores the <see cref="BlinkOutBackgroundColor"/> and <see cref="BlinkOutForegroundColor"/> colors and instead swaps the glyph's foreground and background colors.
-        /// </summary>
+        //
+        // Resumen:
+        //     When true, ignores the SadConsole.Effects.Blinker.BlinkOutBackgroundColor and
+        //     SadConsole.Effects.Blinker.BlinkOutForegroundColor colors and instead swaps the
+        //     glyph's foreground and background colors.
         [DataMember]
         public bool SwapColorsFromCell { get; set; }
 
-        /// <summary>
-        /// How many times to blink. The value of -1 represents forever.
-        /// </summary>
+        //
+        // Resumen:
+        //     How many times to blink. The value of -1 represents forever.
         [DataMember]
         public int BlinkCount { get; set; }
 
-        /// <summary>
-        /// The total duraction this effect will run for, before being flagged as finished. <see cref="System.TimeSpan.MaxValue"/> represents forever.
-        /// </summary>
+        //
+        // Resumen:
+        //     The total duraction this effect will run for, before being flagged as finished.
+        //     System.TimeSpan.MaxValue represents forever.
         [DataMember]
-        public System.TimeSpan Duration { get; set; }
+        public TimeSpan Duration { get; set; }
 
-        /// <summary>
-        /// Creates a new instance of the blink effect.
-        /// </summary>
+        //
+        // Resumen:
+        //     Creates a new instance of the blink effect.
         public BicolorBlink()
         {
-            Duration = System.TimeSpan.MaxValue;
+            Duration = TimeSpan.MaxValue;
             BlinkCount = -1;
-            BlinkSpeed = System.TimeSpan.FromSeconds(1);
+            BlinkSpeed = TimeSpan.FromSeconds(1.0);
             BlinkOutBackgroundColor = Color.Transparent;
             BlinkOutForegroundColor = Color.Transparent;
             _isOn = true;
             _blinkCounter = 0;
         }
 
-        /// <inheritdoc />
-        public override bool ApplyToCell(ColoredGlyph cell, ColoredGlyphState originalState)
+        public override bool ApplyToCell(ColoredGlyphBase cell, ColoredGlyphBase originalState)
         {
             Color oldForeColor = cell.Foreground;
             Color oldBackColor = cell.Background;
@@ -90,70 +96,86 @@ namespace SadConsole.Effects
             return cell.Foreground != oldForeColor || cell.Background != oldBackColor;
         }
 
-        /// <inheritdoc />
-        public override void Update(System.TimeSpan delta)
+        public override void Update(TimeSpan delta)
         {
             base.Update(delta);
-
-            if (_delayFinished && !IsFinished)
+            if (!_delayFinished || base.IsFinished)
             {
-                if (Duration != System.TimeSpan.MaxValue)
+                return;
+            }
+
+            if (Duration != TimeSpan.MaxValue)
+            {
+                _duration += delta;
+                if (_duration >= Duration)
                 {
-                    _duration += delta;
-                    if (_duration >= Duration)
-                    {
-                        IsFinished = true;
-                        return;
-                    }
+                    base.IsFinished = true;
+                    return;
                 }
+            }
 
-                if (_timeElapsed >= BlinkSpeed)
+            if (_timeElapsed < BlinkSpeed)
+            {
+                return;
+            }
+
+            _isOn = !_isOn;
+            _timeElapsed = TimeSpan.Zero;
+            if (BlinkCount != -1)
+            {
+                _blinkCounter++;
+                if (BlinkCount != -1 && _blinkCounter > BlinkCount * 2 + 1)
                 {
-                    _isOn = !_isOn;
-                    _timeElapsed = System.TimeSpan.Zero;
-
-                    if (BlinkCount != -1)
-                    {
-                        _blinkCounter += 1;
-
-                        if (BlinkCount != -1 && _blinkCounter > (BlinkCount))
-                            IsFinished = true;
-                    }
+                    base.IsFinished = true;
                 }
             }
         }
 
-        /// <summary>
-        /// Restarts the cell effect but does not reset it.
-        /// </summary>
+        //
+        // Resumen:
+        //     Restarts the cell effect but does not reset it.
         public override void Restart()
         {
             _isOn = true;
             _blinkCounter = 0;
-            _duration = System.TimeSpan.Zero;
-
+            _duration = TimeSpan.Zero;
             base.Restart();
         }
 
-        /// <inheritdoc />
-        public override ICellEffect Clone() => new BicolorBlink()
+        public override ICellEffect Clone()
         {
-            BlinkOutBackgroundColor = BlinkOutBackgroundColor,
-            BlinkOutForegroundColor = BlinkOutForegroundColor,
-            BlinkSpeed = BlinkSpeed,
-            _isOn = _isOn,
-            SwapColorsFromCell = SwapColorsFromCell,
-            BlinkCount = BlinkCount,
+            return new BicolorBlink
+            {
+                BlinkOutBackgroundColor = BlinkOutBackgroundColor,
+                BlinkOutForegroundColor = BlinkOutForegroundColor,
+                BlinkSpeed = BlinkSpeed,
+                _isOn = _isOn,
+                SwapColorsFromCell = SwapColorsFromCell,
+                BlinkCount = BlinkCount,
+                IsFinished = base.IsFinished,
+                StartDelay = base.StartDelay,
+                CloneOnAdd = base.CloneOnAdd,
+                RemoveOnFinished = base.RemoveOnFinished,
+                RestoreCellOnRemoved = base.RestoreCellOnRemoved,
+                RunEffectOnApply = base.RunEffectOnApply,
+                _timeElapsed = _timeElapsed
+            };
+        }
 
-            IsFinished = IsFinished,
-            StartDelay = StartDelay,
-            CloneOnAdd = CloneOnAdd,
-            RemoveOnFinished = RemoveOnFinished,
-            RestoreCellOnRemoved = RestoreCellOnRemoved,
-            _timeElapsed = _timeElapsed,
-        };
-
-        /// <inheritdoc />
-        public override string ToString() => string.Format("BLINKER-{0}-{1}-{2}-{3}-{4}", BlinkOutBackgroundColor.PackedValue, BlinkOutForegroundColor.PackedValue, BlinkSpeed, SwapColorsFromCell, StartDelay, BlinkCount);
+        public override string ToString()
+        {
+            DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(12, 5);
+            defaultInterpolatedStringHandler.AppendLiteral("BLINKER-");
+            defaultInterpolatedStringHandler.AppendFormatted(BlinkOutBackgroundColor.PackedValue);
+            defaultInterpolatedStringHandler.AppendLiteral("-");
+            defaultInterpolatedStringHandler.AppendFormatted(BlinkOutForegroundColor.PackedValue);
+            defaultInterpolatedStringHandler.AppendLiteral("-");
+            defaultInterpolatedStringHandler.AppendFormatted(BlinkSpeed);
+            defaultInterpolatedStringHandler.AppendLiteral("-");
+            defaultInterpolatedStringHandler.AppendFormatted(SwapColorsFromCell);
+            defaultInterpolatedStringHandler.AppendLiteral("-");
+            defaultInterpolatedStringHandler.AppendFormatted(base.StartDelay);
+            return defaultInterpolatedStringHandler.ToStringAndClear();
+        }
     }
 }

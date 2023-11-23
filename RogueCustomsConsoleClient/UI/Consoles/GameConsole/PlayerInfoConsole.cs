@@ -9,6 +9,7 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System;
 using System.Linq;
 using SadConsole.UI;
+using RogueCustomsConsoleClient.UI.Consoles.Utils;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
@@ -27,7 +28,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public new void Build()
         {
             base.Build();
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
             var detailsButtonText = $" {LocalizationManager.GetString("DetailsButtonText")} ".ToAscii();
             DetailsButton = new Button(detailsButtonText.Length, 1)
@@ -37,41 +37,25 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             };
             DetailsButton.Click += DetailsButton_Click;
 
-            HPBar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left)
+            HPBar = new RogueProgressBar(Width - 4, 1, HorizontalAlignment.Left)
             {
                 Position = new Point(2, 10),
                 DisplayTextAlignment = HorizontalAlignment.Center,
-                DisplayTextColor = Color.White
+                DisplayTextColor = Color.White,
+                BarColor = Color.Red,
+                BackgroundColor = Color.Red,
+                BackgroundGlyph = '░'.ToGlyph()
             };
 
-            var hpBarThemeColors = new Colors();
-
-            hpBarThemeColors.Appearance_ControlDisabled.Foreground = Color.Red;
-            hpBarThemeColors.Appearance_ControlFocused.Foreground = Color.Red;
-            hpBarThemeColors.Appearance_ControlMouseDown.Foreground = Color.Red;
-            hpBarThemeColors.Appearance_ControlOver.Foreground = Color.Red;
-            hpBarThemeColors.Appearance_ControlNormal.Foreground = Color.Red;
-            hpBarThemeColors.Appearance_ControlSelected.Foreground = Color.Red;
-
-            HPBar.SetThemeColors(hpBarThemeColors);
-
-            MPBar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left)
+            MPBar = new RogueProgressBar(Width - 4, 1, HorizontalAlignment.Left)
             {
                 Position = new Point(2, 11),
                 DisplayTextAlignment = HorizontalAlignment.Center,
-                DisplayTextColor = Color.White
+                DisplayTextColor = Color.White,
+                BarColor = Color.Blue,
+                BackgroundColor = Color.Blue,
+                BackgroundGlyph = '░'.ToGlyph()
             };
-
-            var mpBarThemeColors = new Colors();
-
-            mpBarThemeColors.Appearance_ControlDisabled.Foreground = Color.Blue;
-            mpBarThemeColors.Appearance_ControlFocused.Foreground = Color.Blue;
-            mpBarThemeColors.Appearance_ControlMouseDown.Foreground = Color.Blue;
-            mpBarThemeColors.Appearance_ControlOver.Foreground = Color.Blue;
-            mpBarThemeColors.Appearance_ControlNormal.Foreground = Color.Blue;
-            mpBarThemeColors.Appearance_ControlSelected.Foreground = Color.Blue;
-
-            MPBar.SetThemeColors(mpBarThemeColors);
 
             Controls.Add(HPBar);
             Controls.Add(MPBar);

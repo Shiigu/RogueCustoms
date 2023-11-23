@@ -2,7 +2,6 @@
 using SadConsole.UI;
 using SadConsole;
 using SadRogue.Primitives;
-using Themes = SadConsole.UI.Themes;
 using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using Console = SadConsole.Console;
@@ -87,7 +86,6 @@ namespace RogueCustomsConsoleClient.UI.Windows
                 window.DialogResult = true;
                 window.Hide();
             };
-            okButton.Theme = null;
 
             window.Controls.Add(okButton);
             okButton.IsFocused = true;
@@ -106,7 +104,7 @@ namespace RogueCustomsConsoleClient.UI.Windows
 
             var square = new Rectangle(0, 0, window.Width, window.Height);
 
-            ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
+            var appearance = ds.ThemeState.Normal;
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawBox(square, ShapeParameters.CreateStyledBox(ICellSurface.ConnectedLineThick, new ColoredGlyph(WindowColor, Color.Black)));
             ds.Surface.Print((square.Width - TitleCaption.Length - 2) / 2, 0, $" {TitleCaption} ", Color.Black, WindowColor);
