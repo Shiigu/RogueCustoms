@@ -28,7 +28,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public new void Build()
         {
             base.Build();
-            DefaultBackground = Color.Black;
             Font = Game.Instance.LoadFont("fonts/Alloy_curses_12x12.font");
             RefreshOnlyOnStatusUpdate = true;
             CursorLocation = default;

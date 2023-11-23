@@ -39,7 +39,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             var loadDungeonText = LocalizationManager.GetString("LoadDungeonText").ToAscii();
             var optionsText = LocalizationManager.GetString("OptionsText").ToAscii();
             var exitText = LocalizationManager.GetString("ExitButtonText").ToAscii();
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             FontSize = Font.GetFontSize(IFont.Sizes.Two);
             GameVersionString = LocalizationManager.GetString("GameVersionText").Format(new { GameVersion = GlobalConstants.GameVersion }).ToAscii();
 
@@ -116,7 +115,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         public override void Update(TimeSpan delta)
         {
             this.IsFocused = true;
-            this.Print((Width / 2) - GameVersionString.Length, (Height / 2) - 1, GameVersionString);
+            this.Print((Width / 2) - GameVersionString.Length, (Height / 2) - 1, GameVersionString, Color.White);
             base.Update(delta);
         }
 
@@ -128,7 +127,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             int index = CurrentFocusedIndex;
             if(keyboard.IsKeyPressed(Keys.Up) && keyboard.KeysPressed.Count == 1)
             {
-                Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
                 if (index == 0)
                     index = Buttons.Count - 1;
@@ -139,7 +137,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             }
             else if (keyboard.IsKeyPressed(Keys.Down) && keyboard.KeysPressed.Count == 1)
             {
-                Buttons[CurrentFocusedIndex].FocusLost();
                 Buttons[CurrentFocusedIndex].IsFocused = false;
                 if (index == Buttons.Count - 1)
                     index = 0;
@@ -171,10 +168,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             if (CurrentFocusedIndex == index) return;
             Buttons[CurrentFocusedIndex].IsFocused = false;
-            Buttons[CurrentFocusedIndex].FocusLost();
             CurrentFocusedIndex = index;
             Buttons[CurrentFocusedIndex].IsFocused = true;
-            Buttons[CurrentFocusedIndex].Focused();
         }
 
         private void SelectFileButton_Click(object sender, EventArgs args)

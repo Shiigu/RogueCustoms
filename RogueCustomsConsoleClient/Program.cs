@@ -1,4 +1,5 @@
 ﻿using SadConsole;
+using SadConsole.Configuration;
 using System.Text;
 using RogueCustomsConsoleClient.UI.Consoles;
 using RogueCustomsConsoleClient.EngineHandling;
@@ -21,18 +22,26 @@ namespace RogueCustomsConsoleClient
             LocalizationManager.Build();
             SadConsole.Settings.WindowTitle = LocalizationManager.GetString("GameTitle").ToAscii();
 
-            Game.Create(GlobalConstants.ScreenCellWidth, GlobalConstants.ScreenCellHeight, "fonts/IBMCGA.font");
+            var gameStartup = new Builder()
+                .SetScreenSize(GlobalConstants.ScreenCellWidth, GlobalConstants.ScreenCellHeight)
+                .UseDefaultConsole()
+                .OnStart(OnStart)
+                .IsStartingScreenFocused(true)
+                .ConfigureFonts((fontConfig, game) =>
+                {
+                    fontConfig.UseCustomFont("fonts/IBMCGA.font");
+                });
 
+            Game.Create(gameStartup);
             Game.Instance.Keyboard.InitialRepeatDelay = 0.6f;
-            Game.Instance.Keyboard.RepeatDelay = 0.1f;
-            Game.Instance.OnStart = Init;
+            Game.Instance.Keyboard.RepeatDelay = 0.2f;
             Game.Instance.Run();
             Game.Instance.Dispose();
 
             Environment.Exit(0);
         }
 
-        static void Init()
+        private static void OnStart(object sender, GameHost gameHost)
         {
             RootScreen container = new();
             Game.Instance.Screen = container;

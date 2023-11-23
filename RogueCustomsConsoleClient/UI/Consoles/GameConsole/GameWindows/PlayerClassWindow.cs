@@ -2,7 +2,6 @@
 using SadConsole.UI;
 using SadConsole;
 using SadRogue.Primitives;
-using Themes = SadConsole.UI.Themes;
 using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
@@ -16,7 +15,6 @@ using RogueCustomsConsoleClient.Resources.Localization;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using SadConsole.UI.Themes;
 using SadConsole.Ansi;
 using RogueCustomsConsoleClient.UI.Windows;
 using RogueCustomsGameEngine.Game.Entities;
@@ -30,7 +28,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
         private readonly string CancelButtonText = LocalizationManager.GetString("CancelButtonText").ToAscii();
         private readonly string LeftButtonText = LocalizationManager.GetString("LeftButtonText").ToAscii();
         private readonly string RightButtonText = LocalizationManager.GetString("RightButtonText").ToAscii();
-        private Button SelectButton, CancelButton, LeftButton, RightButton;
+        private Button SelectButton, CancelButton;
+        private ButtonBox LeftButton, RightButton;
         private ScrollBar ScrollBar;
         private Console TextAreaSubConsole;
         private string TitleCaption { get; set; }
@@ -55,19 +54,17 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
 
             var window = new PlayerClassWindow(width, height);
 
-            var leftButton = new Button(window.LeftButtonText.Length + 2, 3)
+            var leftButton = new ButtonBox(window.LeftButtonText.Length + 2, 3)
             {
                 Text = window.LeftButtonText,
                 TextAlignment = HorizontalAlignment.Center,
-                Theme = new ButtonLinesTheme(),
                 Position = new Point(1, 1)
             };
 
-            var rightButton = new Button(window.RightButtonText.Length + 2, 3)
+            var rightButton = new ButtonBox(window.RightButtonText.Length + 2, 3)
             {
                 Text = window.RightButtonText,
                 TextAlignment = HorizontalAlignment.Center,
-                Theme = new ButtonLinesTheme(),
                 Position = new Point(width - 5, 1)
             };
 
@@ -114,7 +111,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Position = new Point(width - 2, square.Y - 1)
             };
 
-            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
+            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.ViewPosition = new Point(0, scrollBar.Value);
 
             window.ScrollBar = scrollBar;
             window.Controls.Add(scrollBar);
@@ -145,7 +142,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                     window.Hide();
                 }
             };
-            selectButton.Theme = null;
 
             leftButton.Click += (o, e) => {
                 window.CurrentlyShownIndex = Math.Max(0, window.CurrentlyShownIndex - 1);
@@ -164,7 +160,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                                                     window.Hide();
                                                 });
             };
-            cancelButton.Theme = null;
 
             window.LeftButton = leftButton;
             window.Controls.Add(leftButton);
@@ -212,7 +207,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             TextAreaSubConsole.Clear();
             TextAreaSubConsole.Cursor.Position = new Point(0, 0);
             ds.Surface.Clear();
-            ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
+            var appearance = ds.ThemeState.Normal;
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawLine(new Point(0, 0), new Point(0, Height - 3), ICellSurface.ConnectedLineThick[3], Color.Orange);
             ds.Surface.DrawLine(new Point(0, 0), new Point(Width - 1, 0), ICellSurface.ConnectedLineThick[3], Color.Orange);

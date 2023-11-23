@@ -25,8 +25,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         {
             base.Build();
             TitleCaption = LocalizationManager.GetString("MessageHeaderText").ToAscii();
-            DefaultBackground = Color.Black;
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
             ScrollableMessageLogSubConsole = new ScrollableMessageSubConsole(Width - 3, Height - 2, 200)
             {

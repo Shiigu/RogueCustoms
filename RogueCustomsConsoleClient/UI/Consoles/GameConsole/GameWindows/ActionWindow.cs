@@ -2,7 +2,6 @@
 using SadConsole.UI;
 using SadConsole;
 using SadRogue.Primitives;
-using Themes = SadConsole.UI.Themes;
 using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
@@ -96,11 +95,9 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                     window.Hide();
                 }
             };
-            doButton.Theme = null;
 
             cancelButton.Position = new Point(window.Width - cancelButton.Surface.Width - 2, window.Height - cancelButton.Surface.Height);
             cancelButton.Click += (o, e) => { parent.ControlMode = ControlMode.NormalMove; window.Hide(); };
-            cancelButton.Theme = null;
 
             window.DoButton = doButton;
             window.Controls.Add(doButton);
@@ -121,7 +118,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             var window = (ds.Parent as ControlHost)?.ParentConsole as Console;
 
             ds.Surface.Clear();
-            ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
+            var appearance = ds.ThemeState.Normal;
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawLine(new Point(0, 0), new Point(0, Height - 3), ICellSurface.ConnectedLineThick[3], Color.DarkRed);
             ds.Surface.DrawLine(new Point(0, 0), new Point(Width - 1, 0), ICellSurface.ConnectedLineThick[3], Color.DarkRed);

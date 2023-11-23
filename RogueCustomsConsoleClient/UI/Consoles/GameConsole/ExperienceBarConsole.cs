@@ -6,6 +6,7 @@ using RogueCustomsConsoleClient.UI.Consoles.Containers;
 using RogueCustomsConsoleClient.Resources.Localization;
 using RogueCustomsConsoleClient.Helpers;
 using System;
+using RogueCustomsConsoleClient.UI.Consoles.Utils;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
 {
@@ -22,26 +23,16 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
         public new void Build()
         {
             base.Build();
-            DefaultBackground = Color.Black;
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = true;
-            ExperienceBar = new ProgressBar(Width, Height, HorizontalAlignment.Left)
+            ExperienceBar = new RogueProgressBar(Width, Height, HorizontalAlignment.Left)
             {
                 Position = new Point(0, 0),
                 DisplayTextAlignment = HorizontalAlignment.Center,
-                DisplayTextColor = Color.White
+                DisplayTextColor = Color.White,
+                BarColor = Color.Blue,
+                BackgroundColor = Color.Blue,
+                BackgroundGlyph = '░'.ToGlyph()
             };
-
-            var themeColors = new Colors();
-
-            themeColors.Appearance_ControlDisabled.Foreground = Color.Blue;
-            themeColors.Appearance_ControlFocused.Foreground = Color.Blue;
-            themeColors.Appearance_ControlMouseDown.Foreground = Color.Blue;
-            themeColors.Appearance_ControlOver.Foreground = Color.Blue;
-            themeColors.Appearance_ControlNormal.Foreground = Color.Blue;
-            themeColors.Appearance_ControlSelected.Foreground = Color.Blue;
-
-            ExperienceBar.SetThemeColors(themeColors);
 
             Controls.Add(ExperienceBar);
         }

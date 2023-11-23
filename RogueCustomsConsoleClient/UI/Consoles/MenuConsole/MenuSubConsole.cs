@@ -12,8 +12,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         protected MenuSubConsole(MenuConsoleContainer parent, int width, int height) : base(width, height)
         {
             ParentContainer = parent;
-            DefaultBackground = Color.Black;
-            DefaultForeground = Color.White;
         }
 
         public void Build()

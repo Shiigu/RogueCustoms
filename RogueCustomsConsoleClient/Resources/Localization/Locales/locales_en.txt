@@ -56,7 +56,7 @@ MoveModeNormalControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <S>
 MoveModeImmobilizedControlsText = <A> Aim Target <I> Inventory Menu <S> Skip Turn
 MoveModeCannotActControlsText = <I> Inventory Menu <S> Skip Turn
 MoveModeOnStairsControlsText = <ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
-MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <V> Aim Object For Details <ESC> Exit
+MoveModeControlsSubText = <M> Open Message Log <D> View Player Details <V> Aim Object For Details <F5> Save Game <ESC> Exit
 ActionModeControlsText = <ARROWS> Move <A> Open Action Window <ESC> Cancel
 ViewModeControlsText = <ARROWS> Move <V> View Details <ESC> Cancel
 

@@ -27,8 +27,6 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             MoveModeControlsSubString = LocalizationManager.GetString("MoveModeControlsSubText").ToAscii();
             ActionModeControlsString = LocalizationManager.GetString("ActionModeControlsText").ToAscii();
             ViewModeControlsString = LocalizationManager.GetString("ViewModeControlsText").ToAscii();
-            DefaultBackground = Color.Black;
-            Font = Game.Instance.LoadFont("fonts/IBMCGA.font");
             RefreshOnlyOnStatusUpdate = false;
         }
 

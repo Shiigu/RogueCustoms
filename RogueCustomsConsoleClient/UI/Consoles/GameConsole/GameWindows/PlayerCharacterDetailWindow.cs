@@ -2,7 +2,6 @@
 using SadConsole.UI;
 using SadConsole;
 using SadRogue.Primitives;
-using Themes = SadConsole.UI.Themes;
 using Window = SadConsole.UI.Window;
 using SadConsole.Input;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
@@ -84,14 +83,13 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 Position = new Point(square.X + square.Width - 1, square.Y - 1)
             };
 
-            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.View = new Rectangle(0, scrollBar.Value, textAreaSubConsole.Width, textAreaSubConsole.ViewHeight);
+            scrollBar.ValueChanged += (o, e) => textAreaSubConsole.ViewPosition = new Point(0, scrollBar.Value);
 
             window.ScrollBar = scrollBar;
             window.Controls.Add(scrollBar);
 
             closeButton.Position = new Point((window.Width - closeButton.Width) / 2, window.Height - closeButton.Surface.Height);
             closeButton.Click += (o, e) => window.Hide();
-            closeButton.Theme = null;
 
             window.CloseButton = closeButton;
             window.Controls.Add(closeButton);
@@ -114,7 +112,8 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
             ScrollBar.IsEnabled = TextAreaSubConsole.Cursor.Position.Y > TextAreaSubConsole.ViewHeight;
 
             ds.Surface.Clear();
-            ColoredGlyph appearance = ((Themes.DrawingAreaTheme)ds.Theme).Appearance;
+
+            var appearance = ds.ThemeState.Normal;
             ds.Surface.Fill(appearance.Foreground, appearance.Background, null);
             ds.Surface.DrawLine(new Point(0, 0), new Point(0, Height - 3), ICellSurface.ConnectedLineThick[3], Color.WhiteSmoke);
             ds.Surface.DrawLine(new Point(0, 0), new Point(Width - 1, 0), ICellSurface.ConnectedLineThick[3], Color.WhiteSmoke);
