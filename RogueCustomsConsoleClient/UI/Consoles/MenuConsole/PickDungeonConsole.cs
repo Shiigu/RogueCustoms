@@ -13,6 +13,7 @@ using System.Linq;
 using SadConsole.Input;
 using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
 using RogueCustomsConsoleClient.UI.Windows;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -20,8 +21,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class PickDungeonConsole : MenuSubConsole
     {
-        private ListBox DungeonListBox;
+        private Table DungeonTable;
         private Button PickButton, ReturnButton;
+        private DungeonPickDto SelectedItem;
+        private const int MaxSimultaneousRows = 24;
 
         public PickDungeonConsole(MenuConsoleContainer parent, int width, int height) : base(parent, width, height)
         {
@@ -49,15 +52,32 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             windowHeaderConsole.Controls.Add(windowHeader);
             Children.Add(windowHeaderConsole);
 
-            DungeonListBox = new ListBox((Width / 2) - 2, 20)
+            DungeonTable = new Table((Width / 2) - 1, MaxSimultaneousRows + 1)
             {
-                Position = new Point(1, 6),
-                VisibleItemsMax = 20,
-                IsScrollBarVisible = true,
-                FocusOnMouseClick = false
+                Position = new Point(1, 5),
+                AutoScrollOnCellSelection = true,
+                FocusOnMouseClick = false,
+                DefaultSelectionMode = Table.TableCells.Layout.Mode.EntireRow,
+                DefaultHoverMode = Table.TableCells.Layout.Mode.None,
+                DefaultBackground = Color.Black,
+                DefaultForeground = Color.White,
+                DrawFakeCells = true
             };
-            DungeonListBox.SelectedItemChanged += DungeonListBox_SelectedItemChanged;
-            Controls.Add(DungeonListBox);
+            DungeonTable.Cells.HeaderRow = true;
+            DungeonTable.SelectedCellChanged += DungeonTable_SelectedCellChanged;
+            DungeonTable.SetupScrollBar(Orientation.Vertical, MaxSimultaneousRows, new Point(DungeonTable.Position.X + DungeonTable.Width - 1, DungeonTable.Position.Y));
+            DungeonTable.VerticalScrollBar.Maximum = MaxSimultaneousRows - 1;
+            DungeonTable.VerticalScrollBar.IsVisible = true;
+            DungeonTable.ThemeState.Selected.Foreground = Color.AnsiBlack;
+            DungeonTable.ThemeState.Selected.Background = Color.AnsiWhiteBright;
+
+            var colors = DungeonTable.FindThemeColors().Clone();
+            colors.ControlForegroundSelected.SetColor(Color.Black);
+            colors.ControlBackgroundSelected.SetColor(Color.White);
+            colors.RebuildAppearances();
+            DungeonTable.SetThemeColors(colors);
+
+            Controls.Add(DungeonTable);
 
             PickButton = new Button(pickButtonText.Length + 2)
             {
@@ -77,6 +97,37 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
             ReturnButton.Click += ReturnButton_Click;
             Controls.Add(ReturnButton);
         }
+
+        private void DungeonTable_SelectedCellChanged(object? sender, Table.CellChangedEventArgs e)
+        {
+            if (DungeonTable.SelectedCell == null)
+            {
+                PickButton.IsEnabled = false;
+                return;
+            }
+            var rowIndex = DungeonTable.SelectedCell.Row;
+            if (rowIndex == 0)
+            {
+                for (int i = DungeonTable.Cells.MaxRow; i > 0; i--)
+                {
+                    if (!string.IsNullOrWhiteSpace(DungeonTable.Cells[i, 0].Value.ToString()))
+                    {
+                        DungeonTable.Cells[i, 0].Select();
+                        return;
+                    }
+                }
+                DungeonTable.Cells[1, 0].Select();
+                return;
+            }
+            else if (string.IsNullOrWhiteSpace(DungeonTable.Cells[rowIndex, 0].Value.ToString()))
+            {
+                DungeonTable.Cells[1, 0].Select();
+                return;
+            }
+            SelectedItem = ParentContainer.PossibleDungeonsInfo.Dungeons.Find(d => d.Name.Equals(DungeonTable.Cells[rowIndex, 0].Value.ToString()));
+            PickButton.IsEnabled = SelectedItem != null;
+        }
+
         public override void Update(TimeSpan delta)
         {
             if (ParentContainer.ActiveWindow?.IsVisible != true)
@@ -88,18 +139,18 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             if (keyboard.IsKeyPressed(Keys.Up) && keyboard.KeysPressed.Count == 1)
             {
-                if (DungeonListBox.SelectedIndex == 0)
-                    DungeonListBox.SelectedIndex = DungeonListBox.Items.Count - 1;
-                else
-                    DungeonListBox.SelectedIndex--;
+                if(DungeonTable.SelectedCell != null)
+                {
+                    DungeonTable.Cells[DungeonTable.SelectedCell.Row - 1, 0].Select();
+                }
                 return true;
             }
             else if (keyboard.IsKeyPressed(Keys.Down) && keyboard.KeysPressed.Count == 1)
             {
-                if (DungeonListBox.SelectedIndex == DungeonListBox.Items.Count - 1)
-                    DungeonListBox.SelectedIndex = 0;
-                else
-                    DungeonListBox.SelectedIndex++;
+                if (DungeonTable.SelectedCell != null)
+                {
+                    DungeonTable.Cells[DungeonTable.SelectedCell.Row + 1, 0].Select();
+                }
                 return true;
             }
             else if (keyboard.IsKeyPressed(Keys.Enter) && keyboard.KeysPressed.Count == 1)
@@ -118,47 +169,78 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         public void FillList()
         {
             var RepeatedNameCount = new Dictionary<string, int>();
-            DungeonListBox.Items.Clear();
+            DungeonTable.Cells.Clear();
             if(ParentContainer.PossibleDungeonsInfo.Dungeons.Any())
             {
-                DungeonListBox.IsVisible = true;
+                DungeonTable.IsVisible = true;
                 this.Clear();
+                var dungeonNameHeaderText = LocalizationManager.GetString("DungeonNameHeaderText").ToAscii();
+                var authorHeaderText = LocalizationManager.GetString("AuthorHeaderText").ToAscii();
+                var versionHeaderText = LocalizationManager.GetString("VersionHeaderText").ToAscii();
+
+                DungeonTable.Cells.Row(0).SetLayout(1, Color.White, Color.Blue);
+                DungeonTable.Cells.Column(0).SetLayout(size: (int)(DungeonTable.Width * 0.4), settings: new Table.Cell.Options(DungeonTable)
+                {
+                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
+                });
+                DungeonTable.Cells.Column(1).SetLayout(size: (int)(DungeonTable.Width * 0.4), settings: new Table.Cell.Options(DungeonTable)
+                {
+                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
+                });
+                DungeonTable.Cells.Column(2).SetLayout(size: (int)(DungeonTable.Width * 0.2), settings: new Table.Cell.Options(DungeonTable)
+                {
+                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
+                });
+                DungeonTable.Cells[0, 0].Value = dungeonNameHeaderText;
+                DungeonTable.Cells[0, 1].Value = authorHeaderText;
+                DungeonTable.Cells[0, 2].Value = versionHeaderText;
+
+                var rowIndex = 1;
                 foreach (var dungeon in ParentContainer.PossibleDungeonsInfo.Dungeons)
                 {
-                    var dungeonDisplayName = LocalizationManager.GetString("DungeonDisplayNameText").Format(new
+                    DungeonTable.Cells.Row(rowIndex).SetLayout(1, Color.White, rowIndex % 2 == 0 ? Color.Black : new Color(33,33,33), new Table.Cell.Options(DungeonTable)
                     {
-                        DungeonName = dungeon.Name,
-                        Author = dungeon.Author
-                    }).ToAscii();
-                    if (!RepeatedNameCount.ContainsKey(dungeonDisplayName))
+                        Interactable = true,
+                        Selectable = true
+                    });
+                    DungeonTable.Cells[rowIndex, 0].SetLayout(settings: new Table.Cell.Options(DungeonTable)
                     {
-                        DungeonListBox.Items.Add(dungeonDisplayName);
-                        RepeatedNameCount[dungeonDisplayName] = 1;
+                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Left,
+                    });
+                    DungeonTable.Cells[rowIndex, 1].SetLayout(settings: new Table.Cell.Options(DungeonTable)
+                    {
+                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
+                    });
+                    DungeonTable.Cells[rowIndex, 2].SetLayout(settings: new Table.Cell.Options(DungeonTable)
+                    {
+                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
+                    });
+                    if (!RepeatedNameCount.ContainsKey(dungeon.Name))
+                    {
+                        DungeonTable.Cells[rowIndex, 0].Value = dungeon.Name;
+                        RepeatedNameCount[dungeon.Name] = 1;
                     }
                     else
                     {
-                        DungeonListBox.Items.Add($"{dungeonDisplayName} ({RepeatedNameCount[dungeonDisplayName]})");
-                        RepeatedNameCount[dungeonDisplayName]++;
+                        DungeonTable.Cells[rowIndex, 0].Value = $"{dungeon.Name} ({RepeatedNameCount[dungeon.Name]})";
+                        RepeatedNameCount[dungeon.Name]++;
                     }
+                    DungeonTable.Cells[rowIndex, 1].Value = dungeon.Author;
+                    DungeonTable.Cells[rowIndex, 2].Value = dungeon.Version;
+                    rowIndex++;
                 }
-                DungeonListBox.ScrollBar.IsVisible = true;
-                DungeonListBox.SelectedIndex = 0;
+                DungeonTable.Cells[1, 0].Select();
             }
             else
             {
                 PickButton.IsEnabled = false;
-                DungeonListBox.IsVisible = false;
+                DungeonTable.IsVisible = false;
                 this.Print(1, 6, LocalizationManager.GetString("NoDungeonsText"));
                 if (BackendHandler.Instance.IsLocal)
                     this.Print(1, 7, LocalizationManager.GetString("NoLocalDungeonsSubtext"));
                 else
                     this.Print(1, 7, LocalizationManager.GetString("NoServerDungeonsSubtext"));
             }
-        }
-
-        private void DungeonListBox_SelectedItemChanged(object? sender, ListBox.SelectedItemEventArgs e)
-        {
-            PickButton.IsEnabled = true;
         }
 
         private void ReturnButton_Click(object? sender, EventArgs e)
@@ -170,18 +252,16 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
         {
             try
             {
-                var selectedItem = ParentContainer.PossibleDungeonsInfo.Dungeons[DungeonListBox.SelectedIndex];
-
-                if (selectedItem.IsAtCurrentVersion)
+                if (SelectedItem.IsAtCurrentVersion)
                 {
-                    BackendHandler.Instance.CreateDungeon(selectedItem.InternalName, LocalizationManager.CurrentLocale);
+                    BackendHandler.Instance.CreateDungeon(SelectedItem.InternalName, LocalizationManager.CurrentLocale);
                     var message = BackendHandler.Instance.GetDungeonWelcomeMessage();
 
                     ParentContainer.ChangeConsoleContainerTo(ConsoleContainers.Message, ConsoleContainers.Game, LocalizationManager.GetString("BriefingMessageHeader"), message);
                 }
                 else
                 {
-                    ParentContainer.ActiveWindow = MessageBox.Show(new ColoredString(LocalizationManager.GetString("IncompatibleDungeonMessageBoxText").Format(new { DungeonJsonVersion = selectedItem.Version, RequiredDungeonJsonVersion = ParentContainer.PossibleDungeonsInfo.CurrentVersion })), LocalizationManager.GetString("OKButtonText"), LocalizationManager.GetString("IncompatibleDungeonMessageBoxHeader"), Color.Red);
+                    ParentContainer.ActiveWindow = MessageBox.Show(new ColoredString(LocalizationManager.GetString("IncompatibleDungeonMessageBoxText").Format(new { DungeonJsonVersion = SelectedItem.Version, RequiredDungeonJsonVersion = ParentContainer.PossibleDungeonsInfo.CurrentVersion })), LocalizationManager.GetString("OKButtonText"), LocalizationManager.GetString("IncompatibleDungeonMessageBoxHeader"), Color.Red);
                 }
             }
             catch (Exception)
