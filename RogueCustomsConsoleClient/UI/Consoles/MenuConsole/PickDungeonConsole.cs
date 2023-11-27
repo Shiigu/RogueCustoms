@@ -14,6 +14,7 @@ using SadConsole.Input;
 using RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows;
 using RogueCustomsConsoleClient.UI.Windows;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using static SadConsole.UI.Controls.Table.Cell.Options;
 
 namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 {
@@ -178,43 +179,30 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                 var authorHeaderText = LocalizationManager.GetString("AuthorHeaderText").ToAscii();
                 var versionHeaderText = LocalizationManager.GetString("VersionHeaderText").ToAscii();
 
-                DungeonTable.Cells.Row(0).SetLayout(1, Color.White, Color.Blue);
-                DungeonTable.Cells.Column(0).SetLayout(size: (int)(DungeonTable.Width * 0.4), settings: new Table.Cell.Options(DungeonTable)
-                {
-                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
-                });
-                DungeonTable.Cells.Column(1).SetLayout(size: (int)(DungeonTable.Width * 0.4), settings: new Table.Cell.Options(DungeonTable)
-                {
-                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
-                });
-                DungeonTable.Cells.Column(2).SetLayout(size: (int)(DungeonTable.Width * 0.2), settings: new Table.Cell.Options(DungeonTable)
-                {
-                    HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
-                });
+                DungeonTable.Cells[0, 0].Foreground = Color.White;
+                DungeonTable.Cells[0, 0].Background = Color.Blue;
+                DungeonTable.Cells[0, 0].Resize(1, (int)(DungeonTable.Width * 0.4));
+                DungeonTable.Cells[0, 0].Settings.HorizontalAlignment = HorizontalAlign.Center;
                 DungeonTable.Cells[0, 0].Value = dungeonNameHeaderText;
+                DungeonTable.Cells[0, 1].Foreground = Color.White;
+                DungeonTable.Cells[0, 1].Background = Color.Blue;
+                DungeonTable.Cells[0, 1].Resize(1, (int)(DungeonTable.Width * 0.4));
+                DungeonTable.Cells[0, 1].Settings.HorizontalAlignment = HorizontalAlign.Center;
                 DungeonTable.Cells[0, 1].Value = authorHeaderText;
+                DungeonTable.Cells[0, 2].Foreground = Color.White;
+                DungeonTable.Cells[0, 2].Background = Color.Blue;
+                DungeonTable.Cells[0, 2].Settings.HorizontalAlignment = HorizontalAlign.Center;
+                DungeonTable.Cells[0, 2].Resize(1, (int)(DungeonTable.Width * 0.25));
                 DungeonTable.Cells[0, 2].Value = versionHeaderText;
 
                 var rowIndex = 1;
                 foreach (var dungeon in ParentContainer.PossibleDungeonsInfo.Dungeons)
                 {
-                    DungeonTable.Cells.Row(rowIndex).SetLayout(1, Color.White, rowIndex % 2 == 0 ? Color.Black : new Color(33,33,33), new Table.Cell.Options(DungeonTable)
-                    {
-                        Interactable = true,
-                        Selectable = true
-                    });
-                    DungeonTable.Cells[rowIndex, 0].SetLayout(settings: new Table.Cell.Options(DungeonTable)
-                    {
-                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Left,
-                    });
-                    DungeonTable.Cells[rowIndex, 1].SetLayout(settings: new Table.Cell.Options(DungeonTable)
-                    {
-                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
-                    });
-                    DungeonTable.Cells[rowIndex, 2].SetLayout(settings: new Table.Cell.Options(DungeonTable)
-                    {
-                        HorizontalAlignment = Table.Cell.Options.HorizontalAlign.Center,
-                    });
+                    var colorToUse = rowIndex % 2 == 0 ? Color.Black : new Color(33, 33, 33);
+                    DungeonTable.Cells[rowIndex, 0].Foreground = Color.White;
+                    DungeonTable.Cells[rowIndex, 0].Background = colorToUse;
+                    DungeonTable.Cells[rowIndex, 0].Resize(1, (int)(DungeonTable.Width * 0.4));
+                    DungeonTable.Cells[rowIndex, 0].Settings.HorizontalAlignment = HorizontalAlign.Left;
                     if (!RepeatedNameCount.ContainsKey(dungeon.Name))
                     {
                         DungeonTable.Cells[rowIndex, 0].Value = dungeon.Name;
@@ -225,7 +213,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
                         DungeonTable.Cells[rowIndex, 0].Value = $"{dungeon.Name} ({RepeatedNameCount[dungeon.Name]})";
                         RepeatedNameCount[dungeon.Name]++;
                     }
+                    DungeonTable.Cells[rowIndex, 1].Foreground = Color.White;
+                    DungeonTable.Cells[rowIndex, 1].Background = colorToUse;
+                    DungeonTable.Cells[rowIndex, 1].Resize(1, (int)(DungeonTable.Width * 0.4));
+                    DungeonTable.Cells[rowIndex, 1].Settings.HorizontalAlignment = HorizontalAlign.Center;
                     DungeonTable.Cells[rowIndex, 1].Value = dungeon.Author;
+                    DungeonTable.Cells[rowIndex, 2].Foreground = Color.White;
+                    DungeonTable.Cells[rowIndex, 2].Background = colorToUse;
+                    DungeonTable.Cells[rowIndex, 2].Settings.HorizontalAlignment = HorizontalAlign.Center;
+                    DungeonTable.Cells[rowIndex, 2].Resize(1, (int)(DungeonTable.Width * 0.25));
                     DungeonTable.Cells[rowIndex, 2].Value = dungeon.Version;
                     rowIndex++;
                 }
