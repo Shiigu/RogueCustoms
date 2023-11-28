@@ -573,6 +573,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             RemainingMovement = 0;
         }
 
+        public void InteractWithTile(Tile target, ActionWithEffects action)
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (UsesMP)
+                MP = Math.Max(0, MP - action.MPCost);
+            action?.Do(this, target, true);
+            if (action?.FinishesTurnWhenUsed == true)
+                TookAction = true;
+            RemainingMovement = 0;
+        }
+
         public virtual void AttackedBy(Character source)
         {
             OnAttacked.Where(oaa => oaa.ChecksCondition(this, source)).ForEach(oaa => oaa?.Do(this, source, false));

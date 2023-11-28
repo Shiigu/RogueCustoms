@@ -5,6 +5,7 @@ using System;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
 using System.Linq;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -20,7 +21,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool DealDamage(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -66,7 +67,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool BurnMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool BurnMP(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);

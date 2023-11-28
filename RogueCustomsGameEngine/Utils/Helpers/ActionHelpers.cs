@@ -3,6 +3,7 @@ using D20Tek.DiceNotation.DieRoller;
 using org.matheval;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.DiceNotation;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             Map = map;
         }
 
-        public static ExpandoObject ParseParams(Entity This, Entity Source, Entity Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
+        public static ExpandoObject ParseParams(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, params (string ParamName, string Value)[] args)
         {
             dynamic paramsObject = new ExpandoObject();
             foreach (var (ParamName, Value) in args)
@@ -191,6 +192,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "output":
                             paramsObject.Output = previousEffectOutput;
                             break;
+                        case "tiletype":
+                            paramsObject.TileType = Enum.Parse<TileType>(value, true);
+                            break;
                         case "id":
                             paramsObject.Id = value;
                             break;
@@ -235,13 +239,13 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return value;
         }
 
-        public static string ParseArgForExpression(string arg, Entity This, Entity Source, Entity Target)
+        public static string ParseArgForExpression(string arg, Entity This, Entity Source, ITargetable Target)
         {
             var parsedArg = arg;
 
             parsedArg = ParseArgForEntity(parsedArg, This, "this");
             parsedArg = ParseArgForEntity(parsedArg, Source, "source");
-            parsedArg = ParseArgForEntity(parsedArg, Target, "target");
+            parsedArg = ParseArgForEntity(parsedArg, Target as Entity, "target");
 
             return parsedArg;
         }

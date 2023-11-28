@@ -57,7 +57,6 @@ namespace RogueCustomsDungeonEditor.Controls
         public TurnEndCriteria TurnEndCriteria { get; set; }
         public string PlaceholderActionName { get; set; }
         public UsageCriteria UsageCriteria { get; set; }
-        public List<string> AlteredStatuses { get; set; }
         public List<EffectTypeData> EffectParamData { get; set; }
 
         public string ThisDescription { get; set; }
@@ -92,7 +91,6 @@ namespace RogueCustomsDungeonEditor.Controls
                 TurnEndCriteria,
                 PlaceholderActionName,
                 UsageCriteria,
-                AlteredStatuses,
                 EffectParamData,
                 ThisDescription,
                 SourceDescription,

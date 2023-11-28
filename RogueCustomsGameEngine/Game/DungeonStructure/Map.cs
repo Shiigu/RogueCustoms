@@ -100,6 +100,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<Flag> Flags { get; set; }
 
+        public List<EntityClass> PossibleTrapClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
+
         #endregion
 
         public Map(Dungeon dungeon, int floorLevel, List<Flag> flags)
@@ -132,6 +134,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CharacterActions.SetActionParams(Rng, this);
             ItemActions.SetActionParams(Rng, this);
             GenericActions.SetActionParams(Rng, this);
+            OnTileActions.SetActionParams(Rng, this);
             ActionHelpers.SetActionParams(Rng, this);
         }
 
@@ -466,7 +469,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentEntityId++;
         }
 
-        public void AddEntity(string classId, int level = 1)
+        public Entity AddEntity(string classId, int level = 1, Point predeterminatePosition = null)
         {
             var entityClass = Dungeon.Classes.Find(c => c.Id.Equals(classId))
                 ?? throw new InvalidDataException("Class does not exist!");
@@ -477,7 +480,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new PlayerCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
                     };
                     if (Dungeon.PlayerClass.RequiresNamePrompt && !string.IsNullOrWhiteSpace(Dungeon.PlayerName))
                         entity.Name = Dungeon.PlayerName;
@@ -486,7 +489,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new NonPlayableCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
                     };
                     break;
                 case EntityType.Weapon:
@@ -496,7 +499,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new Item(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
                     };
                     break;
                 default:
@@ -550,6 +553,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         npc.OnSpawn?.Do(npc, npc, false);
                 }
             }
+            return entity;
         }
 
         private void PlacePlayer()
@@ -940,14 +944,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).Character
-                ?? throw new ArgumentException("Player attempted use an action without a valid target.");
+            var characterInTile = GetTileFromCoordinates(x, y).Character;
 
             var selectionIdParts = selectionId.Split('_');
 
             if (selectionIdParts.Length == 2)
             {
-                var entity = selectionIdParts[0]; // "Player" or "Target"
+                var entity = selectionIdParts[0]; // "Player", "Target" or "Tile"
                 var actionIdAsString = selectionIdParts[1]; // ActionId
 
                 if(!int.TryParse(actionIdAsString, out int actionId))
@@ -957,7 +960,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     var selectedAction = Player.OnAttack.Find(oaa => oaa.ActionId == actionId)
                         ?? throw new ArgumentException("Player attempted use a non-existent Attack action.");
-                    Player.AttackCharacter(characterInTile, selectedAction);
+                    if (selectedAction.TargetTypes.Contains(TargetType.Tile) || selectedAction.TargetTypes.Contains(TargetType.Room))
+                        Player.InteractWithTile(GetTileFromCoordinates(x, y), selectedAction);
+                    else if (characterInTile != null)
+                        Player.AttackCharacter(characterInTile, selectedAction);
+                    else
+                        throw new ArgumentException("Player attempted use an action without a valid target.");
                 }
                 else if (entity.Equals("Target"))
                 {
@@ -965,7 +973,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         throw new ArgumentException("Player attempted use an action without a valid target.");
                     var selectedAction = npc.OnInteracted.Find(oia => oia.ActionId == actionId)
                         ?? throw new ArgumentException("Player attempted use a non-existent Interact action from the Target.");
-                    Player.InteractWithCharacter(characterInTile, selectedAction);
+                    if (characterInTile != null)
+                        Player.InteractWithCharacter(characterInTile, selectedAction);
+                    else
+                        throw new ArgumentException("Player attempted use an action without a valid target.");
                 }
                 else
                 {
@@ -982,8 +993,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public ActionListDto GetPlayerAttackActions(int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).Character;
-            var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : "<?????>");
+            var tile = GetTileFromCoordinates(x, y);
+            var characterInTile = tile.Character;
+            var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : Locale[$"TileType{tile.Type}"]);
 
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, this, true));
 
@@ -1179,9 +1191,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            if (tile.GetItems().Exists(i => i.Visible))
-                return tile.GetItems().Find(i => i.Visible).ConsoleRepresentation;
-            if (tile.Trap?.Visible == true)
+            var visibleItems = tile.GetItems().Where(i => i.CanBeSeenBy(Player));
+            if (visibleItems.Any())
+                return visibleItems.First().ConsoleRepresentation;
+            if (tile.Trap?.CanBeSeenBy(Player) == true)
                 return tile.Trap.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
             if (deadEntityInCoordinates != null)
@@ -1349,13 +1362,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return distance;
         }
 
-        public List<Tile> GetAdjacentTiles(Point position)
+        public List<Tile> GetAdjacentTiles(Point position, bool considerDiagonals)
         {
-            return Tiles.GetAdjacentElements(GetTileFromCoordinates(position), true);
+            return Tiles.GetAdjacentElements(GetTileFromCoordinates(position), considerDiagonals);
         }
-        public List<Tile> GetAdjacentWalkableTiles(Point position)
+        public List<Tile> GetAdjacentWalkableTiles(Point position, bool considerDiagonals)
         {
-            return Tiles.GetAdjacentElementsWhere(GetTileFromCoordinates(position), true, t => t.IsWalkable);
+            return Tiles.GetAdjacentElementsWhere(GetTileFromCoordinates(position), considerDiagonals, t => t.IsWalkable);
         }
         public List<Tile> GetFOVTilesWithinDistance(Point source, int distance)
         {

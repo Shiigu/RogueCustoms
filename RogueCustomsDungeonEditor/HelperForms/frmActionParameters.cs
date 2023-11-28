@@ -42,6 +42,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public EffectInfo EffectToSave { get; private set; }
         public bool Saved { get; private set; }
         public List<string> ValidAlteredStatuses { get; private set; }
+        public List<string> ValidTraps { get; private set; }
         public EffectTypeData EffectTypeData { get; private set; }
 
         private readonly DungeonInfo ActiveDungeon;
@@ -54,7 +55,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ParameterType.Number
         };
 
-        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validAlteredStatuses, bool isActionEdit)
+        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validAlteredStatuses, List<string> validTraps, bool isActionEdit)
         {
             InitializeComponent();
             ActiveDungeon = activeDungeon;
@@ -93,6 +94,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             EffectTypeData = paramsData;
             ValidAlteredStatuses = validAlteredStatuses;
+            ValidTraps = validTraps;
             lblDisplayName.Text = $"{paramsData.DisplayName}:";
             lblDescription.Text = paramsData.Description;
 
@@ -402,6 +404,33 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         control = alteredStatusComboBox;
                         break;
+                    case ParameterType.Trap:
+                        var trapComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var trap in ValidTraps)
+                        {
+                            trapComboBox.Items.Add(trap);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidTraps.Find(vt => vt.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                trapComboBox.Text = valueOfKey;
+                            }
+                            else
+                            {
+                                trapComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            trapComboBox.Text = parameter.Default;
+                        }
+                        control = trapComboBox;
+                        break;
                     case ParameterType.Number:
                         control = new TextBox();
                         ((TextBox)control).Text = originalValue ?? parameter.Default;
@@ -526,6 +555,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             valueToValidate = parameterData.ValidValues.Find(vv => vv.Value.Equals(valueToValidate)).Key;
                         break;
                     case ParameterType.AlteredStatus:
+                    case ParameterType.Trap:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");

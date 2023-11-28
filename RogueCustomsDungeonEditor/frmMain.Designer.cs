@@ -1396,7 +1396,6 @@ namespace RogueCustomsDungeonEditor
             this.saeOnFloorStart.Action = (null);
             this.saeOnFloorStart.ActionDescription = ("When the floor starts...");
             this.saeOnFloorStart.ActionTypeText = ("Floor Start");
-            this.saeOnFloorStart.AlteredStatuses = (null);
             this.saeOnFloorStart.AutoSize = (true);
             this.saeOnFloorStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeOnFloorStart.ClassId = (null);
@@ -2045,7 +2044,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnDeath.Action = (null);
             this.saePlayerOnDeath.ActionDescription = ("When they die...                   ");
             this.saePlayerOnDeath.ActionTypeText = ("On Death");
-            this.saePlayerOnDeath.AlteredStatuses = (null);
             this.saePlayerOnDeath.AutoSize = (true);
             this.saePlayerOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saePlayerOnDeath.ClassId = (null);
@@ -2070,7 +2068,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnAttacked.Action = (null);
             this.saePlayerOnAttacked.ActionDescription = ("When they get attacked...   ");
             this.saePlayerOnAttacked.ActionTypeText = ("Interacted");
-            this.saePlayerOnAttacked.AlteredStatuses = (null);
             this.saePlayerOnAttacked.AutoSize = (true);
             this.saePlayerOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saePlayerOnAttacked.ClassId = (null);
@@ -2095,7 +2092,6 @@ namespace RogueCustomsDungeonEditor
             this.saePlayerOnTurnStart.Action = (null);
             this.saePlayerOnTurnStart.ActionDescription = ("When the next turn starts...");
             this.saePlayerOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saePlayerOnTurnStart.AlteredStatuses = (null);
             this.saePlayerOnTurnStart.AutoSize = (true);
             this.saePlayerOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saePlayerOnTurnStart.ClassId = (null);
@@ -2120,7 +2116,6 @@ namespace RogueCustomsDungeonEditor
             this.maePlayerOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
             this.maePlayerOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maePlayerOnAttack.Actions")));
             this.maePlayerOnAttack.ActionTypeText = ("Interact");
-            this.maePlayerOnAttack.AlteredStatuses = (null);
             this.maePlayerOnAttack.ClassId = (null);
             this.maePlayerOnAttack.Dungeon = (null);
             this.maePlayerOnAttack.EffectParamData = (null);
@@ -2390,7 +2385,6 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnInteracted.ActionDescription = ("Someone can interact with\r\nthem with the following:");
             this.maeNPCOnInteracted.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnInteracted.Actions")));
             this.maeNPCOnInteracted.ActionTypeText = ("Interact");
-            this.maeNPCOnInteracted.AlteredStatuses = (null);
             this.maeNPCOnInteracted.ClassId = (null);
             this.maeNPCOnInteracted.Dungeon = (null);
             this.maeNPCOnInteracted.EffectParamData = (null);
@@ -2413,7 +2407,6 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnSpawn.Action = (null);
             this.saeNPCOnSpawn.ActionDescription = ("When spawning...                ");
             this.saeNPCOnSpawn.ActionTypeText = ("Turn Start");
-            this.saeNPCOnSpawn.AlteredStatuses = (null);
             this.saeNPCOnSpawn.AutoSize = (true);
             this.saeNPCOnSpawn.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeNPCOnSpawn.ClassId = (null);
@@ -2478,7 +2471,6 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnDeath.Action = (null);
             this.saeNPCOnDeath.ActionDescription = ("When they die...                   ");
             this.saeNPCOnDeath.ActionTypeText = ("On Death");
-            this.saeNPCOnDeath.AlteredStatuses = (null);
             this.saeNPCOnDeath.AutoSize = (true);
             this.saeNPCOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeNPCOnDeath.ClassId = (null);
@@ -2503,7 +2495,6 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked.Action = (null);
             this.saeNPCOnAttacked.ActionDescription = ("When they get attacked...  ");
             this.saeNPCOnAttacked.ActionTypeText = ("Attacked");
-            this.saeNPCOnAttacked.AlteredStatuses = (null);
             this.saeNPCOnAttacked.AutoSize = (true);
             this.saeNPCOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeNPCOnAttacked.ClassId = (null);
@@ -2528,7 +2519,6 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnTurnStart.Action = (null);
             this.saeNPCOnTurnStart.ActionDescription = ("When the next turn starts...");
             this.saeNPCOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saeNPCOnTurnStart.AlteredStatuses = (null);
             this.saeNPCOnTurnStart.AutoSize = (true);
             this.saeNPCOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeNPCOnTurnStart.ClassId = (null);
@@ -2553,7 +2543,6 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
             this.maeNPCOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnAttack.Actions")));
             this.maeNPCOnAttack.ActionTypeText = ("Interact");
-            this.maeNPCOnAttack.AlteredStatuses = (null);
             this.maeNPCOnAttack.ClassId = (null);
             this.maeNPCOnAttack.Dungeon = (null);
             this.maeNPCOnAttack.EffectParamData = (null);
@@ -2844,7 +2833,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.Action = (null);
             this.saeItemOnTurnStart.ActionDescription = ("When the Item's owner starts a new turn...");
             this.saeItemOnTurnStart.ActionTypeText = ("On Death");
-            this.saeItemOnTurnStart.AlteredStatuses = (null);
             this.saeItemOnTurnStart.AutoSize = (true);
             this.saeItemOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeItemOnTurnStart.ClassId = (null);
@@ -2869,7 +2857,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.Action = (null);
             this.saeItemOnAttacked.ActionDescription = ("When the Item's owner gets interacted...   ");
             this.saeItemOnAttacked.ActionTypeText = ("Interacted");
-            this.saeItemOnAttacked.AlteredStatuses = (null);
             this.saeItemOnAttacked.AutoSize = (true);
             this.saeItemOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeItemOnAttacked.ClassId = (null);
@@ -2894,7 +2881,6 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.ActionDescription = ("The Item's owner can do the following to interact with someone:");
             this.maeItemOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeItemOnAttack.Actions")));
             this.maeItemOnAttack.ActionTypeText = ("Interact");
-            this.maeItemOnAttack.AlteredStatuses = (null);
             this.maeItemOnAttack.ClassId = (null);
             this.maeItemOnAttack.Dungeon = (null);
             this.maeItemOnAttack.EffectParamData = (null);
@@ -2917,7 +2903,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnUse.Action = (null);
             this.saeItemOnUse.ActionDescription = ("When someone uses it on     \r\nthemselves...");
             this.saeItemOnUse.ActionTypeText = ("Item Use");
-            this.saeItemOnUse.AlteredStatuses = (null);
             this.saeItemOnUse.AutoSize = (true);
             this.saeItemOnUse.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeItemOnUse.ClassId = (null);
@@ -2942,7 +2927,6 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnStepped.Action = (null);
             this.saeItemOnStepped.ActionDescription = ("When someone steps on it...");
             this.saeItemOnStepped.ActionTypeText = ("Stepped");
-            this.saeItemOnStepped.AlteredStatuses = (null);
             this.saeItemOnStepped.AutoSize = (true);
             this.saeItemOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeItemOnStepped.ClassId = (null);
@@ -3136,7 +3120,6 @@ namespace RogueCustomsDungeonEditor
             this.saeTrapOnStepped.Action = (null);
             this.saeTrapOnStepped.ActionDescription = ("When someone steps on it...");
             this.saeTrapOnStepped.ActionTypeText = ("Stepped");
-            this.saeTrapOnStepped.AlteredStatuses = (null);
             this.saeTrapOnStepped.AutoSize = (true);
             this.saeTrapOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeTrapOnStepped.ClassId = (null);
@@ -3305,7 +3288,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnAttacked.Action = (null);
             this.saeAlteredStatusOnAttacked.ActionDescription = ("When someone afflicted  \r\nby it is attacked...");
             this.saeAlteredStatusOnAttacked.ActionTypeText = ("On Statused Attacked");
-            this.saeAlteredStatusOnAttacked.AlteredStatuses = (null);
             this.saeAlteredStatusOnAttacked.AutoSize = (true);
             this.saeAlteredStatusOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeAlteredStatusOnAttacked.ClassId = (null);
@@ -3330,7 +3312,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusBeforeAttack.Action = (null);
             this.saeAlteredStatusBeforeAttack.ActionDescription = ("When someone afflicted\r\nby it is about to attack...   ");
             this.saeAlteredStatusBeforeAttack.ActionTypeText = ("Before Statused Attack");
-            this.saeAlteredStatusBeforeAttack.AlteredStatuses = (null);
             this.saeAlteredStatusBeforeAttack.AutoSize = (true);
             this.saeAlteredStatusBeforeAttack.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeAlteredStatusBeforeAttack.ClassId = (null);
@@ -3355,7 +3336,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnRemove.Action = (null);
             this.saeAlteredStatusOnRemove.ActionDescription = ("When someone gets this\r\nAltered Status removed... ");
             this.saeAlteredStatusOnRemove.ActionTypeText = ("On Status Remove");
-            this.saeAlteredStatusOnRemove.AlteredStatuses = (null);
             this.saeAlteredStatusOnRemove.AutoSize = (true);
             this.saeAlteredStatusOnRemove.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeAlteredStatusOnRemove.ClassId = (null);
@@ -3380,7 +3360,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnTurnStart.Action = (null);
             this.saeAlteredStatusOnTurnStart.ActionDescription = ("When someone afflicted\r\nby it begins a new turn...  ");
             this.saeAlteredStatusOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saeAlteredStatusOnTurnStart.AlteredStatuses = (null);
             this.saeAlteredStatusOnTurnStart.AutoSize = (true);
             this.saeAlteredStatusOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeAlteredStatusOnTurnStart.ClassId = (null);
@@ -3405,7 +3384,6 @@ namespace RogueCustomsDungeonEditor
             this.saeAlteredStatusOnApply.Action = (null);
             this.saeAlteredStatusOnApply.ActionDescription = ("When someone gets this\r\nAltered Status inflicted...  ");
             this.saeAlteredStatusOnApply.ActionTypeText = ("On Status Apply");
-            this.saeAlteredStatusOnApply.AlteredStatuses = (null);
             this.saeAlteredStatusOnApply.AutoSize = (true);
             this.saeAlteredStatusOnApply.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeAlteredStatusOnApply.ClassId = (null);

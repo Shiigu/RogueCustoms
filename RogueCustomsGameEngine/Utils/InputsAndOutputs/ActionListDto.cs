@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -40,7 +41,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public ActionItemDto() { }
 
-        public ActionItemDto(ActionWithEffects action, Character source, Character target, Map map)
+        public ActionItemDto(ActionWithEffects action, Character source, ITargetable target, Map map)
         {
             Name = map.Locale[action.Name];
             Description = action.GetDescriptionWithUsageNotes(target, source);

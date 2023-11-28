@@ -116,27 +116,57 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = pickedTarget;
                 PathToUse = (Destination: destination, Route: Map.GetPathBetweenTiles(Position, destination));
             }
-            // If the picked next tile is inaccessible or not visible and it does not contain the target, find another tile.
-            if(PathToUse.Route?.Count > 1 && ((PathToUse.Route?[1].IsOccupied == true && CurrentTarget != null && PathToUse.Route?[1].Character != CurrentTarget) || !FOVTiles.Contains(PathToUse.Route?[1])))
+            // If the picked next tile is inaccessible, invisible, or contains a visible trap, and it does not contain the target, find another tile.
+            if(PathToUse.Route?.Count > 1 && !TileCanBeApproached(PathToUse.Route?[1]) || PathToUse.Route?[1].Trap?.CanBeSeenBy(this) == true)
             {
-                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position);
+                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position, true);
                 var visibleAdjacentTiles = FOVTiles.Intersect(adjacentTiles);
-                var orderedAdjacentTiles = visibleAdjacentTiles.OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
+                var visibleAdjacentTilesWithoutKnownTraps = visibleAdjacentTiles.Where(t => t.Trap?.CanBeSeenBy(this) != true);
+                var visibleAdjacentTilesWithKnownTraps = visibleAdjacentTiles.Except(visibleAdjacentTilesWithoutKnownTraps);
+                var successFind = false;
+
+                // Check Tiles without Traps first to prioritize a safe step. Exclude the last tile they were in to avoid walking in circles.
+                var orderedAdjacentTiles = visibleAdjacentTilesWithoutKnownTraps.OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
                 foreach (var adjacentTile in orderedAdjacentTiles)
                 {
-                    if (!adjacentTile.IsWalkable || adjacentTile.IsOccupied || adjacentTile == ContainingTile || adjacentTile.Position.Equals(LastPosition)) continue;
+                    if (!TileCanBeApproached(adjacentTile) || adjacentTile.Position.Equals(LastPosition)) continue;
                     var pathToDestination = Map.GetPathBetweenTiles(adjacentTile.Position, PathToUse.Destination);
                     if (pathToDestination?.Any() == true && pathToDestination?.Contains(ContainingTile) != true)
                     {
                         pathToDestination.Insert(0, ContainingTile);
                         PathToUse.Route = pathToDestination;
+                        successFind = true;
                         break;
                     }
                 }
+
+                // But if there are no valid tiles, allow walking into traps.
+                if(!successFind)
+                {
+                    orderedAdjacentTiles = visibleAdjacentTilesWithKnownTraps.OrderBy(t => ArrayHelpers.GetManhattanDistanceBetweenCells(t.Position.X, t.Position.Y, PathToUse.Destination.X, PathToUse.Destination.Y));
+                    foreach (var adjacentTile in orderedAdjacentTiles)
+                    {
+                        if (!TileCanBeApproached(adjacentTile) || adjacentTile.Position.Equals(LastPosition)) continue;
+                        var pathToDestination = Map.GetPathBetweenTiles(adjacentTile.Position, PathToUse.Destination);
+                        if (pathToDestination?.Any() == true && pathToDestination?.Contains(ContainingTile) != true)
+                        {
+                            pathToDestination.Insert(0, ContainingTile);
+                            PathToUse.Route = pathToDestination;
+                            break;
+                        }
+                    }
+                }
             }
+
             // But if they still can't find anywhere to move, skip the turn.
-            if (PathToUse.Route?.Count > 1 && ((PathToUse.Route?[1].IsOccupied == true && CurrentTarget != null && PathToUse.Route?[1].Character != CurrentTarget) || !FOVTiles.Contains(PathToUse.Route?[1])))
+            // Notice the lack of the "There's a known trap" condition, as it's meant to discourage walking into traps, but allow doing so if there's no option left.
+            if (PathToUse.Route?.Count > 1 && !TileCanBeApproached(PathToUse.Route?[1]))
                 RemainingMovement = 0;
+        }
+
+        public bool TileCanBeApproached(Tile t)
+        {
+            return t != null && t.IsWalkable && t != ContainingTile && (!t.IsOccupied || (CurrentTarget != null && t.Character == CurrentTarget)) && FOVTiles.Contains(t);
         }
 
         public void AttackOrMove()
@@ -247,7 +277,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (action.MayBeUsed)
                 {
-                    var possibleTargets = KnownCharacters.Where(kc => kc.TargetType != TargetType.Self && action.TargetTypes.Contains(kc.TargetType))
+                    var possibleTargets = KnownCharacters.Where(kc => kc.TargetType != TargetType.Self && kc.TargetType != TargetType.Tile && action.TargetTypes.Contains(kc.TargetType))
                         .Select(kc => (kc.Character, Distance: (int)Point.Distance(kc.Character.Position, Position)));
                     if (possibleTargets.Any())
                         yield return (action, possibleTargets.Where(kc => kc.Distance.Between(action.MinimumRange, action.MaximumRange)).ToList());

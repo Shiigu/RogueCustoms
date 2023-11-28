@@ -118,6 +118,10 @@
           "Value": "ENEMY"
         },
         {
+          "Key": "TargetTypeTile",
+          "Value": "TILE"
+        },
+        {
           "Key": "TargetDoesNotFulfillConditions",
           "Value": "TARGET DOES NOT FULFILL CONDITIONS"
         },
@@ -172,6 +176,26 @@
         {
           "Key": "InventorySizeStatFlatNumber",
           "Value": "{InventorySize} items"
+        },
+        {
+          "Key": "TileTypeFloor",
+          "Value": "Floor"
+        },
+        {
+          "Key": "TileTypeWall",
+          "Value": "Wall"
+        },
+        {
+          "Key": "TileTypeHallway",
+          "Value": "Hallway"
+        },
+        {
+          "Key": "TileTypeStairs",
+          "Value": "Stairs"
+        },
+        {
+          "Key": "TileTypeEmpty",
+          "Value": "Empty"
         },
         {
           "Key": "CharacterLevelsUpMessage",
@@ -300,6 +324,14 @@
         {
           "Key": "CharacterStealsItem",
           "Value": "{SourceName} has stolen {ItemName} from {TargetName}!"
+        },
+        {
+          "Key": "CharacterConvertedTile",
+          "Value": "{CharacterName} has created a {TileType}!"
+        },
+        {
+          "Key": "CharacterCreatedATrap",
+          "Value": "{CharacterName} has deployed a {TrapName}!"
         },
         {
           "Key": "StairsGotRevealed",
@@ -896,6 +928,26 @@
         {
           "Key": "InvisibleDescription",
           "Value": "Can\u0027t be seen. Wears off prematurely if you attack or get attacked."
+        },
+        {
+          "Key": "DisarmedSpikeTrapName",
+          "Value": "Disarmed Spike Trap"
+        },
+        {
+          "Key": "DisarmedSpikeTrapDescription",
+          "Value": "A Disarmed Spike Trap.\n\nUse it on a tile to arm it. It will be initially visible to only you and your allies, but beware! It does not know of allegiances."
+        },
+        {
+          "Key": "ObjectUsedText",
+          "Value": "{source} uses the {this}."
+        },
+        {
+          "Key": "InstantWallName",
+          "Value": "Instant Wall"
+        },
+        {
+          "Key": "InstantWallDescription",
+          "Value": "If possible, it places a Wall on an empty Floor tile. It can\u0027t be removed!"
         }
       ]
     },
@@ -1011,6 +1063,10 @@
           "Value": "ENEMIGO"
         },
         {
+          "Key": "TargetTypeTile",
+          "Value": "TILE"
+        },
+        {
           "Key": "TargetDoesNotFulfillConditions",
           "Value": "EL OBJETIVO NO CUMPLE LAS CONDICIONES"
         },
@@ -1065,6 +1121,26 @@
         {
           "Key": "InventorySizeStatFlatNumber",
           "Value": "{InventorySize} objetos"
+        },
+        {
+          "Key": "TileTypeFloor",
+          "Value": "Floor"
+        },
+        {
+          "Key": "TileTypeWall",
+          "Value": "Wall"
+        },
+        {
+          "Key": "TileTypeHallway",
+          "Value": "Hallway"
+        },
+        {
+          "Key": "TileTypeStairs",
+          "Value": "Stairs"
+        },
+        {
+          "Key": "TileTypeEmpty",
+          "Value": "Empty"
         },
         {
           "Key": "CharacterLevelsUpMessage",
@@ -1193,6 +1269,14 @@
         {
           "Key": "CharacterStealsItem",
           "Value": "\u00A1{SourceName} le ha quitado {ItemName} a {TargetName}!"
+        },
+        {
+          "Key": "CharacterConvertedTile",
+          "Value": "{CharacterName} has created a {TileType}!"
+        },
+        {
+          "Key": "CharacterCreatedATrap",
+          "Value": "{CharacterName} has deployed a {TrapName}!"
         },
         {
           "Key": "StairsGotRevealed",
@@ -1772,7 +1856,7 @@
         },
         {
           "Key": "InvisibilityPotionName",
-          "Value": "Poci\u00F3n de Invisibilidad."
+          "Value": "Poci\u00F3n de Invisibilidad"
         },
         {
           "Key": "InvisibilityPotionDescription",
@@ -1785,6 +1869,26 @@
         {
           "Key": "InvisibleDescription",
           "Value": "No te pueden ver. Se acaba antes si atacas o te atacan."
+        },
+        {
+          "Key": "DisarmedSpikeTrapName",
+          "Value": "Trampa de P\u00FAas desarmada"
+        },
+        {
+          "Key": "DisarmedSpikeTrapDescription",
+          "Value": "Una Trampa de P\u00FAas desarmada.\r\r\n\r\r\n\u00DAsala en una casilla para armarla. Inicialmente solo la ver\u00E1n t\u00FA y tus aliados, pero cuidado... la trampa no sabe de alianzas."
+        },
+        {
+          "Key": "ObjectUsedText",
+          "Value": "{source} us\u00F3 {this}."
+        },
+        {
+          "Key": "InstantWallName",
+          "Value": "Muro instant\u00E1neo"
+        },
+        {
+          "Key": "InstantWallDescription",
+          "Value": "De ser posible, planta un Muro en un Piso vac\u00EDo. No se puede remover."
         }
       ]
     }
@@ -2510,7 +2614,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 20
+          "ChanceToPick": 15
         },
         {
           "ClassId": "Antidote",
@@ -2519,7 +2623,7 @@
           "OverallMaxForKindInFloor": 0,
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
-          "SimultaneousMaxForKindInFloor": 2,
+          "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 10
         },
         {
@@ -2570,7 +2674,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 5
+          "ChanceToPick": 4
         },
         {
           "ClassId": "MagicPotion",
@@ -2591,6 +2695,26 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "DisarmedSpikeTrap",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "InstantWall",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
         }
       ],
       "MinItemsInFloor": 3,
@@ -2762,7 +2886,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 20
+          "ChanceToPick": 15
         },
         {
           "ClassId": "MagicStaff",
@@ -2772,7 +2896,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 9
         },
         {
           "ClassId": "MagicPotion",
@@ -2793,10 +2917,30 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "DisarmedSpikeTrap",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "InstantWall",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
         }
       ],
-      "MinItemsInFloor": 1,
-      "MaxItemsInFloor": 4,
+      "MinItemsInFloor": 2,
+      "MaxItemsInFloor": 5,
       "PossibleTraps": [],
       "MinTrapsInFloor": 0,
       "MaxTrapsInFloor": 0,
@@ -6928,6 +7072,306 @@
       "Description": "InvisibilityPotionDescription",
       "ConsoleRepresentation": {
         "Character": "I",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "DisarmedSpikeTrapName",
+          "Description": "DisarmedSpikeTrapDescription",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "ObjectUsedText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "PlaceTrap",
+              "Params": [
+                {
+                  "ParamName": "Id",
+                  "Value": "SpikeTrap"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "DisarmedSpikeTrap",
+      "Name": "DisarmedSpikeTrapName",
+      "Description": "DisarmedSpikeTrapDescription",
+      "ConsoleRepresentation": {
+        "Character": "v",
+        "BackgroundColor": {
+          "R": 255,
+          "G": 255,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "InstantWallName",
+          "Description": "InstantWallDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "ObjectUsedText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "TransformTile",
+              "Params": [
+                {
+                  "ParamName": "TileType",
+                  "Value": "Wall"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "InstantWall",
+      "Name": "InstantWallName",
+      "Description": "InstantWallDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u2588",
         "BackgroundColor": {
           "R": 0,
           "G": 0,

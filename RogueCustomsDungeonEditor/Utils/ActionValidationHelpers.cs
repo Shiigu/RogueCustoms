@@ -17,6 +17,7 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System.Linq.Expressions;
 using Expression = org.matheval.Expression;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
@@ -267,7 +268,7 @@ namespace RogueCustomsDungeonEditor.Utils
             return paramsObjectAsDictionary.Count >= effect.Params.Length;
         }
 
-        public static bool TestFunction(this Effect effect, Entity This, Entity Source, Entity Target)
+        public static bool TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
         {
             return effect.Function(This, Source, Target, 0, out _, effect.Params);
         }

@@ -36,6 +36,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tvEffectSequence = new TreeView();
             btnCancel = new Button();
             gbSelectionCriteria = new GroupBox();
+            rbTile = new RadioButton();
+            rbEntity = new RadioButton();
+            pnlCharacterTargets = new Panel();
+            chkSelf = new CheckBox();
+            chkEnemies = new CheckBox();
+            chkAllies = new CheckBox();
             nudMPCost = new NumericUpDown();
             label8 = new Label();
             lblNoCooldown = new Label();
@@ -49,9 +55,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             nudMaxRange = new NumericUpDown();
             nudMinRange = new NumericUpDown();
             label2 = new Label();
-            chkSelf = new CheckBox();
-            chkEnemies = new CheckBox();
-            chkAllies = new CheckBox();
             label1 = new Label();
             btnSave = new Button();
             btnEdit = new Button();
@@ -76,6 +79,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             pictureBox1 = new PictureBox();
             chkFinishesTurn = new CheckBox();
             gbSelectionCriteria.SuspendLayout();
+            pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).BeginInit();
@@ -119,6 +123,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // gbSelectionCriteria
             // 
+            gbSelectionCriteria.Controls.Add(rbTile);
+            gbSelectionCriteria.Controls.Add(rbEntity);
+            gbSelectionCriteria.Controls.Add(pnlCharacterTargets);
             gbSelectionCriteria.Controls.Add(nudMPCost);
             gbSelectionCriteria.Controls.Add(label8);
             gbSelectionCriteria.Controls.Add(lblNoCooldown);
@@ -132,9 +139,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             gbSelectionCriteria.Controls.Add(nudMaxRange);
             gbSelectionCriteria.Controls.Add(nudMinRange);
             gbSelectionCriteria.Controls.Add(label2);
-            gbSelectionCriteria.Controls.Add(chkSelf);
-            gbSelectionCriteria.Controls.Add(chkEnemies);
-            gbSelectionCriteria.Controls.Add(chkAllies);
             gbSelectionCriteria.Controls.Add(label1);
             gbSelectionCriteria.Location = new Point(476, 30);
             gbSelectionCriteria.Name = "gbSelectionCriteria";
@@ -142,6 +146,71 @@ namespace RogueCustomsDungeonEditor.HelperForms
             gbSelectionCriteria.TabIndex = 3;
             gbSelectionCriteria.TabStop = false;
             gbSelectionCriteria.Text = "Usage Criteria";
+            // 
+            // rbTile
+            // 
+            rbTile.AutoSize = true;
+            rbTile.Location = new Point(375, 22);
+            rbTile.Name = "rbTile";
+            rbTile.Size = new Size(52, 19);
+            rbTile.TabIndex = 30;
+            rbTile.Text = "A tile";
+            rbTile.UseVisualStyleBackColor = true;
+            rbTile.CheckedChanged += rbTile_CheckedChanged;
+            // 
+            // rbEntity
+            // 
+            rbEntity.AutoSize = true;
+            rbEntity.Checked = true;
+            rbEntity.Location = new Point(112, 24);
+            rbEntity.Name = "rbEntity";
+            rbEntity.Size = new Size(73, 19);
+            rbEntity.TabIndex = 29;
+            rbEntity.TabStop = true;
+            rbEntity.Text = "An entity";
+            rbEntity.UseVisualStyleBackColor = true;
+            rbEntity.CheckedChanged += rbEntity_CheckedChanged;
+            // 
+            // pnlCharacterTargets
+            // 
+            pnlCharacterTargets.AutoSize = true;
+            pnlCharacterTargets.Controls.Add(chkSelf);
+            pnlCharacterTargets.Controls.Add(chkEnemies);
+            pnlCharacterTargets.Controls.Add(chkAllies);
+            pnlCharacterTargets.Location = new Point(5, 44);
+            pnlCharacterTargets.Name = "pnlCharacterTargets";
+            pnlCharacterTargets.Size = new Size(462, 32);
+            pnlCharacterTargets.TabIndex = 28;
+            // 
+            // chkSelf
+            // 
+            chkSelf.AutoSize = true;
+            chkSelf.Location = new Point(414, 8);
+            chkSelf.Name = "chkSelf";
+            chkSelf.Size = new Size(45, 19);
+            chkSelf.TabIndex = 6;
+            chkSelf.Text = "Self";
+            chkSelf.UseVisualStyleBackColor = true;
+            // 
+            // chkEnemies
+            // 
+            chkEnemies.AutoSize = true;
+            chkEnemies.Location = new Point(190, 8);
+            chkEnemies.Name = "chkEnemies";
+            chkEnemies.Size = new Size(70, 19);
+            chkEnemies.TabIndex = 5;
+            chkEnemies.Text = "Enemies";
+            chkEnemies.UseVisualStyleBackColor = true;
+            // 
+            // chkAllies
+            // 
+            chkAllies.AutoSize = true;
+            chkAllies.Location = new Point(4, 8);
+            chkAllies.Name = "chkAllies";
+            chkAllies.Size = new Size(54, 19);
+            chkAllies.TabIndex = 4;
+            chkAllies.Text = "Allies";
+            chkAllies.UseVisualStyleBackColor = true;
             // 
             // nudMPCost
             // 
@@ -259,36 +328,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label2.Size = new Size(386, 15);
             label2.TabIndex = 4;
             label2.Text = "Requires a distance of                 to                 tiles to the Target to be used.";
-            // 
-            // chkSelf
-            // 
-            chkSelf.AutoSize = true;
-            chkSelf.Location = new Point(415, 53);
-            chkSelf.Name = "chkSelf";
-            chkSelf.Size = new Size(45, 19);
-            chkSelf.TabIndex = 3;
-            chkSelf.Text = "Self";
-            chkSelf.UseVisualStyleBackColor = true;
-            // 
-            // chkEnemies
-            // 
-            chkEnemies.AutoSize = true;
-            chkEnemies.Location = new Point(191, 53);
-            chkEnemies.Name = "chkEnemies";
-            chkEnemies.Size = new Size(70, 19);
-            chkEnemies.TabIndex = 2;
-            chkEnemies.Text = "Enemies";
-            chkEnemies.UseVisualStyleBackColor = true;
-            // 
-            // chkAllies
-            // 
-            chkAllies.AutoSize = true;
-            chkAllies.Location = new Point(5, 53);
-            chkAllies.Name = "chkAllies";
-            chkAllies.Size = new Size(54, 19);
-            chkAllies.TabIndex = 1;
-            chkAllies.Text = "Allies";
-            chkAllies.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -565,6 +604,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Text = "Action Editor";
             gbSelectionCriteria.ResumeLayout(false);
             gbSelectionCriteria.PerformLayout();
+            pnlCharacterTargets.ResumeLayout(false);
+            pnlCharacterTargets.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaximumUses).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudInitialCooldown).EndInit();
@@ -590,9 +631,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private NumericUpDown nudMaxRange;
         private NumericUpDown nudMinRange;
         private Label label2;
-        private CheckBox chkSelf;
-        private CheckBox chkEnemies;
-        private CheckBox chkAllies;
         private Label label1;
         private Label lblNoCooldown;
         private Label lblInfiniteUse;
@@ -622,5 +660,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Label label9;
         private PictureBox pictureBox1;
         private CheckBox chkFinishesTurn;
+        private RadioButton rbTile;
+        private RadioButton rbEntity;
+        private Panel pnlCharacterTargets;
+        private CheckBox chkSelf;
+        private CheckBox chkEnemies;
+        private CheckBox chkAllies;
     }
 }

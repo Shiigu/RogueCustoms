@@ -1014,7 +1014,6 @@ namespace RogueCustomsDungeonEditor
         private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
         {
             sae.Action = action;
-            sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             sae.ClassId = classId;
             sae.Dungeon = ActiveDungeon;
             sae.EffectParamData = EffectParamData;
@@ -1023,7 +1022,6 @@ namespace RogueCustomsDungeonEditor
         private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
         {
             mae.Actions = actions;
-            mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             mae.ClassId = classId;
             mae.Dungeon = ActiveDungeon;
             mae.EffectParamData = EffectParamData;
@@ -3406,9 +3404,9 @@ namespace RogueCustomsDungeonEditor
 
         private void ToggleItemTypeControlsVisibility()
         {
-            maeItemOnAttack.RequiresDescription = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor");
             if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
             {
+                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = true;
@@ -3419,6 +3417,7 @@ namespace RogueCustomsDungeonEditor
             }
             else if (cmbItemType.Text == "Consumable")
             {
+                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = true;
                 saeItemOnTurnStart.Visible = false;
                 saeItemOnTurnStart.Action = null;
@@ -3430,6 +3429,7 @@ namespace RogueCustomsDungeonEditor
             }
             else
             {
+                saeItemOnStepped.Visible = false;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = false;
