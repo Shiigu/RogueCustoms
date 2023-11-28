@@ -107,6 +107,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
 
             var trap = Map.AddEntity(paramsObject.Id, 1, Target.Position) as Item;
+
+            if (trap == null || trap.Position == null)
+                return false;
+
             trap.Visible = trapClass.StartsVisible;
             trap.Faction = c.Faction;
 

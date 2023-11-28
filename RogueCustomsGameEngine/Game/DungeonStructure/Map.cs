@@ -220,6 +220,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 ResetAndCreateTiles();
 
                 CreateRoomsWithRandomizedConfig();
+
                 success = ConnectRoomsOrTurnIntoDefaultIfNotPossible();
             }
             while (!success && _generationTries < Constants.MaxGenerationTries);
@@ -352,6 +353,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var normalRoomsCount = 0;
             (int LastPossibleNormalRow, int LastPossibleNormalColumn) = (RoomCountRows - 1, RoomCountColumns - 1);
+            var minimumAmountOfNonDummyRooms = GeneratorAlgorithmToUse.Type == GeneratorAlgorithmTypes.OneBigRoom ? 1 : 2;
             GetPossibleRoomData();
             do
             {
@@ -384,7 +386,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                 }
             }
-            while (!SetPossibleRoomConnections(false).IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None));
+            while (Rooms.Count(r => !r.IsDummy) < minimumAmountOfNonDummyRooms && !SetPossibleRoomConnections(false).IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None));
         }
 
         private void CreateRoomsWithSpecificLayout(List<(int Row, int Column)> normalRooms, List<(int Row, int Column)> dummyRooms)
@@ -433,9 +435,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (success)
                 {
                     PlacePlayer();
-                    if (FloorConfigurationToUse.GenerateStairsOnStart)
-                        SetStairs();
-                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                    success = Player.Position != null;
+                    if(success)
+                    {
+                        if (FloorConfigurationToUse.GenerateStairsOnStart)
+                            SetStairs();
+                        AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                    }
                 }
             }
             return success;
@@ -445,27 +451,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         #region Entities
 
-        public void AddEntity(Entity entity, bool isInInventory)
+        public void AddItemToInventory(Item item)
         {
-            entity.Id = CurrentEntityId;
-            entity.Map = this;
-            if (!isInInventory)
-                entity.Position = PickEmptyPosition(TurnCount == 0);
-            if (entity is PlayerCharacter pc)
-            {
-                Dungeon.PlayerCharacter = pc;
-            }
-            else if (entity is NonPlayableCharacter npc)
-            {
-                AICharacters.Add(npc);
-            }
-            else if (entity is Item i)
-            {
-                if (i.EntityType != EntityType.Trap)
-                    Items.Add(i);
-                else
-                    Traps.Add(i);
-            }
+            item.Id = CurrentEntityId;
+            item.Map = this;
+            Items.Add(item);
             CurrentEntityId++;
         }
 
@@ -506,6 +496,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     throw new InvalidDataException("Entity lacks a valid type!");
             }
             CurrentEntityId++;
+            if (entity.Position == null) return entity;
             if (entity is Item i)
             {
                 if (i.EntityType != EntityType.Trap)
@@ -568,25 +559,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 Player.Id = CurrentEntityId;
                 CurrentEntityId++;
                 if (Player.EquippedWeapon?.ClassId.Equals(Dungeon.PlayerClass.StartingWeaponId) == false)
-                {
-                    Player.EquippedWeapon.Id = CurrentEntityId;
-                    Player.EquippedWeapon.Map = this;
-                    AddEntity(Player.EquippedWeapon, true);
-                    CurrentEntityId++;
-                }
+                    AddItemToInventory(Player.EquippedWeapon);
                 if (Player.EquippedArmor?.ClassId.Equals(Dungeon.PlayerClass.StartingArmorId) == false)
-                {
-                    Player.EquippedArmor.Id = CurrentEntityId;
-                    Player.EquippedArmor.Map = this;
-                    AddEntity(Player.EquippedArmor, true);
-                    CurrentEntityId++;
-                }
+                    AddItemToInventory(Player.EquippedArmor);
                 Player.Inventory?.ForEach(i =>
                 {
-                    i.Id = CurrentEntityId;
-                    i.Map = this;
-                    AddEntity(i, true);
-                    CurrentEntityId++;
+                    AddItemToInventory(i);
                 });
             }
             Player.Position = PickEmptyPosition(false);
@@ -1037,26 +1015,42 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Point PickEmptyPosition(bool allowPlayerRoom)
         {
-            int rngX, rngY;
+            int rngX = -1, rngY = -1;
             var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).Distinct().ToList();
-            Tile tileToCheck;
-            bool hasLaterallyAdjacentHallways;
             var playerRoom = Player?.Position != null ? GetRoomInCoordinates(Player.Position.X, Player.Position.Y) : null;
             if(nonDummyRooms.Count > 1 && playerRoom != null && !allowPlayerRoom)
                 nonDummyRooms.Remove(playerRoom);
             do
             {
                 var possibleNonDummyRoom = nonDummyRooms.TakeRandomElement(Rng);
-                rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
-                rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
-                tileToCheck = GetTileFromCoordinates(rngX, rngY);
-                hasLaterallyAdjacentHallways = GetTileFromCoordinates(rngX - 1, rngY)?.Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX + 1, rngY)?.Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX, rngY - 1)?.Type == TileType.Hallway
-                                            || GetTileFromCoordinates(rngX, rngY + 1)?.Type == TileType.Hallway;
+                if(!possibleNonDummyRoom.GetTiles().Exists(t => CanBeConsideredEmpty(t)))
+                {
+                    nonDummyRooms.Remove(possibleNonDummyRoom);
+                }
+                else
+                {
+                    rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
+                    rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
+                }
             }
-            while (!tileToCheck.IsWalkable || tileToCheck.Type == TileType.Stairs || tileToCheck.Character != null || tileToCheck.GetItems().Any() || tileToCheck.Trap != null || hasLaterallyAdjacentHallways);
-            return new Point(rngX, rngY);
+            while (nonDummyRooms.Any() && !CanBeConsideredEmpty(GetTileFromCoordinates(rngX, rngY)));
+            return rngX != -1 && rngY != -1 ? new Point(rngX, rngY) : null;
+        }
+
+        private bool CanBeConsideredEmpty(Tile? t)
+        {
+            if (t == null) return false;
+            var position = t.Position;
+            var hasLaterallyAdjacentHallways = GetTileFromCoordinates(position.X - 1, position.Y)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(position.X + 1, position.Y)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(position.X, position.Y - 1)?.Type == TileType.Hallway
+                                            || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Hallway;
+            return t.IsWalkable ||
+                    t.Type == TileType.Floor ||
+                    t.Character == null ||
+                    !t.GetItems().Any() ||
+                    t.Trap == null ||
+                    !hasLaterallyAdjacentHallways;
         }
 
         #endregion
@@ -1469,9 +1463,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             Tile? leftConnector = null, rightConnector = null, connectorA = null, connectorB = null;
 
-            if (leftRoom.Width == 1 && leftRoom.Height == 1)
+            if (leftRoom.IsDummy)
                 leftConnector = GetTileFromCoordinates(leftRoom.Position.X, leftRoom.Position.Y);
-            if (rightRoom.Width == 1 && rightRoom.Height == 1)
+            if (rightRoom.IsDummy)
                 rightConnector = GetTileFromCoordinates(rightRoom.Position.X, rightRoom.Position.Y);
 
             var leftRoomMinY = leftRoom.Position.Y + 1;
@@ -1556,9 +1550,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             Tile? topConnector = null, downConnector = null, connectorA = null, connectorB = null;
 
-            if (topRoom.Width == 1 && topRoom.Height == 1)
+            if (topRoom.IsDummy)
                 topConnector = GetTileFromCoordinates(topRoom.Position.X, topRoom.Position.Y);
-            if (downRoom.Width == 1 && downRoom.Height == 1)
+            if (downRoom.IsDummy)
                 downConnector = GetTileFromCoordinates(downRoom.Position.X, downRoom.Position.Y);
 
             var topRoomMinX = topRoom.Position.X + 1;
