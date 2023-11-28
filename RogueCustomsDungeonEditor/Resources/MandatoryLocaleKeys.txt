@@ -25,6 +25,7 @@ TargetTypeSelf
 TargetTypeAlly
 TargetTypeNeutral
 TargetTypeEnemy
+TargetTypeTile
 TargetDoesNotFulfillConditions
 NotEnoughMP
 RequiresATarget
@@ -39,6 +40,11 @@ SightRangeStatFullMap
 SightRangeStatFullRoom
 SightRangeStatFlatNumber
 InventorySizeStatFlatNumber
+TileTypeFloor
+TileTypeWall
+TileTypeHallway
+TileTypeStairs
+TileTypeEmpty
 CharacterLevelsUpMessage
 CharacterLevelsUpHeader
 CharacterHPStat
@@ -71,4 +77,6 @@ CharacterStatGotNerfed
 CharacterStatGotNeutralized
 CharacterWasTeleported
 CharacterStealsItem
+CharacterConvertedTile
+CharacterCreatedATrap
 StairsGotRevealed

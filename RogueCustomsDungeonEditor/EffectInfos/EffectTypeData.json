@@ -3,6 +3,8 @@
     "InternalName": "DealDamage",
     "DisplayName": "Deal Damage to Target",
     "Description": "Used by the User to damage Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -90,6 +92,8 @@
     "InternalName": "BurnMP",
     "DisplayName": "Burn Target's MP",
     "Description": "Used by the User to remove some of Target's MP.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -167,6 +171,8 @@
     "InternalName": "StealItem",
     "DisplayName": "Steal Item from Target",
     "Description": "Used by the User take an item from Target's inventory and put it into their own.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -231,6 +237,8 @@
     "InternalName": "ReplaceConsoleRepresentation",
     "DisplayName": "Change Own Console Representation",
     "Description": "The way the calling object shows up in the Console Client will be modified.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -270,6 +278,8 @@
     "InternalName": "Remove",
     "DisplayName": "Remove Target from Game",
     "Description": "The User will try to remove Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -318,6 +328,8 @@
     "InternalName": "PrintText",
     "DisplayName": "Print Text to Message Log",
     "Description": "If Player can see the User (if visibility checks must apply), text will be printed into the Message Log.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -357,6 +369,8 @@
     "InternalName": "MessageBox",
     "DisplayName": "Show a Message Box",
     "Description": "Player will see a Message Box on their next turn.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -396,6 +410,8 @@
     "InternalName": "HealDamage",
     "DisplayName": "Heal Damage from Target",
     "Description": "Used by the User to heal Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -453,6 +469,8 @@
     "InternalName": "ReplenishMP",
     "DisplayName": "Recover some of Target's MP",
     "Description": "Used by the User to give Target some MP.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -510,6 +528,8 @@
     "InternalName": "GiveExperience",
     "DisplayName": "Give Experience to Target",
     "Description": "Used by the User to give Target some experience points.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -548,6 +568,8 @@
     "InternalName": "ApplyAlteredStatus",
     "DisplayName": "Apply Altered Status on Target",
     "Description": "Used by the User to put an Altered Status on Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -626,6 +648,8 @@
     "InternalName": "ApplyStatAlteration",
     "DisplayName": "Alter one of Target's Stats",
     "Description": "Used by the User to increase or decrease one of Target's stats.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -771,6 +795,8 @@
     "InternalName": "CleanseAlteredStatus",
     "DisplayName": "Remove Altered Status from Target",
     "Description": "Used by the User to remove a certain Altered Status on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -829,6 +855,8 @@
     "InternalName": "CleanseStatAlteration",
     "DisplayName": "Remove all Alterations from one of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on one of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -924,6 +952,8 @@
     "InternalName": "CleanseAllAlteredStatuses",
     "DisplayName": "Remove all Altered Statuses from Target",
     "Description": "Used by the User to remove all removable Altered Statuses on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -972,6 +1002,8 @@
     "InternalName": "CleanseStatAlterations",
     "DisplayName": "Remove all Alterations from all of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on all of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1020,6 +1052,8 @@
     "InternalName": "ForceSkipTurn",
     "DisplayName": "Make Target skip the next turn",
     "Description": "Used by the User to make Target skip their next turn.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1068,6 +1102,8 @@
     "InternalName": "GenerateStairs",
     "DisplayName": "Spawn Stairs",
     "Description": "Stairs will appear in the current Floor, if there weren't any before.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": []
@@ -1124,6 +1160,8 @@
     "InternalName": "ToggleVisibility",
     "DisplayName": "Change Target's visibility",
     "Description": "User will make the Target invisible (if they were visible) or visible (if they were invisible).",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1169,9 +1207,102 @@
     ]
   },
   {
+    "InternalName": "TransformTile",
+    "DisplayName": "Convert Tile",
+    "Description": "User will convert the Tile.\nFails if the Tile is occupied, adjacent to an empty tile, or if it prevents map completeness.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "TileType",
+        "DisplayName": "Tile Type",
+        "Description": "The type this Tile will be converted to.",
+        "ParameterType": "ComboBox",
+        "Default": "Wall",
+        "ValidValues": [
+          {
+            "Key": "Wall",
+            "Value": "Wall"
+          },
+          {
+            "Key": "Floor",
+            "Value": "Floor"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "PlaceTrap",
+    "DisplayName": "Place Trap Tile",
+    "Description": "User will place a Trap on the Tile.\nFails if the Tile already has one, or if it's not a Floor or Hallway Tile.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Trap to place.",
+        "ParameterType": "Trap",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "CheckCondition",
     "DisplayName": "Run Condition",
     "Description": "Evaluates a boolean expression.\n\nIf the expression returns true, it's a Success.\nIf the expression returns false, it's Failure.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": false,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1191,6 +1322,8 @@
     "InternalName": "SetFlag",
     "DisplayName": "Create or Update Flag",
     "Description": "The Dungeon will create a new Flag with the set name, or update its value if it already exists.\n\nDepending on parameters, Flags can persist through Floors.\n\nRemember to Set a flag before using it.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -1230,6 +1363,8 @@
     "InternalName": "Equip",
     "DisplayName": "Equip",
     "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE! IT MAY CRASH THE GAME!",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": false,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": []

@@ -6,6 +6,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using Point = RogueCustomsGameEngine.Utils.Representation.Point;
 using System;
 using System.Runtime.InteropServices.ObjectiveC;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -13,7 +14,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     [Serializable]
-    public class Tile : IEquatable<Tile?>
+    public sealed class Tile : ITargetable, IEquatable<Tile?>
     {
         public Point Position { get; set; }
 
@@ -53,18 +54,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     else if (Type == TileType.Wall)
                     {
-                        if (Position.Equals(Room.TopLeft))
-                            _consoleRepresentation = Map.TileSet.TopLeftWall;
-                        else if (Position.Equals(Room.TopRight))
-                            _consoleRepresentation = Map.TileSet.TopRightWall;
-                        else if (Position.Equals(Room.BottomLeft))
-                            _consoleRepresentation = Map.TileSet.BottomLeftWall;
-                        else if (Position.Equals(Room.BottomRight))
-                            _consoleRepresentation = Map.TileSet.BottomRightWall;
-                        else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
-                            _consoleRepresentation = Map.TileSet.VerticalWall;
-                        else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                        if (Room != null)
+                        {
+                            if (Position.Equals(Room.TopLeft))
+                                _consoleRepresentation = Map.TileSet.TopLeftWall;
+                            else if (Position.Equals(Room.TopRight))
+                                _consoleRepresentation = Map.TileSet.TopRightWall;
+                            else if (Position.Equals(Room.BottomLeft))
+                                _consoleRepresentation = Map.TileSet.BottomLeftWall;
+                            else if (Position.Equals(Room.BottomRight))
+                                _consoleRepresentation = Map.TileSet.BottomRightWall;
+                            else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
+                                _consoleRepresentation = Map.TileSet.VerticalWall;
+                            else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                                _consoleRepresentation = Map.TileSet.HorizontalWall;
+                            else // This should only trigger when it's a Wall that was created by a Character
+                                _consoleRepresentation = Map.TileSet.HorizontalWall;
+                        }
+                        else // This should only trigger when it's a Wall that was created by a Character on a Hallway
+                        {
                             _consoleRepresentation = Map.TileSet.HorizontalWall;
+                        }
                     }
                     else if (Type == TileType.Hallway)
                     {

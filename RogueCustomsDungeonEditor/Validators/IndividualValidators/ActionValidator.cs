@@ -12,6 +12,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using System.Xml.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
@@ -48,19 +50,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                 if (action.MinimumRange < 0)
                     messages.AddError($"Action {name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
-                else if (action.MinimumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
-                else if (action.MinimumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                
                 if (action.MaximumRange < 0)
                     messages.AddError($"Action {name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
-                else if (action.MaximumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
-                else if (action.MaximumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
 
                 if (action.MinimumRange > action.MaximumRange)
                     messages.AddError($"Action {name ?? "NULL"} has a MinimumRange higher than its MaximumRange.");
+
+                if (!action.TargetTypes.Exists(tt => tt == TargetType.Tile))
+                {
+                    if (action.MinimumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
+                        messages.AddError($"Action {name ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
+                    else if (action.MinimumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
+                        messages.AddError($"Action {name ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                    if (action.MaximumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
+                        messages.AddError($"Action {name ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
+                    else if (action.MaximumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
+                        messages.AddError($"Action {name ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                }
 
                 if (action.CooldownBetweenUses < 0)
                     messages.AddError($"Action {name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
@@ -191,9 +198,22 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 target.Inventory.Add(new Item(sampleConsumableClass, sampleDungeon.CurrentFloor));
             }
 
-            bool errorOnActionChain = false;
-            var currentEffect = action.Effect;
+            if (!action.TargetTypes.Contains(TargetType.Tile))
+                TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+            else
+                TestOnATile(owner, source, sampleDungeon, action, messages);
+
+            return messages;
+        }
+
+        private static void TestOnACharacter(Entity owner, Entity source, Character target, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
+        {
+            var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
+            var name = action.Name;
+            var currentEffect = action.Effect;
+            var amountOfSuccesses = 0;
+            var amountOfFailures = 0;
 
             if (currentEffect == null)
                 messages.AddError($"Action {name ?? "NULL"} has no function chain programmed to it.");
@@ -205,7 +225,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
-                if(nextEffect.Function != null)
+                if (nextEffect.Function != null)
                 {
                     var functionName = nextEffect.Function.Method.Name;
 
@@ -229,7 +249,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             errorOnActionChain = true;
                             messages.AddError($"The effect {functionName} of {name ?? "NULL"} has parameters that haven't been parsed.");
                         }
-                        if(flagsAreInvolved)
+                        if (flagsAreInvolved)
                             messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
                     }
                     catch (Exception ex)
@@ -240,29 +260,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                     if (!errorOnActionChain)
                     {
-                        int amountOfSuccesses = 0, amountOfFailures = 0;
-
-                        var excessiveTargetHPWarning = false;
-                        var excessiveTargetMPWarning = false;
-                        var excessiveTargetAttackWarning = false;
-                        var excessiveTargetDefenseWarning = false;
-                        var excessiveTargetMovementWarning = false;
-                        var excessiveTargetHPRegenerationWarning = false;
-                        var excessiveTargetMPRegenerationWarning = false;
-                        var excessiveSourceHPWarning = false;
-                        var excessiveSourceMPWarning = false;
-                        var excessiveSourceAttackWarning = false;
-                        var excessiveSourceDefenseWarning = false;
-                        var excessiveSourceMovementWarning = false;
-                        var excessiveSourceHPRegenerationWarning = false;
-                        var excessiveSourceMPRegenerationWarning = false;
-                        var excessiveThisHPWarning = false;
-                        var excessiveThisMPWarning = false;
-                        var excessiveThisAttackWarning = false;
-                        var excessiveThisDefenseWarning = false;
-                        var excessiveThisMovementWarning = false;
-                        var excessiveThisHPRegenerationWarning = false;
-                        var excessiveThisMPRegenerationWarning = false;
 
                         try
                         {
@@ -353,8 +350,107 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError($"Action {name ?? "NULL"} attempts to call an undefined function.");
                 }
             }
+        }
+        private static void TestOnATile(Entity owner, Entity source, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
+        {
+            var errorOnActionChain = false;
+            var pendingEffects = new List<Effect>();
+            var name = action.Name;
+            var currentEffect = action.Effect;
+            var amountOfSuccesses = 0;
+            var amountOfFailures = 0;
 
-            return messages;
+            if (currentEffect == null)
+                messages.AddError($"Action {name ?? "NULL"} has no function chain programmed to it.");
+            else
+                pendingEffects.Add(currentEffect);
+
+            while (pendingEffects.Exists(pe => pe != null) && !errorOnActionChain)
+            {
+                var target = sampleDungeon.CurrentFloor.Tiles.GetRandomElement();
+                var nextEffect = pendingEffects.Find(pe => pe != null);
+                if (nextEffect == null) break;
+                pendingEffects.Remove(nextEffect);
+                if (nextEffect.Function != null)
+                {
+                    var functionName = nextEffect.Function.Method.Name;
+
+                    if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
+                    {
+                        errorOnActionChain = true;
+                        messages.AddError($"Action {name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
+                    }
+
+                    try
+                    {
+                        if (!nextEffect.HaveAllParametersBeenParsed(owner, source, null, sampleDungeon.CurrentFloor, out bool flagsAreInvolved))
+                        {
+                            errorOnActionChain = true;
+                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has parameters that haven't been parsed.");
+                        }
+                        if (flagsAreInvolved)
+                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
+                    }
+                    catch (Exception ex)
+                    {
+                        errorOnActionChain = true;
+                        messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
+                    }
+
+                    if (!errorOnActionChain)
+                    {
+                        try
+                        {
+                            if (nextEffect.TestFunction(owner, source, target))
+                            {
+                                amountOfSuccesses++;
+                            }
+                            else
+                            {
+                                amountOfFailures++;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorOnActionChain = true;
+                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running against a certain {target?.Type} Tile: {ex.Message}.");
+                        }
+
+                        if (!errorOnActionChain)
+                        {
+                            if (nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
+                            {
+                                if (amountOfSuccesses == 0)
+                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
+                                else if (amountOfFailures == 0)
+                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                            }
+                            else if (nextEffect.OnSuccess != null && nextEffect.OnFailure == null && amountOfSuccesses == 0)
+                            {
+                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
+                            }
+                            else if (nextEffect.OnSuccess == null && nextEffect.OnFailure != null && amountOfFailures == 0)
+                            {
+                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                            }
+
+                            if (nextEffect.Then != null)
+                            {
+                                pendingEffects.Add(nextEffect.Then);
+                            }
+                            else if (nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
+                            {
+                                pendingEffects.Add(nextEffect.OnSuccess);
+                                pendingEffects.Add(nextEffect.OnFailure);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    messages.AddError($"Action {name ?? "NULL"} attempts to call an undefined function.");
+                }
+            }
         }
 
         private static Character GetATestCharacter(Dungeon sampleDungeon)

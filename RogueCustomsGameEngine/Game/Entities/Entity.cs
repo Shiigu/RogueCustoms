@@ -1,4 +1,5 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
-    public abstract class Entity
+    public abstract class Entity : ITargetable
     {
         public int Id { get; set; }
         public string Name { get; set; }

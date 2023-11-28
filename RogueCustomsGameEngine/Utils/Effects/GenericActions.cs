@@ -9,6 +9,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
 using org.matheval;
 using MathNet.Numerics.Statistics.Mcmc;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -26,7 +27,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool PrintText(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool PrintText(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             _ = 0;
@@ -34,7 +35,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var ignoreVisibilityChecks = ExpandoObjectHelper.HasProperty(paramsObject, "BypassesVisibilityCheck") && paramsObject.BypassesVisibilityCheck;
             var entityTypesForVisibilityCheck = new List<EntityType> { EntityType.Player, EntityType.NPC };
             var isSourceVisible = entityTypesForVisibilityCheck.Contains(Source.EntityType) && Map.Player.CanSee(Source);
-            var isTargetVisible = Target != null && entityTypesForVisibilityCheck.Contains(Target.EntityType) && Map.Player.CanSee(Target);
+            var isTargetVisible = Target is Character t && entityTypesForVisibilityCheck.Contains(t.EntityType) && Map.Player.CanSee(t);
 
             if (ignoreVisibilityChecks || isSourceVisible || isTargetVisible)
             {
@@ -47,7 +48,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool MessageBox(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool MessageBox(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -55,7 +56,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool HealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool HealDamage(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -85,14 +86,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool GiveExperience(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool GiveExperience(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target is not Character || !paramsObject.Target.CanGainExperience) return false;
+            if (paramsObject.Target is not Character t || !t.CanGainExperience) return false;
             if (paramsObject.Target.Level == paramsObject.Target.MaxLevel) return false;
-            if (Target.EntityType == EntityType.Player
-                || (Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
+            if (t.EntityType == EntityType.Player
+                || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
             {
                 Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
                 paramsObject.Target.GainExperience((int) paramsObject.Amount);
@@ -101,7 +102,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool ApplyAlteredStatus(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ApplyAlteredStatus(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -134,7 +135,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool ApplyStatAlteration(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool ApplyStatAlteration(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -250,7 +251,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CleanseAlteredStatus(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool CleanseAlteredStatus(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -284,22 +285,22 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CleanseStatAlteration(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool CleanseStatAlteration(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
-            if (paramsObject.Target is not Character)
+            if (paramsObject.Target is not Character t)
                 // Attempted to remove of Target's Altered Statuses when it's not a Character.
                 return false;
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, t, paramsObject);
 
             if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= accuracyCheck)
             {
                 statAlterations.Clear();
 
-                if (paramsObject.Target.EntityType == EntityType.Player
-                    || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(Target)))
+                if (t.EntityType == EntityType.Player
+                    || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
                 {
                     var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
                     var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
@@ -308,7 +309,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         statName = "HPRegeneration";
                     else if (isMPRegeneration)
                         statName = "MPRegeneration";
-                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = paramsObject.Target.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
                 }
                 return true;
             }
@@ -316,7 +317,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CleanseStatAlterations(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool CleanseStatAlterations(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -342,7 +343,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return success;
         }
 
-        public static bool CleanseAllAlteredStatuses(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool CleanseAllAlteredStatuses(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -374,7 +375,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool ForceSkipTurn(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ForceSkipTurn(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -390,7 +391,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool Teleport(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool Teleport(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -411,7 +412,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool GenerateStairs(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool GenerateStairs(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             if (!Map.StairsAreSet)
@@ -423,14 +424,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CheckCondition(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool CheckCondition(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             return new Expression(paramsObject.Condition).Eval<bool>();
         }
 
-        public static bool SetFlag(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool SetFlag(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -442,7 +443,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool ReplenishMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool ReplenishMP(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -473,7 +474,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool ToggleVisibility(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ToggleVisibility(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);

@@ -28,6 +28,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public bool IsNewAction { get; set; }
         private readonly DungeonInfo ActiveDungeon;
         private readonly List<string> UsableAlteredStatusList;
+        private readonly List<string> UsableTrapList;
         private readonly List<EffectTypeData> SelectableEffects;
 
         private TreeNode SelectedNode;
@@ -41,7 +42,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private readonly string ClassId;
         private readonly string PlaceholderActionName;
         private string PreviousTextBoxValue;
-        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<string> alteredStatusList, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
+        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool requiresCondition, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
         {
             InitializeComponent();
             if (!actionToSave.IsNullOrEmpty())
@@ -108,12 +109,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 fklblConditionWarning.Visible = false;
             }
 
-            if(TurnEndCriteria == TurnEndCriteria.CannotEndTurn)
+            if (TurnEndCriteria == TurnEndCriteria.CannotEndTurn)
             {
                 chkFinishesTurn.Enabled = false;
                 chkFinishesTurn.Checked = false;
             }
-            else if(TurnEndCriteria == TurnEndCriteria.MustEndTurn)
+            else if (TurnEndCriteria == TurnEndCriteria.MustEndTurn)
             {
                 chkFinishesTurn.Enabled = false;
                 chkFinishesTurn.Checked = true;
@@ -124,12 +125,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
             }
 
-            UsableAlteredStatusList = alteredStatusList;
+            UsableAlteredStatusList = activeDungeon.AlteredStatuses.ConvertAll(als => als.Id);
+            UsableTrapList = activeDungeon.Traps.ConvertAll(t => t.Id);
             SelectableEffects = selectableEffects;
             RefreshActionSequenceTree();
 
             if (usageCriteria == UsageCriteria.AnyTargetAnyTime)
             {
+                rbEntity.Enabled = false;
+                rbEntity.Checked = true;
+                rbTile.Enabled = false;
                 gbSelectionCriteria.Enabled = false;
             }
             else if (usageCriteria == UsageCriteria.AnyTarget)
@@ -137,12 +142,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 chkAllies.Enabled = false;
                 chkEnemies.Enabled = false;
                 chkSelf.Enabled = false;
+                rbEntity.Enabled = false;
+                rbEntity.Checked = true;
+                rbTile.Enabled = false;
                 nudMinRange.Enabled = false;
                 nudMaxRange.Enabled = false;
                 nudMPCost.Enabled = false;
             }
             else
             {
+                rbTile.Checked = ActionToSave?.TargetTypes?.Contains("Tile", StringComparer.InvariantCultureIgnoreCase) == true;
+                rbEntity.Checked = !rbTile.Checked;
                 chkAllies.Checked = ActionToSave?.TargetTypes?.Contains("Ally", StringComparer.InvariantCultureIgnoreCase) == true;
                 chkEnemies.Checked = ActionToSave?.TargetTypes?.Contains("Enemy", StringComparer.InvariantCultureIgnoreCase) == true;
                 chkSelf.Checked = ActionToSave?.TargetTypes?.Contains("Self", StringComparer.InvariantCultureIgnoreCase) == true;
@@ -294,37 +304,39 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var inputBoxPrompt = currentEffect.IsNullOrEmpty()
                 ? "You may change the function if you wish.\n\nAll parameters will display as default if you do, however."
                 : "Please indicate the function that will be executed in this step.";
-            var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", SelectableEffects.Where(se => se.InternalName != "Equip").Select(se => se.DisplayName).ToList(), currentEffectDisplayName);
+            var selectableEffectsToShow = rbEntity.Checked
+                ? SelectableEffects.Where(se => se.CanBeUsedOnEntity).Select(se => se.DisplayName).ToList()
+                : SelectableEffects.Where(se => se.CanBeUsedOnTile).Select(se => se.DisplayName).ToList();
+            var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", selectableEffectsToShow, currentEffectDisplayName);
             if (effectTypeSelection == null) return;
             var selectedEffectTypeData = SelectableEffects.Find(se => se.DisplayName.Equals(effectTypeSelection));
             if (selectedEffectTypeData == null) return;
-            if (!selectedEffectTypeData.InternalName.Equals(currentEffect.EffectName) && (!string.IsNullOrWhiteSpace(currentEffect.Then?.EffectName)
-                || !string.IsNullOrWhiteSpace(currentEffect.OnSuccess?.EffectName)
-                || !string.IsNullOrWhiteSpace(currentEffect.OnFailure?.EffectName)))
+            if(!currentEffect.IsNullOrEmpty() && !selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName) && (currentEffect.Then != null || currentEffect.OnSuccess != null || currentEffect.OnFailure != null))
             {
-                var messageBoxResult = MessageBox.Show(
-                    "This Action has child steps. If you change the function and save it, the child steps will be completely erased!\n\nAre you sure you want to continue?",
-                    "Add THEN Step",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-                if (messageBoxResult == DialogResult.No)
-                    return;
+                if(!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty())
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        "This Action has child steps. If you change the function and save it, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                        "Add THEN Step",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.No)
+                        return;
+                }
+                else
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        "This Action has 'Do Nothing' child steps. If you save any changes you make, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                        "Add THEN Step",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.No)
+                        return;
+                }
             }
-            if (selectedEffectTypeData.InternalName.Equals(currentEffect.EffectName) && ((currentEffect.Then != null && string.IsNullOrWhiteSpace(currentEffect.Then?.EffectName))
-                || (currentEffect.OnSuccess != null && string.IsNullOrWhiteSpace(currentEffect.OnSuccess?.EffectName))
-                || (currentEffect.OnFailure != null && string.IsNullOrWhiteSpace(currentEffect.OnFailure?.EffectName))))
-            {
-                var messageBoxResult = MessageBox.Show(
-                    "This Action has 'Do Nothing' child steps. If you save any changes you make, the child steps will be completely erased!\n\nAre you sure you want to continue?",
-                    "Add THEN Step",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-                if (messageBoxResult == DialogResult.No)
-                    return;
-            }
-            var frmActionParameter = new frmActionParameters(currentEffect, ActiveDungeon, selectedEffectTypeData, UsableAlteredStatusList, selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
+            var frmActionParameter = new frmActionParameters(currentEffect, ActiveDungeon, selectedEffectTypeData, UsableAlteredStatusList, UsableTrapList, selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
             frmActionParameter.ShowDialog();
             if (frmActionParameter.Saved)
             {
@@ -521,15 +533,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     {
                         if (gbSelectionCriteria.Enabled)
                         {
-                            if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                            if (rbEntity.Checked)
                             {
-                                ActionToSave.TargetTypes = new List<string>();
-                                if (chkAllies.Checked)
-                                    ActionToSave.TargetTypes.Add("Ally");
-                                if (chkEnemies.Checked)
-                                    ActionToSave.TargetTypes.Add("Enemy");
-                                if (chkSelf.Checked)
-                                    ActionToSave.TargetTypes.Add("Self");
+                                if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                                {
+                                    ActionToSave.TargetTypes = new List<string>();
+                                    if (chkAllies.Checked)
+                                        ActionToSave.TargetTypes.Add("Ally");
+                                    if (chkEnemies.Checked)
+                                        ActionToSave.TargetTypes.Add("Enemy");
+                                    if (chkSelf.Checked)
+                                        ActionToSave.TargetTypes.Add("Self");
+                                }
+                            }
+                            else if (rbTile.Checked)
+                            {
+                                ActionToSave.TargetTypes = new List<string> { "Tile" };
                             }
                             ActionToSave.MinimumRange = (int)nudMinRange.Value;
                             ActionToSave.MaximumRange = (int)nudMaxRange.Value;
@@ -589,15 +608,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     {
                         if (gbSelectionCriteria.Enabled)
                         {
-                            if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                            if (rbEntity.Checked)
                             {
-                                ActionToSave.TargetTypes = new List<string>();
-                                if (chkAllies.Checked)
-                                    ActionToSave.TargetTypes.Add("Ally");
-                                if (chkEnemies.Checked)
-                                    ActionToSave.TargetTypes.Add("Enemy");
-                                if (chkSelf.Checked)
-                                    ActionToSave.TargetTypes.Add("Self");
+                                if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                                {
+                                    ActionToSave.TargetTypes = new List<string>();
+                                    if (chkAllies.Checked)
+                                        ActionToSave.TargetTypes.Add("Ally");
+                                    if (chkEnemies.Checked)
+                                        ActionToSave.TargetTypes.Add("Enemy");
+                                    if (chkSelf.Checked)
+                                        ActionToSave.TargetTypes.Add("Self");
+                                }
+                            }
+                            else if (rbTile.Checked)
+                            {
+                                ActionToSave.TargetTypes = new List<string> { "Tile" };
                             }
                             ActionToSave.MinimumRange = (int)nudMinRange.Value;
                             ActionToSave.MaximumRange = (int)nudMaxRange.Value;
@@ -624,17 +650,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
             errorMessages = new List<string>();
             if (UsageCriteria != UsageCriteria.AnyTargetAnyTime && UsageCriteria != UsageCriteria.AnyTarget)
             {
-                if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
+                if (rbEntity.Checked)
                 {
-                    errorMessages.Add("Action is not set to be targetable to anyone.");
-                }
-                else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
-                {
-                    errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
-                }
-                else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
-                {
-                    errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
+                    if (!chkAllies.Checked && !chkEnemies.Checked && !chkSelf.Checked)
+                    {
+                        errorMessages.Add("Action is not set to be targetable to anyone.");
+                    }
+                    else if ((chkAllies.Checked || chkEnemies.Checked) && !chkSelf.Checked && (int)nudMaxRange.Value < 1)
+                    {
+                        errorMessages.Add("Action is set to be targetable to Allies or Enemies, but can only be aimed at the User's own Tile.");
+                    }
+                    else if (chkSelf.Checked && !chkAllies.Checked && !chkEnemies.Checked && (int)nudMinRange.Value > 0)
+                    {
+                        errorMessages.Add("Action is set to be targetable only to Self, but cannot be aimed at the User's own Tile.");
+                    }
                 }
             }
             if (RequiresDescription && string.IsNullOrWhiteSpace(txtActionDescription.Text))
@@ -665,6 +694,35 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 txtActionCondition.Text = PreviousTextBoxValue;
             }
             fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
+        }
+
+        private void rbEntity_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlCharacterTargets.Visible = rbEntity.Checked;
+        }
+
+        private void rbTile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTile.Checked && (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked))
+            {
+                var messageBoxResult = MessageBox.Show(
+                    "Changing the target to a Tile will remove the current target types.\n\nAre you sure you want to continue?",
+                    "Change Target Types",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                {
+                    rbTile.Checked = false;
+                }
+                else
+                {
+                    chkAllies.Checked = false;
+                    chkEnemies.Checked = false;
+                    chkSelf.Checked = false;
+                }
+            }
+            pnlCharacterTargets.Visible = !rbTile.Checked;
         }
     }
 

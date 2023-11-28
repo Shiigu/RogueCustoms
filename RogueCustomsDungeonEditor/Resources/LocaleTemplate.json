@@ -110,6 +110,10 @@
       "Value": "ENEMY"
     },
     {
+      "Key": "TargetTypeTile",
+      "Value": "TILE"
+    },
+    {
       "Key": "RequiresATarget",
       "Value": "REQUIRES A TARGET"
     },
@@ -166,6 +170,26 @@
       "Value": "{InventorySize} items"
     },
     {
+      "Key": "TileTypeFloor",
+      "Value": "Floor"
+    },
+    {
+      "Key": "TileTypeWall",
+      "Value": "Wall"
+    },
+    {
+      "Key": "TileTypeHallway",
+      "Value": "Hallway"
+    },
+    {
+      "Key": "TileTypeStairs",
+      "Value": "Stairs"
+    },
+    {
+      "Key": "TileTypeEmpty",
+      "Value": "Empty"
+    },
+    {
       "Key": "CharacterLevelsUpMessage",
       "Value": "{CharacterName} has reached Level {Level}!"
     },
@@ -216,7 +240,7 @@
     {
       "Key": "CharacterInventorySizeStat",
       "Value": "Inventory Size"
-    },    
+    },
     {
       "Key": "CharacterEvasionStat",
       "Value": "Evasion"
@@ -292,6 +316,14 @@
     {
       "Key": "CharacterStealsItem",
       "Value": "{SourceName} has stolen {ItemName} from {TargetName}!"
+    },
+    {
+      "Key": "CharacterConvertedTile",
+      "Value": "{CharacterName} has created a {TileType}!"
+    },
+    {
+      "Key": "CharacterCreatedATrap",
+      "Value": "{CharacterName} has deployed a {TrapName}!"
     },
     {
       "Key": "StairsGotRevealed",

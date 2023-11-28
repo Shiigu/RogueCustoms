@@ -2,6 +2,7 @@
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Helpers;
 using System;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -17,11 +18,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool Equip(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool Equip(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
+            var targetName = (Target is Entity e) ? e.Name : "NULL";
             if (This is not Item i || Target is not Character c)
-                throw new InvalidOperationException($"Attempted to equip {This.Name} on {Target.Name}, which is not valid");
+                throw new InvalidOperationException($"Attempted to equip {This.Name} on {targetName}, which is not valid");
             if (!i.IsEquippable)
                 throw new InvalidOperationException("Attempted to equip an unequippable item!");
 
@@ -32,7 +34,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool Remove(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool Remove(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
