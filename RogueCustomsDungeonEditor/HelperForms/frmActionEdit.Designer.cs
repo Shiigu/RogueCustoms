@@ -31,7 +31,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmActionEdit));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmActionEdit));
             lblTitle = new Label();
             tvEffectSequence = new TreeView();
             btnCancel = new Button();
@@ -78,6 +78,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label9 = new Label();
             pictureBox1 = new PictureBox();
             chkFinishesTurn = new CheckBox();
+            btnCopyStep = new Button();
+            btnPasteStep = new Button();
             gbSelectionCriteria.SuspendLayout();
             pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
@@ -113,7 +115,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(588, 444);
+            btnCancel.Location = new Point(528, 512);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -340,7 +342,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(428, 444);
+            btnSave.Location = new Point(368, 512);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -351,7 +353,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnEdit
             // 
             btnEdit.Enabled = false;
-            btnEdit.Location = new Point(300, 415);
+            btnEdit.Location = new Point(54, 285);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(113, 23);
             btnEdit.TabIndex = 5;
@@ -362,7 +364,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewThen
             // 
             btnNewThen.Enabled = false;
-            btnNewThen.Location = new Point(419, 415);
+            btnNewThen.Location = new Point(173, 285);
             btnNewThen.Name = "btnNewThen";
             btnNewThen.Size = new Size(75, 23);
             btnNewThen.TabIndex = 6;
@@ -373,7 +375,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnNewOnSuccessFailure
             // 
             btnNewOnSuccessFailure.Enabled = false;
-            btnNewOnSuccessFailure.Location = new Point(502, 415);
+            btnNewOnSuccessFailure.Location = new Point(256, 285);
             btnNewOnSuccessFailure.Name = "btnNewOnSuccessFailure";
             btnNewOnSuccessFailure.Size = new Size(165, 23);
             btnNewOnSuccessFailure.TabIndex = 7;
@@ -384,9 +386,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // btnRemove
             // 
             btnRemove.Enabled = false;
-            btnRemove.Location = new Point(673, 415);
+            btnRemove.Location = new Point(308, 314);
             btnRemove.Name = "btnRemove";
-            btnRemove.Size = new Size(91, 23);
+            btnRemove.Size = new Size(113, 23);
             btnRemove.TabIndex = 8;
             btnRemove.Text = "Remove Step";
             btnRemove.UseVisualStyleBackColor = true;
@@ -394,7 +396,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(507, 444);
+            btnSaveAs.Location = new Point(447, 512);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -409,7 +411,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblActionDescriptionLocale.FlatStyle = FlatStyle.Flat;
             fklblActionDescriptionLocale.Image = (Image)resources.GetObject("fklblActionDescriptionLocale.Image");
             fklblActionDescriptionLocale.ImageAlign = ContentAlignment.TopLeft;
-            fklblActionDescriptionLocale.Location = new Point(3, 329);
+            fklblActionDescriptionLocale.Location = new Point(476, 334);
             fklblActionDescriptionLocale.Name = "fklblActionDescriptionLocale";
             fklblActionDescriptionLocale.Size = new Size(467, 42);
             fklblActionDescriptionLocale.TabIndex = 15;
@@ -421,7 +423,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionDescription
             // 
-            txtActionDescription.Location = new Point(3, 300);
+            txtActionDescription.Location = new Point(476, 305);
             txtActionDescription.Name = "txtActionDescription";
             txtActionDescription.Size = new Size(467, 23);
             txtActionDescription.TabIndex = 14;
@@ -430,7 +432,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(3, 282);
+            label6.Location = new Point(476, 287);
             label6.Name = "label6";
             label6.Size = new Size(67, 15);
             label6.TabIndex = 13;
@@ -443,7 +445,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning.FlatStyle = FlatStyle.Flat;
             fklblConditionWarning.Image = (Image)resources.GetObject("fklblConditionWarning.Image");
             fklblConditionWarning.ImageAlign = ContentAlignment.TopLeft;
-            fklblConditionWarning.Location = new Point(476, 329);
+            fklblConditionWarning.Location = new Point(476, 431);
             fklblConditionWarning.Name = "fklblConditionWarning";
             fklblConditionWarning.Size = new Size(464, 42);
             fklblConditionWarning.TabIndex = 24;
@@ -455,7 +457,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionCondition
             // 
-            txtActionCondition.Location = new Point(476, 300);
+            txtActionCondition.Location = new Point(476, 402);
             txtActionCondition.Name = "txtActionCondition";
             txtActionCondition.Size = new Size(464, 23);
             txtActionCondition.TabIndex = 23;
@@ -465,7 +467,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(476, 282);
+            label7.Location = new Point(476, 384);
             label7.Name = "label7";
             label7.Size = new Size(238, 15);
             label7.TabIndex = 22;
@@ -483,42 +485,42 @@ namespace RogueCustomsDungeonEditor.HelperForms
             panel1.Controls.Add(label10);
             panel1.Controls.Add(label9);
             panel1.Controls.Add(pictureBox1);
-            panel1.Location = new Point(10, 376);
+            panel1.Location = new Point(4, 351);
             panel1.Name = "panel1";
-            panel1.Size = new Size(284, 98);
+            panel1.Size = new Size(466, 146);
             panel1.TabIndex = 25;
             // 
             // lblTarget
             // 
-            lblTarget.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblTarget.Location = new Point(77, 76);
+            lblTarget.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTarget.Location = new Point(65, 114);
             lblTarget.Name = "lblTarget";
-            lblTarget.Size = new Size(202, 19);
+            lblTarget.Size = new Size(384, 19);
             lblTarget.TabIndex = 7;
             lblTarget.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblSource
             // 
-            lblSource.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSource.Location = new Point(77, 57);
+            lblSource.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblSource.Location = new Point(65, 78);
             lblSource.Name = "lblSource";
-            lblSource.Size = new Size(202, 19);
+            lblSource.Size = new Size(384, 19);
             lblSource.TabIndex = 6;
             lblSource.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblThis
             // 
-            lblThis.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblThis.Location = new Point(77, 38);
+            lblThis.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblThis.Location = new Point(65, 40);
             lblThis.Name = "lblThis";
-            lblThis.Size = new Size(202, 19);
+            lblThis.Size = new Size(384, 19);
             lblThis.TabIndex = 5;
             lblThis.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label12
             // 
             label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label12.Location = new Point(3, 76);
+            label12.Location = new Point(3, 115);
             label12.Name = "label12";
             label12.Size = new Size(68, 19);
             label12.TabIndex = 4;
@@ -528,7 +530,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label11
             // 
             label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.Location = new Point(3, 57);
+            label11.Location = new Point(3, 79);
             label11.Name = "label11";
             label11.Size = new Size(68, 19);
             label11.TabIndex = 3;
@@ -538,7 +540,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label10
             // 
             label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.Location = new Point(3, 38);
+            label10.Location = new Point(3, 41);
             label10.Name = "label10";
             label10.Size = new Size(68, 19);
             label10.TabIndex = 2;
@@ -567,18 +569,42 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // chkFinishesTurn
             // 
             chkFinishesTurn.AutoSize = true;
-            chkFinishesTurn.Location = new Point(300, 387);
+            chkFinishesTurn.Location = new Point(476, 478);
             chkFinishesTurn.Name = "chkFinishesTurn";
             chkFinishesTurn.Size = new Size(265, 19);
             chkFinishesTurn.TabIndex = 26;
             chkFinishesTurn.Text = "Executing this action finishes the current turn";
             chkFinishesTurn.UseVisualStyleBackColor = true;
             // 
+            // btnCopyStep
+            // 
+            btnCopyStep.Enabled = false;
+            btnCopyStep.Location = new Point(54, 314);
+            btnCopyStep.Name = "btnCopyStep";
+            btnCopyStep.Size = new Size(118, 23);
+            btnCopyStep.TabIndex = 27;
+            btnCopyStep.Text = "Copy Step";
+            btnCopyStep.UseVisualStyleBackColor = true;
+            btnCopyStep.Click += btnCopyStep_Click;
+            // 
+            // btnPasteStep
+            // 
+            btnPasteStep.Enabled = false;
+            btnPasteStep.Location = new Point(178, 314);
+            btnPasteStep.Name = "btnPasteStep";
+            btnPasteStep.Size = new Size(124, 23);
+            btnPasteStep.TabIndex = 28;
+            btnPasteStep.Text = "Paste Step";
+            btnPasteStep.UseVisualStyleBackColor = true;
+            btnPasteStep.Click += btnPasteStep_Click;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(950, 480);
+            ClientSize = new Size(950, 544);
+            Controls.Add(btnPasteStep);
+            Controls.Add(btnCopyStep);
             Controls.Add(chkFinishesTurn);
             Controls.Add(panel1);
             Controls.Add(fklblConditionWarning);
@@ -602,6 +628,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Name = "frmActionEdit";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Action Editor";
+            FormClosing += frmActionEdit_FormClosing;
             gbSelectionCriteria.ResumeLayout(false);
             gbSelectionCriteria.PerformLayout();
             pnlCharacterTargets.ResumeLayout(false);
@@ -666,5 +693,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private CheckBox chkSelf;
         private CheckBox chkEnemies;
         private CheckBox chkAllies;
+        private Button btnCopyStep;
+        private Button btnPasteStep;
     }
 }
