@@ -134,7 +134,10 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
             if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
-            if (!((int)Point.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
+
+            var distanceFromSourceToTarget = (int)Point.Distance(target.Position, source.Position);
+
+            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
             if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
@@ -147,6 +150,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.ContainingRoom) return false;
 
             if (!source.CanSee(target)) return false;
+
+            if (distanceFromSourceToTarget > 1 && !source.HasNoObstructionsTowards(target)) return false;
 
             return true;
         }
