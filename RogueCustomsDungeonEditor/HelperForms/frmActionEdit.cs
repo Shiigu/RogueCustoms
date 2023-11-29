@@ -1,7 +1,10 @@
-﻿using RogueCustomsDungeonEditor.EffectInfos;
+﻿using RogueCustomsDungeonEditor.Clipboard;
+using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using static RogueCustomsGameEngine.Game.Entities.Effect;
 
 namespace RogueCustomsDungeonEditor.HelperForms
@@ -165,6 +169,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 lblNoCooldown.Visible = nudCooldown.Value < 2;
                 lblInfiniteUse.Visible = nudMaximumUses.Value == 0;
             }
+            ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
         }
 
         private void RefreshActionSequenceTree()
@@ -285,6 +290,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 btnRemove.Enabled = true;
                 btnNewThen.Enabled = selectedEffectData?.CanHaveThenChild == true && !HasThenChildNode;
                 btnNewOnSuccessFailure.Enabled = selectedEffectData?.CanHaveOnSuccessOnFailureChild == true && selectedEffect != null && !HasOnSuccessFailureChildNodes;
+                btnCopyStep.Enabled = true;
+                btnPasteStep.Enabled = ClipboardManager.ContainsData(FormConstants.StepClipboardKey);
             }
             else
             {
@@ -292,6 +299,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 btnRemove.Enabled = false;
                 btnNewThen.Enabled = false;
                 btnNewOnSuccessFailure.Enabled = false;
+                btnCopyStep.Enabled = false;
+                btnPasteStep.Enabled = false;
             }
         }
 
@@ -311,12 +320,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (effectTypeSelection == null) return;
             var selectedEffectTypeData = SelectableEffects.Find(se => se.DisplayName.Equals(effectTypeSelection));
             if (selectedEffectTypeData == null) return;
-            if(!currentEffect.IsNullOrEmpty() && !selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName) && (currentEffect.Then != null || currentEffect.OnSuccess != null || currentEffect.OnFailure != null))
+            if (!currentEffect.IsNullOrEmpty() && !selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName) && (currentEffect.Then != null || currentEffect.OnSuccess != null || currentEffect.OnFailure != null))
             {
-                if(!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty())
+                if (!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty())
                 {
                     var messageBoxResult = MessageBox.Show(
-                        "This Action has child steps. If you change the function and save it, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                        "This Function has child steps. If you change the function and save it, the child steps will be completely erased!\n\nAre you sure you want to continue?",
                         "Add THEN Step",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -327,7 +336,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 else
                 {
                     var messageBoxResult = MessageBox.Show(
-                        "This Action has 'Do Nothing' child steps. If you save any changes you make, the child steps will be completely erased!\n\nAre you sure you want to continue?",
+                        "This Function has 'Do Nothing' child steps. If you save any changes you make, the child steps will be completely erased!\n\nAre you sure you want to continue?",
                         "Add THEN Step",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -517,7 +526,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     if (ActionToSave.IsNullOrEmpty())
                     {
                         var messageBoxResult = MessageBox.Show(
-                            "This Action has NO steps. If saved, it will be completely erased!\n\nAre you sure you want to continue?",
+                            "This Function has NO steps. If saved, it will be completely erased!\n\nAre you sure you want to continue?",
                             "Add THEN Step",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Warning
@@ -586,7 +595,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (ActionToSave.IsNullOrEmpty())
                 {
                     var messageBoxResult = MessageBox.Show(
-                        "This Action has NO steps. Proceeding means it will not be saved.\n\nAre you sure you want to continue?",
+                        "This Function has NO steps. Proceeding means it will not be saved.\n\nAre you sure you want to continue?",
                         "Add THEN Step",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -723,6 +732,63 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
             pnlCharacterTargets.Visible = !rbTile.Checked;
+        }
+
+        private void btnCopyStep_Click(object sender, EventArgs e)
+        {
+            if (tvEffectSequence.SelectedNode == null) return;
+            if (tvEffectSequence.SelectedNode?.Tag is not EffectInfo itemTag) return;
+            if (itemTag.IsNullOrEmpty()) return;
+            var clonedEffect = itemTag.Clone();
+            clonedEffect.Then = null;
+            clonedEffect.OnSuccess = null;
+            clonedEffect.OnFailure = null;
+            ClipboardManager.Copy(FormConstants.StepClipboardKey, clonedEffect);
+        }
+
+        private void btnPasteStep_Click(object sender, EventArgs e)
+        {
+            if (!ClipboardManager.ContainsData(FormConstants.StepClipboardKey)) return;
+            var currentEffect = (EffectInfo)SelectedNode.Tag;
+            var parentEffect = SelectedNode.Parent != null ? (EffectInfo)SelectedNode.Parent.Tag : null;
+            if (!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty())
+            {
+                var messageBoxResult = MessageBox.Show(
+                    "This Function has child steps. Pasting this Function will make the child steps be completely erased!\n\nAre you sure you want to continue?",
+                    "Add THEN Step",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                    return;
+            }
+            var effect = ClipboardManager.Paste<EffectInfo>(FormConstants.StepClipboardKey);
+            if (parentEffect != null)
+            {
+                if (parentEffect.Then == currentEffect)
+                    parentEffect.Then = effect;
+                else if (parentEffect.OnSuccess == currentEffect)
+                    parentEffect.OnSuccess = effect;
+                else if (parentEffect.OnFailure == currentEffect)
+                    parentEffect.OnFailure = effect;
+            }
+            else
+            {
+                tvEffectSequence.Nodes.Clear();
+                AddActionNode(new EffectInfoDto(effect, null, SelectableEffects), null, effect);
+            }
+            RefreshActionSequenceTree();
+            tvEffectSequence.SelectNodeByTag(SelectedNode.Tag);
+        }
+
+        private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
+        {
+            btnPasteStep.Enabled = SelectedNode != null && ClipboardManager.ContainsData(FormConstants.StepClipboardKey);
+        }
+
+        private void frmActionEdit_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ClipboardManager.RemoveData(FormConstants.StepClipboardKey);
         }
     }
 

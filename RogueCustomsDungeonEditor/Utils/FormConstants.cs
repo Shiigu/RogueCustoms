@@ -9,5 +9,6 @@ namespace RogueCustomsDungeonEditor.Utils
     public static class FormConstants
     {
         public const string ActionClipboardKey = "ActionWithEffects";
+        public const string StepClipboardKey = "Effect";
     }
 }
