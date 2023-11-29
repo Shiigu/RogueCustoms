@@ -6,7 +6,7 @@ namespace RogueCustomsGameEngine.Game.Entities.Interfaces
     {
         void PickTargetAndPath();
         void AttackOrMove();
-        void MoveTo(Point p);
+        void MoveTo(GamePoint p);
         void UpdateKnownCharacterList();
     }
 }

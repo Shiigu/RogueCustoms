@@ -10,7 +10,7 @@ using System.Linq;
 using System;
 using System.Drawing;
 using System.IO;
-using Point = RogueCustomsGameEngine.Utils.Representation.Point;
+using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -471,10 +471,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             return !tilesInTheLine.Any(t => !t.IsWalkable);
         }
 
-        public void GainExperience(int pointsToAdd)
+        public void GainExperience(int GamePointsToAdd)
         {
             if (!CanGainExperience) return;
-            Experience += pointsToAdd;
+            Experience += GamePointsToAdd;
             if (Experience >= ExperienceToLevelUp)
             {
                 LastLevelUpExperience = ExperienceToLevelUp;

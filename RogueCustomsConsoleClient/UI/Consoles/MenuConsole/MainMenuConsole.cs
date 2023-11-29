@@ -121,7 +121,10 @@ namespace RogueCustomsConsoleClient.UI.Consoles.MenuConsole
 
         public override bool ProcessKeyboard(Keyboard keyboard)
         {
-            if (ParentContainer.ActiveWindow?.IsVisible == true) return true;
+            if (ParentContainer.ActiveWindow?.IsVisible == true)
+            {
+                return ParentContainer.ActiveWindow.ProcessKeyboard(keyboard);
+            }
             bool handled = false;
             var changeFocus = false;
             int index = CurrentFocusedIndex;

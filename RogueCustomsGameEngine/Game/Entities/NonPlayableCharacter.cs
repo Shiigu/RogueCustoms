@@ -11,7 +11,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
-    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable S2259 // Null GamePointers should not be dereferenced
     #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning disable CS8601 // Posible asignación de referencia nula
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
@@ -27,12 +27,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         // This is used to prevent continuous paying attention to themselves rather than on others
         private ActionWithEffects LastUsedActionOnSelf;
         // This is used to prevent continuous shuffling between tiles if it does not find an open path
-        public Point LastPosition { get; set; }
+        public GamePoint LastPosition { get; set; }
 
         private Character CurrentTarget;
         private readonly bool KnowsAllCharacterPositions;
         private readonly int AIOddsToUseActionsOnSelf;
-        private (Point Destination, List<Tile> Route) PathToUse;
+        private (GamePoint Destination, List<Tile> Route) PathToUse;
         public ActionWithEffects OnSpawn { get; set; }
         public List<ActionWithEffects> OnInteracted { get; set; }
 
@@ -93,19 +93,19 @@ namespace RogueCustomsGameEngine.Game.Entities
 
                 var pickedTarget = closestTargets.TakeRandomElement(Rng);
                 var destination = pickedTarget.Position;
-                var distance = (int)Point.Distance(pickedTarget.Position, Position);
+                var distance = (int)GamePoint.Distance(pickedTarget.Position, Position);
                 var minimumMinimumRange = attackActionsWithMinimumMaximumRange.Min(aawmmr => aawmmr.MinimumRange);
 
                 if (distance < minimumMinimumRange)
                 {
-                    if (PathToUse.Destination != null && Point.Distance(PathToUse.Destination, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange))
+                    if (PathToUse.Destination != null && GamePoint.Distance(PathToUse.Destination, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange))
                     {
                         destination = PathToUse.Destination;
                     }
                     else
                     {
                         var possibleDestinations = Map.Tiles.GetElementsWithinDistance(Position.Y, Position.X, minimumMaximumRange, true)
-                                        .Where(t => t.IsWalkable && !t.IsOccupied && Point.Distance(t.Position, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange));
+                                        .Where(t => t.IsWalkable && !t.IsOccupied && GamePoint.Distance(t.Position, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange));
                         var paths = possibleDestinations.Select(pd => Map.GetPathBetweenTiles(Position, pd.Position)).Where(p => p.Any()).ToList();
                         var minLength = paths.Min(p => p.Count);
                         var pathWithMinLength = paths.First(p => p.Count == minLength);
@@ -217,7 +217,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 LastUsedActionOnSelf = null;
         }
 
-        public void MoveTo(Point p)
+        public void MoveTo(GamePoint p)
         {
             if (p == null)
             {
@@ -278,7 +278,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (action.MayBeUsed)
                 {
                     var possibleTargets = KnownCharacters.Where(kc => kc.TargetType != TargetType.Self && kc.TargetType != TargetType.Tile && action.TargetTypes.Contains(kc.TargetType))
-                        .Select(kc => (kc.Character, Distance: (int)Point.Distance(kc.Character.Position, Position)));
+                        .Select(kc => (kc.Character, Distance: (int)GamePoint.Distance(kc.Character.Position, Position)));
                     if (possibleTargets.Any())
                         yield return (action, possibleTargets.Where(kc => kc.Distance.Between(action.MinimumRange, action.MaximumRange)).ToList());
                 }
@@ -289,7 +289,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             List<(Character target, int distance)> targetsAndDistances = new();
             KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType))
-                .ForEach(t => targetsAndDistances.Add((t.Character, (int)Math.Ceiling(Point.Distance(Position, t.Character.Position)))));
+                .ForEach(t => targetsAndDistances.Add((t.Character, (int)Math.Ceiling(GamePoint.Distance(Position, t.Character.Position)))));
             if (!targetsAndDistances.Any()) return new List<Character>();
             var minimumDistance = targetsAndDistances.Min(tad => tad.distance);
             return targetsAndDistances.Where(tad => tad.distance == minimumDistance).Select(tad => tad.target).ToList();
@@ -338,8 +338,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             if(pickedEmptyTile == null)
             {
                 var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetItems().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
-                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => Point.Distance(t.Position, Position)) : -1;
-                var closestEmptyTiles = closeEmptyTiles.Where(t => Point.Distance(t.Position, Position) <= closestDistance);
+                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => GamePoint.Distance(t.Position, Position)) : -1;
+                var closestEmptyTiles = closeEmptyTiles.Where(t => GamePoint.Distance(t.Position, Position) <= closestDistance);
                 if (closestEmptyTiles.Any())
                 {
                     pickedEmptyTile = closestEmptyTiles.TakeRandomElement(Rng);
@@ -362,7 +362,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
     }
-    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore S2259 // Null GamePointers should not be dereferenced
     #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning restore CS8601 // Posible asignación de referencia nula
     #pragma warning restore CS8604 // Posible argumento de referencia nulo

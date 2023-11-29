@@ -9,23 +9,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class Room
     {
-        public readonly Point Position;
+        public readonly GamePoint Position;
         public readonly Map Map;
         public readonly int RoomRow;
         public readonly int RoomColumn;
         public readonly int Width;
         public readonly int Height;
 
-        public Point TopLeft => new(Position.X, Position.Y);
-        public Point TopRight => new(Position.X + Width - 1, Position.Y);
-        public Point BottomLeft => new(Position.X, Position.Y + Height - 1);
-        public Point BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
+        public GamePoint TopLeft => new(Position.X, Position.Y);
+        public GamePoint TopRight => new(Position.X + Width - 1, Position.Y);
+        public GamePoint BottomLeft => new(Position.X, Position.Y + Height - 1);
+        public GamePoint BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
 
         public bool IsDummy => Width == 1 && Height == 1;
 
         public List<Tile> GetTiles() => Map.Tiles.Where(t => t.Position.X.Between(TopLeft.X, TopRight.X) && t.Position.Y.Between(TopLeft.Y, BottomRight.Y)).ToList();
 
-        public Room(Map map, Point position, int roomRow, int roomColumn, int width, int height)
+        public Room(Map map, GamePoint position, int roomRow, int roomColumn, int width, int height)
         {
             Map = map;
             Position = position;
