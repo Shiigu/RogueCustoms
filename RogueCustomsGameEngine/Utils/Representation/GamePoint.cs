@@ -4,10 +4,10 @@ using System;
 namespace RogueCustomsGameEngine.Utils.Representation
 {
     [Serializable]
-    public class Point
+    public class GamePoint
     {
-        public Point() { }
-        public Point(int x, int y)
+        public GamePoint() { }
+        public GamePoint(int x, int y)
         {
             X = x;
             Y = y;
@@ -18,7 +18,7 @@ namespace RogueCustomsGameEngine.Utils.Representation
 
         public override bool Equals(object? obj)
         {
-            if (obj is not Point other)
+            if (obj is not GamePoint other)
                 return base.Equals(obj);
             else
                 return X == other.X && Y == other.Y;
@@ -26,7 +26,7 @@ namespace RogueCustomsGameEngine.Utils.Representation
 
         public override string ToString() => $"({X}, {Y})";
 
-        public static double Distance(Point p1, Point p2)
+        public static double Distance(GamePoint p1, GamePoint p2)
         {
             return Math.Sqrt(ArrayHelpers.GetSquaredEuclideanDistanceBetweenCells(p1.X, p1.Y, p2.X, p2.Y));
         }

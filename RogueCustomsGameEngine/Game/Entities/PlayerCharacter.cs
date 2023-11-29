@@ -19,7 +19,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
         }
 
-        public new void GainExperience(int pointsToAdd)
+        public new void GainExperience(int GamePointsToAdd)
         {
             var oldLevel = Level;
             var oldMaxHP = MaxHP;
@@ -28,7 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var oldMovement = Movement;
             var oldHPRegeneration = HPRegeneration;
             var oldMPRegeneration = MPRegeneration;
-            base.GainExperience(pointsToAdd);
+            base.GainExperience(GamePointsToAdd);
             if (Level > oldLevel)
             {
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));

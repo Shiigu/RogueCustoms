@@ -9,6 +9,6 @@ namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface ITargetable
     {
-        public Point Position { get; set; }
+        public GamePoint Position { get; set; }
     }
 }

@@ -13,7 +13,7 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
-    #pragma warning disable S2259 // Null pointers should not be dereferenced
+    #pragma warning disable S2259 // Null GamePointers should not be dereferenced
     #pragma warning disable S2589 // Boolean expressions should not be gratuitous
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     // Represents Actions that are not expected to be used by any type of Entity in particular. Free to use by everyone.
@@ -490,7 +490,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
     }
-    #pragma warning restore S2259 // Null pointers should not be dereferenced
+    #pragma warning restore S2259 // Null GamePointers should not be dereferenced
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

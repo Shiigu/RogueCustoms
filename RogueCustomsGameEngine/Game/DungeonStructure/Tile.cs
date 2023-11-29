@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
-using Point = RogueCustomsGameEngine.Utils.Representation.Point;
+using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 using System;
 using System.Runtime.InteropServices.ObjectiveC;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
@@ -16,7 +16,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public sealed class Tile : ITargetable, IEquatable<Tile?>
     {
-        public Point Position { get; set; }
+        public GamePoint Position { get; set; }
 
         private TileType _type { get; set; } = TileType.Empty;
         public TileType Type
@@ -214,7 +214,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Equals(Tile? other)
         {
             return other is not null &&
-                   EqualityComparer<Point>.Default.Equals(Position, other.Position) &&
+                   EqualityComparer<GamePoint>.Default.Equals(Position, other.Position) &&
                    _type == other._type &&
                    Type == other.Type &&
                    IsConnectorTile == other.IsConnectorTile &&

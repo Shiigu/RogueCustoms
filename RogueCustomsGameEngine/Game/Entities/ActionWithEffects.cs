@@ -135,7 +135,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
             if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
 
-            var distanceFromSourceToTarget = (int)Point.Distance(target.Position, source.Position);
+            var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
 
             if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
             if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
@@ -158,7 +158,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool CanBeUsedOnTile(Tile target, Character source)
         {
-            if (!((int)Point.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
+            if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
             if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
@@ -231,7 +231,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 descriptionWithUsageNotes.Append('\n').Append(Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost }));
             }
 
-            var distance = target != null ? (int)Point.Distance(target.Position, sourceAsCharacter.Position) : -1;
+            var distance = target != null ? (int)GamePoint.Distance(target.Position, sourceAsCharacter.Position) : -1;
 
             if (CurrentCooldown > 0)
             {

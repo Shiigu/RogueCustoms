@@ -15,7 +15,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string Name { get; set; }
         public string ClassId { get; set; }
         public string Description { get; set; }
-        public Point? Position { get; set; }
+        public GamePoint? Position { get; set; }
         public Tile ContainingTile => Map.GetTileFromCoordinates(Position.X, Position.Y);
         public Room ContainingRoom => Map.GetRoomInCoordinates(Position.X, Position.Y);
 
