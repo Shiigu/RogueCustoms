@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using System.Drawing;
 using System.IO;
+using Point = RogueCustomsGameEngine.Utils.Representation.Point;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -460,6 +461,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 || (entity.Visible
                 && entity.Position != null
                 && ComputeFOVTiles().Contains(entity.ContainingTile));
+        }
+
+        public bool HasNoObstructionsTowards(Entity entity)
+        {
+            if (this == entity) return true;
+            if (this.Position == null || entity.Position == null) return false;
+            var tilesInTheLine = MathAlgorithms.BresenhamLine(ContainingTile, entity.ContainingTile, t => t.Position.X, t => t.Position.Y, (x, y) => Map.GetTileFromCoordinates(x, y), t => t.IsWalkable);
+            return !tilesInTheLine.Any(t => !t.IsWalkable);
         }
 
         public void GainExperience(int pointsToAdd)
