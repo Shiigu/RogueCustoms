@@ -763,7 +763,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     return;
             }
             var effect = ClipboardManager.Paste<EffectInfo>(FormConstants.StepClipboardKey);
-            if (parentEffect != null)
+            if (!parentEffect.IsNullOrEmpty())
             {
                 if (parentEffect.Then == currentEffect)
                     parentEffect.Then = effect;
@@ -775,7 +775,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             else
             {
                 tvEffectSequence.Nodes.Clear();
-                AddActionNode(new EffectInfoDto(effect, null, SelectableEffects), null, effect);
+                ActionToSave.Effect = effect;
             }
             RefreshActionSequenceTree();
             tvEffectSequence.SelectNodeByTag(SelectedNode.Tag);
