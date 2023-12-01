@@ -595,7 +595,7 @@
   </data>
   <data name="maePlayerOnAttack.Actions" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNi4x
+        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNy4w
         LjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAQBAAAAoQFTeXN0ZW0uQ29sbGVj
         dGlvbnMuR2VuZXJpYy5MaXN0YDFbW1JvZ3VlQ3VzdG9tc0dhbWVFbmdpbmUuVXRpbHMuSnNvbkltcG9y
         dHMuQWN0aW9uV2l0aEVmZmVjdHNJbmZvLCBSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5l
@@ -644,7 +644,7 @@
   </data>
   <data name="maeNPCOnInteracted.Actions" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNi4x
+        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNy4w
         LjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAQBAAAAoQFTeXN0ZW0uQ29sbGVj
         dGlvbnMuR2VuZXJpYy5MaXN0YDFbW1JvZ3VlQ3VzdG9tc0dhbWVFbmdpbmUuVXRpbHMuSnNvbkltcG9y
         dHMuQWN0aW9uV2l0aEVmZmVjdHNJbmZvLCBSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5l
@@ -680,7 +680,7 @@
   </data>
   <data name="maeNPCOnAttack.Actions" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNi4x
+        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNy4w
         LjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAQBAAAAoQFTeXN0ZW0uQ29sbGVj
         dGlvbnMuR2VuZXJpYy5MaXN0YDFbW1JvZ3VlQ3VzdG9tc0dhbWVFbmdpbmUuVXRpbHMuSnNvbkltcG9y
         dHMuQWN0aW9uV2l0aEVmZmVjdHNJbmZvLCBSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5l
@@ -729,7 +729,7 @@
   </data>
   <data name="maeItemOnAttack.Actions" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNi4x
+        AAEAAAD/////AQAAAAAAAAAMAgAAAE1Sb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBWZXJzaW9uPTEuNy4w
         LjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAQBAAAAoQFTeXN0ZW0uQ29sbGVj
         dGlvbnMuR2VuZXJpYy5MaXN0YDFbW1JvZ3VlQ3VzdG9tc0dhbWVFbmdpbmUuVXRpbHMuSnNvbkltcG9y
         dHMuQWN0aW9uV2l0aEVmZmVjdHNJbmZvLCBSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5l

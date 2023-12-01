@@ -134,7 +134,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
-            else if (owner is Item item && item.IsEquippable)
+            else if (owner is Item item && item.IsEquippable && action != item.OwnOnDeath)
             {
                 source = GetATestCharacter(sampleDungeon);
                 item.Owner = source as NonPlayableCharacter;
@@ -164,6 +164,34 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 fillerArmor.Owner = source as Character;
                 (source as Character).EquippedArmor = fillerArmor;
                 (source as Character).AlteredStatuses.Add(alteredStatus);
+            }
+            else if (owner is Item i && action == i.OwnOnDeath)
+            {
+                source = GetATestCharacter(sampleDungeon);
+                i.Owner = source as NonPlayableCharacter;
+                if (owner.EntityType == EntityType.Weapon)
+                {
+                    (source as Character).EquippedWeapon = i;
+                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+                    fillerArmor.Owner = source as Character;
+                    (source as Character).EquippedArmor = fillerArmor;
+                }
+                else if (owner.EntityType == EntityType.Armor)
+                {
+                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+                    fillerWeapon.Owner = source as Character;
+                    (source as Character).EquippedWeapon = fillerWeapon;
+                    (source as Character).EquippedArmor = i;
+                }
+                else if (owner.EntityType == EntityType.Consumable)
+                {
+                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+                    fillerWeapon.Owner = source as Character;
+                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+                    fillerArmor.Owner = source as Character;
+                    (source as Character).EquippedWeapon = fillerWeapon;
+                    (source as Character).EquippedArmor = fillerArmor;
+                }
             }
             else if (owner == null)
             {

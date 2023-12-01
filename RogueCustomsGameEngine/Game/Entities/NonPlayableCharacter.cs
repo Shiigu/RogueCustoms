@@ -313,12 +313,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void Die(Entity? attacker = null)
         {
-            ExistenceStatus = EntityExistenceStatus.Dead;
-            Passable = true;
-            if (attacker == null || attacker is Character)
-                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
-            Inventory?.ForEach(i => DropItem(i));
-            Inventory?.Clear();
+            base.Die(attacker);
+            if (ExistenceStatus == EntityExistenceStatus.Dead)
+            {
+                Inventory?.ForEach(i => DropItem(i));
+                Inventory?.Clear();
+            }
         }
 
         public override void PickItem(Item item)

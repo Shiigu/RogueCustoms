@@ -717,6 +717,8 @@ namespace RogueCustomsDungeonEditor.Utils
                     item.OnUse = null;
                 if (item.OnStepped.IsNullOrEmpty())
                     item.OnStepped = null;
+                if (item.OnDeath.IsNullOrEmpty())
+                    item.OnDeath = null;
             }
 
             foreach (var trap in dungeonInfo.Traps)
