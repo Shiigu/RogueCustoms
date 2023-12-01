@@ -3218,6 +3218,7 @@ namespace RogueCustomsDungeonEditor
             SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
             SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
             SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
+            SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
             SetSingleActionEditorParams(saeItemOnStepped, item.Id, item.OnStepped);
         }
@@ -3251,7 +3252,7 @@ namespace RogueCustomsDungeonEditor
             if (item.EntityType == "Weapon" || item.EntityType == "Armor")
             {
                 item.OnTurnStart = saeItemOnTurnStart.Action;
-                item.OnAttacked = saeItemOnTurnStart.Action;
+                item.OnAttacked = saeItemOnAttacked.Action;
                 item.OnUse = DungeonInfoHelpers.CreateEquipAction();
             }
             else if (item.EntityType == "Consumable")
@@ -3261,6 +3262,7 @@ namespace RogueCustomsDungeonEditor
 
             item.OnAttack = maeItemOnAttack.Actions;
             item.OnStepped = saeItemOnStepped.Action;
+            item.OnDeath = saeItemOnDeath.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Exists(i => i.Id.Equals(id)))
             {
@@ -3413,6 +3415,9 @@ namespace RogueCustomsDungeonEditor
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "The Item's Owner can\ninteract with someone else\nwith the following:";
                 maeItemOnAttack.SourceDescription = "Whoever is equipping This";
+                saeItemOnDeath.Visible = true;
+                saeItemOnDeath.ActionDescription = "When someone equipping it dies...               ";
+                saeItemOnDeath.SourceDescription = "Whoever is equipping This";
                 saeItemOnAttacked.Visible = true;
             }
             else if (cmbItemType.Text == "Consumable")
@@ -3424,6 +3429,9 @@ namespace RogueCustomsDungeonEditor
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "Someone can use it to\ninteract with someone else\nwith the following:";
                 maeItemOnAttack.SourceDescription = "Whoever is about to use This";
+                saeItemOnDeath.Visible = true;
+                saeItemOnDeath.ActionDescription = "When someone carrying it dies...                ";
+                saeItemOnDeath.SourceDescription = "Whoever is has This in their Inventory";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
             }
@@ -3438,6 +3446,8 @@ namespace RogueCustomsDungeonEditor
                 maeItemOnAttack.ActionDescription = "You shouldn't see this.";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
+                saeItemOnDeath.Visible = false;
+                saeItemOnDeath.Action = null;
                 saeItemOnStepped.Visible = false;
                 saeItemOnStepped.Action = null;
             }

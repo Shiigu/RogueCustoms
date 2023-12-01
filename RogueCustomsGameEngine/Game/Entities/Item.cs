@@ -30,13 +30,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             Owner = null;
             OnStepped = MapClassAction(entityClass.OnStepped);
             if (entityClass.EntityType != EntityType.Trap)
+            {
                 OnUse = MapClassAction(entityClass.OnUse);
-            if (entityClass.EntityType != EntityType.Trap)
+                OwnOnDeath = MapClassAction(entityClass.OnDeath);
                 OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
-            if (entityClass.EntityType != EntityType.Trap)
                 MapClassActions(entityClass.OnAttack, OwnOnAttack);
-            if (entityClass.EntityType != EntityType.Trap)
                 OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
+            }
         }
 
         public void Stepped(Character stomper)

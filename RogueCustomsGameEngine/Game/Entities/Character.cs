@@ -614,6 +614,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             throw new InvalidDataException($"Cannot identify target relationship between {Name} and {target.Name}!");
         }
 
-        public abstract void Die(Entity? attacker = null);
+        public virtual void Die(Entity? attacker = null)
+        {
+            if (attacker == null || attacker is Character)
+                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
+            if(this.HP <= 0)
+            {
+                ExistenceStatus = EntityExistenceStatus.Dead;
+                Passable = true;
+            }
+        }
     }
 }

@@ -111,6 +111,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, itemInfo.OnAttack);
                 OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked);
+                OnDeath = ActionWithEffects.Create(itemInfo.OnDeath);
                 OnStepped = ActionWithEffects.Create(itemInfo.OnStepped);
                 OnUse = ActionWithEffects.Create(itemInfo.OnUse);
             }

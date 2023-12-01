@@ -66,6 +66,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 {
                     var paramName = ParamName.ToLower();
                     var value = ParseArgForExpression(Map.Locale[Value], This, Source, Target);
+                    if (string.IsNullOrEmpty(value)) continue;
                     switch (paramName)
                     {
                         case "attacker":

@@ -237,6 +237,7 @@ namespace RogueCustomsDungeonEditor
             this.label101 = (new global::System.Windows.Forms.Label());
             this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpItem = (new global::System.Windows.Forms.TabPage());
+            this.saeItemOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saeItemOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saeItemOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.maeItemOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
@@ -2802,6 +2803,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpItem
             // 
+            this.tpItem.Controls.Add(this.saeItemOnDeath);
             this.tpItem.Controls.Add(this.saeItemOnTurnStart);
             this.tpItem.Controls.Add(this.saeItemOnAttacked);
             this.tpItem.Controls.Add(this.maeItemOnAttack);
@@ -2828,6 +2830,30 @@ namespace RogueCustomsDungeonEditor
             this.tpItem.Text = ("Item");
             this.tpItem.UseVisualStyleBackColor = (true);
             // 
+            // saeItemOnDeath
+            // 
+            this.saeItemOnDeath.Action = (null);
+            this.saeItemOnDeath.ActionDescription = ("When someone carrying it dies...                ");
+            this.saeItemOnDeath.ActionTypeText = ("On Death");
+            this.saeItemOnDeath.AutoSize = (true);
+            this.saeItemOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
+            this.saeItemOnDeath.ClassId = (null);
+            this.saeItemOnDeath.Dungeon = (null);
+            this.saeItemOnDeath.EffectParamData = (null);
+            this.saeItemOnDeath.Location = (new global::System.Drawing.Point(367, 316));
+            this.saeItemOnDeath.Name = ("saeItemOnDeath");
+            this.saeItemOnDeath.PlaceholderActionName = ("Death");
+            this.saeItemOnDeath.RequiresActionName = (false);
+            this.saeItemOnDeath.RequiresCondition = (false);
+            this.saeItemOnDeath.RequiresDescription = (false);
+            this.saeItemOnDeath.Size = (new global::System.Drawing.Size(361, 32));
+            this.saeItemOnDeath.SourceDescription = ("The item");
+            this.saeItemOnDeath.TabIndex = (226);
+            this.saeItemOnDeath.TargetDescription = ("Whoever killed on them (if any)");
+            this.saeItemOnDeath.ThisDescription = ("The item");
+            this.saeItemOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
+            this.saeItemOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            // 
             // saeItemOnTurnStart
             // 
             this.saeItemOnTurnStart.Action = (null);
@@ -2838,7 +2864,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnTurnStart.ClassId = (null);
             this.saeItemOnTurnStart.Dungeon = (null);
             this.saeItemOnTurnStart.EffectParamData = (null);
-            this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 310));
+            this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 244));
             this.saeItemOnTurnStart.Name = ("saeItemOnTurnStart");
             this.saeItemOnTurnStart.PlaceholderActionName = ("Death");
             this.saeItemOnTurnStart.RequiresActionName = (false);
@@ -2862,7 +2888,7 @@ namespace RogueCustomsDungeonEditor
             this.saeItemOnAttacked.ClassId = (null);
             this.saeItemOnAttacked.Dungeon = (null);
             this.saeItemOnAttacked.EffectParamData = (null);
-            this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 272));
+            this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 206));
             this.saeItemOnAttacked.Name = ("saeItemOnAttacked");
             this.saeItemOnAttacked.PlaceholderActionName = ("Interacted");
             this.saeItemOnAttacked.RequiresActionName = (false);
@@ -2884,7 +2910,7 @@ namespace RogueCustomsDungeonEditor
             this.maeItemOnAttack.ClassId = (null);
             this.maeItemOnAttack.Dungeon = (null);
             this.maeItemOnAttack.EffectParamData = (null);
-            this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 172));
+            this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 106));
             this.maeItemOnAttack.Name = ("maeItemOnAttack");
             this.maeItemOnAttack.PlaceholderActionName = (null);
             this.maeItemOnAttack.RequiresActionName = (true);
@@ -2925,20 +2951,20 @@ namespace RogueCustomsDungeonEditor
             // saeItemOnStepped
             // 
             this.saeItemOnStepped.Action = (null);
-            this.saeItemOnStepped.ActionDescription = ("When someone steps on it...");
+            this.saeItemOnStepped.ActionDescription = ("When someone steps on it... ");
             this.saeItemOnStepped.ActionTypeText = ("Stepped");
             this.saeItemOnStepped.AutoSize = (true);
             this.saeItemOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
             this.saeItemOnStepped.ClassId = (null);
             this.saeItemOnStepped.Dungeon = (null);
             this.saeItemOnStepped.EffectParamData = (null);
-            this.saeItemOnStepped.Location = (new global::System.Drawing.Point(15, 278));
+            this.saeItemOnStepped.Location = (new global::System.Drawing.Point(13, 278));
             this.saeItemOnStepped.Name = ("saeItemOnStepped");
             this.saeItemOnStepped.PlaceholderActionName = ("Stepped");
             this.saeItemOnStepped.RequiresActionName = (false);
             this.saeItemOnStepped.RequiresCondition = (false);
             this.saeItemOnStepped.RequiresDescription = (false);
-            this.saeItemOnStepped.Size = (new global::System.Drawing.Size(290, 32));
+            this.saeItemOnStepped.Size = (new global::System.Drawing.Size(293, 32));
             this.saeItemOnStepped.SourceDescription = ("The item");
             this.saeItemOnStepped.TabIndex = (221);
             this.saeItemOnStepped.TargetDescription = ("Whoever stepped on it");
@@ -3882,5 +3908,6 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnAttacked;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusBeforeAttack;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnRemove;
+        private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnDeath;
     }
 }

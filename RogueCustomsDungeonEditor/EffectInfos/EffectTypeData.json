@@ -408,7 +408,7 @@
   },
   {
     "InternalName": "HealDamage",
-    "DisplayName": "Heal Damage from Target",
+    "DisplayName": "Heal Target",
     "Description": "Used by the User to heal Target.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
@@ -1008,16 +1008,6 @@
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
       {
-        "InternalName": "Accuracy",
-        "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
-        "ParameterType": "Odds",
-        "Default": "100",
-        "ValidValues": [],
-        "Required": true,
-        "OptionalIfFieldsHaveValue": []
-      },
-      {
         "InternalName": "Target",
         "DisplayName": "Target",
         "Description": "Who will get all Stat Alterations removed. Generally Target, but can be any Character.",
@@ -1033,6 +1023,16 @@
             "Value": "Target"
           }
         ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
       },
