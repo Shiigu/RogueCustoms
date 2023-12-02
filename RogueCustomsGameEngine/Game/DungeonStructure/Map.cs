@@ -1022,8 +1022,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var playerRoom = Player?.Position != null ? GetRoomInCoordinates(Player.Position.X, Player.Position.Y) : null;
             if(nonDummyRooms.Count > 1 && playerRoom != null && !allowPlayerRoom)
                 nonDummyRooms.Remove(playerRoom);
+            var roomIsValid = false;
             do
             {
+                roomIsValid = false;
                 var possibleNonDummyRoom = nonDummyRooms.TakeRandomElement(Rng);
                 if(!possibleNonDummyRoom.GetTiles().Exists(t => CanBeConsideredEmpty(t)))
                 {
@@ -1031,11 +1033,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 else
                 {
+                    roomIsValid = true;
                     rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
                     rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
                 }
             }
-            while (nonDummyRooms.Any() && !CanBeConsideredEmpty(GetTileFromCoordinates(rngX, rngY)));
+            while (nonDummyRooms.Any() && (!roomIsValid || !CanBeConsideredEmpty(GetTileFromCoordinates(rngX, rngY))));
             return rngX != -1 && rngY != -1 ? new GamePoint(rngX, rngY) : null;
         }
 
@@ -1047,11 +1050,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             || GetTileFromCoordinates(position.X + 1, position.Y)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y - 1)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Hallway;
-            return t.IsWalkable ||
-                    t.Type == TileType.Floor ||
-                    t.Character == null ||
-                    !t.GetItems().Any() ||
-                    t.Trap == null ||
+            return t.IsWalkable &&
+                    t.Type == TileType.Floor &&
+                    t.Character == null &&
+                    !t.GetItems().Any() &&
+                    t.Trap == null &&
                     !hasLaterallyAdjacentHallways;
         }
 
