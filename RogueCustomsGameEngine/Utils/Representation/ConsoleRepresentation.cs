@@ -37,6 +37,16 @@ namespace RogueCustomsGameEngine.Utils.Representation
                    EqualityComparer<GameColor>.Default.Equals(ForegroundColor, other.ForegroundColor);
         }
 
+        public ConsoleRepresentation Clone()
+        {
+            return new ConsoleRepresentation
+            {
+                Character = Character,
+                BackgroundColor = BackgroundColor,
+                ForegroundColor = ForegroundColor
+            };
+        }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Character, BackgroundColor, ForegroundColor);

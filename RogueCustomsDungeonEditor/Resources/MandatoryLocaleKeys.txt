@@ -6,6 +6,7 @@ NewTurn
 FloorEnter
 FloorLeave
 CharacterSwitchedPlacesWithPlayer
+CharacterGotAnItem
 PlayerPutItemOnBag
 PlayerPutItemOnFloor
 NPCPickItem
@@ -79,4 +80,6 @@ CharacterWasTeleported
 CharacterStealsItem
 CharacterConvertedTile
 CharacterCreatedATrap
+CharacterCreatedAnNPC
+CharacterRevivedAnNPC
 StairsGotRevealed

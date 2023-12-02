@@ -622,6 +622,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
+                StatModifications.ForEach(m => m.Modifications.Clear());
+                AlteredStatuses.Clear();
             }
         }
     }
