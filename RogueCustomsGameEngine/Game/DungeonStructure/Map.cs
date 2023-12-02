@@ -100,6 +100,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<Flag> Flags { get; set; }
 
+        public List<EntityClass> PossibleNPCClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.NPC).ToList();
+        public List<EntityClass> PossibleItemClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable).ToList();
         public List<EntityClass> PossibleTrapClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
 
         #endregion

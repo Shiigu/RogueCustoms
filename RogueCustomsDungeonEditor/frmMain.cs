@@ -2944,6 +2944,7 @@ namespace RogueCustomsDungeonEditor
             npc.BaseSightRange = ssNPC.BaseSightRange;
             npc.CanGainExperience = ssNPC.CanGainExperience;
             npc.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
+            npc.MaxLevel = ssNPC.MaxLevel;
             npc.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
             npc.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
             npc.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;

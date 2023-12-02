@@ -34,6 +34,10 @@
       "Value": "{CharacterName} let {PlayerName} pass."
     },
     {
+      "Key": "CharacterGotAnItem",
+      "Value": "{CharacterName} got an {ItemName} from {SourceName}."
+    },
+    {
       "Key": "PlayerPutItemOnBag",
       "Value": "{CharacterName} put {ItemName} on the bag."
     },
@@ -324,6 +328,14 @@
     {
       "Key": "CharacterCreatedATrap",
       "Value": "{CharacterName} has deployed a {TrapName}!"
+    },
+    {
+      "Key": "CharacterCreatedAnNPC",
+      "Value": "{NPCName} has been summoned by {CharacterName}!"
+    },
+    {
+      "Key": "CharacterRevivedAnNPC",
+      "Value": "{NPCName} has been revived by {CharacterName}!"
     },
     {
       "Key": "StairsGotRevealed",

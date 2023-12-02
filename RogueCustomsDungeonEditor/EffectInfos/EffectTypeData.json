@@ -79,7 +79,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
         "ValidValues": [],
@@ -158,7 +158,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
         "ValidValues": [],
@@ -224,7 +224,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -315,7 +315,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -635,7 +635,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -742,7 +742,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -842,7 +842,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -939,7 +939,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -989,7 +989,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1039,7 +1039,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1089,7 +1089,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1147,7 +1147,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1197,7 +1197,96 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "GiveItem",
+    "DisplayName": "Give Item to Target",
+    "Description": "User will give an item Target (if possible).\nItem may come from Source's inventory, or come out of thin air",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "Who will give the Item. Generally Source, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will receive the Item. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Item to give.",
+        "ParameterType": "Item",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "FromInventory",
+        "DisplayName": "Must be in Inventory",
+        "Description": "If true, this fails if Source does not have the Item in the Inventory. If it succeeds, they give away said item.\n\nIf false, the Item materializes out of nowhere.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1247,7 +1336,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1278,7 +1367,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "Description": "Indicates the odds to get a Trap placed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -1288,7 +1377,89 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SpawnNPC",
+    "DisplayName": "Spawn NPC on Tile",
+    "Description": "User will spawn an NPC of the specified Class on the Tile.\nThe NPC will be of the same Faction as the User.\nFails if the Tile is occupied or isn't walkable.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the NPC to Spawn.",
+        "ParameterType": "NPC",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Level",
+        "DisplayName": "Level",
+        "Description": "Indicates the Level of the spawned NPC.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for an NPC to be Spawned. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ReviveNPC",
+    "DisplayName": "Revive NPC on Tile",
+    "Description": "User will revive an NPC of their Faction on the Tile.\nThe NPC will have full HP and MP.\nIf there are multiple valid NPCs, it will revive one at random.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Target tile to get an NPC revived. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],

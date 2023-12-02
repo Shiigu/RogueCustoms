@@ -19,6 +19,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Tile ContainingTile => Map.GetTileFromCoordinates(Position.X, Position.Y);
         public Room ContainingRoom => Map.GetRoomInCoordinates(Position.X, Position.Y);
 
+        public readonly ConsoleRepresentation BaseConsoleRepresentation;
         public readonly ConsoleRepresentation ConsoleRepresentation;
         public bool Visible { get; set; }
         public EntityExistenceStatus ExistenceStatus { get; set; }
@@ -45,6 +46,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ForegroundColor = entityClass.ConsoleRepresentation.ForegroundColor,
                 BackgroundColor = entityClass.ConsoleRepresentation.BackgroundColor,
             };
+            BaseConsoleRepresentation = ConsoleRepresentation.Clone();
             EntityType = entityClass.EntityType;
             Passable = entityClass.Passable;
             Visible = entityClass.StartsVisible;

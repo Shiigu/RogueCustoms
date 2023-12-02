@@ -11,7 +11,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
-    #pragma warning disable S2259 // Null GamePointers should not be dereferenced
+    #pragma warning disable S2259 // Null Pointers should not be dereferenced
     #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning disable CS8601 // Posible asignación de referencia nula
     #pragma warning disable CS8604 // Posible argumento de referencia nulo
@@ -245,6 +245,19 @@ namespace RogueCustomsGameEngine.Game.Entities
                     PathToUse.Destination = null;
             }
         }
+        public void ClearKnownCharacters()
+        {
+            KnownCharacters.Clear();
+        }
+
+        public void UpdateKnownCharacterRelationships()
+        {
+            for (var i = 0; i < KnownCharacters.Count; i++)
+            {
+                var character = KnownCharacters[i];
+                character.TargetType = CalculateTargetTypeFor(character.Character);
+            }
+        }
 
         public void UpdateKnownCharacterList()
         {
@@ -362,7 +375,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
     }
-    #pragma warning restore S2259 // Null GamePointers should not be dereferenced
+    #pragma warning restore S2259 // Null Pointers should not be dereferenced
     #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
     #pragma warning restore CS8601 // Posible asignación de referencia nula
     #pragma warning restore CS8604 // Posible argumento de referencia nulo

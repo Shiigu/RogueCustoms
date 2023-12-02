@@ -148,6 +148,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "turnlength":
                             paramsObject.TurnLength = CalculateDiceNotationIfNeeded(value);
                             break;
+                        case "level":
+                            paramsObject.Level = CalculateDiceNotationIfNeeded(value);
+                            break;
                         case "bypassesaccuracycheck":
                             paramsObject.BypassesAccuracyCheck = new Expression(value).Eval<bool>();
                             break;
@@ -165,6 +168,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                             break;
                         case "canstealconsumables":
                             paramsObject.CanStealConsumables = new Expression(value).Eval<bool>();
+                            break;
+                        case "frominventory":
+                            paramsObject.FromInventory = new Expression(value).Eval<bool>();
                             break;
                         case "condition":
                             paramsObject.Condition = value;

@@ -31,8 +31,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public bool Saved { get; set; }
         public bool IsNewAction { get; set; }
         private readonly DungeonInfo ActiveDungeon;
-        private readonly List<string> UsableAlteredStatusList;
+        private readonly List<string> UsableNPCList;
+        private readonly List<string> UsableItemList;
         private readonly List<string> UsableTrapList;
+        private readonly List<string> UsableAlteredStatusList;
         private readonly List<EffectTypeData> SelectableEffects;
 
         private TreeNode SelectedNode;
@@ -129,8 +131,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 chkFinishesTurn.Checked = ActionToSave.FinishesTurnWhenUsed;
             }
 
-            UsableAlteredStatusList = activeDungeon.AlteredStatuses.ConvertAll(als => als.Id);
+            UsableNPCList = activeDungeon.NPCs.ConvertAll(npc => npc.Id);
+            UsableItemList = activeDungeon.Items.ConvertAll(i => i.Id);
             UsableTrapList = activeDungeon.Traps.ConvertAll(t => t.Id);
+            UsableAlteredStatusList = activeDungeon.AlteredStatuses.ConvertAll(als => als.Id);
             SelectableEffects = selectableEffects;
             RefreshActionSequenceTree();
 
@@ -345,7 +349,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         return;
                 }
             }
-            var frmActionParameter = new frmActionParameters(currentEffect, ActiveDungeon, selectedEffectTypeData, UsableAlteredStatusList, UsableTrapList, selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
+            var frmActionParameter = new frmActionParameters(currentEffect,
+                                                             ActiveDungeon,
+                                                             selectedEffectTypeData,
+                                                             UsableNPCList,
+                                                             UsableItemList,
+                                                             UsableTrapList,
+                                                             UsableAlteredStatusList,
+                                                             selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
             frmActionParameter.ShowDialog();
             if (frmActionParameter.Saved)
             {
@@ -707,6 +718,24 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void rbEntity_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbTile.Checked)
+            {
+                var messageBoxResult = MessageBox.Show(
+                    "Changing the target to an Entity will remove the current target types as well as ALL steps.\n\nThis action is NOT reversible.\n\nAre you sure you want to continue?",
+                    "Change Target Types",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+                if (messageBoxResult == DialogResult.No)
+                {
+                    rbEntity.Checked = false;
+                }
+                else
+                {
+                    ActionToSave.Effect = null;
+                    RefreshActionSequenceTree();
+                }
+            }
             pnlCharacterTargets.Visible = rbEntity.Checked;
         }
 
@@ -715,7 +744,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (rbTile.Checked && (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked))
             {
                 var messageBoxResult = MessageBox.Show(
-                    "Changing the target to a Tile will remove the current target types.\n\nAre you sure you want to continue?",
+                    "Changing the target to a Tile will remove the current target types as well as ALL steps.\n\nThis action is NOT reversible.\n\nAre you sure you want to continue?",
                     "Change Target Types",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -729,6 +758,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     chkAllies.Checked = false;
                     chkEnemies.Checked = false;
                     chkSelf.Checked = false;
+                    ActionToSave.Effect = null;
+                    RefreshActionSequenceTree();
                 }
             }
             pnlCharacterTargets.Visible = !rbTile.Checked;

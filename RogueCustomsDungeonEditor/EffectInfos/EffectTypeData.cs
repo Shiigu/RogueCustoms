@@ -49,8 +49,10 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Character,
         Color,
         Text,
-        AlteredStatus,
+        NPC,
+        Item,
         Trap,
+        AlteredStatus,
         Number,
         BooleanExpression,
         Key

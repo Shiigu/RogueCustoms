@@ -200,6 +200,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
         public Character Character => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
