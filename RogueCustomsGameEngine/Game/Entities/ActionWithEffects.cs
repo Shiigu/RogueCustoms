@@ -349,7 +349,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Effect = Effect.Clone(),
                 UseCondition = UseCondition,
                 TargetTypes = new List<TargetType>(TargetTypes),
-                MPCost = MPCost
+                MPCost = MPCost,
+                FinishesTurnWhenUsed = FinishesTurnWhenUsed
             };
         }
     }
