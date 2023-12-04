@@ -13,10 +13,12 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using static RogueCustomsGameEngine.Game.Entities.Effect;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
@@ -185,6 +187,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (ActionToSave.Effect.IsNullOrEmpty())
                 ActionToSave.Effect = new EffectInfo();
             AddActionNode(new EffectInfoDto(ActionToSave.Effect, null, SelectableEffects), null, ActionToSave.Effect);
+            tvEffectSequence.Invalidate();
             tvEffectSequence.ExpandAll();
         }
 
@@ -313,16 +316,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (SelectedNode == null) return;
             var currentEffect = (EffectInfo)SelectedNode.Tag;
             var parentEffect = SelectedNode.Parent != null ? (EffectInfo)SelectedNode.Parent.Tag : null;
-            var currentEffectDisplayName = SelectableEffects.Find(se => se.InternalName.Equals(currentEffect?.EffectName))?.DisplayName;
+            var currentEffectDisplayName = SelectableEffects.Find(se => se.InternalName.Equals(currentEffect?.EffectName))?.ComboBoxDisplayName;
             var inputBoxPrompt = currentEffect.IsNullOrEmpty()
                 ? "You may change the function if you wish.\n\nAll parameters will display as default if you do, however."
                 : "Please indicate the function that will be executed in this step.";
             var selectableEffectsToShow = rbEntity.Checked
-                ? SelectableEffects.Where(se => se.CanBeUsedOnEntity).Select(se => se.DisplayName).ToList()
-                : SelectableEffects.Where(se => se.CanBeUsedOnTile).Select(se => se.DisplayName).ToList();
+                ? SelectableEffects.Where(se => se.CanBeUsedOnEntity).Select(se => se.ComboBoxDisplayName).ToList()
+                : SelectableEffects.Where(se => se.CanBeUsedOnTile).Select(se => se.ComboBoxDisplayName).ToList();
             var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", selectableEffectsToShow, currentEffectDisplayName);
             if (effectTypeSelection == null) return;
-            var selectedEffectTypeData = SelectableEffects.Find(se => se.DisplayName.Equals(effectTypeSelection));
+            var selectedEffectTypeData = SelectableEffects.Find(se => se.ComboBoxDisplayName.Equals(effectTypeSelection));
             if (selectedEffectTypeData == null) return;
             if (!currentEffect.IsNullOrEmpty() && !selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName) && (currentEffect.Then != null || currentEffect.OnSuccess != null || currentEffect.OnFailure != null))
             {
@@ -850,7 +853,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 if (effectData != null)
                 {
-                    DisplayName = effectData.DisplayName;
+                    DisplayName = effectData.GetParsedTreeViewDisplayName(info.Params);
                     Description = effectData.Description;
                     foreach (var parameter in info.Params)
                     {
