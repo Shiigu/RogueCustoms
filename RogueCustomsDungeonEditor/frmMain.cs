@@ -3300,7 +3300,7 @@ namespace RogueCustomsDungeonEditor
             {
                 item.OnTurnStart = saeItemOnTurnStart.Action;
                 item.OnAttacked = saeItemOnAttacked.Action;
-                item.OnUse = DungeonInfoHelpers.CreateEquipAction();
+                item.OnUse = null;
             }
             else if (item.EntityType == "Consumable")
             {

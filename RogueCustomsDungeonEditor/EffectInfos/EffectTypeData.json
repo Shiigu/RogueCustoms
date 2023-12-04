@@ -1529,15 +1529,5 @@
         "OptionalIfFieldsHaveValue": []
       }
     ]
-  },
-  {
-    "InternalName": "Equip",
-    "DisplayName": "Equip",
-    "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE! IT MAY CRASH THE GAME!",
-    "CanBeUsedOnEntity": false,
-    "CanBeUsedOnTile": false,
-    "CanHaveThenChild": false,
-    "CanHaveOnSuccessOnFailureChild": false,
-    "Parameters": []
   }
 ]

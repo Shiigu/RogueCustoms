@@ -24,8 +24,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
 
-        // This is used to prevent continuous paying attention to themselves rather than on others
-        private ActionWithEffects LastUsedActionOnSelf;
+
         // This is used to prevent continuous shuffling between tiles if it does not find an open path
         public GamePoint LastPosition { get; set; }
         public AIType AIType { get; set; }
@@ -43,7 +42,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnownCharacters.Add((this, TargetType.Self));
             PathToUse = (null, null);
             CurrentTarget = null;
-            LastUsedActionOnSelf = null;
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
             AIType = entityClass.AIType;
             AIOddsToUseActionsOnSelf = entityClass.AIOddsToUseActionsOnSelf;
@@ -132,9 +130,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 foreach (var target in action.PossibleTargets.Select(t => t.Target))
                 {
-                    weightedActions.Add((action.Action, target, action.Action.GetActionWeightFor(target, this)));
+                    if(action.Action.CanBeUsedOn(target, this))
+                        weightedActions.Add((action.Action, target, action.Action.GetActionWeightFor(target, this)));
                 }
             }
+
+            if (!weightedActions.Any()) return;
+
             var maxWeight = weightedActions.Max(a => a.Weight);
             var actionsWithMaxWeight = weightedActions.Where(a => a.Weight == maxWeight);
             var actionToUse = actionsWithMaxWeight.TakeRandomElement(Rng);
@@ -256,35 +258,46 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else
             {
-                if (CurrentAction.CanBeUsedOn(this))
+                if (CurrentAction != null && CurrentAction.CanBeUsedOn(this))
                     AttackCharacter(this, CurrentAction);
                 else
                 {
                     var possibleActionsOnSelf = new List<(ActionWithEffects action, Item item)>();
-                    foreach (var onAttackAction in OnAttack.Where(oaa => oaa != LastUsedActionOnSelf && oaa.CanBeUsedOn(this)))
+                    foreach (var onAttackAction in OnAttack.Where(oaa => oaa.CanBeUsedOn(this)))
                     {
                         possibleActionsOnSelf.Add((onAttackAction, null));
                     }
                     foreach (var item in Inventory.Where(i => i.EntityType == EntityType.Consumable))
                     {
-                        if (item.OnUse != LastUsedActionOnSelf && item.OnUse.MayBeUsed)
+                        if (item.OnUse.MayBeUsed)
                             possibleActionsOnSelf.Add((item.OnUse, item));
                     }
                     if (possibleActionsOnSelf.Any())
                     {
-                        var (action, item) = possibleActionsOnSelf.TakeRandomElement(Rng);
-                        if (item == null)
-                            AttackCharacter(this, action);
-                        else
-                            action?.Do(item, this, true);
-                        LastUsedActionOnSelf = action;
-                        if (action?.FinishesTurnWhenUsed == true)
-                            TookAction = true;
+                        List<(ActionWithEffects Action, ITargetable Target, int Weight)> weightedActions = new();
+                        foreach (var action in possibleActionsOnSelf)
+                        {
+                            weightedActions.Add((action.action, this, action.action.GetActionWeightFor(this, this)));
+                        }
+                        var maxWeight = weightedActions.Max(a => a.Weight);
+                        var actionsWithMaxWeight = weightedActions.Where(a => a.Weight == maxWeight);
+                        if (actionsWithMaxWeight.Any())
+                        {
+                            var pickedAction = actionsWithMaxWeight.TakeRandomElement(Rng).Action;
+                            var (action, item) = possibleActionsOnSelf.Find(paos => paos.action == pickedAction);
+                            if (item == null)
+                            {
+                                if (!pickedAction.TargetTypes.Contains(TargetType.Tile))
+                                    AttackCharacter(this, pickedAction);
+                                else
+                                    InteractWithTile(ContainingTile, pickedAction);
+                            }
+                            else
+                                action?.Do(item, this, true);
+                        }
                     }
                 }
             }
-            if((RemainingMovement > 0 && Movement == 0) || TookAction)
-                LastUsedActionOnSelf = null;
         }
 
         public void MoveTo(GamePoint p)

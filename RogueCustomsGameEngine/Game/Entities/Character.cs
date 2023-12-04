@@ -513,7 +513,16 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public abstract void PickItem(Item item);
 
-        public void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
+        public void EquipItem(Item item)
+        {
+            if (!item.IsEquippable)
+                throw new InvalidOperationException("Attempted to equip an unequippable item!");
+
+            var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
+            SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
+        }
+
+        private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
         {
             if (itemToEquip.EntityType == EntityType.Weapon)
                 EquippedWeapon = itemToEquip;

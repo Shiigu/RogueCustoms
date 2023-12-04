@@ -823,9 +823,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void PlayerUseItem(Item item)
         {
-            item.Used(Player);
-            if(item.OnUse?.FinishesTurnWhenUsed == true)
+            if (!item.IsEquippable)
+            {
+                item.Used(Player);
+                if (item.OnUse?.FinishesTurnWhenUsed == true)
+                    Player.TookAction = true;
+            }
+            else
+            {
+                Player.EquipItem(item);
                 Player.TookAction = true;
+            }
             Player.RemainingMovement = 0;
             ProcessTurn();
         }

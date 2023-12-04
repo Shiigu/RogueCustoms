@@ -18,22 +18,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool Equip(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
-        {
-            _ = 0;
-            var targetName = (Target is Entity e) ? e.Name : "NULL";
-            if (This is not Item i || Target is not Character c)
-                throw new InvalidOperationException($"Attempted to equip {This.Name} on {targetName}, which is not valid");
-            if (!i.IsEquippable)
-                throw new InvalidOperationException("Attempted to equip an unequippable item!");
-
-            var currentEquippedWeapon = c.EquippedWeapon;
-            var currentEquippedArmor = c.EquippedArmor;
-            c.SwapWithEquippedItem(i.EntityType == EntityType.Weapon ? currentEquippedWeapon : currentEquippedArmor, i);
-
-            return true;
-        }
-
         public static bool Remove(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
