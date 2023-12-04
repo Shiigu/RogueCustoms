@@ -108,7 +108,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var baseDescriptionWidth = lblDescription.Width;
             var baseDescriptionHeight = lblDescription.Height;
 
-            lblDisplayName.Text = $"{paramsData.DisplayName}:";
+            lblDisplayName.Text = $"{paramsData.ComboBoxDisplayName}:";
             lblDescription.Text = paramsData.Description;
 
             if (lblDisplayName.PreferredWidth > baseDisplayWidth)
