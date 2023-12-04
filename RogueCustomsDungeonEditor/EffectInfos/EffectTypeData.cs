@@ -26,7 +26,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
 
         public string GetParsedTreeViewDisplayName(Parameter[] effectParameters)
         {
-            string pattern = @"(\{([^{}]+)\})";
+            string pattern = @"\{([^{}]+)\}";
             Regex regex = new Regex(pattern);
 
             string parsedText = regex.Replace(TreeViewDisplayText, match =>
