@@ -675,6 +675,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 npc.AIType = "Random";
             }
 
+            foreach (var item in dungeon.Items)
+            {
+                if (item.EntityType.Equals("Weapon") || item.EntityType.Equals("Armor"))
+                    item.OnUse = null;
+            }
+
             dungeon.Version = "1.3";
             return dungeon;
         }

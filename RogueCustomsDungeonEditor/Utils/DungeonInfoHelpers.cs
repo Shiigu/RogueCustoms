@@ -530,31 +530,6 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-        public static ActionWithEffectsInfo CreateEquipAction()
-        {
-            return new ActionWithEffectsInfo
-            {
-                Name = "Equip",
-                Effect = new EffectInfo
-                {
-                    EffectName = "PrintText",
-                    Params = new Parameter[]
-                    {
-                        new Parameter
-                        {
-                            ParamName = "text",
-                            Value = "ObjectEquippedText"
-                        }
-                    },
-                    Then = new EffectInfo
-                    {
-                        EffectName = "Equip",
-                        Params = Array.Empty<Parameter>()
-                    }
-                }
-            };
-        }
-
         public static bool HasOverlappingFloorInfosForLevels(this DungeonInfo dungeon, int minFloorLevel, int maxFloorLevel, FloorInfo floorBeingEdited)
         {
             for (int i = minFloorLevel; i <= maxFloorLevel; i++)

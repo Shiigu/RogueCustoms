@@ -130,7 +130,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (sourceAsCharacter == null) return false;
             if (!MayBeUsed) return false;
 
-            if (target is Character tc && TargetTypes.Exists(tt => tt == TargetType.Self || tt == TargetType.Ally || tt == TargetType.Neutral || tt == TargetType.Enemy))
+            if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
                 return CanBeUsedOnCharacter(tc, sourceAsCharacter);
 
             if (target is Tile tt && TargetTypes.Contains(TargetType.Tile))

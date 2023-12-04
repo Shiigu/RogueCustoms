@@ -13,6 +13,10 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
     {
         public int GetActionWeight(ActionWithEffects action, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target)
         {
+            // Very heavily discourage NPCs from using actions that cannot be applied on the target in the current turn.
+            if (!action.CanBeUsedOn(Target, Source))
+                return int.MinValue;
+
             return Target != Source || map.Rng.RollProbability() <= Source.AIOddsToUseActionsOnSelf ? 1000 : 1;
         }
 
