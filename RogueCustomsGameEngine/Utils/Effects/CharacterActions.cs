@@ -36,6 +36,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
+        public static bool ResetConsoleRepresentation(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            var baseConsoleRepresentation = Source.BaseConsoleRepresentation.Clone();
+            Source.ConsoleRepresentation.Character = baseConsoleRepresentation.Character;
+            Source.ConsoleRepresentation.ForegroundColor = baseConsoleRepresentation.ForegroundColor;
+            Source.ConsoleRepresentation.BackgroundColor = baseConsoleRepresentation.BackgroundColor;
+            _ = 0;
+            return true;
+        }
+
         public static bool StealItem(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
