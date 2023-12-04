@@ -30,7 +30,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public bool IsConnectorTile { get; set; } = false;
         public bool IsWalkable => Type != TileType.Empty && Type != TileType.Wall;
-        public bool IsOccupied => Character != null && Character.ExistenceStatus == EntityExistenceStatus.Alive;
+        public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
 
         private ConsoleRepresentation _consoleRepresentation;
         public ConsoleRepresentation ConsoleRepresentation
@@ -199,7 +199,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
-        public Character Character => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public Character LivingCharacter => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
@@ -227,7 +227,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                    Visible == other.Visible &&
                    EqualityComparer<Map>.Default.Equals(Map, other.Map) &&
                    EqualityComparer<Room>.Default.Equals(Room, other.Room) &&
-                   EqualityComparer<Character>.Default.Equals(Character, other.Character) &&
+                   EqualityComparer<Character>.Default.Equals(LivingCharacter, other.LivingCharacter) &&
                    EqualityComparer<Item>.Default.Equals(Trap, other.Trap);
         }
 

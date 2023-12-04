@@ -53,13 +53,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
 
             var success = false;
             var oldType = t.Type;
 
-            if (t.Character == null && t.Trap == null && t.GetItems().Count == 0)
+            if (t.LivingCharacter == null && t.Trap == null && t.GetItems().Count == 0)
             {
                 t.Type = paramsObject.TileType;
                 success = Map.Tiles.IsFullyConnected(t => t.IsWalkable);
@@ -101,7 +101,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
 
             var trapClass = Map.PossibleTrapClasses.Find(c => c.Id.Equals(paramsObject.Id));
@@ -144,7 +144,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target Tile must be a Walkable
                 return false;
 
-            if (t.Character != null)
+            if (t.LivingCharacter != null)
                 // Target Tile must NOT be occupied
                 return false;
 
@@ -154,7 +154,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
                         
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 var level = (int) paramsObject.Level;
 
@@ -191,7 +191,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
                 npc.HP = npc.MaxHP;

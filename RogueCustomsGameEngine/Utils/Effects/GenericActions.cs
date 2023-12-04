@@ -117,7 +117,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusTarget = paramsObject.Target as Character;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.RollProbability() <= accuracyCheck)
             {
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Exists(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
                 var statusPower = (decimal) paramsObject.Power;
@@ -203,7 +203,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.RollProbability() <= accuracyCheck)
             {
                 var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
                 var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
@@ -265,7 +265,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (!statusToRemove.CleansedByCleanseActions) throw new InvalidOperationException($"Attempted to remove {statusToRemove.Name} with a Cleanse action when it can't be cleansed that way.");
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.RollProbability() <= accuracyCheck)
             {
                 c.AlteredStatuses.Where(als => als.ClassId.Equals(statusToRemove.ClassId)).ForEach(als => {
                     als.OnRemove?.Do(als, c, false);
@@ -298,7 +298,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, t, paramsObject);
 
-            if (statAlterations?.Any() == true && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (statAlterations?.Any() == true && Rng.RollProbability() <= accuracyCheck)
             {
                 statAlterations.Clear();
 
@@ -329,7 +329,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
             var success = false;
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 foreach (var (statName, modifications) in c.StatModifications)
                 {
@@ -354,7 +354,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to remove all of Target's Altered Statuses when it's not a Character.
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck && c.AlteredStatuses?.Any() == true)
+            if (Rng.RollProbability() <= accuracyCheck && c.AlteredStatuses?.Any() == true)
             {
                 c.AlteredStatuses.ForEach(als => {
                     als.OnRemove?.Do(als, c, false);
@@ -386,7 +386,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to skip Target's next turn when it's not a Character.
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck && c.CanTakeAction)
+            if (Rng.RollProbability() <= accuracyCheck && c.CanTakeAction)
             {
                 c.CanTakeAction = false;
                 return true;
@@ -402,7 +402,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to teleport Target when it's not a Character.
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.RollProbability() <= accuracyCheck)
             {
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
@@ -485,7 +485,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to toggle Target's Visibility when it's not a Character.
                 return false;
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 c.Visible = !c.Visible;
                 return true;
@@ -525,15 +525,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, t, paramsObject);
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 var itemToGive = paramsObject.FromInventory
                     ? s.Inventory.Find(i => i.ClassId.Equals(itemClass.Id))
-                    : Map.AddEntity(paramsObject.Id) as Item;
+                    : Map.AddEntity(paramsObject.Id, 1, new GamePoint(0, 0)) as Item;
                 if (paramsObject.FromInventory)
                     s.Inventory.Remove(itemToGive);
                 t.Inventory.Add(itemToGive);
                 itemToGive.Owner = t;
+                itemToGive.Position = null;
                 Map.AppendMessage(Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name }), Color.DeepSkyBlue);
                 return true;
             }

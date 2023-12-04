@@ -37,10 +37,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError($"Action {name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
             }
 
+            var isSelectable = (owner is PlayerCharacter opc && opc.OnAttack.Contains(action))
+                                || (owner is Item oi && oi.OwnOnAttack.Contains(action))
+                                || (owner is NonPlayableCharacter onpc && onpc.OnInteracted.Contains(action));
+
             if (owner != null)
             {
-                messages.AddRange(dungeonJson.ValidateString(action.NameLocaleKey, $"An Action of {ownerName}", "Name", true));
-                messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {name ?? "NULL"}", "Description", false));
+                if (isSelectable)
+                {
+                    messages.AddRange(dungeonJson.ValidateString(action.NameLocaleKey, $"An Action of {ownerName}", "Name", true));
+                    messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {name ?? "NULL"}", "Description", false));
+                }
 
                 var duplicateTargetTypes = action.TargetTypes.GroupBy(tt => tt).Where(gtt => gtt.Count() > 1);
                 foreach (var targetType in duplicateTargetTypes.Select(gtt => gtt.Key))

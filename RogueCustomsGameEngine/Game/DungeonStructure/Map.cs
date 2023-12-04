@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -364,7 +365,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     for (var column = 0; column < RoomCountColumns; column++)
                     {
-                        var rngRoom = Rng.NextInclusive(1, 100);
+                        var rngRoom = Rng.RollProbability();
                         // Force generation of a normal room if it's the last possible location and no normal Room was created yet
                         if ((normalRoomsCount == 0 && row == LastPossibleNormalRow && column == LastPossibleNormalColumn) || !rngRoom.Between(71, 100))
                         {
@@ -924,7 +925,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).Character;
+            var characterInTile = GetTileFromCoordinates(x, y).LivingCharacter;
 
             var selectionIdParts = selectionId.Split('_');
 
@@ -974,7 +975,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public ActionListDto GetPlayerAttackActions(int x, int y)
         {
             var tile = GetTileFromCoordinates(x, y);
-            var characterInTile = tile.Character;
+            var characterInTile = tile.LivingCharacter;
             var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : Locale[$"TileType{tile.Type}"]);
 
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, this, true));
@@ -991,7 +992,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public EntityDetailDto GetDetailsOfEntity(int x, int y)
         {
             var tile = GetTileFromCoordinates(x, y);
-            var characterInTile = tile.Character;
+            var characterInTile = tile.LivingCharacter;
             if (characterInTile?.Visible == true)
                 return new EntityDetailDto(characterInTile);
             var itemInTile = tile.GetItems().FirstOrDefault();
@@ -1052,7 +1053,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Hallway;
             return t.IsWalkable &&
                     t.Type == TileType.Floor &&
-                    t.Character == null &&
+                    t.LivingCharacter == null &&
                     !t.GetItems().Any() &&
                     t.Trap == null &&
                     !hasLaterallyAdjacentHallways;
@@ -1165,25 +1166,25 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 tileBaseConsoleRepresentation.ForegroundColor.A /= 2;
                 return tileBaseConsoleRepresentation;
             }
-            if (tile.Character != null)
+            if (tile.LivingCharacter != null)
             {
-                if(tile.Character.ExistenceStatus != EntityExistenceStatus.Alive && tile.Type == TileType.Stairs)
+                if(tile.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive && tile.Type == TileType.Stairs)
                         return tileBaseConsoleRepresentation;
 
                 var characterBaseConsoleRepresentation = new ConsoleRepresentation
                 {
-                    ForegroundColor = tile.Character.ConsoleRepresentation.ForegroundColor.Clone(),
-                    BackgroundColor = tile.Character.ConsoleRepresentation.BackgroundColor.Clone(),
-                    Character = tile.Character.ConsoleRepresentation.Character
+                    ForegroundColor = tile.LivingCharacter.ConsoleRepresentation.ForegroundColor.Clone(),
+                    BackgroundColor = tile.LivingCharacter.ConsoleRepresentation.BackgroundColor.Clone(),
+                    Character = tile.LivingCharacter.ConsoleRepresentation.Character
                 };
-                if ((tile.Character == Player || tile.Character.Faction.AlliedWith.Contains(Player.Faction)) && !tile.Character.Visible)
+                if ((tile.LivingCharacter == Player || tile.LivingCharacter.Faction.AlliedWith.Contains(Player.Faction)) && !tile.LivingCharacter.Visible)
                 {
                     // Invisible players or allies will get their colors reversed
-                    characterBaseConsoleRepresentation.BackgroundColor = tile.Character.ConsoleRepresentation.ForegroundColor.Clone();
-                    characterBaseConsoleRepresentation.ForegroundColor = tile.Character.ConsoleRepresentation.BackgroundColor.Clone();
+                    characterBaseConsoleRepresentation.BackgroundColor = tile.LivingCharacter.ConsoleRepresentation.ForegroundColor.Clone();
+                    characterBaseConsoleRepresentation.ForegroundColor = tile.LivingCharacter.ConsoleRepresentation.BackgroundColor.Clone();
                     return characterBaseConsoleRepresentation;
                 }
-                else if (tile.Character.Visible)
+                else if (tile.LivingCharacter.Visible)
                 {
                     return characterBaseConsoleRepresentation;
                 }
@@ -1249,7 +1250,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     for (int y = 0; y < temporaryRoomConnectionMatrix.GetLength(1); y++)
                     {
                         if (x == y) continue;
-                        if (testMatrix[x, y] != RoomConnectionType.None && Rng.NextInclusive(1, 100).Between(1, 30))
+                        if (testMatrix[x, y] != RoomConnectionType.None && Rng.RollProbability().Between(1, 30))
                         {
                             testMatrix[x, y] = RoomConnectionType.None;
                             if (testMatrix.IsFullyConnectedAdjacencyMatrix(r => r != RoomConnectionType.None))
@@ -1283,7 +1284,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     var thisRoom = Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
                     if (thisRoom == null || thisRoom.Width <= 1 || thisRoom.Height <= 1) continue;
 
-                    if (Rng.NextInclusive(1, 100) > RoomFusionOdds) continue;
+                    if (Rng.RollProbability() > RoomFusionOdds) continue;
 
                     var adjacentRooms = GetConnectionsForRoom(thisRoom).Select(ar => ar.Room);
 
@@ -1760,6 +1761,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Horizontal = 1,
             Vertical = 2,
             None = 0
+        }
+
+        public Map Clone()
+        {
+            return JsonSerializer.Deserialize<Map>(JsonSerializer.Serialize(this));
         }
         #endregion
     }

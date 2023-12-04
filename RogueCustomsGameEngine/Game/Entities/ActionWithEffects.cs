@@ -11,6 +11,8 @@ using System.Linq;
 using org.matheval;
 using System.Runtime.Serialization;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using System.Drawing;
+using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -93,6 +95,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             return successfulEffects;
         }
 
+        public int GetActionWeightFor(ITargetable target, NonPlayableCharacter source)
+        {
+            var AIStrategy = NPCAIStrategyFactory.GetNPCAIStrategy(source.AIType);
+
+            return AIStrategy.GetActionWeight(this, Map, User, source, target);
+        }
+
         public bool CanBeUsedOn(ITargetable target, Character? source = null)
         {
             if (target == null && !TargetTypes.Contains(TargetType.Tile)) return false;
@@ -113,8 +122,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     if (i.Owner != null)
                         sourceAsCharacter = i.Owner;
-                    else if (i.Position != null && i.ContainingTile.Character != null)
-                        sourceAsCharacter = i.ContainingTile.Character;
+                    else if (i.Position != null && i.ContainingTile.LivingCharacter != null)
+                        sourceAsCharacter = i.ContainingTile.LivingCharacter;
                 }
             }
 
@@ -446,6 +455,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnFailure = OnFailure?.Clone()
             };
         }
+
         // Explicit implementation of ISerializable
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

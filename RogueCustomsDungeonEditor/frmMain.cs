@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -41,6 +42,13 @@ namespace RogueCustomsDungeonEditor
             { "FullMap", "The whole map" },
             { "FullRoom", "The whole room" },
             { "FlatNumber", "A flat distance" }
+        };
+
+        private readonly Dictionary<string, string> NPCAITypeDisplayNames = new Dictionary<string, string> {
+            { "Default", "Default strategy" },
+            { "Random", "Heavily Randomized" },
+            { "CostEfficient", "Cost-efficiently" },
+            { "AllOut", "All-out" }
         };
 
         private DungeonInfo ActiveDungeon;
@@ -2906,7 +2914,18 @@ namespace RogueCustomsDungeonEditor
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
             SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
+            cmbNPCAIType.Items.Clear();
+            cmbNPCAIType.Text = "";
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
+            foreach (var aiType in NPCAITypeDisplayNames)
+            {
+                cmbNPCAIType.Items.Add(aiType.Value);
+                if (aiType.Key.Equals(npc.AIType))
+                {
+                    cmbNPCAIType.Text = aiType.Value;
+                    cmbNPCAIType_SelectedIndexChanged(null, EventArgs.Empty);
+                }
+            }
         }
 
         private bool SaveNPC(string id)
@@ -2965,6 +2984,13 @@ namespace RogueCustomsDungeonEditor
             npc.OnAttacked = saeNPCOnAttacked.Action;
             npc.OnInteracted = maeNPCOnInteracted.Actions;
             npc.OnDeath = saeNPCOnDeath.Action;
+            foreach (var aiType in NPCAITypeDisplayNames)
+            {
+                if (aiType.Value.Equals(cmbNPCAIType.Text))
+                {
+                    npc.AIType = aiType.Key;
+                }
+            }
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Exists(n => n.Id.Equals(id)))
@@ -3058,6 +3084,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
             if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
+            if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
+                errorMessages.Add("This NPC does not have a set AI strategy.");
 
             return !errorMessages.Any();
         }
@@ -3180,6 +3208,24 @@ namespace RogueCustomsDungeonEditor
 
         private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            DirtyTab = true;
+        }
+
+        private void cmbNPCAIType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbNPCAIType.Text == NPCAITypeDisplayNames["Random"])
+            {
+                lblNPCAIOddsToTargetSelfA.Visible = true;
+                lblNPCAIOddsToTargetSelfB.Visible = true;
+                nudNPCOddsToTargetSelf.Visible = true;
+            }
+            else
+            {
+                lblNPCAIOddsToTargetSelfA.Visible = false;
+                lblNPCAIOddsToTargetSelfB.Visible = false;
+                nudNPCOddsToTargetSelf.Visible = false;
+                nudNPCOddsToTargetSelf.Value = 0;
+            }
             DirtyTab = true;
         }
         #endregion

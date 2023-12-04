@@ -47,7 +47,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (s.Inventory.Count < s.InventorySize && t.Inventory.Count > 0 && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (s.Inventory.Count < s.InventorySize && t.Inventory.Count > 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 var stealableItems = new List<Item>();
                 if (paramsObject.CanStealEquippables)

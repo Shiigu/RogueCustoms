@@ -204,6 +204,10 @@ namespace RogueCustomsDungeonEditor
             this.label27 = (new global::System.Windows.Forms.Label());
             this.crsPlayer = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
             this.tpNPC = (new global::System.Windows.Forms.TabPage());
+            this.lblNPCAIOddsToTargetSelfB = (new global::System.Windows.Forms.Label());
+            this.nudNPCOddsToTargetSelf = (new global::System.Windows.Forms.NumericUpDown());
+            this.cmbNPCAIType = (new global::System.Windows.Forms.ComboBox());
+            this.label20 = (new global::System.Windows.Forms.Label());
             this.maeNPCOnInteracted = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
             this.saeNPCOnSpawn = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.ssNPC = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
@@ -212,8 +216,7 @@ namespace RogueCustomsDungeonEditor
             this.saeNPCOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.saeNPCOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
             this.maeNPCOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
-            this.nudNPCOddsToTargetSelf = (new global::System.Windows.Forms.NumericUpDown());
-            this.label104 = (new global::System.Windows.Forms.Label());
+            this.lblNPCAIOddsToTargetSelfA = (new global::System.Windows.Forms.Label());
             this.txtNPCExperiencePayout = (new global::System.Windows.Forms.TextBox());
             this.label103 = (new global::System.Windows.Forms.Label());
             this.chkNPCKnowsAllCharacterPositions = (new global::System.Windows.Forms.CheckBox());
@@ -2342,6 +2345,10 @@ namespace RogueCustomsDungeonEditor
             // tpNPC
             // 
             this.tpNPC.AutoScroll = (true);
+            this.tpNPC.Controls.Add(this.lblNPCAIOddsToTargetSelfB);
+            this.tpNPC.Controls.Add(this.nudNPCOddsToTargetSelf);
+            this.tpNPC.Controls.Add(this.cmbNPCAIType);
+            this.tpNPC.Controls.Add(this.label20);
             this.tpNPC.Controls.Add(this.maeNPCOnInteracted);
             this.tpNPC.Controls.Add(this.saeNPCOnSpawn);
             this.tpNPC.Controls.Add(this.ssNPC);
@@ -2350,8 +2357,7 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.Controls.Add(this.saeNPCOnAttacked);
             this.tpNPC.Controls.Add(this.saeNPCOnTurnStart);
             this.tpNPC.Controls.Add(this.maeNPCOnAttack);
-            this.tpNPC.Controls.Add(this.nudNPCOddsToTargetSelf);
-            this.tpNPC.Controls.Add(this.label104);
+            this.tpNPC.Controls.Add(this.lblNPCAIOddsToTargetSelfA);
             this.tpNPC.Controls.Add(this.txtNPCExperiencePayout);
             this.tpNPC.Controls.Add(this.label103);
             this.tpNPC.Controls.Add(this.chkNPCKnowsAllCharacterPositions);
@@ -2380,6 +2386,44 @@ namespace RogueCustomsDungeonEditor
             this.tpNPC.TabIndex = (5);
             this.tpNPC.Text = ("NPC");
             this.tpNPC.UseVisualStyleBackColor = (true);
+            // 
+            // lblNPCAIOddsToTargetSelfB
+            // 
+            this.lblNPCAIOddsToTargetSelfB.AutoSize = (true);
+            this.lblNPCAIOddsToTargetSelfB.Location = (new global::System.Drawing.Point(330, 938));
+            this.lblNPCAIOddsToTargetSelfB.Name = ("lblNPCAIOddsToTargetSelfB");
+            this.lblNPCAIOddsToTargetSelfB.Size = (new global::System.Drawing.Size(17, 15));
+            this.lblNPCAIOddsToTargetSelfB.TabIndex = (217);
+            this.lblNPCAIOddsToTargetSelfB.Text = ("%");
+            this.lblNPCAIOddsToTargetSelfB.Visible = (false);
+            // 
+            // nudNPCOddsToTargetSelf
+            // 
+            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 936));
+            this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
+            this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
+            this.nudNPCOddsToTargetSelf.TabIndex = (195);
+            this.nudNPCOddsToTargetSelf.Visible = (false);
+            this.nudNPCOddsToTargetSelf.ValueChanged += (this.nudNPCOddsToTargetSelf_ValueChanged);
+            // 
+            // cmbNPCAIType
+            // 
+            this.cmbNPCAIType.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
+            this.cmbNPCAIType.FormattingEnabled = (true);
+            this.cmbNPCAIType.Location = (new global::System.Drawing.Point(201, 904));
+            this.cmbNPCAIType.Name = ("cmbNPCAIType");
+            this.cmbNPCAIType.Size = (new global::System.Drawing.Size(146, 23));
+            this.cmbNPCAIType.TabIndex = (216);
+            this.cmbNPCAIType.SelectedIndexChanged += (this.cmbNPCAIType_SelectedIndexChanged);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = (true);
+            this.label20.Location = (new global::System.Drawing.Point(13, 907));
+            this.label20.Name = ("label20");
+            this.label20.Size = (new global::System.Drawing.Size(174, 15));
+            this.label20.TabIndex = (215);
+            this.label20.Text = ("NPC decision-making strategy: ");
             // 
             // maeNPCOnInteracted
             // 
@@ -2561,22 +2605,15 @@ namespace RogueCustomsDungeonEditor
             this.maeNPCOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
             this.maeNPCOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
             // 
-            // nudNPCOddsToTargetSelf
+            // lblNPCAIOddsToTargetSelfA
             // 
-            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 903));
-            this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
-            this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
-            this.nudNPCOddsToTargetSelf.TabIndex = (195);
-            this.nudNPCOddsToTargetSelf.ValueChanged += (this.nudNPCOddsToTargetSelf_ValueChanged);
-            // 
-            // label104
-            // 
-            this.label104.AutoSize = (true);
-            this.label104.Location = (new global::System.Drawing.Point(13, 905));
-            this.label104.Name = ("label104");
-            this.label104.Size = (new global::System.Drawing.Size(334, 15));
-            this.label104.TabIndex = (194);
-            this.label104.Text = ("Odds for NPC to target themselves with an Action:                 %");
+            this.lblNPCAIOddsToTargetSelfA.AutoSize = (true);
+            this.lblNPCAIOddsToTargetSelfA.Location = (new global::System.Drawing.Point(13, 938));
+            this.lblNPCAIOddsToTargetSelfA.Name = ("lblNPCAIOddsToTargetSelfA");
+            this.lblNPCAIOddsToTargetSelfA.Size = (new global::System.Drawing.Size(276, 15));
+            this.lblNPCAIOddsToTargetSelfA.TabIndex = (194);
+            this.lblNPCAIOddsToTargetSelfA.Text = ("Odds for NPC to target themselves with an Action: ");
+            this.lblNPCAIOddsToTargetSelfA.Visible = (false);
             // 
             // txtNPCExperiencePayout
             // 
@@ -3793,7 +3830,7 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.TextBox txtNPCName;
         private global::System.Windows.Forms.Label label101;
         private global::System.Windows.Forms.NumericUpDown nudNPCOddsToTargetSelf;
-        private global::System.Windows.Forms.Label label104;
+        private global::System.Windows.Forms.Label lblNPCAIOddsToTargetSelfA;
         private global::System.Windows.Forms.TextBox txtItemPower;
         private global::System.Windows.Forms.Label label108;
         private global::System.Windows.Forms.CheckBox chkItemCanBePickedUp;
@@ -3909,5 +3946,8 @@ namespace RogueCustomsDungeonEditor
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusBeforeAttack;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeAlteredStatusOnRemove;
         private global::RogueCustomsDungeonEditor.Controls.SingleActionEditor saeItemOnDeath;
+        private global::System.Windows.Forms.ComboBox cmbNPCAIType;
+        private global::System.Windows.Forms.Label label20;
+        private global::System.Windows.Forms.Label lblNPCAIOddsToTargetSelfB;
     }
 }

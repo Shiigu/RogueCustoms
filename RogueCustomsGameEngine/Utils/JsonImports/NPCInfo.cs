@@ -8,6 +8,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     public class NPCInfo : CharacterInfo
     {
         public bool KnowsAllCharacterPositions { get; set; }
+        public string AIType { get; set; }
         public int AIOddsToUseActionsOnSelf { get; set; }
         public ActionWithEffectsInfo OnSpawn { get; set; } = new ActionWithEffectsInfo();
         public List<ActionWithEffectsInfo> OnInteracted { get; set; } = new List<ActionWithEffectsInfo>();
