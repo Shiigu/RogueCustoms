@@ -275,6 +275,16 @@
     ]
   },
   {
+    "InternalName": "ResetConsoleRepresentation",
+    "DisplayName": "Reset Own Console Representation",
+    "Description": "The display appearance of User in the Console Client will be turned back into the original.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "Parameters": []
+  },
+  {
     "InternalName": "Remove",
     "DisplayName": "Remove Target from Game",
     "Description": "The User will try to remove Target.",

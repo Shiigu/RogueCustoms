@@ -90,7 +90,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else if (itemJson.EntityType == "Consumable" && !itemJson.OnAttack.Any())
             {
-                messages.AddWarning("Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
+                messages.AddWarning("Item doesn't have any OnItemUseActions or OnAttackActions. Item lacks selectable Actions in this current state.");
             }
 
             if (!dungeonJson.FloorInfos.Exists(fi => fi.PossibleItems.Exists(pm => pm.ClassId.Equals(itemJson.Id))))

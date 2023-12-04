@@ -7622,79 +7622,66 @@
         "FinishesTurnWhenUsed": false,
         "StartingCooldown": 0,
         "Effect": {
-          "EffectName": "ReplaceConsoleRepresentation",
-          "Params": [
-            {
-              "ParamName": "ForeColor",
-              "Value": "0,255,0,255"
-            },
-            {
-              "ParamName": "Character",
-              "Value": ""
-            },
-            {
-              "ParamName": "BackColor",
-              "Value": "0,0,0,255"
-            }
-          ],
+          "EffectName": "ResetConsoleRepresentation",
+          "Params": [],
           "Then": {
-            "EffectName": "MessageBox",
+            "EffectName": "PrintText",
             "Params": [
               {
-                "ParamName": "Title",
-                "Value": "AnkhOfResurrectionMessageBoxHeader"
-              },
-              {
                 "ParamName": "Text",
-                "Value": "AnkhOfResurrectionMessageBoxText"
+                "Value": "AnkhOfResurrectionUseText"
               },
               {
                 "ParamName": "Color",
                 "Value": "0,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
               }
             ],
             "Then": {
-              "EffectName": "PrintText",
+              "EffectName": "HealDamage",
               "Params": [
                 {
-                  "ParamName": "Text",
-                  "Value": "AnkhOfResurrectionUseText"
+                  "ParamName": "Source",
+                  "Value": "source"
                 },
                 {
-                  "ParamName": "Color",
-                  "Value": "0,255,255,255"
+                  "ParamName": "Target",
+                  "Value": "source"
                 },
                 {
-                  "ParamName": "BypassesVisibilityCheck",
-                  "Value": "False"
+                  "ParamName": "Power",
+                  "Value": "{source.MaxHP} / 2"
                 }
               ],
               "Then": {
-                "EffectName": "HealDamage",
+                "EffectName": "CleanseAllAlteredStatuses",
                 "Params": [
-                  {
-                    "ParamName": "Source",
-                    "Value": "source"
-                  },
                   {
                     "ParamName": "Target",
                     "Value": "source"
                   },
                   {
-                    "ParamName": "Power",
-                    "Value": "{source.MaxHP} / 2"
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
                   }
                 ],
                 "Then": {
-                  "EffectName": "CleanseAllAlteredStatuses",
+                  "EffectName": "CleanseStatAlterations",
                   "Params": [
-                    {
-                      "ParamName": "Target",
-                      "Value": "source"
-                    },
                     {
                       "ParamName": "Accuracy",
                       "Value": "100"
+                    },
+                    {
+                      "ParamName": "Target",
+                      "Value": "source"
                     },
                     {
                       "ParamName": "BypassesAccuracyCheck",
@@ -7702,15 +7689,15 @@
                     }
                   ],
                   "Then": {
-                    "EffectName": "CleanseStatAlterations",
+                    "EffectName": "Remove",
                     "Params": [
+                      {
+                        "ParamName": "Target",
+                        "Value": "this"
+                      },
                       {
                         "ParamName": "Accuracy",
                         "Value": "100"
-                      },
-                      {
-                        "ParamName": "Target",
-                        "Value": "source"
                       },
                       {
                         "ParamName": "BypassesAccuracyCheck",
@@ -7718,37 +7705,46 @@
                       }
                     ],
                     "Then": {
-                      "EffectName": "Remove",
+                      "EffectName": "PrintText",
                       "Params": [
                         {
-                          "ParamName": "Target",
-                          "Value": "this"
+                          "ParamName": "Text",
+                          "Value": "ObjectDisappearedText"
                         },
                         {
-                          "ParamName": "Accuracy",
-                          "Value": "100"
+                          "ParamName": "Color",
+                          "Value": "255,255,255,255"
                         },
                         {
-                          "ParamName": "BypassesAccuracyCheck",
-                          "Value": "True"
+                          "ParamName": "BypassesVisibilityCheck",
+                          "Value": "False"
                         }
                       ],
                       "Then": {
-                        "EffectName": "PrintText",
+                        "EffectName": "CheckCondition",
                         "Params": [
                           {
-                            "ParamName": "Text",
-                            "Value": "ObjectDisappearedText"
-                          },
-                          {
-                            "ParamName": "Color",
-                            "Value": "255,255,255,255"
-                          },
-                          {
-                            "ParamName": "BypassesVisibilityCheck",
-                            "Value": "False"
+                            "ParamName": "Condition",
+                            "Value": "{source.ClassId} == \u0022EasyPlayer\u0022 || {source.ClassId} == \u0022NormalPlayer\u0022 || {source.ClassId} == \u0022HardPlayer\u0022"
                           }
-                        ]
+                        ],
+                        "OnSuccess": {
+                          "EffectName": "MessageBox",
+                          "Params": [
+                            {
+                              "ParamName": "Title",
+                              "Value": "AnkhOfResurrectionMessageBoxHeader"
+                            },
+                            {
+                              "ParamName": "Text",
+                              "Value": "AnkhOfResurrectionMessageBoxText"
+                            },
+                            {
+                              "ParamName": "Color",
+                              "Value": "0,255,255,255"
+                            }
+                          ]
+                        }
                       }
                     }
                   }
