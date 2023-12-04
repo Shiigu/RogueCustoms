@@ -55,6 +55,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return Math.Abs(Next()) % (maxValue - minValue + 1) + minValue;
         }
+        public int RollProbability()
+        {
+            return NextInclusive(1, 100);
+        }
         public override string ToString() => $"Seed: {Seed}";
     }
 }

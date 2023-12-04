@@ -1,5 +1,6 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
@@ -62,6 +63,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnInteracted { get; set; }
 
         public readonly bool KnowsAllCharacterPositions;
+        public readonly AIType AIType;
         public readonly int AIOddsToUseActionsOnSelf;
 
         #endregion
@@ -239,6 +241,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
                 AIOddsToUseActionsOnSelf = npcInfo.AIOddsToUseActionsOnSelf;
+                AIType = Enum.Parse<AIType>(npcInfo.AIType);
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn);
                 OnInteracted = new List<ActionWithEffects>();

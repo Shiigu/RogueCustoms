@@ -33,7 +33,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
             var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
             if (damageDealt > 0 && damageDealt < 1)
@@ -81,7 +81,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
             var burnAmount = paramsObject.Power;
             if (paramsObject.Power > 0 && paramsObject.Power < 1)

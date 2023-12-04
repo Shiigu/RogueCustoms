@@ -3,6 +3,9 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -78,6 +81,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
 
         public override string ToString() => $"Position: {Position}; Name: {Name}; Char: {ConsoleRepresentation.Character}";
+
+        public Entity Clone()
+        {
+            return JsonSerializer.Deserialize<Entity>(JsonSerializer.Serialize(this));
+        }
     }
 
     public enum EntityType

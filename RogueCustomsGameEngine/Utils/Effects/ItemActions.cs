@@ -43,7 +43,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name} as if it were an item, which it isn't.");
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (Rng.RollProbability() <= accuracyCheck)
             {
                 i.Owner?.Inventory?.Remove(i);
                 i.Owner = null;

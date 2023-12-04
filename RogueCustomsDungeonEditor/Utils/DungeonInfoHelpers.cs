@@ -460,7 +460,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 OnAttack = new(),
                 OnAttacked = new(),
                 OnDeath = new(),
-                AIOddsToUseActionsOnSelf = 50
+                AIType = "Default",
+                AIOddsToUseActionsOnSelf = 0
             };
         }
         public static ItemInfo CreateItemTemplate()
