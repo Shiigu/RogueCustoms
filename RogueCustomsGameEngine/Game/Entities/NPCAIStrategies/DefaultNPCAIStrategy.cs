@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "DealDamage":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
@@ -58,7 +58,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "BurnMP":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var burnAmount = paramsObject.Power;
@@ -67,10 +67,22 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     weight = (int)((250 + burnAmount * 50) * accuracyFactor);
                     break;
 
+                case "RemoveHunger":
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger)
+                    {
+                        weight = (weight == 0) ? -500 : weight - 100;
+                        break;
+                    }
+                    var hungerRemoveAmount = paramsObject.Power;
+                    if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                        hungerRemoveAmount = 1;
+                    weight = (int)((100 + hungerRemoveAmount * 50) * accuracyFactor);
+                    break;
+
                 case "StealItem":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || Source.Inventory.Count >= Source.InventorySize)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var stealableItems = new List<Item>();
@@ -87,7 +99,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "HealDamage":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.HP >= targetAsCharacter.MaxHP)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var healAmount = Math.Min(targetAsCharacter.MaxHP - targetAsCharacter.HP, paramsObject.Power);
@@ -99,7 +111,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "ReplenishMP":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP || targetAsCharacter.MP >= targetAsCharacter.MaxMP)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP, paramsObject.Power);
@@ -108,21 +120,33 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     weight = (int)((250 + replenishAmount * 50) * accuracyFactor);
                     break;
 
+                case "ReplenishHunger":
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger || targetAsCharacter.Hunger >= targetAsCharacter.MaxHunger)
+                    {
+                        weight = (weight == 0) ? -500 : weight - 100;
+                        break;
+                    }
+                    replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP, paramsObject.Power);
+                    if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                        replenishAmount = 1;
+                    weight = (int)((50 + replenishAmount * 50) * accuracyFactor);
+                    break;
+
                 case "ApplyAlteredStatus":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var alteredStatus = map.PossibleStatuses.Find(als => als.ClassId.Equals(paramsObject.Id));
                     if (alteredStatus == null)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     if (!alteredStatus.CanOverwrite && !alteredStatus.CanStack && targetAsCharacter.AlteredStatuses.Exists(als => als.ClassId.Equals(paramsObject.Id)))
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var turnLengthWeight = paramsObject.TurnLength > 0 ? (int)Math.Min(1, Math.Max(10, paramsObject.TurnLength / 5)) : 10;
@@ -133,7 +157,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "ApplyStatAlteration":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
 
@@ -156,7 +180,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     }
                     if (paramsObject.Amount != 0 && (!paramsObject.CanBeStacked && statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id))))
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
 
@@ -171,12 +195,12 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "CleanseAlteredStatus":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     if (!targetAsCharacter.AlteredStatuses.Exists(als => als.ClassId.Equals(paramsObject.Id)))
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(50 * accuracyFactor);
@@ -184,13 +208,13 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "CleanseStatAlteration":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     statAlterations = paramsObject.StatAlterationList as List<StatModification>;
                     if (!statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(50 * accuracyFactor);
@@ -199,7 +223,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "CleanseAllAlteredStatuses":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(50 * targetAsCharacter.AlteredStatuses.Count * accuracyFactor);
@@ -208,7 +232,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "CleanseStatAlterations":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     statAlterations = paramsObject.StatAlterationList as List<StatModification>;
@@ -218,7 +242,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "ForceSkipTurn":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.CanTakeAction)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(500 * accuracyFactor);
@@ -228,7 +252,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "ToggleVisibility":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(50 * accuracyFactor);
@@ -237,7 +261,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "GiveItem":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.Inventory.Count >= targetAsCharacter.InventorySize)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     weight = (int)(100 * accuracyFactor);
@@ -246,7 +270,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "PlaceTrap":
                     if (targetAsTile == null)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     var distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
@@ -257,7 +281,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 case "ReviveNPC":
                     if (targetAsTile == null || targetAsTile.LivingCharacter != null)
                     {
-                        weight = -500;
+                        weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
