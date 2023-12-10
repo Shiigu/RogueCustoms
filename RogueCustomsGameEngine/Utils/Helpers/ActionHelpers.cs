@@ -42,6 +42,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "MPRegeneration",
             "Accuracy",
             "Evasion",
+            "Hunger",
+            "MaxHunger",
             "ExperiencePayout",
             "Owner",
             "Power",

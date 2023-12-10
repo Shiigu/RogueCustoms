@@ -84,6 +84,12 @@
             label3 = new System.Windows.Forms.Label();
             nudBaseEvasion = new System.Windows.Forms.NumericUpDown();
             label4 = new System.Windows.Forms.Label();
+            chkUsesHunger = new System.Windows.Forms.CheckBox();
+            label5 = new System.Windows.Forms.Label();
+            nudBaseMaxHunger = new System.Windows.Forms.NumericUpDown();
+            label6 = new System.Windows.Forms.Label();
+            label7 = new System.Windows.Forms.Label();
+            nudHungerHPDegeneration = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)nudMPRegenerationPerLevelUp).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMPPerLevelUp).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseMPRegeneration).BeginInit();
@@ -102,12 +108,14 @@
             ((System.ComponentModel.ISupportInitialize)nudBaseHP).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseAccuracy).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseEvasion).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudBaseMaxHunger).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudHungerHPDegeneration).BeginInit();
             SuspendLayout();
             // 
             // label128
             // 
             label128.AutoSize = true;
-            label128.Location = new System.Drawing.Point(15, 663);
+            label128.Location = new System.Drawing.Point(15, 748);
             label128.Name = "label128";
             label128.Size = new System.Drawing.Size(54, 15);
             label128.TabIndex = 256;
@@ -116,7 +124,7 @@
             // label129
             // 
             label129.AutoSize = true;
-            label129.Location = new System.Drawing.Point(129, 665);
+            label129.Location = new System.Drawing.Point(129, 750);
             label129.Name = "label129";
             label129.Size = new System.Drawing.Size(169, 15);
             label129.TabIndex = 255;
@@ -127,7 +135,7 @@
             nudMPRegenerationPerLevelUp.DecimalPlaces = 4;
             nudMPRegenerationPerLevelUp.Enabled = false;
             nudMPRegenerationPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudMPRegenerationPerLevelUp.Location = new System.Drawing.Point(72, 661);
+            nudMPRegenerationPerLevelUp.Location = new System.Drawing.Point(72, 746);
             nudMPRegenerationPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudMPRegenerationPerLevelUp.Name = "nudMPRegenerationPerLevelUp";
             nudMPRegenerationPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -136,7 +144,7 @@
             // label127
             // 
             label127.AutoSize = true;
-            label127.Location = new System.Drawing.Point(71, 524);
+            label127.Location = new System.Drawing.Point(71, 609);
             label127.Name = "label127";
             label127.Size = new System.Drawing.Size(124, 15);
             label127.TabIndex = 253;
@@ -147,7 +155,7 @@
             nudMPPerLevelUp.DecimalPlaces = 4;
             nudMPPerLevelUp.Enabled = false;
             nudMPPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudMPPerLevelUp.Location = new System.Drawing.Point(15, 521);
+            nudMPPerLevelUp.Location = new System.Drawing.Point(15, 606);
             nudMPPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudMPPerLevelUp.Name = "nudMPPerLevelUp";
             nudMPPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -226,7 +234,7 @@
             // label75
             // 
             label75.AutoSize = true;
-            label75.Location = new System.Drawing.Point(15, 636);
+            label75.Location = new System.Drawing.Point(15, 721);
             label75.Name = "label75";
             label75.Size = new System.Drawing.Size(54, 15);
             label75.TabIndex = 244;
@@ -235,7 +243,7 @@
             // label76
             // 
             label76.AutoSize = true;
-            label76.Location = new System.Drawing.Point(3, 448);
+            label76.Location = new System.Drawing.Point(3, 533);
             label76.Name = "label76";
             label76.Size = new System.Drawing.Size(325, 30);
             label76.TabIndex = 243;
@@ -245,7 +253,7 @@
             // 
             label77.AutoSize = true;
             label77.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label77.Location = new System.Drawing.Point(16, 419);
+            label77.Location = new System.Drawing.Point(16, 504);
             label77.Name = "label77";
             label77.Size = new System.Drawing.Size(115, 15);
             label77.TabIndex = 242;
@@ -254,7 +262,7 @@
             // chkCanGainExperience
             // 
             chkCanGainExperience.AutoSize = true;
-            chkCanGainExperience.Location = new System.Drawing.Point(15, 327);
+            chkCanGainExperience.Location = new System.Drawing.Point(15, 412);
             chkCanGainExperience.Name = "chkCanGainExperience";
             chkCanGainExperience.Size = new System.Drawing.Size(169, 19);
             chkCanGainExperience.TabIndex = 241;
@@ -263,7 +271,7 @@
             // 
             // nudMaxLevel
             // 
-            nudMaxLevel.Location = new System.Drawing.Point(121, 379);
+            nudMaxLevel.Location = new System.Drawing.Point(121, 464);
             nudMaxLevel.Name = "nudMaxLevel";
             nudMaxLevel.Size = new System.Drawing.Size(44, 23);
             nudMaxLevel.TabIndex = 240;
@@ -272,7 +280,7 @@
             // label78
             // 
             label78.AutoSize = true;
-            label78.Location = new System.Drawing.Point(12, 382);
+            label78.Location = new System.Drawing.Point(12, 467);
             label78.Name = "label78";
             label78.Size = new System.Drawing.Size(103, 15);
             label78.TabIndex = 239;
@@ -280,7 +288,7 @@
             // 
             // txtLevelUpFormula
             // 
-            txtLevelUpFormula.Location = new System.Drawing.Point(142, 351);
+            txtLevelUpFormula.Location = new System.Drawing.Point(142, 436);
             txtLevelUpFormula.Name = "txtLevelUpFormula";
             txtLevelUpFormula.Size = new System.Drawing.Size(180, 23);
             txtLevelUpFormula.TabIndex = 238;
@@ -290,7 +298,7 @@
             // label79
             // 
             label79.AutoSize = true;
-            label79.Location = new System.Drawing.Point(12, 354);
+            label79.Location = new System.Drawing.Point(12, 439);
             label79.Name = "label79";
             label79.Size = new System.Drawing.Size(126, 15);
             label79.TabIndex = 237;
@@ -300,7 +308,7 @@
             // 
             label80.AutoSize = true;
             label80.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label80.Location = new System.Drawing.Point(110, 297);
+            label80.Location = new System.Drawing.Point(110, 382);
             label80.Name = "label80";
             label80.Size = new System.Drawing.Size(101, 21);
             label80.TabIndex = 236;
@@ -355,7 +363,7 @@
             // label84
             // 
             label84.AutoSize = true;
-            label84.Location = new System.Drawing.Point(129, 638);
+            label84.Location = new System.Drawing.Point(129, 723);
             label84.Name = "label84";
             label84.Size = new System.Drawing.Size(167, 15);
             label84.TabIndex = 229;
@@ -366,7 +374,7 @@
             nudHPRegenerationPerLevelUp.DecimalPlaces = 4;
             nudHPRegenerationPerLevelUp.Enabled = false;
             nudHPRegenerationPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudHPRegenerationPerLevelUp.Location = new System.Drawing.Point(72, 634);
+            nudHPRegenerationPerLevelUp.Location = new System.Drawing.Point(72, 719);
             nudHPRegenerationPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudHPRegenerationPerLevelUp.Name = "nudHPRegenerationPerLevelUp";
             nudHPRegenerationPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -387,7 +395,7 @@
             // label85
             // 
             label85.AutoSize = true;
-            label85.Location = new System.Drawing.Point(15, 609);
+            label85.Location = new System.Drawing.Point(15, 694);
             label85.Name = "label85";
             label85.Size = new System.Drawing.Size(61, 15);
             label85.TabIndex = 226;
@@ -414,7 +422,7 @@
             // label88
             // 
             label88.AutoSize = true;
-            label88.Location = new System.Drawing.Point(133, 610);
+            label88.Location = new System.Drawing.Point(133, 695);
             label88.Name = "label88";
             label88.Size = new System.Drawing.Size(174, 15);
             label88.TabIndex = 223;
@@ -425,7 +433,7 @@
             nudMovementPerLevelUp.DecimalPlaces = 4;
             nudMovementPerLevelUp.Enabled = false;
             nudMovementPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudMovementPerLevelUp.Location = new System.Drawing.Point(76, 607);
+            nudMovementPerLevelUp.Location = new System.Drawing.Point(76, 692);
             nudMovementPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudMovementPerLevelUp.Name = "nudMovementPerLevelUp";
             nudMovementPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -443,7 +451,7 @@
             // label89
             // 
             label89.AutoSize = true;
-            label89.Location = new System.Drawing.Point(71, 580);
+            label89.Location = new System.Drawing.Point(71, 665);
             label89.Name = "label89";
             label89.Size = new System.Drawing.Size(148, 15);
             label89.TabIndex = 220;
@@ -454,7 +462,7 @@
             nudDefensePerLevelUp.DecimalPlaces = 4;
             nudDefensePerLevelUp.Enabled = false;
             nudDefensePerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudDefensePerLevelUp.Location = new System.Drawing.Point(15, 577);
+            nudDefensePerLevelUp.Location = new System.Drawing.Point(15, 662);
             nudDefensePerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudDefensePerLevelUp.Name = "nudDefensePerLevelUp";
             nudDefensePerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -480,16 +488,16 @@
             // label91
             // 
             label91.AutoSize = true;
-            label91.Location = new System.Drawing.Point(2, 26);
+            label91.Location = new System.Drawing.Point(10, 26);
             label91.Name = "label91";
-            label91.Size = new System.Drawing.Size(325, 30);
+            label91.Size = new System.Drawing.Size(303, 30);
             label91.TabIndex = 216;
-            label91.Text = "NOTE: HP, Attack, Defense, Movement and HP Regeneration\r\nare internal names. Display Names depend on Locales.";
+            label91.Text = "NOTE: The stat names displayed here are internal names.\r\nDisplay Names depend on Locales.";
             // 
             // label92
             // 
             label92.AutoSize = true;
-            label92.Location = new System.Drawing.Point(71, 553);
+            label92.Location = new System.Drawing.Point(71, 638);
             label92.Name = "label92";
             label92.Size = new System.Drawing.Size(140, 15);
             label92.TabIndex = 215;
@@ -500,7 +508,7 @@
             nudAttackPerLevelUp.DecimalPlaces = 4;
             nudAttackPerLevelUp.Enabled = false;
             nudAttackPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudAttackPerLevelUp.Location = new System.Drawing.Point(15, 550);
+            nudAttackPerLevelUp.Location = new System.Drawing.Point(15, 635);
             nudAttackPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudAttackPerLevelUp.Name = "nudAttackPerLevelUp";
             nudAttackPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -526,7 +534,7 @@
             // label94
             // 
             label94.AutoSize = true;
-            label94.Location = new System.Drawing.Point(71, 496);
+            label94.Location = new System.Drawing.Point(71, 581);
             label94.Name = "label94";
             label94.Size = new System.Drawing.Size(122, 15);
             label94.TabIndex = 211;
@@ -537,7 +545,7 @@
             nudHPPerLevelUp.DecimalPlaces = 4;
             nudHPPerLevelUp.Enabled = false;
             nudHPPerLevelUp.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudHPPerLevelUp.Location = new System.Drawing.Point(15, 493);
+            nudHPPerLevelUp.Location = new System.Drawing.Point(15, 578);
             nudHPPerLevelUp.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudHPPerLevelUp.Name = "nudHPPerLevelUp";
             nudHPPerLevelUp.Size = new System.Drawing.Size(54, 23);
@@ -634,12 +642,76 @@
             label4.TabIndex = 260;
             label4.Text = "Evasion:";
             // 
+            // chkUsesHunger
+            // 
+            chkUsesHunger.AutoSize = true;
+            chkUsesHunger.Location = new System.Drawing.Point(11, 298);
+            chkUsesHunger.Name = "chkUsesHunger";
+            chkUsesHunger.Size = new System.Drawing.Size(134, 19);
+            chkUsesHunger.TabIndex = 263;
+            chkUsesHunger.Text = "Uses Hunger System";
+            chkUsesHunger.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(68, 327);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(105, 15);
+            label5.TabIndex = 265;
+            label5.Text = "Maximum Hunger";
+            // 
+            // nudBaseMaxHunger
+            // 
+            nudBaseMaxHunger.Location = new System.Drawing.Point(11, 323);
+            nudBaseMaxHunger.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            nudBaseMaxHunger.Name = "nudBaseMaxHunger";
+            nudBaseMaxHunger.Size = new System.Drawing.Size(55, 23);
+            nudBaseMaxHunger.TabIndex = 264;
+            nudBaseMaxHunger.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(106, 360);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(163, 15);
+            label6.TabIndex = 268;
+            label6.Text = "HP per turn when Hunger is 0";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(10, 358);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(36, 15);
+            label7.TabIndex = 267;
+            label7.Text = "Loses";
+            // 
+            // nudHungerHPDegeneration
+            // 
+            nudHungerHPDegeneration.DecimalPlaces = 4;
+            nudHungerHPDegeneration.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            nudHungerHPDegeneration.Location = new System.Drawing.Point(49, 356);
+            nudHungerHPDegeneration.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            nudHungerHPDegeneration.Minimum = new decimal(new int[] { 999, 0, 0, int.MinValue });
+            nudHungerHPDegeneration.Name = "nudHungerHPDegeneration";
+            nudHungerHPDegeneration.Size = new System.Drawing.Size(55, 23);
+            nudHungerHPDegeneration.TabIndex = 266;
+            nudHungerHPDegeneration.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
             // StatsSheet
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(label6);
+            Controls.Add(label7);
+            Controls.Add(nudHungerHPDegeneration);
+            Controls.Add(label5);
+            Controls.Add(nudBaseMaxHunger);
+            Controls.Add(chkUsesHunger);
             Controls.Add(label3);
             Controls.Add(nudBaseEvasion);
             Controls.Add(label4);
@@ -697,7 +769,7 @@
             Controls.Add(label96);
             Controls.Add(lblSightRangeText);
             Name = "StatsSheet";
-            Size = new System.Drawing.Size(331, 687);
+            Size = new System.Drawing.Size(331, 772);
             ((System.ComponentModel.ISupportInitialize)nudMPRegenerationPerLevelUp).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMPPerLevelUp).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseMPRegeneration).EndInit();
@@ -716,6 +788,8 @@
             ((System.ComponentModel.ISupportInitialize)nudBaseHP).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseAccuracy).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBaseEvasion).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudBaseMaxHunger).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudHungerHPDegeneration).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -778,5 +852,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown nudBaseEvasion;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox chkUsesHunger;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown nudBaseMaxHunger;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown nudHungerHPDegeneration;
     }
 }

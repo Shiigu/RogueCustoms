@@ -18,6 +18,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
     {
         private ProgressBar HPBar;
         private ProgressBar MPBar;
+        private ProgressBar HungerBar;
         public Button DetailsButton { get; set; }
 
         public PlayerInfoConsole(GameConsoleContainer parent) : base(parent, GameConsoleConstants.PlayerInfoCellWidth, GameConsoleConstants.PlayerInfoCellHeight)
@@ -32,7 +33,7 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
             var detailsButtonText = $" {LocalizationManager.GetString("DetailsButtonText")} ".ToAscii();
             DetailsButton = new Button(detailsButtonText.Length, 1)
             {
-                Position = new Point((Width - detailsButtonText.Length) / 2, 39),
+                Position = new Point((Width - detailsButtonText.Length) / 2, 42),
                 Text = detailsButtonText
             };
             DetailsButton.Click += DetailsButton_Click;
@@ -57,8 +58,19 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 BackgroundGlyph = '░'.ToGlyph()
             };
 
+            HungerBar = new RogueProgressBar(Width - 4, 1, HorizontalAlignment.Left)
+            {
+                Position = new Point(2, 38),
+                DisplayTextAlignment = HorizontalAlignment.Center,
+                DisplayTextColor = Color.White,
+                BarColor = Color.DarkRed,
+                BackgroundColor = Color.DarkRed,
+                BackgroundGlyph = '▒'.ToGlyph()
+            };
+
             Controls.Add(HPBar);
             Controls.Add(MPBar);
+            Controls.Add(HungerBar);
             Controls.Add(DetailsButton);
         }
 
@@ -147,6 +159,14 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole
                 else
                 {
                     this.Print(4, 30, LocalizationManager.GetString("PlayerNoStatusesText"), true);
+                }
+
+                HungerBar.IsVisible = playerEntity.UsesHunger;
+                if (playerEntity.UsesHunger)
+                {
+                    HungerBar.DisplayText = $"{playerEntity.Hunger}/{playerEntity.MaxHunger}";
+                    HungerBar.Progress = (float)playerEntity.Hunger / playerEntity.MaxHunger;
+                    this.Print((square.Width - playerEntity.HungerStatName.Length) / 2, 37, playerEntity.HungerStatName, true);
                 }
             }
             base.Update(delta);

@@ -325,7 +325,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (path.Route.Any() && path.Route[0] != ContainingTile && Map.TryMoveCharacter(this, path.Route[0]))
                     PathToUse = path;
                 else
+                {
                     PathToUse.Destination = null;
+                    RemainingMovement = 0;
+                    if (Movement == 0)
+                        TookAction = true;
+                }
             }
         }
 
@@ -357,7 +362,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<Character> GetClosestTargets(ActionWithEffects action)
         {
             List<(Character target, int distance)> targetsAndDistances = new();
-            KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType))
+            KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType) && CanSee(kc.Character))
                 .ForEach(t => targetsAndDistances.Add((t.Character, (int)Math.Ceiling(GamePoint.Distance(Position, t.Character.Position)))));
             if (!targetsAndDistances.Any()) return new List<Character>();
             var minimumDistance = targetsAndDistances.Min(tad => tad.distance);

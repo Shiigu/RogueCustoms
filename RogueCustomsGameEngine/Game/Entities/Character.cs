@@ -45,6 +45,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanGainExperience { get; set; }
         public bool CanTakeAction { get; set; }
         public bool UsesMP { get; set; }
+        public bool UsesHunger { get; set; }
         public int HP { get; set; }
 
         public readonly int BaseMaxHP;
@@ -117,6 +118,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseSightRange;
         public int TotalSightRangeIncrements { get; set; } = 0;
         public int SightRange => BaseSightRange + TotalSightRangeIncrements;
+
+        public int Hunger { get; set; }
+
+        public readonly int BaseMaxHunger;
+        public List<StatModification> MaxHungerModifications { get; set; }
+        public int TotalMaxHungerIncrements => MaxHungerModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
+        public int MaxHunger => (int) Math.Min(BaseMaxHunger + TotalMaxHungerIncrements, Constants.REGEN_STAT_CAP);
+
+        public readonly decimal HungerHPDegeneration;
+        private decimal CarriedHungerDegeneration;
+
+        public bool IsStarving => UsesHunger && Hunger <= 0;
 
         public readonly int BaseAccuracy;
         public List<StatModification> AccuracyModifications { get; set; }
@@ -246,6 +259,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 modifications.Add((Map.Locale["CharacterEvasionStat"], EvasionModifications));
                 if (UsesMP) 
                     modifications.Add((Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications));
+                if (UsesHunger)
+                    modifications.Add((Map.Locale["CharacterHungerStat"], MaxHungerModifications));
 
                 return modifications;
             }
@@ -257,6 +272,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             StartingWeaponId = entityClass.StartingWeaponId;
             StartingArmorId = entityClass.StartingArmorId;
             UsesMP = entityClass.UsesMP;
+            UsesHunger = entityClass.UsesHunger;
             HP = entityClass.BaseHP;
             BaseMaxHP = entityClass.BaseHP;
             MaxHPIncreasePerLevel = entityClass.MaxHPIncreasePerLevel;
@@ -275,6 +291,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             MPRegenerationIncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel;
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
+            Hunger = entityClass.BaseHunger;
+            BaseMaxHunger = entityClass.BaseHunger;
+            HungerHPDegeneration = entityClass.HungerHPDegeneration;
             CanGainExperience = entityClass.CanGainExperience;
             Level = level;
             MaxLevel = entityClass.MaxLevel;
@@ -296,6 +315,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications = new List<StatModification>();
             HPRegenerationModifications = new List<StatModification>();
             MPRegenerationModifications = new List<StatModification>();
+            MaxHungerModifications = new List<StatModification>();
             AccuracyModifications = new List<StatModification>();
             EvasionModifications = new List<StatModification>();
 
@@ -310,6 +330,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             LastLevelUpExperience = Experience;
             CarriedHPRegeneration = 0;
             CarriedMPRegeneration = 0;
+            CarriedHungerDegeneration = 0;
 
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             OwnOnAttack = new List<ActionWithEffects>();
@@ -396,6 +417,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
             }
+            TryDegenerateHunger();
             TryRegenerateHP();
             TryRegenerateMP();
             if (HP <= 0)
@@ -406,25 +428,34 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (HP > MaxHP) HP = MaxHP;
-            if ((HPRegeneration > 0 && HP == MaxHP) || HPRegeneration == 0)
+            var hpRegenerationToUse = IsStarving ? HungerHPDegeneration * -1 : HPRegeneration;
+            if (IsStarving && CarriedHPRegeneration > 0)
+                CarriedHPRegeneration = 0;
+            if ((hpRegenerationToUse > 0 && HP == MaxHP) || hpRegenerationToUse == 0)
             {
                 CarriedHPRegeneration = 0;
                 return;
             }
-            CarriedHPRegeneration += HPRegeneration;
-            if (CarriedHPRegeneration > 1)
+            CarriedHPRegeneration += hpRegenerationToUse;
+            if (CarriedHPRegeneration >= 1)
             {
                 var wholePart = Math.Truncate(CarriedHPRegeneration);
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Min(MaxHP, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
             }
-            else if (CarriedHPRegeneration < -1)
+            else if (CarriedHPRegeneration <= -1)
             {
+                var oldHP = HP;
                 var wholePart = Math.Truncate(CarriedHPRegeneration);
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Max(0, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
+                if (oldHP > HP && IsStarving)
+                {
+                    Map.PlayerTookDamage = true;
+                    Map.AppendMessage(Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldHP - HP, CharacterHPStat = Map.Locale["CharacterHPStat"], CharacterHungerStat = Map.Locale["CharacterHungerStat"] }));
+                }
             }
         }
 
@@ -439,19 +470,34 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return;
             }
             CarriedMPRegeneration += MPRegeneration;
-            if (CarriedMPRegeneration > 1)
+            if (CarriedMPRegeneration >= 1)
             {
                 var wholePart = Math.Truncate(CarriedMPRegeneration);
                 var fractionalPart = CarriedMPRegeneration - wholePart;
                 MP = Math.Min(MaxMP, MP + (int)wholePart);
                 CarriedMPRegeneration = fractionalPart;
             }
-            else if (CarriedMPRegeneration < -1)
+            else if (CarriedMPRegeneration <= -1)
             {
                 var wholePart = Math.Truncate(CarriedMPRegeneration);
                 var fractionalPart = CarriedMPRegeneration - wholePart;
                 MP = Math.Max(0, MP + (int)wholePart);
                 CarriedMPRegeneration = fractionalPart;
+            }
+        }
+
+        public void TryDegenerateHunger()
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (!UsesHunger || Map.HungerDegeneration <= 0 || Hunger == 0) return;
+            if (Hunger > MaxHunger) Hunger = MaxHunger;
+            CarriedHungerDegeneration += Map.HungerDegeneration;
+            if (CarriedHungerDegeneration >= 1)
+            {
+                var wholePart = Math.Truncate(CarriedHungerDegeneration);
+                var fractionalPart = CarriedHungerDegeneration - wholePart;
+                Hunger = Math.Min(MaxHunger, Hunger - (int)wholePart);
+                CarriedHungerDegeneration = fractionalPart;
             }
         }
 

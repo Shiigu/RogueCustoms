@@ -62,6 +62,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterMaxHPStat"],
                     Base = characterClass.BaseHP,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.MaxHPIncreasePerLevel,
                     IsDecimalStat = false,
                     Visible = true
@@ -70,6 +71,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterMaxMPStat"],
                     Base = characterClass.BaseMP,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.MaxMPIncreasePerLevel,
                     IsDecimalStat = false,
                     Visible = characterClass.UsesMP
@@ -78,6 +80,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterAttackStat"],
                     Base = characterClass.BaseAttack,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.AttackIncreasePerLevel,
                     IsDecimalStat = false,
                     Visible = true
@@ -86,6 +89,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterDefenseStat"],
                     Base = characterClass.BaseDefense,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.DefenseIncreasePerLevel,
                     IsDecimalStat = false,
                     Visible = true
@@ -94,6 +98,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterMovementStat"],
                     Base = characterClass.BaseMovement,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.MovementIncreasePerLevel,
                     IsDecimalStat = false,
                     Visible = true
@@ -102,6 +107,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterHPRegenerationStat"],
                     Base = characterClass.BaseHPRegeneration,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.HPRegenerationIncreasePerLevel,
                     IsDecimalStat = true,
                     Visible = true
@@ -110,9 +116,18 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 {
                     Name = dungeon.LocaleToUse["CharacterMPRegenerationStat"],
                     Base = characterClass.BaseMPRegeneration,
+                    HasIncreasePerLevel = true,
                     IncreasePerLevel = characterClass.MPRegenerationIncreasePerLevel,
                     IsDecimalStat = true,
                     Visible = characterClass.UsesMP
+                },
+                new CharacterClassStatDto
+                {
+                    Name = dungeon.LocaleToUse["CharacterHungerStat"],
+                    Base = characterClass.BaseHunger,
+                    HasIncreasePerLevel = false,
+                    IsDecimalStat = true,
+                    Visible = characterClass.UsesHunger
                 }
             };
 
@@ -157,6 +172,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public decimal IncreasePerLevel { get; set; }
         public bool IsDecimalStat { get; set; }
         public bool IsPercentileStat { get; set; }
+        public bool HasIncreasePerLevel { get; set; }
         public bool Visible { get; set; }
     }
     #pragma warning restore CS8604 // Posible argumento de referencia nulo

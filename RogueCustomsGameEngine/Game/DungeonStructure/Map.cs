@@ -16,6 +16,7 @@ using System.IO;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Immutable;
 using System.Text.Json;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -68,6 +69,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int MaxConnectionsBetweenRooms => FloorConfigurationToUse.MaxConnectionsBetweenRooms;
         public int OddsForExtraConnections => FloorConfigurationToUse.OddsForExtraConnections;
         public int RoomFusionOdds => FloorConfigurationToUse.RoomFusionOdds;
+        public decimal HungerDegeneration => FloorConfigurationToUse.HungerDegeneration;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -986,10 +988,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTile = tile.LivingCharacter;
             var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : Locale[$"TileType{tile.Type}"]);
 
-            Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, this, true));
+            Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, tile, this, true));
 
             if(characterInTile is NonPlayableCharacter npc)
-                npc.OnInteracted?.ForEach(oia => actionList.AddAction(oia, Player, characterInTile, this, false));
+                npc.OnInteracted?.ForEach(oia => actionList.AddAction(oia, Player, characterInTile, tile, this, false));
 
             if(actionList.Actions.DistinctBy(a => a.SelectionId).Count() != actionList.Actions.Count)
                 throw new ArgumentException("Duplicate Actions discovered in selection.");

@@ -298,12 +298,15 @@ namespace RogueCustomsConsoleClient.UI.Consoles.GameConsole.GameWindows
                 subConsole.Cursor.Print($"{stat.Name}: {stat.Base:0.#####}".ToAscii());
             else
                 subConsole.Cursor.Print($"{stat.Name}: {(int)stat.Base}".ToAscii());
-            subConsole.Cursor.NewLine();
-            subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
-            subConsole.Cursor.Print(new ColoredString(LocalizationManager.GetString("PlayerClassIncreasePerLevelText").Format(new
+            if (stat.HasIncreasePerLevel)
             {
-                Increase = $"{stat.IncreasePerLevel:+0.#####;-0.#####;0}"
-            }).ToAscii()));
+                subConsole.Cursor.NewLine();
+                subConsole.Cursor.Position = new Point(subConsole.Cursor.Position.X + 5, subConsole.Cursor.Position.Y);
+                subConsole.Cursor.Print(new ColoredString(LocalizationManager.GetString("PlayerClassIncreasePerLevelText").Format(new
+                {
+                    Increase = $"{stat.IncreasePerLevel:+0.#####;-0.#####;0}"
+                }).ToAscii()));
+            }
         }
 
         private static void PrintPlayerStartingItemInfo(Console subConsole, string itemTypeHeader, ItemDetailDto item)

@@ -170,6 +170,86 @@
     ]
   },
   {
+    "InternalName": "RemoveHunger",
+    "TreeViewDisplayText": "Remove ({Power}) Hunger from ({Target})",
+    "ComboBoxDisplayName": "Remove Target's Hunger",
+    "Description": "Used by the User to remove some of Target's Hunger.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Attacker",
+        "DisplayName": "Attacker",
+        "Description": "What will remove Hunger. Generally Source, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get Hunger removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Power",
+        "Description": "Amount of Hunger that will be removed. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Attack to land. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "StealItem",
     "TreeViewDisplayText": "Steal an Item that is ({ItemType}) from Target",
     "ComboBoxDisplayName": "Steal Item from Target",
@@ -534,8 +614,68 @@
       },
       {
         "InternalName": "Power",
-        "DisplayName": "MP Recovery Power",
+        "DisplayName": "MP Recovery",
         "Description": "Maximum Amount of MP that will be recovered. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{source.Power}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ReplenishHunger",
+    "TreeViewDisplayText": "Recover up to ({Power}) Hunger from ({Target})",
+    "ComboBoxDisplayName": "Recover some of Target's Hunger",
+    "Description": "Used by the User to give Target some Hunger.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "What will give Hunger. Generally the User, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get Hunger. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Hunger Recovery",
+        "Description": "Maximum Amount of Hunger that will be recovered. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
         "ParameterType": "Formula",
         "Default": "{source.Power}",
         "ValidValues": [],
@@ -815,7 +955,7 @@
     ]
   },
   {
-    "InternalName": "CleanseAlteredStatus",    
+    "InternalName": "CleanseAlteredStatus",
     "TreeViewDisplayText": "Remove ({Id}) Altered Status from ({Target})",
     "ComboBoxDisplayName": "Remove Altered Status from Target",
     "Description": "Used by the User to remove a certain Altered Status on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
@@ -1076,7 +1216,7 @@
     ]
   },
   {
-    "InternalName": "ForceSkipTurn",    
+    "InternalName": "ForceSkipTurn",
     "TreeViewDisplayText": "Make ({Target}) skip the next turn",
     "ComboBoxDisplayName": "Make Target skip the next turn",
     "Description": "Used by the User to make Target skip their next turn.",
@@ -1328,7 +1468,7 @@
     ]
   },
   {
-    "InternalName": "TransformTile",    
+    "InternalName": "TransformTile",
     "TreeViewDisplayText": "Convert the Tile into ({TileType})",
     "ComboBoxDisplayName": "Convert Tile",
     "Description": "User will convert the Tile.\nFails if the Tile is occupied, adjacent to an empty tile, or if it prevents map completeness.",

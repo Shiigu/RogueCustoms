@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -21,10 +22,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Actions = new List<ActionItemDto>();
         }
 
-        public void AddAction(ActionWithEffects action, Character source, Character target, Map map, bool isPlayerAction)
+        public void AddAction(ActionWithEffects action, Character source, Character targetCharacter, Tile tile, Map map, bool isPlayerAction)
         {
             var entityDescriptor = isPlayerAction ? "Player" : "Target";
-            Actions.Add(new ActionItemDto(action, source, target, map)
+
+            Actions.Add(new ActionItemDto(action, source, action.TargetTypes.Contains(TargetType.Tile) ? tile : targetCharacter, map)
             {
                 SelectionId = $"{entityDescriptor}_{action.ActionId}"
             });

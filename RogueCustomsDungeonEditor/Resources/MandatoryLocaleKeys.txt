@@ -58,6 +58,7 @@ CharacterMovementStat
 CharacterSightRangeStat
 CharacterHPRegenerationStat
 CharacterMPRegenerationStat
+CharacterHungerStat
 CharacterInventorySizeStat
 CharacterEvasionStat
 CharacterAccuracyStat
@@ -66,9 +67,13 @@ CharacterMitigationStat
 CharacterTakesDamage
 CharacterHealsSomeHP
 CharacterHealsAllHP
+CharacterTakesDamageFromHunger
 CharacterLosesMP
 CharacterRecoversSomeMP
 CharacterRecoversAllMP
+CharacterLosesHunger
+CharacterRecoversSomeHunger
+CharacterRecoversAllHunger
 CharacterGainsExperience
 CharacterGotStatused
 CharacterStatusGotRefreshed

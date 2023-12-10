@@ -670,9 +670,31 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         private static DungeonInfo ConvertDungeonInfoToV13(this DungeonInfo dungeon)
         {
+            foreach (var floorInfo in dungeon.FloorInfos)
+            {
+                floorInfo.HungerDegeneration = 0;
+            }
+
+            foreach (var playerClass in dungeon.PlayerClasses)
+            {
+                playerClass.UsesHunger = false;
+                playerClass.BaseHunger = 0;
+                playerClass.HungerHPDegeneration = 0;
+            }
+
+            foreach (var playerClass in dungeon.PlayerClasses)
+            {
+                playerClass.UsesHunger = false;
+                playerClass.BaseHunger = 0;
+                playerClass.HungerHPDegeneration = 0;
+            }
+
             foreach (var npc in dungeon.NPCs)
             {
                 npc.AIType = "Random";
+                npc.UsesHunger = false;
+                npc.BaseHunger = 0;
+                npc.HungerHPDegeneration = 0;
             }
 
             foreach (var item in dungeon.Items)

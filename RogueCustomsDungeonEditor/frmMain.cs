@@ -1760,6 +1760,7 @@ namespace RogueCustomsDungeonEditor
             nudMaxRoomConnections.Value = floorGroup.MaxConnectionsBetweenRooms;
             nudExtraRoomConnectionOdds.Value = floorGroup.OddsForExtraConnections;
             nudRoomFusionOdds.Value = floorGroup.RoomFusionOdds;
+            nudHungerLostPerTurn.Value = floorGroup.HungerDegeneration;
         }
 
         private bool ValidateFloorGroupDataForSave(out List<string> errorMessages)
@@ -1869,6 +1870,7 @@ namespace RogueCustomsDungeonEditor
                 floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
                 floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
                 floorGroup.OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null;
+                floorGroup.HungerDegeneration = nudHungerLostPerTurn.Value;
 
                 if (saveAsNew)
                 {
@@ -1991,6 +1993,11 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void nudHeight_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudHungerLostPerTurn_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
         }
@@ -2565,6 +2572,9 @@ namespace RogueCustomsDungeonEditor
             ssPlayer.BaseAccuracy = playerClass.BaseAccuracy;
             ssPlayer.BaseEvasion = playerClass.BaseEvasion;
             ssPlayer.BaseSightRange = playerClass.BaseSightRange;
+            ssPlayer.UsesHunger = playerClass.UsesHunger;
+            ssPlayer.BaseHunger = playerClass.BaseHunger;
+            ssPlayer.HungerHPDegeneration = playerClass.HungerHPDegeneration;
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
             ssPlayer.MaxLevel = playerClass.MaxLevel;
@@ -2637,6 +2647,10 @@ namespace RogueCustomsDungeonEditor
             playerClass.HPRegenerationIncreasePerLevel = ssPlayer.HPRegenerationPerLevelUp;
             playerClass.MPRegenerationIncreasePerLevel = ssPlayer.MPRegenerationPerLevelUp;
             playerClass.MaxLevel = ssPlayer.MaxLevel;
+
+            playerClass.UsesHunger = ssPlayer.UsesHunger;
+            playerClass.BaseHunger = ssPlayer.BaseHunger;
+            playerClass.HungerHPDegeneration = ssPlayer.HungerHPDegeneration;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
@@ -2744,6 +2758,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
             if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
                 errorMessages.Add("This Player Class can gain experience, but cannot level up.");
+            if (ssPlayer.UsesHunger && ssPlayer.BaseHunger <= 0)
+                errorMessages.Add("This Player Class uses a Hunger System but has no Hunger.");
 
             return !errorMessages.Any();
         }
@@ -2884,6 +2900,9 @@ namespace RogueCustomsDungeonEditor
             ssNPC.BaseAccuracy = npc.BaseAccuracy;
             ssNPC.BaseEvasion = npc.BaseEvasion;
             ssNPC.BaseSightRange = npc.BaseSightRange;
+            ssNPC.UsesHunger = npc.UsesHunger;
+            ssNPC.BaseHunger = npc.BaseHunger;
+            ssNPC.HungerHPDegeneration = npc.HungerHPDegeneration;
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
             ssNPC.MaxLevel = npc.MaxLevel;
@@ -2971,6 +2990,10 @@ namespace RogueCustomsDungeonEditor
             npc.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
             npc.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
             npc.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
+
+            npc.UsesHunger = ssNPC.UsesHunger;
+            npc.BaseHunger = ssNPC.BaseHunger;
+            npc.HungerHPDegeneration = ssNPC.HungerHPDegeneration;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
@@ -3084,6 +3107,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
             if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
+            if (ssNPC.UsesHunger && ssNPC.BaseHunger <= 0)
+                errorMessages.Add("This NPC uses a Hunger System but has no Hunger.");
             if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
                 errorMessages.Add("This NPC does not have a set AI strategy.");
 

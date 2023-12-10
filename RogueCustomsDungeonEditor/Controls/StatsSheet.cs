@@ -49,6 +49,7 @@ namespace RogueCustomsDungeonEditor.Controls
             set
             {
                 chkUsesMP.Checked = value;
+                ToggleMPControls();
             }
         }
 
@@ -186,6 +187,44 @@ namespace RogueCustomsDungeonEditor.Controls
                 }
             }
         }
+        public bool UsesHunger
+        {
+            get
+            {
+                return chkUsesHunger.Checked;
+            }
+            set
+            {
+                chkUsesHunger.Checked = value;
+                ToggleHungerControls();
+            }
+        }
+
+        public int BaseHunger
+        {
+            get
+            {
+                return UsesHunger ? (int)nudBaseMaxHunger.Value : 0;
+            }
+            set
+            {
+                if (UsesHunger)
+                    nudBaseMaxHunger.Value = value;
+            }
+        }
+
+        public decimal HungerHPDegeneration
+        {
+            get
+            {
+                return UsesHunger ? nudHungerHPDegeneration.Value : 0;
+            }
+            set
+            {
+                if (UsesHunger)
+                    nudHungerHPDegeneration.Value = value;
+            }
+        }
 
         public bool CanGainExperience
         {
@@ -196,6 +235,7 @@ namespace RogueCustomsDungeonEditor.Controls
             set
             {
                 chkCanGainExperience.Checked = value;
+                ToggleLevelUpControls();
             }
         }
 
@@ -220,6 +260,7 @@ namespace RogueCustomsDungeonEditor.Controls
             set
             {
                 nudMaxLevel.Value = value;
+                ToggleLevelUpControls();
             }
         }
 
@@ -325,6 +366,9 @@ namespace RogueCustomsDungeonEditor.Controls
             nudBaseHPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudBaseMPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudFlatSightRange.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
+            chkUsesHunger.CheckedChanged += (_, _) => ToggleHungerControls();
+            nudBaseMaxHunger.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
+            nudHungerHPDegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             chkCanGainExperience.CheckedChanged += (_, _) => ToggleLevelUpControls();
             nudMaxLevel.ValueChanged += (_, _) => ToggleLevelUpControls();
             nudHPPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
@@ -380,6 +424,17 @@ namespace RogueCustomsDungeonEditor.Controls
             nudMPRegenerationPerLevelUp.Enabled = (chkCanGainExperience.Checked || nudMaxLevel.Value > 1) && chkUsesMP.Checked;
             if (!chkUsesMP.Checked)
                 nudMPRegenerationPerLevelUp.Value = 0;
+            StatsChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ToggleHungerControls()
+        {
+            nudBaseMaxHunger.Enabled = chkUsesHunger.Checked;
+            if (!chkUsesHunger.Checked)
+                nudBaseMaxHunger.Value = 0;
+            nudHungerHPDegeneration.Enabled = chkUsesHunger.Checked;
+            if (!chkUsesHunger.Checked)
+                nudHungerHPDegeneration.Value = 0;
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
 

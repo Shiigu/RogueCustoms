@@ -28,7 +28,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         #region Character-only data
 
-        public bool UsesMP { get; set; }
+        public readonly bool UsesMP;
+        public readonly bool UsesHunger;
         public readonly int BaseHP;
         public readonly int BaseMP;
         public readonly int BaseAttack;
@@ -37,6 +38,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly decimal BaseHPRegeneration;
         public readonly decimal BaseMPRegeneration;
         public readonly int BaseSightRange;
+        public readonly int BaseHunger;
+        public readonly decimal HungerHPDegeneration;
         public readonly int BaseAccuracy;
         public readonly int BaseEvasion;
         public readonly int InventorySize;
@@ -128,6 +131,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 BaseMovement = playerClassInfo.BaseMovement;
                 BaseHPRegeneration = playerClassInfo.BaseHPRegeneration;
                 BaseMPRegeneration = playerClassInfo.BaseMPRegeneration;
+                UsesHunger = playerClassInfo.UsesHunger;
+                HungerHPDegeneration = playerClassInfo.HungerHPDegeneration;
                 StartingWeaponId = playerClassInfo.StartingWeapon;
                 StartingArmorId = playerClassInfo.StartingArmor;
                 CanGainExperience = playerClassInfo.CanGainExperience;
@@ -168,6 +173,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = playerClassInfo.InventorySize;
+                BaseHunger = playerClassInfo.BaseHunger;
+                HungerHPDegeneration = playerClassInfo.HungerHPDegeneration;
                 OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart);
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, playerClassInfo.OnAttack);
@@ -190,6 +197,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 BaseMovement = npcInfo.BaseMovement;
                 BaseHPRegeneration = npcInfo.BaseHPRegeneration;
                 BaseMPRegeneration = npcInfo.BaseMPRegeneration;
+                UsesHunger = npcInfo.UsesHunger;
+                HungerHPDegeneration = npcInfo.HungerHPDegeneration;
                 StartingWeaponId = npcInfo.StartingWeapon;
                 StartingArmorId = npcInfo.StartingArmor;
                 CanGainExperience = npcInfo.CanGainExperience;
@@ -230,6 +239,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = npcInfo.InventorySize;
+                BaseHunger = npcInfo.BaseHunger;
+                HungerHPDegeneration = npcInfo.HungerHPDegeneration;
                 OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart);
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, npcInfo.OnAttack);
