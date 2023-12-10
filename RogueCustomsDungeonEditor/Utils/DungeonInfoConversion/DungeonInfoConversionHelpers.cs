@@ -31,6 +31,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             {
                 switch (dungeon.Version)
                 {
+                    case "1.2":
+                        dungeon = dungeon.ConvertDungeonInfoToV13();
+                        break;
                     case "1.1":
                         dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
                         break;
@@ -662,9 +665,52 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
         }
 
         #endregion
+
+        #region 1.2 to 1.3
+
+        private static DungeonInfo ConvertDungeonInfoToV13(this DungeonInfo dungeon)
+        {
+            foreach (var floorInfo in dungeon.FloorInfos)
+            {
+                floorInfo.HungerDegeneration = 0;
+            }
+
+            foreach (var playerClass in dungeon.PlayerClasses)
+            {
+                playerClass.UsesHunger = false;
+                playerClass.BaseHunger = 0;
+                playerClass.HungerHPDegeneration = 0;
+            }
+
+            foreach (var playerClass in dungeon.PlayerClasses)
+            {
+                playerClass.UsesHunger = false;
+                playerClass.BaseHunger = 0;
+                playerClass.HungerHPDegeneration = 0;
+            }
+
+            foreach (var npc in dungeon.NPCs)
+            {
+                npc.AIType = "Random";
+                npc.UsesHunger = false;
+                npc.BaseHunger = 0;
+                npc.HungerHPDegeneration = 0;
+            }
+
+            foreach (var item in dungeon.Items)
+            {
+                if (item.EntityType.Equals("Weapon") || item.EntityType.Equals("Armor"))
+                    item.OnUse = null;
+            }
+
+            dungeon.Version = "1.3";
+            return dungeon;
+        }
+
+        #endregion
     }
-    #pragma warning restore S2589 // Boolean expressions should not be gratuitous
-    #pragma warning restore S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
-    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore S2589 // Boolean expressions should not be gratuitous
+#pragma warning restore S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
+#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
 }

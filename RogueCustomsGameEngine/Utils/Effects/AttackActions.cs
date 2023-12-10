@@ -5,6 +5,7 @@ using System;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
 using System.Linq;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -20,7 +21,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool DealDamage(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool DealDamage(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -32,7 +33,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
             var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
             if (damageDealt > 0 && damageDealt < 1)
@@ -66,7 +67,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool BurnMP(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool BurnMP(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
         {
             output = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -80,7 +81,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
-            if (Rng.NextInclusive(1, 100) > accuracyCheck)
+            if (Rng.RollProbability() > accuracyCheck)
                 return false;
             var burnAmount = paramsObject.Power;
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
@@ -109,6 +110,37 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.PlayerGotMPBurned = true;
             }
             c.MP = Math.Max(0, c.MP - burnAmount);
+            return true;
+        }
+        public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character c)
+                // Attempted to remove Target's Hunger when it's not a Character.
+                return false;
+            if (c.ExistenceStatus != EntityExistenceStatus.Alive)
+                return false;
+            if (!c.UsesMP)
+                return false;
+
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+
+            if (Rng.RollProbability() > accuracyCheck)
+                return false;
+            var hungerAmount = paramsObject.Power;
+            if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                hungerAmount = 1;
+            hungerAmount = (int)hungerAmount;
+            output = hungerAmount;
+            if (hungerAmount <= 0)
+                return false;
+            if (c.EntityType == EntityType.Player
+                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            {
+                Map.AppendMessage(Map.Locale["CharacterLosesHunger"].Format(new { CharacterName = c.Name, LostHunger = paramsObject.Power, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
+            }
+            c.MP = Math.Max(0, c.MP - hungerAmount);
             return true;
         }
     }

@@ -6,6 +6,7 @@ NewTurn
 FloorEnter
 FloorLeave
 CharacterSwitchedPlacesWithPlayer
+CharacterGotAnItem
 PlayerPutItemOnBag
 PlayerPutItemOnFloor
 NPCPickItem
@@ -25,6 +26,7 @@ TargetTypeSelf
 TargetTypeAlly
 TargetTypeNeutral
 TargetTypeEnemy
+TargetTypeTile
 TargetDoesNotFulfillConditions
 NotEnoughMP
 RequiresATarget
@@ -39,6 +41,11 @@ SightRangeStatFullMap
 SightRangeStatFullRoom
 SightRangeStatFlatNumber
 InventorySizeStatFlatNumber
+TileTypeFloor
+TileTypeWall
+TileTypeHallway
+TileTypeStairs
+TileTypeEmpty
 CharacterLevelsUpMessage
 CharacterLevelsUpHeader
 CharacterHPStat
@@ -51,6 +58,7 @@ CharacterMovementStat
 CharacterSightRangeStat
 CharacterHPRegenerationStat
 CharacterMPRegenerationStat
+CharacterHungerStat
 CharacterInventorySizeStat
 CharacterEvasionStat
 CharacterAccuracyStat
@@ -59,9 +67,13 @@ CharacterMitigationStat
 CharacterTakesDamage
 CharacterHealsSomeHP
 CharacterHealsAllHP
+CharacterTakesDamageFromHunger
 CharacterLosesMP
 CharacterRecoversSomeMP
 CharacterRecoversAllMP
+CharacterLosesHunger
+CharacterRecoversSomeHunger
+CharacterRecoversAllHunger
 CharacterGainsExperience
 CharacterGotStatused
 CharacterStatusGotRefreshed
@@ -71,4 +83,8 @@ CharacterStatGotNerfed
 CharacterStatGotNeutralized
 CharacterWasTeleported
 CharacterStealsItem
+CharacterConvertedTile
+CharacterCreatedATrap
+CharacterCreatedAnNPC
+CharacterRevivedAnNPC
 StairsGotRevealed

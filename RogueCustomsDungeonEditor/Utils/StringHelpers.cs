@@ -58,5 +58,38 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return sb;
         }
+
+        public static string[] SplitStringWithPattern(this string input, string pattern)
+        {
+            Regex regex = new Regex(pattern);
+            MatchCollection matches = regex.Matches(input);
+
+            var result = new List<string>();
+
+            int previousMatchEndIndex = 0;
+
+            foreach (Match match in matches)
+            {
+                // Add the portion before the match
+                result.Add(input.Substring(previousMatchEndIndex, match.Index - previousMatchEndIndex));
+
+                // Add the matched portion
+                result.Add(match.Value);
+
+                // Update previousMatchEndIndex for the next iteration
+                previousMatchEndIndex = match.Index + match.Length;
+            }
+
+            // Add the portion after the last match
+            string lastPart = input.Substring(previousMatchEndIndex);
+
+            // Exclude the final split if it's empty
+            if (!string.IsNullOrEmpty(lastPart))
+            {
+                result.Add(lastPart);
+            }
+
+            return result.ToArray();
+        }
     }
 }

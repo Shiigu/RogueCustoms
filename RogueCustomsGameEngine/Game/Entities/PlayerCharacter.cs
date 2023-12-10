@@ -19,7 +19,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
         }
 
-        public new void GainExperience(int pointsToAdd)
+        public new void GainExperience(int GamePointsToAdd)
         {
             var oldLevel = Level;
             var oldMaxHP = MaxHP;
@@ -28,7 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var oldMovement = Movement;
             var oldHPRegeneration = HPRegeneration;
             var oldMPRegeneration = MPRegeneration;
-            base.GainExperience(pointsToAdd);
+            base.GainExperience(GamePointsToAdd);
             if (Level > oldLevel)
             {
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
@@ -64,11 +64,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void Die(Entity? attacker = null)
         {
-            ExistenceStatus = EntityExistenceStatus.Dead;
-            Map.DungeonStatus = DungeonStatus.GameOver;
-            Passable = true;
-            if (attacker == null || attacker is Character)
-                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
+            base.Die(attacker);
+            if(ExistenceStatus == EntityExistenceStatus.Dead)
+                Map.DungeonStatus = DungeonStatus.GameOver;
         }
 
         public void DropItem(int slot)

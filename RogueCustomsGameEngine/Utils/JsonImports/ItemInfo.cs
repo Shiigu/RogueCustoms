@@ -15,6 +15,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public ActionWithEffectsInfo OnTurnStart { get; set; } = new ActionWithEffectsInfo();
         public List<ActionWithEffectsInfo> OnAttack { get; set; } = new List<ActionWithEffectsInfo>();
         public ActionWithEffectsInfo OnAttacked { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnDeath { get; set; } = new ActionWithEffectsInfo();
         public ActionWithEffectsInfo OnStepped { get; set; } = new ActionWithEffectsInfo();
         public ActionWithEffectsInfo OnUse { get; set; } = new ActionWithEffectsInfo();
     }

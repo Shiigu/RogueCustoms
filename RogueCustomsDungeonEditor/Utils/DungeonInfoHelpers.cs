@@ -403,6 +403,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 BaseMPRegeneration = 0,
                 MPRegenerationIncreasePerLevel = 0,
                 BaseSightRange = "FullRoom",
+                UsesHunger = true,
+                BaseHunger = 100,
+                HungerHPDegeneration = 3,
                 StartingWeapon = "",
                 StartingArmor = "",
                 InventorySize = 0,
@@ -449,6 +452,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 BaseMPRegeneration = 0,
                 MPRegenerationIncreasePerLevel = 0,
                 BaseSightRange = "FullRoom",
+                UsesHunger = false,
+                BaseHunger = 0,
+                HungerHPDegeneration = 0,
                 StartingWeapon = "",
                 StartingArmor = "",
                 InventorySize = 0,
@@ -460,7 +466,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 OnAttack = new(),
                 OnAttacked = new(),
                 OnDeath = new(),
-                AIOddsToUseActionsOnSelf = 50
+                AIType = "Default",
+                AIOddsToUseActionsOnSelf = 0
             };
         }
         public static ItemInfo CreateItemTemplate()
@@ -526,31 +533,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 CleanseOnFloorChange = true,
                 OnApply = new(),
                 OnTurnStart = new(),
-            };
-        }
-
-        public static ActionWithEffectsInfo CreateEquipAction()
-        {
-            return new ActionWithEffectsInfo
-            {
-                Name = "Equip",
-                Effect = new EffectInfo
-                {
-                    EffectName = "PrintText",
-                    Params = new Parameter[]
-                    {
-                        new Parameter
-                        {
-                            ParamName = "text",
-                            Value = "ObjectEquippedText"
-                        }
-                    },
-                    Then = new EffectInfo
-                    {
-                        EffectName = "Equip",
-                        Params = Array.Empty<Parameter>()
-                    }
-                }
             };
         }
 
@@ -717,6 +699,8 @@ namespace RogueCustomsDungeonEditor.Utils
                     item.OnUse = null;
                 if (item.OnStepped.IsNullOrEmpty())
                     item.OnStepped = null;
+                if (item.OnDeath.IsNullOrEmpty())
+                    item.OnDeath = null;
             }
 
             foreach (var trap in dungeonInfo.Traps)

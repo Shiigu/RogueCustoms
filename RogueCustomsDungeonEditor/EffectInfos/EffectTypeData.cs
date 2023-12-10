@@ -1,9 +1,12 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.EffectInfos
@@ -12,11 +15,88 @@ namespace RogueCustomsDungeonEditor.EffectInfos
     public class EffectTypeData
     {
         public string InternalName { get; set; }
-        public string DisplayName { get; set; }
+        public string ComboBoxDisplayName { get; set; }
+        public string TreeViewDisplayText { get; set; }
         public string Description { get; set; }
+        public bool CanBeUsedOnEntity { get; set; }
+        public bool CanBeUsedOnTile { get; set; }
         public bool CanHaveThenChild { get; set; }
         public bool CanHaveOnSuccessOnFailureChild { get; set; }
         public List<EffectParameter> Parameters { get; set; }
+
+        public string GetParsedTreeViewDisplayName(Parameter[] effectParameters)
+        {
+            string pattern = @"\{([^{}]+)\}";
+            Regex regex = new Regex(pattern);
+
+            string parsedText = regex.Replace(TreeViewDisplayText, match =>
+            {
+                string placeholder = match.Groups[1].Value;
+
+                // Find the parameter with matching key
+                var matchingParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals(placeholder, StringComparison.InvariantCultureIgnoreCase));
+
+                // If parameter not found, handle it differently (e.g., using a switch statement)
+                if (matchingParam != null)
+                {
+                    return matchingParam.Value;
+                }
+                else
+                {
+                    return HandleSpecialCase(placeholder, effectParameters);
+                }
+            });
+
+            return parsedText;
+        }
+
+        private string HandleSpecialCase(string placeholder, Parameter[] effectParameters)
+        {
+            // Add logic to handle special cases (e.g., using a switch statement)
+            switch (placeholder.ToLowerInvariant())
+            {
+                case "itemtype":
+                    var output = "[UNDEFINED]";
+                    var canStealEquippablesParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("CanStealEquippables", StringComparison.InvariantCultureIgnoreCase));
+                    var canStealConsumablesParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("CanStealConsumables", StringComparison.InvariantCultureIgnoreCase));
+
+                    var canStealEquippables = canStealEquippablesParam != null && bool.Parse(canStealEquippablesParam.Value);
+                    var canStealConsumables = canStealConsumablesParam != null && bool.Parse(canStealConsumablesParam.Value);
+
+                    if (canStealEquippables && canStealConsumables)
+                    {
+                        output = "Equippables and Consumables";
+                    }
+                    if (canStealEquippables && !canStealConsumables)
+                    {
+                        output = "Equippables";
+                    }
+                    if (!canStealEquippables && canStealConsumables)
+                    {
+                        output = "Equippables";
+                    }
+
+                    return output;
+                case "stat":
+                    var statParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("CanStealEquippables", StringComparison.InvariantCultureIgnoreCase));
+                    if (statParam == null) return "[UNDEFINED]";
+                    var statValue = statParam.Value;
+                    var statValidValues = Parameters.Find(p => p.InternalName.Equals("Stat", StringComparison.InvariantCultureIgnoreCase)).ValidValues;
+                    var statValidValueForParam = statValidValues.Find(vv => vv.Key.Equals(statValue, StringComparison.InvariantCultureIgnoreCase));
+                    return statValidValueForParam != null ? statValidValueForParam.Value : "[UNDEFINED]";
+                case "wherefrom":
+                    var fromInventoryParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("FromInventory", StringComparison.InvariantCultureIgnoreCase));
+                    if (fromInventoryParam == null) return "[UNDEFINED]";
+                    var fromInventoryValue = fromInventoryParam.Value;
+                    if (!bool.TryParse(fromInventoryValue, out bool fromInventoryParsed))
+                        return "[UNDEFINED]";
+                    if (fromInventoryParsed)
+                        return "From Inventory";
+                    return "Out of Thin Air";
+                default:
+                    return "[UNDEFINED]";
+            }
+        }
     }
 
     public class EffectParameter
@@ -47,6 +127,9 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Character,
         Color,
         Text,
+        NPC,
+        Item,
+        Trap,
         AlteredStatus,
         Number,
         BooleanExpression,

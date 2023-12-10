@@ -7,6 +7,6 @@
         Neutral,
         Enemy,
         Room,
-        Floor
+        Tile
     }
 }

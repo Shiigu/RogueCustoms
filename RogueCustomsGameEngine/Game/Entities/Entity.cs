@@ -1,23 +1,28 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
     #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
-    public abstract class Entity
+    public abstract class Entity : ITargetable
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string ClassId { get; set; }
         public string Description { get; set; }
-        public Point? Position { get; set; }
+        public GamePoint? Position { get; set; }
         public Tile ContainingTile => Map.GetTileFromCoordinates(Position.X, Position.Y);
         public Room ContainingRoom => Map.GetRoomInCoordinates(Position.X, Position.Y);
 
+        public readonly ConsoleRepresentation BaseConsoleRepresentation;
         public readonly ConsoleRepresentation ConsoleRepresentation;
         public bool Visible { get; set; }
         public EntityExistenceStatus ExistenceStatus { get; set; }
@@ -44,6 +49,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ForegroundColor = entityClass.ConsoleRepresentation.ForegroundColor,
                 BackgroundColor = entityClass.ConsoleRepresentation.BackgroundColor,
             };
+            BaseConsoleRepresentation = ConsoleRepresentation.Clone();
             EntityType = entityClass.EntityType;
             Passable = entityClass.Passable;
             Visible = entityClass.StartsVisible;
@@ -75,6 +81,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
 
         public override string ToString() => $"Position: {Position}; Name: {Name}; Char: {ConsoleRepresentation.Character}";
+
+        public Entity Clone()
+        {
+            return JsonSerializer.Deserialize<Entity>(JsonSerializer.Serialize(this));
+        }
     }
 
     public enum EntityType

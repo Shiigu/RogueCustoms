@@ -3,9 +3,10 @@ using System.Drawing;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
-using Point = RogueCustomsGameEngine.Utils.Representation.Point;
+using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 using System;
 using System.Runtime.InteropServices.ObjectiveC;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -13,9 +14,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     [Serializable]
-    public class Tile : IEquatable<Tile?>
+    public sealed class Tile : ITargetable, IEquatable<Tile?>
     {
-        public Point Position { get; set; }
+        public GamePoint Position { get; set; }
 
         private TileType _type { get; set; } = TileType.Empty;
         public TileType Type
@@ -29,7 +30,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public bool IsConnectorTile { get; set; } = false;
         public bool IsWalkable => Type != TileType.Empty && Type != TileType.Wall;
-        public bool IsOccupied => Character != null && Character.ExistenceStatus == EntityExistenceStatus.Alive;
+        public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
 
         private ConsoleRepresentation _consoleRepresentation;
         public ConsoleRepresentation ConsoleRepresentation
@@ -53,18 +54,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     else if (Type == TileType.Wall)
                     {
-                        if (Position.Equals(Room.TopLeft))
-                            _consoleRepresentation = Map.TileSet.TopLeftWall;
-                        else if (Position.Equals(Room.TopRight))
-                            _consoleRepresentation = Map.TileSet.TopRightWall;
-                        else if (Position.Equals(Room.BottomLeft))
-                            _consoleRepresentation = Map.TileSet.BottomLeftWall;
-                        else if (Position.Equals(Room.BottomRight))
-                            _consoleRepresentation = Map.TileSet.BottomRightWall;
-                        else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
-                            _consoleRepresentation = Map.TileSet.VerticalWall;
-                        else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                        if (Room != null)
+                        {
+                            if (Position.Equals(Room.TopLeft))
+                                _consoleRepresentation = Map.TileSet.TopLeftWall;
+                            else if (Position.Equals(Room.TopRight))
+                                _consoleRepresentation = Map.TileSet.TopRightWall;
+                            else if (Position.Equals(Room.BottomLeft))
+                                _consoleRepresentation = Map.TileSet.BottomLeftWall;
+                            else if (Position.Equals(Room.BottomRight))
+                                _consoleRepresentation = Map.TileSet.BottomRightWall;
+                            else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
+                                _consoleRepresentation = Map.TileSet.VerticalWall;
+                            else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                                _consoleRepresentation = Map.TileSet.HorizontalWall;
+                            else // This should only trigger when it's a Wall that was created by a Character
+                                _consoleRepresentation = Map.TileSet.HorizontalWall;
+                        }
+                        else // This should only trigger when it's a Wall that was created by a Character on a Hallway
+                        {
                             _consoleRepresentation = Map.TileSet.HorizontalWall;
+                        }
                     }
                     else if (Type == TileType.Hallway)
                     {
@@ -189,7 +199,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
-        public Character Character => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public Character LivingCharacter => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
@@ -204,7 +215,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Equals(Tile? other)
         {
             return other is not null &&
-                   EqualityComparer<Point>.Default.Equals(Position, other.Position) &&
+                   EqualityComparer<GamePoint>.Default.Equals(Position, other.Position) &&
                    _type == other._type &&
                    Type == other.Type &&
                    IsConnectorTile == other.IsConnectorTile &&
@@ -216,7 +227,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                    Visible == other.Visible &&
                    EqualityComparer<Map>.Default.Equals(Map, other.Map) &&
                    EqualityComparer<Room>.Default.Equals(Room, other.Room) &&
-                   EqualityComparer<Character>.Default.Equals(Character, other.Character) &&
+                   EqualityComparer<Character>.Default.Equals(LivingCharacter, other.LivingCharacter) &&
                    EqualityComparer<Item>.Default.Equals(Trap, other.Trap);
         }
 

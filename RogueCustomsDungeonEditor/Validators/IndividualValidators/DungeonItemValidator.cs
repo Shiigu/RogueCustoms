@@ -79,17 +79,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddRange(ActionValidator.Validate(itemAsInstance.OnStepped, dungeonJson, sampleDungeon));
             }
 
+            if (itemJson.OnDeath != null)
+            {
+                messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
+            }
+
             if (itemJson.OnUse != null)
             {
                 messages.AddRange(ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
             }
-            else if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")
+            else if (itemJson.EntityType == "Consumable" && !itemJson.OnAttack.Any())
             {
-                messages.AddWarning("Equippable Item doesn't have any OnItemUseActions. If it's not set as a StartingWeapon or StartingArmor of a Character, the item will be unusable.");
-            }
-            else if (!itemJson.OnAttack.Any())
-            {
-                messages.AddWarning("Consumable Item doesn't have any OnItemUseActions or OnAttackActions. Item cannot do anything in this current state.");
+                messages.AddWarning("Item doesn't have any OnItemUseActions or OnAttackActions. Item lacks selectable Actions in this current state.");
             }
 
             if (!dungeonJson.FloorInfos.Exists(fi => fi.PossibleItems.Exists(pm => pm.ClassId.Equals(itemJson.Id))))

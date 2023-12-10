@@ -46,7 +46,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblDisplayName.Font = new Font("Segoe UI", 13F, FontStyle.Bold, GraphicsUnit.Point);
             lblDisplayName.Location = new Point(11, 7);
             lblDisplayName.Name = "lblDisplayName";
-            lblDisplayName.Size = new Size(314, 32);
+            lblDisplayName.Size = new Size(314, 26);
             lblDisplayName.TabIndex = 0;
             lblDisplayName.Text = "DisplayName:";
             // 
@@ -108,7 +108,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             lblDescription.Location = new Point(10, 43);
             lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(315, 33);
+            lblDescription.Size = new Size(321, 36);
             lblDescription.TabIndex = 7;
             lblDescription.Text = "Description of Action";
             // 

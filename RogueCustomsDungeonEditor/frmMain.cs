@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -41,6 +42,13 @@ namespace RogueCustomsDungeonEditor
             { "FullMap", "The whole map" },
             { "FullRoom", "The whole room" },
             { "FlatNumber", "A flat distance" }
+        };
+
+        private readonly Dictionary<string, string> NPCAITypeDisplayNames = new Dictionary<string, string> {
+            { "Default", "Default strategy" },
+            { "Random", "Heavily Randomized" },
+            { "CostEfficient", "Cost-efficiently" },
+            { "AllOut", "All-out" }
         };
 
         private DungeonInfo ActiveDungeon;
@@ -1014,7 +1022,6 @@ namespace RogueCustomsDungeonEditor
         private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
         {
             sae.Action = action;
-            sae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             sae.ClassId = classId;
             sae.Dungeon = ActiveDungeon;
             sae.EffectParamData = EffectParamData;
@@ -1023,7 +1030,6 @@ namespace RogueCustomsDungeonEditor
         private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
         {
             mae.Actions = actions;
-            mae.AlteredStatuses = ActiveDungeon.AlteredStatuses.Select(als => als.Id).ToList();
             mae.ClassId = classId;
             mae.Dungeon = ActiveDungeon;
             mae.EffectParamData = EffectParamData;
@@ -1754,6 +1760,7 @@ namespace RogueCustomsDungeonEditor
             nudMaxRoomConnections.Value = floorGroup.MaxConnectionsBetweenRooms;
             nudExtraRoomConnectionOdds.Value = floorGroup.OddsForExtraConnections;
             nudRoomFusionOdds.Value = floorGroup.RoomFusionOdds;
+            nudHungerLostPerTurn.Value = floorGroup.HungerDegeneration;
         }
 
         private bool ValidateFloorGroupDataForSave(out List<string> errorMessages)
@@ -1863,6 +1870,7 @@ namespace RogueCustomsDungeonEditor
                 floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
                 floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
                 floorGroup.OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null;
+                floorGroup.HungerDegeneration = nudHungerLostPerTurn.Value;
 
                 if (saveAsNew)
                 {
@@ -1985,6 +1993,11 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void nudHeight_ValueChanged(object sender, EventArgs e)
+        {
+            DirtyTab = true;
+        }
+
+        private void nudHungerLostPerTurn_ValueChanged(object sender, EventArgs e)
         {
             DirtyTab = true;
         }
@@ -2559,6 +2572,9 @@ namespace RogueCustomsDungeonEditor
             ssPlayer.BaseAccuracy = playerClass.BaseAccuracy;
             ssPlayer.BaseEvasion = playerClass.BaseEvasion;
             ssPlayer.BaseSightRange = playerClass.BaseSightRange;
+            ssPlayer.UsesHunger = playerClass.UsesHunger;
+            ssPlayer.BaseHunger = playerClass.BaseHunger;
+            ssPlayer.HungerHPDegeneration = playerClass.HungerHPDegeneration;
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
             ssPlayer.MaxLevel = playerClass.MaxLevel;
@@ -2631,6 +2647,10 @@ namespace RogueCustomsDungeonEditor
             playerClass.HPRegenerationIncreasePerLevel = ssPlayer.HPRegenerationPerLevelUp;
             playerClass.MPRegenerationIncreasePerLevel = ssPlayer.MPRegenerationPerLevelUp;
             playerClass.MaxLevel = ssPlayer.MaxLevel;
+
+            playerClass.UsesHunger = ssPlayer.UsesHunger;
+            playerClass.BaseHunger = ssPlayer.BaseHunger;
+            playerClass.HungerHPDegeneration = ssPlayer.HungerHPDegeneration;
 
             playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
             playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
@@ -2738,6 +2758,8 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
             if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
                 errorMessages.Add("This Player Class can gain experience, but cannot level up.");
+            if (ssPlayer.UsesHunger && ssPlayer.BaseHunger <= 0)
+                errorMessages.Add("This Player Class uses a Hunger System but has no Hunger.");
 
             return !errorMessages.Any();
         }
@@ -2878,6 +2900,9 @@ namespace RogueCustomsDungeonEditor
             ssNPC.BaseAccuracy = npc.BaseAccuracy;
             ssNPC.BaseEvasion = npc.BaseEvasion;
             ssNPC.BaseSightRange = npc.BaseSightRange;
+            ssNPC.UsesHunger = npc.UsesHunger;
+            ssNPC.BaseHunger = npc.BaseHunger;
+            ssNPC.HungerHPDegeneration = npc.HungerHPDegeneration;
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
             ssNPC.MaxLevel = npc.MaxLevel;
@@ -2908,7 +2933,18 @@ namespace RogueCustomsDungeonEditor
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
             SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
+            cmbNPCAIType.Items.Clear();
+            cmbNPCAIType.Text = "";
             nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
+            foreach (var aiType in NPCAITypeDisplayNames)
+            {
+                cmbNPCAIType.Items.Add(aiType.Value);
+                if (aiType.Key.Equals(npc.AIType))
+                {
+                    cmbNPCAIType.Text = aiType.Value;
+                    cmbNPCAIType_SelectedIndexChanged(null, EventArgs.Empty);
+                }
+            }
         }
 
         private bool SaveNPC(string id)
@@ -2946,6 +2982,7 @@ namespace RogueCustomsDungeonEditor
             npc.BaseSightRange = ssNPC.BaseSightRange;
             npc.CanGainExperience = ssNPC.CanGainExperience;
             npc.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
+            npc.MaxLevel = ssNPC.MaxLevel;
             npc.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
             npc.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
             npc.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;
@@ -2953,6 +2990,10 @@ namespace RogueCustomsDungeonEditor
             npc.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
             npc.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
             npc.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
+
+            npc.UsesHunger = ssNPC.UsesHunger;
+            npc.BaseHunger = ssNPC.BaseHunger;
+            npc.HungerHPDegeneration = ssNPC.HungerHPDegeneration;
 
             npc.StartingWeapon = cmbNPCStartingWeapon.Text;
             npc.StartingArmor = cmbNPCStartingArmor.Text;
@@ -2966,6 +3007,13 @@ namespace RogueCustomsDungeonEditor
             npc.OnAttacked = saeNPCOnAttacked.Action;
             npc.OnInteracted = maeNPCOnInteracted.Actions;
             npc.OnDeath = saeNPCOnDeath.Action;
+            foreach (var aiType in NPCAITypeDisplayNames)
+            {
+                if (aiType.Value.Equals(cmbNPCAIType.Text))
+                {
+                    npc.AIType = aiType.Key;
+                }
+            }
             npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Exists(n => n.Id.Equals(id)))
@@ -3059,6 +3107,10 @@ namespace RogueCustomsDungeonEditor
                 errorMessages.Add("This NPC can gain experience, but cannot level up.");
             if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
+            if (ssNPC.UsesHunger && ssNPC.BaseHunger <= 0)
+                errorMessages.Add("This NPC uses a Hunger System but has no Hunger.");
+            if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
+                errorMessages.Add("This NPC does not have a set AI strategy.");
 
             return !errorMessages.Any();
         }
@@ -3183,6 +3235,24 @@ namespace RogueCustomsDungeonEditor
         {
             DirtyTab = true;
         }
+
+        private void cmbNPCAIType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbNPCAIType.Text == NPCAITypeDisplayNames["Random"])
+            {
+                lblNPCAIOddsToTargetSelfA.Visible = true;
+                lblNPCAIOddsToTargetSelfB.Visible = true;
+                nudNPCOddsToTargetSelf.Visible = true;
+            }
+            else
+            {
+                lblNPCAIOddsToTargetSelfA.Visible = false;
+                lblNPCAIOddsToTargetSelfB.Visible = false;
+                nudNPCOddsToTargetSelf.Visible = false;
+                nudNPCOddsToTargetSelf.Value = 0;
+            }
+            DirtyTab = true;
+        }
         #endregion
 
         #region Item
@@ -3220,6 +3290,7 @@ namespace RogueCustomsDungeonEditor
             SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
             SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
             SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
+            SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
             SetSingleActionEditorParams(saeItemOnStepped, item.Id, item.OnStepped);
         }
@@ -3253,8 +3324,8 @@ namespace RogueCustomsDungeonEditor
             if (item.EntityType == "Weapon" || item.EntityType == "Armor")
             {
                 item.OnTurnStart = saeItemOnTurnStart.Action;
-                item.OnAttacked = saeItemOnTurnStart.Action;
-                item.OnUse = DungeonInfoHelpers.CreateEquipAction();
+                item.OnAttacked = saeItemOnAttacked.Action;
+                item.OnUse = null;
             }
             else if (item.EntityType == "Consumable")
             {
@@ -3263,6 +3334,7 @@ namespace RogueCustomsDungeonEditor
 
             item.OnAttack = maeItemOnAttack.Actions;
             item.OnStepped = saeItemOnStepped.Action;
+            item.OnDeath = saeItemOnDeath.Action;
 
             if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Exists(i => i.Id.Equals(id)))
             {
@@ -3406,30 +3478,38 @@ namespace RogueCustomsDungeonEditor
 
         private void ToggleItemTypeControlsVisibility()
         {
-            maeItemOnAttack.RequiresDescription = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor");
             if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
             {
+                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = true;
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "The Item's Owner can\ninteract with someone else\nwith the following:";
                 maeItemOnAttack.SourceDescription = "Whoever is equipping This";
+                saeItemOnDeath.Visible = true;
+                saeItemOnDeath.ActionDescription = "When someone equipping it dies...               ";
+                saeItemOnDeath.SourceDescription = "Whoever is equipping This";
                 saeItemOnAttacked.Visible = true;
             }
             else if (cmbItemType.Text == "Consumable")
             {
+                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = true;
                 saeItemOnTurnStart.Visible = false;
                 saeItemOnTurnStart.Action = null;
                 maeItemOnAttack.Visible = true;
                 maeItemOnAttack.ActionDescription = "Someone can use it to\ninteract with someone else\nwith the following:";
                 maeItemOnAttack.SourceDescription = "Whoever is about to use This";
+                saeItemOnDeath.Visible = true;
+                saeItemOnDeath.ActionDescription = "When someone carrying it dies...                ";
+                saeItemOnDeath.SourceDescription = "Whoever is has This in their Inventory";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
             }
             else
             {
+                saeItemOnStepped.Visible = false;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = false;
@@ -3438,6 +3518,8 @@ namespace RogueCustomsDungeonEditor
                 maeItemOnAttack.ActionDescription = "You shouldn't see this.";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
+                saeItemOnDeath.Visible = false;
+                saeItemOnDeath.Action = null;
                 saeItemOnStepped.Visible = false;
                 saeItemOnStepped.Action = null;
             }

@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -22,7 +23,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
             if (ExpandoObjectHelper.HasProperty(paramsObject, "Character"))
@@ -35,7 +36,18 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool StealItem(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ResetConsoleRepresentation(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        {
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            var baseConsoleRepresentation = Source.BaseConsoleRepresentation.Clone();
+            Source.ConsoleRepresentation.Character = baseConsoleRepresentation.Character;
+            Source.ConsoleRepresentation.ForegroundColor = baseConsoleRepresentation.ForegroundColor;
+            Source.ConsoleRepresentation.BackgroundColor = baseConsoleRepresentation.BackgroundColor;
+            _ = 0;
+            return true;
+        }
+
+        public static bool StealItem(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {
             _ = 0;
             dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
@@ -46,7 +58,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
-            if (s.Inventory.Count < s.InventorySize && t.Inventory.Count > 0 && Rng.NextInclusive(1, 100) <= accuracyCheck)
+            if (s.Inventory.Count < s.InventorySize && t.Inventory.Count > 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 var stealableItems = new List<Item>();
                 if (paramsObject.CanStealEquippables)

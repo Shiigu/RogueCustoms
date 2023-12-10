@@ -1,5 +1,5 @@
 {
-  "Version": "1.2",
+  "Version": "1.3",
   "Name": "DungeonName",
   "Author": "Shiigu",
   "WelcomeMessage": "WelcomeMessage",
@@ -40,6 +40,10 @@
         {
           "Key": "CharacterSwitchedPlacesWithPlayer",
           "Value": "{CharacterName} let {PlayerName} pass."
+        },
+        {
+          "Key": "CharacterGotAnItem",
+          "Value": "{CharacterName} got an {ItemName} from {SourceName}."
         },
         {
           "Key": "PlayerPutItemOnBag",
@@ -118,6 +122,10 @@
           "Value": "ENEMY"
         },
         {
+          "Key": "TargetTypeTile",
+          "Value": "TILE"
+        },
+        {
           "Key": "TargetDoesNotFulfillConditions",
           "Value": "TARGET DOES NOT FULFILL CONDITIONS"
         },
@@ -174,6 +182,26 @@
           "Value": "{InventorySize} items"
         },
         {
+          "Key": "TileTypeFloor",
+          "Value": "Floor"
+        },
+        {
+          "Key": "TileTypeWall",
+          "Value": "Wall"
+        },
+        {
+          "Key": "TileTypeHallway",
+          "Value": "Hallway"
+        },
+        {
+          "Key": "TileTypeStairs",
+          "Value": "Stairs"
+        },
+        {
+          "Key": "TileTypeEmpty",
+          "Value": "Empty"
+        },
+        {
           "Key": "CharacterLevelsUpMessage",
           "Value": "{CharacterName} has reached Level {Level}!"
         },
@@ -222,6 +250,10 @@
           "Value": "MP Regeneration"
         },
         {
+          "Key": "CharacterHungerStat",
+          "Value": "Hunger"
+        },
+        {
           "Key": "CharacterInventorySizeStat",
           "Value": "Inventory Size"
         },
@@ -254,6 +286,10 @@
           "Value": "{CharacterName} is now at maximum HP!"
         },
         {
+          "Key": "CharacterTakesDamageFromHunger",
+          "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+        },
+        {
           "Key": "CharacterLosesMP",
           "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
         },
@@ -264,6 +300,18 @@
         {
           "Key": "CharacterRecoversAllMP",
           "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterLosesHunger",
+          "Value": "{CharacterName} lost {LostHunger} {CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeHunger",
+          "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllHunger",
+          "Value": "{CharacterName} is now at maximum {CharacterHungerStat}!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -300,6 +348,22 @@
         {
           "Key": "CharacterStealsItem",
           "Value": "{SourceName} has stolen {ItemName} from {TargetName}!"
+        },
+        {
+          "Key": "CharacterConvertedTile",
+          "Value": "{CharacterName} has created a {TileType}!"
+        },
+        {
+          "Key": "CharacterCreatedATrap",
+          "Value": "{CharacterName} has deployed a {TrapName}!"
+        },
+        {
+          "Key": "CharacterCreatedAnNPC",
+          "Value": "{NPCName} has been summoned by {CharacterName}!"
+        },
+        {
+          "Key": "CharacterRevivedAnNPC",
+          "Value": "{NPCName} has been revived by {CharacterName}!"
         },
         {
           "Key": "StairsGotRevealed",
@@ -682,10 +746,6 @@
           "Value": "{source} looks at {target} and reads the {this}."
         },
         {
-          "Key": "ScrollOfDestructionAttackDescription",
-          "Value": "A single-use scroll that instantly kills the target."
-        },
-        {
           "Key": "MagicStaffName",
           "Value": "Magic Staff"
         },
@@ -896,6 +956,122 @@
         {
           "Key": "InvisibleDescription",
           "Value": "Can\u0027t be seen. Wears off prematurely if you attack or get attacked."
+        },
+        {
+          "Key": "DisarmedSpikeTrapName",
+          "Value": "Disarmed Spike Trap"
+        },
+        {
+          "Key": "DisarmedSpikeTrapDescription",
+          "Value": "A Disarmed Spike Trap.\n\nUse it on a tile to arm it. It will be initially visible to only you and your allies, but beware! It does not know of allegiances."
+        },
+        {
+          "Key": "ObjectUsedText",
+          "Value": "{source} uses the {this}."
+        },
+        {
+          "Key": "InstantWallName",
+          "Value": "Instant Wall"
+        },
+        {
+          "Key": "InstantWallDescription",
+          "Value": "If possible, it places a Wall on an empty Floor tile. It can\u0027t be removed!"
+        },
+        {
+          "Key": "AnkhOfResurrectionMessageBoxHeader",
+          "Value": "BUT WAIT!"
+        },
+        {
+          "Key": "AnkhOfResurrectionMessageBoxText",
+          "Value": "YOUR ANKH OF RESURRECTION\r\nBROUGHT YOU BACK TO LIFE!"
+        },
+        {
+          "Key": "AnkhOfResurrectionUseText",
+          "Value": "The {this} has brought {source} back to life!"
+        },
+        {
+          "Key": "AnkhOfResurrectionName",
+          "Value": "Ankh Of Resurrection"
+        },
+        {
+          "Key": "AnkhOfResurrectionDescription",
+          "Value": "A small, mystical artifact that brings the user back to life if they die. Consumed upon use.\r\n\r\n(Cannot be used manually)"
+        },
+        {
+          "Key": "ScrollOfReanimationName",
+          "Value": "Scroll of Reanimation"
+        },
+        {
+          "Key": "ScrollOfReanimationDescription",
+          "Value": "A single-use scroll that revives a fallen ally.\n\n(Must be used from the list of Actions)"
+        },
+        {
+          "Key": "ScrollOfReanimationAttackDescription",
+          "Value": "A single-use scroll that revives a fallen ally."
+        },
+        {
+          "Key": "ScrollOfReanimationAttackText",
+          "Value": "{source} reads the {this}."
+        },
+        {
+          "Key": "WandOfScalesName",
+          "Value": "Wand of Scales"
+        },
+        {
+          "Key": "WandOfScalesDescription",
+          "Value": "Wag this wand at a Tile to summon a friendly Lizard. It can\u0027t climb stairs, though.\n\n(Must be used from the list of Actions)"
+        },
+        {
+          "Key": "WandOfScalesAttackDescription",
+          "Value": "Wag this wand at a Tile to summon a friendly Lizard. It can\u0027t climb stairs, though."
+        },
+        {
+          "Key": "WandOfScalesAttackText",
+          "Value": "{source} wags the {this}."
+        },
+        {
+          "Key": "LizardName",
+          "Value": "Lizard"
+        },
+        {
+          "Key": "LizardDescription",
+          "Value": "A summonable, mighty, ADORABLE reptile that aids its summoner for no good reason, actually.\n\nIt can\u0027t climb stairs, however."
+        },
+        {
+          "Key": "ClawsName",
+          "Value": "Claws"
+        },
+        {
+          "Key": "ClawsDescription",
+          "Value": "Sharp claws made for climbing. And skewering.\n\nWeapon damage: 1d3"
+        },
+        {
+          "Key": "ClawsAttackText",
+          "Value": "{source} tries to slash {target}."
+        },
+        {
+          "Key": "UnarmoredName",
+          "Value": "Unarmored"
+        },
+        {
+          "Key": "UnarmoredDescription",
+          "Value": "You can\u0027t expect a lizard to wear armor...\n\nArmor Mitigation: 0"
+        },
+        {
+          "Key": "SummonedDeathText",
+          "Value": "{this} has poofed away."
+        },
+        {
+          "Key": "AppleName",
+          "Value": "Apple"
+        },
+        {
+          "Key": "AppleDescription",
+          "Value": "A hard red fruit that replenishes 50 Hunger when consumed."
+        },
+        {
+          "Key": "ObjectEatenText",
+          "Value": "{source} eats the {this}."
         }
       ]
     },
@@ -933,6 +1109,10 @@
         {
           "Key": "CharacterSwitchedPlacesWithPlayer",
           "Value": "{CharacterName} dej\u00F3 pasar a {PlayerName}."
+        },
+        {
+          "Key": "CharacterGotAnItem",
+          "Value": "{CharacterName} recibi\u00F3 {ItemName} por parte de {SourceName}."
         },
         {
           "Key": "PlayerPutItemOnBag",
@@ -1011,6 +1191,10 @@
           "Value": "ENEMIGO"
         },
         {
+          "Key": "TargetTypeTile",
+          "Value": "TILE"
+        },
+        {
           "Key": "TargetDoesNotFulfillConditions",
           "Value": "EL OBJETIVO NO CUMPLE LAS CONDICIONES"
         },
@@ -1067,6 +1251,26 @@
           "Value": "{InventorySize} objetos"
         },
         {
+          "Key": "TileTypeFloor",
+          "Value": "Floor"
+        },
+        {
+          "Key": "TileTypeWall",
+          "Value": "Wall"
+        },
+        {
+          "Key": "TileTypeHallway",
+          "Value": "Hallway"
+        },
+        {
+          "Key": "TileTypeStairs",
+          "Value": "Stairs"
+        },
+        {
+          "Key": "TileTypeEmpty",
+          "Value": "Empty"
+        },
+        {
           "Key": "CharacterLevelsUpMessage",
           "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"
         },
@@ -1115,6 +1319,10 @@
           "Value": "Regeneraci\u00F3n de PM"
         },
         {
+          "Key": "CharacterHungerStat",
+          "Value": "Hambre"
+        },
+        {
           "Key": "CharacterInventorySizeStat",
           "Value": "Capacidad de Inventario"
         },
@@ -1147,6 +1355,10 @@
           "Value": "\u00A1{CharacterName} ha recuperado todos los PS!"
         },
         {
+          "Key": "CharacterTakesDamageFromHunger",
+          "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+        },
+        {
           "Key": "CharacterLosesMP",
           "Value": "{CharacterName} perdi\u00F3 {BurnedMP} {CharacterMPStat}."
         },
@@ -1157,6 +1369,18 @@
         {
           "Key": "CharacterRecoversAllMP",
           "Value": "\u00A1{CharacterName} ha recuperado todo su {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterLosesHunger",
+          "Value": "{CharacterName} perdi\u00F3 {LostHunger} de{CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeHunger",
+          "Value": "\u00A1{CharacterName} recuper\u00F3 {ReplenishAmount} {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllHunger",
+          "Value": "\u00A1{CharacterName} ahora tiene {CharacterHungerStat} al m\u00E1ximo!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -1193,6 +1417,22 @@
         {
           "Key": "CharacterStealsItem",
           "Value": "\u00A1{SourceName} le ha quitado {ItemName} a {TargetName}!"
+        },
+        {
+          "Key": "CharacterConvertedTile",
+          "Value": "{CharacterName} has created a {TileType}!"
+        },
+        {
+          "Key": "CharacterCreatedATrap",
+          "Value": "{CharacterName} has deployed a {TrapName}!"
+        },
+        {
+          "Key": "CharacterCreatedAnNPC",
+          "Value": "{NPCName} ha sido la invocaci\u00F3n de {CharacterName}."
+        },
+        {
+          "Key": "CharacterRevivedAnNPC",
+          "Value": "{NPCName} ha vuelto a la vida gracias a {CharacterName}."
         },
         {
           "Key": "StairsGotRevealed",
@@ -1772,7 +2012,7 @@
         },
         {
           "Key": "InvisibilityPotionName",
-          "Value": "Poci\u00F3n de Invisibilidad."
+          "Value": "Poci\u00F3n de Invisibilidad"
         },
         {
           "Key": "InvisibilityPotionDescription",
@@ -1785,6 +2025,122 @@
         {
           "Key": "InvisibleDescription",
           "Value": "No te pueden ver. Se acaba antes si atacas o te atacan."
+        },
+        {
+          "Key": "DisarmedSpikeTrapName",
+          "Value": "Trampa de P\u00FAas desarmada"
+        },
+        {
+          "Key": "DisarmedSpikeTrapDescription",
+          "Value": "Una Trampa de P\u00FAas desarmada.\r\r\n\r\r\n\u00DAsala en una casilla para armarla. Inicialmente solo la ver\u00E1n t\u00FA y tus aliados, pero cuidado... la trampa no sabe de alianzas."
+        },
+        {
+          "Key": "ObjectUsedText",
+          "Value": "{source} us\u00F3 {this}."
+        },
+        {
+          "Key": "InstantWallName",
+          "Value": "Muro instant\u00E1neo"
+        },
+        {
+          "Key": "InstantWallDescription",
+          "Value": "De ser posible, planta un Muro en un Piso vac\u00EDo. No se puede remover."
+        },
+        {
+          "Key": "AnkhOfResurrectionMessageBoxHeader",
+          "Value": "\u00A1PERO ESPERA!"
+        },
+        {
+          "Key": "AnkhOfResurrectionMessageBoxText",
+          "Value": "\u00A1TU ANKH DE LA RESUCITACI\u00D3N\r\r\nTE HA DEVUELTO A LA VIDA!"
+        },
+        {
+          "Key": "AnkhOfResurrectionUseText",
+          "Value": "El {this} ha devuelto a {source} a la vida."
+        },
+        {
+          "Key": "AnkhOfResurrectionName",
+          "Value": "Ankh de la Resucitaci\u00F3n"
+        },
+        {
+          "Key": "AnkhOfResurrectionDescription",
+          "Value": "Un peque\u00F1o y m\u00EDstico artilugio que devuelve a su usuario a la vida al morir. Se consume al usar.\r\n\r\n(No se puede usar manualmente)"
+        },
+        {
+          "Key": "ScrollOfReanimationName",
+          "Value": "Pergamino de Reanimaci\u00F3n"
+        },
+        {
+          "Key": "ScrollOfReanimationDescription",
+          "Value": "Un pergamino de uso \u00FAnico que revive a un aliado ca\u00EDdo.\r\n\r\n(Debe usarse desde la lista de Acciones)"
+        },
+        {
+          "Key": "ScrollOfReanimationAttackDescription",
+          "Value": "Un pergamino de uso \u00FAnico que revive a un aliado ca\u00EDdo."
+        },
+        {
+          "Key": "ScrollOfReanimationAttackText",
+          "Value": "{source} lee el {this}."
+        },
+        {
+          "Key": "WandOfScalesName",
+          "Value": "Vara de Escamas"
+        },
+        {
+          "Key": "WandOfScalesDescription",
+          "Value": "Ondea esta varita en una casilla para invocar un Lagarto amistoso. Lamentablemente no sabe usar las escaleras.\r\r\n\r\r\n(Debe usarse desde la lista de Acciones)"
+        },
+        {
+          "Key": "WandOfScalesAttackDescription",
+          "Value": "Ondea esta varita en una casilla para invocar un Lagarto amistoso. Lamentablemente no sabe usar las escaleras."
+        },
+        {
+          "Key": "WandOfScalesAttackText",
+          "Value": "{source} ondea la {this}."
+        },
+        {
+          "Key": "LizardName",
+          "Value": "Lagarto"
+        },
+        {
+          "Key": "LizardDescription",
+          "Value": "Un poderoso, invocable y ADORABLE reptile que ayuda a su invocador... sin motivo alguno, la verdad.\r\n\r\nY no sabe subir las escaleras."
+        },
+        {
+          "Key": "ClawsName",
+          "Value": "Garras"
+        },
+        {
+          "Key": "ClawsDescription",
+          "Value": "Garras filosas hechas para trepar. Y desmembrar.\r\n\r\nDa\u00F1o de arma: 1d3"
+        },
+        {
+          "Key": "ClawsAttackText",
+          "Value": "{source} intenta ara\u00F1ar a {target}."
+        },
+        {
+          "Key": "UnarmoredName",
+          "Value": "Sin armadura"
+        },
+        {
+          "Key": "UnarmoredDescription",
+          "Value": "No puedes esperar que un Lagarto lleve armadura...\r\n\r\nMitigaci\u00F3n: 0"
+        },
+        {
+          "Key": "SummonedDeathText",
+          "Value": "{this} se desvaneci\u00F3..."
+        },
+        {
+          "Key": "AppleName",
+          "Value": "Manzana"
+        },
+        {
+          "Key": "AppleDescription",
+          "Value": "Una fruta dura y roja que recupera 50 de Hambre al consumirse."
+        },
+        {
+          "Key": "ObjectEatenText",
+          "Value": "{source} se come {this}."
         }
       ]
     }
@@ -2500,7 +2856,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 15
+          "ChanceToPick": 8
         },
         {
           "ClassId": "LeatherArmor",
@@ -2510,7 +2866,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 20
+          "ChanceToPick": 8
         },
         {
           "ClassId": "Antidote",
@@ -2519,8 +2875,8 @@
           "OverallMaxForKindInFloor": 0,
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
-          "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 10
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 9
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2570,7 +2926,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 5
+          "ChanceToPick": 2
         },
         {
           "ClassId": "MagicPotion",
@@ -2591,10 +2947,60 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "DisarmedSpikeTrap",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "InstantWall",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "ScrollOfReanimation",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 2
+        },
+        {
+          "ClassId": "WandOfScales",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 2,
+          "ChanceToPick": 10
         }
       ],
-      "MinItemsInFloor": 3,
-      "MaxItemsInFloor": 8,
+      "MinItemsInFloor": 4,
+      "MaxItemsInFloor": 10,
       "PossibleTraps": [
         {
           "ClassId": "WonderTile",
@@ -2642,6 +3048,7 @@
       "MaxConnectionsBetweenRooms": 1,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 25,
+      "HungerDegeneration": 0.0750,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "Standard",
@@ -2742,7 +3149,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 40
+          "ChanceToPick": 30
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2762,7 +3169,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 20
+          "ChanceToPick": 15
         },
         {
           "ClassId": "MagicStaff",
@@ -2772,7 +3179,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 9
         },
         {
           "ClassId": "MagicPotion",
@@ -2793,16 +3200,57 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "DisarmedSpikeTrap",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "InstantWall",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 3
+        },
+        {
+          "ClassId": "WandOfScales",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
-      "MinItemsInFloor": 1,
-      "MaxItemsInFloor": 4,
+      "MinItemsInFloor": 2,
+      "MaxItemsInFloor": 7,
       "PossibleTraps": [],
       "MinTrapsInFloor": 0,
       "MaxTrapsInFloor": 0,
       "MaxConnectionsBetweenRooms": 0,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 0,
+      "HungerDegeneration": 0,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "OneBigRoom",
@@ -3034,7 +3482,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 5
         },
         {
           "ClassId": "MagicStaff",
@@ -3044,7 +3492,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 5
         },
         {
           "ClassId": "MagicPotion",
@@ -3058,6 +3506,26 @@
         },
         {
           "ClassId": "InvisibilityPotion",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "WandOfScales",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
           "MinLevel": 0,
           "MaxLevel": 0,
           "OverallMaxForKindInFloor": 0,
@@ -3116,6 +3584,7 @@
       "MaxConnectionsBetweenRooms": 1,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 25,
+      "HungerDegeneration": 0.1,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "Standard",
@@ -3180,7 +3649,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 40
+          "ChanceToPick": 35
         },
         {
           "ClassId": "PotionOfStrength",
@@ -3190,7 +3659,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 40
+          "ChanceToPick": 35
         },
         {
           "ClassId": "MagicPotion",
@@ -3201,10 +3670,30 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
           "ChanceToPick": 20
+        },
+        {
+          "ClassId": "WandOfScales",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 0,
-      "MaxItemsInFloor": 3,
+      "MaxItemsInFloor": 4,
       "PossibleTraps": [
         {
           "ClassId": "SpikeTrap",
@@ -3232,6 +3721,7 @@
       "MaxConnectionsBetweenRooms": 0,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 0,
+      "HungerDegeneration": 0.2500,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "OneBigRoom",
@@ -3353,6 +3843,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": true,
+      "UsesHunger": false,
       "BaseHP": 18,
       "BaseMP": 10,
       "BaseAttack": 4,
@@ -3363,11 +3854,16 @@
       "BaseHPRegeneration": 0.125,
       "BaseMPRegeneration": 0.250,
       "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 6,
-      "StartingWeapon": "Pistol",
-      "StartingArmor": "LeatherArmor",
+      "StartingWeapon": "BareFists",
+      "StartingArmor": "ClothArmor",
       "StartingInventory": [
-        "Antidote"
+        "Antidote",
+        "AnkhOfResurrection",
+        "Pistol",
+        "LeatherArmor"
       ],
       "MaxLevel": 10,
       "CanGainExperience": true,
@@ -3460,6 +3956,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": true,
+      "UsesHunger": true,
       "BaseHP": 12,
       "BaseMP": 6,
       "BaseAttack": 2,
@@ -3470,10 +3967,14 @@
       "BaseHPRegeneration": 0.075,
       "BaseMPRegeneration": 0.1250,
       "BaseSightRange": "FullRoom",
+      "BaseHunger": 100,
+      "HungerHPDegeneration": 1.0000,
       "InventorySize": 4,
-      "StartingWeapon": "Sword",
+      "StartingWeapon": "BareFists",
       "StartingArmor": "ClothArmor",
-      "StartingInventory": [],
+      "StartingInventory": [
+        "Sword"
+      ],
       "MaxLevel": 10,
       "CanGainExperience": true,
       "ExperiencePayoutFormula": "0",
@@ -3565,6 +4066,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": true,
       "BaseHP": 8,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -3575,6 +4077,8 @@
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "6",
+      "BaseHunger": 75,
+      "HungerHPDegeneration": 3.0000,
       "InventorySize": 2,
       "StartingWeapon": "BareFists",
       "StartingArmor": "ClothArmor",
@@ -3668,12 +4172,14 @@
   "NPCs": [
     {
       "KnowsAllCharacterPositions": true,
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -3684,7 +4190,9 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
-      "InventorySize": 0,
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 1,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "StartingInventory": [],
@@ -3819,12 +4327,14 @@
     },
     {
       "KnowsAllCharacterPositions": true,
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [],
       "Faction": "RangedEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -3835,7 +4345,9 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
-      "InventorySize": 0,
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 1,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
       "StartingInventory": [],
@@ -3941,6 +4453,7 @@
     },
     {
       "KnowsAllCharacterPositions": false,
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 50,
       "OnSpawn": {
         "Name": "TurnStart",
@@ -3977,6 +4490,7 @@
       "CanBePickedUp": false,
       "StartsVisible": false,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 0,
@@ -3987,7 +4501,9 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
-      "InventorySize": 1,
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 2,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "StartingInventory": [],
@@ -4265,6 +4781,7 @@
     },
     {
       "KnowsAllCharacterPositions": true,
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [
         {
@@ -4321,6 +4838,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -4331,7 +4849,9 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
-      "InventorySize": 0,
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 1,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
       "StartingInventory": [],
@@ -4369,6 +4889,50 @@
               {
                 "ParamName": "BypassesVisibilityCheck",
                 "Value": "False"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "GivePotion",
+          "Description": "",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 1,
+          "TargetTypes": [
+            "Ally"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "GiveItem",
+            "Params": [
+              {
+                "ParamName": "Source",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Id",
+                "Value": "HealingPotion"
+              },
+              {
+                "ParamName": "FromInventory",
+                "Value": "False"
+              },
+              {
+                "ParamName": "Accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
               }
             ]
           }
@@ -4447,12 +5011,14 @@
     },
     {
       "KnowsAllCharacterPositions": false,
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 25,
       "BaseMP": 0,
       "BaseAttack": 2,
@@ -4463,7 +5029,9 @@
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
-      "InventorySize": 0,
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 1,
       "StartingWeapon": "Pistol",
       "StartingArmor": "LeatherArmor",
       "StartingInventory": [],
@@ -4599,6 +5167,102 @@
         "ForegroundColor": {
           "R": 255,
           "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    },
+    {
+      "KnowsAllCharacterPositions": true,
+      "AIType": "Random",
+      "AIOddsToUseActionsOnSelf": 0,
+      "OnInteracted": [],
+      "Faction": "AlliedNPCs",
+      "CanBePickedUp": false,
+      "StartsVisible": true,
+      "UsesMP": false,
+      "UsesHunger": false,
+      "BaseHP": 6,
+      "BaseMP": 0,
+      "BaseAttack": 2,
+      "BaseDefense": 0,
+      "BaseMovement": 1,
+      "BaseAccuracy": 100,
+      "BaseEvasion": -10,
+      "BaseHPRegeneration": 0,
+      "BaseMPRegeneration": 0,
+      "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
+      "InventorySize": 0,
+      "StartingWeapon": "Claws",
+      "StartingArmor": "Unarmored",
+      "StartingInventory": [],
+      "MaxLevel": 1,
+      "CanGainExperience": false,
+      "ExperiencePayoutFormula": "1 * Level",
+      "ExperienceToLevelUpFormula": "500",
+      "MaxHPIncreasePerLevel": 0,
+      "MaxMPIncreasePerLevel": 0,
+      "AttackIncreasePerLevel": 0,
+      "DefenseIncreasePerLevel": 0,
+      "MovementIncreasePerLevel": 0,
+      "HPRegenerationIncreasePerLevel": 0,
+      "MPRegenerationIncreasePerLevel": 0,
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "Death",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "SummonedDeathText"
+            },
+            {
+              "ParamName": "color",
+              "Value": "0,128,255,255"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              {
+                "ParamName": "character",
+                "Value": "\u00B1"
+              }
+            ]
+          }
+        }
+      },
+      "Id": "Lizard",
+      "Name": "LizardName",
+      "Description": "LizardDescription",
+      "ConsoleRepresentation": {
+        "Character": "l",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 128,
           "B": 0,
           "A": 255
         }
@@ -5339,34 +6003,6 @@
           ]
         }
       },
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
-        }
-      },
       "Id": "Sword",
       "Name": "SwordName",
       "Description": "SwordDescription",
@@ -5555,34 +6191,6 @@
           ]
         }
       },
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
-        }
-      },
       "Id": "Pistol",
       "Name": "PistolName",
       "Description": "PistolDescription",
@@ -5632,34 +6240,6 @@
           ]
         }
       },
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
-        }
-      },
       "Id": "LeatherArmor",
       "Name": "LeatherName",
       "Description": "LeatherDescription",
@@ -5707,34 +6287,6 @@
               "Value": "False"
             }
           ]
-        }
-      },
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
         }
       },
       "Id": "PlateArmor",
@@ -5999,34 +6551,6 @@
           }
         }
       ],
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
-        }
-      },
       "Id": "Javelin",
       "Name": "JavelinName",
       "Description": "JavelinDescription",
@@ -6453,34 +6977,6 @@
               "Value": "False"
             }
           ]
-        }
-      },
-      "OnUse": {
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "TargetTypes": [],
-        "MPCost": 0,
-        "FinishesTurnWhenUsed": true,
-        "StartingCooldown": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            {
-              "ParamName": "text",
-              "Value": "ObjectEquippedText"
-            },
-            {
-              "ParamName": "BypassesVisibilityCheck",
-              "Value": "False"
-            }
-          ],
-          "Then": {
-            "EffectName": "Equip",
-            "Params": []
-          }
         }
       },
       "Id": "MagicStaff",
@@ -6928,6 +7424,1170 @@
       "Description": "InvisibilityPotionDescription",
       "ConsoleRepresentation": {
         "Character": "I",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "DisarmedSpikeTrapName",
+          "Description": "DisarmedSpikeTrapDescription",
+          "MinimumRange": 0,
+          "MaximumRange": 0,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "ObjectUsedText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "PlaceTrap",
+              "Params": [
+                {
+                  "ParamName": "Id",
+                  "Value": "SpikeTrap"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "DisarmedSpikeTrap",
+      "Name": "DisarmedSpikeTrapName",
+      "Description": "DisarmedSpikeTrapDescription",
+      "ConsoleRepresentation": {
+        "Character": "v",
+        "BackgroundColor": {
+          "R": 255,
+          "G": 255,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "InstantWallName",
+          "Description": "InstantWallDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "ObjectUsedText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "TransformTile",
+              "Params": [
+                {
+                  "ParamName": "TileType",
+                  "Value": "Wall"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "InstantWall",
+      "Name": "InstantWallName",
+      "Description": "InstantWallDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u2588",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [],
+      "OnDeath": {
+        "Name": "Death",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": false,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "ResetConsoleRepresentation",
+          "Params": [],
+          "Then": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "AnkhOfResurrectionUseText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "0,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "HealDamage",
+              "Params": [
+                {
+                  "ParamName": "Source",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "Target",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "Power",
+                  "Value": "{source.MaxHP} / 2"
+                }
+              ],
+              "Then": {
+                "EffectName": "CleanseAllAlteredStatuses",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "source"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "CleanseStatAlterations",
+                  "Params": [
+                    {
+                      "ParamName": "Accuracy",
+                      "Value": "100"
+                    },
+                    {
+                      "ParamName": "Target",
+                      "Value": "source"
+                    },
+                    {
+                      "ParamName": "BypassesAccuracyCheck",
+                      "Value": "True"
+                    }
+                  ],
+                  "Then": {
+                    "EffectName": "Remove",
+                    "Params": [
+                      {
+                        "ParamName": "Target",
+                        "Value": "this"
+                      },
+                      {
+                        "ParamName": "Accuracy",
+                        "Value": "100"
+                      },
+                      {
+                        "ParamName": "BypassesAccuracyCheck",
+                        "Value": "True"
+                      }
+                    ],
+                    "Then": {
+                      "EffectName": "PrintText",
+                      "Params": [
+                        {
+                          "ParamName": "Text",
+                          "Value": "ObjectDisappearedText"
+                        },
+                        {
+                          "ParamName": "Color",
+                          "Value": "255,255,255,255"
+                        },
+                        {
+                          "ParamName": "BypassesVisibilityCheck",
+                          "Value": "False"
+                        }
+                      ],
+                      "Then": {
+                        "EffectName": "CheckCondition",
+                        "Params": [
+                          {
+                            "ParamName": "Condition",
+                            "Value": "{source.ClassId} == \u0022EasyPlayer\u0022 || {source.ClassId} == \u0022NormalPlayer\u0022 || {source.ClassId} == \u0022HardPlayer\u0022"
+                          }
+                        ],
+                        "OnSuccess": {
+                          "EffectName": "MessageBox",
+                          "Params": [
+                            {
+                              "ParamName": "Title",
+                              "Value": "AnkhOfResurrectionMessageBoxHeader"
+                            },
+                            {
+                              "ParamName": "Text",
+                              "Value": "AnkhOfResurrectionMessageBoxText"
+                            },
+                            {
+                              "ParamName": "Color",
+                              "Value": "0,255,255,255"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "AnkhOfResurrection",
+      "Name": "AnkhOfResurrectionName",
+      "Description": "AnkhOfResurrectionDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u002B",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": false,
+      "StartsVisible": true,
+      "Power": "1d3",
+      "EntityType": "Weapon",
+      "OnAttack": [
+        {
+          "Name": "MeleeWeaponAttackName",
+          "Description": "BareFistsAttackDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Enemy"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "ClawsAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              }
+            ],
+            "Then": {
+              "EffectName": "DealDamage",
+              "Params": [
+                {
+                  "ParamName": "accuracy",
+                  "Value": "95"
+                },
+                {
+                  "ParamName": "attacker",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "attack",
+                  "Value": "{source.Damage}"
+                },
+                {
+                  "ParamName": "defense",
+                  "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "False"
+                }
+              ],
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "Id": "Claws",
+      "Name": "ClawsName",
+      "Description": "ClawsDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u25B2",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": false,
+      "StartsVisible": false,
+      "Power": "0",
+      "EntityType": "Armor",
+      "OnAttack": [],
+      "Id": "Unarmored",
+      "Name": "UnarmoredName",
+      "Description": "UnarmoredDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u25AC",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "ScrollOfReanimationName",
+          "Description": "ScrollOfReanimationAttackDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "ScrollOfReanimationAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              }
+            ],
+            "Then": {
+              "EffectName": "ReviveNPC",
+              "Params": [
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "Id": "ScrollOfReanimation",
+      "Name": "ScrollOfReanimationName",
+      "Description": "ScrollOfReanimationDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u2261",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "0",
+      "EntityType": "Consumable",
+      "OnAttack": [
+        {
+          "Name": "WandOfScalesName",
+          "Description": "WandOfScalesAttackDescription",
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "Tile"
+          ],
+          "UseCondition": "",
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "Text",
+                "Value": "WandOfScalesAttackText"
+              },
+              {
+                "ParamName": "Color",
+                "Value": "255,255,255,255"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "False"
+              }
+            ],
+            "Then": {
+              "EffectName": "SpawnNPC",
+              "Params": [
+                {
+                  "ParamName": "Id",
+                  "Value": "Lizard"
+                },
+                {
+                  "ParamName": "Level",
+                  "Value": "1"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "Remove",
+                "Params": [
+                  {
+                    "ParamName": "Target",
+                    "Value": "this"
+                  },
+                  {
+                    "ParamName": "Accuracy",
+                    "Value": "100"
+                  },
+                  {
+                    "ParamName": "BypassesAccuracyCheck",
+                    "Value": "True"
+                  }
+                ],
+                "Then": {
+                  "EffectName": "PrintText",
+                  "Params": [
+                    {
+                      "ParamName": "Text",
+                      "Value": "ObjectDisappearedText"
+                    },
+                    {
+                      "ParamName": "Color",
+                      "Value": "255,255,255,255"
+                    },
+                    {
+                      "ParamName": "BypassesVisibilityCheck",
+                      "Value": "False"
+                    }
+                  ]
+                }
+              },
+              "OnFailure": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "FailedAttackText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "ItemUse",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "DoesNotHaveStatus(target,Invisible)",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectDrunkText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ],
+          "Then": {
+            "EffectName": "ApplyAlteredStatus",
+            "Params": [
+              {
+                "ParamName": "id",
+                "Value": "Invisible"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "power",
+                "Value": "0"
+              },
+              {
+                "ParamName": "turnlength",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "True"
+              }
+            ],
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "this"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "OnSuccess": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "text",
+                    "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "text",
+                  "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Id": "WandOfScales",
+      "Name": "WandOfScalesName",
+      "Description": "WandOfScalesDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u250C",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "50",
+      "EntityType": "Consumable",
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "ItemUse",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "{target.Hunger} \u003C {target.MaxHunger}",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEatenText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            },
+            {
+              "ParamName": "Color",
+              "Value": "255,255,255,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplenishHunger",
+            "Params": [
+              {
+                "ParamName": "Source",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Power",
+                "Value": "{source.Power}"
+              }
+            ],
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                {
+                  "ParamName": "Target",
+                  "Value": "this"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "Then": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "Text",
+                  "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "Color",
+                  "Value": "255,255,255,255"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Id": "Apple",
+      "Name": "AppleName",
+      "Description": "AppleDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u03B4",
         "BackgroundColor": {
           "R": 0,
           "G": 0,

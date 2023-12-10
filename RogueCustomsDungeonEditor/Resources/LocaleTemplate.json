@@ -34,6 +34,10 @@
       "Value": "{CharacterName} let {PlayerName} pass."
     },
     {
+      "Key": "CharacterGotAnItem",
+      "Value": "{CharacterName} got an {ItemName} from {SourceName}."
+    },
+    {
       "Key": "PlayerPutItemOnBag",
       "Value": "{CharacterName} put {ItemName} on the bag."
     },
@@ -110,6 +114,10 @@
       "Value": "ENEMY"
     },
     {
+      "Key": "TargetTypeTile",
+      "Value": "TILE"
+    },
+    {
       "Key": "RequiresATarget",
       "Value": "REQUIRES A TARGET"
     },
@@ -166,6 +174,26 @@
       "Value": "{InventorySize} items"
     },
     {
+      "Key": "TileTypeFloor",
+      "Value": "Floor"
+    },
+    {
+      "Key": "TileTypeWall",
+      "Value": "Wall"
+    },
+    {
+      "Key": "TileTypeHallway",
+      "Value": "Hallway"
+    },
+    {
+      "Key": "TileTypeStairs",
+      "Value": "Stairs"
+    },
+    {
+      "Key": "TileTypeEmpty",
+      "Value": "Empty"
+    },
+    {
       "Key": "CharacterLevelsUpMessage",
       "Value": "{CharacterName} has reached Level {Level}!"
     },
@@ -216,7 +244,7 @@
     {
       "Key": "CharacterInventorySizeStat",
       "Value": "Inventory Size"
-    },    
+    },
     {
       "Key": "CharacterEvasionStat",
       "Value": "Evasion"
@@ -224,6 +252,10 @@
     {
       "Key": "CharacterAccuracyStat",
       "Value": "Accuracy"
+    },
+    {
+      "Key": "CharacterHungerStat",
+      "Value": "Hunger"
     },
     {
       "Key": "CharacterDamageStat",
@@ -246,6 +278,10 @@
       "Value": "{CharacterName} is now at maximum {CharacterHPStat}!"
     },
     {
+      "Key": "CharacterTakesDamageFromHunger",
+      "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+    },
+    {
       "Key": "CharacterLosesMP",
       "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
     },
@@ -256,6 +292,18 @@
     {
       "Key": "CharacterRecoversAllMP",
       "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
+    },
+    {
+      "Key": "CharacterLosesHunger",
+      "Value": "{CharacterName} lost {LostHunger} {CharacterHungerStat}."
+    },
+    {
+      "Key": "CharacterRecoversSomeHunger",
+      "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterHungerStat}!"
+    },
+    {
+      "Key": "CharacterRecoversAllHunger",
+      "Value": "{CharacterName} is now at maximum {CharacterHungerStat}!"
     },
     {
       "Key": "CharacterGainsExperience",
@@ -292,6 +340,22 @@
     {
       "Key": "CharacterStealsItem",
       "Value": "{SourceName} has stolen {ItemName} from {TargetName}!"
+    },
+    {
+      "Key": "CharacterConvertedTile",
+      "Value": "{CharacterName} has created a {TileType}!"
+    },
+    {
+      "Key": "CharacterCreatedATrap",
+      "Value": "{CharacterName} has deployed a {TrapName}!"
+    },
+    {
+      "Key": "CharacterCreatedAnNPC",
+      "Value": "{NPCName} has been summoned by {CharacterName}!"
+    },
+    {
+      "Key": "CharacterRevivedAnNPC",
+      "Value": "{NPCName} has been revived by {CharacterName}!"
     },
     {
       "Key": "StairsGotRevealed",

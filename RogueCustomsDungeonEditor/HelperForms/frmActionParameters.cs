@@ -1,9 +1,12 @@
 ﻿using MathNet.Numerics;
+
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +22,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Control = System.Windows.Forms.Control;
 using Label = System.Windows.Forms.Label;
 using Parameter = RogueCustomsGameEngine.Utils.JsonImports.Parameter;
@@ -27,20 +31,23 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
-    #pragma warning disable IDE1006 // Estilos de nombres
-    #pragma warning disable RCS1077 // Optimize LINQ method call.
-    #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
-    #pragma warning disable S2259 // Null pointers should not be dereferenced
-    #pragma warning disable S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
-    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning disable CS8601 // Posible asignación de referencia nula
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    #pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
+#pragma warning disable IDE1006 // Estilos de nombres
+#pragma warning disable RCS1077 // Optimize LINQ method call.
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable S2259 // Null pointers should not be dereferenced
+#pragma warning disable S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
     public partial class frmActionParameters : Form
     {
         public EffectInfo EffectToSave { get; private set; }
         public bool Saved { get; private set; }
+        public List<string> ValidNPCs { get; private set; }
+        public List<string> ValidItems { get; private set; }
+        public List<string> ValidTraps { get; private set; }
         public List<string> ValidAlteredStatuses { get; private set; }
         public EffectTypeData EffectTypeData { get; private set; }
 
@@ -54,7 +61,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ParameterType.Number
         };
 
-        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validAlteredStatuses, bool isActionEdit)
+        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validNPCs, List<string> validItems, List<string> validTraps, List<string> validAlteredStatuses, bool isActionEdit)
         {
             InitializeComponent();
             ActiveDungeon = activeDungeon;
@@ -92,13 +99,21 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
             EffectTypeData = paramsData;
+            ValidNPCs = validNPCs;
+            ValidItems = validItems;
+            ValidTraps = validTraps;
             ValidAlteredStatuses = validAlteredStatuses;
-            lblDisplayName.Text = $"{paramsData.DisplayName}:";
+
+            var baseDisplayWidth = lblDisplayName.Width;
+            var baseDescriptionWidth = lblDescription.Width;
+            var baseDescriptionHeight = lblDescription.Height;
+
+            lblDisplayName.Text = $"{paramsData.ComboBoxDisplayName}:";
             lblDescription.Text = paramsData.Description;
 
-            if (lblDisplayName.PreferredWidth > lblDisplayName.Width)
+            if (lblDisplayName.PreferredWidth > baseDisplayWidth)
             {
-                var widthChange = lblDisplayName.Width - lblDisplayName.PreferredWidth;
+                var widthChange = baseDisplayWidth - lblDisplayName.PreferredWidth;
                 lblDisplayName.Width = lblDisplayName.PreferredWidth;
                 lblDescription.Width -= widthChange;
                 lblRequired.Width -= widthChange;
@@ -108,6 +123,32 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 btnCancel.Location = new Point(btnCancel.Location.X - (widthChange / 2), btnCancel.Location.Y);
                 btnCancel.Width -= widthChange / 2;
                 this.Width -= widthChange;
+            }
+
+            if (lblDescription.PreferredWidth > baseDescriptionWidth)
+            {
+                var widthChange = baseDescriptionWidth - lblDescription.PreferredWidth;
+                lblDisplayName.Width -= widthChange;
+                lblDescription.Width = lblDescription.PreferredWidth;
+                lblRequired.Width -= widthChange;
+                tlpParameters.Width -= widthChange;
+                llblWikiAction.Width -= widthChange;
+                btnSave.Width -= widthChange / 2;
+                btnCancel.Location = new Point(btnCancel.Location.X - (widthChange / 2), btnCancel.Location.Y);
+                btnCancel.Width -= widthChange / 2;
+                this.Width -= widthChange;
+            }
+
+            if (lblDescription.PreferredHeight > baseDescriptionHeight)
+            {
+                var heightChange = baseDescriptionHeight - lblDescription.PreferredHeight;
+                lblDescription.Height = lblDescription.PreferredHeight;
+                lblRequired.Location = new Point(lblRequired.Location.X, lblRequired.Location.Y - heightChange);
+                tlpParameters.Location = new Point(tlpParameters.Location.X, tlpParameters.Location.Y - heightChange);
+                llblWikiAction.Location = new Point(llblWikiAction.Location.X, llblWikiAction.Location.Y - heightChange);
+                btnSave.Location = new Point(btnSave.Location.X, btnSave.Location.Y - heightChange);
+                btnCancel.Location = new Point(btnCancel.Location.X, btnCancel.Location.Y - heightChange);
+                this.Height -= heightChange;
             }
 
             var rowNumber = 0;
@@ -375,6 +416,87 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         textBoxPanel.Controls.Add(warningBox, 1, 0);
                         control = textBoxPanel;
                         break;
+                    case ParameterType.NPC:
+                        var npcComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var npc in ValidNPCs)
+                        {
+                            npcComboBox.Items.Add(npc);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidNPCs.Find(vnpc => vnpc.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                npcComboBox.Text = valueOfKey;
+                            }
+                            else
+                            {
+                                npcComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            npcComboBox.Text = parameter.Default;
+                        }
+                        control = npcComboBox;
+                        break;
+                    case ParameterType.Item:
+                        var itemComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var item in ValidItems)
+                        {
+                            itemComboBox.Items.Add(item);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidItems.Find(vi => vi.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                itemComboBox.Text = valueOfKey;
+                            }
+                            else
+                            {
+                                itemComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            itemComboBox.Text = parameter.Default;
+                        }
+                        control = itemComboBox;
+                        break;
+                    case ParameterType.Trap:
+                        var trapComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var trap in ValidTraps)
+                        {
+                            trapComboBox.Items.Add(trap);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ValidTraps.Find(vt => vt.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                trapComboBox.Text = valueOfKey;
+                            }
+                            else
+                            {
+                                trapComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            trapComboBox.Text = parameter.Default;
+                        }
+                        control = trapComboBox;
+                        break;
                     case ParameterType.AlteredStatus:
                         var alteredStatusComboBox = new ComboBox
                         {
@@ -525,6 +647,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         else
                             valueToValidate = parameterData.ValidValues.Find(vv => vv.Value.Equals(valueToValidate)).Key;
                         break;
+                    case ParameterType.NPC:
+                    case ParameterType.Item:
+                    case ParameterType.Trap:
                     case ParameterType.AlteredStatus:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
@@ -637,14 +762,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
         }
     }
-    #pragma warning restore IDE1006 // Estilos de nombres
-    #pragma warning restore RCS1077 // Optimize LINQ method call.
-    #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
-    #pragma warning restore S2259 // Null pointers should not be dereferenced
-    #pragma warning restore S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
-    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning restore CS8601 // Posible asignación de referencia nula
-    #pragma warning restore CS8604 // Posible argumento de referencia nulo
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    #pragma warning restore CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
+#pragma warning restore IDE1006 // Estilos de nombres
+#pragma warning restore RCS1077 // Optimize LINQ method call.
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning restore S2259 // Null pointers should not be dereferenced
+#pragma warning restore S6602 // "Find" method should be used instead of the "FirstOrDefault" extension
+#pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning restore CS8601 // Posible asignación de referencia nula
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
 }

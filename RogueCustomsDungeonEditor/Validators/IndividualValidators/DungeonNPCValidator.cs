@@ -2,6 +2,7 @@
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 messages.AddWarning("KnowsAllCharacterPositions is set to true but Sight Range covers the entire map. KnowsAllCharacterPositions will have no effect.");
             }
+            if (string.IsNullOrWhiteSpace(npcJson.AIType))
+                messages.AddError("AIType must not be empty.");
+            else if (!Enum.TryParse<AIType>(npcJson.AIType, true, out _))
+                messages.AddError("AIType does not contain a valid value.");
             if (npcJson.AIOddsToUseActionsOnSelf < 0)
                 messages.AddError("AIOddsToUseActionsOnSelf must be 0 or higher.");
             else if (npcJson.AIOddsToUseActionsOnSelf == 0 && npcJson.InventorySize > 0)

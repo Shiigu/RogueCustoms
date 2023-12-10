@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using System.Drawing;
 using System.IO;
+using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -44,6 +45,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanGainExperience { get; set; }
         public bool CanTakeAction { get; set; }
         public bool UsesMP { get; set; }
+        public bool UsesHunger { get; set; }
         public int HP { get; set; }
 
         public readonly int BaseMaxHP;
@@ -116,6 +118,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int BaseSightRange;
         public int TotalSightRangeIncrements { get; set; } = 0;
         public int SightRange => BaseSightRange + TotalSightRangeIncrements;
+
+        public int Hunger { get; set; }
+
+        public readonly int BaseMaxHunger;
+        public List<StatModification> MaxHungerModifications { get; set; }
+        public int TotalMaxHungerIncrements => MaxHungerModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
+        public int MaxHunger => (int) Math.Min(BaseMaxHunger + TotalMaxHungerIncrements, Constants.REGEN_STAT_CAP);
+
+        public readonly decimal HungerHPDegeneration;
+        private decimal CarriedHungerDegeneration;
+
+        public bool IsStarving => UsesHunger && Hunger <= 0;
 
         public readonly int BaseAccuracy;
         public List<StatModification> AccuracyModifications { get; set; }
@@ -245,6 +259,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 modifications.Add((Map.Locale["CharacterEvasionStat"], EvasionModifications));
                 if (UsesMP) 
                     modifications.Add((Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications));
+                if (UsesHunger)
+                    modifications.Add((Map.Locale["CharacterHungerStat"], MaxHungerModifications));
 
                 return modifications;
             }
@@ -256,6 +272,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             StartingWeaponId = entityClass.StartingWeaponId;
             StartingArmorId = entityClass.StartingArmorId;
             UsesMP = entityClass.UsesMP;
+            UsesHunger = entityClass.UsesHunger;
             HP = entityClass.BaseHP;
             BaseMaxHP = entityClass.BaseHP;
             MaxHPIncreasePerLevel = entityClass.MaxHPIncreasePerLevel;
@@ -274,6 +291,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             MPRegenerationIncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel;
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
+            Hunger = entityClass.BaseHunger;
+            BaseMaxHunger = entityClass.BaseHunger;
+            HungerHPDegeneration = entityClass.HungerHPDegeneration;
             CanGainExperience = entityClass.CanGainExperience;
             Level = level;
             MaxLevel = entityClass.MaxLevel;
@@ -295,6 +315,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MovementModifications = new List<StatModification>();
             HPRegenerationModifications = new List<StatModification>();
             MPRegenerationModifications = new List<StatModification>();
+            MaxHungerModifications = new List<StatModification>();
             AccuracyModifications = new List<StatModification>();
             EvasionModifications = new List<StatModification>();
 
@@ -309,6 +330,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             LastLevelUpExperience = Experience;
             CarriedHPRegeneration = 0;
             CarriedMPRegeneration = 0;
+            CarriedHungerDegeneration = 0;
 
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             OwnOnAttack = new List<ActionWithEffects>();
@@ -395,6 +417,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
             }
+            TryDegenerateHunger();
             TryRegenerateHP();
             TryRegenerateMP();
             if (HP <= 0)
@@ -405,25 +428,34 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (HP > MaxHP) HP = MaxHP;
-            if ((HPRegeneration > 0 && HP == MaxHP) || HPRegeneration == 0)
+            var hpRegenerationToUse = IsStarving ? HungerHPDegeneration * -1 : HPRegeneration;
+            if (IsStarving && CarriedHPRegeneration > 0)
+                CarriedHPRegeneration = 0;
+            if ((hpRegenerationToUse > 0 && HP == MaxHP) || hpRegenerationToUse == 0)
             {
                 CarriedHPRegeneration = 0;
                 return;
             }
-            CarriedHPRegeneration += HPRegeneration;
-            if (CarriedHPRegeneration > 1)
+            CarriedHPRegeneration += hpRegenerationToUse;
+            if (CarriedHPRegeneration >= 1)
             {
                 var wholePart = Math.Truncate(CarriedHPRegeneration);
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Min(MaxHP, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
             }
-            else if (CarriedHPRegeneration < -1)
+            else if (CarriedHPRegeneration <= -1)
             {
+                var oldHP = HP;
                 var wholePart = Math.Truncate(CarriedHPRegeneration);
                 var fractionalPart = CarriedHPRegeneration - wholePart;
                 HP = Math.Max(0, HP + (int)wholePart);
                 CarriedHPRegeneration = fractionalPart;
+                if (oldHP > HP && IsStarving)
+                {
+                    Map.PlayerTookDamage = true;
+                    Map.AppendMessage(Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldHP - HP, CharacterHPStat = Map.Locale["CharacterHPStat"], CharacterHungerStat = Map.Locale["CharacterHungerStat"] }));
+                }
             }
         }
 
@@ -438,19 +470,34 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return;
             }
             CarriedMPRegeneration += MPRegeneration;
-            if (CarriedMPRegeneration > 1)
+            if (CarriedMPRegeneration >= 1)
             {
                 var wholePart = Math.Truncate(CarriedMPRegeneration);
                 var fractionalPart = CarriedMPRegeneration - wholePart;
                 MP = Math.Min(MaxMP, MP + (int)wholePart);
                 CarriedMPRegeneration = fractionalPart;
             }
-            else if (CarriedMPRegeneration < -1)
+            else if (CarriedMPRegeneration <= -1)
             {
                 var wholePart = Math.Truncate(CarriedMPRegeneration);
                 var fractionalPart = CarriedMPRegeneration - wholePart;
                 MP = Math.Max(0, MP + (int)wholePart);
                 CarriedMPRegeneration = fractionalPart;
+            }
+        }
+
+        public void TryDegenerateHunger()
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (!UsesHunger || Map.HungerDegeneration <= 0 || Hunger == 0) return;
+            if (Hunger > MaxHunger) Hunger = MaxHunger;
+            CarriedHungerDegeneration += Map.HungerDegeneration;
+            if (CarriedHungerDegeneration >= 1)
+            {
+                var wholePart = Math.Truncate(CarriedHungerDegeneration);
+                var fractionalPart = CarriedHungerDegeneration - wholePart;
+                Hunger = Math.Min(MaxHunger, Hunger - (int)wholePart);
+                CarriedHungerDegeneration = fractionalPart;
             }
         }
 
@@ -462,10 +509,18 @@ namespace RogueCustomsGameEngine.Game.Entities
                 && ComputeFOVTiles().Contains(entity.ContainingTile));
         }
 
-        public void GainExperience(int pointsToAdd)
+        public bool HasNoObstructionsTowards(Entity entity)
+        {
+            if (this == entity) return true;
+            if (this.Position == null || entity.Position == null) return false;
+            var tilesInTheLine = MathAlgorithms.BresenhamLine(ContainingTile, entity.ContainingTile, t => t.Position.X, t => t.Position.Y, (x, y) => Map.GetTileFromCoordinates(x, y), t => t.IsWalkable);
+            return !tilesInTheLine.Any(t => !t.IsWalkable);
+        }
+
+        public void GainExperience(int GamePointsToAdd)
         {
             if (!CanGainExperience) return;
-            Experience += pointsToAdd;
+            Experience += GamePointsToAdd;
             if (Experience >= ExperienceToLevelUp)
             {
                 LastLevelUpExperience = ExperienceToLevelUp;
@@ -504,7 +559,16 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public abstract void PickItem(Item item);
 
-        public void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
+        public void EquipItem(Item item)
+        {
+            if (!item.IsEquippable)
+                throw new InvalidOperationException("Attempted to equip an unequippable item!");
+
+            var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
+            SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
+        }
+
+        private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
         {
             if (itemToEquip.EntityType == EntityType.Weapon)
                 EquippedWeapon = itemToEquip;
@@ -573,6 +637,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             RemainingMovement = 0;
         }
 
+        public void InteractWithTile(Tile target, ActionWithEffects action)
+        {
+            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (UsesMP)
+                MP = Math.Max(0, MP - action.MPCost);
+            action?.Do(this, target, true);
+            if (action?.FinishesTurnWhenUsed == true)
+                TookAction = true;
+            RemainingMovement = 0;
+        }
+
         public virtual void AttackedBy(Character source)
         {
             OnAttacked.Where(oaa => oaa.ChecksCondition(this, source)).ForEach(oaa => oaa?.Do(this, source, false));
@@ -594,6 +669,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             throw new InvalidDataException($"Cannot identify target relationship between {Name} and {target.Name}!");
         }
 
-        public abstract void Die(Entity? attacker = null);
+        public virtual void Die(Entity? attacker = null)
+        {
+            if (attacker == null || attacker is Character)
+                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
+            if(this.HP <= 0)
+            {
+                ExistenceStatus = EntityExistenceStatus.Dead;
+                Passable = true;
+                StatModifications.ForEach(m => m.Modifications.Clear());
+                AlteredStatuses.Clear();
+            }
+        }
     }
 }

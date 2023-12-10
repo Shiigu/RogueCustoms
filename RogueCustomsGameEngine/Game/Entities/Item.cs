@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using static System.Collections.Specialized.BitVector32;
 using RogueCustomsGameEngine.Utils;
+using MathNet.Numerics.Statistics.Mcmc;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -17,6 +18,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool IsEquippable => EntityType == EntityType.Weapon || EntityType == EntityType.Armor;
         public bool CanBePickedUp { get; set; }
         public string Power { get; set; }
+        public Faction Faction { get; set; }                // Exclusively used to allow Traps to be visible only to certain characters.
         public Character Owner { get; set; }
         public ActionWithEffects OnStepped { get; set; }
         public ActionWithEffects OnUse { get; set; }
@@ -28,13 +30,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             Owner = null;
             OnStepped = MapClassAction(entityClass.OnStepped);
             if (entityClass.EntityType != EntityType.Trap)
+            {
                 OnUse = MapClassAction(entityClass.OnUse);
-            if (entityClass.EntityType != EntityType.Trap)
+                OwnOnDeath = MapClassAction(entityClass.OnDeath);
                 OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
-            if (entityClass.EntityType != EntityType.Trap)
                 MapClassActions(entityClass.OnAttack, OwnOnAttack);
-            if (entityClass.EntityType != EntityType.Trap)
                 OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
+            }
         }
 
         public void Stepped(Character stomper)
@@ -65,6 +67,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.ChecksCondition(Owner, Owner))
                 OwnOnTurnStart?.Do(this, Owner, true);
+        }
+
+        public bool CanBeSeenBy(Character c)
+        {
+            if (c == null) return false;
+            if (c.CanSee(this)) return true;
+            if (!Visible && Faction != null && c.FOVTiles.Contains(ContainingTile))
+            {
+                if (Faction == c.Faction) return true;
+                if (Faction.AlliedWith.Contains(c.Faction)) return true;
+            }
+            return false;
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

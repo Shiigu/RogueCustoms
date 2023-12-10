@@ -12,6 +12,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanBePickedUp { get; set; }
         public bool StartsVisible { get; set; }
         public bool UsesMP { get; set; }
+        public bool UsesHunger { get; set; }
         public int BaseHP { get; set; }
         public int BaseMP { get; set; }
         public int BaseAttack { get; set; }
@@ -22,6 +23,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public decimal BaseHPRegeneration { get; set; }
         public decimal BaseMPRegeneration { get; set; }
         public string BaseSightRange { get; set; }
+        public int BaseHunger { get; set; }
+        public decimal HungerHPDegeneration { get; set; }
         public int InventorySize { get; set; }
         public string StartingWeapon { get; set; }
         public string StartingArmor { get; set; }

@@ -10,6 +10,9 @@ using System;
 using System.Linq;
 using org.matheval;
 using System.Runtime.Serialization;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using System.Drawing;
+using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -79,7 +82,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return info != null && !string.IsNullOrWhiteSpace(info.Name) ? new ActionWithEffects(info) : null;
         }
 
-        public List<string> Do(Entity source, Entity target, bool turnSourceVisibleWhenDone)
+        public List<string> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
         {
             var successfulEffects = Effect.Do(User, source, target);
 
@@ -92,70 +95,117 @@ namespace RogueCustomsGameEngine.Game.Entities
             return successfulEffects;
         }
 
-        public bool CanBeUsedOn(Character target, Character? source = null)
+        public int GetActionWeightFor(ITargetable target, NonPlayableCharacter source)
         {
-            if (target == null && !TargetTypes.Exists(tt => tt == TargetType.Room || tt == TargetType.Floor)) return false;
+            var AIStrategy = NPCAIStrategyFactory.GetNPCAIStrategy(source.AIType);
 
-            Character character = null;
+            return AIStrategy.GetActionWeight(this, Map, User, source, target);
+        }
+
+        public bool CanBeUsedOn(ITargetable target, Character? source = null)
+        {
+            if (target == null && !TargetTypes.Contains(TargetType.Tile)) return false;
+
+            Character sourceAsCharacter = null;
 
             if (source != null)
             {
-                character = source;
+                sourceAsCharacter = source;
             }
             else
             {
                 if (User is Character c)
                 {
-                    character = c;
+                    sourceAsCharacter = c;
                 }
                 else if (User is Item i)
                 {
                     if (i.Owner != null)
-                        character = i.Owner;
-                    else if (i.Position != null && i.ContainingTile.Character != null)
-                        character = i.ContainingTile.Character;
+                        sourceAsCharacter = i.Owner;
+                    else if (i.Position != null && i.ContainingTile.LivingCharacter != null)
+                        sourceAsCharacter = i.ContainingTile.LivingCharacter;
                 }
             }
 
-            if (character == null) return false;
+            if (sourceAsCharacter == null) return false;
             if (!MayBeUsed) return false;
-            if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
-            if (TargetTypes.Any() && !TargetTypes.Contains(character.CalculateTargetTypeFor(target))) return false;
-            if (!((int)Point.Distance(target.Position, character.Position)).Between(MinimumRange, MaximumRange)) return false;
-            if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0)) return false;
 
-            if (!string.IsNullOrWhiteSpace(UseCondition))
-            {
-                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+            if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
+                return CanBeUsedOnCharacter(tc, sourceAsCharacter);
 
-                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
-            }
-
-            if (character.ContainingTile.Type != TileType.Hallway && character.ContainingRoom != target.ContainingRoom) return false;
-
-            if (!character.CanSee(target)) return false;
+            if (target is Tile tt && TargetTypes.Contains(TargetType.Tile))
+                return CanBeUsedOnTile(tt, sourceAsCharacter);
 
             return true;
         }
 
-        public string GetDescriptionWithUsageNotes(Character target, Character? source = null)
+        public bool CanBeUsedOnCharacter(Character target, Character source)
+        {
+            if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
+            if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
+
+            var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
+
+            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+            if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
+
+            if (!string.IsNullOrWhiteSpace(UseCondition))
+            {
+                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, source, target);
+
+                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+            }
+
+            if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.ContainingRoom) return false;
+
+            if (!source.CanSee(target)) return false;
+
+            if (distanceFromSourceToTarget > 1 && !source.HasNoObstructionsTowards(target)) return false;
+
+            return true;
+        }
+
+        public bool CanBeUsedOnTile(Tile target, Character source)
+        {
+            if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
+            if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
+
+            var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
+
+            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+
+            if (!string.IsNullOrWhiteSpace(UseCondition))
+            {
+                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, source, target);
+
+                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+            }
+
+            if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.Room) return false;
+
+            if (!source.FOVTiles.Contains(target)) return false;
+
+            return true;
+        }
+
+        public string GetDescriptionWithUsageNotes(ITargetable target, Character? source = null)
         {
             var descriptionWithUsageNotes = new StringBuilder(Map.Locale[Description]);
-            Character character;
+            Character sourceAsCharacter;
 
             if (source != null)
             {
-                character = source;
+                sourceAsCharacter = source;
             }
             else
             {
                 if (User is Character)
                 {
-                    character = User as Character;
+                    sourceAsCharacter = User as Character;
                 }
                 else if (User is Item i)
                 {
-                    character = i.Owner;
+                    sourceAsCharacter = i.Owner;
                 }
                 else
                 {
@@ -165,7 +215,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             var cannotBeUsedString = Locale["CannotBeUsed"];
 
-            if (character == null) return "";
+            if (sourceAsCharacter == null) return "";
 
             descriptionWithUsageNotes.AppendLine();
 
@@ -194,7 +244,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 descriptionWithUsageNotes.Append('\n').Append(Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost }));
             }
 
-            var distance = target != null ? (int)Point.Distance(target.Position, character.Position) : -1;
+            var distance = target != null ? (int)GamePoint.Distance(target.Position, sourceAsCharacter.Position) : -1;
 
             if (CurrentCooldown > 0)
             {
@@ -233,19 +283,22 @@ namespace RogueCustomsGameEngine.Game.Entities
                     descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
                 }
 
-                var targetType = character.CalculateTargetTypeFor(target);
-                if (!TargetTypes.Contains(targetType))
+                if(target is Character tc && !TargetTypes.Contains(TargetType.Tile))
                 {
-                    if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
-                    var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
-                    var usableTargetTypesString = string.Join('/', usableTargetTypes);
-                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
+                    var targetType = sourceAsCharacter.CalculateTargetTypeFor(tc);
+                    if (!TargetTypes.Contains(targetType))
+                    {
+                        if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                            descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
+                        var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
+                        var usableTargetTypesString = string.Join('/', usableTargetTypes);
+                        descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
+                    }
                 }
 
                 if(!string.IsNullOrWhiteSpace(UseCondition))
                 {
-                    var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+                    var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, sourceAsCharacter, target);
 
                     if (!ActionHelpers.CalculateBooleanExpression(parsedCondition))
                     {
@@ -255,14 +308,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
 
-                if (character.MP < MPCost || (character.MaxMP == 0 && MPCost > 0) || (!character.UsesMP && MPCost > 0))
+                if (sourceAsCharacter.MP < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                         descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
                     descriptionWithUsageNotes.AppendLine(Locale["NotEnoughMP"].Format(new { MPStat = Map.Locale["CharacterMPStat"].ToUpperInvariant() }));
                 }
             }
-            else
+            else if (!TargetTypes.Contains(TargetType.Tile))
             {
                 if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                     descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
@@ -309,7 +362,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Effect = Effect.Clone(),
                 UseCondition = UseCondition,
                 TargetTypes = new List<TargetType>(TargetTypes),
-                MPCost = MPCost
+                MPCost = MPCost,
+                FinishesTurnWhenUsed = FinishesTurnWhenUsed
             };
         }
     }
@@ -319,7 +373,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");
 
-        public delegate bool ActionMethod(Entity This, Entity Source, Entity Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args);
+        public delegate bool ActionMethod(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args);
 
         public string EffectMethodName { get; set; }
         public string EffectClassName { get; set; }
@@ -367,7 +421,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public List<string> Do(Entity This, Entity Source, Entity Target)
+        public List<string> Do(Entity This, Entity Source, ITargetable Target)
         {
             var currentEffect = this;
             var successfulEffects = new List<string>();
@@ -405,6 +459,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnFailure = OnFailure?.Clone()
             };
         }
+
         // Explicit implementation of ISerializable
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

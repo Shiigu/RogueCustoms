@@ -1,8 +1,11 @@
 [
   {
     "InternalName": "DealDamage",
-    "DisplayName": "Deal Damage to Target",
+    "TreeViewDisplayText": "Deal ({Attack}) - ({Defense}) Damage to ({Target})",
+    "ComboBoxDisplayName": "Deal Damage to Target",
     "Description": "Used by the User to damage Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -77,7 +80,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
         "ValidValues": [],
@@ -88,8 +91,11 @@
   },
   {
     "InternalName": "BurnMP",
-    "DisplayName": "Burn Target's MP",
+    "TreeViewDisplayText": "Burn ({Power}) MP from ({Target})",
+    "ComboBoxDisplayName": "Burn Target's MP",
     "Description": "Used by the User to remove some of Target's MP.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -154,7 +160,87 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "RemoveHunger",
+    "TreeViewDisplayText": "Remove ({Power}) Hunger from ({Target})",
+    "ComboBoxDisplayName": "Remove Target's Hunger",
+    "Description": "Used by the User to remove some of Target's Hunger.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Attacker",
+        "DisplayName": "Attacker",
+        "Description": "What will remove Hunger. Generally Source, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get Hunger removed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Power",
+        "Description": "Amount of Hunger that will be removed. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Attack to land. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
         "ValidValues": [],
@@ -165,8 +251,11 @@
   },
   {
     "InternalName": "StealItem",
-    "DisplayName": "Steal Item from Target",
+    "TreeViewDisplayText": "Steal an Item that is ({ItemType}) from Target",
+    "ComboBoxDisplayName": "Steal Item from Target",
     "Description": "Used by the User take an item from Target's inventory and put it into their own.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -218,7 +307,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -229,8 +318,11 @@
   },
   {
     "InternalName": "ReplaceConsoleRepresentation",
-    "DisplayName": "Change Own Console Representation",
+    "TreeViewDisplayText": "Change Own Console Representation",
+    "ComboBoxDisplayName": "Change Own Console Representation",
     "Description": "The way the calling object shows up in the Console Client will be modified.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -267,9 +359,23 @@
     ]
   },
   {
+    "InternalName": "ResetConsoleRepresentation",
+    "TreeViewDisplayText": "Reset Own Console Representation",
+    "ComboBoxDisplayName": "Reset Own Console Representation",
+    "Description": "The display appearance of User in the Console Client will be turned back into the original.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "Parameters": []
+  },
+  {
     "InternalName": "Remove",
-    "DisplayName": "Remove Target from Game",
+    "TreeViewDisplayText": "Remove ({Target}) from Game",
+    "ComboBoxDisplayName": "Remove Target from Game",
     "Description": "The User will try to remove Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -305,7 +411,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -316,8 +422,11 @@
   },
   {
     "InternalName": "PrintText",
-    "DisplayName": "Print Text to Message Log",
+    "TreeViewDisplayText": "Print ({Text}) to Message Log",
+    "ComboBoxDisplayName": "Print Text to Message Log",
     "Description": "If Player can see the User (if visibility checks must apply), text will be printed into the Message Log.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -355,8 +464,11 @@
   },
   {
     "InternalName": "MessageBox",
-    "DisplayName": "Show a Message Box",
+    "TreeViewDisplayText": "Show a Message Box with Title ({Title}) and Text ({Text})",
+    "ComboBoxDisplayName": "Show a Message Box",
     "Description": "Player will see a Message Box on their next turn.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -394,8 +506,11 @@
   },
   {
     "InternalName": "HealDamage",
-    "DisplayName": "Heal Damage from Target",
+    "TreeViewDisplayText": "Heal up to ({Power}) HP from ({Target})",
+    "ComboBoxDisplayName": "Heal Target",
     "Description": "Used by the User to heal Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -451,8 +566,11 @@
   },
   {
     "InternalName": "ReplenishMP",
-    "DisplayName": "Recover some of Target's MP",
+    "TreeViewDisplayText": "Recover up to ({Power}) MP from ({Target})",
+    "ComboBoxDisplayName": "Recover some of Target's MP",
     "Description": "Used by the User to give Target some MP.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -496,7 +614,7 @@
       },
       {
         "InternalName": "Power",
-        "DisplayName": "MP Recovery Power",
+        "DisplayName": "MP Recovery",
         "Description": "Maximum Amount of MP that will be recovered. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
         "ParameterType": "Formula",
         "Default": "{source.Power}",
@@ -507,9 +625,72 @@
     ]
   },
   {
+    "InternalName": "ReplenishHunger",
+    "TreeViewDisplayText": "Recover up to ({Power}) Hunger from ({Target})",
+    "ComboBoxDisplayName": "Recover some of Target's Hunger",
+    "Description": "Used by the User to give Target some Hunger.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "What will give Hunger. Generally the User, but can be anything.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get Hunger. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Power",
+        "DisplayName": "Hunger Recovery",
+        "Description": "Maximum Amount of Hunger that will be recovered. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "{source.Power}",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "GiveExperience",
-    "DisplayName": "Give Experience to Target",
+    "TreeViewDisplayText": "Give ({Amount}) Experience to ({Target})",
+    "ComboBoxDisplayName": "Give Experience to Target",
     "Description": "Used by the User to give Target some experience points.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -546,8 +727,11 @@
   },
   {
     "InternalName": "ApplyAlteredStatus",
-    "DisplayName": "Apply Altered Status on Target",
+    "TreeViewDisplayText": "Status ({Target}) with ({Id})",
+    "ComboBoxDisplayName": "Apply Altered Status on Target",
     "Description": "Used by the User to put an Altered Status on Target.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -613,7 +797,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -624,8 +808,11 @@
   },
   {
     "InternalName": "ApplyStatAlteration",
-    "DisplayName": "Alter one of Target's Stats",
+    "TreeViewDisplayText": "Modify ({Target})'s ({Stat}) by ({Amount}) for ({TurnLength}) turns",
+    "ComboBoxDisplayName": "Alter one of Target's Stats",
     "Description": "Used by the User to increase or decrease one of Target's stats.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -718,7 +905,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -769,8 +956,11 @@
   },
   {
     "InternalName": "CleanseAlteredStatus",
-    "DisplayName": "Remove Altered Status from Target",
+    "TreeViewDisplayText": "Remove ({Id}) Altered Status from ({Target})",
+    "ComboBoxDisplayName": "Remove Altered Status from Target",
     "Description": "Used by the User to remove a certain Altered Status on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -816,7 +1006,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -827,8 +1017,11 @@
   },
   {
     "InternalName": "CleanseStatAlteration",
-    "DisplayName": "Remove all Alterations from one of Target's Stats",
+    "TreeViewDisplayText": "Remove all Alterations from ({Target})'s ({Stat})",
+    "ComboBoxDisplayName": "Remove all Alterations from one of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on one of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -911,7 +1104,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -922,8 +1115,11 @@
   },
   {
     "InternalName": "CleanseAllAlteredStatuses",
-    "DisplayName": "Remove all Altered Statuses from Target",
+    "TreeViewDisplayText": "Remove all Altered Statuses from ({Target})",
+    "ComboBoxDisplayName": "Remove all Altered Statuses from Target",
     "Description": "Used by the User to remove all removable Altered Statuses on Target. Stat Alterations with the same Id as an Altered Status will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -959,7 +1155,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -970,21 +1166,14 @@
   },
   {
     "InternalName": "CleanseStatAlterations",
-    "DisplayName": "Remove all Alterations from all of Target's Stats",
+    "TreeViewDisplayText": "Remove all Alterations from all of ({Target})'s Stats",
+    "ComboBoxDisplayName": "Remove all Alterations from all of Target's Stats",
     "Description": "Used by the User to remove all the removable Alterations on all of Target's Stats. Altered Statuses with the same Id as a Stat Alteration will be removed as well.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
-      {
-        "InternalName": "Accuracy",
-        "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
-        "ParameterType": "Odds",
-        "Default": "100",
-        "ValidValues": [],
-        "Required": true,
-        "OptionalIfFieldsHaveValue": []
-      },
       {
         "InternalName": "Target",
         "DisplayName": "Target",
@@ -1005,9 +1194,19 @@
         "OptionalIfFieldsHaveValue": []
       },
       {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get all Stat Alterations removed, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1018,8 +1217,11 @@
   },
   {
     "InternalName": "ForceSkipTurn",
-    "DisplayName": "Make Target skip the next turn",
+    "TreeViewDisplayText": "Make ({Target}) skip the next turn",
+    "ComboBoxDisplayName": "Make Target skip the next turn",
     "Description": "Used by the User to make Target skip their next turn.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1055,7 +1257,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1066,15 +1268,19 @@
   },
   {
     "InternalName": "GenerateStairs",
-    "DisplayName": "Spawn Stairs",
+    "TreeViewDisplayText": "Spawn Stairs",
+    "ComboBoxDisplayName": "Spawn Stairs",
     "Description": "Stairs will appear in the current Floor, if there weren't any before.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": []
   },
   {
     "InternalName": "Teleport",
-    "DisplayName": "Teleport the Target",
+    "TreeViewDisplayText": "Teleport ({Target}) to another Tile",
+    "ComboBoxDisplayName": "Teleport the Target",
     "Description": "User will teleport the Target to a random unoccupied Floor tile.\nFails if Target is in a Hallway tile.",
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
@@ -1111,7 +1317,7 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1122,8 +1328,11 @@
   },
   {
     "InternalName": "ToggleVisibility",
-    "DisplayName": "Change Target's visibility",
+    "TreeViewDisplayText": "Change ({Target})'s Visibility",
+    "ComboBoxDisplayName": "Change Target's visibility",
     "Description": "User will make the Target invisible (if they were visible) or visible (if they were invisible).",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1159,7 +1368,274 @@
       {
         "InternalName": "BypassesAccuracyCheck",
         "DisplayName": "Bypasses Accuracy Check?",
-        "Description": "If true, the Action's Accuracy, User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "GiveItem",
+    "TreeViewDisplayText": "Give ({Target}) a ({Id}) ({WhereFrom})",
+    "ComboBoxDisplayName": "Give Item to Target",
+    "Description": "User will give an item Target (if possible).\nItem may come from Source's inventory, or come out of thin air",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "Who will give the Item. Generally Source, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will receive the Item. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Item to give.",
+        "ParameterType": "Item",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "FromInventory",
+        "DisplayName": "Must be in Inventory",
+        "Description": "If true, this fails if Source does not have the Item in the Inventory. If it succeeds, they give away said item.\n\nIf false, the Item materializes out of nowhere.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "TransformTile",
+    "TreeViewDisplayText": "Convert the Tile into ({TileType})",
+    "ComboBoxDisplayName": "Convert Tile",
+    "Description": "User will convert the Tile.\nFails if the Tile is occupied, adjacent to an empty tile, or if it prevents map completeness.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "TileType",
+        "DisplayName": "Tile Type",
+        "Description": "The type this Tile will be converted to.",
+        "ParameterType": "ComboBox",
+        "Default": "Wall",
+        "ValidValues": [
+          {
+            "Key": "Wall",
+            "Value": "Wall"
+          },
+          {
+            "Key": "Floor",
+            "Value": "Floor"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "PlaceTrap",
+    "TreeViewDisplayText": "Place ({Id}) Trap on the Tile",
+    "ComboBoxDisplayName": "Place Trap on Tile",
+    "Description": "User will place a Trap on the Tile.\nFails if the Tile already has one, or if it's not a Floor or Hallway Tile.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the Trap to place.",
+        "ParameterType": "Trap",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds to get a Trap placed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SpawnNPC",
+    "TreeViewDisplayText": "Spawn ({Id}) NPC on the Tile",
+    "ComboBoxDisplayName": "Spawn NPC on Tile",
+    "Description": "User will spawn an NPC of the specified Class on the Tile.\nThe NPC will be of the same Faction as the User.\nFails if the Tile is occupied or isn't walkable.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Class Id of the NPC to Spawn.",
+        "ParameterType": "NPC",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Level",
+        "DisplayName": "Level",
+        "Description": "Indicates the Level of the spawned NPC.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for an NPC to be Spawned. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ReviveNPC",
+    "TreeViewDisplayText": "Revive an allied NPC on the Tile",
+    "ComboBoxDisplayName": "Revive NPC on Tile",
+    "Description": "User will revive an NPC of their Faction on the Tile.\nThe NPC will have full HP and MP.\nIf there are multiple valid NPCs, it will revive one at random.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Target tile to get an NPC revived. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Check?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -1170,8 +1646,11 @@
   },
   {
     "InternalName": "CheckCondition",
-    "DisplayName": "Run Condition",
+    "TreeViewDisplayText": "Check if ({Condition}) is true",
+    "ComboBoxDisplayName": "Run Condition",
     "Description": "Evaluates a boolean expression.\n\nIf the expression returns true, it's a Success.\nIf the expression returns false, it's Failure.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": false,
     "CanHaveOnSuccessOnFailureChild": true,
     "Parameters": [
@@ -1189,8 +1668,11 @@
   },
   {
     "InternalName": "SetFlag",
-    "DisplayName": "Create or Update Flag",
+    "TreeViewDisplayText": "Set ({Key}) Flag to ({Value})",
+    "ComboBoxDisplayName": "Create or Update Flag",
     "Description": "The Dungeon will create a new Flag with the set name, or update its value if it already exists.\n\nDepending on parameters, Flags can persist through Floors.\n\nRemember to Set a flag before using it.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
     "Parameters": [
@@ -1225,13 +1707,5 @@
         "OptionalIfFieldsHaveValue": []
       }
     ]
-  },
-  {
-    "InternalName": "Equip",
-    "DisplayName": "Equip",
-    "Description": "THIS FUNCTION MUST NEVER BE USED OUTSIDE OF EQUIPPABLE ITEMS. REMOVE! IT MAY CRASH THE GAME!",
-    "CanHaveThenChild": false,
-    "CanHaveOnSuccessOnFailureChild": false,
-    "Parameters": []
   }
 ]

@@ -167,6 +167,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Mitigation { get; set; }
         public string MovementStatName { get; set; }
         public int Movement { get; set; }
+        public bool UsesHunger { get; set; }
+        public string HungerStatName { get; set; }
+        public int Hunger { get; set; }
+        public int MaxHunger { get; set; }
         public bool CanMove { get; set; }
         public bool CanTakeAction { get; set; }
         #endregion
@@ -220,6 +224,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Movement = pc.Movement;
                 CanMove = pc.Movement > 0;
                 CanTakeAction = pc.CanTakeAction;
+                UsesHunger = pc.UsesHunger;
+                HungerStatName = map.Locale["CharacterHungerStat"];
+                Hunger = pc.Hunger;
+                MaxHunger = pc.MaxHunger;
             }
         }
     }
