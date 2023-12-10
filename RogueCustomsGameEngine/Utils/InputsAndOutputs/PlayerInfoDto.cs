@@ -150,6 +150,19 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Modifications = new List<StatModificationDto>()
             };
             character.EvasionModifications.Where(m => m.RemainingTurns != 0).ForEach(em => evasionStat.Modifications.Add(new StatModificationDto(em, evasionStat, map)));
+            var hungerStat = new StatDto()
+            {
+                Name = map.Locale["CharacterHungerStat"],
+                Current = character.Hunger,
+                Max = character.MaxHunger,
+                Base = character.BaseMaxHunger,
+                IsDecimalStat = false,
+                IsPercentileStat = false,
+                HasMaxStat = true,
+                Visible = character.UsesHunger,
+                Modifications = new List<StatModificationDto>()
+            };
+            character.MaxHungerModifications.Where(m => m.RemainingTurns != 0).ForEach(hm => hungerStat.Modifications.Add(new StatModificationDto(hm, mpRegenerationStat, map)));
             Stats = new List<StatDto>
             {
                 hpStat,
@@ -160,7 +173,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 hpRegenerationStat,
                 mpRegenerationStat,
                 accuracyStat,
-                evasionStat
+                evasionStat,
+                hungerStat
             };
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));

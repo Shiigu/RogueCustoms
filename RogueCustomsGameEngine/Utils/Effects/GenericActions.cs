@@ -476,6 +476,33 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.PlayerGotMPReplenished = true;
             return true;
         }
+        public static bool ReplenishHunger(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            if (paramsObject.Target is not Character t)
+                // Attempted to recover Target's Hunger when it's not a Character.
+                return false;
+            if (!t.UsesHunger) return false;
+            if (t.Hunger >= t.MaxHunger)
+                return false;
+            var replenishAmount = Math.Min(t.MaxHunger - t.Hunger, paramsObject.Power);
+            if (paramsObject.Power > 0 && paramsObject.Power < 1)
+                replenishAmount = 1;
+            replenishAmount = (int)replenishAmount;
+            output = (int)replenishAmount;
+            t.Hunger = Math.Min(t.MaxHunger, t.Hunger + replenishAmount);
+
+            if (t.EntityType == EntityType.Player
+                || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
+            {
+                if (t.Hunger == t.MaxHunger)
+                    Map.AppendMessage(Map.Locale["CharacterRecoversAllHunger"].Format(new { CharacterName = t.Name, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
+                else
+                    Map.AppendMessage(Map.Locale["CharacterRecoversSomeHunger"].Format(new { CharacterName = t.Name, ReplenishAmount = replenishAmount.ToString(), CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
+            }
+            return true;
+        }
 
         public static bool ToggleVisibility(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
         {

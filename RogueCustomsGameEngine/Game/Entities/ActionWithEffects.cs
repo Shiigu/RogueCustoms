@@ -170,6 +170,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
             if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
 
+            var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
+
+            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
                 var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, source, target);

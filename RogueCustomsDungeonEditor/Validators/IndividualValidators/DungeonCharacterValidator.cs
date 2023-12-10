@@ -116,6 +116,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         break;
                 }
             }
+
+            if (characterJson.UsesHunger)
+            {
+                if (characterJson.BaseHunger <= 0)
+                    messages.AddError("Character is set to use Hunger, but Base Max Hunger is 0 or lower.");
+                if (characterJson.HungerHPDegeneration < 0)
+                    messages.AddWarning("Character is set to use Hunger, but Hunger lost per turn when starving is lower than 0. Character will not get penalized from a lack of Hunger.");
+            }
             if (characterJson.HPRegenerationIncreasePerLevel < 0)
                 messages.AddError("HP Regeneration Gained per level must be 0 or higher.");
             else if (characterJson.HPRegenerationIncreasePerLevel == 0)

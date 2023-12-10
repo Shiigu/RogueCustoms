@@ -250,6 +250,10 @@
           "Value": "MP Regeneration"
         },
         {
+          "Key": "CharacterHungerStat",
+          "Value": "Hunger"
+        },
+        {
           "Key": "CharacterInventorySizeStat",
           "Value": "Inventory Size"
         },
@@ -282,6 +286,10 @@
           "Value": "{CharacterName} is now at maximum HP!"
         },
         {
+          "Key": "CharacterTakesDamageFromHunger",
+          "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+        },
+        {
           "Key": "CharacterLosesMP",
           "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
         },
@@ -292,6 +300,18 @@
         {
           "Key": "CharacterRecoversAllMP",
           "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterLosesHunger",
+          "Value": "{CharacterName} lost {LostHunger} {CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeHunger",
+          "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllHunger",
+          "Value": "{CharacterName} is now at maximum {CharacterHungerStat}!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -1040,6 +1060,18 @@
         {
           "Key": "SummonedDeathText",
           "Value": "{this} has poofed away."
+        },
+        {
+          "Key": "AppleName",
+          "Value": "Apple"
+        },
+        {
+          "Key": "AppleDescription",
+          "Value": "A hard red fruit that replenishes 50 Hunger when consumed."
+        },
+        {
+          "Key": "ObjectEatenText",
+          "Value": "{source} eats the {this}."
         }
       ]
     },
@@ -1287,6 +1319,10 @@
           "Value": "Regeneraci\u00F3n de PM"
         },
         {
+          "Key": "CharacterHungerStat",
+          "Value": "Hambre"
+        },
+        {
           "Key": "CharacterInventorySizeStat",
           "Value": "Capacidad de Inventario"
         },
@@ -1319,6 +1355,10 @@
           "Value": "\u00A1{CharacterName} ha recuperado todos los PS!"
         },
         {
+          "Key": "CharacterTakesDamageFromHunger",
+          "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+        },
+        {
           "Key": "CharacterLosesMP",
           "Value": "{CharacterName} perdi\u00F3 {BurnedMP} {CharacterMPStat}."
         },
@@ -1329,6 +1369,18 @@
         {
           "Key": "CharacterRecoversAllMP",
           "Value": "\u00A1{CharacterName} ha recuperado todo su {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterLosesHunger",
+          "Value": "{CharacterName} perdi\u00F3 {LostHunger} de{CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeHunger",
+          "Value": "\u00A1{CharacterName} recuper\u00F3 {ReplenishAmount} {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllHunger",
+          "Value": "\u00A1{CharacterName} ahora tiene {CharacterHungerStat} al m\u00E1ximo!"
         },
         {
           "Key": "CharacterGainsExperience",
@@ -2077,6 +2129,18 @@
         {
           "Key": "SummonedDeathText",
           "Value": "{this} se desvaneci\u00F3..."
+        },
+        {
+          "Key": "AppleName",
+          "Value": "Manzana"
+        },
+        {
+          "Key": "AppleDescription",
+          "Value": "Una fruta dura y roja que recupera 50 de Hambre al consumirse."
+        },
+        {
+          "Key": "ObjectEatenText",
+          "Value": "{source} se come {this}."
         }
       ]
     }
@@ -2792,7 +2856,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 12
+          "ChanceToPick": 8
         },
         {
           "ClassId": "LeatherArmor",
@@ -2802,7 +2866,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 13
+          "ChanceToPick": 8
         },
         {
           "ClassId": "Antidote",
@@ -2812,7 +2876,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 9
         },
         {
           "ClassId": "PotionOfStrength",
@@ -2923,10 +2987,20 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 2,
+          "ChanceToPick": 10
         }
       ],
-      "MinItemsInFloor": 3,
-      "MaxItemsInFloor": 8,
+      "MinItemsInFloor": 4,
+      "MaxItemsInFloor": 10,
       "PossibleTraps": [
         {
           "ClassId": "WonderTile",
@@ -2974,6 +3048,7 @@
       "MaxConnectionsBetweenRooms": 1,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 25,
+      "HungerDegeneration": 0.0750,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "Standard",
@@ -3074,7 +3149,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 35
+          "ChanceToPick": 30
         },
         {
           "ClassId": "PotionOfStrength",
@@ -3155,16 +3230,27 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 2,
-      "MaxItemsInFloor": 6,
+      "MaxItemsInFloor": 7,
       "PossibleTraps": [],
       "MinTrapsInFloor": 0,
       "MaxTrapsInFloor": 0,
       "MaxConnectionsBetweenRooms": 0,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 0,
+      "HungerDegeneration": 0,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "OneBigRoom",
@@ -3406,7 +3492,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
-          "ChanceToPick": 10
+          "ChanceToPick": 5
         },
         {
           "ClassId": "MagicPotion",
@@ -3430,6 +3516,16 @@
         },
         {
           "ClassId": "WandOfScales",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
           "MinLevel": 0,
           "MaxLevel": 0,
           "OverallMaxForKindInFloor": 0,
@@ -3488,6 +3584,7 @@
       "MaxConnectionsBetweenRooms": 1,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 25,
+      "HungerDegeneration": 0.1,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "Standard",
@@ -3552,7 +3649,7 @@
           "CanSpawnOnFirstTurn": false,
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 2,
-          "ChanceToPick": 40
+          "ChanceToPick": 35
         },
         {
           "ClassId": "PotionOfStrength",
@@ -3583,10 +3680,20 @@
           "CanSpawnAfterFirstTurn": false,
           "SimultaneousMaxForKindInFloor": 1,
           "ChanceToPick": 5
+        },
+        {
+          "ClassId": "Apple",
+          "MinLevel": 0,
+          "MaxLevel": 0,
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 5
         }
       ],
       "MinItemsInFloor": 0,
-      "MaxItemsInFloor": 3,
+      "MaxItemsInFloor": 4,
       "PossibleTraps": [
         {
           "ClassId": "SpikeTrap",
@@ -3614,6 +3721,7 @@
       "MaxConnectionsBetweenRooms": 0,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 0,
+      "HungerDegeneration": 0.2500,
       "PossibleGeneratorAlgorithms": [
         {
           "Name": "OneBigRoom",
@@ -3735,6 +3843,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": true,
+      "UsesHunger": false,
       "BaseHP": 18,
       "BaseMP": 10,
       "BaseAttack": 4,
@@ -3745,6 +3854,8 @@
       "BaseHPRegeneration": 0.125,
       "BaseMPRegeneration": 0.250,
       "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 6,
       "StartingWeapon": "BareFists",
       "StartingArmor": "ClothArmor",
@@ -3845,6 +3956,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": true,
+      "UsesHunger": true,
       "BaseHP": 12,
       "BaseMP": 6,
       "BaseAttack": 2,
@@ -3855,6 +3967,8 @@
       "BaseHPRegeneration": 0.075,
       "BaseMPRegeneration": 0.1250,
       "BaseSightRange": "FullRoom",
+      "BaseHunger": 100,
+      "HungerHPDegeneration": 1.0000,
       "InventorySize": 4,
       "StartingWeapon": "BareFists",
       "StartingArmor": "ClothArmor",
@@ -3952,6 +4066,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": true,
       "BaseHP": 8,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -3962,6 +4077,8 @@
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "6",
+      "BaseHunger": 75,
+      "HungerHPDegeneration": 3.0000,
       "InventorySize": 2,
       "StartingWeapon": "BareFists",
       "StartingArmor": "ClothArmor",
@@ -4062,6 +4179,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -4072,6 +4190,8 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 1,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -4214,6 +4334,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -4224,6 +4345,8 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 1,
       "StartingWeapon": "Javelin",
       "StartingArmor": "Skirt",
@@ -4367,6 +4490,7 @@
       "CanBePickedUp": false,
       "StartsVisible": false,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 0,
@@ -4377,6 +4501,8 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullRoom",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 2,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -4712,6 +4838,7 @@
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 4,
       "BaseMP": 0,
       "BaseAttack": 1,
@@ -4722,6 +4849,8 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 1,
       "StartingWeapon": "BareFists",
       "StartingArmor": "Skirt",
@@ -4882,13 +5011,14 @@
     },
     {
       "KnowsAllCharacterPositions": false,
-      "AIType": "Default",
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [],
       "Faction": "MeleeEnemies",
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 25,
       "BaseMP": 0,
       "BaseAttack": 2,
@@ -4899,6 +5029,8 @@
       "BaseHPRegeneration": 0.025,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 1,
       "StartingWeapon": "Pistol",
       "StartingArmor": "LeatherArmor",
@@ -5042,13 +5174,14 @@
     },
     {
       "KnowsAllCharacterPositions": true,
-      "AIType": "Default",
+      "AIType": "Random",
       "AIOddsToUseActionsOnSelf": 0,
       "OnInteracted": [],
       "Faction": "AlliedNPCs",
       "CanBePickedUp": false,
       "StartsVisible": true,
       "UsesMP": false,
+      "UsesHunger": false,
       "BaseHP": 6,
       "BaseMP": 0,
       "BaseAttack": 2,
@@ -5059,6 +5192,8 @@
       "BaseHPRegeneration": 0,
       "BaseMPRegeneration": 0,
       "BaseSightRange": "FullMap",
+      "BaseHunger": 0,
+      "HungerHPDegeneration": 0,
       "InventorySize": 0,
       "StartingWeapon": "Claws",
       "StartingArmor": "Unarmored",
@@ -8306,6 +8441,153 @@
       "Description": "WandOfScalesDescription",
       "ConsoleRepresentation": {
         "Character": "\u250C",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
+    {
+      "CanBePickedUp": true,
+      "StartsVisible": true,
+      "Power": "50",
+      "EntityType": "Consumable",
+      "OnAttack": [],
+      "OnStepped": {
+        "Name": "PrintStepped",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectSteppedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ]
+        }
+      },
+      "OnUse": {
+        "Name": "ItemUse",
+        "Description": "",
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [],
+        "UseCondition": "{target.Hunger} \u003C {target.MaxHunger}",
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "ObjectEatenText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            },
+            {
+              "ParamName": "Color",
+              "Value": "255,255,255,255"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplenishHunger",
+            "Params": [
+              {
+                "ParamName": "Source",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Power",
+                "Value": "{source.Power}"
+              }
+            ],
+            "OnSuccess": {
+              "EffectName": "Remove",
+              "Params": [
+                {
+                  "ParamName": "Target",
+                  "Value": "this"
+                },
+                {
+                  "ParamName": "Accuracy",
+                  "Value": "100"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "True"
+                }
+              ],
+              "Then": {
+                "EffectName": "PrintText",
+                "Params": [
+                  {
+                    "ParamName": "Text",
+                    "Value": "ObjectDisappearedText"
+                  },
+                  {
+                    "ParamName": "Color",
+                    "Value": "255,255,255,255"
+                  },
+                  {
+                    "ParamName": "BypassesVisibilityCheck",
+                    "Value": "False"
+                  }
+                ]
+              }
+            },
+            "OnFailure": {
+              "EffectName": "PrintText",
+              "Params": [
+                {
+                  "ParamName": "Text",
+                  "Value": "ObjectNotUsedText"
+                },
+                {
+                  "ParamName": "Color",
+                  "Value": "255,255,255,255"
+                },
+                {
+                  "ParamName": "BypassesVisibilityCheck",
+                  "Value": "False"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Id": "Apple",
+      "Name": "AppleName",
+      "Description": "AppleDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u03B4",
         "BackgroundColor": {
           "R": 0,
           "G": 0,

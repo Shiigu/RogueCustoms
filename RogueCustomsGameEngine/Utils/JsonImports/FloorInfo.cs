@@ -33,6 +33,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int OddsForExtraConnections { get; set; }
         public int RoomFusionOdds { get; set; }
 
+        public decimal HungerDegeneration { get; set; }
+
         public List<GeneratorAlgorithmInfo> PossibleGeneratorAlgorithms { get; set; }
         public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
     }

@@ -254,6 +254,10 @@
       "Value": "Accuracy"
     },
     {
+      "Key": "CharacterHungerStat",
+      "Value": "Hunger"
+    },
+    {
       "Key": "CharacterDamageStat",
       "Value": "Damage"
     },
@@ -274,6 +278,10 @@
       "Value": "{CharacterName} is now at maximum {CharacterHPStat}!"
     },
     {
+      "Key": "CharacterTakesDamageFromHunger",
+      "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+    },
+    {
       "Key": "CharacterLosesMP",
       "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
     },
@@ -284,6 +292,18 @@
     {
       "Key": "CharacterRecoversAllMP",
       "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
+    },
+    {
+      "Key": "CharacterLosesHunger",
+      "Value": "{CharacterName} lost {LostHunger} {CharacterHungerStat}."
+    },
+    {
+      "Key": "CharacterRecoversSomeHunger",
+      "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterHungerStat}!"
+    },
+    {
+      "Key": "CharacterRecoversAllHunger",
+      "Value": "{CharacterName} is now at maximum {CharacterHungerStat}!"
     },
     {
       "Key": "CharacterGainsExperience",

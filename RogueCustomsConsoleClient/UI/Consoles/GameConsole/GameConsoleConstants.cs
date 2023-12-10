@@ -12,10 +12,10 @@
         public const int MessageLogCellHeight = 10;
 
         public const int PlayerInfoCellWidth = 19;
-        public const int PlayerInfoCellHeight = 42;
+        public const int PlayerInfoCellHeight = 45;
 
         public const int ButtonsCellWidth = 19;
-        public const int ButtonsCellHeight = 19;
+        public const int ButtonsCellHeight = 16;
 
         public const int ExperienceBarWidth = 119;
         public const int ExperienceBarHeight = 1;

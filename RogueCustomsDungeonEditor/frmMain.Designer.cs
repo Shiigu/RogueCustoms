@@ -30,3658 +30,3691 @@ namespace RogueCustomsDungeonEditor
         /// </summary>
         private void InitializeComponent()
         {
-            global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::RogueCustomsDungeonEditor.frmMain));
-            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
-            this.msMenu = (new global::System.Windows.Forms.MenuStrip());
-            this.editorToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
-            this.exitToolStripMenuItem = (new global::System.Windows.Forms.ToolStripMenuItem());
-            this.tsButtons = (new global::System.Windows.Forms.ToolStrip());
-            this.tsbNewDungeon = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbOpenDungeon = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbSaveDungeon = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbSaveDungeonAs = (new global::System.Windows.Forms.ToolStripButton());
-            this.tssDungeonElement = (new global::System.Windows.Forms.ToolStripSeparator());
-            this.tsbAddElement = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbSaveElement = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbSaveElementAs = (new global::System.Windows.Forms.ToolStripButton());
-            this.tsbDeleteElement = (new global::System.Windows.Forms.ToolStripButton());
-            this.tssElementValidate = (new global::System.Windows.Forms.ToolStripSeparator());
-            this.tsbValidateDungeon = (new global::System.Windows.Forms.ToolStripButton());
-            this.tvDungeonInfo = (new global::System.Windows.Forms.TreeView());
-            this.tbTabs = (new global::System.Windows.Forms.TabControl());
-            this.tpBasicInfo = (new global::System.Windows.Forms.TabPage());
-            this.cmbDefaultLocale = (new global::System.Windows.Forms.ComboBox());
-            this.label8 = (new global::System.Windows.Forms.Label());
-            this.fklblEndingMessageLocale = (new global::System.Windows.Forms.Button());
-            this.fklblWelcomeMessageLocale = (new global::System.Windows.Forms.Button());
-            this.fklblAuthorLocale = (new global::System.Windows.Forms.Button());
-            this.fklblDungeonNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtEndingMessage = (new global::System.Windows.Forms.TextBox());
-            this.label4 = (new global::System.Windows.Forms.Label());
-            this.txtWelcomeMessage = (new global::System.Windows.Forms.TextBox());
-            this.label3 = (new global::System.Windows.Forms.Label());
-            this.txtAuthor = (new global::System.Windows.Forms.TextBox());
-            this.label2 = (new global::System.Windows.Forms.Label());
-            this.txtDungeonName = (new global::System.Windows.Forms.TextBox());
-            this.label1 = (new global::System.Windows.Forms.Label());
-            this.tpLocales = (new global::System.Windows.Forms.TabPage());
-            this.btnDeleteLocale = (new global::System.Windows.Forms.Button());
-            this.btnAddLocale = (new global::System.Windows.Forms.Button());
-            this.btnUpdateLocale = (new global::System.Windows.Forms.Button());
-            this.fklblMissingLocale = (new global::System.Windows.Forms.Button());
-            this.txtLocaleEntryValue = (new global::System.Windows.Forms.TextBox());
-            this.label7 = (new global::System.Windows.Forms.Label());
-            this.txtLocaleEntryKey = (new global::System.Windows.Forms.TextBox());
-            this.label6 = (new global::System.Windows.Forms.Label());
-            this.dgvLocales = (new global::System.Windows.Forms.DataGridView());
-            this.cmKey = (new global::System.Windows.Forms.DataGridViewTextBoxColumn());
-            this.cmValue = (new global::System.Windows.Forms.DataGridViewTextBoxColumn());
-            this.tpTileSetInfos = (new global::System.Windows.Forms.TabPage());
-            this.label151 = (new global::System.Windows.Forms.Label());
-            this.csrEmpty = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label152 = (new global::System.Windows.Forms.Label());
-            this.csrStairs = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label153 = (new global::System.Windows.Forms.Label());
-            this.label154 = (new global::System.Windows.Forms.Label());
-            this.csrFloor = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label148 = (new global::System.Windows.Forms.Label());
-            this.csrHorizontalHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label149 = (new global::System.Windows.Forms.Label());
-            this.csrBottomRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label150 = (new global::System.Windows.Forms.Label());
-            this.csrBottomLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label137 = (new global::System.Windows.Forms.Label());
-            this.csrCentralHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label140 = (new global::System.Windows.Forms.Label());
-            this.csrVerticalRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label141 = (new global::System.Windows.Forms.Label());
-            this.csrVerticalLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label142 = (new global::System.Windows.Forms.Label());
-            this.csrHorizontalTopHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label143 = (new global::System.Windows.Forms.Label());
-            this.csrHorizontalBottomHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label144 = (new global::System.Windows.Forms.Label());
-            this.csrVerticalHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label145 = (new global::System.Windows.Forms.Label());
-            this.csrTopRightHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label146 = (new global::System.Windows.Forms.Label());
-            this.label147 = (new global::System.Windows.Forms.Label());
-            this.csrTopLeftHallway = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label138 = (new global::System.Windows.Forms.Label());
-            this.csrConnectorWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label134 = (new global::System.Windows.Forms.Label());
-            this.csrHorizontalWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label135 = (new global::System.Windows.Forms.Label());
-            this.csrBottomRightWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label136 = (new global::System.Windows.Forms.Label());
-            this.csrBottomLeftWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label133 = (new global::System.Windows.Forms.Label());
-            this.csrVerticalWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label132 = (new global::System.Windows.Forms.Label());
-            this.csrTopRightWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.label131 = (new global::System.Windows.Forms.Label());
-            this.label130 = (new global::System.Windows.Forms.Label());
-            this.csrTopLeftWall = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpFloorInfos = (new global::System.Windows.Forms.TabPage());
-            this.saeOnFloorStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.cmbTilesets = (new global::System.Windows.Forms.ComboBox());
-            this.label155 = (new global::System.Windows.Forms.Label());
-            this.nudRoomFusionOdds = (new global::System.Windows.Forms.NumericUpDown());
-            this.label19 = (new global::System.Windows.Forms.Label());
-            this.nudExtraRoomConnectionOdds = (new global::System.Windows.Forms.NumericUpDown());
-            this.label18 = (new global::System.Windows.Forms.Label());
-            this.nudMaxRoomConnections = (new global::System.Windows.Forms.NumericUpDown());
-            this.label5 = (new global::System.Windows.Forms.Label());
-            this.btnRemoveAlgorithm = (new global::System.Windows.Forms.Button());
-            this.btnEditAlgorithm = (new global::System.Windows.Forms.Button());
-            this.btnAddAlgorithm = (new global::System.Windows.Forms.Button());
-            this.lvFloorAlgorithms = (new global::System.Windows.Forms.ListView());
-            this.label17 = (new global::System.Windows.Forms.Label());
-            this.label16 = (new global::System.Windows.Forms.Label());
-            this.btnTrapGenerator = (new global::System.Windows.Forms.Button());
-            this.label15 = (new global::System.Windows.Forms.Label());
-            this.btnItemGenerator = (new global::System.Windows.Forms.Button());
-            this.label14 = (new global::System.Windows.Forms.Label());
-            this.btnNPCGenerator = (new global::System.Windows.Forms.Button());
-            this.label13 = (new global::System.Windows.Forms.Label());
-            this.nudHeight = (new global::System.Windows.Forms.NumericUpDown());
-            this.nudWidth = (new global::System.Windows.Forms.NumericUpDown());
-            this.label12 = (new global::System.Windows.Forms.Label());
-            this.label11 = (new global::System.Windows.Forms.Label());
-            this.fklblStairsReminder = (new global::System.Windows.Forms.Button());
-            this.chkGenerateStairsOnStart = (new global::System.Windows.Forms.CheckBox());
-            this.nudMaxFloorLevel = (new global::System.Windows.Forms.NumericUpDown());
-            this.label10 = (new global::System.Windows.Forms.Label());
-            this.nudMinFloorLevel = (new global::System.Windows.Forms.NumericUpDown());
-            this.label9 = (new global::System.Windows.Forms.Label());
-            this.tpFactionInfos = (new global::System.Windows.Forms.TabPage());
-            this.lbEnemies = (new global::System.Windows.Forms.ListBox());
-            this.label26 = (new global::System.Windows.Forms.Label());
-            this.btnEnemiesToNeutrals = (new global::System.Windows.Forms.Button());
-            this.btnEnemyToNeutral = (new global::System.Windows.Forms.Button());
-            this.btnNeutralsToEnemies = (new global::System.Windows.Forms.Button());
-            this.btnNeutralToEnemy = (new global::System.Windows.Forms.Button());
-            this.lbNeutrals = (new global::System.Windows.Forms.ListBox());
-            this.label25 = (new global::System.Windows.Forms.Label());
-            this.btnNeutralsToAllies = (new global::System.Windows.Forms.Button());
-            this.btnNeutralToAlly = (new global::System.Windows.Forms.Button());
-            this.btnAlliesToNeutrals = (new global::System.Windows.Forms.Button());
-            this.btnAllyToNeutral = (new global::System.Windows.Forms.Button());
-            this.lbAllies = (new global::System.Windows.Forms.ListBox());
-            this.label24 = (new global::System.Windows.Forms.Label());
-            this.label23 = (new global::System.Windows.Forms.Label());
-            this.fklblFactionDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtFactionDescription = (new global::System.Windows.Forms.TextBox());
-            this.label22 = (new global::System.Windows.Forms.Label());
-            this.fklblFactionNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtFactionName = (new global::System.Windows.Forms.TextBox());
-            this.label21 = (new global::System.Windows.Forms.Label());
-            this.tpPlayerClass = (new global::System.Windows.Forms.TabPage());
-            this.ssPlayer = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
-            this.sisPlayerStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
-            this.saePlayerOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saePlayerOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saePlayerOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.maePlayerOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
-            this.label58 = (new global::System.Windows.Forms.Label());
-            this.cmbPlayerStartingArmor = (new global::System.Windows.Forms.ComboBox());
-            this.label57 = (new global::System.Windows.Forms.Label());
-            this.cmbPlayerStartingWeapon = (new global::System.Windows.Forms.ComboBox());
-            this.label56 = (new global::System.Windows.Forms.Label());
-            this.label54 = (new global::System.Windows.Forms.Label());
-            this.nudPlayerInventorySize = (new global::System.Windows.Forms.NumericUpDown());
-            this.label53 = (new global::System.Windows.Forms.Label());
-            this.label30 = (new global::System.Windows.Forms.Label());
-            this.chkPlayerStartsVisible = (new global::System.Windows.Forms.CheckBox());
-            this.cmbPlayerFaction = (new global::System.Windows.Forms.ComboBox());
-            this.label29 = (new global::System.Windows.Forms.Label());
-            this.chkRequirePlayerPrompt = (new global::System.Windows.Forms.CheckBox());
-            this.fklblPlayerClassDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtPlayerClassDescription = (new global::System.Windows.Forms.TextBox());
-            this.label28 = (new global::System.Windows.Forms.Label());
-            this.fklblPlayerClassNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtPlayerClassName = (new global::System.Windows.Forms.TextBox());
-            this.label27 = (new global::System.Windows.Forms.Label());
-            this.crsPlayer = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpNPC = (new global::System.Windows.Forms.TabPage());
-            this.lblNPCAIOddsToTargetSelfB = (new global::System.Windows.Forms.Label());
-            this.nudNPCOddsToTargetSelf = (new global::System.Windows.Forms.NumericUpDown());
-            this.cmbNPCAIType = (new global::System.Windows.Forms.ComboBox());
-            this.label20 = (new global::System.Windows.Forms.Label());
-            this.maeNPCOnInteracted = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
-            this.saeNPCOnSpawn = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.ssNPC = (new global::RogueCustomsDungeonEditor.Controls.StatsSheet());
-            this.sisNPCStartingInventory = (new global::RogueCustomsDungeonEditor.Controls.StartingInventorySelector());
-            this.saeNPCOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeNPCOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeNPCOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.maeNPCOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
-            this.lblNPCAIOddsToTargetSelfA = (new global::System.Windows.Forms.Label());
-            this.txtNPCExperiencePayout = (new global::System.Windows.Forms.TextBox());
-            this.label103 = (new global::System.Windows.Forms.Label());
-            this.chkNPCKnowsAllCharacterPositions = (new global::System.Windows.Forms.CheckBox());
-            this.label67 = (new global::System.Windows.Forms.Label());
-            this.cmbNPCStartingArmor = (new global::System.Windows.Forms.ComboBox());
-            this.label70 = (new global::System.Windows.Forms.Label());
-            this.cmbNPCStartingWeapon = (new global::System.Windows.Forms.ComboBox());
-            this.label71 = (new global::System.Windows.Forms.Label());
-            this.label73 = (new global::System.Windows.Forms.Label());
-            this.nudNPCInventorySize = (new global::System.Windows.Forms.NumericUpDown());
-            this.label74 = (new global::System.Windows.Forms.Label());
-            this.label98 = (new global::System.Windows.Forms.Label());
-            this.chkNPCStartsVisible = (new global::System.Windows.Forms.CheckBox());
-            this.cmbNPCFaction = (new global::System.Windows.Forms.ComboBox());
-            this.label99 = (new global::System.Windows.Forms.Label());
-            this.fklblNPCDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtNPCDescription = (new global::System.Windows.Forms.TextBox());
-            this.label100 = (new global::System.Windows.Forms.Label());
-            this.fklblNPCNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtNPCName = (new global::System.Windows.Forms.TextBox());
-            this.label101 = (new global::System.Windows.Forms.Label());
-            this.crsNPC = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpItem = (new global::System.Windows.Forms.TabPage());
-            this.saeItemOnDeath = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeItemOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeItemOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.maeItemOnAttack = (new global::RogueCustomsDungeonEditor.Controls.MultiActionEditor());
-            this.saeItemOnUse = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeItemOnStepped = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.txtItemPower = (new global::System.Windows.Forms.TextBox());
-            this.label108 = (new global::System.Windows.Forms.Label());
-            this.chkItemCanBePickedUp = (new global::System.Windows.Forms.CheckBox());
-            this.chkItemStartsVisible = (new global::System.Windows.Forms.CheckBox());
-            this.cmbItemType = (new global::System.Windows.Forms.ComboBox());
-            this.label107 = (new global::System.Windows.Forms.Label());
-            this.label102 = (new global::System.Windows.Forms.Label());
-            this.fklblItemDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtItemDescription = (new global::System.Windows.Forms.TextBox());
-            this.label105 = (new global::System.Windows.Forms.Label());
-            this.fklblItemNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtItemName = (new global::System.Windows.Forms.TextBox());
-            this.label106 = (new global::System.Windows.Forms.Label());
-            this.crsItem = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpTrap = (new global::System.Windows.Forms.TabPage());
-            this.saeTrapOnStepped = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.txtTrapPower = (new global::System.Windows.Forms.TextBox());
-            this.label113 = (new global::System.Windows.Forms.Label());
-            this.chkTrapStartsVisible = (new global::System.Windows.Forms.CheckBox());
-            this.label116 = (new global::System.Windows.Forms.Label());
-            this.fklblTrapDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtTrapDescription = (new global::System.Windows.Forms.TextBox());
-            this.label117 = (new global::System.Windows.Forms.Label());
-            this.fklblTrapNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtTrapName = (new global::System.Windows.Forms.TextBox());
-            this.label118 = (new global::System.Windows.Forms.Label());
-            this.crsTrap = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpAlteredStatus = (new global::System.Windows.Forms.TabPage());
-            this.saeAlteredStatusOnAttacked = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeAlteredStatusBeforeAttack = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeAlteredStatusOnRemove = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeAlteredStatusOnTurnStart = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.saeAlteredStatusOnApply = (new global::RogueCustomsDungeonEditor.Controls.SingleActionEditor());
-            this.chkAlteredStatusCleansedOnCleanseActions = (new global::System.Windows.Forms.CheckBox());
-            this.chkAlteredStatusCleanseOnFloorChange = (new global::System.Windows.Forms.CheckBox());
-            this.chkAlteredStatusCanOverwrite = (new global::System.Windows.Forms.CheckBox());
-            this.chkAlteredStatusCanStack = (new global::System.Windows.Forms.CheckBox());
-            this.label111 = (new global::System.Windows.Forms.Label());
-            this.fklblAlteredStatusDescriptionLocale = (new global::System.Windows.Forms.Button());
-            this.txtAlteredStatusDescription = (new global::System.Windows.Forms.TextBox());
-            this.label114 = (new global::System.Windows.Forms.Label());
-            this.fklblAlteredStatusNameLocale = (new global::System.Windows.Forms.Button());
-            this.txtAlteredStatusName = (new global::System.Windows.Forms.TextBox());
-            this.label115 = (new global::System.Windows.Forms.Label());
-            this.crsAlteredStatus = (new global::RogueCustomsDungeonEditor.Controls.ConsoleRepresentationSelector());
-            this.tpValidation = (new global::System.Windows.Forms.TabPage());
-            this.tvValidationResults = (new global::System.Windows.Forms.TreeView());
-            this.ofdDungeon = (new global::System.Windows.Forms.OpenFileDialog());
-            this.sfdDungeon = (new global::System.Windows.Forms.SaveFileDialog());
-            this.msMenu.SuspendLayout();
-            this.tsButtons.SuspendLayout();
-            this.tbTabs.SuspendLayout();
-            this.tpBasicInfo.SuspendLayout();
-            this.tpLocales.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.dgvLocales)).BeginInit();
-            this.tpTileSetInfos.SuspendLayout();
-            this.tpFloorInfos.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudRoomFusionOdds)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudExtraRoomConnectionOdds)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMaxRoomConnections)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMaxFloorLevel)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMinFloorLevel)).BeginInit();
-            this.tpFactionInfos.SuspendLayout();
-            this.tpPlayerClass.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).BeginInit();
-            this.tpNPC.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).BeginInit();
-            this.tpItem.SuspendLayout();
-            this.tpTrap.SuspendLayout();
-            this.tpAlteredStatus.SuspendLayout();
-            this.tpValidation.SuspendLayout();
-            this.SuspendLayout();
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            var dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            msMenu = new MenuStrip();
+            editorToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem = new ToolStripMenuItem();
+            tsButtons = new ToolStrip();
+            tsbNewDungeon = new ToolStripButton();
+            tsbOpenDungeon = new ToolStripButton();
+            tsbSaveDungeon = new ToolStripButton();
+            tsbSaveDungeonAs = new ToolStripButton();
+            tssDungeonElement = new ToolStripSeparator();
+            tsbAddElement = new ToolStripButton();
+            tsbSaveElement = new ToolStripButton();
+            tsbSaveElementAs = new ToolStripButton();
+            tsbDeleteElement = new ToolStripButton();
+            tssElementValidate = new ToolStripSeparator();
+            tsbValidateDungeon = new ToolStripButton();
+            tvDungeonInfo = new TreeView();
+            tbTabs = new TabControl();
+            tpBasicInfo = new TabPage();
+            cmbDefaultLocale = new ComboBox();
+            label8 = new Label();
+            fklblEndingMessageLocale = new Button();
+            fklblWelcomeMessageLocale = new Button();
+            fklblAuthorLocale = new Button();
+            fklblDungeonNameLocale = new Button();
+            txtEndingMessage = new TextBox();
+            label4 = new Label();
+            txtWelcomeMessage = new TextBox();
+            label3 = new Label();
+            txtAuthor = new TextBox();
+            label2 = new Label();
+            txtDungeonName = new TextBox();
+            label1 = new Label();
+            tpLocales = new TabPage();
+            btnDeleteLocale = new Button();
+            btnAddLocale = new Button();
+            btnUpdateLocale = new Button();
+            fklblMissingLocale = new Button();
+            txtLocaleEntryValue = new TextBox();
+            label7 = new Label();
+            txtLocaleEntryKey = new TextBox();
+            label6 = new Label();
+            dgvLocales = new DataGridView();
+            cmKey = new DataGridViewTextBoxColumn();
+            cmValue = new DataGridViewTextBoxColumn();
+            tpTileSetInfos = new TabPage();
+            label151 = new Label();
+            csrEmpty = new Controls.ConsoleRepresentationSelector();
+            label152 = new Label();
+            csrStairs = new Controls.ConsoleRepresentationSelector();
+            label153 = new Label();
+            label154 = new Label();
+            csrFloor = new Controls.ConsoleRepresentationSelector();
+            label148 = new Label();
+            csrHorizontalHallway = new Controls.ConsoleRepresentationSelector();
+            label149 = new Label();
+            csrBottomRightHallway = new Controls.ConsoleRepresentationSelector();
+            label150 = new Label();
+            csrBottomLeftHallway = new Controls.ConsoleRepresentationSelector();
+            label137 = new Label();
+            csrCentralHallway = new Controls.ConsoleRepresentationSelector();
+            label140 = new Label();
+            csrVerticalRightHallway = new Controls.ConsoleRepresentationSelector();
+            label141 = new Label();
+            csrVerticalLeftHallway = new Controls.ConsoleRepresentationSelector();
+            label142 = new Label();
+            csrHorizontalTopHallway = new Controls.ConsoleRepresentationSelector();
+            label143 = new Label();
+            csrHorizontalBottomHallway = new Controls.ConsoleRepresentationSelector();
+            label144 = new Label();
+            csrVerticalHallway = new Controls.ConsoleRepresentationSelector();
+            label145 = new Label();
+            csrTopRightHallway = new Controls.ConsoleRepresentationSelector();
+            label146 = new Label();
+            label147 = new Label();
+            csrTopLeftHallway = new Controls.ConsoleRepresentationSelector();
+            label138 = new Label();
+            csrConnectorWall = new Controls.ConsoleRepresentationSelector();
+            label134 = new Label();
+            csrHorizontalWall = new Controls.ConsoleRepresentationSelector();
+            label135 = new Label();
+            csrBottomRightWall = new Controls.ConsoleRepresentationSelector();
+            label136 = new Label();
+            csrBottomLeftWall = new Controls.ConsoleRepresentationSelector();
+            label133 = new Label();
+            csrVerticalWall = new Controls.ConsoleRepresentationSelector();
+            label132 = new Label();
+            csrTopRightWall = new Controls.ConsoleRepresentationSelector();
+            label131 = new Label();
+            label130 = new Label();
+            csrTopLeftWall = new Controls.ConsoleRepresentationSelector();
+            tpFloorInfos = new TabPage();
+            nudHungerLostPerTurn = new NumericUpDown();
+            label31 = new Label();
+            saeOnFloorStart = new Controls.SingleActionEditor();
+            cmbTilesets = new ComboBox();
+            label155 = new Label();
+            nudRoomFusionOdds = new NumericUpDown();
+            label19 = new Label();
+            nudExtraRoomConnectionOdds = new NumericUpDown();
+            label18 = new Label();
+            nudMaxRoomConnections = new NumericUpDown();
+            label5 = new Label();
+            btnRemoveAlgorithm = new Button();
+            btnEditAlgorithm = new Button();
+            btnAddAlgorithm = new Button();
+            lvFloorAlgorithms = new ListView();
+            label17 = new Label();
+            label16 = new Label();
+            btnTrapGenerator = new Button();
+            label15 = new Label();
+            btnItemGenerator = new Button();
+            label14 = new Label();
+            btnNPCGenerator = new Button();
+            label13 = new Label();
+            nudHeight = new NumericUpDown();
+            nudWidth = new NumericUpDown();
+            label12 = new Label();
+            label11 = new Label();
+            fklblStairsReminder = new Button();
+            chkGenerateStairsOnStart = new CheckBox();
+            nudMaxFloorLevel = new NumericUpDown();
+            label10 = new Label();
+            nudMinFloorLevel = new NumericUpDown();
+            label9 = new Label();
+            tpFactionInfos = new TabPage();
+            lbEnemies = new ListBox();
+            label26 = new Label();
+            btnEnemiesToNeutrals = new Button();
+            btnEnemyToNeutral = new Button();
+            btnNeutralsToEnemies = new Button();
+            btnNeutralToEnemy = new Button();
+            lbNeutrals = new ListBox();
+            label25 = new Label();
+            btnNeutralsToAllies = new Button();
+            btnNeutralToAlly = new Button();
+            btnAlliesToNeutrals = new Button();
+            btnAllyToNeutral = new Button();
+            lbAllies = new ListBox();
+            label24 = new Label();
+            label23 = new Label();
+            fklblFactionDescriptionLocale = new Button();
+            txtFactionDescription = new TextBox();
+            label22 = new Label();
+            fklblFactionNameLocale = new Button();
+            txtFactionName = new TextBox();
+            label21 = new Label();
+            tpPlayerClass = new TabPage();
+            ssPlayer = new Controls.StatsSheet();
+            sisPlayerStartingInventory = new Controls.StartingInventorySelector();
+            saePlayerOnDeath = new Controls.SingleActionEditor();
+            saePlayerOnAttacked = new Controls.SingleActionEditor();
+            saePlayerOnTurnStart = new Controls.SingleActionEditor();
+            maePlayerOnAttack = new Controls.MultiActionEditor();
+            label58 = new Label();
+            cmbPlayerStartingArmor = new ComboBox();
+            label57 = new Label();
+            cmbPlayerStartingWeapon = new ComboBox();
+            label56 = new Label();
+            label54 = new Label();
+            nudPlayerInventorySize = new NumericUpDown();
+            label53 = new Label();
+            label30 = new Label();
+            chkPlayerStartsVisible = new CheckBox();
+            cmbPlayerFaction = new ComboBox();
+            label29 = new Label();
+            chkRequirePlayerPrompt = new CheckBox();
+            fklblPlayerClassDescriptionLocale = new Button();
+            txtPlayerClassDescription = new TextBox();
+            label28 = new Label();
+            fklblPlayerClassNameLocale = new Button();
+            txtPlayerClassName = new TextBox();
+            label27 = new Label();
+            crsPlayer = new Controls.ConsoleRepresentationSelector();
+            tpNPC = new TabPage();
+            lblNPCAIOddsToTargetSelfB = new Label();
+            nudNPCOddsToTargetSelf = new NumericUpDown();
+            cmbNPCAIType = new ComboBox();
+            label20 = new Label();
+            maeNPCOnInteracted = new Controls.MultiActionEditor();
+            saeNPCOnSpawn = new Controls.SingleActionEditor();
+            ssNPC = new Controls.StatsSheet();
+            sisNPCStartingInventory = new Controls.StartingInventorySelector();
+            saeNPCOnDeath = new Controls.SingleActionEditor();
+            saeNPCOnAttacked = new Controls.SingleActionEditor();
+            saeNPCOnTurnStart = new Controls.SingleActionEditor();
+            maeNPCOnAttack = new Controls.MultiActionEditor();
+            lblNPCAIOddsToTargetSelfA = new Label();
+            txtNPCExperiencePayout = new TextBox();
+            label103 = new Label();
+            chkNPCKnowsAllCharacterPositions = new CheckBox();
+            label67 = new Label();
+            cmbNPCStartingArmor = new ComboBox();
+            label70 = new Label();
+            cmbNPCStartingWeapon = new ComboBox();
+            label71 = new Label();
+            label73 = new Label();
+            nudNPCInventorySize = new NumericUpDown();
+            label74 = new Label();
+            label98 = new Label();
+            chkNPCStartsVisible = new CheckBox();
+            cmbNPCFaction = new ComboBox();
+            label99 = new Label();
+            fklblNPCDescriptionLocale = new Button();
+            txtNPCDescription = new TextBox();
+            label100 = new Label();
+            fklblNPCNameLocale = new Button();
+            txtNPCName = new TextBox();
+            label101 = new Label();
+            crsNPC = new Controls.ConsoleRepresentationSelector();
+            tpItem = new TabPage();
+            saeItemOnDeath = new Controls.SingleActionEditor();
+            saeItemOnTurnStart = new Controls.SingleActionEditor();
+            saeItemOnAttacked = new Controls.SingleActionEditor();
+            maeItemOnAttack = new Controls.MultiActionEditor();
+            saeItemOnUse = new Controls.SingleActionEditor();
+            saeItemOnStepped = new Controls.SingleActionEditor();
+            txtItemPower = new TextBox();
+            label108 = new Label();
+            chkItemCanBePickedUp = new CheckBox();
+            chkItemStartsVisible = new CheckBox();
+            cmbItemType = new ComboBox();
+            label107 = new Label();
+            label102 = new Label();
+            fklblItemDescriptionLocale = new Button();
+            txtItemDescription = new TextBox();
+            label105 = new Label();
+            fklblItemNameLocale = new Button();
+            txtItemName = new TextBox();
+            label106 = new Label();
+            crsItem = new Controls.ConsoleRepresentationSelector();
+            tpTrap = new TabPage();
+            saeTrapOnStepped = new Controls.SingleActionEditor();
+            txtTrapPower = new TextBox();
+            label113 = new Label();
+            chkTrapStartsVisible = new CheckBox();
+            label116 = new Label();
+            fklblTrapDescriptionLocale = new Button();
+            txtTrapDescription = new TextBox();
+            label117 = new Label();
+            fklblTrapNameLocale = new Button();
+            txtTrapName = new TextBox();
+            label118 = new Label();
+            crsTrap = new Controls.ConsoleRepresentationSelector();
+            tpAlteredStatus = new TabPage();
+            saeAlteredStatusOnAttacked = new Controls.SingleActionEditor();
+            saeAlteredStatusBeforeAttack = new Controls.SingleActionEditor();
+            saeAlteredStatusOnRemove = new Controls.SingleActionEditor();
+            saeAlteredStatusOnTurnStart = new Controls.SingleActionEditor();
+            saeAlteredStatusOnApply = new Controls.SingleActionEditor();
+            chkAlteredStatusCleansedOnCleanseActions = new CheckBox();
+            chkAlteredStatusCleanseOnFloorChange = new CheckBox();
+            chkAlteredStatusCanOverwrite = new CheckBox();
+            chkAlteredStatusCanStack = new CheckBox();
+            label111 = new Label();
+            fklblAlteredStatusDescriptionLocale = new Button();
+            txtAlteredStatusDescription = new TextBox();
+            label114 = new Label();
+            fklblAlteredStatusNameLocale = new Button();
+            txtAlteredStatusName = new TextBox();
+            label115 = new Label();
+            crsAlteredStatus = new Controls.ConsoleRepresentationSelector();
+            tpValidation = new TabPage();
+            tvValidationResults = new TreeView();
+            ofdDungeon = new OpenFileDialog();
+            sfdDungeon = new SaveFileDialog();
+            msMenu.SuspendLayout();
+            tsButtons.SuspendLayout();
+            tbTabs.SuspendLayout();
+            tpBasicInfo.SuspendLayout();
+            tpLocales.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLocales).BeginInit();
+            tpTileSetInfos.SuspendLayout();
+            tpFloorInfos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxRoomConnections).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudHeight).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudWidth).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxFloorLevel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMinFloorLevel).BeginInit();
+            tpFactionInfos.SuspendLayout();
+            tpPlayerClass.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
+            tpNPC.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudNPCOddsToTargetSelf).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
+            tpItem.SuspendLayout();
+            tpTrap.SuspendLayout();
+            tpAlteredStatus.SuspendLayout();
+            tpValidation.SuspendLayout();
+            SuspendLayout();
             // 
             // msMenu
             // 
-            this.msMenu.Items.AddRange(new global::System.Windows.Forms.ToolStripItem[] { this.editorToolStripMenuItem });
-            this.msMenu.Location = (new global::System.Drawing.Point(0, 0));
-            this.msMenu.Name = ("msMenu");
-            this.msMenu.Size = (new global::System.Drawing.Size(967, 24));
-            this.msMenu.TabIndex = (0);
-            this.msMenu.Text = ("menuStrip1");
+            msMenu.Items.AddRange(new ToolStripItem[] { editorToolStripMenuItem });
+            msMenu.Location = new System.Drawing.Point(0, 0);
+            msMenu.Name = "msMenu";
+            msMenu.Size = new System.Drawing.Size(967, 24);
+            msMenu.TabIndex = 0;
+            msMenu.Text = "menuStrip1";
             // 
             // editorToolStripMenuItem
             // 
-            this.editorToolStripMenuItem.DropDownItems.AddRange(new global::System.Windows.Forms.ToolStripItem[] { this.exitToolStripMenuItem });
-            this.editorToolStripMenuItem.Name = ("editorToolStripMenuItem");
-            this.editorToolStripMenuItem.Size = (new global::System.Drawing.Size(50, 20));
-            this.editorToolStripMenuItem.Text = ("Editor");
+            editorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            editorToolStripMenuItem.Name = "editorToolStripMenuItem";
+            editorToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            editorToolStripMenuItem.Text = "Editor";
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Name = ("exitToolStripMenuItem");
-            this.exitToolStripMenuItem.Size = (new global::System.Drawing.Size(93, 22));
-            this.exitToolStripMenuItem.Text = ("Exit");
-            this.exitToolStripMenuItem.Click += (this.exitToolStripMenuItem_Click);
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // tsButtons
             // 
-            this.tsButtons.Items.AddRange(new global::System.Windows.Forms.ToolStripItem[] { this.tsbNewDungeon, this.tsbOpenDungeon, this.tsbSaveDungeon, this.tsbSaveDungeonAs, this.tssDungeonElement, this.tsbAddElement, this.tsbSaveElement, this.tsbSaveElementAs, this.tsbDeleteElement, this.tssElementValidate, this.tsbValidateDungeon });
-            this.tsButtons.Location = (new global::System.Drawing.Point(0, 24));
-            this.tsButtons.Name = ("tsButtons");
-            this.tsButtons.Size = (new global::System.Drawing.Size(967, 38));
-            this.tsButtons.TabIndex = (1);
-            this.tsButtons.Text = ("toolStrip1");
+            tsButtons.Items.AddRange(new ToolStripItem[] { tsbNewDungeon, tsbOpenDungeon, tsbSaveDungeon, tsbSaveDungeonAs, tssDungeonElement, tsbAddElement, tsbSaveElement, tsbSaveElementAs, tsbDeleteElement, tssElementValidate, tsbValidateDungeon });
+            tsButtons.Location = new System.Drawing.Point(0, 24);
+            tsButtons.Name = "tsButtons";
+            tsButtons.Size = new System.Drawing.Size(967, 38);
+            tsButtons.TabIndex = 1;
+            tsButtons.Text = "toolStrip1";
             // 
             // tsbNewDungeon
             // 
-            this.tsbNewDungeon.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbNewDungeon.Image")));
-            this.tsbNewDungeon.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbNewDungeon.Name = ("tsbNewDungeon");
-            this.tsbNewDungeon.Size = (new global::System.Drawing.Size(87, 35));
-            this.tsbNewDungeon.Text = ("New Dungeon");
-            this.tsbNewDungeon.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbNewDungeon.ToolTipText = ("Create a new, empty Dungeon");
-            this.tsbNewDungeon.Click += (this.tsbNewDungeon_Click);
+            tsbNewDungeon.Image = (System.Drawing.Image)resources.GetObject("tsbNewDungeon.Image");
+            tsbNewDungeon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbNewDungeon.Name = "tsbNewDungeon";
+            tsbNewDungeon.Size = new System.Drawing.Size(87, 35);
+            tsbNewDungeon.Text = "New Dungeon";
+            tsbNewDungeon.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbNewDungeon.ToolTipText = "Create a new, empty Dungeon";
+            tsbNewDungeon.Click += tsbNewDungeon_Click;
             // 
             // tsbOpenDungeon
             // 
-            this.tsbOpenDungeon.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbOpenDungeon.Image")));
-            this.tsbOpenDungeon.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbOpenDungeon.Name = ("tsbOpenDungeon");
-            this.tsbOpenDungeon.Size = (new global::System.Drawing.Size(92, 35));
-            this.tsbOpenDungeon.Text = ("Open Dungeon");
-            this.tsbOpenDungeon.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbOpenDungeon.ToolTipText = ("Edit an existing Dungeon");
-            this.tsbOpenDungeon.Click += (this.tsbOpenDungeon_Click);
+            tsbOpenDungeon.Image = (System.Drawing.Image)resources.GetObject("tsbOpenDungeon.Image");
+            tsbOpenDungeon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbOpenDungeon.Name = "tsbOpenDungeon";
+            tsbOpenDungeon.Size = new System.Drawing.Size(92, 35);
+            tsbOpenDungeon.Text = "Open Dungeon";
+            tsbOpenDungeon.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbOpenDungeon.ToolTipText = "Edit an existing Dungeon";
+            tsbOpenDungeon.Click += tsbOpenDungeon_Click;
             // 
             // tsbSaveDungeon
             // 
-            this.tsbSaveDungeon.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbSaveDungeon.Image")));
-            this.tsbSaveDungeon.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbSaveDungeon.Name = ("tsbSaveDungeon");
-            this.tsbSaveDungeon.Size = (new global::System.Drawing.Size(87, 35));
-            this.tsbSaveDungeon.Text = ("Save Dungeon");
-            this.tsbSaveDungeon.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbSaveDungeon.ToolTipText = ("Save Dungeon to a file");
-            this.tsbSaveDungeon.Visible = (false);
-            this.tsbSaveDungeon.Click += (this.tsbSaveDungeon_Click);
+            tsbSaveDungeon.Image = (System.Drawing.Image)resources.GetObject("tsbSaveDungeon.Image");
+            tsbSaveDungeon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbSaveDungeon.Name = "tsbSaveDungeon";
+            tsbSaveDungeon.Size = new System.Drawing.Size(87, 35);
+            tsbSaveDungeon.Text = "Save Dungeon";
+            tsbSaveDungeon.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbSaveDungeon.ToolTipText = "Save Dungeon to a file";
+            tsbSaveDungeon.Visible = false;
+            tsbSaveDungeon.Click += tsbSaveDungeon_Click;
             // 
             // tsbSaveDungeonAs
             // 
-            this.tsbSaveDungeonAs.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbSaveDungeonAs.Image")));
-            this.tsbSaveDungeonAs.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbSaveDungeonAs.Name = ("tsbSaveDungeonAs");
-            this.tsbSaveDungeonAs.Size = (new global::System.Drawing.Size(112, 35));
-            this.tsbSaveDungeonAs.Text = ("Save Dungeon As...");
-            this.tsbSaveDungeonAs.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbSaveDungeonAs.ToolTipText = ("Save the Dungeon to a file of your choosing");
-            this.tsbSaveDungeonAs.Visible = (false);
-            this.tsbSaveDungeonAs.Click += (this.tsbSaveDungeonAs_Click);
+            tsbSaveDungeonAs.Image = (System.Drawing.Image)resources.GetObject("tsbSaveDungeonAs.Image");
+            tsbSaveDungeonAs.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbSaveDungeonAs.Name = "tsbSaveDungeonAs";
+            tsbSaveDungeonAs.Size = new System.Drawing.Size(112, 35);
+            tsbSaveDungeonAs.Text = "Save Dungeon As...";
+            tsbSaveDungeonAs.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbSaveDungeonAs.ToolTipText = "Save the Dungeon to a file of your choosing";
+            tsbSaveDungeonAs.Visible = false;
+            tsbSaveDungeonAs.Click += tsbSaveDungeonAs_Click;
             // 
             // tssDungeonElement
             // 
-            this.tssDungeonElement.Name = ("tssDungeonElement");
-            this.tssDungeonElement.Size = (new global::System.Drawing.Size(6, 38));
-            this.tssDungeonElement.Visible = (false);
+            tssDungeonElement.Name = "tssDungeonElement";
+            tssDungeonElement.Size = new System.Drawing.Size(6, 38);
+            tssDungeonElement.Visible = false;
             // 
             // tsbAddElement
             // 
-            this.tsbAddElement.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbAddElement.Image")));
-            this.tsbAddElement.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbAddElement.Name = ("tsbAddElement");
-            this.tsbAddElement.Size = (new global::System.Drawing.Size(81, 35));
-            this.tsbAddElement.Text = ("New Element");
-            this.tsbAddElement.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbAddElement.ToolTipText = ("Add a new element of this category");
-            this.tsbAddElement.Visible = (false);
-            this.tsbAddElement.Click += (this.tsbAddElement_Click);
+            tsbAddElement.Image = (System.Drawing.Image)resources.GetObject("tsbAddElement.Image");
+            tsbAddElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbAddElement.Name = "tsbAddElement";
+            tsbAddElement.Size = new System.Drawing.Size(81, 35);
+            tsbAddElement.Text = "New Element";
+            tsbAddElement.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbAddElement.ToolTipText = "Add a new element of this category";
+            tsbAddElement.Visible = false;
+            tsbAddElement.Click += tsbAddElement_Click;
             // 
             // tsbSaveElement
             // 
-            this.tsbSaveElement.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbSaveElement.Image")));
-            this.tsbSaveElement.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbSaveElement.Name = ("tsbSaveElement");
-            this.tsbSaveElement.Size = (new global::System.Drawing.Size(81, 35));
-            this.tsbSaveElement.Text = ("Save Element");
-            this.tsbSaveElement.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbSaveElement.ToolTipText = ("Save currently-opened Element");
-            this.tsbSaveElement.Visible = (false);
-            this.tsbSaveElement.Click += (this.tsbSaveElement_Click);
+            tsbSaveElement.Image = (System.Drawing.Image)resources.GetObject("tsbSaveElement.Image");
+            tsbSaveElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbSaveElement.Name = "tsbSaveElement";
+            tsbSaveElement.Size = new System.Drawing.Size(81, 35);
+            tsbSaveElement.Text = "Save Element";
+            tsbSaveElement.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbSaveElement.ToolTipText = "Save currently-opened Element";
+            tsbSaveElement.Visible = false;
+            tsbSaveElement.Click += tsbSaveElement_Click;
             // 
             // tsbSaveElementAs
             // 
-            this.tsbSaveElementAs.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbSaveElementAs.Image")));
-            this.tsbSaveElementAs.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbSaveElementAs.Name = ("tsbSaveElementAs");
-            this.tsbSaveElementAs.Size = (new global::System.Drawing.Size(133, 35));
-            this.tsbSaveElementAs.Text = ("Save As New Element...");
-            this.tsbSaveElementAs.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbSaveElementAs.ToolTipText = ("Save currently-opened Element with another name");
-            this.tsbSaveElementAs.Visible = (false);
-            this.tsbSaveElementAs.Click += (this.tsbSaveElementAs_Click);
+            tsbSaveElementAs.Image = (System.Drawing.Image)resources.GetObject("tsbSaveElementAs.Image");
+            tsbSaveElementAs.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbSaveElementAs.Name = "tsbSaveElementAs";
+            tsbSaveElementAs.Size = new System.Drawing.Size(133, 35);
+            tsbSaveElementAs.Text = "Save As New Element...";
+            tsbSaveElementAs.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbSaveElementAs.ToolTipText = "Save currently-opened Element with another name";
+            tsbSaveElementAs.Visible = false;
+            tsbSaveElementAs.Click += tsbSaveElementAs_Click;
             // 
             // tsbDeleteElement
             // 
-            this.tsbDeleteElement.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbDeleteElement.Image")));
-            this.tsbDeleteElement.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbDeleteElement.Name = ("tsbDeleteElement");
-            this.tsbDeleteElement.Size = (new global::System.Drawing.Size(90, 35));
-            this.tsbDeleteElement.Text = ("Delete Element");
-            this.tsbDeleteElement.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbDeleteElement.ToolTipText = ("Remove the currently open Element");
-            this.tsbDeleteElement.Visible = (false);
-            this.tsbDeleteElement.Click += (this.tsbDeleteElement_Click);
+            tsbDeleteElement.Image = (System.Drawing.Image)resources.GetObject("tsbDeleteElement.Image");
+            tsbDeleteElement.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbDeleteElement.Name = "tsbDeleteElement";
+            tsbDeleteElement.Size = new System.Drawing.Size(90, 35);
+            tsbDeleteElement.Text = "Delete Element";
+            tsbDeleteElement.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbDeleteElement.ToolTipText = "Remove the currently open Element";
+            tsbDeleteElement.Visible = false;
+            tsbDeleteElement.Click += tsbDeleteElement_Click;
             // 
             // tssElementValidate
             // 
-            this.tssElementValidate.Name = ("tssElementValidate");
-            this.tssElementValidate.Size = (new global::System.Drawing.Size(6, 38));
-            this.tssElementValidate.Visible = (false);
+            tssElementValidate.Name = "tssElementValidate";
+            tssElementValidate.Size = new System.Drawing.Size(6, 38);
+            tssElementValidate.Visible = false;
             // 
             // tsbValidateDungeon
             // 
-            this.tsbValidateDungeon.Image = ((global::System.Drawing.Image)(resources.GetObject("tsbValidateDungeon.Image")));
-            this.tsbValidateDungeon.ImageTransparentColor = (global::System.Drawing.Color.Magenta);
-            this.tsbValidateDungeon.Name = ("tsbValidateDungeon");
-            this.tsbValidateDungeon.Size = (new global::System.Drawing.Size(104, 35));
-            this.tsbValidateDungeon.Text = ("Validate Dungeon");
-            this.tsbValidateDungeon.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageAboveText);
-            this.tsbValidateDungeon.ToolTipText = ("Run the Dungeon Validator to check if it won't crash Rogue Customs");
-            this.tsbValidateDungeon.Visible = (false);
-            this.tsbValidateDungeon.Click += (this.tsbValidateDungeon_Click);
+            tsbValidateDungeon.Image = (System.Drawing.Image)resources.GetObject("tsbValidateDungeon.Image");
+            tsbValidateDungeon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsbValidateDungeon.Name = "tsbValidateDungeon";
+            tsbValidateDungeon.Size = new System.Drawing.Size(104, 35);
+            tsbValidateDungeon.Text = "Validate Dungeon";
+            tsbValidateDungeon.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbValidateDungeon.ToolTipText = "Run the Dungeon Validator to check if it won't crash Rogue Customs";
+            tsbValidateDungeon.Visible = false;
+            tsbValidateDungeon.Click += tsbValidateDungeon_Click;
             // 
             // tvDungeonInfo
             // 
-            this.tvDungeonInfo.FullRowSelect = (true);
-            this.tvDungeonInfo.HideSelection = (false);
-            this.tvDungeonInfo.Location = (new global::System.Drawing.Point(0, 65));
-            this.tvDungeonInfo.Name = ("tvDungeonInfo");
-            this.tvDungeonInfo.Size = (new global::System.Drawing.Size(217, 384));
-            this.tvDungeonInfo.TabIndex = (2);
-            this.tvDungeonInfo.AfterSelect += (this.tvDungeonInfo_AfterSelect);
+            tvDungeonInfo.FullRowSelect = true;
+            tvDungeonInfo.HideSelection = false;
+            tvDungeonInfo.Location = new System.Drawing.Point(0, 65);
+            tvDungeonInfo.Name = "tvDungeonInfo";
+            tvDungeonInfo.Size = new System.Drawing.Size(217, 384);
+            tvDungeonInfo.TabIndex = 2;
+            tvDungeonInfo.AfterSelect += tvDungeonInfo_AfterSelect;
             // 
             // tbTabs
             // 
-            this.tbTabs.Controls.Add(this.tpBasicInfo);
-            this.tbTabs.Controls.Add(this.tpLocales);
-            this.tbTabs.Controls.Add(this.tpTileSetInfos);
-            this.tbTabs.Controls.Add(this.tpFloorInfos);
-            this.tbTabs.Controls.Add(this.tpFactionInfos);
-            this.tbTabs.Controls.Add(this.tpPlayerClass);
-            this.tbTabs.Controls.Add(this.tpNPC);
-            this.tbTabs.Controls.Add(this.tpItem);
-            this.tbTabs.Controls.Add(this.tpTrap);
-            this.tbTabs.Controls.Add(this.tpAlteredStatus);
-            this.tbTabs.Controls.Add(this.tpValidation);
-            this.tbTabs.Location = (new global::System.Drawing.Point(219, 65));
-            this.tbTabs.Name = ("tbTabs");
-            this.tbTabs.SelectedIndex = (0);
-            this.tbTabs.Size = (new global::System.Drawing.Size(748, 384));
-            this.tbTabs.TabIndex = (3);
-            this.tbTabs.SelectedIndexChanged += (this.tbTabs_SelectedIndexChanged);
+            tbTabs.Controls.Add(tpBasicInfo);
+            tbTabs.Controls.Add(tpLocales);
+            tbTabs.Controls.Add(tpTileSetInfos);
+            tbTabs.Controls.Add(tpFloorInfos);
+            tbTabs.Controls.Add(tpFactionInfos);
+            tbTabs.Controls.Add(tpPlayerClass);
+            tbTabs.Controls.Add(tpNPC);
+            tbTabs.Controls.Add(tpItem);
+            tbTabs.Controls.Add(tpTrap);
+            tbTabs.Controls.Add(tpAlteredStatus);
+            tbTabs.Controls.Add(tpValidation);
+            tbTabs.Location = new System.Drawing.Point(219, 65);
+            tbTabs.Name = "tbTabs";
+            tbTabs.SelectedIndex = 0;
+            tbTabs.Size = new System.Drawing.Size(748, 384);
+            tbTabs.TabIndex = 3;
+            tbTabs.SelectedIndexChanged += tbTabs_SelectedIndexChanged;
             // 
             // tpBasicInfo
             // 
-            this.tpBasicInfo.Controls.Add(this.cmbDefaultLocale);
-            this.tpBasicInfo.Controls.Add(this.label8);
-            this.tpBasicInfo.Controls.Add(this.fklblEndingMessageLocale);
-            this.tpBasicInfo.Controls.Add(this.fklblWelcomeMessageLocale);
-            this.tpBasicInfo.Controls.Add(this.fklblAuthorLocale);
-            this.tpBasicInfo.Controls.Add(this.fklblDungeonNameLocale);
-            this.tpBasicInfo.Controls.Add(this.txtEndingMessage);
-            this.tpBasicInfo.Controls.Add(this.label4);
-            this.tpBasicInfo.Controls.Add(this.txtWelcomeMessage);
-            this.tpBasicInfo.Controls.Add(this.label3);
-            this.tpBasicInfo.Controls.Add(this.txtAuthor);
-            this.tpBasicInfo.Controls.Add(this.label2);
-            this.tpBasicInfo.Controls.Add(this.txtDungeonName);
-            this.tpBasicInfo.Controls.Add(this.label1);
-            this.tpBasicInfo.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpBasicInfo.Name = ("tpBasicInfo");
-            this.tpBasicInfo.Padding = (new global::System.Windows.Forms.Padding(3));
-            this.tpBasicInfo.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpBasicInfo.TabIndex = (0);
-            this.tpBasicInfo.Text = ("Basic Information");
-            this.tpBasicInfo.UseVisualStyleBackColor = (true);
+            tpBasicInfo.Controls.Add(cmbDefaultLocale);
+            tpBasicInfo.Controls.Add(label8);
+            tpBasicInfo.Controls.Add(fklblEndingMessageLocale);
+            tpBasicInfo.Controls.Add(fklblWelcomeMessageLocale);
+            tpBasicInfo.Controls.Add(fklblAuthorLocale);
+            tpBasicInfo.Controls.Add(fklblDungeonNameLocale);
+            tpBasicInfo.Controls.Add(txtEndingMessage);
+            tpBasicInfo.Controls.Add(label4);
+            tpBasicInfo.Controls.Add(txtWelcomeMessage);
+            tpBasicInfo.Controls.Add(label3);
+            tpBasicInfo.Controls.Add(txtAuthor);
+            tpBasicInfo.Controls.Add(label2);
+            tpBasicInfo.Controls.Add(txtDungeonName);
+            tpBasicInfo.Controls.Add(label1);
+            tpBasicInfo.Location = new System.Drawing.Point(4, 24);
+            tpBasicInfo.Name = "tpBasicInfo";
+            tpBasicInfo.Padding = new Padding(3);
+            tpBasicInfo.Size = new System.Drawing.Size(740, 356);
+            tpBasicInfo.TabIndex = 0;
+            tpBasicInfo.Text = "Basic Information";
+            tpBasicInfo.UseVisualStyleBackColor = true;
             // 
             // cmbDefaultLocale
             // 
-            this.cmbDefaultLocale.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbDefaultLocale.FormattingEnabled = (true);
-            this.cmbDefaultLocale.Location = (new global::System.Drawing.Point(188, 228));
-            this.cmbDefaultLocale.Name = ("cmbDefaultLocale");
-            this.cmbDefaultLocale.Size = (new global::System.Drawing.Size(81, 23));
-            this.cmbDefaultLocale.TabIndex = (17);
-            this.cmbDefaultLocale.SelectedIndexChanged += (this.cmbDefaultLocale_SelectedIndexChanged);
+            cmbDefaultLocale.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDefaultLocale.FormattingEnabled = true;
+            cmbDefaultLocale.Location = new System.Drawing.Point(188, 228);
+            cmbDefaultLocale.Name = "cmbDefaultLocale";
+            cmbDefaultLocale.Size = new System.Drawing.Size(81, 23);
+            cmbDefaultLocale.TabIndex = 17;
+            cmbDefaultLocale.SelectedIndexChanged += cmbDefaultLocale_SelectedIndexChanged;
             // 
             // label8
             // 
-            this.label8.AutoSize = (true);
-            this.label8.Location = (new global::System.Drawing.Point(11, 223));
-            this.label8.Name = ("label8");
-            this.label8.Size = (new global::System.Drawing.Size(171, 30));
-            this.label8.TabIndex = (16);
-            this.label8.Text = ("If the game has a language this\r\ndungeon lacks, use this locale:");
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(11, 223);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(171, 30);
+            label8.TabIndex = 16;
+            label8.Text = "If the game has a language this\r\ndungeon lacks, use this locale:";
             // 
             // fklblEndingMessageLocale
             // 
-            this.fklblEndingMessageLocale.Enabled = (false);
-            this.fklblEndingMessageLocale.FlatAppearance.BorderSize = (0);
-            this.fklblEndingMessageLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblEndingMessageLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblEndingMessageLocale.Image")));
-            this.fklblEndingMessageLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblEndingMessageLocale.Location = (new global::System.Drawing.Point(401, 304));
-            this.fklblEndingMessageLocale.Name = ("fklblEndingMessageLocale");
-            this.fklblEndingMessageLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblEndingMessageLocale.TabIndex = (15);
-            this.fklblEndingMessageLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblEndingMessageLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblEndingMessageLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblEndingMessageLocale.UseVisualStyleBackColor = (true);
-            this.fklblEndingMessageLocale.Visible = (false);
+            fklblEndingMessageLocale.Enabled = false;
+            fklblEndingMessageLocale.FlatAppearance.BorderSize = 0;
+            fklblEndingMessageLocale.FlatStyle = FlatStyle.Flat;
+            fklblEndingMessageLocale.Image = (System.Drawing.Image)resources.GetObject("fklblEndingMessageLocale.Image");
+            fklblEndingMessageLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblEndingMessageLocale.Location = new System.Drawing.Point(401, 304);
+            fklblEndingMessageLocale.Name = "fklblEndingMessageLocale";
+            fklblEndingMessageLocale.Size = new System.Drawing.Size(331, 42);
+            fklblEndingMessageLocale.TabIndex = 15;
+            fklblEndingMessageLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblEndingMessageLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblEndingMessageLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblEndingMessageLocale.UseVisualStyleBackColor = true;
+            fklblEndingMessageLocale.Visible = false;
             // 
             // fklblWelcomeMessageLocale
             // 
-            this.fklblWelcomeMessageLocale.Enabled = (false);
-            this.fklblWelcomeMessageLocale.FlatAppearance.BorderSize = (0);
-            this.fklblWelcomeMessageLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblWelcomeMessageLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblWelcomeMessageLocale.Image")));
-            this.fklblWelcomeMessageLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblWelcomeMessageLocale.Location = (new global::System.Drawing.Point(403, 132));
-            this.fklblWelcomeMessageLocale.Name = ("fklblWelcomeMessageLocale");
-            this.fklblWelcomeMessageLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblWelcomeMessageLocale.TabIndex = (14);
-            this.fklblWelcomeMessageLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblWelcomeMessageLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblWelcomeMessageLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblWelcomeMessageLocale.UseVisualStyleBackColor = (true);
-            this.fklblWelcomeMessageLocale.Visible = (false);
+            fklblWelcomeMessageLocale.Enabled = false;
+            fklblWelcomeMessageLocale.FlatAppearance.BorderSize = 0;
+            fklblWelcomeMessageLocale.FlatStyle = FlatStyle.Flat;
+            fklblWelcomeMessageLocale.Image = (System.Drawing.Image)resources.GetObject("fklblWelcomeMessageLocale.Image");
+            fklblWelcomeMessageLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblWelcomeMessageLocale.Location = new System.Drawing.Point(403, 132);
+            fklblWelcomeMessageLocale.Name = "fklblWelcomeMessageLocale";
+            fklblWelcomeMessageLocale.Size = new System.Drawing.Size(331, 42);
+            fklblWelcomeMessageLocale.TabIndex = 14;
+            fklblWelcomeMessageLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblWelcomeMessageLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblWelcomeMessageLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblWelcomeMessageLocale.UseVisualStyleBackColor = true;
+            fklblWelcomeMessageLocale.Visible = false;
             // 
             // fklblAuthorLocale
             // 
-            this.fklblAuthorLocale.Enabled = (false);
-            this.fklblAuthorLocale.FlatAppearance.BorderSize = (0);
-            this.fklblAuthorLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblAuthorLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblAuthorLocale.Image")));
-            this.fklblAuthorLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblAuthorLocale.Location = (new global::System.Drawing.Point(11, 168));
-            this.fklblAuthorLocale.Name = ("fklblAuthorLocale");
-            this.fklblAuthorLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblAuthorLocale.TabIndex = (13);
-            this.fklblAuthorLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblAuthorLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblAuthorLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblAuthorLocale.UseVisualStyleBackColor = (true);
-            this.fklblAuthorLocale.Visible = (false);
+            fklblAuthorLocale.Enabled = false;
+            fklblAuthorLocale.FlatAppearance.BorderSize = 0;
+            fklblAuthorLocale.FlatStyle = FlatStyle.Flat;
+            fklblAuthorLocale.Image = (System.Drawing.Image)resources.GetObject("fklblAuthorLocale.Image");
+            fklblAuthorLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblAuthorLocale.Location = new System.Drawing.Point(11, 168);
+            fklblAuthorLocale.Name = "fklblAuthorLocale";
+            fklblAuthorLocale.Size = new System.Drawing.Size(331, 42);
+            fklblAuthorLocale.TabIndex = 13;
+            fklblAuthorLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblAuthorLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblAuthorLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblAuthorLocale.UseVisualStyleBackColor = true;
+            fklblAuthorLocale.Visible = false;
             // 
             // fklblDungeonNameLocale
             // 
-            this.fklblDungeonNameLocale.Enabled = (false);
-            this.fklblDungeonNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblDungeonNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblDungeonNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblDungeonNameLocale.Image")));
-            this.fklblDungeonNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblDungeonNameLocale.Location = (new global::System.Drawing.Point(11, 55));
-            this.fklblDungeonNameLocale.Name = ("fklblDungeonNameLocale");
-            this.fklblDungeonNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblDungeonNameLocale.TabIndex = (12);
-            this.fklblDungeonNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblDungeonNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblDungeonNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblDungeonNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblDungeonNameLocale.Visible = (false);
+            fklblDungeonNameLocale.Enabled = false;
+            fklblDungeonNameLocale.FlatAppearance.BorderSize = 0;
+            fklblDungeonNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblDungeonNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblDungeonNameLocale.Image");
+            fklblDungeonNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblDungeonNameLocale.Location = new System.Drawing.Point(11, 55);
+            fklblDungeonNameLocale.Name = "fklblDungeonNameLocale";
+            fklblDungeonNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblDungeonNameLocale.TabIndex = 12;
+            fklblDungeonNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblDungeonNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblDungeonNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblDungeonNameLocale.UseVisualStyleBackColor = true;
+            fklblDungeonNameLocale.Visible = false;
             // 
             // txtEndingMessage
             // 
-            this.txtEndingMessage.Location = (new global::System.Drawing.Point(403, 195));
-            this.txtEndingMessage.Multiline = (true);
-            this.txtEndingMessage.Name = ("txtEndingMessage");
-            this.txtEndingMessage.ScrollBars = (global::System.Windows.Forms.ScrollBars.Vertical);
-            this.txtEndingMessage.Size = (new global::System.Drawing.Size(313, 103));
-            this.txtEndingMessage.TabIndex = (7);
-            this.txtEndingMessage.TextChanged += (this.txtEndingMessage_TextChanged);
+            txtEndingMessage.Location = new System.Drawing.Point(403, 195);
+            txtEndingMessage.Multiline = true;
+            txtEndingMessage.Name = "txtEndingMessage";
+            txtEndingMessage.ScrollBars = ScrollBars.Vertical;
+            txtEndingMessage.Size = new System.Drawing.Size(313, 103);
+            txtEndingMessage.TabIndex = 7;
+            txtEndingMessage.TextChanged += txtEndingMessage_TextChanged;
             // 
             // label4
             // 
-            this.label4.AutoSize = (true);
-            this.label4.Location = (new global::System.Drawing.Point(403, 177));
-            this.label4.Name = ("label4");
-            this.label4.Size = (new global::System.Drawing.Size(93, 15));
-            this.label4.TabIndex = (6);
-            this.label4.Text = ("Ending Message");
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(403, 177);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(93, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Ending Message";
             // 
             // txtWelcomeMessage
             // 
-            this.txtWelcomeMessage.Location = (new global::System.Drawing.Point(403, 26));
-            this.txtWelcomeMessage.Multiline = (true);
-            this.txtWelcomeMessage.Name = ("txtWelcomeMessage");
-            this.txtWelcomeMessage.ScrollBars = (global::System.Windows.Forms.ScrollBars.Vertical);
-            this.txtWelcomeMessage.Size = (new global::System.Drawing.Size(313, 103));
-            this.txtWelcomeMessage.TabIndex = (5);
-            this.txtWelcomeMessage.TextChanged += (this.txtWelcomeMessage_TextChanged);
+            txtWelcomeMessage.Location = new System.Drawing.Point(403, 26);
+            txtWelcomeMessage.Multiline = true;
+            txtWelcomeMessage.Name = "txtWelcomeMessage";
+            txtWelcomeMessage.ScrollBars = ScrollBars.Vertical;
+            txtWelcomeMessage.Size = new System.Drawing.Size(313, 103);
+            txtWelcomeMessage.TabIndex = 5;
+            txtWelcomeMessage.TextChanged += txtWelcomeMessage_TextChanged;
             // 
             // label3
             // 
-            this.label3.AutoSize = (true);
-            this.label3.Location = (new global::System.Drawing.Point(403, 8));
-            this.label3.Name = ("label3");
-            this.label3.Size = (new global::System.Drawing.Size(106, 15));
-            this.label3.TabIndex = (4);
-            this.label3.Text = ("Welcome Message");
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(403, 8);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(106, 15);
+            label3.TabIndex = 4;
+            label3.Text = "Welcome Message";
             // 
             // txtAuthor
             // 
-            this.txtAuthor.Location = (new global::System.Drawing.Point(11, 134));
-            this.txtAuthor.Name = ("txtAuthor");
-            this.txtAuthor.Size = (new global::System.Drawing.Size(359, 23));
-            this.txtAuthor.TabIndex = (3);
-            this.txtAuthor.TextChanged += (this.txtAuthor_TextChanged);
+            txtAuthor.Location = new System.Drawing.Point(11, 134);
+            txtAuthor.Name = "txtAuthor";
+            txtAuthor.Size = new System.Drawing.Size(359, 23);
+            txtAuthor.TabIndex = 3;
+            txtAuthor.TextChanged += txtAuthor_TextChanged;
             // 
             // label2
             // 
-            this.label2.AutoSize = (true);
-            this.label2.Location = (new global::System.Drawing.Point(11, 116));
-            this.label2.Name = ("label2");
-            this.label2.Size = (new global::System.Drawing.Size(44, 15));
-            this.label2.TabIndex = (2);
-            this.label2.Text = ("Author");
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(11, 116);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(44, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Author";
             // 
             // txtDungeonName
             // 
-            this.txtDungeonName.Location = (new global::System.Drawing.Point(11, 26));
-            this.txtDungeonName.Name = ("txtDungeonName");
-            this.txtDungeonName.Size = (new global::System.Drawing.Size(359, 23));
-            this.txtDungeonName.TabIndex = (1);
-            this.txtDungeonName.TextChanged += (this.txtDungeonName_TextChanged);
+            txtDungeonName.Location = new System.Drawing.Point(11, 26);
+            txtDungeonName.Name = "txtDungeonName";
+            txtDungeonName.Size = new System.Drawing.Size(359, 23);
+            txtDungeonName.TabIndex = 1;
+            txtDungeonName.TextChanged += txtDungeonName_TextChanged;
             // 
             // label1
             // 
-            this.label1.AutoSize = (true);
-            this.label1.Location = (new global::System.Drawing.Point(11, 8));
-            this.label1.Name = ("label1");
-            this.label1.Size = (new global::System.Drawing.Size(39, 15));
-            this.label1.TabIndex = (0);
-            this.label1.Text = ("Name");
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(11, 8);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(39, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Name";
             // 
             // tpLocales
             // 
-            this.tpLocales.Controls.Add(this.btnDeleteLocale);
-            this.tpLocales.Controls.Add(this.btnAddLocale);
-            this.tpLocales.Controls.Add(this.btnUpdateLocale);
-            this.tpLocales.Controls.Add(this.fklblMissingLocale);
-            this.tpLocales.Controls.Add(this.txtLocaleEntryValue);
-            this.tpLocales.Controls.Add(this.label7);
-            this.tpLocales.Controls.Add(this.txtLocaleEntryKey);
-            this.tpLocales.Controls.Add(this.label6);
-            this.tpLocales.Controls.Add(this.dgvLocales);
-            this.tpLocales.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpLocales.Name = ("tpLocales");
-            this.tpLocales.Padding = (new global::System.Windows.Forms.Padding(3));
-            this.tpLocales.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpLocales.TabIndex = (1);
-            this.tpLocales.Text = ("Locale Entries");
-            this.tpLocales.UseVisualStyleBackColor = (true);
+            tpLocales.Controls.Add(btnDeleteLocale);
+            tpLocales.Controls.Add(btnAddLocale);
+            tpLocales.Controls.Add(btnUpdateLocale);
+            tpLocales.Controls.Add(fklblMissingLocale);
+            tpLocales.Controls.Add(txtLocaleEntryValue);
+            tpLocales.Controls.Add(label7);
+            tpLocales.Controls.Add(txtLocaleEntryKey);
+            tpLocales.Controls.Add(label6);
+            tpLocales.Controls.Add(dgvLocales);
+            tpLocales.Location = new System.Drawing.Point(4, 24);
+            tpLocales.Name = "tpLocales";
+            tpLocales.Padding = new Padding(3);
+            tpLocales.Size = new System.Drawing.Size(740, 356);
+            tpLocales.TabIndex = 1;
+            tpLocales.Text = "Locale Entries";
+            tpLocales.UseVisualStyleBackColor = true;
             // 
             // btnDeleteLocale
             // 
-            this.btnDeleteLocale.Enabled = (false);
-            this.btnDeleteLocale.Location = (new global::System.Drawing.Point(401, 326));
-            this.btnDeleteLocale.Name = ("btnDeleteLocale");
-            this.btnDeleteLocale.Size = (new global::System.Drawing.Size(331, 23));
-            this.btnDeleteLocale.TabIndex = (16);
-            this.btnDeleteLocale.Text = ("Delete Locale Entry");
-            this.btnDeleteLocale.UseVisualStyleBackColor = (true);
-            this.btnDeleteLocale.Click += (this.btnDeleteLocale_Click);
+            btnDeleteLocale.Enabled = false;
+            btnDeleteLocale.Location = new System.Drawing.Point(401, 326);
+            btnDeleteLocale.Name = "btnDeleteLocale";
+            btnDeleteLocale.Size = new System.Drawing.Size(331, 23);
+            btnDeleteLocale.TabIndex = 16;
+            btnDeleteLocale.Text = "Delete Locale Entry";
+            btnDeleteLocale.UseVisualStyleBackColor = true;
+            btnDeleteLocale.Click += btnDeleteLocale_Click;
             // 
             // btnAddLocale
             // 
-            this.btnAddLocale.Enabled = (false);
-            this.btnAddLocale.Location = (new global::System.Drawing.Point(569, 297));
-            this.btnAddLocale.Name = ("btnAddLocale");
-            this.btnAddLocale.Size = (new global::System.Drawing.Size(163, 23));
-            this.btnAddLocale.TabIndex = (15);
-            this.btnAddLocale.Text = ("Add New Locale Entry");
-            this.btnAddLocale.UseVisualStyleBackColor = (true);
-            this.btnAddLocale.Click += (this.btnAddLocale_Click);
+            btnAddLocale.Enabled = false;
+            btnAddLocale.Location = new System.Drawing.Point(569, 297);
+            btnAddLocale.Name = "btnAddLocale";
+            btnAddLocale.Size = new System.Drawing.Size(163, 23);
+            btnAddLocale.TabIndex = 15;
+            btnAddLocale.Text = "Add New Locale Entry";
+            btnAddLocale.UseVisualStyleBackColor = true;
+            btnAddLocale.Click += btnAddLocale_Click;
             // 
             // btnUpdateLocale
             // 
-            this.btnUpdateLocale.Enabled = (false);
-            this.btnUpdateLocale.Location = (new global::System.Drawing.Point(401, 297));
-            this.btnUpdateLocale.Name = ("btnUpdateLocale");
-            this.btnUpdateLocale.Size = (new global::System.Drawing.Size(162, 23));
-            this.btnUpdateLocale.TabIndex = (14);
-            this.btnUpdateLocale.Text = ("Update Locale Entry");
-            this.btnUpdateLocale.UseVisualStyleBackColor = (true);
-            this.btnUpdateLocale.Click += (this.btnUpdateLocale_Click);
+            btnUpdateLocale.Enabled = false;
+            btnUpdateLocale.Location = new System.Drawing.Point(401, 297);
+            btnUpdateLocale.Name = "btnUpdateLocale";
+            btnUpdateLocale.Size = new System.Drawing.Size(162, 23);
+            btnUpdateLocale.TabIndex = 14;
+            btnUpdateLocale.Text = "Update Locale Entry";
+            btnUpdateLocale.UseVisualStyleBackColor = true;
+            btnUpdateLocale.Click += btnUpdateLocale_Click;
             // 
             // fklblMissingLocale
             // 
-            this.fklblMissingLocale.Enabled = (false);
-            this.fklblMissingLocale.FlatAppearance.BorderSize = (0);
-            this.fklblMissingLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblMissingLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblMissingLocale.Image")));
-            this.fklblMissingLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblMissingLocale.Location = (new global::System.Drawing.Point(403, 228));
-            this.fklblMissingLocale.Name = ("fklblMissingLocale");
-            this.fklblMissingLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblMissingLocale.TabIndex = (13);
-            this.fklblMissingLocale.Text = ("(Missing locale warning)");
-            this.fklblMissingLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblMissingLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblMissingLocale.UseVisualStyleBackColor = (true);
-            this.fklblMissingLocale.Visible = (false);
+            fklblMissingLocale.Enabled = false;
+            fklblMissingLocale.FlatAppearance.BorderSize = 0;
+            fklblMissingLocale.FlatStyle = FlatStyle.Flat;
+            fklblMissingLocale.Image = (System.Drawing.Image)resources.GetObject("fklblMissingLocale.Image");
+            fklblMissingLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblMissingLocale.Location = new System.Drawing.Point(403, 228);
+            fklblMissingLocale.Name = "fklblMissingLocale";
+            fklblMissingLocale.Size = new System.Drawing.Size(331, 42);
+            fklblMissingLocale.TabIndex = 13;
+            fklblMissingLocale.Text = "(Missing locale warning)";
+            fklblMissingLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblMissingLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblMissingLocale.UseVisualStyleBackColor = true;
+            fklblMissingLocale.Visible = false;
             // 
             // txtLocaleEntryValue
             // 
-            this.txtLocaleEntryValue.Enabled = (false);
-            this.txtLocaleEntryValue.Location = (new global::System.Drawing.Point(401, 79));
-            this.txtLocaleEntryValue.Multiline = (true);
-            this.txtLocaleEntryValue.Name = ("txtLocaleEntryValue");
-            this.txtLocaleEntryValue.ScrollBars = (global::System.Windows.Forms.ScrollBars.Vertical);
-            this.txtLocaleEntryValue.Size = (new global::System.Drawing.Size(331, 143));
-            this.txtLocaleEntryValue.TabIndex = (4);
-            this.txtLocaleEntryValue.TextChanged += (this.txtLocaleEntryValue_TextChanged);
+            txtLocaleEntryValue.Enabled = false;
+            txtLocaleEntryValue.Location = new System.Drawing.Point(401, 79);
+            txtLocaleEntryValue.Multiline = true;
+            txtLocaleEntryValue.Name = "txtLocaleEntryValue";
+            txtLocaleEntryValue.ScrollBars = ScrollBars.Vertical;
+            txtLocaleEntryValue.Size = new System.Drawing.Size(331, 143);
+            txtLocaleEntryValue.TabIndex = 4;
+            txtLocaleEntryValue.TextChanged += txtLocaleEntryValue_TextChanged;
             // 
             // label7
             // 
-            this.label7.AutoSize = (true);
-            this.label7.Location = (new global::System.Drawing.Point(401, 61));
-            this.label7.Name = ("label7");
-            this.label7.Size = (new global::System.Drawing.Size(102, 15));
-            this.label7.TabIndex = (3);
-            this.label7.Text = ("Locale Entry Value");
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(401, 61);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(102, 15);
+            label7.TabIndex = 3;
+            label7.Text = "Locale Entry Value";
             // 
             // txtLocaleEntryKey
             // 
-            this.txtLocaleEntryKey.Enabled = (false);
-            this.txtLocaleEntryKey.Location = (new global::System.Drawing.Point(401, 25));
-            this.txtLocaleEntryKey.Name = ("txtLocaleEntryKey");
-            this.txtLocaleEntryKey.Size = (new global::System.Drawing.Size(331, 23));
-            this.txtLocaleEntryKey.TabIndex = (2);
-            this.txtLocaleEntryKey.TextChanged += (this.txtLocaleEntryKey_TextChanged);
+            txtLocaleEntryKey.Enabled = false;
+            txtLocaleEntryKey.Location = new System.Drawing.Point(401, 25);
+            txtLocaleEntryKey.Name = "txtLocaleEntryKey";
+            txtLocaleEntryKey.Size = new System.Drawing.Size(331, 23);
+            txtLocaleEntryKey.TabIndex = 2;
+            txtLocaleEntryKey.TextChanged += txtLocaleEntryKey_TextChanged;
             // 
             // label6
             // 
-            this.label6.AutoSize = (true);
-            this.label6.Location = (new global::System.Drawing.Point(401, 7));
-            this.label6.Name = ("label6");
-            this.label6.Size = (new global::System.Drawing.Size(93, 15));
-            this.label6.TabIndex = (1);
-            this.label6.Text = ("Locale Entry Key");
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(401, 7);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(93, 15);
+            label6.TabIndex = 1;
+            label6.Text = "Locale Entry Key";
             // 
             // dgvLocales
             // 
-            this.dgvLocales.AllowUserToAddRows = (false);
-            this.dgvLocales.AllowUserToDeleteRows = (false);
-            this.dgvLocales.AllowUserToResizeColumns = (false);
-            this.dgvLocales.AllowUserToResizeRows = (false);
-            this.dgvLocales.ColumnHeadersHeightSizeMode = (global::System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize);
-            this.dgvLocales.ColumnHeadersVisible = (false);
-            this.dgvLocales.Columns.AddRange(new global::System.Windows.Forms.DataGridViewColumn[] { this.cmKey, this.cmValue });
-            this.dgvLocales.Location = (new global::System.Drawing.Point(0, 0));
-            this.dgvLocales.MultiSelect = (false);
-            this.dgvLocales.Name = ("dgvLocales");
-            this.dgvLocales.ReadOnly = (true);
-            this.dgvLocales.RowHeadersVisible = (false);
-            this.dgvLocales.RowTemplate.Height = (25);
-            this.dgvLocales.ScrollBars = (global::System.Windows.Forms.ScrollBars.Vertical);
-            this.dgvLocales.SelectionMode = (global::System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect);
-            this.dgvLocales.Size = (new global::System.Drawing.Size(395, 356));
-            this.dgvLocales.TabIndex = (0);
-            this.dgvLocales.SelectionChanged += (this.dgvLocales_SelectionChanged);
+            dgvLocales.AllowUserToAddRows = false;
+            dgvLocales.AllowUserToDeleteRows = false;
+            dgvLocales.AllowUserToResizeColumns = false;
+            dgvLocales.AllowUserToResizeRows = false;
+            dgvLocales.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvLocales.ColumnHeadersVisible = false;
+            dgvLocales.Columns.AddRange(new DataGridViewColumn[] { cmKey, cmValue });
+            dgvLocales.Location = new System.Drawing.Point(0, 0);
+            dgvLocales.MultiSelect = false;
+            dgvLocales.Name = "dgvLocales";
+            dgvLocales.ReadOnly = true;
+            dgvLocales.RowHeadersVisible = false;
+            dgvLocales.RowTemplate.Height = 25;
+            dgvLocales.ScrollBars = ScrollBars.Vertical;
+            dgvLocales.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvLocales.Size = new System.Drawing.Size(395, 356);
+            dgvLocales.TabIndex = 0;
+            dgvLocales.SelectionChanged += dgvLocales_SelectionChanged;
             // 
             // cmKey
             // 
-            dataGridViewCellStyle1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.cmKey.DefaultCellStyle = (dataGridViewCellStyle1);
-            this.cmKey.HeaderText = ("Key");
-            this.cmKey.Name = ("cmKey");
-            this.cmKey.ReadOnly = (true);
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            cmKey.DefaultCellStyle = dataGridViewCellStyle1;
+            cmKey.HeaderText = "Key";
+            cmKey.Name = "cmKey";
+            cmKey.ReadOnly = true;
             // 
             // cmValue
             // 
-            this.cmValue.HeaderText = ("Value");
-            this.cmValue.Name = ("cmValue");
-            this.cmValue.ReadOnly = (true);
-            this.cmValue.Width = (300);
+            cmValue.HeaderText = "Value";
+            cmValue.Name = "cmValue";
+            cmValue.ReadOnly = true;
+            cmValue.Width = 300;
             // 
             // tpTileSetInfos
             // 
-            this.tpTileSetInfos.AutoScroll = (true);
-            this.tpTileSetInfos.Controls.Add(this.label151);
-            this.tpTileSetInfos.Controls.Add(this.csrEmpty);
-            this.tpTileSetInfos.Controls.Add(this.label152);
-            this.tpTileSetInfos.Controls.Add(this.csrStairs);
-            this.tpTileSetInfos.Controls.Add(this.label153);
-            this.tpTileSetInfos.Controls.Add(this.label154);
-            this.tpTileSetInfos.Controls.Add(this.csrFloor);
-            this.tpTileSetInfos.Controls.Add(this.label148);
-            this.tpTileSetInfos.Controls.Add(this.csrHorizontalHallway);
-            this.tpTileSetInfos.Controls.Add(this.label149);
-            this.tpTileSetInfos.Controls.Add(this.csrBottomRightHallway);
-            this.tpTileSetInfos.Controls.Add(this.label150);
-            this.tpTileSetInfos.Controls.Add(this.csrBottomLeftHallway);
-            this.tpTileSetInfos.Controls.Add(this.label137);
-            this.tpTileSetInfos.Controls.Add(this.csrCentralHallway);
-            this.tpTileSetInfos.Controls.Add(this.label140);
-            this.tpTileSetInfos.Controls.Add(this.csrVerticalRightHallway);
-            this.tpTileSetInfos.Controls.Add(this.label141);
-            this.tpTileSetInfos.Controls.Add(this.csrVerticalLeftHallway);
-            this.tpTileSetInfos.Controls.Add(this.label142);
-            this.tpTileSetInfos.Controls.Add(this.csrHorizontalTopHallway);
-            this.tpTileSetInfos.Controls.Add(this.label143);
-            this.tpTileSetInfos.Controls.Add(this.csrHorizontalBottomHallway);
-            this.tpTileSetInfos.Controls.Add(this.label144);
-            this.tpTileSetInfos.Controls.Add(this.csrVerticalHallway);
-            this.tpTileSetInfos.Controls.Add(this.label145);
-            this.tpTileSetInfos.Controls.Add(this.csrTopRightHallway);
-            this.tpTileSetInfos.Controls.Add(this.label146);
-            this.tpTileSetInfos.Controls.Add(this.label147);
-            this.tpTileSetInfos.Controls.Add(this.csrTopLeftHallway);
-            this.tpTileSetInfos.Controls.Add(this.label138);
-            this.tpTileSetInfos.Controls.Add(this.csrConnectorWall);
-            this.tpTileSetInfos.Controls.Add(this.label134);
-            this.tpTileSetInfos.Controls.Add(this.csrHorizontalWall);
-            this.tpTileSetInfos.Controls.Add(this.label135);
-            this.tpTileSetInfos.Controls.Add(this.csrBottomRightWall);
-            this.tpTileSetInfos.Controls.Add(this.label136);
-            this.tpTileSetInfos.Controls.Add(this.csrBottomLeftWall);
-            this.tpTileSetInfos.Controls.Add(this.label133);
-            this.tpTileSetInfos.Controls.Add(this.csrVerticalWall);
-            this.tpTileSetInfos.Controls.Add(this.label132);
-            this.tpTileSetInfos.Controls.Add(this.csrTopRightWall);
-            this.tpTileSetInfos.Controls.Add(this.label131);
-            this.tpTileSetInfos.Controls.Add(this.label130);
-            this.tpTileSetInfos.Controls.Add(this.csrTopLeftWall);
-            this.tpTileSetInfos.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpTileSetInfos.Name = ("tpTileSetInfos");
-            this.tpTileSetInfos.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpTileSetInfos.TabIndex = (10);
-            this.tpTileSetInfos.Text = ("Tileset");
-            this.tpTileSetInfos.UseVisualStyleBackColor = (true);
+            tpTileSetInfos.AutoScroll = true;
+            tpTileSetInfos.Controls.Add(label151);
+            tpTileSetInfos.Controls.Add(csrEmpty);
+            tpTileSetInfos.Controls.Add(label152);
+            tpTileSetInfos.Controls.Add(csrStairs);
+            tpTileSetInfos.Controls.Add(label153);
+            tpTileSetInfos.Controls.Add(label154);
+            tpTileSetInfos.Controls.Add(csrFloor);
+            tpTileSetInfos.Controls.Add(label148);
+            tpTileSetInfos.Controls.Add(csrHorizontalHallway);
+            tpTileSetInfos.Controls.Add(label149);
+            tpTileSetInfos.Controls.Add(csrBottomRightHallway);
+            tpTileSetInfos.Controls.Add(label150);
+            tpTileSetInfos.Controls.Add(csrBottomLeftHallway);
+            tpTileSetInfos.Controls.Add(label137);
+            tpTileSetInfos.Controls.Add(csrCentralHallway);
+            tpTileSetInfos.Controls.Add(label140);
+            tpTileSetInfos.Controls.Add(csrVerticalRightHallway);
+            tpTileSetInfos.Controls.Add(label141);
+            tpTileSetInfos.Controls.Add(csrVerticalLeftHallway);
+            tpTileSetInfos.Controls.Add(label142);
+            tpTileSetInfos.Controls.Add(csrHorizontalTopHallway);
+            tpTileSetInfos.Controls.Add(label143);
+            tpTileSetInfos.Controls.Add(csrHorizontalBottomHallway);
+            tpTileSetInfos.Controls.Add(label144);
+            tpTileSetInfos.Controls.Add(csrVerticalHallway);
+            tpTileSetInfos.Controls.Add(label145);
+            tpTileSetInfos.Controls.Add(csrTopRightHallway);
+            tpTileSetInfos.Controls.Add(label146);
+            tpTileSetInfos.Controls.Add(label147);
+            tpTileSetInfos.Controls.Add(csrTopLeftHallway);
+            tpTileSetInfos.Controls.Add(label138);
+            tpTileSetInfos.Controls.Add(csrConnectorWall);
+            tpTileSetInfos.Controls.Add(label134);
+            tpTileSetInfos.Controls.Add(csrHorizontalWall);
+            tpTileSetInfos.Controls.Add(label135);
+            tpTileSetInfos.Controls.Add(csrBottomRightWall);
+            tpTileSetInfos.Controls.Add(label136);
+            tpTileSetInfos.Controls.Add(csrBottomLeftWall);
+            tpTileSetInfos.Controls.Add(label133);
+            tpTileSetInfos.Controls.Add(csrVerticalWall);
+            tpTileSetInfos.Controls.Add(label132);
+            tpTileSetInfos.Controls.Add(csrTopRightWall);
+            tpTileSetInfos.Controls.Add(label131);
+            tpTileSetInfos.Controls.Add(label130);
+            tpTileSetInfos.Controls.Add(csrTopLeftWall);
+            tpTileSetInfos.Location = new System.Drawing.Point(4, 24);
+            tpTileSetInfos.Name = "tpTileSetInfos";
+            tpTileSetInfos.Size = new System.Drawing.Size(740, 356);
+            tpTileSetInfos.TabIndex = 10;
+            tpTileSetInfos.Text = "Tileset";
+            tpTileSetInfos.UseVisualStyleBackColor = true;
             // 
             // label151
             // 
-            this.label151.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label151.Location = (new global::System.Drawing.Point(465, 1055));
-            this.label151.Name = ("label151");
-            this.label151.Size = (new global::System.Drawing.Size(211, 32));
-            this.label151.TabIndex = (169);
-            this.label151.Text = ("Empty (inaccessible)");
-            this.label151.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label151.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label151.Location = new System.Drawing.Point(465, 1055);
+            label151.Name = "label151";
+            label151.Size = new System.Drawing.Size(211, 32);
+            label151.TabIndex = 169;
+            label151.Text = "Empty (inaccessible)";
+            label151.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrEmpty
             // 
-            this.csrEmpty.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrEmpty.BackgroundColor")));
-            this.csrEmpty.Character = ('\0');
-            this.csrEmpty.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrEmpty.ForegroundColor")));
-            this.csrEmpty.Location = (new global::System.Drawing.Point(465, 1090));
-            this.csrEmpty.Name = ("csrEmpty");
-            this.csrEmpty.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrEmpty.TabIndex = (170);
-            this.csrEmpty.PropertyChanged += (this.csrEmpty_PropertyChanged);
+            csrEmpty.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrEmpty.BackgroundColor");
+            csrEmpty.Character = '\0';
+            csrEmpty.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrEmpty.ForegroundColor");
+            csrEmpty.Location = new System.Drawing.Point(465, 1090);
+            csrEmpty.Name = "csrEmpty";
+            csrEmpty.Size = new System.Drawing.Size(211, 83);
+            csrEmpty.TabIndex = 170;
+            csrEmpty.PropertyChanged += csrEmpty_PropertyChanged;
             // 
             // label152
             // 
-            this.label152.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label152.Location = (new global::System.Drawing.Point(248, 1055));
-            this.label152.Name = ("label152");
-            this.label152.Size = (new global::System.Drawing.Size(211, 32));
-            this.label152.TabIndex = (167);
-            this.label152.Text = ("Stairs");
-            this.label152.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label152.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label152.Location = new System.Drawing.Point(248, 1055);
+            label152.Name = "label152";
+            label152.Size = new System.Drawing.Size(211, 32);
+            label152.TabIndex = 167;
+            label152.Text = "Stairs";
+            label152.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrStairs
             // 
-            this.csrStairs.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrStairs.BackgroundColor")));
-            this.csrStairs.Character = ('\0');
-            this.csrStairs.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrStairs.ForegroundColor")));
-            this.csrStairs.Location = (new global::System.Drawing.Point(248, 1090));
-            this.csrStairs.Name = ("csrStairs");
-            this.csrStairs.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrStairs.TabIndex = (168);
-            this.csrStairs.PropertyChanged += (this.csrStairs_PropertyChanged);
+            csrStairs.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrStairs.BackgroundColor");
+            csrStairs.Character = '\0';
+            csrStairs.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrStairs.ForegroundColor");
+            csrStairs.Location = new System.Drawing.Point(248, 1090);
+            csrStairs.Name = "csrStairs";
+            csrStairs.Size = new System.Drawing.Size(211, 83);
+            csrStairs.TabIndex = 168;
+            csrStairs.PropertyChanged += csrStairs_PropertyChanged;
             // 
             // label153
             // 
-            this.label153.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label153.Location = (new global::System.Drawing.Point(248, 1003));
-            this.label153.Name = ("label153");
-            this.label153.Size = (new global::System.Drawing.Size(211, 52));
-            this.label153.TabIndex = (166);
-            this.label153.Text = ("OTHERS");
-            this.label153.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label153.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label153.Location = new System.Drawing.Point(248, 1003);
+            label153.Name = "label153";
+            label153.Size = new System.Drawing.Size(211, 52);
+            label153.TabIndex = 166;
+            label153.Text = "OTHERS";
+            label153.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label154
             // 
-            this.label154.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label154.Location = (new global::System.Drawing.Point(31, 1055));
-            this.label154.Name = ("label154");
-            this.label154.Size = (new global::System.Drawing.Size(211, 32));
-            this.label154.TabIndex = (164);
-            this.label154.Text = ("Unoccupied Floor");
-            this.label154.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label154.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label154.Location = new System.Drawing.Point(31, 1055);
+            label154.Name = "label154";
+            label154.Size = new System.Drawing.Size(211, 32);
+            label154.TabIndex = 164;
+            label154.Text = "Unoccupied Floor";
+            label154.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrFloor
             // 
-            this.csrFloor.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrFloor.BackgroundColor")));
-            this.csrFloor.Character = ('\0');
-            this.csrFloor.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrFloor.ForegroundColor")));
-            this.csrFloor.Location = (new global::System.Drawing.Point(31, 1090));
-            this.csrFloor.Name = ("csrFloor");
-            this.csrFloor.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrFloor.TabIndex = (165);
-            this.csrFloor.PropertyChanged += (this.csrFloor_PropertyChanged);
+            csrFloor.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrFloor.BackgroundColor");
+            csrFloor.Character = '\0';
+            csrFloor.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrFloor.ForegroundColor");
+            csrFloor.Location = new System.Drawing.Point(31, 1090);
+            csrFloor.Name = "csrFloor";
+            csrFloor.Size = new System.Drawing.Size(211, 83);
+            csrFloor.TabIndex = 165;
+            csrFloor.PropertyChanged += csrFloor_PropertyChanged;
             // 
             // label148
             // 
-            this.label148.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label148.Location = (new global::System.Drawing.Point(454, 611));
-            this.label148.Name = ("label148");
-            this.label148.Size = (new global::System.Drawing.Size(211, 32));
-            this.label148.TabIndex = (162);
-            this.label148.Text = ("Horizontal");
-            this.label148.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label148.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label148.Location = new System.Drawing.Point(454, 611);
+            label148.Name = "label148";
+            label148.Size = new System.Drawing.Size(211, 32);
+            label148.TabIndex = 162;
+            label148.Text = "Horizontal";
+            label148.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrHorizontalHallway
             // 
-            this.csrHorizontalHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalHallway.BackgroundColor")));
-            this.csrHorizontalHallway.Character = ('\0');
-            this.csrHorizontalHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalHallway.ForegroundColor")));
-            this.csrHorizontalHallway.Location = (new global::System.Drawing.Point(454, 646));
-            this.csrHorizontalHallway.Name = ("csrHorizontalHallway");
-            this.csrHorizontalHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrHorizontalHallway.TabIndex = (163);
-            this.csrHorizontalHallway.PropertyChanged += (this.csrHorizontalHallway_PropertyChanged);
+            csrHorizontalHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalHallway.BackgroundColor");
+            csrHorizontalHallway.Character = '\0';
+            csrHorizontalHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalHallway.ForegroundColor");
+            csrHorizontalHallway.Location = new System.Drawing.Point(454, 646);
+            csrHorizontalHallway.Name = "csrHorizontalHallway";
+            csrHorizontalHallway.Size = new System.Drawing.Size(211, 83);
+            csrHorizontalHallway.TabIndex = 163;
+            csrHorizontalHallway.PropertyChanged += csrHorizontalHallway_PropertyChanged;
             // 
             // label149
             // 
-            this.label149.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label149.Location = (new global::System.Drawing.Point(237, 611));
-            this.label149.Name = ("label149");
-            this.label149.Size = (new global::System.Drawing.Size(211, 32));
-            this.label149.TabIndex = (160);
-            this.label149.Text = ("Bottom Right Corner");
-            this.label149.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label149.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label149.Location = new System.Drawing.Point(237, 611);
+            label149.Name = "label149";
+            label149.Size = new System.Drawing.Size(211, 32);
+            label149.TabIndex = 160;
+            label149.Text = "Bottom Right Corner";
+            label149.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrBottomRightHallway
             // 
-            this.csrBottomRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightHallway.BackgroundColor")));
-            this.csrBottomRightHallway.Character = ('\0');
-            this.csrBottomRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightHallway.ForegroundColor")));
-            this.csrBottomRightHallway.Location = (new global::System.Drawing.Point(237, 646));
-            this.csrBottomRightHallway.Name = ("csrBottomRightHallway");
-            this.csrBottomRightHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrBottomRightHallway.TabIndex = (161);
-            this.csrBottomRightHallway.PropertyChanged += (this.csrBottomRightHallway_PropertyChanged);
+            csrBottomRightHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomRightHallway.BackgroundColor");
+            csrBottomRightHallway.Character = '\0';
+            csrBottomRightHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomRightHallway.ForegroundColor");
+            csrBottomRightHallway.Location = new System.Drawing.Point(237, 646);
+            csrBottomRightHallway.Name = "csrBottomRightHallway";
+            csrBottomRightHallway.Size = new System.Drawing.Size(211, 83);
+            csrBottomRightHallway.TabIndex = 161;
+            csrBottomRightHallway.PropertyChanged += csrBottomRightHallway_PropertyChanged;
             // 
             // label150
             // 
-            this.label150.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label150.Location = (new global::System.Drawing.Point(20, 611));
-            this.label150.Name = ("label150");
-            this.label150.Size = (new global::System.Drawing.Size(211, 32));
-            this.label150.TabIndex = (158);
-            this.label150.Text = ("Bottom Left Corner");
-            this.label150.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label150.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label150.Location = new System.Drawing.Point(20, 611);
+            label150.Name = "label150";
+            label150.Size = new System.Drawing.Size(211, 32);
+            label150.TabIndex = 158;
+            label150.Text = "Bottom Left Corner";
+            label150.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrBottomLeftHallway
             // 
-            this.csrBottomLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftHallway.BackgroundColor")));
-            this.csrBottomLeftHallway.Character = ('\0');
-            this.csrBottomLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftHallway.ForegroundColor")));
-            this.csrBottomLeftHallway.Location = (new global::System.Drawing.Point(20, 646));
-            this.csrBottomLeftHallway.Name = ("csrBottomLeftHallway");
-            this.csrBottomLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrBottomLeftHallway.TabIndex = (159);
-            this.csrBottomLeftHallway.PropertyChanged += (this.csrBottomLeftHallway_PropertyChanged);
+            csrBottomLeftHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomLeftHallway.BackgroundColor");
+            csrBottomLeftHallway.Character = '\0';
+            csrBottomLeftHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomLeftHallway.ForegroundColor");
+            csrBottomLeftHallway.Location = new System.Drawing.Point(20, 646);
+            csrBottomLeftHallway.Name = "csrBottomLeftHallway";
+            csrBottomLeftHallway.Size = new System.Drawing.Size(211, 83);
+            csrBottomLeftHallway.TabIndex = 159;
+            csrBottomLeftHallway.PropertyChanged += csrBottomLeftHallway_PropertyChanged;
             // 
             // label137
             // 
-            this.label137.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label137.Location = (new global::System.Drawing.Point(324, 862));
-            this.label137.Name = ("label137");
-            this.label137.Size = (new global::System.Drawing.Size(211, 32));
-            this.label137.TabIndex = (156);
-            this.label137.Text = ("Central");
-            this.label137.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label137.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label137.Location = new System.Drawing.Point(324, 862);
+            label137.Name = "label137";
+            label137.Size = new System.Drawing.Size(211, 32);
+            label137.TabIndex = 156;
+            label137.Text = "Central";
+            label137.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrCentralHallway
             // 
-            this.csrCentralHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrCentralHallway.BackgroundColor")));
-            this.csrCentralHallway.Character = ('\0');
-            this.csrCentralHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrCentralHallway.ForegroundColor")));
-            this.csrCentralHallway.Location = (new global::System.Drawing.Point(324, 897));
-            this.csrCentralHallway.Name = ("csrCentralHallway");
-            this.csrCentralHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrCentralHallway.TabIndex = (157);
-            this.csrCentralHallway.PropertyChanged += (this.csrCentralHallway_PropertyChanged);
+            csrCentralHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrCentralHallway.BackgroundColor");
+            csrCentralHallway.Character = '\0';
+            csrCentralHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrCentralHallway.ForegroundColor");
+            csrCentralHallway.Location = new System.Drawing.Point(324, 897);
+            csrCentralHallway.Name = "csrCentralHallway";
+            csrCentralHallway.Size = new System.Drawing.Size(211, 83);
+            csrCentralHallway.TabIndex = 157;
+            csrCentralHallway.PropertyChanged += csrCentralHallway_PropertyChanged;
             // 
             // label140
             // 
-            this.label140.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label140.Location = (new global::System.Drawing.Point(107, 862));
-            this.label140.Name = ("label140");
-            this.label140.Size = (new global::System.Drawing.Size(211, 32));
-            this.label140.TabIndex = (154);
-            this.label140.Text = ("Vertical-Right");
-            this.label140.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label140.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label140.Location = new System.Drawing.Point(107, 862);
+            label140.Name = "label140";
+            label140.Size = new System.Drawing.Size(211, 32);
+            label140.TabIndex = 154;
+            label140.Text = "Vertical-Right";
+            label140.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrVerticalRightHallway
             // 
-            this.csrVerticalRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalRightHallway.BackgroundColor")));
-            this.csrVerticalRightHallway.Character = ('\0');
-            this.csrVerticalRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalRightHallway.ForegroundColor")));
-            this.csrVerticalRightHallway.Location = (new global::System.Drawing.Point(107, 897));
-            this.csrVerticalRightHallway.Name = ("csrVerticalRightHallway");
-            this.csrVerticalRightHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrVerticalRightHallway.TabIndex = (155);
-            this.csrVerticalRightHallway.PropertyChanged += (this.csrVerticalRightHallway_PropertyChanged);
+            csrVerticalRightHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalRightHallway.BackgroundColor");
+            csrVerticalRightHallway.Character = '\0';
+            csrVerticalRightHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalRightHallway.ForegroundColor");
+            csrVerticalRightHallway.Location = new System.Drawing.Point(107, 897);
+            csrVerticalRightHallway.Name = "csrVerticalRightHallway";
+            csrVerticalRightHallway.Size = new System.Drawing.Size(211, 83);
+            csrVerticalRightHallway.TabIndex = 155;
+            csrVerticalRightHallway.PropertyChanged += csrVerticalRightHallway_PropertyChanged;
             // 
             // label141
             // 
-            this.label141.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label141.Location = (new global::System.Drawing.Point(454, 741));
-            this.label141.Name = ("label141");
-            this.label141.Size = (new global::System.Drawing.Size(211, 32));
-            this.label141.TabIndex = (152);
-            this.label141.Text = ("Vertical-Left");
-            this.label141.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label141.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label141.Location = new System.Drawing.Point(454, 741);
+            label141.Name = "label141";
+            label141.Size = new System.Drawing.Size(211, 32);
+            label141.TabIndex = 152;
+            label141.Text = "Vertical-Left";
+            label141.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrVerticalLeftHallway
             // 
-            this.csrVerticalLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalLeftHallway.BackgroundColor")));
-            this.csrVerticalLeftHallway.Character = ('\0');
-            this.csrVerticalLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalLeftHallway.ForegroundColor")));
-            this.csrVerticalLeftHallway.Location = (new global::System.Drawing.Point(454, 776));
-            this.csrVerticalLeftHallway.Name = ("csrVerticalLeftHallway");
-            this.csrVerticalLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrVerticalLeftHallway.TabIndex = (153);
-            this.csrVerticalLeftHallway.PropertyChanged += (this.csrVerticalLeftHallway_PropertyChanged);
+            csrVerticalLeftHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalLeftHallway.BackgroundColor");
+            csrVerticalLeftHallway.Character = '\0';
+            csrVerticalLeftHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalLeftHallway.ForegroundColor");
+            csrVerticalLeftHallway.Location = new System.Drawing.Point(454, 776);
+            csrVerticalLeftHallway.Name = "csrVerticalLeftHallway";
+            csrVerticalLeftHallway.Size = new System.Drawing.Size(211, 83);
+            csrVerticalLeftHallway.TabIndex = 153;
+            csrVerticalLeftHallway.PropertyChanged += csrVerticalLeftHallway_PropertyChanged;
             // 
             // label142
             // 
-            this.label142.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label142.Location = (new global::System.Drawing.Point(237, 741));
-            this.label142.Name = ("label142");
-            this.label142.Size = (new global::System.Drawing.Size(211, 32));
-            this.label142.TabIndex = (150);
-            this.label142.Text = ("Horizontal-Top");
-            this.label142.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label142.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label142.Location = new System.Drawing.Point(237, 741);
+            label142.Name = "label142";
+            label142.Size = new System.Drawing.Size(211, 32);
+            label142.TabIndex = 150;
+            label142.Text = "Horizontal-Top";
+            label142.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrHorizontalTopHallway
             // 
-            this.csrHorizontalTopHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalTopHallway.BackgroundColor")));
-            this.csrHorizontalTopHallway.Character = ('\0');
-            this.csrHorizontalTopHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalTopHallway.ForegroundColor")));
-            this.csrHorizontalTopHallway.Location = (new global::System.Drawing.Point(237, 776));
-            this.csrHorizontalTopHallway.Name = ("csrHorizontalTopHallway");
-            this.csrHorizontalTopHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrHorizontalTopHallway.TabIndex = (151);
-            this.csrHorizontalTopHallway.PropertyChanged += (this.csrHorizontalTopHallway_PropertyChanged);
+            csrHorizontalTopHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalTopHallway.BackgroundColor");
+            csrHorizontalTopHallway.Character = '\0';
+            csrHorizontalTopHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalTopHallway.ForegroundColor");
+            csrHorizontalTopHallway.Location = new System.Drawing.Point(237, 776);
+            csrHorizontalTopHallway.Name = "csrHorizontalTopHallway";
+            csrHorizontalTopHallway.Size = new System.Drawing.Size(211, 83);
+            csrHorizontalTopHallway.TabIndex = 151;
+            csrHorizontalTopHallway.PropertyChanged += csrHorizontalTopHallway_PropertyChanged;
             // 
             // label143
             // 
-            this.label143.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label143.Location = (new global::System.Drawing.Point(20, 741));
-            this.label143.Name = ("label143");
-            this.label143.Size = (new global::System.Drawing.Size(211, 32));
-            this.label143.TabIndex = (148);
-            this.label143.Text = ("Horizontal-Bottom");
-            this.label143.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label143.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label143.Location = new System.Drawing.Point(20, 741);
+            label143.Name = "label143";
+            label143.Size = new System.Drawing.Size(211, 32);
+            label143.TabIndex = 148;
+            label143.Text = "Horizontal-Bottom";
+            label143.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrHorizontalBottomHallway
             // 
-            this.csrHorizontalBottomHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalBottomHallway.BackgroundColor")));
-            this.csrHorizontalBottomHallway.Character = ('\0');
-            this.csrHorizontalBottomHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalBottomHallway.ForegroundColor")));
-            this.csrHorizontalBottomHallway.Location = (new global::System.Drawing.Point(20, 776));
-            this.csrHorizontalBottomHallway.Name = ("csrHorizontalBottomHallway");
-            this.csrHorizontalBottomHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrHorizontalBottomHallway.TabIndex = (149);
-            this.csrHorizontalBottomHallway.PropertyChanged += (this.csrHorizontalBottomHallway_PropertyChanged);
+            csrHorizontalBottomHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalBottomHallway.BackgroundColor");
+            csrHorizontalBottomHallway.Character = '\0';
+            csrHorizontalBottomHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalBottomHallway.ForegroundColor");
+            csrHorizontalBottomHallway.Location = new System.Drawing.Point(20, 776);
+            csrHorizontalBottomHallway.Name = "csrHorizontalBottomHallway";
+            csrHorizontalBottomHallway.Size = new System.Drawing.Size(211, 83);
+            csrHorizontalBottomHallway.TabIndex = 149;
+            csrHorizontalBottomHallway.PropertyChanged += csrHorizontalBottomHallway_PropertyChanged;
             // 
             // label144
             // 
-            this.label144.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label144.Location = (new global::System.Drawing.Point(454, 490));
-            this.label144.Name = ("label144");
-            this.label144.Size = (new global::System.Drawing.Size(211, 32));
-            this.label144.TabIndex = (146);
-            this.label144.Text = ("Vertical");
-            this.label144.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label144.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label144.Location = new System.Drawing.Point(454, 490);
+            label144.Name = "label144";
+            label144.Size = new System.Drawing.Size(211, 32);
+            label144.TabIndex = 146;
+            label144.Text = "Vertical";
+            label144.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrVerticalHallway
             // 
-            this.csrVerticalHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalHallway.BackgroundColor")));
-            this.csrVerticalHallway.Character = ('\0');
-            this.csrVerticalHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalHallway.ForegroundColor")));
-            this.csrVerticalHallway.Location = (new global::System.Drawing.Point(454, 525));
-            this.csrVerticalHallway.Name = ("csrVerticalHallway");
-            this.csrVerticalHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrVerticalHallway.TabIndex = (147);
-            this.csrVerticalHallway.PropertyChanged += (this.csrVerticalHallway_PropertyChanged);
+            csrVerticalHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalHallway.BackgroundColor");
+            csrVerticalHallway.Character = '\0';
+            csrVerticalHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalHallway.ForegroundColor");
+            csrVerticalHallway.Location = new System.Drawing.Point(454, 525);
+            csrVerticalHallway.Name = "csrVerticalHallway";
+            csrVerticalHallway.Size = new System.Drawing.Size(211, 83);
+            csrVerticalHallway.TabIndex = 147;
+            csrVerticalHallway.PropertyChanged += csrVerticalHallway_PropertyChanged;
             // 
             // label145
             // 
-            this.label145.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label145.Location = (new global::System.Drawing.Point(237, 490));
-            this.label145.Name = ("label145");
-            this.label145.Size = (new global::System.Drawing.Size(211, 32));
-            this.label145.TabIndex = (144);
-            this.label145.Text = ("Top Right Corner");
-            this.label145.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label145.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label145.Location = new System.Drawing.Point(237, 490);
+            label145.Name = "label145";
+            label145.Size = new System.Drawing.Size(211, 32);
+            label145.TabIndex = 144;
+            label145.Text = "Top Right Corner";
+            label145.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrTopRightHallway
             // 
-            this.csrTopRightHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightHallway.BackgroundColor")));
-            this.csrTopRightHallway.Character = ('\0');
-            this.csrTopRightHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightHallway.ForegroundColor")));
-            this.csrTopRightHallway.Location = (new global::System.Drawing.Point(237, 525));
-            this.csrTopRightHallway.Name = ("csrTopRightHallway");
-            this.csrTopRightHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrTopRightHallway.TabIndex = (145);
-            this.csrTopRightHallway.PropertyChanged += (this.csrTopRightHallway_PropertyChanged);
+            csrTopRightHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopRightHallway.BackgroundColor");
+            csrTopRightHallway.Character = '\0';
+            csrTopRightHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopRightHallway.ForegroundColor");
+            csrTopRightHallway.Location = new System.Drawing.Point(237, 525);
+            csrTopRightHallway.Name = "csrTopRightHallway";
+            csrTopRightHallway.Size = new System.Drawing.Size(211, 83);
+            csrTopRightHallway.TabIndex = 145;
+            csrTopRightHallway.PropertyChanged += csrTopRightHallway_PropertyChanged;
             // 
             // label146
             // 
-            this.label146.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label146.Location = (new global::System.Drawing.Point(237, 438));
-            this.label146.Name = ("label146");
-            this.label146.Size = (new global::System.Drawing.Size(211, 52));
-            this.label146.TabIndex = (143);
-            this.label146.Text = ("HALLWAYS");
-            this.label146.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label146.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label146.Location = new System.Drawing.Point(237, 438);
+            label146.Name = "label146";
+            label146.Size = new System.Drawing.Size(211, 52);
+            label146.TabIndex = 143;
+            label146.Text = "HALLWAYS";
+            label146.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label147
             // 
-            this.label147.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label147.Location = (new global::System.Drawing.Point(20, 490));
-            this.label147.Name = ("label147");
-            this.label147.Size = (new global::System.Drawing.Size(211, 32));
-            this.label147.TabIndex = (141);
-            this.label147.Text = ("Top Left Corner");
-            this.label147.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label147.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label147.Location = new System.Drawing.Point(20, 490);
+            label147.Name = "label147";
+            label147.Size = new System.Drawing.Size(211, 32);
+            label147.TabIndex = 141;
+            label147.Text = "Top Left Corner";
+            label147.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrTopLeftHallway
             // 
-            this.csrTopLeftHallway.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftHallway.BackgroundColor")));
-            this.csrTopLeftHallway.Character = ('\0');
-            this.csrTopLeftHallway.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftHallway.ForegroundColor")));
-            this.csrTopLeftHallway.Location = (new global::System.Drawing.Point(20, 525));
-            this.csrTopLeftHallway.Name = ("csrTopLeftHallway");
-            this.csrTopLeftHallway.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrTopLeftHallway.TabIndex = (142);
-            this.csrTopLeftHallway.PropertyChanged += (this.csrTopLeftHallway_PropertyChanged);
+            csrTopLeftHallway.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopLeftHallway.BackgroundColor");
+            csrTopLeftHallway.Character = '\0';
+            csrTopLeftHallway.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopLeftHallway.ForegroundColor");
+            csrTopLeftHallway.Location = new System.Drawing.Point(20, 525);
+            csrTopLeftHallway.Name = "csrTopLeftHallway";
+            csrTopLeftHallway.Size = new System.Drawing.Size(211, 83);
+            csrTopLeftHallway.TabIndex = 142;
+            csrTopLeftHallway.PropertyChanged += csrTopLeftHallway_PropertyChanged;
             // 
             // label138
             // 
-            this.label138.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label138.Location = (new global::System.Drawing.Point(253, 304));
-            this.label138.Name = ("label138");
-            this.label138.Size = (new global::System.Drawing.Size(211, 32));
-            this.label138.TabIndex = (139);
-            this.label138.Text = ("Hallway Connector");
-            this.label138.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label138.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label138.Location = new System.Drawing.Point(253, 304);
+            label138.Name = "label138";
+            label138.Size = new System.Drawing.Size(211, 32);
+            label138.TabIndex = 139;
+            label138.Text = "Hallway Connector";
+            label138.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrConnectorWall
             // 
-            this.csrConnectorWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrConnectorWall.BackgroundColor")));
-            this.csrConnectorWall.Character = ('\0');
-            this.csrConnectorWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrConnectorWall.ForegroundColor")));
-            this.csrConnectorWall.Location = (new global::System.Drawing.Point(253, 339));
-            this.csrConnectorWall.Name = ("csrConnectorWall");
-            this.csrConnectorWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrConnectorWall.TabIndex = (140);
-            this.csrConnectorWall.PropertyChanged += (this.csrConnectorWall_PropertyChanged);
+            csrConnectorWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrConnectorWall.BackgroundColor");
+            csrConnectorWall.Character = '\0';
+            csrConnectorWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrConnectorWall.ForegroundColor");
+            csrConnectorWall.Location = new System.Drawing.Point(253, 339);
+            csrConnectorWall.Name = "csrConnectorWall";
+            csrConnectorWall.Size = new System.Drawing.Size(211, 83);
+            csrConnectorWall.TabIndex = 140;
+            csrConnectorWall.PropertyChanged += csrConnectorWall_PropertyChanged;
             // 
             // label134
             // 
-            this.label134.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label134.Location = (new global::System.Drawing.Point(470, 183));
-            this.label134.Name = ("label134");
-            this.label134.Size = (new global::System.Drawing.Size(211, 32));
-            this.label134.TabIndex = (135);
-            this.label134.Text = ("Horizontal");
-            this.label134.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label134.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label134.Location = new System.Drawing.Point(470, 183);
+            label134.Name = "label134";
+            label134.Size = new System.Drawing.Size(211, 32);
+            label134.TabIndex = 135;
+            label134.Text = "Horizontal";
+            label134.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrHorizontalWall
             // 
-            this.csrHorizontalWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalWall.BackgroundColor")));
-            this.csrHorizontalWall.Character = ('\0');
-            this.csrHorizontalWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrHorizontalWall.ForegroundColor")));
-            this.csrHorizontalWall.Location = (new global::System.Drawing.Point(470, 218));
-            this.csrHorizontalWall.Name = ("csrHorizontalWall");
-            this.csrHorizontalWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrHorizontalWall.TabIndex = (136);
-            this.csrHorizontalWall.PropertyChanged += (this.csrHorizontalWall_PropertyChanged);
+            csrHorizontalWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalWall.BackgroundColor");
+            csrHorizontalWall.Character = '\0';
+            csrHorizontalWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrHorizontalWall.ForegroundColor");
+            csrHorizontalWall.Location = new System.Drawing.Point(470, 218);
+            csrHorizontalWall.Name = "csrHorizontalWall";
+            csrHorizontalWall.Size = new System.Drawing.Size(211, 83);
+            csrHorizontalWall.TabIndex = 136;
+            csrHorizontalWall.PropertyChanged += csrHorizontalWall_PropertyChanged;
             // 
             // label135
             // 
-            this.label135.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label135.Location = (new global::System.Drawing.Point(253, 183));
-            this.label135.Name = ("label135");
-            this.label135.Size = (new global::System.Drawing.Size(211, 32));
-            this.label135.TabIndex = (133);
-            this.label135.Text = ("Bottom Right Corner");
-            this.label135.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label135.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label135.Location = new System.Drawing.Point(253, 183);
+            label135.Name = "label135";
+            label135.Size = new System.Drawing.Size(211, 32);
+            label135.TabIndex = 133;
+            label135.Text = "Bottom Right Corner";
+            label135.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrBottomRightWall
             // 
-            this.csrBottomRightWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightWall.BackgroundColor")));
-            this.csrBottomRightWall.Character = ('\0');
-            this.csrBottomRightWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomRightWall.ForegroundColor")));
-            this.csrBottomRightWall.Location = (new global::System.Drawing.Point(253, 218));
-            this.csrBottomRightWall.Name = ("csrBottomRightWall");
-            this.csrBottomRightWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrBottomRightWall.TabIndex = (134);
-            this.csrBottomRightWall.PropertyChanged += (this.csrBottomRightWall_PropertyChanged);
+            csrBottomRightWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomRightWall.BackgroundColor");
+            csrBottomRightWall.Character = '\0';
+            csrBottomRightWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomRightWall.ForegroundColor");
+            csrBottomRightWall.Location = new System.Drawing.Point(253, 218);
+            csrBottomRightWall.Name = "csrBottomRightWall";
+            csrBottomRightWall.Size = new System.Drawing.Size(211, 83);
+            csrBottomRightWall.TabIndex = 134;
+            csrBottomRightWall.PropertyChanged += csrBottomRightWall_PropertyChanged;
             // 
             // label136
             // 
-            this.label136.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label136.Location = (new global::System.Drawing.Point(36, 183));
-            this.label136.Name = ("label136");
-            this.label136.Size = (new global::System.Drawing.Size(211, 32));
-            this.label136.TabIndex = (131);
-            this.label136.Text = ("Bottom Left Corner");
-            this.label136.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label136.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label136.Location = new System.Drawing.Point(36, 183);
+            label136.Name = "label136";
+            label136.Size = new System.Drawing.Size(211, 32);
+            label136.TabIndex = 131;
+            label136.Text = "Bottom Left Corner";
+            label136.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrBottomLeftWall
             // 
-            this.csrBottomLeftWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftWall.BackgroundColor")));
-            this.csrBottomLeftWall.Character = ('\0');
-            this.csrBottomLeftWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrBottomLeftWall.ForegroundColor")));
-            this.csrBottomLeftWall.Location = (new global::System.Drawing.Point(36, 218));
-            this.csrBottomLeftWall.Name = ("csrBottomLeftWall");
-            this.csrBottomLeftWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrBottomLeftWall.TabIndex = (132);
-            this.csrBottomLeftWall.PropertyChanged += (this.csrBottomLeftWall_PropertyChanged);
+            csrBottomLeftWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomLeftWall.BackgroundColor");
+            csrBottomLeftWall.Character = '\0';
+            csrBottomLeftWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrBottomLeftWall.ForegroundColor");
+            csrBottomLeftWall.Location = new System.Drawing.Point(36, 218);
+            csrBottomLeftWall.Name = "csrBottomLeftWall";
+            csrBottomLeftWall.Size = new System.Drawing.Size(211, 83);
+            csrBottomLeftWall.TabIndex = 132;
+            csrBottomLeftWall.PropertyChanged += csrBottomLeftWall_PropertyChanged;
             // 
             // label133
             // 
-            this.label133.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label133.Location = (new global::System.Drawing.Point(470, 62));
-            this.label133.Name = ("label133");
-            this.label133.Size = (new global::System.Drawing.Size(211, 32));
-            this.label133.TabIndex = (129);
-            this.label133.Text = ("Vertical");
-            this.label133.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label133.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label133.Location = new System.Drawing.Point(470, 62);
+            label133.Name = "label133";
+            label133.Size = new System.Drawing.Size(211, 32);
+            label133.TabIndex = 129;
+            label133.Text = "Vertical";
+            label133.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrVerticalWall
             // 
-            this.csrVerticalWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalWall.BackgroundColor")));
-            this.csrVerticalWall.Character = ('\0');
-            this.csrVerticalWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrVerticalWall.ForegroundColor")));
-            this.csrVerticalWall.Location = (new global::System.Drawing.Point(470, 97));
-            this.csrVerticalWall.Name = ("csrVerticalWall");
-            this.csrVerticalWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrVerticalWall.TabIndex = (130);
-            this.csrVerticalWall.PropertyChanged += (this.csrVerticalWall_PropertyChanged);
+            csrVerticalWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalWall.BackgroundColor");
+            csrVerticalWall.Character = '\0';
+            csrVerticalWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrVerticalWall.ForegroundColor");
+            csrVerticalWall.Location = new System.Drawing.Point(470, 97);
+            csrVerticalWall.Name = "csrVerticalWall";
+            csrVerticalWall.Size = new System.Drawing.Size(211, 83);
+            csrVerticalWall.TabIndex = 130;
+            csrVerticalWall.PropertyChanged += csrVerticalWall_PropertyChanged;
             // 
             // label132
             // 
-            this.label132.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label132.Location = (new global::System.Drawing.Point(253, 62));
-            this.label132.Name = ("label132");
-            this.label132.Size = (new global::System.Drawing.Size(211, 32));
-            this.label132.TabIndex = (127);
-            this.label132.Text = ("Top Right Corner");
-            this.label132.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label132.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label132.Location = new System.Drawing.Point(253, 62);
+            label132.Name = "label132";
+            label132.Size = new System.Drawing.Size(211, 32);
+            label132.TabIndex = 127;
+            label132.Text = "Top Right Corner";
+            label132.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrTopRightWall
             // 
-            this.csrTopRightWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightWall.BackgroundColor")));
-            this.csrTopRightWall.Character = ('\0');
-            this.csrTopRightWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopRightWall.ForegroundColor")));
-            this.csrTopRightWall.Location = (new global::System.Drawing.Point(253, 97));
-            this.csrTopRightWall.Name = ("csrTopRightWall");
-            this.csrTopRightWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrTopRightWall.TabIndex = (128);
-            this.csrTopRightWall.PropertyChanged += (this.csrTopRightWall_PropertyChanged);
+            csrTopRightWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopRightWall.BackgroundColor");
+            csrTopRightWall.Character = '\0';
+            csrTopRightWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopRightWall.ForegroundColor");
+            csrTopRightWall.Location = new System.Drawing.Point(253, 97);
+            csrTopRightWall.Name = "csrTopRightWall";
+            csrTopRightWall.Size = new System.Drawing.Size(211, 83);
+            csrTopRightWall.TabIndex = 128;
+            csrTopRightWall.PropertyChanged += csrTopRightWall_PropertyChanged;
             // 
             // label131
             // 
-            this.label131.Font = (new global::System.Drawing.Font("Segoe UI", 18F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label131.Location = (new global::System.Drawing.Point(253, 10));
-            this.label131.Name = ("label131");
-            this.label131.Size = (new global::System.Drawing.Size(211, 52));
-            this.label131.TabIndex = (126);
-            this.label131.Text = ("WALLS");
-            this.label131.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label131.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label131.Location = new System.Drawing.Point(253, 10);
+            label131.Name = "label131";
+            label131.Size = new System.Drawing.Size(211, 52);
+            label131.TabIndex = 126;
+            label131.Text = "WALLS";
+            label131.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label130
             // 
-            this.label130.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label130.Location = (new global::System.Drawing.Point(36, 62));
-            this.label130.Name = ("label130");
-            this.label130.Size = (new global::System.Drawing.Size(211, 32));
-            this.label130.TabIndex = (124);
-            this.label130.Text = ("Top Left Corner");
-            this.label130.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label130.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label130.Location = new System.Drawing.Point(36, 62);
+            label130.Name = "label130";
+            label130.Size = new System.Drawing.Size(211, 32);
+            label130.TabIndex = 124;
+            label130.Text = "Top Left Corner";
+            label130.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // csrTopLeftWall
             // 
-            this.csrTopLeftWall.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftWall.BackgroundColor")));
-            this.csrTopLeftWall.Character = ('\0');
-            this.csrTopLeftWall.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("csrTopLeftWall.ForegroundColor")));
-            this.csrTopLeftWall.Location = (new global::System.Drawing.Point(36, 97));
-            this.csrTopLeftWall.Name = ("csrTopLeftWall");
-            this.csrTopLeftWall.Size = (new global::System.Drawing.Size(211, 83));
-            this.csrTopLeftWall.TabIndex = (125);
-            this.csrTopLeftWall.PropertyChanged += (this.csrTopLeftWall_PropertyChanged);
+            csrTopLeftWall.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopLeftWall.BackgroundColor");
+            csrTopLeftWall.Character = '\0';
+            csrTopLeftWall.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("csrTopLeftWall.ForegroundColor");
+            csrTopLeftWall.Location = new System.Drawing.Point(36, 97);
+            csrTopLeftWall.Name = "csrTopLeftWall";
+            csrTopLeftWall.Size = new System.Drawing.Size(211, 83);
+            csrTopLeftWall.TabIndex = 125;
+            csrTopLeftWall.PropertyChanged += csrTopLeftWall_PropertyChanged;
             // 
             // tpFloorInfos
             // 
-            this.tpFloorInfos.AutoScroll = (true);
-            this.tpFloorInfos.Controls.Add(this.saeOnFloorStart);
-            this.tpFloorInfos.Controls.Add(this.cmbTilesets);
-            this.tpFloorInfos.Controls.Add(this.label155);
-            this.tpFloorInfos.Controls.Add(this.nudRoomFusionOdds);
-            this.tpFloorInfos.Controls.Add(this.label19);
-            this.tpFloorInfos.Controls.Add(this.nudExtraRoomConnectionOdds);
-            this.tpFloorInfos.Controls.Add(this.label18);
-            this.tpFloorInfos.Controls.Add(this.nudMaxRoomConnections);
-            this.tpFloorInfos.Controls.Add(this.label5);
-            this.tpFloorInfos.Controls.Add(this.btnRemoveAlgorithm);
-            this.tpFloorInfos.Controls.Add(this.btnEditAlgorithm);
-            this.tpFloorInfos.Controls.Add(this.btnAddAlgorithm);
-            this.tpFloorInfos.Controls.Add(this.lvFloorAlgorithms);
-            this.tpFloorInfos.Controls.Add(this.label17);
-            this.tpFloorInfos.Controls.Add(this.label16);
-            this.tpFloorInfos.Controls.Add(this.btnTrapGenerator);
-            this.tpFloorInfos.Controls.Add(this.label15);
-            this.tpFloorInfos.Controls.Add(this.btnItemGenerator);
-            this.tpFloorInfos.Controls.Add(this.label14);
-            this.tpFloorInfos.Controls.Add(this.btnNPCGenerator);
-            this.tpFloorInfos.Controls.Add(this.label13);
-            this.tpFloorInfos.Controls.Add(this.nudHeight);
-            this.tpFloorInfos.Controls.Add(this.nudWidth);
-            this.tpFloorInfos.Controls.Add(this.label12);
-            this.tpFloorInfos.Controls.Add(this.label11);
-            this.tpFloorInfos.Controls.Add(this.fklblStairsReminder);
-            this.tpFloorInfos.Controls.Add(this.chkGenerateStairsOnStart);
-            this.tpFloorInfos.Controls.Add(this.nudMaxFloorLevel);
-            this.tpFloorInfos.Controls.Add(this.label10);
-            this.tpFloorInfos.Controls.Add(this.nudMinFloorLevel);
-            this.tpFloorInfos.Controls.Add(this.label9);
-            this.tpFloorInfos.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpFloorInfos.Name = ("tpFloorInfos");
-            this.tpFloorInfos.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpFloorInfos.TabIndex = (2);
-            this.tpFloorInfos.Text = ("Floor Group");
-            this.tpFloorInfos.UseVisualStyleBackColor = (true);
+            tpFloorInfos.AutoScroll = true;
+            tpFloorInfos.Controls.Add(nudHungerLostPerTurn);
+            tpFloorInfos.Controls.Add(label31);
+            tpFloorInfos.Controls.Add(saeOnFloorStart);
+            tpFloorInfos.Controls.Add(cmbTilesets);
+            tpFloorInfos.Controls.Add(label155);
+            tpFloorInfos.Controls.Add(nudRoomFusionOdds);
+            tpFloorInfos.Controls.Add(label19);
+            tpFloorInfos.Controls.Add(nudExtraRoomConnectionOdds);
+            tpFloorInfos.Controls.Add(label18);
+            tpFloorInfos.Controls.Add(nudMaxRoomConnections);
+            tpFloorInfos.Controls.Add(label5);
+            tpFloorInfos.Controls.Add(btnRemoveAlgorithm);
+            tpFloorInfos.Controls.Add(btnEditAlgorithm);
+            tpFloorInfos.Controls.Add(btnAddAlgorithm);
+            tpFloorInfos.Controls.Add(lvFloorAlgorithms);
+            tpFloorInfos.Controls.Add(label17);
+            tpFloorInfos.Controls.Add(label16);
+            tpFloorInfos.Controls.Add(btnTrapGenerator);
+            tpFloorInfos.Controls.Add(label15);
+            tpFloorInfos.Controls.Add(btnItemGenerator);
+            tpFloorInfos.Controls.Add(label14);
+            tpFloorInfos.Controls.Add(btnNPCGenerator);
+            tpFloorInfos.Controls.Add(label13);
+            tpFloorInfos.Controls.Add(nudHeight);
+            tpFloorInfos.Controls.Add(nudWidth);
+            tpFloorInfos.Controls.Add(label12);
+            tpFloorInfos.Controls.Add(label11);
+            tpFloorInfos.Controls.Add(fklblStairsReminder);
+            tpFloorInfos.Controls.Add(chkGenerateStairsOnStart);
+            tpFloorInfos.Controls.Add(nudMaxFloorLevel);
+            tpFloorInfos.Controls.Add(label10);
+            tpFloorInfos.Controls.Add(nudMinFloorLevel);
+            tpFloorInfos.Controls.Add(label9);
+            tpFloorInfos.Location = new System.Drawing.Point(4, 24);
+            tpFloorInfos.Name = "tpFloorInfos";
+            tpFloorInfos.Size = new System.Drawing.Size(740, 356);
+            tpFloorInfos.TabIndex = 2;
+            tpFloorInfos.Text = "Floor Group";
+            tpFloorInfos.UseVisualStyleBackColor = true;
+            // 
+            // nudHungerLostPerTurn
+            // 
+            nudHungerLostPerTurn.DecimalPlaces = 4;
+            nudHungerLostPerTurn.Increment = new decimal(new int[] { 25, 0, 0, 262144 });
+            nudHungerLostPerTurn.Location = new System.Drawing.Point(98, 341);
+            nudHungerLostPerTurn.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            nudHungerLostPerTurn.Name = "nudHungerLostPerTurn";
+            nudHungerLostPerTurn.Size = new System.Drawing.Size(54, 23);
+            nudHungerLostPerTurn.TabIndex = 42;
+            nudHungerLostPerTurn.Value = new decimal(new int[] { 25, 0, 0, 262144 });
+            nudHungerLostPerTurn.ValueChanged += nudHungerLostPerTurn_ValueChanged;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Location = new System.Drawing.Point(12, 342);
+            label31.Name = "label31";
+            label31.Size = new System.Drawing.Size(232, 15);
+            label31.TabIndex = 41;
+            label31.Text = "Characters lose                    Hunger per turn";
             // 
             // saeOnFloorStart
             // 
-            this.saeOnFloorStart.Action = (null);
-            this.saeOnFloorStart.ActionDescription = ("When the floor starts...");
-            this.saeOnFloorStart.ActionTypeText = ("Floor Start");
-            this.saeOnFloorStart.AutoSize = (true);
-            this.saeOnFloorStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeOnFloorStart.ClassId = (null);
-            this.saeOnFloorStart.Dungeon = (null);
-            this.saeOnFloorStart.EffectParamData = (null);
-            this.saeOnFloorStart.Location = (new global::System.Drawing.Point(370, 307));
-            this.saeOnFloorStart.Name = ("saeOnFloorStart");
-            this.saeOnFloorStart.PlaceholderActionName = ("FloorStart");
-            this.saeOnFloorStart.RequiresActionName = (false);
-            this.saeOnFloorStart.RequiresCondition = (false);
-            this.saeOnFloorStart.RequiresDescription = (false);
-            this.saeOnFloorStart.Size = (new global::System.Drawing.Size(260, 32));
-            this.saeOnFloorStart.SourceDescription = ("The player");
-            this.saeOnFloorStart.TabIndex = (40);
-            this.saeOnFloorStart.TargetDescription = ("The player");
-            this.saeOnFloorStart.ThisDescription = ("None (Don't use)");
-            this.saeOnFloorStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeOnFloorStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeOnFloorStart.Action = null;
+            saeOnFloorStart.ActionDescription = "When the floor starts...";
+            saeOnFloorStart.ActionTypeText = "Floor Start";
+            saeOnFloorStart.AutoSize = true;
+            saeOnFloorStart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeOnFloorStart.ClassId = null;
+            saeOnFloorStart.Dungeon = null;
+            saeOnFloorStart.EffectParamData = null;
+            saeOnFloorStart.Location = new System.Drawing.Point(367, 306);
+            saeOnFloorStart.Name = "saeOnFloorStart";
+            saeOnFloorStart.PlaceholderActionName = "FloorStart";
+            saeOnFloorStart.RequiresActionName = false;
+            saeOnFloorStart.RequiresCondition = false;
+            saeOnFloorStart.RequiresDescription = false;
+            saeOnFloorStart.Size = new System.Drawing.Size(260, 32);
+            saeOnFloorStart.SourceDescription = "The player";
+            saeOnFloorStart.TabIndex = 40;
+            saeOnFloorStart.TargetDescription = "The player";
+            saeOnFloorStart.ThisDescription = "None (Don't use)";
+            saeOnFloorStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeOnFloorStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // cmbTilesets
             // 
-            this.cmbTilesets.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbTilesets.FormattingEnabled = (true);
-            this.cmbTilesets.Location = (new global::System.Drawing.Point(167, 77));
-            this.cmbTilesets.Name = ("cmbTilesets");
-            this.cmbTilesets.Size = (new global::System.Drawing.Size(149, 23));
-            this.cmbTilesets.TabIndex = (39);
-            this.cmbTilesets.SelectedIndexChanged += (this.cmbTilesets_SelectedIndexChanged);
+            cmbTilesets.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTilesets.FormattingEnabled = true;
+            cmbTilesets.Location = new System.Drawing.Point(164, 76);
+            cmbTilesets.Name = "cmbTilesets";
+            cmbTilesets.Size = new System.Drawing.Size(149, 23);
+            cmbTilesets.TabIndex = 39;
+            cmbTilesets.SelectedIndexChanged += cmbTilesets_SelectedIndexChanged;
             // 
             // label155
             // 
-            this.label155.AutoSize = (true);
-            this.label155.Location = (new global::System.Drawing.Point(121, 80));
-            this.label155.Name = ("label155");
-            this.label155.Size = (new global::System.Drawing.Size(40, 15));
-            this.label155.TabIndex = (38);
-            this.label155.Text = ("Tileset");
+            label155.AutoSize = true;
+            label155.Location = new System.Drawing.Point(118, 79);
+            label155.Name = "label155";
+            label155.Size = new System.Drawing.Size(40, 15);
+            label155.TabIndex = 38;
+            label155.Text = "Tileset";
             // 
             // nudRoomFusionOdds
             // 
-            this.nudRoomFusionOdds.Location = (new global::System.Drawing.Point(518, 269));
-            this.nudRoomFusionOdds.Name = ("nudRoomFusionOdds");
-            this.nudRoomFusionOdds.Size = (new global::System.Drawing.Size(40, 23));
-            this.nudRoomFusionOdds.TabIndex = (35);
-            this.nudRoomFusionOdds.ValueChanged += (this.nudRoomFusionOdds_ValueChanged);
+            nudRoomFusionOdds.Location = new System.Drawing.Point(515, 268);
+            nudRoomFusionOdds.Name = "nudRoomFusionOdds";
+            nudRoomFusionOdds.Size = new System.Drawing.Size(40, 23);
+            nudRoomFusionOdds.TabIndex = 35;
+            nudRoomFusionOdds.ValueChanged += nudRoomFusionOdds_ValueChanged;
             // 
             // label19
             // 
-            this.label19.AutoSize = (true);
-            this.label19.Location = (new global::System.Drawing.Point(369, 271));
-            this.label19.Name = ("label19");
-            this.label19.Size = (new global::System.Drawing.Size(285, 15));
-            this.label19.TabIndex = (34);
-            this.label19.Text = ("Two adjacent rooms have a               % chance to fuse");
+            label19.AutoSize = true;
+            label19.Location = new System.Drawing.Point(366, 270);
+            label19.Name = "label19";
+            label19.Size = new System.Drawing.Size(285, 15);
+            label19.TabIndex = 34;
+            label19.Text = "Two adjacent rooms have a               % chance to fuse";
             // 
             // nudExtraRoomConnectionOdds
             // 
-            this.nudExtraRoomConnectionOdds.Location = (new global::System.Drawing.Point(470, 239));
-            this.nudExtraRoomConnectionOdds.Name = ("nudExtraRoomConnectionOdds");
-            this.nudExtraRoomConnectionOdds.Size = (new global::System.Drawing.Size(40, 23));
-            this.nudExtraRoomConnectionOdds.TabIndex = (33);
-            this.nudExtraRoomConnectionOdds.ValueChanged += (this.nudRoomConnectionOdds_ValueChanged);
+            nudExtraRoomConnectionOdds.Location = new System.Drawing.Point(467, 238);
+            nudExtraRoomConnectionOdds.Name = "nudExtraRoomConnectionOdds";
+            nudExtraRoomConnectionOdds.Size = new System.Drawing.Size(40, 23);
+            nudExtraRoomConnectionOdds.TabIndex = 33;
+            nudExtraRoomConnectionOdds.ValueChanged += nudRoomConnectionOdds_ValueChanged;
             // 
             // label18
             // 
-            this.label18.AutoSize = (true);
-            this.label18.Location = (new global::System.Drawing.Point(370, 242));
-            this.label18.Name = ("label18");
-            this.label18.Size = (new global::System.Drawing.Size(323, 15));
-            this.label18.TabIndex = (32);
-            this.label18.Text = ("(With a chance of               % of connecting more than once)");
+            label18.AutoSize = true;
+            label18.Location = new System.Drawing.Point(367, 241);
+            label18.Name = "label18";
+            label18.Size = new System.Drawing.Size(323, 15);
+            label18.TabIndex = 32;
+            label18.Text = "(With a chance of               % of connecting more than once)";
             // 
             // nudMaxRoomConnections
             // 
-            this.nudMaxRoomConnections.Location = (new global::System.Drawing.Point(619, 211));
-            this.nudMaxRoomConnections.Maximum = (new global::System.Decimal(new global::System.Int32[] { 9, 0, 0, 0 }));
-            this.nudMaxRoomConnections.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudMaxRoomConnections.Name = ("nudMaxRoomConnections");
-            this.nudMaxRoomConnections.Size = (new global::System.Drawing.Size(33, 23));
-            this.nudMaxRoomConnections.TabIndex = (31);
-            this.nudMaxRoomConnections.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.nudMaxRoomConnections.ValueChanged += (this.nudMaxRoomConnections_ValueChanged);
+            nudMaxRoomConnections.Location = new System.Drawing.Point(616, 210);
+            nudMaxRoomConnections.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
+            nudMaxRoomConnections.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudMaxRoomConnections.Name = "nudMaxRoomConnections";
+            nudMaxRoomConnections.Size = new System.Drawing.Size(33, 23);
+            nudMaxRoomConnections.TabIndex = 31;
+            nudMaxRoomConnections.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudMaxRoomConnections.ValueChanged += nudMaxRoomConnections_ValueChanged;
             // 
             // label5
             // 
-            this.label5.AutoSize = (true);
-            this.label5.Location = (new global::System.Drawing.Point(370, 213));
-            this.label5.Name = ("label5");
-            this.label5.Size = (new global::System.Drawing.Size(326, 15));
-            this.label5.TabIndex = (30);
-            this.label5.Text = ("Rooms can connect between each other up to             time(s)");
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(367, 212);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(326, 15);
+            label5.TabIndex = 30;
+            label5.Text = "Rooms can connect between each other up to             time(s)";
             // 
             // btnRemoveAlgorithm
             // 
-            this.btnRemoveAlgorithm.Enabled = (false);
-            this.btnRemoveAlgorithm.Location = (new global::System.Drawing.Point(586, 174));
-            this.btnRemoveAlgorithm.Name = ("btnRemoveAlgorithm");
-            this.btnRemoveAlgorithm.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnRemoveAlgorithm.TabIndex = (29);
-            this.btnRemoveAlgorithm.Text = ("Remove");
-            this.btnRemoveAlgorithm.UseVisualStyleBackColor = (true);
-            this.btnRemoveAlgorithm.Click += (this.btnRemoveAlgorithm_Click);
+            btnRemoveAlgorithm.Enabled = false;
+            btnRemoveAlgorithm.Location = new System.Drawing.Point(583, 173);
+            btnRemoveAlgorithm.Name = "btnRemoveAlgorithm";
+            btnRemoveAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnRemoveAlgorithm.TabIndex = 29;
+            btnRemoveAlgorithm.Text = "Remove";
+            btnRemoveAlgorithm.UseVisualStyleBackColor = true;
+            btnRemoveAlgorithm.Click += btnRemoveAlgorithm_Click;
             // 
             // btnEditAlgorithm
             // 
-            this.btnEditAlgorithm.Enabled = (false);
-            this.btnEditAlgorithm.Location = (new global::System.Drawing.Point(505, 174));
-            this.btnEditAlgorithm.Name = ("btnEditAlgorithm");
-            this.btnEditAlgorithm.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnEditAlgorithm.TabIndex = (28);
-            this.btnEditAlgorithm.Text = ("Edit");
-            this.btnEditAlgorithm.UseVisualStyleBackColor = (true);
-            this.btnEditAlgorithm.Click += (this.btnEditAlgorithm_Click);
+            btnEditAlgorithm.Enabled = false;
+            btnEditAlgorithm.Location = new System.Drawing.Point(502, 173);
+            btnEditAlgorithm.Name = "btnEditAlgorithm";
+            btnEditAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnEditAlgorithm.TabIndex = 28;
+            btnEditAlgorithm.Text = "Edit";
+            btnEditAlgorithm.UseVisualStyleBackColor = true;
+            btnEditAlgorithm.Click += btnEditAlgorithm_Click;
             // 
             // btnAddAlgorithm
             // 
-            this.btnAddAlgorithm.Location = (new global::System.Drawing.Point(424, 174));
-            this.btnAddAlgorithm.Name = ("btnAddAlgorithm");
-            this.btnAddAlgorithm.Size = (new global::System.Drawing.Size(75, 23));
-            this.btnAddAlgorithm.TabIndex = (27);
-            this.btnAddAlgorithm.Text = ("New...");
-            this.btnAddAlgorithm.UseVisualStyleBackColor = (true);
-            this.btnAddAlgorithm.Click += (this.btnAddAlgorithm_Click);
+            btnAddAlgorithm.Location = new System.Drawing.Point(421, 173);
+            btnAddAlgorithm.Name = "btnAddAlgorithm";
+            btnAddAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnAddAlgorithm.TabIndex = 27;
+            btnAddAlgorithm.Text = "New...";
+            btnAddAlgorithm.UseVisualStyleBackColor = true;
+            btnAddAlgorithm.Click += btnAddAlgorithm_Click;
             // 
             // lvFloorAlgorithms
             // 
-            this.lvFloorAlgorithms.Location = (new global::System.Drawing.Point(370, 59));
-            this.lvFloorAlgorithms.MultiSelect = (false);
-            this.lvFloorAlgorithms.Name = ("lvFloorAlgorithms");
-            this.lvFloorAlgorithms.Size = (new global::System.Drawing.Size(349, 109));
-            this.lvFloorAlgorithms.TabIndex = (26);
-            this.lvFloorAlgorithms.UseCompatibleStateImageBehavior = (false);
-            this.lvFloorAlgorithms.SelectedIndexChanged += (this.lvFloorAlgorithms_SelectedIndexChanged);
+            lvFloorAlgorithms.Location = new System.Drawing.Point(367, 58);
+            lvFloorAlgorithms.MultiSelect = false;
+            lvFloorAlgorithms.Name = "lvFloorAlgorithms";
+            lvFloorAlgorithms.Size = new System.Drawing.Size(349, 109);
+            lvFloorAlgorithms.TabIndex = 26;
+            lvFloorAlgorithms.UseCompatibleStateImageBehavior = false;
+            lvFloorAlgorithms.SelectedIndexChanged += lvFloorAlgorithms_SelectedIndexChanged;
             // 
             // label17
             // 
-            this.label17.AutoSize = (true);
-            this.label17.Location = (new global::System.Drawing.Point(482, 40));
-            this.label17.Name = ("label17");
-            this.label17.Size = (new global::System.Drawing.Size(127, 15));
-            this.label17.TabIndex = (25);
-            this.label17.Text = ("Generation Algorithms");
+            label17.AutoSize = true;
+            label17.Location = new System.Drawing.Point(479, 39);
+            label17.Name = "label17";
+            label17.Size = new System.Drawing.Size(127, 15);
+            label17.TabIndex = 25;
+            label17.Text = "Generation Algorithms";
             // 
             // label16
             // 
-            this.label16.AutoSize = (true);
-            this.label16.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label16.Location = (new global::System.Drawing.Point(477, 10));
-            this.label16.Name = ("label16");
-            this.label16.Size = (new global::System.Drawing.Size(138, 21));
-            this.label16.TabIndex = (24);
-            this.label16.Text = ("Floor Room Data");
+            label16.AutoSize = true;
+            label16.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label16.Location = new System.Drawing.Point(474, 9);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(138, 21);
+            label16.TabIndex = 24;
+            label16.Text = "Floor Room Data";
             // 
             // btnTrapGenerator
             // 
-            this.btnTrapGenerator.Location = (new global::System.Drawing.Point(179, 310));
-            this.btnTrapGenerator.Name = ("btnTrapGenerator");
-            this.btnTrapGenerator.Size = (new global::System.Drawing.Size(151, 23));
-            this.btnTrapGenerator.TabIndex = (23);
-            this.btnTrapGenerator.Text = ("Traps to be generated...");
-            this.btnTrapGenerator.UseVisualStyleBackColor = (true);
-            this.btnTrapGenerator.Click += (this.btnTrapGenerator_Click);
+            btnTrapGenerator.Location = new System.Drawing.Point(176, 309);
+            btnTrapGenerator.Name = "btnTrapGenerator";
+            btnTrapGenerator.Size = new System.Drawing.Size(151, 23);
+            btnTrapGenerator.TabIndex = 23;
+            btnTrapGenerator.Text = "Traps to be generated...";
+            btnTrapGenerator.UseVisualStyleBackColor = true;
+            btnTrapGenerator.Click += btnTrapGenerator_Click;
             // 
             // label15
             // 
-            this.label15.AutoSize = (true);
-            this.label15.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label15.Location = (new global::System.Drawing.Point(190, 276));
-            this.label15.Name = ("label15");
-            this.label15.Size = (new global::System.Drawing.Size(126, 21));
-            this.label15.TabIndex = (22);
-            this.label15.Text = ("Floor Trap Data");
+            label15.AutoSize = true;
+            label15.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label15.Location = new System.Drawing.Point(187, 275);
+            label15.Name = "label15";
+            label15.Size = new System.Drawing.Size(126, 21);
+            label15.TabIndex = 22;
+            label15.Text = "Floor Trap Data";
             // 
             // btnItemGenerator
             // 
-            this.btnItemGenerator.Location = (new global::System.Drawing.Point(12, 310));
-            this.btnItemGenerator.Name = ("btnItemGenerator");
-            this.btnItemGenerator.Size = (new global::System.Drawing.Size(151, 23));
-            this.btnItemGenerator.TabIndex = (21);
-            this.btnItemGenerator.Text = ("Items to be generated...");
-            this.btnItemGenerator.UseVisualStyleBackColor = (true);
-            this.btnItemGenerator.Click += (this.btnItemGenerator_Click);
+            btnItemGenerator.Location = new System.Drawing.Point(9, 309);
+            btnItemGenerator.Name = "btnItemGenerator";
+            btnItemGenerator.Size = new System.Drawing.Size(151, 23);
+            btnItemGenerator.TabIndex = 21;
+            btnItemGenerator.Text = "Items to be generated...";
+            btnItemGenerator.UseVisualStyleBackColor = true;
+            btnItemGenerator.Click += btnItemGenerator_Click;
             // 
             // label14
             // 
-            this.label14.AutoSize = (true);
-            this.label14.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label14.Location = (new global::System.Drawing.Point(23, 276));
-            this.label14.Name = ("label14");
-            this.label14.Size = (new global::System.Drawing.Size(128, 21));
-            this.label14.TabIndex = (20);
-            this.label14.Text = ("Floor Item Data");
+            label14.AutoSize = true;
+            label14.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label14.Location = new System.Drawing.Point(20, 275);
+            label14.Name = "label14";
+            label14.Size = new System.Drawing.Size(128, 21);
+            label14.TabIndex = 20;
+            label14.Text = "Floor Item Data";
             // 
             // btnNPCGenerator
             // 
-            this.btnNPCGenerator.Location = (new global::System.Drawing.Point(97, 242));
-            this.btnNPCGenerator.Name = ("btnNPCGenerator");
-            this.btnNPCGenerator.Size = (new global::System.Drawing.Size(151, 23));
-            this.btnNPCGenerator.TabIndex = (19);
-            this.btnNPCGenerator.Text = ("NPCs to be generated...");
-            this.btnNPCGenerator.UseVisualStyleBackColor = (true);
-            this.btnNPCGenerator.Click += (this.btnNPCGenerator_Click);
+            btnNPCGenerator.Location = new System.Drawing.Point(94, 241);
+            btnNPCGenerator.Name = "btnNPCGenerator";
+            btnNPCGenerator.Size = new System.Drawing.Size(151, 23);
+            btnNPCGenerator.TabIndex = 19;
+            btnNPCGenerator.Text = "NPCs to be generated...";
+            btnNPCGenerator.UseVisualStyleBackColor = true;
+            btnNPCGenerator.Click += btnNPCGenerator_Click;
             // 
             // label13
             // 
-            this.label13.AutoSize = (true);
-            this.label13.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label13.Location = (new global::System.Drawing.Point(109, 208));
-            this.label13.Name = ("label13");
-            this.label13.Size = (new global::System.Drawing.Size(126, 21));
-            this.label13.TabIndex = (18);
-            this.label13.Text = ("Floor NPC Data");
+            label13.AutoSize = true;
+            label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label13.Location = new System.Drawing.Point(106, 207);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(126, 21);
+            label13.TabIndex = 18;
+            label13.Text = "Floor NPC Data";
             // 
             // nudHeight
             // 
-            this.nudHeight.Location = (new global::System.Drawing.Point(54, 92));
-            this.nudHeight.Name = ("nudHeight");
-            this.nudHeight.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudHeight.TabIndex = (17);
-            this.nudHeight.ValueChanged += (this.nudHeight_ValueChanged);
+            nudHeight.Location = new System.Drawing.Point(51, 91);
+            nudHeight.Name = "nudHeight";
+            nudHeight.Size = new System.Drawing.Size(54, 23);
+            nudHeight.TabIndex = 17;
+            nudHeight.ValueChanged += nudHeight_ValueChanged;
             // 
             // nudWidth
             // 
-            this.nudWidth.Location = (new global::System.Drawing.Point(54, 59));
-            this.nudWidth.Name = ("nudWidth");
-            this.nudWidth.Size = (new global::System.Drawing.Size(54, 23));
-            this.nudWidth.TabIndex = (16);
-            this.nudWidth.ValueChanged += (this.nudWidth_ValueChanged);
+            nudWidth.Location = new System.Drawing.Point(51, 58);
+            nudWidth.Name = "nudWidth";
+            nudWidth.Size = new System.Drawing.Size(54, 23);
+            nudWidth.TabIndex = 16;
+            nudWidth.ValueChanged += nudWidth_ValueChanged;
             // 
             // label12
             // 
-            this.label12.AutoSize = (true);
-            this.label12.Location = (new global::System.Drawing.Point(9, 94));
-            this.label12.Name = ("label12");
-            this.label12.Size = (new global::System.Drawing.Size(43, 15));
-            this.label12.TabIndex = (15);
-            this.label12.Text = ("Height");
+            label12.AutoSize = true;
+            label12.Location = new System.Drawing.Point(6, 93);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(43, 15);
+            label12.TabIndex = 15;
+            label12.Text = "Height";
             // 
             // label11
             // 
-            this.label11.AutoSize = (true);
-            this.label11.Location = (new global::System.Drawing.Point(9, 61));
-            this.label11.Name = ("label11");
-            this.label11.Size = (new global::System.Drawing.Size(39, 15));
-            this.label11.TabIndex = (14);
-            this.label11.Text = ("Width");
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(6, 60);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(39, 15);
+            label11.TabIndex = 14;
+            label11.Text = "Width";
             // 
             // fklblStairsReminder
             // 
-            this.fklblStairsReminder.Enabled = (false);
-            this.fklblStairsReminder.FlatAppearance.BorderSize = (0);
-            this.fklblStairsReminder.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblStairsReminder.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblStairsReminder.Image")));
-            this.fklblStairsReminder.ImageAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblStairsReminder.Location = (new global::System.Drawing.Point(9, 159));
-            this.fklblStairsReminder.Name = ("fklblStairsReminder");
-            this.fklblStairsReminder.Size = (new global::System.Drawing.Size(287, 42));
-            this.fklblStairsReminder.TabIndex = (13);
-            this.fklblStairsReminder.Text = ("Remember to include an element that\r\ngenerates Stairs, or it would softlock the game.");
-            this.fklblStairsReminder.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblStairsReminder.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblStairsReminder.UseVisualStyleBackColor = (true);
-            this.fklblStairsReminder.Visible = (false);
+            fklblStairsReminder.Enabled = false;
+            fklblStairsReminder.FlatAppearance.BorderSize = 0;
+            fklblStairsReminder.FlatStyle = FlatStyle.Flat;
+            fklblStairsReminder.Image = (System.Drawing.Image)resources.GetObject("fklblStairsReminder.Image");
+            fklblStairsReminder.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblStairsReminder.Location = new System.Drawing.Point(6, 158);
+            fklblStairsReminder.Name = "fklblStairsReminder";
+            fklblStairsReminder.Size = new System.Drawing.Size(287, 42);
+            fklblStairsReminder.TabIndex = 13;
+            fklblStairsReminder.Text = "Remember to include an element that\r\ngenerates Stairs, or it would softlock the game.";
+            fklblStairsReminder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblStairsReminder.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblStairsReminder.UseVisualStyleBackColor = true;
+            fklblStairsReminder.Visible = false;
             // 
             // chkGenerateStairsOnStart
             // 
-            this.chkGenerateStairsOnStart.AutoSize = (true);
-            this.chkGenerateStairsOnStart.Location = (new global::System.Drawing.Point(9, 134));
-            this.chkGenerateStairsOnStart.Name = ("chkGenerateStairsOnStart");
-            this.chkGenerateStairsOnStart.Size = (new global::System.Drawing.Size(214, 19));
-            this.chkGenerateStairsOnStart.TabIndex = (4);
-            this.chkGenerateStairsOnStart.Text = ("Place Stairs when Floor is generated");
-            this.chkGenerateStairsOnStart.UseVisualStyleBackColor = (true);
-            this.chkGenerateStairsOnStart.CheckedChanged += (this.chkGenerateStairsOnStart_CheckedChanged);
+            chkGenerateStairsOnStart.AutoSize = true;
+            chkGenerateStairsOnStart.Location = new System.Drawing.Point(6, 133);
+            chkGenerateStairsOnStart.Name = "chkGenerateStairsOnStart";
+            chkGenerateStairsOnStart.Size = new System.Drawing.Size(214, 19);
+            chkGenerateStairsOnStart.TabIndex = 4;
+            chkGenerateStairsOnStart.Text = "Place Stairs when Floor is generated";
+            chkGenerateStairsOnStart.UseVisualStyleBackColor = true;
+            chkGenerateStairsOnStart.CheckedChanged += chkGenerateStairsOnStart_CheckedChanged;
             // 
             // nudMaxFloorLevel
             // 
-            this.nudMaxFloorLevel.Location = (new global::System.Drawing.Point(138, 10));
-            this.nudMaxFloorLevel.Name = ("nudMaxFloorLevel");
-            this.nudMaxFloorLevel.Size = (new global::System.Drawing.Size(33, 23));
-            this.nudMaxFloorLevel.TabIndex = (3);
-            this.nudMaxFloorLevel.ValueChanged += (this.nudMaxFloorLevel_ValueChanged);
-            this.nudMaxFloorLevel.Leave += (this.nudMaxFloorLevel_Leave);
+            nudMaxFloorLevel.Location = new System.Drawing.Point(135, 9);
+            nudMaxFloorLevel.Name = "nudMaxFloorLevel";
+            nudMaxFloorLevel.Size = new System.Drawing.Size(33, 23);
+            nudMaxFloorLevel.TabIndex = 3;
+            nudMaxFloorLevel.ValueChanged += nudMaxFloorLevel_ValueChanged;
+            nudMaxFloorLevel.Leave += nudMaxFloorLevel_Leave;
             // 
             // label10
             // 
-            this.label10.AutoSize = (true);
-            this.label10.Location = (new global::System.Drawing.Point(114, 12));
-            this.label10.Name = ("label10");
-            this.label10.Size = (new global::System.Drawing.Size(18, 15));
-            this.label10.TabIndex = (2);
-            this.label10.Text = ("to");
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(111, 11);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(18, 15);
+            label10.TabIndex = 2;
+            label10.Text = "to";
             // 
             // nudMinFloorLevel
             // 
-            this.nudMinFloorLevel.Location = (new global::System.Drawing.Point(76, 10));
-            this.nudMinFloorLevel.Name = ("nudMinFloorLevel");
-            this.nudMinFloorLevel.Size = (new global::System.Drawing.Size(33, 23));
-            this.nudMinFloorLevel.TabIndex = (1);
-            this.nudMinFloorLevel.ValueChanged += (this.nudMinFloorLevel_ValueChanged);
-            this.nudMinFloorLevel.Leave += (this.nudMinFloorLevel_Leave);
+            nudMinFloorLevel.Location = new System.Drawing.Point(73, 9);
+            nudMinFloorLevel.Name = "nudMinFloorLevel";
+            nudMinFloorLevel.Size = new System.Drawing.Size(33, 23);
+            nudMinFloorLevel.TabIndex = 1;
+            nudMinFloorLevel.ValueChanged += nudMinFloorLevel_ValueChanged;
+            nudMinFloorLevel.Leave += nudMinFloorLevel_Leave;
             // 
             // label9
             // 
-            this.label9.AutoSize = (true);
-            this.label9.Location = (new global::System.Drawing.Point(9, 12));
-            this.label9.Name = ("label9");
-            this.label9.Size = (new global::System.Drawing.Size(65, 15));
-            this.label9.TabIndex = (0);
-            this.label9.Text = ("From Level");
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(6, 11);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(65, 15);
+            label9.TabIndex = 0;
+            label9.Text = "From Level";
             // 
             // tpFactionInfos
             // 
-            this.tpFactionInfos.Controls.Add(this.lbEnemies);
-            this.tpFactionInfos.Controls.Add(this.label26);
-            this.tpFactionInfos.Controls.Add(this.btnEnemiesToNeutrals);
-            this.tpFactionInfos.Controls.Add(this.btnEnemyToNeutral);
-            this.tpFactionInfos.Controls.Add(this.btnNeutralsToEnemies);
-            this.tpFactionInfos.Controls.Add(this.btnNeutralToEnemy);
-            this.tpFactionInfos.Controls.Add(this.lbNeutrals);
-            this.tpFactionInfos.Controls.Add(this.label25);
-            this.tpFactionInfos.Controls.Add(this.btnNeutralsToAllies);
-            this.tpFactionInfos.Controls.Add(this.btnNeutralToAlly);
-            this.tpFactionInfos.Controls.Add(this.btnAlliesToNeutrals);
-            this.tpFactionInfos.Controls.Add(this.btnAllyToNeutral);
-            this.tpFactionInfos.Controls.Add(this.lbAllies);
-            this.tpFactionInfos.Controls.Add(this.label24);
-            this.tpFactionInfos.Controls.Add(this.label23);
-            this.tpFactionInfos.Controls.Add(this.fklblFactionDescriptionLocale);
-            this.tpFactionInfos.Controls.Add(this.txtFactionDescription);
-            this.tpFactionInfos.Controls.Add(this.label22);
-            this.tpFactionInfos.Controls.Add(this.fklblFactionNameLocale);
-            this.tpFactionInfos.Controls.Add(this.txtFactionName);
-            this.tpFactionInfos.Controls.Add(this.label21);
-            this.tpFactionInfos.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpFactionInfos.Name = ("tpFactionInfos");
-            this.tpFactionInfos.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpFactionInfos.TabIndex = (3);
-            this.tpFactionInfos.Text = ("Faction");
-            this.tpFactionInfos.UseVisualStyleBackColor = (true);
+            tpFactionInfos.Controls.Add(lbEnemies);
+            tpFactionInfos.Controls.Add(label26);
+            tpFactionInfos.Controls.Add(btnEnemiesToNeutrals);
+            tpFactionInfos.Controls.Add(btnEnemyToNeutral);
+            tpFactionInfos.Controls.Add(btnNeutralsToEnemies);
+            tpFactionInfos.Controls.Add(btnNeutralToEnemy);
+            tpFactionInfos.Controls.Add(lbNeutrals);
+            tpFactionInfos.Controls.Add(label25);
+            tpFactionInfos.Controls.Add(btnNeutralsToAllies);
+            tpFactionInfos.Controls.Add(btnNeutralToAlly);
+            tpFactionInfos.Controls.Add(btnAlliesToNeutrals);
+            tpFactionInfos.Controls.Add(btnAllyToNeutral);
+            tpFactionInfos.Controls.Add(lbAllies);
+            tpFactionInfos.Controls.Add(label24);
+            tpFactionInfos.Controls.Add(label23);
+            tpFactionInfos.Controls.Add(fklblFactionDescriptionLocale);
+            tpFactionInfos.Controls.Add(txtFactionDescription);
+            tpFactionInfos.Controls.Add(label22);
+            tpFactionInfos.Controls.Add(fklblFactionNameLocale);
+            tpFactionInfos.Controls.Add(txtFactionName);
+            tpFactionInfos.Controls.Add(label21);
+            tpFactionInfos.Location = new System.Drawing.Point(4, 24);
+            tpFactionInfos.Name = "tpFactionInfos";
+            tpFactionInfos.Size = new System.Drawing.Size(740, 356);
+            tpFactionInfos.TabIndex = 3;
+            tpFactionInfos.Text = "Faction";
+            tpFactionInfos.UseVisualStyleBackColor = true;
             // 
             // lbEnemies
             // 
-            this.lbEnemies.FormattingEnabled = (true);
-            this.lbEnemies.ItemHeight = (15);
-            this.lbEnemies.Location = (new global::System.Drawing.Point(450, 161));
-            this.lbEnemies.Name = ("lbEnemies");
-            this.lbEnemies.Size = (new global::System.Drawing.Size(111, 169));
-            this.lbEnemies.TabIndex = (33);
-            this.lbEnemies.SelectedIndexChanged += (this.lbEnemies_SelectedIndexChanged);
+            lbEnemies.FormattingEnabled = true;
+            lbEnemies.ItemHeight = 15;
+            lbEnemies.Location = new System.Drawing.Point(450, 161);
+            lbEnemies.Name = "lbEnemies";
+            lbEnemies.Size = new System.Drawing.Size(111, 169);
+            lbEnemies.TabIndex = 33;
+            lbEnemies.SelectedIndexChanged += lbEnemies_SelectedIndexChanged;
             // 
             // label26
             // 
-            this.label26.AutoSize = (true);
-            this.label26.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label26.Location = (new global::System.Drawing.Point(461, 143));
-            this.label26.Name = ("label26");
-            this.label26.Size = (new global::System.Drawing.Size(92, 15));
-            this.label26.TabIndex = (32);
-            this.label26.Text = ("Enemies With...");
+            label26.AutoSize = true;
+            label26.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label26.Location = new System.Drawing.Point(461, 143);
+            label26.Name = "label26";
+            label26.Size = new System.Drawing.Size(92, 15);
+            label26.TabIndex = 32;
+            label26.Text = "Enemies With...";
             // 
             // btnEnemiesToNeutrals
             // 
-            this.btnEnemiesToNeutrals.Enabled = (false);
-            this.btnEnemiesToNeutrals.Location = (new global::System.Drawing.Point(407, 211));
-            this.btnEnemiesToNeutrals.Name = ("btnEnemiesToNeutrals");
-            this.btnEnemiesToNeutrals.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnEnemiesToNeutrals.TabIndex = (31);
-            this.btnEnemiesToNeutrals.Text = ("<<");
-            this.btnEnemiesToNeutrals.UseVisualStyleBackColor = (true);
-            this.btnEnemiesToNeutrals.Click += (this.btnEnemiesToNeutrals_Click);
+            btnEnemiesToNeutrals.Enabled = false;
+            btnEnemiesToNeutrals.Location = new System.Drawing.Point(407, 211);
+            btnEnemiesToNeutrals.Name = "btnEnemiesToNeutrals";
+            btnEnemiesToNeutrals.Size = new System.Drawing.Size(37, 23);
+            btnEnemiesToNeutrals.TabIndex = 31;
+            btnEnemiesToNeutrals.Text = "<<";
+            btnEnemiesToNeutrals.UseVisualStyleBackColor = true;
+            btnEnemiesToNeutrals.Click += btnEnemiesToNeutrals_Click;
             // 
             // btnEnemyToNeutral
             // 
-            this.btnEnemyToNeutral.Enabled = (false);
-            this.btnEnemyToNeutral.Location = (new global::System.Drawing.Point(407, 182));
-            this.btnEnemyToNeutral.Name = ("btnEnemyToNeutral");
-            this.btnEnemyToNeutral.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnEnemyToNeutral.TabIndex = (30);
-            this.btnEnemyToNeutral.Text = ("<");
-            this.btnEnemyToNeutral.UseVisualStyleBackColor = (true);
-            this.btnEnemyToNeutral.Click += (this.btnEnemyToNeutral_Click);
+            btnEnemyToNeutral.Enabled = false;
+            btnEnemyToNeutral.Location = new System.Drawing.Point(407, 182);
+            btnEnemyToNeutral.Name = "btnEnemyToNeutral";
+            btnEnemyToNeutral.Size = new System.Drawing.Size(37, 23);
+            btnEnemyToNeutral.TabIndex = 30;
+            btnEnemyToNeutral.Text = "<";
+            btnEnemyToNeutral.UseVisualStyleBackColor = true;
+            btnEnemyToNeutral.Click += btnEnemyToNeutral_Click;
             // 
             // btnNeutralsToEnemies
             // 
-            this.btnNeutralsToEnemies.Enabled = (false);
-            this.btnNeutralsToEnemies.Location = (new global::System.Drawing.Point(407, 284));
-            this.btnNeutralsToEnemies.Name = ("btnNeutralsToEnemies");
-            this.btnNeutralsToEnemies.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnNeutralsToEnemies.TabIndex = (29);
-            this.btnNeutralsToEnemies.Text = (">>");
-            this.btnNeutralsToEnemies.UseVisualStyleBackColor = (true);
-            this.btnNeutralsToEnemies.Click += (this.btnNeutralsToEnemies_Click);
+            btnNeutralsToEnemies.Enabled = false;
+            btnNeutralsToEnemies.Location = new System.Drawing.Point(407, 284);
+            btnNeutralsToEnemies.Name = "btnNeutralsToEnemies";
+            btnNeutralsToEnemies.Size = new System.Drawing.Size(37, 23);
+            btnNeutralsToEnemies.TabIndex = 29;
+            btnNeutralsToEnemies.Text = ">>";
+            btnNeutralsToEnemies.UseVisualStyleBackColor = true;
+            btnNeutralsToEnemies.Click += btnNeutralsToEnemies_Click;
             // 
             // btnNeutralToEnemy
             // 
-            this.btnNeutralToEnemy.Enabled = (false);
-            this.btnNeutralToEnemy.Location = (new global::System.Drawing.Point(407, 255));
-            this.btnNeutralToEnemy.Name = ("btnNeutralToEnemy");
-            this.btnNeutralToEnemy.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnNeutralToEnemy.TabIndex = (28);
-            this.btnNeutralToEnemy.Text = (">");
-            this.btnNeutralToEnemy.UseVisualStyleBackColor = (true);
-            this.btnNeutralToEnemy.Click += (this.btnNeutralToEnemy_Click);
+            btnNeutralToEnemy.Enabled = false;
+            btnNeutralToEnemy.Location = new System.Drawing.Point(407, 255);
+            btnNeutralToEnemy.Name = "btnNeutralToEnemy";
+            btnNeutralToEnemy.Size = new System.Drawing.Size(37, 23);
+            btnNeutralToEnemy.TabIndex = 28;
+            btnNeutralToEnemy.Text = ">";
+            btnNeutralToEnemy.UseVisualStyleBackColor = true;
+            btnNeutralToEnemy.Click += btnNeutralToEnemy_Click;
             // 
             // lbNeutrals
             // 
-            this.lbNeutrals.FormattingEnabled = (true);
-            this.lbNeutrals.ItemHeight = (15);
-            this.lbNeutrals.Location = (new global::System.Drawing.Point(290, 161));
-            this.lbNeutrals.Name = ("lbNeutrals");
-            this.lbNeutrals.Size = (new global::System.Drawing.Size(111, 169));
-            this.lbNeutrals.TabIndex = (27);
-            this.lbNeutrals.SelectedIndexChanged += (this.lbNeutrals_SelectedIndexChanged);
+            lbNeutrals.FormattingEnabled = true;
+            lbNeutrals.ItemHeight = 15;
+            lbNeutrals.Location = new System.Drawing.Point(290, 161);
+            lbNeutrals.Name = "lbNeutrals";
+            lbNeutrals.Size = new System.Drawing.Size(111, 169);
+            lbNeutrals.TabIndex = 27;
+            lbNeutrals.SelectedIndexChanged += lbNeutrals_SelectedIndexChanged;
             // 
             // label25
             // 
-            this.label25.AutoSize = (true);
-            this.label25.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label25.Location = (new global::System.Drawing.Point(303, 143));
-            this.label25.Name = ("label25");
-            this.label25.Size = (new global::System.Drawing.Size(88, 15));
-            this.label25.TabIndex = (26);
-            this.label25.Text = ("Neutral With...");
+            label25.AutoSize = true;
+            label25.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label25.Location = new System.Drawing.Point(303, 143);
+            label25.Name = "label25";
+            label25.Size = new System.Drawing.Size(88, 15);
+            label25.TabIndex = 26;
+            label25.Text = "Neutral With...";
             // 
             // btnNeutralsToAllies
             // 
-            this.btnNeutralsToAllies.Enabled = (false);
-            this.btnNeutralsToAllies.Location = (new global::System.Drawing.Point(247, 211));
-            this.btnNeutralsToAllies.Name = ("btnNeutralsToAllies");
-            this.btnNeutralsToAllies.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnNeutralsToAllies.TabIndex = (25);
-            this.btnNeutralsToAllies.Text = ("<<");
-            this.btnNeutralsToAllies.UseVisualStyleBackColor = (true);
-            this.btnNeutralsToAllies.Click += (this.btnNeutralsToAllies_Click);
+            btnNeutralsToAllies.Enabled = false;
+            btnNeutralsToAllies.Location = new System.Drawing.Point(247, 211);
+            btnNeutralsToAllies.Name = "btnNeutralsToAllies";
+            btnNeutralsToAllies.Size = new System.Drawing.Size(37, 23);
+            btnNeutralsToAllies.TabIndex = 25;
+            btnNeutralsToAllies.Text = "<<";
+            btnNeutralsToAllies.UseVisualStyleBackColor = true;
+            btnNeutralsToAllies.Click += btnNeutralsToAllies_Click;
             // 
             // btnNeutralToAlly
             // 
-            this.btnNeutralToAlly.Enabled = (false);
-            this.btnNeutralToAlly.Location = (new global::System.Drawing.Point(247, 182));
-            this.btnNeutralToAlly.Name = ("btnNeutralToAlly");
-            this.btnNeutralToAlly.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnNeutralToAlly.TabIndex = (24);
-            this.btnNeutralToAlly.Text = ("<");
-            this.btnNeutralToAlly.UseVisualStyleBackColor = (true);
-            this.btnNeutralToAlly.Click += (this.btnNeutralToAlly_Click);
+            btnNeutralToAlly.Enabled = false;
+            btnNeutralToAlly.Location = new System.Drawing.Point(247, 182);
+            btnNeutralToAlly.Name = "btnNeutralToAlly";
+            btnNeutralToAlly.Size = new System.Drawing.Size(37, 23);
+            btnNeutralToAlly.TabIndex = 24;
+            btnNeutralToAlly.Text = "<";
+            btnNeutralToAlly.UseVisualStyleBackColor = true;
+            btnNeutralToAlly.Click += btnNeutralToAlly_Click;
             // 
             // btnAlliesToNeutrals
             // 
-            this.btnAlliesToNeutrals.Enabled = (false);
-            this.btnAlliesToNeutrals.Location = (new global::System.Drawing.Point(247, 284));
-            this.btnAlliesToNeutrals.Name = ("btnAlliesToNeutrals");
-            this.btnAlliesToNeutrals.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnAlliesToNeutrals.TabIndex = (23);
-            this.btnAlliesToNeutrals.Text = (">>");
-            this.btnAlliesToNeutrals.UseVisualStyleBackColor = (true);
-            this.btnAlliesToNeutrals.Click += (this.btnAlliesToNeutrals_Click);
+            btnAlliesToNeutrals.Enabled = false;
+            btnAlliesToNeutrals.Location = new System.Drawing.Point(247, 284);
+            btnAlliesToNeutrals.Name = "btnAlliesToNeutrals";
+            btnAlliesToNeutrals.Size = new System.Drawing.Size(37, 23);
+            btnAlliesToNeutrals.TabIndex = 23;
+            btnAlliesToNeutrals.Text = ">>";
+            btnAlliesToNeutrals.UseVisualStyleBackColor = true;
+            btnAlliesToNeutrals.Click += btnAlliesToNeutrals_Click;
             // 
             // btnAllyToNeutral
             // 
-            this.btnAllyToNeutral.Enabled = (false);
-            this.btnAllyToNeutral.Location = (new global::System.Drawing.Point(247, 255));
-            this.btnAllyToNeutral.Name = ("btnAllyToNeutral");
-            this.btnAllyToNeutral.Size = (new global::System.Drawing.Size(37, 23));
-            this.btnAllyToNeutral.TabIndex = (22);
-            this.btnAllyToNeutral.Text = (">");
-            this.btnAllyToNeutral.UseVisualStyleBackColor = (true);
-            this.btnAllyToNeutral.Click += (this.btnAllyToNeutral_Click);
+            btnAllyToNeutral.Enabled = false;
+            btnAllyToNeutral.Location = new System.Drawing.Point(247, 255);
+            btnAllyToNeutral.Name = "btnAllyToNeutral";
+            btnAllyToNeutral.Size = new System.Drawing.Size(37, 23);
+            btnAllyToNeutral.TabIndex = 22;
+            btnAllyToNeutral.Text = ">";
+            btnAllyToNeutral.UseVisualStyleBackColor = true;
+            btnAllyToNeutral.Click += btnAllyToNeutral_Click;
             // 
             // lbAllies
             // 
-            this.lbAllies.FormattingEnabled = (true);
-            this.lbAllies.ItemHeight = (15);
-            this.lbAllies.Location = (new global::System.Drawing.Point(130, 161));
-            this.lbAllies.Name = ("lbAllies");
-            this.lbAllies.Size = (new global::System.Drawing.Size(111, 169));
-            this.lbAllies.TabIndex = (21);
-            this.lbAllies.SelectedIndexChanged += (this.lbAllies_SelectedIndexChanged);
+            lbAllies.FormattingEnabled = true;
+            lbAllies.ItemHeight = 15;
+            lbAllies.Location = new System.Drawing.Point(130, 161);
+            lbAllies.Name = "lbAllies";
+            lbAllies.Size = new System.Drawing.Size(111, 169);
+            lbAllies.TabIndex = 21;
+            lbAllies.SelectedIndexChanged += lbAllies_SelectedIndexChanged;
             // 
             // label24
             // 
-            this.label24.AutoSize = (true);
-            this.label24.Font = (new global::System.Drawing.Font("Segoe UI", 9F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label24.Location = (new global::System.Drawing.Point(147, 143));
-            this.label24.Name = ("label24");
-            this.label24.Size = (new global::System.Drawing.Size(77, 15));
-            this.label24.TabIndex = (20);
-            this.label24.Text = ("Allied With...");
+            label24.AutoSize = true;
+            label24.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label24.Location = new System.Drawing.Point(147, 143);
+            label24.Name = "label24";
+            label24.Size = new System.Drawing.Size(77, 15);
+            label24.TabIndex = 20;
+            label24.Text = "Allied With...";
             // 
             // label23
             // 
-            this.label23.AutoSize = (true);
-            this.label23.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label23.Location = (new global::System.Drawing.Point(296, 109));
-            this.label23.Name = ("label23");
-            this.label23.Size = (new global::System.Drawing.Size(98, 21));
-            this.label23.TabIndex = (19);
-            this.label23.Text = ("Allegiances");
+            label23.AutoSize = true;
+            label23.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label23.Location = new System.Drawing.Point(296, 109);
+            label23.Name = "label23";
+            label23.Size = new System.Drawing.Size(98, 21);
+            label23.TabIndex = 19;
+            label23.Text = "Allegiances";
             // 
             // fklblFactionDescriptionLocale
             // 
-            this.fklblFactionDescriptionLocale.Enabled = (false);
-            this.fklblFactionDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblFactionDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblFactionDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblFactionDescriptionLocale.Image")));
-            this.fklblFactionDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblFactionDescriptionLocale.Location = (new global::System.Drawing.Point(375, 59));
-            this.fklblFactionDescriptionLocale.Name = ("fklblFactionDescriptionLocale");
-            this.fklblFactionDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblFactionDescriptionLocale.TabIndex = (18);
-            this.fklblFactionDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblFactionDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblFactionDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblFactionDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblFactionDescriptionLocale.Visible = (false);
+            fklblFactionDescriptionLocale.Enabled = false;
+            fklblFactionDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblFactionDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblFactionDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblFactionDescriptionLocale.Image");
+            fklblFactionDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblFactionDescriptionLocale.Location = new System.Drawing.Point(375, 59);
+            fklblFactionDescriptionLocale.Name = "fklblFactionDescriptionLocale";
+            fklblFactionDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblFactionDescriptionLocale.TabIndex = 18;
+            fklblFactionDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblFactionDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblFactionDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblFactionDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblFactionDescriptionLocale.Visible = false;
             // 
             // txtFactionDescription
             // 
-            this.txtFactionDescription.Location = (new global::System.Drawing.Point(375, 30));
-            this.txtFactionDescription.Name = ("txtFactionDescription");
-            this.txtFactionDescription.Size = (new global::System.Drawing.Size(359, 23));
-            this.txtFactionDescription.TabIndex = (17);
-            this.txtFactionDescription.TextChanged += (this.txtFactionDescription_TextChanged);
+            txtFactionDescription.Location = new System.Drawing.Point(375, 30);
+            txtFactionDescription.Name = "txtFactionDescription";
+            txtFactionDescription.Size = new System.Drawing.Size(359, 23);
+            txtFactionDescription.TabIndex = 17;
+            txtFactionDescription.TextChanged += txtFactionDescription_TextChanged;
             // 
             // label22
             // 
-            this.label22.AutoSize = (true);
-            this.label22.Location = (new global::System.Drawing.Point(375, 12));
-            this.label22.Name = ("label22");
-            this.label22.Size = (new global::System.Drawing.Size(67, 15));
-            this.label22.TabIndex = (16);
-            this.label22.Text = ("Description");
+            label22.AutoSize = true;
+            label22.Location = new System.Drawing.Point(375, 12);
+            label22.Name = "label22";
+            label22.Size = new System.Drawing.Size(67, 15);
+            label22.TabIndex = 16;
+            label22.Text = "Description";
             // 
             // fklblFactionNameLocale
             // 
-            this.fklblFactionNameLocale.Enabled = (false);
-            this.fklblFactionNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblFactionNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblFactionNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblFactionNameLocale.Image")));
-            this.fklblFactionNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblFactionNameLocale.Location = (new global::System.Drawing.Point(13, 59));
-            this.fklblFactionNameLocale.Name = ("fklblFactionNameLocale");
-            this.fklblFactionNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblFactionNameLocale.TabIndex = (15);
-            this.fklblFactionNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblFactionNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblFactionNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblFactionNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblFactionNameLocale.Visible = (false);
+            fklblFactionNameLocale.Enabled = false;
+            fklblFactionNameLocale.FlatAppearance.BorderSize = 0;
+            fklblFactionNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblFactionNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblFactionNameLocale.Image");
+            fklblFactionNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblFactionNameLocale.Location = new System.Drawing.Point(13, 59);
+            fklblFactionNameLocale.Name = "fklblFactionNameLocale";
+            fklblFactionNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblFactionNameLocale.TabIndex = 15;
+            fklblFactionNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblFactionNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblFactionNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblFactionNameLocale.UseVisualStyleBackColor = true;
+            fklblFactionNameLocale.Visible = false;
             // 
             // txtFactionName
             // 
-            this.txtFactionName.Location = (new global::System.Drawing.Point(13, 30));
-            this.txtFactionName.Name = ("txtFactionName");
-            this.txtFactionName.Size = (new global::System.Drawing.Size(359, 23));
-            this.txtFactionName.TabIndex = (14);
-            this.txtFactionName.TextChanged += (this.txtFactionName_TextChanged);
+            txtFactionName.Location = new System.Drawing.Point(13, 30);
+            txtFactionName.Name = "txtFactionName";
+            txtFactionName.Size = new System.Drawing.Size(359, 23);
+            txtFactionName.TabIndex = 14;
+            txtFactionName.TextChanged += txtFactionName_TextChanged;
             // 
             // label21
             // 
-            this.label21.AutoSize = (true);
-            this.label21.Location = (new global::System.Drawing.Point(13, 12));
-            this.label21.Name = ("label21");
-            this.label21.Size = (new global::System.Drawing.Size(39, 15));
-            this.label21.TabIndex = (13);
-            this.label21.Text = ("Name");
+            label21.AutoSize = true;
+            label21.Location = new System.Drawing.Point(13, 12);
+            label21.Name = "label21";
+            label21.Size = new System.Drawing.Size(39, 15);
+            label21.TabIndex = 13;
+            label21.Text = "Name";
             // 
             // tpPlayerClass
             // 
-            this.tpPlayerClass.AutoScroll = (true);
-            this.tpPlayerClass.Controls.Add(this.ssPlayer);
-            this.tpPlayerClass.Controls.Add(this.sisPlayerStartingInventory);
-            this.tpPlayerClass.Controls.Add(this.saePlayerOnDeath);
-            this.tpPlayerClass.Controls.Add(this.saePlayerOnAttacked);
-            this.tpPlayerClass.Controls.Add(this.saePlayerOnTurnStart);
-            this.tpPlayerClass.Controls.Add(this.maePlayerOnAttack);
-            this.tpPlayerClass.Controls.Add(this.label58);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerStartingArmor);
-            this.tpPlayerClass.Controls.Add(this.label57);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerStartingWeapon);
-            this.tpPlayerClass.Controls.Add(this.label56);
-            this.tpPlayerClass.Controls.Add(this.label54);
-            this.tpPlayerClass.Controls.Add(this.nudPlayerInventorySize);
-            this.tpPlayerClass.Controls.Add(this.label53);
-            this.tpPlayerClass.Controls.Add(this.label30);
-            this.tpPlayerClass.Controls.Add(this.chkPlayerStartsVisible);
-            this.tpPlayerClass.Controls.Add(this.cmbPlayerFaction);
-            this.tpPlayerClass.Controls.Add(this.label29);
-            this.tpPlayerClass.Controls.Add(this.chkRequirePlayerPrompt);
-            this.tpPlayerClass.Controls.Add(this.fklblPlayerClassDescriptionLocale);
-            this.tpPlayerClass.Controls.Add(this.txtPlayerClassDescription);
-            this.tpPlayerClass.Controls.Add(this.label28);
-            this.tpPlayerClass.Controls.Add(this.fklblPlayerClassNameLocale);
-            this.tpPlayerClass.Controls.Add(this.txtPlayerClassName);
-            this.tpPlayerClass.Controls.Add(this.label27);
-            this.tpPlayerClass.Controls.Add(this.crsPlayer);
-            this.tpPlayerClass.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpPlayerClass.Name = ("tpPlayerClass");
-            this.tpPlayerClass.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpPlayerClass.TabIndex = (4);
-            this.tpPlayerClass.Text = ("Player Class");
-            this.tpPlayerClass.UseVisualStyleBackColor = (true);
+            tpPlayerClass.AutoScroll = true;
+            tpPlayerClass.Controls.Add(ssPlayer);
+            tpPlayerClass.Controls.Add(sisPlayerStartingInventory);
+            tpPlayerClass.Controls.Add(saePlayerOnDeath);
+            tpPlayerClass.Controls.Add(saePlayerOnAttacked);
+            tpPlayerClass.Controls.Add(saePlayerOnTurnStart);
+            tpPlayerClass.Controls.Add(maePlayerOnAttack);
+            tpPlayerClass.Controls.Add(label58);
+            tpPlayerClass.Controls.Add(cmbPlayerStartingArmor);
+            tpPlayerClass.Controls.Add(label57);
+            tpPlayerClass.Controls.Add(cmbPlayerStartingWeapon);
+            tpPlayerClass.Controls.Add(label56);
+            tpPlayerClass.Controls.Add(label54);
+            tpPlayerClass.Controls.Add(nudPlayerInventorySize);
+            tpPlayerClass.Controls.Add(label53);
+            tpPlayerClass.Controls.Add(label30);
+            tpPlayerClass.Controls.Add(chkPlayerStartsVisible);
+            tpPlayerClass.Controls.Add(cmbPlayerFaction);
+            tpPlayerClass.Controls.Add(label29);
+            tpPlayerClass.Controls.Add(chkRequirePlayerPrompt);
+            tpPlayerClass.Controls.Add(fklblPlayerClassDescriptionLocale);
+            tpPlayerClass.Controls.Add(txtPlayerClassDescription);
+            tpPlayerClass.Controls.Add(label28);
+            tpPlayerClass.Controls.Add(fklblPlayerClassNameLocale);
+            tpPlayerClass.Controls.Add(txtPlayerClassName);
+            tpPlayerClass.Controls.Add(label27);
+            tpPlayerClass.Controls.Add(crsPlayer);
+            tpPlayerClass.Location = new System.Drawing.Point(4, 24);
+            tpPlayerClass.Name = "tpPlayerClass";
+            tpPlayerClass.Size = new System.Drawing.Size(740, 356);
+            tpPlayerClass.TabIndex = 4;
+            tpPlayerClass.Text = "Player Class";
+            tpPlayerClass.UseVisualStyleBackColor = true;
             // 
             // ssPlayer
             // 
-            this.ssPlayer.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.AutoSize = (true);
-            this.ssPlayer.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.ssPlayer.BaseAccuracy = (100);
-            this.ssPlayer.BaseAttack = (0);
-            this.ssPlayer.BaseDefense = (0);
-            this.ssPlayer.BaseEvasion = (0);
-            this.ssPlayer.BaseHP = (1);
-            this.ssPlayer.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.ssPlayer.BaseMovement = (1);
-            this.ssPlayer.BaseMP = (0);
-            this.ssPlayer.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssPlayer.BaseSightRangeDisplayNames")));
-            this.ssPlayer.CanGainExperience = (false);
-            this.ssPlayer.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.ExperienceToLevelUpFormula = ("");
-            this.ssPlayer.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.Location = (new global::System.Drawing.Point(385, 94));
-            this.ssPlayer.MaxLevel = (1);
-            this.ssPlayer.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssPlayer.Name = ("ssPlayer");
-            this.ssPlayer.Size = (new global::System.Drawing.Size(331, 687));
-            this.ssPlayer.TabIndex = (129);
-            this.ssPlayer.UsesMP = (false);
+            ssPlayer.AttackPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.AutoSize = true;
+            ssPlayer.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ssPlayer.BaseAccuracy = 100;
+            ssPlayer.BaseAttack = 0;
+            ssPlayer.BaseDefense = 0;
+            ssPlayer.BaseEvasion = 0;
+            ssPlayer.BaseHP = 1;
+            ssPlayer.BaseHPRegeneration = new decimal(new int[] { 1, 0, 0, 0 });
+            ssPlayer.BaseHunger = 0;
+            ssPlayer.BaseMovement = 1;
+            ssPlayer.BaseMP = 0;
+            ssPlayer.BaseMPRegeneration = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssPlayer.BaseSightRangeDisplayNames");
+            ssPlayer.CanGainExperience = false;
+            ssPlayer.DefensePerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.ExperienceToLevelUpFormula = "";
+            ssPlayer.HPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.HPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.HungerHPDegeneration = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.Location = new System.Drawing.Point(385, 94);
+            ssPlayer.MaxLevel = 1;
+            ssPlayer.MovementPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.MPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.MPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssPlayer.Name = "ssPlayer";
+            ssPlayer.Size = new System.Drawing.Size(331, 772);
+            ssPlayer.TabIndex = 129;
+            ssPlayer.UsesHunger = false;
+            ssPlayer.UsesMP = false;
             // 
             // sisPlayerStartingInventory
             // 
-            this.sisPlayerStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisPlayerStartingInventory.Inventory")));
-            this.sisPlayerStartingInventory.InventorySize = (0);
-            this.sisPlayerStartingInventory.Location = (new global::System.Drawing.Point(13, 396));
-            this.sisPlayerStartingInventory.Name = ("sisPlayerStartingInventory");
-            this.sisPlayerStartingInventory.SelectableItems = (null);
-            this.sisPlayerStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
-            this.sisPlayerStartingInventory.TabIndex = (128);
+            sisPlayerStartingInventory.Inventory = (System.Collections.Generic.List<string>)resources.GetObject("sisPlayerStartingInventory.Inventory");
+            sisPlayerStartingInventory.InventorySize = 0;
+            sisPlayerStartingInventory.Location = new System.Drawing.Point(13, 396);
+            sisPlayerStartingInventory.Name = "sisPlayerStartingInventory";
+            sisPlayerStartingInventory.SelectableItems = null;
+            sisPlayerStartingInventory.Size = new System.Drawing.Size(293, 79);
+            sisPlayerStartingInventory.TabIndex = 128;
             // 
             // saePlayerOnDeath
             // 
-            this.saePlayerOnDeath.Action = (null);
-            this.saePlayerOnDeath.ActionDescription = ("When they die...                   ");
-            this.saePlayerOnDeath.ActionTypeText = ("On Death");
-            this.saePlayerOnDeath.AutoSize = (true);
-            this.saePlayerOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saePlayerOnDeath.ClassId = (null);
-            this.saePlayerOnDeath.Dungeon = (null);
-            this.saePlayerOnDeath.EffectParamData = (null);
-            this.saePlayerOnDeath.Location = (new global::System.Drawing.Point(13, 686));
-            this.saePlayerOnDeath.Name = ("saePlayerOnDeath");
-            this.saePlayerOnDeath.PlaceholderActionName = ("Death");
-            this.saePlayerOnDeath.RequiresActionName = (false);
-            this.saePlayerOnDeath.RequiresCondition = (false);
-            this.saePlayerOnDeath.RequiresDescription = (false);
-            this.saePlayerOnDeath.Size = (new global::System.Drawing.Size(283, 32));
-            this.saePlayerOnDeath.SourceDescription = ("The player");
-            this.saePlayerOnDeath.TabIndex = (127);
-            this.saePlayerOnDeath.TargetDescription = ("Whoever killed them (if any)");
-            this.saePlayerOnDeath.ThisDescription = ("The player");
-            this.saePlayerOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saePlayerOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saePlayerOnDeath.Action = null;
+            saePlayerOnDeath.ActionDescription = "When they die...                   ";
+            saePlayerOnDeath.ActionTypeText = "On Death";
+            saePlayerOnDeath.AutoSize = true;
+            saePlayerOnDeath.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saePlayerOnDeath.ClassId = null;
+            saePlayerOnDeath.Dungeon = null;
+            saePlayerOnDeath.EffectParamData = null;
+            saePlayerOnDeath.Location = new System.Drawing.Point(13, 686);
+            saePlayerOnDeath.Name = "saePlayerOnDeath";
+            saePlayerOnDeath.PlaceholderActionName = "Death";
+            saePlayerOnDeath.RequiresActionName = false;
+            saePlayerOnDeath.RequiresCondition = false;
+            saePlayerOnDeath.RequiresDescription = false;
+            saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
+            saePlayerOnDeath.SourceDescription = "The player";
+            saePlayerOnDeath.TabIndex = 127;
+            saePlayerOnDeath.TargetDescription = "Whoever killed them (if any)";
+            saePlayerOnDeath.ThisDescription = "The player";
+            saePlayerOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnAttacked
             // 
-            this.saePlayerOnAttacked.Action = (null);
-            this.saePlayerOnAttacked.ActionDescription = ("When they get attacked...   ");
-            this.saePlayerOnAttacked.ActionTypeText = ("Interacted");
-            this.saePlayerOnAttacked.AutoSize = (true);
-            this.saePlayerOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saePlayerOnAttacked.ClassId = (null);
-            this.saePlayerOnAttacked.Dungeon = (null);
-            this.saePlayerOnAttacked.EffectParamData = (null);
-            this.saePlayerOnAttacked.Location = (new global::System.Drawing.Point(13, 648));
-            this.saePlayerOnAttacked.Name = ("saePlayerOnAttacked");
-            this.saePlayerOnAttacked.PlaceholderActionName = ("Interacted");
-            this.saePlayerOnAttacked.RequiresActionName = (false);
-            this.saePlayerOnAttacked.RequiresCondition = (false);
-            this.saePlayerOnAttacked.RequiresDescription = (false);
-            this.saePlayerOnAttacked.Size = (new global::System.Drawing.Size(284, 32));
-            this.saePlayerOnAttacked.SourceDescription = ("The player");
-            this.saePlayerOnAttacked.TabIndex = (126);
-            this.saePlayerOnAttacked.TargetDescription = ("Whoever interacted with them");
-            this.saePlayerOnAttacked.ThisDescription = ("The player");
-            this.saePlayerOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saePlayerOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saePlayerOnAttacked.Action = null;
+            saePlayerOnAttacked.ActionDescription = "When they get attacked...   ";
+            saePlayerOnAttacked.ActionTypeText = "Interacted";
+            saePlayerOnAttacked.AutoSize = true;
+            saePlayerOnAttacked.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saePlayerOnAttacked.ClassId = null;
+            saePlayerOnAttacked.Dungeon = null;
+            saePlayerOnAttacked.EffectParamData = null;
+            saePlayerOnAttacked.Location = new System.Drawing.Point(13, 648);
+            saePlayerOnAttacked.Name = "saePlayerOnAttacked";
+            saePlayerOnAttacked.PlaceholderActionName = "Interacted";
+            saePlayerOnAttacked.RequiresActionName = false;
+            saePlayerOnAttacked.RequiresCondition = false;
+            saePlayerOnAttacked.RequiresDescription = false;
+            saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
+            saePlayerOnAttacked.SourceDescription = "The player";
+            saePlayerOnAttacked.TabIndex = 126;
+            saePlayerOnAttacked.TargetDescription = "Whoever interacted with them";
+            saePlayerOnAttacked.ThisDescription = "The player";
+            saePlayerOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnTurnStart
             // 
-            this.saePlayerOnTurnStart.Action = (null);
-            this.saePlayerOnTurnStart.ActionDescription = ("When the next turn starts...");
-            this.saePlayerOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saePlayerOnTurnStart.AutoSize = (true);
-            this.saePlayerOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saePlayerOnTurnStart.ClassId = (null);
-            this.saePlayerOnTurnStart.Dungeon = (null);
-            this.saePlayerOnTurnStart.EffectParamData = (null);
-            this.saePlayerOnTurnStart.Location = (new global::System.Drawing.Point(13, 510));
-            this.saePlayerOnTurnStart.Name = ("saePlayerOnTurnStart");
-            this.saePlayerOnTurnStart.PlaceholderActionName = ("TurnStart");
-            this.saePlayerOnTurnStart.RequiresActionName = (false);
-            this.saePlayerOnTurnStart.RequiresCondition = (false);
-            this.saePlayerOnTurnStart.RequiresDescription = (false);
-            this.saePlayerOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
-            this.saePlayerOnTurnStart.SourceDescription = ("The player");
-            this.saePlayerOnTurnStart.TabIndex = (125);
-            this.saePlayerOnTurnStart.TargetDescription = ("The player");
-            this.saePlayerOnTurnStart.ThisDescription = ("The player");
-            this.saePlayerOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saePlayerOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saePlayerOnTurnStart.Action = null;
+            saePlayerOnTurnStart.ActionDescription = "When the next turn starts...";
+            saePlayerOnTurnStart.ActionTypeText = "Turn Start";
+            saePlayerOnTurnStart.AutoSize = true;
+            saePlayerOnTurnStart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saePlayerOnTurnStart.ClassId = null;
+            saePlayerOnTurnStart.Dungeon = null;
+            saePlayerOnTurnStart.EffectParamData = null;
+            saePlayerOnTurnStart.Location = new System.Drawing.Point(13, 510);
+            saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
+            saePlayerOnTurnStart.PlaceholderActionName = "TurnStart";
+            saePlayerOnTurnStart.RequiresActionName = false;
+            saePlayerOnTurnStart.RequiresCondition = false;
+            saePlayerOnTurnStart.RequiresDescription = false;
+            saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
+            saePlayerOnTurnStart.SourceDescription = "The player";
+            saePlayerOnTurnStart.TabIndex = 125;
+            saePlayerOnTurnStart.TargetDescription = "The player";
+            saePlayerOnTurnStart.ThisDescription = "The player";
+            saePlayerOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maePlayerOnAttack
             // 
-            this.maePlayerOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
-            this.maePlayerOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maePlayerOnAttack.Actions")));
-            this.maePlayerOnAttack.ActionTypeText = ("Interact");
-            this.maePlayerOnAttack.ClassId = (null);
-            this.maePlayerOnAttack.Dungeon = (null);
-            this.maePlayerOnAttack.EffectParamData = (null);
-            this.maePlayerOnAttack.Location = (new global::System.Drawing.Point(13, 548));
-            this.maePlayerOnAttack.Name = ("maePlayerOnAttack");
-            this.maePlayerOnAttack.PlaceholderActionName = (null);
-            this.maePlayerOnAttack.RequiresActionName = (true);
-            this.maePlayerOnAttack.RequiresCondition = (true);
-            this.maePlayerOnAttack.RequiresDescription = (true);
-            this.maePlayerOnAttack.Size = (new global::System.Drawing.Size(368, 94));
-            this.maePlayerOnAttack.SourceDescription = ("The player");
-            this.maePlayerOnAttack.TabIndex = (124);
-            this.maePlayerOnAttack.TargetDescription = ("Whoever they are targeting");
-            this.maePlayerOnAttack.ThisDescription = ("The player");
-            this.maePlayerOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
-            this.maePlayerOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
+            maePlayerOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
+            maePlayerOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maePlayerOnAttack.Actions");
+            maePlayerOnAttack.ActionTypeText = "Interact";
+            maePlayerOnAttack.ClassId = null;
+            maePlayerOnAttack.Dungeon = null;
+            maePlayerOnAttack.EffectParamData = null;
+            maePlayerOnAttack.Location = new System.Drawing.Point(13, 548);
+            maePlayerOnAttack.Name = "maePlayerOnAttack";
+            maePlayerOnAttack.PlaceholderActionName = null;
+            maePlayerOnAttack.RequiresActionName = true;
+            maePlayerOnAttack.RequiresCondition = true;
+            maePlayerOnAttack.RequiresDescription = true;
+            maePlayerOnAttack.Size = new System.Drawing.Size(368, 94);
+            maePlayerOnAttack.SourceDescription = "The player";
+            maePlayerOnAttack.TabIndex = 124;
+            maePlayerOnAttack.TargetDescription = "Whoever they are targeting";
+            maePlayerOnAttack.ThisDescription = "The player";
+            maePlayerOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maePlayerOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // label58
             // 
-            this.label58.AutoSize = (true);
-            this.label58.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label58.Location = (new global::System.Drawing.Point(141, 483));
-            this.label58.Name = ("label58");
-            this.label58.Size = (new global::System.Drawing.Size(67, 21));
-            this.label58.TabIndex = (104);
-            this.label58.Text = ("Actions");
+            label58.AutoSize = true;
+            label58.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label58.Location = new System.Drawing.Point(141, 483);
+            label58.Name = "label58";
+            label58.Size = new System.Drawing.Size(67, 21);
+            label58.TabIndex = 104;
+            label58.Text = "Actions";
             // 
             // cmbPlayerStartingArmor
             // 
-            this.cmbPlayerStartingArmor.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerStartingArmor.FormattingEnabled = (true);
-            this.cmbPlayerStartingArmor.Location = (new global::System.Drawing.Point(146, 331));
-            this.cmbPlayerStartingArmor.Name = ("cmbPlayerStartingArmor");
-            this.cmbPlayerStartingArmor.Size = (new global::System.Drawing.Size(158, 23));
-            this.cmbPlayerStartingArmor.TabIndex = (81);
-            this.cmbPlayerStartingArmor.SelectedIndexChanged += (this.cmbPlayerStartingArmor_SelectedIndexChanged);
+            cmbPlayerStartingArmor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbPlayerStartingArmor.FormattingEnabled = true;
+            cmbPlayerStartingArmor.Location = new System.Drawing.Point(146, 331);
+            cmbPlayerStartingArmor.Name = "cmbPlayerStartingArmor";
+            cmbPlayerStartingArmor.Size = new System.Drawing.Size(158, 23);
+            cmbPlayerStartingArmor.TabIndex = 81;
+            cmbPlayerStartingArmor.SelectedIndexChanged += cmbPlayerStartingArmor_SelectedIndexChanged;
             // 
             // label57
             // 
-            this.label57.AutoSize = (true);
-            this.label57.Location = (new global::System.Drawing.Point(13, 334));
-            this.label57.Name = ("label57");
-            this.label57.Size = (new global::System.Drawing.Size(131, 15));
-            this.label57.TabIndex = (80);
-            this.label57.Text = ("When unarmored, wear");
+            label57.AutoSize = true;
+            label57.Location = new System.Drawing.Point(13, 334);
+            label57.Name = "label57";
+            label57.Size = new System.Drawing.Size(131, 15);
+            label57.TabIndex = 80;
+            label57.Text = "When unarmored, wear";
             // 
             // cmbPlayerStartingWeapon
             // 
-            this.cmbPlayerStartingWeapon.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerStartingWeapon.FormattingEnabled = (true);
-            this.cmbPlayerStartingWeapon.Location = (new global::System.Drawing.Point(139, 300));
-            this.cmbPlayerStartingWeapon.Name = ("cmbPlayerStartingWeapon");
-            this.cmbPlayerStartingWeapon.Size = (new global::System.Drawing.Size(165, 23));
-            this.cmbPlayerStartingWeapon.TabIndex = (79);
-            this.cmbPlayerStartingWeapon.SelectedIndexChanged += (this.cmbPlayerStartingWeapon_SelectedIndexChanged);
+            cmbPlayerStartingWeapon.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbPlayerStartingWeapon.FormattingEnabled = true;
+            cmbPlayerStartingWeapon.Location = new System.Drawing.Point(139, 300);
+            cmbPlayerStartingWeapon.Name = "cmbPlayerStartingWeapon";
+            cmbPlayerStartingWeapon.Size = new System.Drawing.Size(165, 23);
+            cmbPlayerStartingWeapon.TabIndex = 79;
+            cmbPlayerStartingWeapon.SelectedIndexChanged += cmbPlayerStartingWeapon_SelectedIndexChanged;
             // 
             // label56
             // 
-            this.label56.AutoSize = (true);
-            this.label56.Location = (new global::System.Drawing.Point(13, 303));
-            this.label56.Name = ("label56");
-            this.label56.Size = (new global::System.Drawing.Size(123, 15));
-            this.label56.TabIndex = (78);
-            this.label56.Text = ("When unarmed, wield");
+            label56.AutoSize = true;
+            label56.Location = new System.Drawing.Point(13, 303);
+            label56.Name = "label56";
+            label56.Size = new System.Drawing.Size(123, 15);
+            label56.TabIndex = 78;
+            label56.Text = "When unarmed, wield";
             // 
             // label54
             // 
-            this.label54.AutoSize = (true);
-            this.label54.Location = (new global::System.Drawing.Point(172, 364));
-            this.label54.Name = ("label54");
-            this.label54.Size = (new global::System.Drawing.Size(36, 15));
-            this.label54.TabIndex = (72);
-            this.label54.Text = ("items");
+            label54.AutoSize = true;
+            label54.Location = new System.Drawing.Point(172, 364);
+            label54.Name = "label54";
+            label54.Size = new System.Drawing.Size(36, 15);
+            label54.TabIndex = 72;
+            label54.Text = "items";
             // 
             // nudPlayerInventorySize
             // 
-            this.nudPlayerInventorySize.Location = (new global::System.Drawing.Point(121, 359));
-            this.nudPlayerInventorySize.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudPlayerInventorySize.Name = ("nudPlayerInventorySize");
-            this.nudPlayerInventorySize.Size = (new global::System.Drawing.Size(45, 23));
-            this.nudPlayerInventorySize.TabIndex = (71);
-            this.nudPlayerInventorySize.ValueChanged += (this.nudPlayerInventorySize_ValueChanged);
+            nudPlayerInventorySize.Location = new System.Drawing.Point(121, 359);
+            nudPlayerInventorySize.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            nudPlayerInventorySize.Name = "nudPlayerInventorySize";
+            nudPlayerInventorySize.Size = new System.Drawing.Size(45, 23);
+            nudPlayerInventorySize.TabIndex = 71;
+            nudPlayerInventorySize.ValueChanged += nudPlayerInventorySize_ValueChanged;
             // 
             // label53
             // 
-            this.label53.AutoSize = (true);
-            this.label53.Location = (new global::System.Drawing.Point(13, 362));
-            this.label53.Name = ("label53");
-            this.label53.Size = (new global::System.Drawing.Size(109, 15));
-            this.label53.TabIndex = (70);
-            this.label53.Text = ("Inventory Capacity:");
+            label53.AutoSize = true;
+            label53.Location = new System.Drawing.Point(13, 362);
+            label53.Name = "label53";
+            label53.Size = new System.Drawing.Size(109, 15);
+            label53.TabIndex = 70;
+            label53.Text = "Inventory Capacity:";
             // 
             // label30
             // 
-            this.label30.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label30.Location = (new global::System.Drawing.Point(370, 19));
-            this.label30.Name = ("label30");
-            this.label30.Size = (new global::System.Drawing.Size(131, 52));
-            this.label30.TabIndex = (26);
-            this.label30.Text = ("Appearance");
-            this.label30.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label30.Location = new System.Drawing.Point(370, 19);
+            label30.Name = "label30";
+            label30.Size = new System.Drawing.Size(131, 52);
+            label30.TabIndex = 26;
+            label30.Text = "Appearance";
+            label30.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // chkPlayerStartsVisible
             // 
-            this.chkPlayerStartsVisible.AutoSize = (true);
-            this.chkPlayerStartsVisible.Location = (new global::System.Drawing.Point(13, 272));
-            this.chkPlayerStartsVisible.Name = ("chkPlayerStartsVisible");
-            this.chkPlayerStartsVisible.Size = (new global::System.Drawing.Size(102, 19));
-            this.chkPlayerStartsVisible.TabIndex = (25);
-            this.chkPlayerStartsVisible.Text = ("Spawns visible");
-            this.chkPlayerStartsVisible.UseVisualStyleBackColor = (true);
-            this.chkPlayerStartsVisible.CheckedChanged += (this.chkPlayerStartsVisible_CheckedChanged);
+            chkPlayerStartsVisible.AutoSize = true;
+            chkPlayerStartsVisible.Location = new System.Drawing.Point(13, 272);
+            chkPlayerStartsVisible.Name = "chkPlayerStartsVisible";
+            chkPlayerStartsVisible.Size = new System.Drawing.Size(102, 19);
+            chkPlayerStartsVisible.TabIndex = 25;
+            chkPlayerStartsVisible.Text = "Spawns visible";
+            chkPlayerStartsVisible.UseVisualStyleBackColor = true;
+            chkPlayerStartsVisible.CheckedChanged += chkPlayerStartsVisible_CheckedChanged;
             // 
             // cmbPlayerFaction
             // 
-            this.cmbPlayerFaction.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbPlayerFaction.FormattingEnabled = (true);
-            this.cmbPlayerFaction.Location = (new global::System.Drawing.Point(65, 241));
-            this.cmbPlayerFaction.Name = ("cmbPlayerFaction");
-            this.cmbPlayerFaction.Size = (new global::System.Drawing.Size(146, 23));
-            this.cmbPlayerFaction.TabIndex = (24);
-            this.cmbPlayerFaction.SelectedIndexChanged += (this.cmbPlayerFaction_SelectedIndexChanged);
+            cmbPlayerFaction.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbPlayerFaction.FormattingEnabled = true;
+            cmbPlayerFaction.Location = new System.Drawing.Point(65, 241);
+            cmbPlayerFaction.Name = "cmbPlayerFaction";
+            cmbPlayerFaction.Size = new System.Drawing.Size(146, 23);
+            cmbPlayerFaction.TabIndex = 24;
+            cmbPlayerFaction.SelectedIndexChanged += cmbPlayerFaction_SelectedIndexChanged;
             // 
             // label29
             // 
-            this.label29.AutoSize = (true);
-            this.label29.Location = (new global::System.Drawing.Point(13, 244));
-            this.label29.Name = ("label29");
-            this.label29.Size = (new global::System.Drawing.Size(46, 15));
-            this.label29.TabIndex = (23);
-            this.label29.Text = ("Faction");
+            label29.AutoSize = true;
+            label29.Location = new System.Drawing.Point(13, 244);
+            label29.Name = "label29";
+            label29.Size = new System.Drawing.Size(46, 15);
+            label29.TabIndex = 23;
+            label29.Text = "Faction";
             // 
             // chkRequirePlayerPrompt
             // 
-            this.chkRequirePlayerPrompt.AutoSize = (true);
-            this.chkRequirePlayerPrompt.Location = (new global::System.Drawing.Point(13, 107));
-            this.chkRequirePlayerPrompt.Name = ("chkRequirePlayerPrompt");
-            this.chkRequirePlayerPrompt.Size = (new global::System.Drawing.Size(287, 19));
-            this.chkRequirePlayerPrompt.TabIndex = (22);
-            this.chkRequirePlayerPrompt.Text = ("Player will have to provide a name upon selection");
-            this.chkRequirePlayerPrompt.UseVisualStyleBackColor = (true);
-            this.chkRequirePlayerPrompt.CheckedChanged += (this.chkRequirePlayerPrompt_CheckedChanged);
+            chkRequirePlayerPrompt.AutoSize = true;
+            chkRequirePlayerPrompt.Location = new System.Drawing.Point(13, 107);
+            chkRequirePlayerPrompt.Name = "chkRequirePlayerPrompt";
+            chkRequirePlayerPrompt.Size = new System.Drawing.Size(287, 19);
+            chkRequirePlayerPrompt.TabIndex = 22;
+            chkRequirePlayerPrompt.Text = "Player will have to provide a name upon selection";
+            chkRequirePlayerPrompt.UseVisualStyleBackColor = true;
+            chkRequirePlayerPrompt.CheckedChanged += chkRequirePlayerPrompt_CheckedChanged;
             // 
             // fklblPlayerClassDescriptionLocale
             // 
-            this.fklblPlayerClassDescriptionLocale.Enabled = (false);
-            this.fklblPlayerClassDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblPlayerClassDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblPlayerClassDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblPlayerClassDescriptionLocale.Image")));
-            this.fklblPlayerClassDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblPlayerClassDescriptionLocale.Location = (new global::System.Drawing.Point(13, 185));
-            this.fklblPlayerClassDescriptionLocale.Name = ("fklblPlayerClassDescriptionLocale");
-            this.fklblPlayerClassDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblPlayerClassDescriptionLocale.TabIndex = (21);
-            this.fklblPlayerClassDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblPlayerClassDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblPlayerClassDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblPlayerClassDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblPlayerClassDescriptionLocale.Visible = (false);
+            fklblPlayerClassDescriptionLocale.Enabled = false;
+            fklblPlayerClassDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblPlayerClassDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblPlayerClassDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblPlayerClassDescriptionLocale.Image");
+            fklblPlayerClassDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblPlayerClassDescriptionLocale.Location = new System.Drawing.Point(13, 185);
+            fklblPlayerClassDescriptionLocale.Name = "fklblPlayerClassDescriptionLocale";
+            fklblPlayerClassDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblPlayerClassDescriptionLocale.TabIndex = 21;
+            fklblPlayerClassDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblPlayerClassDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblPlayerClassDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblPlayerClassDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblPlayerClassDescriptionLocale.Visible = false;
             // 
             // txtPlayerClassDescription
             // 
-            this.txtPlayerClassDescription.Location = (new global::System.Drawing.Point(13, 156));
-            this.txtPlayerClassDescription.Name = ("txtPlayerClassDescription");
-            this.txtPlayerClassDescription.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtPlayerClassDescription.TabIndex = (20);
-            this.txtPlayerClassDescription.TextChanged += (this.txtPlayerClassDescription_TextChanged);
+            txtPlayerClassDescription.Location = new System.Drawing.Point(13, 156);
+            txtPlayerClassDescription.Name = "txtPlayerClassDescription";
+            txtPlayerClassDescription.Size = new System.Drawing.Size(350, 23);
+            txtPlayerClassDescription.TabIndex = 20;
+            txtPlayerClassDescription.TextChanged += txtPlayerClassDescription_TextChanged;
             // 
             // label28
             // 
-            this.label28.AutoSize = (true);
-            this.label28.Location = (new global::System.Drawing.Point(13, 138));
-            this.label28.Name = ("label28");
-            this.label28.Size = (new global::System.Drawing.Size(67, 15));
-            this.label28.TabIndex = (19);
-            this.label28.Text = ("Description");
+            label28.AutoSize = true;
+            label28.Location = new System.Drawing.Point(13, 138);
+            label28.Name = "label28";
+            label28.Size = new System.Drawing.Size(67, 15);
+            label28.TabIndex = 19;
+            label28.Text = "Description";
             // 
             // fklblPlayerClassNameLocale
             // 
-            this.fklblPlayerClassNameLocale.Enabled = (false);
-            this.fklblPlayerClassNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblPlayerClassNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblPlayerClassNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblPlayerClassNameLocale.Image")));
-            this.fklblPlayerClassNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblPlayerClassNameLocale.Location = (new global::System.Drawing.Point(13, 55));
-            this.fklblPlayerClassNameLocale.Name = ("fklblPlayerClassNameLocale");
-            this.fklblPlayerClassNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblPlayerClassNameLocale.TabIndex = (18);
-            this.fklblPlayerClassNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblPlayerClassNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblPlayerClassNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblPlayerClassNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblPlayerClassNameLocale.Visible = (false);
+            fklblPlayerClassNameLocale.Enabled = false;
+            fklblPlayerClassNameLocale.FlatAppearance.BorderSize = 0;
+            fklblPlayerClassNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblPlayerClassNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblPlayerClassNameLocale.Image");
+            fklblPlayerClassNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblPlayerClassNameLocale.Location = new System.Drawing.Point(13, 55);
+            fklblPlayerClassNameLocale.Name = "fklblPlayerClassNameLocale";
+            fklblPlayerClassNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblPlayerClassNameLocale.TabIndex = 18;
+            fklblPlayerClassNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblPlayerClassNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblPlayerClassNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblPlayerClassNameLocale.UseVisualStyleBackColor = true;
+            fklblPlayerClassNameLocale.Visible = false;
             // 
             // txtPlayerClassName
             // 
-            this.txtPlayerClassName.Location = (new global::System.Drawing.Point(13, 26));
-            this.txtPlayerClassName.Name = ("txtPlayerClassName");
-            this.txtPlayerClassName.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtPlayerClassName.TabIndex = (17);
-            this.txtPlayerClassName.TextChanged += (this.txtPlayerClassName_TextChanged);
+            txtPlayerClassName.Location = new System.Drawing.Point(13, 26);
+            txtPlayerClassName.Name = "txtPlayerClassName";
+            txtPlayerClassName.Size = new System.Drawing.Size(350, 23);
+            txtPlayerClassName.TabIndex = 17;
+            txtPlayerClassName.TextChanged += txtPlayerClassName_TextChanged;
             // 
             // label27
             // 
-            this.label27.AutoSize = (true);
-            this.label27.Location = (new global::System.Drawing.Point(13, 8));
-            this.label27.Name = ("label27");
-            this.label27.Size = (new global::System.Drawing.Size(80, 15));
-            this.label27.TabIndex = (16);
-            this.label27.Text = ("Default Name");
+            label27.AutoSize = true;
+            label27.Location = new System.Drawing.Point(13, 8);
+            label27.Name = "label27";
+            label27.Size = new System.Drawing.Size(80, 15);
+            label27.TabIndex = 16;
+            label27.Text = "Default Name";
             // 
             // crsPlayer
             // 
-            this.crsPlayer.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsPlayer.BackgroundColor")));
-            this.crsPlayer.Character = ('\0');
-            this.crsPlayer.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsPlayer.ForegroundColor")));
-            this.crsPlayer.Location = (new global::System.Drawing.Point(504, 8));
-            this.crsPlayer.Name = ("crsPlayer");
-            this.crsPlayer.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsPlayer.TabIndex = (123);
-            this.crsPlayer.PropertyChanged += (this.crsPlayer_PropertyChanged);
+            crsPlayer.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.BackgroundColor");
+            crsPlayer.Character = '\0';
+            crsPlayer.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.ForegroundColor");
+            crsPlayer.Location = new System.Drawing.Point(504, 8);
+            crsPlayer.Name = "crsPlayer";
+            crsPlayer.Size = new System.Drawing.Size(211, 83);
+            crsPlayer.TabIndex = 123;
+            crsPlayer.PropertyChanged += crsPlayer_PropertyChanged;
             // 
             // tpNPC
             // 
-            this.tpNPC.AutoScroll = (true);
-            this.tpNPC.Controls.Add(this.lblNPCAIOddsToTargetSelfB);
-            this.tpNPC.Controls.Add(this.nudNPCOddsToTargetSelf);
-            this.tpNPC.Controls.Add(this.cmbNPCAIType);
-            this.tpNPC.Controls.Add(this.label20);
-            this.tpNPC.Controls.Add(this.maeNPCOnInteracted);
-            this.tpNPC.Controls.Add(this.saeNPCOnSpawn);
-            this.tpNPC.Controls.Add(this.ssNPC);
-            this.tpNPC.Controls.Add(this.sisNPCStartingInventory);
-            this.tpNPC.Controls.Add(this.saeNPCOnDeath);
-            this.tpNPC.Controls.Add(this.saeNPCOnAttacked);
-            this.tpNPC.Controls.Add(this.saeNPCOnTurnStart);
-            this.tpNPC.Controls.Add(this.maeNPCOnAttack);
-            this.tpNPC.Controls.Add(this.lblNPCAIOddsToTargetSelfA);
-            this.tpNPC.Controls.Add(this.txtNPCExperiencePayout);
-            this.tpNPC.Controls.Add(this.label103);
-            this.tpNPC.Controls.Add(this.chkNPCKnowsAllCharacterPositions);
-            this.tpNPC.Controls.Add(this.label67);
-            this.tpNPC.Controls.Add(this.cmbNPCStartingArmor);
-            this.tpNPC.Controls.Add(this.label70);
-            this.tpNPC.Controls.Add(this.cmbNPCStartingWeapon);
-            this.tpNPC.Controls.Add(this.label71);
-            this.tpNPC.Controls.Add(this.label73);
-            this.tpNPC.Controls.Add(this.nudNPCInventorySize);
-            this.tpNPC.Controls.Add(this.label74);
-            this.tpNPC.Controls.Add(this.label98);
-            this.tpNPC.Controls.Add(this.chkNPCStartsVisible);
-            this.tpNPC.Controls.Add(this.cmbNPCFaction);
-            this.tpNPC.Controls.Add(this.label99);
-            this.tpNPC.Controls.Add(this.fklblNPCDescriptionLocale);
-            this.tpNPC.Controls.Add(this.txtNPCDescription);
-            this.tpNPC.Controls.Add(this.label100);
-            this.tpNPC.Controls.Add(this.fklblNPCNameLocale);
-            this.tpNPC.Controls.Add(this.txtNPCName);
-            this.tpNPC.Controls.Add(this.label101);
-            this.tpNPC.Controls.Add(this.crsNPC);
-            this.tpNPC.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpNPC.Name = ("tpNPC");
-            this.tpNPC.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpNPC.TabIndex = (5);
-            this.tpNPC.Text = ("NPC");
-            this.tpNPC.UseVisualStyleBackColor = (true);
+            tpNPC.AutoScroll = true;
+            tpNPC.Controls.Add(lblNPCAIOddsToTargetSelfB);
+            tpNPC.Controls.Add(nudNPCOddsToTargetSelf);
+            tpNPC.Controls.Add(cmbNPCAIType);
+            tpNPC.Controls.Add(label20);
+            tpNPC.Controls.Add(maeNPCOnInteracted);
+            tpNPC.Controls.Add(saeNPCOnSpawn);
+            tpNPC.Controls.Add(ssNPC);
+            tpNPC.Controls.Add(sisNPCStartingInventory);
+            tpNPC.Controls.Add(saeNPCOnDeath);
+            tpNPC.Controls.Add(saeNPCOnAttacked);
+            tpNPC.Controls.Add(saeNPCOnTurnStart);
+            tpNPC.Controls.Add(maeNPCOnAttack);
+            tpNPC.Controls.Add(lblNPCAIOddsToTargetSelfA);
+            tpNPC.Controls.Add(txtNPCExperiencePayout);
+            tpNPC.Controls.Add(label103);
+            tpNPC.Controls.Add(chkNPCKnowsAllCharacterPositions);
+            tpNPC.Controls.Add(label67);
+            tpNPC.Controls.Add(cmbNPCStartingArmor);
+            tpNPC.Controls.Add(label70);
+            tpNPC.Controls.Add(cmbNPCStartingWeapon);
+            tpNPC.Controls.Add(label71);
+            tpNPC.Controls.Add(label73);
+            tpNPC.Controls.Add(nudNPCInventorySize);
+            tpNPC.Controls.Add(label74);
+            tpNPC.Controls.Add(label98);
+            tpNPC.Controls.Add(chkNPCStartsVisible);
+            tpNPC.Controls.Add(cmbNPCFaction);
+            tpNPC.Controls.Add(label99);
+            tpNPC.Controls.Add(fklblNPCDescriptionLocale);
+            tpNPC.Controls.Add(txtNPCDescription);
+            tpNPC.Controls.Add(label100);
+            tpNPC.Controls.Add(fklblNPCNameLocale);
+            tpNPC.Controls.Add(txtNPCName);
+            tpNPC.Controls.Add(label101);
+            tpNPC.Controls.Add(crsNPC);
+            tpNPC.Location = new System.Drawing.Point(4, 24);
+            tpNPC.Name = "tpNPC";
+            tpNPC.Size = new System.Drawing.Size(740, 356);
+            tpNPC.TabIndex = 5;
+            tpNPC.Text = "NPC";
+            tpNPC.UseVisualStyleBackColor = true;
             // 
             // lblNPCAIOddsToTargetSelfB
             // 
-            this.lblNPCAIOddsToTargetSelfB.AutoSize = (true);
-            this.lblNPCAIOddsToTargetSelfB.Location = (new global::System.Drawing.Point(330, 938));
-            this.lblNPCAIOddsToTargetSelfB.Name = ("lblNPCAIOddsToTargetSelfB");
-            this.lblNPCAIOddsToTargetSelfB.Size = (new global::System.Drawing.Size(17, 15));
-            this.lblNPCAIOddsToTargetSelfB.TabIndex = (217);
-            this.lblNPCAIOddsToTargetSelfB.Text = ("%");
-            this.lblNPCAIOddsToTargetSelfB.Visible = (false);
+            lblNPCAIOddsToTargetSelfB.AutoSize = true;
+            lblNPCAIOddsToTargetSelfB.Location = new System.Drawing.Point(330, 938);
+            lblNPCAIOddsToTargetSelfB.Name = "lblNPCAIOddsToTargetSelfB";
+            lblNPCAIOddsToTargetSelfB.Size = new System.Drawing.Size(17, 15);
+            lblNPCAIOddsToTargetSelfB.TabIndex = 217;
+            lblNPCAIOddsToTargetSelfB.Text = "%";
+            lblNPCAIOddsToTargetSelfB.Visible = false;
             // 
             // nudNPCOddsToTargetSelf
             // 
-            this.nudNPCOddsToTargetSelf.Location = (new global::System.Drawing.Point(287, 936));
-            this.nudNPCOddsToTargetSelf.Name = ("nudNPCOddsToTargetSelf");
-            this.nudNPCOddsToTargetSelf.Size = (new global::System.Drawing.Size(41, 23));
-            this.nudNPCOddsToTargetSelf.TabIndex = (195);
-            this.nudNPCOddsToTargetSelf.Visible = (false);
-            this.nudNPCOddsToTargetSelf.ValueChanged += (this.nudNPCOddsToTargetSelf_ValueChanged);
+            nudNPCOddsToTargetSelf.Location = new System.Drawing.Point(287, 936);
+            nudNPCOddsToTargetSelf.Name = "nudNPCOddsToTargetSelf";
+            nudNPCOddsToTargetSelf.Size = new System.Drawing.Size(41, 23);
+            nudNPCOddsToTargetSelf.TabIndex = 195;
+            nudNPCOddsToTargetSelf.Visible = false;
+            nudNPCOddsToTargetSelf.ValueChanged += nudNPCOddsToTargetSelf_ValueChanged;
             // 
             // cmbNPCAIType
             // 
-            this.cmbNPCAIType.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCAIType.FormattingEnabled = (true);
-            this.cmbNPCAIType.Location = (new global::System.Drawing.Point(201, 904));
-            this.cmbNPCAIType.Name = ("cmbNPCAIType");
-            this.cmbNPCAIType.Size = (new global::System.Drawing.Size(146, 23));
-            this.cmbNPCAIType.TabIndex = (216);
-            this.cmbNPCAIType.SelectedIndexChanged += (this.cmbNPCAIType_SelectedIndexChanged);
+            cmbNPCAIType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbNPCAIType.FormattingEnabled = true;
+            cmbNPCAIType.Location = new System.Drawing.Point(201, 904);
+            cmbNPCAIType.Name = "cmbNPCAIType";
+            cmbNPCAIType.Size = new System.Drawing.Size(146, 23);
+            cmbNPCAIType.TabIndex = 216;
+            cmbNPCAIType.SelectedIndexChanged += cmbNPCAIType_SelectedIndexChanged;
             // 
             // label20
             // 
-            this.label20.AutoSize = (true);
-            this.label20.Location = (new global::System.Drawing.Point(13, 907));
-            this.label20.Name = ("label20");
-            this.label20.Size = (new global::System.Drawing.Size(174, 15));
-            this.label20.TabIndex = (215);
-            this.label20.Text = ("NPC decision-making strategy: ");
+            label20.AutoSize = true;
+            label20.Location = new System.Drawing.Point(13, 907);
+            label20.Name = "label20";
+            label20.Size = new System.Drawing.Size(174, 15);
+            label20.TabIndex = 215;
+            label20.Text = "NPC decision-making strategy: ";
             // 
             // maeNPCOnInteracted
             // 
-            this.maeNPCOnInteracted.ActionDescription = ("Someone can interact with\r\nthem with the following:");
-            this.maeNPCOnInteracted.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnInteracted.Actions")));
-            this.maeNPCOnInteracted.ActionTypeText = ("Interact");
-            this.maeNPCOnInteracted.ClassId = (null);
-            this.maeNPCOnInteracted.Dungeon = (null);
-            this.maeNPCOnInteracted.EffectParamData = (null);
-            this.maeNPCOnInteracted.Location = (new global::System.Drawing.Point(13, 726));
-            this.maeNPCOnInteracted.Name = ("maeNPCOnInteracted");
-            this.maeNPCOnInteracted.PlaceholderActionName = (null);
-            this.maeNPCOnInteracted.RequiresActionName = (true);
-            this.maeNPCOnInteracted.RequiresCondition = (true);
-            this.maeNPCOnInteracted.RequiresDescription = (true);
-            this.maeNPCOnInteracted.Size = (new global::System.Drawing.Size(368, 94));
-            this.maeNPCOnInteracted.SourceDescription = ("Whoever is targeting them");
-            this.maeNPCOnInteracted.TabIndex = (214);
-            this.maeNPCOnInteracted.TargetDescription = ("The NPC");
-            this.maeNPCOnInteracted.ThisDescription = ("The NPC");
-            this.maeNPCOnInteracted.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MayNotEndTurn);
-            this.maeNPCOnInteracted.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
+            maeNPCOnInteracted.ActionDescription = "Someone can interact with\r\nthem with the following:";
+            maeNPCOnInteracted.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeNPCOnInteracted.Actions");
+            maeNPCOnInteracted.ActionTypeText = "Interact";
+            maeNPCOnInteracted.ClassId = null;
+            maeNPCOnInteracted.Dungeon = null;
+            maeNPCOnInteracted.EffectParamData = null;
+            maeNPCOnInteracted.Location = new System.Drawing.Point(13, 726);
+            maeNPCOnInteracted.Name = "maeNPCOnInteracted";
+            maeNPCOnInteracted.PlaceholderActionName = null;
+            maeNPCOnInteracted.RequiresActionName = true;
+            maeNPCOnInteracted.RequiresCondition = true;
+            maeNPCOnInteracted.RequiresDescription = true;
+            maeNPCOnInteracted.Size = new System.Drawing.Size(368, 94);
+            maeNPCOnInteracted.SourceDescription = "Whoever is targeting them";
+            maeNPCOnInteracted.TabIndex = 214;
+            maeNPCOnInteracted.TargetDescription = "The NPC";
+            maeNPCOnInteracted.ThisDescription = "The NPC";
+            maeNPCOnInteracted.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
+            maeNPCOnInteracted.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // saeNPCOnSpawn
             // 
-            this.saeNPCOnSpawn.Action = (null);
-            this.saeNPCOnSpawn.ActionDescription = ("When spawning...                ");
-            this.saeNPCOnSpawn.ActionTypeText = ("Turn Start");
-            this.saeNPCOnSpawn.AutoSize = (true);
-            this.saeNPCOnSpawn.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeNPCOnSpawn.ClassId = (null);
-            this.saeNPCOnSpawn.Dungeon = (null);
-            this.saeNPCOnSpawn.EffectParamData = (null);
-            this.saeNPCOnSpawn.Location = (new global::System.Drawing.Point(13, 550));
-            this.saeNPCOnSpawn.Name = ("saeNPCOnSpawn");
-            this.saeNPCOnSpawn.PlaceholderActionName = ("TurnStart");
-            this.saeNPCOnSpawn.RequiresActionName = (false);
-            this.saeNPCOnSpawn.RequiresCondition = (true);
-            this.saeNPCOnSpawn.RequiresDescription = (false);
-            this.saeNPCOnSpawn.Size = (new global::System.Drawing.Size(283, 32));
-            this.saeNPCOnSpawn.SourceDescription = ("The NPC (won't become visible)");
-            this.saeNPCOnSpawn.TabIndex = (213);
-            this.saeNPCOnSpawn.TargetDescription = ("The NPC (won't become visible)");
-            this.saeNPCOnSpawn.ThisDescription = ("The NPC (won't become visible)");
-            this.saeNPCOnSpawn.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeNPCOnSpawn.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeNPCOnSpawn.Action = null;
+            saeNPCOnSpawn.ActionDescription = "When spawning...                ";
+            saeNPCOnSpawn.ActionTypeText = "Turn Start";
+            saeNPCOnSpawn.AutoSize = true;
+            saeNPCOnSpawn.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeNPCOnSpawn.ClassId = null;
+            saeNPCOnSpawn.Dungeon = null;
+            saeNPCOnSpawn.EffectParamData = null;
+            saeNPCOnSpawn.Location = new System.Drawing.Point(13, 550);
+            saeNPCOnSpawn.Name = "saeNPCOnSpawn";
+            saeNPCOnSpawn.PlaceholderActionName = "TurnStart";
+            saeNPCOnSpawn.RequiresActionName = false;
+            saeNPCOnSpawn.RequiresCondition = true;
+            saeNPCOnSpawn.RequiresDescription = false;
+            saeNPCOnSpawn.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnSpawn.SourceDescription = "The NPC (won't become visible)";
+            saeNPCOnSpawn.TabIndex = 213;
+            saeNPCOnSpawn.TargetDescription = "The NPC (won't become visible)";
+            saeNPCOnSpawn.ThisDescription = "The NPC (won't become visible)";
+            saeNPCOnSpawn.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeNPCOnSpawn.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // ssNPC
             // 
-            this.ssNPC.AttackPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.AutoSize = (true);
-            this.ssNPC.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.ssNPC.BaseAccuracy = (100);
-            this.ssNPC.BaseAttack = (0);
-            this.ssNPC.BaseDefense = (0);
-            this.ssNPC.BaseEvasion = (0);
-            this.ssNPC.BaseHP = (1);
-            this.ssNPC.BaseHPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.ssNPC.BaseMovement = (1);
-            this.ssNPC.BaseMP = (0);
-            this.ssNPC.BaseMPRegeneration = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.BaseSightRangeDisplayNames = ((global::System.Collections.Generic.Dictionary<global::System.String, global::System.String>)(resources.GetObject("ssNPC.BaseSightRangeDisplayNames")));
-            this.ssNPC.CanGainExperience = (false);
-            this.ssNPC.DefensePerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.ExperienceToLevelUpFormula = ("");
-            this.ssNPC.HPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.HPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.Location = (new global::System.Drawing.Point(385, 94));
-            this.ssNPC.MaxLevel = (1);
-            this.ssNPC.MovementPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.MPPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.MPRegenerationPerLevelUp = (new global::System.Decimal(new global::System.Int32[] { 0, 0, 0, 0 }));
-            this.ssNPC.Name = ("ssNPC");
-            this.ssNPC.Size = (new global::System.Drawing.Size(331, 687));
-            this.ssNPC.TabIndex = (212);
-            this.ssNPC.UsesMP = (false);
+            ssNPC.AttackPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.AutoSize = true;
+            ssNPC.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ssNPC.BaseAccuracy = 100;
+            ssNPC.BaseAttack = 0;
+            ssNPC.BaseDefense = 0;
+            ssNPC.BaseEvasion = 0;
+            ssNPC.BaseHP = 1;
+            ssNPC.BaseHPRegeneration = new decimal(new int[] { 1, 0, 0, 0 });
+            ssNPC.BaseHunger = 0;
+            ssNPC.BaseMovement = 1;
+            ssNPC.BaseMP = 0;
+            ssNPC.BaseMPRegeneration = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssNPC.BaseSightRangeDisplayNames");
+            ssNPC.CanGainExperience = false;
+            ssNPC.DefensePerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.ExperienceToLevelUpFormula = "";
+            ssNPC.HPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.HPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.HungerHPDegeneration = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.Location = new System.Drawing.Point(385, 94);
+            ssNPC.MaxLevel = 1;
+            ssNPC.MovementPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.MPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.MPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
+            ssNPC.Name = "ssNPC";
+            ssNPC.Size = new System.Drawing.Size(331, 772);
+            ssNPC.TabIndex = 212;
+            ssNPC.UsesHunger = false;
+            ssNPC.UsesMP = false;
             // 
             // sisNPCStartingInventory
             // 
-            this.sisNPCStartingInventory.Inventory = ((global::System.Collections.Generic.List<global::System.String>)(resources.GetObject("sisNPCStartingInventory.Inventory")));
-            this.sisNPCStartingInventory.InventorySize = (0);
-            this.sisNPCStartingInventory.Location = (new global::System.Drawing.Point(13, 432));
-            this.sisNPCStartingInventory.Name = ("sisNPCStartingInventory");
-            this.sisNPCStartingInventory.SelectableItems = (null);
-            this.sisNPCStartingInventory.Size = (new global::System.Drawing.Size(293, 79));
-            this.sisNPCStartingInventory.TabIndex = (129);
+            sisNPCStartingInventory.Inventory = (System.Collections.Generic.List<string>)resources.GetObject("sisNPCStartingInventory.Inventory");
+            sisNPCStartingInventory.InventorySize = 0;
+            sisNPCStartingInventory.Location = new System.Drawing.Point(13, 432);
+            sisNPCStartingInventory.Name = "sisNPCStartingInventory";
+            sisNPCStartingInventory.SelectableItems = null;
+            sisNPCStartingInventory.Size = new System.Drawing.Size(293, 79);
+            sisNPCStartingInventory.TabIndex = 129;
             // 
             // saeNPCOnDeath
             // 
-            this.saeNPCOnDeath.Action = (null);
-            this.saeNPCOnDeath.ActionDescription = ("When they die...                   ");
-            this.saeNPCOnDeath.ActionTypeText = ("On Death");
-            this.saeNPCOnDeath.AutoSize = (true);
-            this.saeNPCOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeNPCOnDeath.ClassId = (null);
-            this.saeNPCOnDeath.Dungeon = (null);
-            this.saeNPCOnDeath.EffectParamData = (null);
-            this.saeNPCOnDeath.Location = (new global::System.Drawing.Point(13, 866));
-            this.saeNPCOnDeath.Name = ("saeNPCOnDeath");
-            this.saeNPCOnDeath.PlaceholderActionName = ("Death");
-            this.saeNPCOnDeath.RequiresActionName = (false);
-            this.saeNPCOnDeath.RequiresCondition = (false);
-            this.saeNPCOnDeath.RequiresDescription = (false);
-            this.saeNPCOnDeath.Size = (new global::System.Drawing.Size(283, 32));
-            this.saeNPCOnDeath.SourceDescription = ("The NPC");
-            this.saeNPCOnDeath.TabIndex = (211);
-            this.saeNPCOnDeath.TargetDescription = ("Whoever killed them (if any)");
-            this.saeNPCOnDeath.ThisDescription = ("The NPC");
-            this.saeNPCOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeNPCOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeNPCOnDeath.Action = null;
+            saeNPCOnDeath.ActionDescription = "When they die...                   ";
+            saeNPCOnDeath.ActionTypeText = "On Death";
+            saeNPCOnDeath.AutoSize = true;
+            saeNPCOnDeath.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeNPCOnDeath.ClassId = null;
+            saeNPCOnDeath.Dungeon = null;
+            saeNPCOnDeath.EffectParamData = null;
+            saeNPCOnDeath.Location = new System.Drawing.Point(13, 866);
+            saeNPCOnDeath.Name = "saeNPCOnDeath";
+            saeNPCOnDeath.PlaceholderActionName = "Death";
+            saeNPCOnDeath.RequiresActionName = false;
+            saeNPCOnDeath.RequiresCondition = false;
+            saeNPCOnDeath.RequiresDescription = false;
+            saeNPCOnDeath.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnDeath.SourceDescription = "The NPC";
+            saeNPCOnDeath.TabIndex = 211;
+            saeNPCOnDeath.TargetDescription = "Whoever killed them (if any)";
+            saeNPCOnDeath.ThisDescription = "The NPC";
+            saeNPCOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeNPCOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeNPCOnAttacked
             // 
-            this.saeNPCOnAttacked.Action = (null);
-            this.saeNPCOnAttacked.ActionDescription = ("When they get attacked...  ");
-            this.saeNPCOnAttacked.ActionTypeText = ("Attacked");
-            this.saeNPCOnAttacked.AutoSize = (true);
-            this.saeNPCOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeNPCOnAttacked.ClassId = (null);
-            this.saeNPCOnAttacked.Dungeon = (null);
-            this.saeNPCOnAttacked.EffectParamData = (null);
-            this.saeNPCOnAttacked.Location = (new global::System.Drawing.Point(13, 826));
-            this.saeNPCOnAttacked.Name = ("saeNPCOnAttacked");
-            this.saeNPCOnAttacked.PlaceholderActionName = ("Interacted");
-            this.saeNPCOnAttacked.RequiresActionName = (false);
-            this.saeNPCOnAttacked.RequiresCondition = (false);
-            this.saeNPCOnAttacked.RequiresDescription = (false);
-            this.saeNPCOnAttacked.Size = (new global::System.Drawing.Size(281, 32));
-            this.saeNPCOnAttacked.SourceDescription = ("The NPC");
-            this.saeNPCOnAttacked.TabIndex = (210);
-            this.saeNPCOnAttacked.TargetDescription = ("Whoever interacted with them");
-            this.saeNPCOnAttacked.ThisDescription = ("The NPC");
-            this.saeNPCOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeNPCOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeNPCOnAttacked.Action = null;
+            saeNPCOnAttacked.ActionDescription = "When they get attacked...  ";
+            saeNPCOnAttacked.ActionTypeText = "Attacked";
+            saeNPCOnAttacked.AutoSize = true;
+            saeNPCOnAttacked.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeNPCOnAttacked.ClassId = null;
+            saeNPCOnAttacked.Dungeon = null;
+            saeNPCOnAttacked.EffectParamData = null;
+            saeNPCOnAttacked.Location = new System.Drawing.Point(13, 826);
+            saeNPCOnAttacked.Name = "saeNPCOnAttacked";
+            saeNPCOnAttacked.PlaceholderActionName = "Interacted";
+            saeNPCOnAttacked.RequiresActionName = false;
+            saeNPCOnAttacked.RequiresCondition = false;
+            saeNPCOnAttacked.RequiresDescription = false;
+            saeNPCOnAttacked.Size = new System.Drawing.Size(281, 32);
+            saeNPCOnAttacked.SourceDescription = "The NPC";
+            saeNPCOnAttacked.TabIndex = 210;
+            saeNPCOnAttacked.TargetDescription = "Whoever interacted with them";
+            saeNPCOnAttacked.ThisDescription = "The NPC";
+            saeNPCOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeNPCOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeNPCOnTurnStart
             // 
-            this.saeNPCOnTurnStart.Action = (null);
-            this.saeNPCOnTurnStart.ActionDescription = ("When the next turn starts...");
-            this.saeNPCOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saeNPCOnTurnStart.AutoSize = (true);
-            this.saeNPCOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeNPCOnTurnStart.ClassId = (null);
-            this.saeNPCOnTurnStart.Dungeon = (null);
-            this.saeNPCOnTurnStart.EffectParamData = (null);
-            this.saeNPCOnTurnStart.Location = (new global::System.Drawing.Point(13, 588));
-            this.saeNPCOnTurnStart.Name = ("saeNPCOnTurnStart");
-            this.saeNPCOnTurnStart.PlaceholderActionName = ("TurnStart");
-            this.saeNPCOnTurnStart.RequiresActionName = (false);
-            this.saeNPCOnTurnStart.RequiresCondition = (false);
-            this.saeNPCOnTurnStart.RequiresDescription = (false);
-            this.saeNPCOnTurnStart.Size = (new global::System.Drawing.Size(283, 32));
-            this.saeNPCOnTurnStart.SourceDescription = ("The NPC");
-            this.saeNPCOnTurnStart.TabIndex = (209);
-            this.saeNPCOnTurnStart.TargetDescription = ("The NPC");
-            this.saeNPCOnTurnStart.ThisDescription = ("The NPC");
-            this.saeNPCOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeNPCOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeNPCOnTurnStart.Action = null;
+            saeNPCOnTurnStart.ActionDescription = "When the next turn starts...";
+            saeNPCOnTurnStart.ActionTypeText = "Turn Start";
+            saeNPCOnTurnStart.AutoSize = true;
+            saeNPCOnTurnStart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeNPCOnTurnStart.ClassId = null;
+            saeNPCOnTurnStart.Dungeon = null;
+            saeNPCOnTurnStart.EffectParamData = null;
+            saeNPCOnTurnStart.Location = new System.Drawing.Point(13, 588);
+            saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
+            saeNPCOnTurnStart.PlaceholderActionName = "TurnStart";
+            saeNPCOnTurnStart.RequiresActionName = false;
+            saeNPCOnTurnStart.RequiresCondition = false;
+            saeNPCOnTurnStart.RequiresDescription = false;
+            saeNPCOnTurnStart.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnTurnStart.SourceDescription = "The NPC";
+            saeNPCOnTurnStart.TabIndex = 209;
+            saeNPCOnTurnStart.TargetDescription = "The NPC";
+            saeNPCOnTurnStart.ThisDescription = "The NPC";
+            saeNPCOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeNPCOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maeNPCOnAttack
             // 
-            this.maeNPCOnAttack.ActionDescription = ("Can do the following to\r\ninteract with someone:");
-            this.maeNPCOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeNPCOnAttack.Actions")));
-            this.maeNPCOnAttack.ActionTypeText = ("Interact");
-            this.maeNPCOnAttack.ClassId = (null);
-            this.maeNPCOnAttack.Dungeon = (null);
-            this.maeNPCOnAttack.EffectParamData = (null);
-            this.maeNPCOnAttack.Location = (new global::System.Drawing.Point(13, 626));
-            this.maeNPCOnAttack.Name = ("maeNPCOnAttack");
-            this.maeNPCOnAttack.PlaceholderActionName = (null);
-            this.maeNPCOnAttack.RequiresActionName = (true);
-            this.maeNPCOnAttack.RequiresCondition = (true);
-            this.maeNPCOnAttack.RequiresDescription = (false);
-            this.maeNPCOnAttack.Size = (new global::System.Drawing.Size(368, 94));
-            this.maeNPCOnAttack.SourceDescription = ("The NPC");
-            this.maeNPCOnAttack.TabIndex = (208);
-            this.maeNPCOnAttack.TargetDescription = ("Whoever they are targeting");
-            this.maeNPCOnAttack.ThisDescription = ("The NPC");
-            this.maeNPCOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
-            this.maeNPCOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
+            maeNPCOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
+            maeNPCOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeNPCOnAttack.Actions");
+            maeNPCOnAttack.ActionTypeText = "Interact";
+            maeNPCOnAttack.ClassId = null;
+            maeNPCOnAttack.Dungeon = null;
+            maeNPCOnAttack.EffectParamData = null;
+            maeNPCOnAttack.Location = new System.Drawing.Point(13, 626);
+            maeNPCOnAttack.Name = "maeNPCOnAttack";
+            maeNPCOnAttack.PlaceholderActionName = null;
+            maeNPCOnAttack.RequiresActionName = true;
+            maeNPCOnAttack.RequiresCondition = true;
+            maeNPCOnAttack.RequiresDescription = false;
+            maeNPCOnAttack.Size = new System.Drawing.Size(368, 94);
+            maeNPCOnAttack.SourceDescription = "The NPC";
+            maeNPCOnAttack.TabIndex = 208;
+            maeNPCOnAttack.TargetDescription = "Whoever they are targeting";
+            maeNPCOnAttack.ThisDescription = "The NPC";
+            maeNPCOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maeNPCOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // lblNPCAIOddsToTargetSelfA
             // 
-            this.lblNPCAIOddsToTargetSelfA.AutoSize = (true);
-            this.lblNPCAIOddsToTargetSelfA.Location = (new global::System.Drawing.Point(13, 938));
-            this.lblNPCAIOddsToTargetSelfA.Name = ("lblNPCAIOddsToTargetSelfA");
-            this.lblNPCAIOddsToTargetSelfA.Size = (new global::System.Drawing.Size(276, 15));
-            this.lblNPCAIOddsToTargetSelfA.TabIndex = (194);
-            this.lblNPCAIOddsToTargetSelfA.Text = ("Odds for NPC to target themselves with an Action: ");
-            this.lblNPCAIOddsToTargetSelfA.Visible = (false);
+            lblNPCAIOddsToTargetSelfA.AutoSize = true;
+            lblNPCAIOddsToTargetSelfA.Location = new System.Drawing.Point(13, 938);
+            lblNPCAIOddsToTargetSelfA.Name = "lblNPCAIOddsToTargetSelfA";
+            lblNPCAIOddsToTargetSelfA.Size = new System.Drawing.Size(276, 15);
+            lblNPCAIOddsToTargetSelfA.TabIndex = 194;
+            lblNPCAIOddsToTargetSelfA.Text = "Odds for NPC to target themselves with an Action: ";
+            lblNPCAIOddsToTargetSelfA.Visible = false;
             // 
             // txtNPCExperiencePayout
             // 
-            this.txtNPCExperiencePayout.Location = (new global::System.Drawing.Point(121, 297));
-            this.txtNPCExperiencePayout.Name = ("txtNPCExperiencePayout");
-            this.txtNPCExperiencePayout.Size = (new global::System.Drawing.Size(242, 23));
-            this.txtNPCExperiencePayout.TabIndex = (192);
-            this.txtNPCExperiencePayout.Enter += (this.txtNPCExperiencePayout_Enter);
-            this.txtNPCExperiencePayout.Leave += (this.txtNPCExperiencePayout_Leave);
+            txtNPCExperiencePayout.Location = new System.Drawing.Point(121, 297);
+            txtNPCExperiencePayout.Name = "txtNPCExperiencePayout";
+            txtNPCExperiencePayout.Size = new System.Drawing.Size(242, 23);
+            txtNPCExperiencePayout.TabIndex = 192;
+            txtNPCExperiencePayout.Enter += txtNPCExperiencePayout_Enter;
+            txtNPCExperiencePayout.Leave += txtNPCExperiencePayout_Leave;
             // 
             // label103
             // 
-            this.label103.AutoSize = (true);
-            this.label103.Location = (new global::System.Drawing.Point(13, 300));
-            this.label103.Name = ("label103");
-            this.label103.Size = (new global::System.Drawing.Size(104, 15));
-            this.label103.TabIndex = (191);
-            this.label103.Text = ("Experience Payout");
+            label103.AutoSize = true;
+            label103.Location = new System.Drawing.Point(13, 300);
+            label103.Name = "label103";
+            label103.Size = new System.Drawing.Size(104, 15);
+            label103.TabIndex = 191;
+            label103.Text = "Experience Payout";
             // 
             // chkNPCKnowsAllCharacterPositions
             // 
-            this.chkNPCKnowsAllCharacterPositions.AutoSize = (true);
-            this.chkNPCKnowsAllCharacterPositions.Location = (new global::System.Drawing.Point(13, 268));
-            this.chkNPCKnowsAllCharacterPositions.Name = ("chkNPCKnowsAllCharacterPositions");
-            this.chkNPCKnowsAllCharacterPositions.Size = (new global::System.Drawing.Size(361, 19));
-            this.chkNPCKnowsAllCharacterPositions.TabIndex = (190);
-            this.chkNPCKnowsAllCharacterPositions.Text = ("Knows the position of all living characters (even when not seen)");
-            this.chkNPCKnowsAllCharacterPositions.UseVisualStyleBackColor = (true);
-            this.chkNPCKnowsAllCharacterPositions.CheckedChanged += (this.chkNPCKnowsAllCharacterPositions_CheckedChanged);
+            chkNPCKnowsAllCharacterPositions.AutoSize = true;
+            chkNPCKnowsAllCharacterPositions.Location = new System.Drawing.Point(13, 268);
+            chkNPCKnowsAllCharacterPositions.Name = "chkNPCKnowsAllCharacterPositions";
+            chkNPCKnowsAllCharacterPositions.Size = new System.Drawing.Size(361, 19);
+            chkNPCKnowsAllCharacterPositions.TabIndex = 190;
+            chkNPCKnowsAllCharacterPositions.Text = "Knows the position of all living characters (even when not seen)";
+            chkNPCKnowsAllCharacterPositions.UseVisualStyleBackColor = true;
+            chkNPCKnowsAllCharacterPositions.CheckedChanged += chkNPCKnowsAllCharacterPositions_CheckedChanged;
             // 
             // label67
             // 
-            this.label67.AutoSize = (true);
-            this.label67.Font = (new global::System.Drawing.Font("Segoe UI", 12F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label67.Location = (new global::System.Drawing.Point(141, 514));
-            this.label67.Name = ("label67");
-            this.label67.Size = (new global::System.Drawing.Size(67, 21));
-            this.label67.TabIndex = (182);
-            this.label67.Text = ("Actions");
+            label67.AutoSize = true;
+            label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label67.Location = new System.Drawing.Point(141, 514);
+            label67.Name = "label67";
+            label67.Size = new System.Drawing.Size(67, 21);
+            label67.TabIndex = 182;
+            label67.Text = "Actions";
             // 
             // cmbNPCStartingArmor
             // 
-            this.cmbNPCStartingArmor.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCStartingArmor.FormattingEnabled = (true);
-            this.cmbNPCStartingArmor.Location = (new global::System.Drawing.Point(146, 362));
-            this.cmbNPCStartingArmor.Name = ("cmbNPCStartingArmor");
-            this.cmbNPCStartingArmor.Size = (new global::System.Drawing.Size(158, 23));
-            this.cmbNPCStartingArmor.TabIndex = (175);
-            this.cmbNPCStartingArmor.SelectedIndexChanged += (this.cmbNPCStartingArmor_SelectedIndexChanged);
+            cmbNPCStartingArmor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbNPCStartingArmor.FormattingEnabled = true;
+            cmbNPCStartingArmor.Location = new System.Drawing.Point(146, 362);
+            cmbNPCStartingArmor.Name = "cmbNPCStartingArmor";
+            cmbNPCStartingArmor.Size = new System.Drawing.Size(158, 23);
+            cmbNPCStartingArmor.TabIndex = 175;
+            cmbNPCStartingArmor.SelectedIndexChanged += cmbNPCStartingArmor_SelectedIndexChanged;
             // 
             // label70
             // 
-            this.label70.AutoSize = (true);
-            this.label70.Location = (new global::System.Drawing.Point(13, 365));
-            this.label70.Name = ("label70");
-            this.label70.Size = (new global::System.Drawing.Size(131, 15));
-            this.label70.TabIndex = (174);
-            this.label70.Text = ("When unarmored, wear");
+            label70.AutoSize = true;
+            label70.Location = new System.Drawing.Point(13, 365);
+            label70.Name = "label70";
+            label70.Size = new System.Drawing.Size(131, 15);
+            label70.TabIndex = 174;
+            label70.Text = "When unarmored, wear";
             // 
             // cmbNPCStartingWeapon
             // 
-            this.cmbNPCStartingWeapon.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCStartingWeapon.FormattingEnabled = (true);
-            this.cmbNPCStartingWeapon.Location = (new global::System.Drawing.Point(139, 331));
-            this.cmbNPCStartingWeapon.Name = ("cmbNPCStartingWeapon");
-            this.cmbNPCStartingWeapon.Size = (new global::System.Drawing.Size(165, 23));
-            this.cmbNPCStartingWeapon.TabIndex = (173);
-            this.cmbNPCStartingWeapon.SelectedIndexChanged += (this.cmbNPCStartingWeapon_SelectedIndexChanged);
+            cmbNPCStartingWeapon.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbNPCStartingWeapon.FormattingEnabled = true;
+            cmbNPCStartingWeapon.Location = new System.Drawing.Point(139, 331);
+            cmbNPCStartingWeapon.Name = "cmbNPCStartingWeapon";
+            cmbNPCStartingWeapon.Size = new System.Drawing.Size(165, 23);
+            cmbNPCStartingWeapon.TabIndex = 173;
+            cmbNPCStartingWeapon.SelectedIndexChanged += cmbNPCStartingWeapon_SelectedIndexChanged;
             // 
             // label71
             // 
-            this.label71.AutoSize = (true);
-            this.label71.Location = (new global::System.Drawing.Point(13, 334));
-            this.label71.Name = ("label71");
-            this.label71.Size = (new global::System.Drawing.Size(123, 15));
-            this.label71.TabIndex = (172);
-            this.label71.Text = ("When unarmed, wield");
+            label71.AutoSize = true;
+            label71.Location = new System.Drawing.Point(13, 334);
+            label71.Name = "label71";
+            label71.Size = new System.Drawing.Size(123, 15);
+            label71.TabIndex = 172;
+            label71.Text = "When unarmed, wield";
             // 
             // label73
             // 
-            this.label73.AutoSize = (true);
-            this.label73.Location = (new global::System.Drawing.Point(172, 395));
-            this.label73.Name = ("label73");
-            this.label73.Size = (new global::System.Drawing.Size(36, 15));
-            this.label73.TabIndex = (166);
-            this.label73.Text = ("items");
+            label73.AutoSize = true;
+            label73.Location = new System.Drawing.Point(172, 395);
+            label73.Name = "label73";
+            label73.Size = new System.Drawing.Size(36, 15);
+            label73.TabIndex = 166;
+            label73.Text = "items";
             // 
             // nudNPCInventorySize
             // 
-            this.nudNPCInventorySize.Location = (new global::System.Drawing.Point(121, 390));
-            this.nudNPCInventorySize.Maximum = (new global::System.Decimal(new global::System.Int32[] { 999, 0, 0, 0 }));
-            this.nudNPCInventorySize.Name = ("nudNPCInventorySize");
-            this.nudNPCInventorySize.Size = (new global::System.Drawing.Size(45, 23));
-            this.nudNPCInventorySize.TabIndex = (165);
-            this.nudNPCInventorySize.ValueChanged += (this.nudNPCInventorySize_ValueChanged);
+            nudNPCInventorySize.Location = new System.Drawing.Point(121, 390);
+            nudNPCInventorySize.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            nudNPCInventorySize.Name = "nudNPCInventorySize";
+            nudNPCInventorySize.Size = new System.Drawing.Size(45, 23);
+            nudNPCInventorySize.TabIndex = 165;
+            nudNPCInventorySize.ValueChanged += nudNPCInventorySize_ValueChanged;
             // 
             // label74
             // 
-            this.label74.AutoSize = (true);
-            this.label74.Location = (new global::System.Drawing.Point(13, 393));
-            this.label74.Name = ("label74");
-            this.label74.Size = (new global::System.Drawing.Size(109, 15));
-            this.label74.TabIndex = (164);
-            this.label74.Text = ("Inventory Capacity:");
+            label74.AutoSize = true;
+            label74.Location = new System.Drawing.Point(13, 393);
+            label74.Name = "label74";
+            label74.Size = new System.Drawing.Size(109, 15);
+            label74.TabIndex = 164;
+            label74.Text = "Inventory Capacity:";
             // 
             // label98
             // 
-            this.label98.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label98.Location = (new global::System.Drawing.Point(370, 19));
-            this.label98.Name = ("label98");
-            this.label98.Size = (new global::System.Drawing.Size(131, 52));
-            this.label98.TabIndex = (122);
-            this.label98.Text = ("Appearance");
-            this.label98.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label98.Location = new System.Drawing.Point(370, 19);
+            label98.Name = "label98";
+            label98.Size = new System.Drawing.Size(131, 52);
+            label98.TabIndex = 122;
+            label98.Text = "Appearance";
+            label98.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // chkNPCStartsVisible
             // 
-            this.chkNPCStartsVisible.AutoSize = (true);
-            this.chkNPCStartsVisible.Location = (new global::System.Drawing.Point(13, 240));
-            this.chkNPCStartsVisible.Name = ("chkNPCStartsVisible");
-            this.chkNPCStartsVisible.Size = (new global::System.Drawing.Size(102, 19));
-            this.chkNPCStartsVisible.TabIndex = (121);
-            this.chkNPCStartsVisible.Text = ("Spawns visible");
-            this.chkNPCStartsVisible.UseVisualStyleBackColor = (true);
-            this.chkNPCStartsVisible.CheckedChanged += (this.chkNPCStartsVisible_CheckedChanged);
+            chkNPCStartsVisible.AutoSize = true;
+            chkNPCStartsVisible.Location = new System.Drawing.Point(13, 240);
+            chkNPCStartsVisible.Name = "chkNPCStartsVisible";
+            chkNPCStartsVisible.Size = new System.Drawing.Size(102, 19);
+            chkNPCStartsVisible.TabIndex = 121;
+            chkNPCStartsVisible.Text = "Spawns visible";
+            chkNPCStartsVisible.UseVisualStyleBackColor = true;
+            chkNPCStartsVisible.CheckedChanged += chkNPCStartsVisible_CheckedChanged;
             // 
             // cmbNPCFaction
             // 
-            this.cmbNPCFaction.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbNPCFaction.FormattingEnabled = (true);
-            this.cmbNPCFaction.Location = (new global::System.Drawing.Point(65, 209));
-            this.cmbNPCFaction.Name = ("cmbNPCFaction");
-            this.cmbNPCFaction.Size = (new global::System.Drawing.Size(146, 23));
-            this.cmbNPCFaction.TabIndex = (120);
-            this.cmbNPCFaction.SelectedIndexChanged += (this.cmbNPCFaction_SelectedIndexChanged);
+            cmbNPCFaction.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbNPCFaction.FormattingEnabled = true;
+            cmbNPCFaction.Location = new System.Drawing.Point(65, 209);
+            cmbNPCFaction.Name = "cmbNPCFaction";
+            cmbNPCFaction.Size = new System.Drawing.Size(146, 23);
+            cmbNPCFaction.TabIndex = 120;
+            cmbNPCFaction.SelectedIndexChanged += cmbNPCFaction_SelectedIndexChanged;
             // 
             // label99
             // 
-            this.label99.AutoSize = (true);
-            this.label99.Location = (new global::System.Drawing.Point(13, 212));
-            this.label99.Name = ("label99");
-            this.label99.Size = (new global::System.Drawing.Size(46, 15));
-            this.label99.TabIndex = (119);
-            this.label99.Text = ("Faction");
+            label99.AutoSize = true;
+            label99.Location = new System.Drawing.Point(13, 212);
+            label99.Name = "label99";
+            label99.Size = new System.Drawing.Size(46, 15);
+            label99.TabIndex = 119;
+            label99.Text = "Faction";
             // 
             // fklblNPCDescriptionLocale
             // 
-            this.fklblNPCDescriptionLocale.Enabled = (false);
-            this.fklblNPCDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblNPCDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblNPCDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblNPCDescriptionLocale.Image")));
-            this.fklblNPCDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblNPCDescriptionLocale.Location = (new global::System.Drawing.Point(13, 153));
-            this.fklblNPCDescriptionLocale.Name = ("fklblNPCDescriptionLocale");
-            this.fklblNPCDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblNPCDescriptionLocale.TabIndex = (117);
-            this.fklblNPCDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblNPCDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblNPCDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblNPCDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblNPCDescriptionLocale.Visible = (false);
+            fklblNPCDescriptionLocale.Enabled = false;
+            fklblNPCDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblNPCDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblNPCDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblNPCDescriptionLocale.Image");
+            fklblNPCDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblNPCDescriptionLocale.Location = new System.Drawing.Point(13, 153);
+            fklblNPCDescriptionLocale.Name = "fklblNPCDescriptionLocale";
+            fklblNPCDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblNPCDescriptionLocale.TabIndex = 117;
+            fklblNPCDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblNPCDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblNPCDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblNPCDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblNPCDescriptionLocale.Visible = false;
             // 
             // txtNPCDescription
             // 
-            this.txtNPCDescription.Location = (new global::System.Drawing.Point(13, 124));
-            this.txtNPCDescription.Name = ("txtNPCDescription");
-            this.txtNPCDescription.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtNPCDescription.TabIndex = (116);
-            this.txtNPCDescription.TextChanged += (this.txtNPCDescription_TextChanged);
+            txtNPCDescription.Location = new System.Drawing.Point(13, 124);
+            txtNPCDescription.Name = "txtNPCDescription";
+            txtNPCDescription.Size = new System.Drawing.Size(350, 23);
+            txtNPCDescription.TabIndex = 116;
+            txtNPCDescription.TextChanged += txtNPCDescription_TextChanged;
             // 
             // label100
             // 
-            this.label100.AutoSize = (true);
-            this.label100.Location = (new global::System.Drawing.Point(13, 106));
-            this.label100.Name = ("label100");
-            this.label100.Size = (new global::System.Drawing.Size(67, 15));
-            this.label100.TabIndex = (115);
-            this.label100.Text = ("Description");
+            label100.AutoSize = true;
+            label100.Location = new System.Drawing.Point(13, 106);
+            label100.Name = "label100";
+            label100.Size = new System.Drawing.Size(67, 15);
+            label100.TabIndex = 115;
+            label100.Text = "Description";
             // 
             // fklblNPCNameLocale
             // 
-            this.fklblNPCNameLocale.Enabled = (false);
-            this.fklblNPCNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblNPCNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblNPCNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblNPCNameLocale.Image")));
-            this.fklblNPCNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblNPCNameLocale.Location = (new global::System.Drawing.Point(13, 55));
-            this.fklblNPCNameLocale.Name = ("fklblNPCNameLocale");
-            this.fklblNPCNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblNPCNameLocale.TabIndex = (114);
-            this.fklblNPCNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblNPCNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblNPCNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblNPCNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblNPCNameLocale.Visible = (false);
+            fklblNPCNameLocale.Enabled = false;
+            fklblNPCNameLocale.FlatAppearance.BorderSize = 0;
+            fklblNPCNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblNPCNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblNPCNameLocale.Image");
+            fklblNPCNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblNPCNameLocale.Location = new System.Drawing.Point(13, 55);
+            fklblNPCNameLocale.Name = "fklblNPCNameLocale";
+            fklblNPCNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblNPCNameLocale.TabIndex = 114;
+            fklblNPCNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblNPCNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblNPCNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblNPCNameLocale.UseVisualStyleBackColor = true;
+            fklblNPCNameLocale.Visible = false;
             // 
             // txtNPCName
             // 
-            this.txtNPCName.Location = (new global::System.Drawing.Point(13, 26));
-            this.txtNPCName.Name = ("txtNPCName");
-            this.txtNPCName.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtNPCName.TabIndex = (113);
-            this.txtNPCName.TextChanged += (this.txtNPCName_TextChanged);
+            txtNPCName.Location = new System.Drawing.Point(13, 26);
+            txtNPCName.Name = "txtNPCName";
+            txtNPCName.Size = new System.Drawing.Size(350, 23);
+            txtNPCName.TabIndex = 113;
+            txtNPCName.TextChanged += txtNPCName_TextChanged;
             // 
             // label101
             // 
-            this.label101.AutoSize = (true);
-            this.label101.Location = (new global::System.Drawing.Point(13, 8));
-            this.label101.Name = ("label101");
-            this.label101.Size = (new global::System.Drawing.Size(80, 15));
-            this.label101.TabIndex = (112);
-            this.label101.Text = ("Default Name");
+            label101.AutoSize = true;
+            label101.Location = new System.Drawing.Point(13, 8);
+            label101.Name = "label101";
+            label101.Size = new System.Drawing.Size(80, 15);
+            label101.TabIndex = 112;
+            label101.Text = "Default Name";
             // 
             // crsNPC
             // 
-            this.crsNPC.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsNPC.BackgroundColor")));
-            this.crsNPC.Character = ('\0');
-            this.crsNPC.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsNPC.ForegroundColor")));
-            this.crsNPC.Location = (new global::System.Drawing.Point(504, 8));
-            this.crsNPC.Name = ("crsNPC");
-            this.crsNPC.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsNPC.TabIndex = (207);
-            this.crsNPC.PropertyChanged += (this.crsNPC_PropertyChanged);
+            crsNPC.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.BackgroundColor");
+            crsNPC.Character = '\0';
+            crsNPC.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.ForegroundColor");
+            crsNPC.Location = new System.Drawing.Point(504, 8);
+            crsNPC.Name = "crsNPC";
+            crsNPC.Size = new System.Drawing.Size(211, 83);
+            crsNPC.TabIndex = 207;
+            crsNPC.PropertyChanged += crsNPC_PropertyChanged;
             // 
             // tpItem
             // 
-            this.tpItem.Controls.Add(this.saeItemOnDeath);
-            this.tpItem.Controls.Add(this.saeItemOnTurnStart);
-            this.tpItem.Controls.Add(this.saeItemOnAttacked);
-            this.tpItem.Controls.Add(this.maeItemOnAttack);
-            this.tpItem.Controls.Add(this.saeItemOnUse);
-            this.tpItem.Controls.Add(this.saeItemOnStepped);
-            this.tpItem.Controls.Add(this.txtItemPower);
-            this.tpItem.Controls.Add(this.label108);
-            this.tpItem.Controls.Add(this.chkItemCanBePickedUp);
-            this.tpItem.Controls.Add(this.chkItemStartsVisible);
-            this.tpItem.Controls.Add(this.cmbItemType);
-            this.tpItem.Controls.Add(this.label107);
-            this.tpItem.Controls.Add(this.label102);
-            this.tpItem.Controls.Add(this.fklblItemDescriptionLocale);
-            this.tpItem.Controls.Add(this.txtItemDescription);
-            this.tpItem.Controls.Add(this.label105);
-            this.tpItem.Controls.Add(this.fklblItemNameLocale);
-            this.tpItem.Controls.Add(this.txtItemName);
-            this.tpItem.Controls.Add(this.label106);
-            this.tpItem.Controls.Add(this.crsItem);
-            this.tpItem.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpItem.Name = ("tpItem");
-            this.tpItem.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpItem.TabIndex = (6);
-            this.tpItem.Text = ("Item");
-            this.tpItem.UseVisualStyleBackColor = (true);
+            tpItem.Controls.Add(saeItemOnDeath);
+            tpItem.Controls.Add(saeItemOnTurnStart);
+            tpItem.Controls.Add(saeItemOnAttacked);
+            tpItem.Controls.Add(maeItemOnAttack);
+            tpItem.Controls.Add(saeItemOnUse);
+            tpItem.Controls.Add(saeItemOnStepped);
+            tpItem.Controls.Add(txtItemPower);
+            tpItem.Controls.Add(label108);
+            tpItem.Controls.Add(chkItemCanBePickedUp);
+            tpItem.Controls.Add(chkItemStartsVisible);
+            tpItem.Controls.Add(cmbItemType);
+            tpItem.Controls.Add(label107);
+            tpItem.Controls.Add(label102);
+            tpItem.Controls.Add(fklblItemDescriptionLocale);
+            tpItem.Controls.Add(txtItemDescription);
+            tpItem.Controls.Add(label105);
+            tpItem.Controls.Add(fklblItemNameLocale);
+            tpItem.Controls.Add(txtItemName);
+            tpItem.Controls.Add(label106);
+            tpItem.Controls.Add(crsItem);
+            tpItem.Location = new System.Drawing.Point(4, 24);
+            tpItem.Name = "tpItem";
+            tpItem.Size = new System.Drawing.Size(740, 356);
+            tpItem.TabIndex = 6;
+            tpItem.Text = "Item";
+            tpItem.UseVisualStyleBackColor = true;
             // 
             // saeItemOnDeath
             // 
-            this.saeItemOnDeath.Action = (null);
-            this.saeItemOnDeath.ActionDescription = ("When someone carrying it dies...                ");
-            this.saeItemOnDeath.ActionTypeText = ("On Death");
-            this.saeItemOnDeath.AutoSize = (true);
-            this.saeItemOnDeath.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeItemOnDeath.ClassId = (null);
-            this.saeItemOnDeath.Dungeon = (null);
-            this.saeItemOnDeath.EffectParamData = (null);
-            this.saeItemOnDeath.Location = (new global::System.Drawing.Point(367, 316));
-            this.saeItemOnDeath.Name = ("saeItemOnDeath");
-            this.saeItemOnDeath.PlaceholderActionName = ("Death");
-            this.saeItemOnDeath.RequiresActionName = (false);
-            this.saeItemOnDeath.RequiresCondition = (false);
-            this.saeItemOnDeath.RequiresDescription = (false);
-            this.saeItemOnDeath.Size = (new global::System.Drawing.Size(361, 32));
-            this.saeItemOnDeath.SourceDescription = ("The item");
-            this.saeItemOnDeath.TabIndex = (226);
-            this.saeItemOnDeath.TargetDescription = ("Whoever killed on them (if any)");
-            this.saeItemOnDeath.ThisDescription = ("The item");
-            this.saeItemOnDeath.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeItemOnDeath.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeItemOnDeath.Action = null;
+            saeItemOnDeath.ActionDescription = "When someone carrying it dies...                ";
+            saeItemOnDeath.ActionTypeText = "On Death";
+            saeItemOnDeath.AutoSize = true;
+            saeItemOnDeath.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeItemOnDeath.ClassId = null;
+            saeItemOnDeath.Dungeon = null;
+            saeItemOnDeath.EffectParamData = null;
+            saeItemOnDeath.Location = new System.Drawing.Point(367, 316);
+            saeItemOnDeath.Name = "saeItemOnDeath";
+            saeItemOnDeath.PlaceholderActionName = "Death";
+            saeItemOnDeath.RequiresActionName = false;
+            saeItemOnDeath.RequiresCondition = false;
+            saeItemOnDeath.RequiresDescription = false;
+            saeItemOnDeath.Size = new System.Drawing.Size(361, 32);
+            saeItemOnDeath.SourceDescription = "The item";
+            saeItemOnDeath.TabIndex = 226;
+            saeItemOnDeath.TargetDescription = "Whoever killed on them (if any)";
+            saeItemOnDeath.ThisDescription = "The item";
+            saeItemOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeItemOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeItemOnTurnStart
             // 
-            this.saeItemOnTurnStart.Action = (null);
-            this.saeItemOnTurnStart.ActionDescription = ("When the Item's owner starts a new turn...");
-            this.saeItemOnTurnStart.ActionTypeText = ("On Death");
-            this.saeItemOnTurnStart.AutoSize = (true);
-            this.saeItemOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeItemOnTurnStart.ClassId = (null);
-            this.saeItemOnTurnStart.Dungeon = (null);
-            this.saeItemOnTurnStart.EffectParamData = (null);
-            this.saeItemOnTurnStart.Location = (new global::System.Drawing.Point(367, 244));
-            this.saeItemOnTurnStart.Name = ("saeItemOnTurnStart");
-            this.saeItemOnTurnStart.PlaceholderActionName = ("Death");
-            this.saeItemOnTurnStart.RequiresActionName = (false);
-            this.saeItemOnTurnStart.RequiresCondition = (false);
-            this.saeItemOnTurnStart.RequiresDescription = (false);
-            this.saeItemOnTurnStart.Size = (new global::System.Drawing.Size(362, 32));
-            this.saeItemOnTurnStart.SourceDescription = ("Whoever is equipping This");
-            this.saeItemOnTurnStart.TabIndex = (225);
-            this.saeItemOnTurnStart.TargetDescription = ("Whoever is equipping This");
-            this.saeItemOnTurnStart.ThisDescription = ("The item");
-            this.saeItemOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeItemOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeItemOnTurnStart.Action = null;
+            saeItemOnTurnStart.ActionDescription = "When the Item's owner starts a new turn...";
+            saeItemOnTurnStart.ActionTypeText = "On Death";
+            saeItemOnTurnStart.AutoSize = true;
+            saeItemOnTurnStart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeItemOnTurnStart.ClassId = null;
+            saeItemOnTurnStart.Dungeon = null;
+            saeItemOnTurnStart.EffectParamData = null;
+            saeItemOnTurnStart.Location = new System.Drawing.Point(367, 244);
+            saeItemOnTurnStart.Name = "saeItemOnTurnStart";
+            saeItemOnTurnStart.PlaceholderActionName = "Death";
+            saeItemOnTurnStart.RequiresActionName = false;
+            saeItemOnTurnStart.RequiresCondition = false;
+            saeItemOnTurnStart.RequiresDescription = false;
+            saeItemOnTurnStart.Size = new System.Drawing.Size(362, 32);
+            saeItemOnTurnStart.SourceDescription = "Whoever is equipping This";
+            saeItemOnTurnStart.TabIndex = 225;
+            saeItemOnTurnStart.TargetDescription = "Whoever is equipping This";
+            saeItemOnTurnStart.ThisDescription = "The item";
+            saeItemOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeItemOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeItemOnAttacked
             // 
-            this.saeItemOnAttacked.Action = (null);
-            this.saeItemOnAttacked.ActionDescription = ("When the Item's owner gets interacted...   ");
-            this.saeItemOnAttacked.ActionTypeText = ("Interacted");
-            this.saeItemOnAttacked.AutoSize = (true);
-            this.saeItemOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeItemOnAttacked.ClassId = (null);
-            this.saeItemOnAttacked.Dungeon = (null);
-            this.saeItemOnAttacked.EffectParamData = (null);
-            this.saeItemOnAttacked.Location = (new global::System.Drawing.Point(367, 206));
-            this.saeItemOnAttacked.Name = ("saeItemOnAttacked");
-            this.saeItemOnAttacked.PlaceholderActionName = ("Interacted");
-            this.saeItemOnAttacked.RequiresActionName = (false);
-            this.saeItemOnAttacked.RequiresCondition = (false);
-            this.saeItemOnAttacked.RequiresDescription = (false);
-            this.saeItemOnAttacked.Size = (new global::System.Drawing.Size(362, 32));
-            this.saeItemOnAttacked.SourceDescription = ("Whoever is equipping it");
-            this.saeItemOnAttacked.TabIndex = (224);
-            this.saeItemOnAttacked.TargetDescription = ("The owner's interactor");
-            this.saeItemOnAttacked.ThisDescription = ("The item");
-            this.saeItemOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeItemOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeItemOnAttacked.Action = null;
+            saeItemOnAttacked.ActionDescription = "When the Item's owner gets interacted...   ";
+            saeItemOnAttacked.ActionTypeText = "Interacted";
+            saeItemOnAttacked.AutoSize = true;
+            saeItemOnAttacked.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeItemOnAttacked.ClassId = null;
+            saeItemOnAttacked.Dungeon = null;
+            saeItemOnAttacked.EffectParamData = null;
+            saeItemOnAttacked.Location = new System.Drawing.Point(367, 206);
+            saeItemOnAttacked.Name = "saeItemOnAttacked";
+            saeItemOnAttacked.PlaceholderActionName = "Interacted";
+            saeItemOnAttacked.RequiresActionName = false;
+            saeItemOnAttacked.RequiresCondition = false;
+            saeItemOnAttacked.RequiresDescription = false;
+            saeItemOnAttacked.Size = new System.Drawing.Size(362, 32);
+            saeItemOnAttacked.SourceDescription = "Whoever is equipping it";
+            saeItemOnAttacked.TabIndex = 224;
+            saeItemOnAttacked.TargetDescription = "The owner's interactor";
+            saeItemOnAttacked.ThisDescription = "The item";
+            saeItemOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeItemOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maeItemOnAttack
             // 
-            this.maeItemOnAttack.ActionDescription = ("The Item's owner can do the following to interact with someone:");
-            this.maeItemOnAttack.Actions = ((global::System.Collections.Generic.List<global::RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)(resources.GetObject("maeItemOnAttack.Actions")));
-            this.maeItemOnAttack.ActionTypeText = ("Interact");
-            this.maeItemOnAttack.ClassId = (null);
-            this.maeItemOnAttack.Dungeon = (null);
-            this.maeItemOnAttack.EffectParamData = (null);
-            this.maeItemOnAttack.Location = (new global::System.Drawing.Point(367, 106));
-            this.maeItemOnAttack.Name = ("maeItemOnAttack");
-            this.maeItemOnAttack.PlaceholderActionName = (null);
-            this.maeItemOnAttack.RequiresActionName = (true);
-            this.maeItemOnAttack.RequiresCondition = (true);
-            this.maeItemOnAttack.RequiresDescription = (true);
-            this.maeItemOnAttack.Size = (new global::System.Drawing.Size(368, 94));
-            this.maeItemOnAttack.SourceDescription = (null);
-            this.maeItemOnAttack.TabIndex = (223);
-            this.maeItemOnAttack.TargetDescription = ("Whoever is being targeted");
-            this.maeItemOnAttack.ThisDescription = ("The item");
-            this.maeItemOnAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
-            this.maeItemOnAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.FullConditions);
+            maeItemOnAttack.ActionDescription = "The Item's owner can do the following to interact with someone:";
+            maeItemOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeItemOnAttack.Actions");
+            maeItemOnAttack.ActionTypeText = "Interact";
+            maeItemOnAttack.ClassId = null;
+            maeItemOnAttack.Dungeon = null;
+            maeItemOnAttack.EffectParamData = null;
+            maeItemOnAttack.Location = new System.Drawing.Point(367, 106);
+            maeItemOnAttack.Name = "maeItemOnAttack";
+            maeItemOnAttack.PlaceholderActionName = null;
+            maeItemOnAttack.RequiresActionName = true;
+            maeItemOnAttack.RequiresCondition = true;
+            maeItemOnAttack.RequiresDescription = true;
+            maeItemOnAttack.Size = new System.Drawing.Size(368, 94);
+            maeItemOnAttack.SourceDescription = null;
+            maeItemOnAttack.TabIndex = 223;
+            maeItemOnAttack.TargetDescription = "Whoever is being targeted";
+            maeItemOnAttack.ThisDescription = "The item";
+            maeItemOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maeItemOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // saeItemOnUse
             // 
-            this.saeItemOnUse.Action = (null);
-            this.saeItemOnUse.ActionDescription = ("When someone uses it on     \r\nthemselves...");
-            this.saeItemOnUse.ActionTypeText = ("Item Use");
-            this.saeItemOnUse.AutoSize = (true);
-            this.saeItemOnUse.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeItemOnUse.ClassId = (null);
-            this.saeItemOnUse.Dungeon = (null);
-            this.saeItemOnUse.EffectParamData = (null);
-            this.saeItemOnUse.Location = (new global::System.Drawing.Point(13, 316));
-            this.saeItemOnUse.Name = ("saeItemOnUse");
-            this.saeItemOnUse.PlaceholderActionName = ("ItemUse");
-            this.saeItemOnUse.RequiresActionName = (false);
-            this.saeItemOnUse.RequiresCondition = (true);
-            this.saeItemOnUse.RequiresDescription = (false);
-            this.saeItemOnUse.Size = (new global::System.Drawing.Size(292, 32));
-            this.saeItemOnUse.SourceDescription = ("The item");
-            this.saeItemOnUse.TabIndex = (222);
-            this.saeItemOnUse.TargetDescription = ("Whoever is using it");
-            this.saeItemOnUse.ThisDescription = ("The item");
-            this.saeItemOnUse.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.MustEndTurn);
-            this.saeItemOnUse.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeItemOnUse.Action = null;
+            saeItemOnUse.ActionDescription = "When someone uses it on     \r\nthemselves...";
+            saeItemOnUse.ActionTypeText = "Item Use";
+            saeItemOnUse.AutoSize = true;
+            saeItemOnUse.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeItemOnUse.ClassId = null;
+            saeItemOnUse.Dungeon = null;
+            saeItemOnUse.EffectParamData = null;
+            saeItemOnUse.Location = new System.Drawing.Point(13, 316);
+            saeItemOnUse.Name = "saeItemOnUse";
+            saeItemOnUse.PlaceholderActionName = "ItemUse";
+            saeItemOnUse.RequiresActionName = false;
+            saeItemOnUse.RequiresCondition = true;
+            saeItemOnUse.RequiresDescription = false;
+            saeItemOnUse.Size = new System.Drawing.Size(292, 32);
+            saeItemOnUse.SourceDescription = "The item";
+            saeItemOnUse.TabIndex = 222;
+            saeItemOnUse.TargetDescription = "Whoever is using it";
+            saeItemOnUse.ThisDescription = "The item";
+            saeItemOnUse.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            saeItemOnUse.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeItemOnStepped
             // 
-            this.saeItemOnStepped.Action = (null);
-            this.saeItemOnStepped.ActionDescription = ("When someone steps on it... ");
-            this.saeItemOnStepped.ActionTypeText = ("Stepped");
-            this.saeItemOnStepped.AutoSize = (true);
-            this.saeItemOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeItemOnStepped.ClassId = (null);
-            this.saeItemOnStepped.Dungeon = (null);
-            this.saeItemOnStepped.EffectParamData = (null);
-            this.saeItemOnStepped.Location = (new global::System.Drawing.Point(13, 278));
-            this.saeItemOnStepped.Name = ("saeItemOnStepped");
-            this.saeItemOnStepped.PlaceholderActionName = ("Stepped");
-            this.saeItemOnStepped.RequiresActionName = (false);
-            this.saeItemOnStepped.RequiresCondition = (false);
-            this.saeItemOnStepped.RequiresDescription = (false);
-            this.saeItemOnStepped.Size = (new global::System.Drawing.Size(293, 32));
-            this.saeItemOnStepped.SourceDescription = ("The item");
-            this.saeItemOnStepped.TabIndex = (221);
-            this.saeItemOnStepped.TargetDescription = ("Whoever stepped on it");
-            this.saeItemOnStepped.ThisDescription = ("The item");
-            this.saeItemOnStepped.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeItemOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeItemOnStepped.Action = null;
+            saeItemOnStepped.ActionDescription = "When someone steps on it... ";
+            saeItemOnStepped.ActionTypeText = "Stepped";
+            saeItemOnStepped.AutoSize = true;
+            saeItemOnStepped.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeItemOnStepped.ClassId = null;
+            saeItemOnStepped.Dungeon = null;
+            saeItemOnStepped.EffectParamData = null;
+            saeItemOnStepped.Location = new System.Drawing.Point(13, 278);
+            saeItemOnStepped.Name = "saeItemOnStepped";
+            saeItemOnStepped.PlaceholderActionName = "Stepped";
+            saeItemOnStepped.RequiresActionName = false;
+            saeItemOnStepped.RequiresCondition = false;
+            saeItemOnStepped.RequiresDescription = false;
+            saeItemOnStepped.Size = new System.Drawing.Size(293, 32);
+            saeItemOnStepped.SourceDescription = "The item";
+            saeItemOnStepped.TabIndex = 221;
+            saeItemOnStepped.TargetDescription = "Whoever stepped on it";
+            saeItemOnStepped.ThisDescription = "The item";
+            saeItemOnStepped.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeItemOnStepped.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // txtItemPower
             // 
-            this.txtItemPower.Location = (new global::System.Drawing.Point(86, 243));
-            this.txtItemPower.Name = ("txtItemPower");
-            this.txtItemPower.Size = (new global::System.Drawing.Size(150, 23));
-            this.txtItemPower.TabIndex = (206);
-            this.txtItemPower.Enter += (this.txtItemPower_Enter);
-            this.txtItemPower.Leave += (this.txtItemPower_Leave);
+            txtItemPower.Location = new System.Drawing.Point(86, 243);
+            txtItemPower.Name = "txtItemPower";
+            txtItemPower.Size = new System.Drawing.Size(150, 23);
+            txtItemPower.TabIndex = 206;
+            txtItemPower.Enter += txtItemPower_Enter;
+            txtItemPower.Leave += txtItemPower_Leave;
             // 
             // label108
             // 
-            this.label108.AutoSize = (true);
-            this.label108.Location = (new global::System.Drawing.Point(13, 249));
-            this.label108.Name = ("label108");
-            this.label108.Size = (new global::System.Drawing.Size(67, 15));
-            this.label108.TabIndex = (205);
-            this.label108.Text = ("Item Power");
+            label108.AutoSize = true;
+            label108.Location = new System.Drawing.Point(13, 249);
+            label108.Name = "label108";
+            label108.Size = new System.Drawing.Size(67, 15);
+            label108.TabIndex = 205;
+            label108.Text = "Item Power";
             // 
             // chkItemCanBePickedUp
             // 
-            this.chkItemCanBePickedUp.AutoSize = (true);
-            this.chkItemCanBePickedUp.Location = (new global::System.Drawing.Point(242, 245));
-            this.chkItemCanBePickedUp.Name = ("chkItemCanBePickedUp");
-            this.chkItemCanBePickedUp.Size = (new global::System.Drawing.Size(118, 19));
-            this.chkItemCanBePickedUp.TabIndex = (204);
-            this.chkItemCanBePickedUp.Text = ("Can be picked up");
-            this.chkItemCanBePickedUp.UseVisualStyleBackColor = (true);
-            this.chkItemCanBePickedUp.CheckedChanged += (this.chkItemCanBePickedUp_CheckedChanged);
+            chkItemCanBePickedUp.AutoSize = true;
+            chkItemCanBePickedUp.Location = new System.Drawing.Point(242, 245);
+            chkItemCanBePickedUp.Name = "chkItemCanBePickedUp";
+            chkItemCanBePickedUp.Size = new System.Drawing.Size(118, 19);
+            chkItemCanBePickedUp.TabIndex = 204;
+            chkItemCanBePickedUp.Text = "Can be picked up";
+            chkItemCanBePickedUp.UseVisualStyleBackColor = true;
+            chkItemCanBePickedUp.CheckedChanged += chkItemCanBePickedUp_CheckedChanged;
             // 
             // chkItemStartsVisible
             // 
-            this.chkItemStartsVisible.AutoSize = (true);
-            this.chkItemStartsVisible.Location = (new global::System.Drawing.Point(242, 211));
-            this.chkItemStartsVisible.Name = ("chkItemStartsVisible");
-            this.chkItemStartsVisible.Size = (new global::System.Drawing.Size(102, 19));
-            this.chkItemStartsVisible.TabIndex = (203);
-            this.chkItemStartsVisible.Text = ("Spawns visible");
-            this.chkItemStartsVisible.UseVisualStyleBackColor = (true);
-            this.chkItemStartsVisible.CheckedChanged += (this.chkItemStartsVisible_CheckedChanged);
+            chkItemStartsVisible.AutoSize = true;
+            chkItemStartsVisible.Location = new System.Drawing.Point(242, 211);
+            chkItemStartsVisible.Name = "chkItemStartsVisible";
+            chkItemStartsVisible.Size = new System.Drawing.Size(102, 19);
+            chkItemStartsVisible.TabIndex = 203;
+            chkItemStartsVisible.Text = "Spawns visible";
+            chkItemStartsVisible.UseVisualStyleBackColor = true;
+            chkItemStartsVisible.CheckedChanged += chkItemStartsVisible_CheckedChanged;
             // 
             // cmbItemType
             // 
-            this.cmbItemType.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbItemType.FormattingEnabled = (true);
-            this.cmbItemType.Location = (new global::System.Drawing.Point(77, 209));
-            this.cmbItemType.Name = ("cmbItemType");
-            this.cmbItemType.Size = (new global::System.Drawing.Size(159, 23));
-            this.cmbItemType.TabIndex = (202);
-            this.cmbItemType.SelectedIndexChanged += (this.cmbItemType_SelectedIndexChanged);
+            cmbItemType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbItemType.FormattingEnabled = true;
+            cmbItemType.Location = new System.Drawing.Point(77, 209);
+            cmbItemType.Name = "cmbItemType";
+            cmbItemType.Size = new System.Drawing.Size(159, 23);
+            cmbItemType.TabIndex = 202;
+            cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
             // 
             // label107
             // 
-            this.label107.AutoSize = (true);
-            this.label107.Location = (new global::System.Drawing.Point(13, 212));
-            this.label107.Name = ("label107");
-            this.label107.Size = (new global::System.Drawing.Size(58, 15));
-            this.label107.TabIndex = (201);
-            this.label107.Text = ("Item Type");
+            label107.AutoSize = true;
+            label107.Location = new System.Drawing.Point(13, 212);
+            label107.Name = "label107";
+            label107.Size = new System.Drawing.Size(58, 15);
+            label107.TabIndex = 201;
+            label107.Text = "Item Type";
             // 
             // label102
             // 
-            this.label102.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label102.Location = (new global::System.Drawing.Point(390, 20));
-            this.label102.Name = ("label102");
-            this.label102.Size = (new global::System.Drawing.Size(131, 52));
-            this.label102.TabIndex = (196);
-            this.label102.Text = ("Appearance");
-            this.label102.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label102.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label102.Location = new System.Drawing.Point(390, 20);
+            label102.Name = "label102";
+            label102.Size = new System.Drawing.Size(131, 52);
+            label102.TabIndex = 196;
+            label102.Text = "Appearance";
+            label102.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // fklblItemDescriptionLocale
             // 
-            this.fklblItemDescriptionLocale.Enabled = (false);
-            this.fklblItemDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblItemDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblItemDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblItemDescriptionLocale.Image")));
-            this.fklblItemDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblItemDescriptionLocale.Location = (new global::System.Drawing.Point(13, 153));
-            this.fklblItemDescriptionLocale.Name = ("fklblItemDescriptionLocale");
-            this.fklblItemDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblItemDescriptionLocale.TabIndex = (195);
-            this.fklblItemDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblItemDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblItemDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblItemDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblItemDescriptionLocale.Visible = (false);
+            fklblItemDescriptionLocale.Enabled = false;
+            fklblItemDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblItemDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblItemDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblItemDescriptionLocale.Image");
+            fklblItemDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblItemDescriptionLocale.Location = new System.Drawing.Point(13, 153);
+            fklblItemDescriptionLocale.Name = "fklblItemDescriptionLocale";
+            fklblItemDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblItemDescriptionLocale.TabIndex = 195;
+            fklblItemDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblItemDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblItemDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblItemDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblItemDescriptionLocale.Visible = false;
             // 
             // txtItemDescription
             // 
-            this.txtItemDescription.Location = (new global::System.Drawing.Point(13, 124));
-            this.txtItemDescription.Name = ("txtItemDescription");
-            this.txtItemDescription.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtItemDescription.TabIndex = (194);
-            this.txtItemDescription.TextChanged += (this.txtItemDescription_TextChanged);
+            txtItemDescription.Location = new System.Drawing.Point(13, 124);
+            txtItemDescription.Name = "txtItemDescription";
+            txtItemDescription.Size = new System.Drawing.Size(350, 23);
+            txtItemDescription.TabIndex = 194;
+            txtItemDescription.TextChanged += txtItemDescription_TextChanged;
             // 
             // label105
             // 
-            this.label105.AutoSize = (true);
-            this.label105.Location = (new global::System.Drawing.Point(13, 106));
-            this.label105.Name = ("label105");
-            this.label105.Size = (new global::System.Drawing.Size(67, 15));
-            this.label105.TabIndex = (193);
-            this.label105.Text = ("Description");
+            label105.AutoSize = true;
+            label105.Location = new System.Drawing.Point(13, 106);
+            label105.Name = "label105";
+            label105.Size = new System.Drawing.Size(67, 15);
+            label105.TabIndex = 193;
+            label105.Text = "Description";
             // 
             // fklblItemNameLocale
             // 
-            this.fklblItemNameLocale.Enabled = (false);
-            this.fklblItemNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblItemNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblItemNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblItemNameLocale.Image")));
-            this.fklblItemNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblItemNameLocale.Location = (new global::System.Drawing.Point(13, 55));
-            this.fklblItemNameLocale.Name = ("fklblItemNameLocale");
-            this.fklblItemNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblItemNameLocale.TabIndex = (192);
-            this.fklblItemNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblItemNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblItemNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblItemNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblItemNameLocale.Visible = (false);
+            fklblItemNameLocale.Enabled = false;
+            fklblItemNameLocale.FlatAppearance.BorderSize = 0;
+            fklblItemNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblItemNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblItemNameLocale.Image");
+            fklblItemNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblItemNameLocale.Location = new System.Drawing.Point(13, 55);
+            fklblItemNameLocale.Name = "fklblItemNameLocale";
+            fklblItemNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblItemNameLocale.TabIndex = 192;
+            fklblItemNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblItemNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblItemNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblItemNameLocale.UseVisualStyleBackColor = true;
+            fklblItemNameLocale.Visible = false;
             // 
             // txtItemName
             // 
-            this.txtItemName.Location = (new global::System.Drawing.Point(13, 26));
-            this.txtItemName.Name = ("txtItemName");
-            this.txtItemName.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtItemName.TabIndex = (191);
-            this.txtItemName.TextChanged += (this.txtItemName_TextChanged);
+            txtItemName.Location = new System.Drawing.Point(13, 26);
+            txtItemName.Name = "txtItemName";
+            txtItemName.Size = new System.Drawing.Size(350, 23);
+            txtItemName.TabIndex = 191;
+            txtItemName.TextChanged += txtItemName_TextChanged;
             // 
             // label106
             // 
-            this.label106.AutoSize = (true);
-            this.label106.Location = (new global::System.Drawing.Point(13, 8));
-            this.label106.Name = ("label106");
-            this.label106.Size = (new global::System.Drawing.Size(80, 15));
-            this.label106.TabIndex = (190);
-            this.label106.Text = ("Default Name");
+            label106.AutoSize = true;
+            label106.Location = new System.Drawing.Point(13, 8);
+            label106.Name = "label106";
+            label106.Size = new System.Drawing.Size(80, 15);
+            label106.TabIndex = 190;
+            label106.Text = "Default Name";
             // 
             // crsItem
             // 
-            this.crsItem.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsItem.BackgroundColor")));
-            this.crsItem.Character = ('\0');
-            this.crsItem.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsItem.ForegroundColor")));
-            this.crsItem.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsItem.Name = ("crsItem");
-            this.crsItem.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsItem.TabIndex = (220);
-            this.crsItem.PropertyChanged += (this.crsItem_PropertyChanged);
+            crsItem.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.BackgroundColor");
+            crsItem.Character = '\0';
+            crsItem.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.ForegroundColor");
+            crsItem.Location = new System.Drawing.Point(524, 9);
+            crsItem.Name = "crsItem";
+            crsItem.Size = new System.Drawing.Size(211, 83);
+            crsItem.TabIndex = 220;
+            crsItem.PropertyChanged += crsItem_PropertyChanged;
             // 
             // tpTrap
             // 
-            this.tpTrap.Controls.Add(this.saeTrapOnStepped);
-            this.tpTrap.Controls.Add(this.txtTrapPower);
-            this.tpTrap.Controls.Add(this.label113);
-            this.tpTrap.Controls.Add(this.chkTrapStartsVisible);
-            this.tpTrap.Controls.Add(this.label116);
-            this.tpTrap.Controls.Add(this.fklblTrapDescriptionLocale);
-            this.tpTrap.Controls.Add(this.txtTrapDescription);
-            this.tpTrap.Controls.Add(this.label117);
-            this.tpTrap.Controls.Add(this.fklblTrapNameLocale);
-            this.tpTrap.Controls.Add(this.txtTrapName);
-            this.tpTrap.Controls.Add(this.label118);
-            this.tpTrap.Controls.Add(this.crsTrap);
-            this.tpTrap.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpTrap.Name = ("tpTrap");
-            this.tpTrap.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpTrap.TabIndex = (7);
-            this.tpTrap.Text = ("Trap");
-            this.tpTrap.UseVisualStyleBackColor = (true);
+            tpTrap.Controls.Add(saeTrapOnStepped);
+            tpTrap.Controls.Add(txtTrapPower);
+            tpTrap.Controls.Add(label113);
+            tpTrap.Controls.Add(chkTrapStartsVisible);
+            tpTrap.Controls.Add(label116);
+            tpTrap.Controls.Add(fklblTrapDescriptionLocale);
+            tpTrap.Controls.Add(txtTrapDescription);
+            tpTrap.Controls.Add(label117);
+            tpTrap.Controls.Add(fklblTrapNameLocale);
+            tpTrap.Controls.Add(txtTrapName);
+            tpTrap.Controls.Add(label118);
+            tpTrap.Controls.Add(crsTrap);
+            tpTrap.Location = new System.Drawing.Point(4, 24);
+            tpTrap.Name = "tpTrap";
+            tpTrap.Size = new System.Drawing.Size(740, 356);
+            tpTrap.TabIndex = 7;
+            tpTrap.Text = "Trap";
+            tpTrap.UseVisualStyleBackColor = true;
             // 
             // saeTrapOnStepped
             // 
-            this.saeTrapOnStepped.Action = (null);
-            this.saeTrapOnStepped.ActionDescription = ("When someone steps on it...");
-            this.saeTrapOnStepped.ActionTypeText = ("Stepped");
-            this.saeTrapOnStepped.AutoSize = (true);
-            this.saeTrapOnStepped.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeTrapOnStepped.ClassId = (null);
-            this.saeTrapOnStepped.Dungeon = (null);
-            this.saeTrapOnStepped.EffectParamData = (null);
-            this.saeTrapOnStepped.Location = (new global::System.Drawing.Point(13, 272));
-            this.saeTrapOnStepped.Name = ("saeTrapOnStepped");
-            this.saeTrapOnStepped.PlaceholderActionName = ("Stepped");
-            this.saeTrapOnStepped.RequiresActionName = (false);
-            this.saeTrapOnStepped.RequiresCondition = (false);
-            this.saeTrapOnStepped.RequiresDescription = (false);
-            this.saeTrapOnStepped.Size = (new global::System.Drawing.Size(290, 32));
-            this.saeTrapOnStepped.SourceDescription = ("The trap");
-            this.saeTrapOnStepped.TabIndex = (240);
-            this.saeTrapOnStepped.TargetDescription = ("Whoever steps on it");
-            this.saeTrapOnStepped.ThisDescription = ("The trap");
-            this.saeTrapOnStepped.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeTrapOnStepped.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeTrapOnStepped.Action = null;
+            saeTrapOnStepped.ActionDescription = "When someone steps on it...";
+            saeTrapOnStepped.ActionTypeText = "Stepped";
+            saeTrapOnStepped.AutoSize = true;
+            saeTrapOnStepped.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeTrapOnStepped.ClassId = null;
+            saeTrapOnStepped.Dungeon = null;
+            saeTrapOnStepped.EffectParamData = null;
+            saeTrapOnStepped.Location = new System.Drawing.Point(13, 272);
+            saeTrapOnStepped.Name = "saeTrapOnStepped";
+            saeTrapOnStepped.PlaceholderActionName = "Stepped";
+            saeTrapOnStepped.RequiresActionName = false;
+            saeTrapOnStepped.RequiresCondition = false;
+            saeTrapOnStepped.RequiresDescription = false;
+            saeTrapOnStepped.Size = new System.Drawing.Size(290, 32);
+            saeTrapOnStepped.SourceDescription = "The trap";
+            saeTrapOnStepped.TabIndex = 240;
+            saeTrapOnStepped.TargetDescription = "Whoever steps on it";
+            saeTrapOnStepped.ThisDescription = "The trap";
+            saeTrapOnStepped.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeTrapOnStepped.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // txtTrapPower
             // 
-            this.txtTrapPower.Location = (new global::System.Drawing.Point(86, 209));
-            this.txtTrapPower.Name = ("txtTrapPower");
-            this.txtTrapPower.Size = (new global::System.Drawing.Size(150, 23));
-            this.txtTrapPower.TabIndex = (236);
-            this.txtTrapPower.Enter += (this.txtTrapPower_Enter);
-            this.txtTrapPower.Leave += (this.txtTrapPower_Leave);
+            txtTrapPower.Location = new System.Drawing.Point(86, 209);
+            txtTrapPower.Name = "txtTrapPower";
+            txtTrapPower.Size = new System.Drawing.Size(150, 23);
+            txtTrapPower.TabIndex = 236;
+            txtTrapPower.Enter += txtTrapPower_Enter;
+            txtTrapPower.Leave += txtTrapPower_Leave;
             // 
             // label113
             // 
-            this.label113.AutoSize = (true);
-            this.label113.Location = (new global::System.Drawing.Point(13, 215));
-            this.label113.Name = ("label113");
-            this.label113.Size = (new global::System.Drawing.Size(65, 15));
-            this.label113.TabIndex = (235);
-            this.label113.Text = ("Trap Power");
+            label113.AutoSize = true;
+            label113.Location = new System.Drawing.Point(13, 215);
+            label113.Name = "label113";
+            label113.Size = new System.Drawing.Size(65, 15);
+            label113.TabIndex = 235;
+            label113.Text = "Trap Power";
             // 
             // chkTrapStartsVisible
             // 
-            this.chkTrapStartsVisible.AutoSize = (true);
-            this.chkTrapStartsVisible.Location = (new global::System.Drawing.Point(13, 247));
-            this.chkTrapStartsVisible.Name = ("chkTrapStartsVisible");
-            this.chkTrapStartsVisible.Size = (new global::System.Drawing.Size(102, 19));
-            this.chkTrapStartsVisible.TabIndex = (233);
-            this.chkTrapStartsVisible.Text = ("Spawns visible");
-            this.chkTrapStartsVisible.UseVisualStyleBackColor = (true);
-            this.chkTrapStartsVisible.CheckedChanged += (this.chkTrapStartsVisible_CheckedChanged);
+            chkTrapStartsVisible.AutoSize = true;
+            chkTrapStartsVisible.Location = new System.Drawing.Point(13, 247);
+            chkTrapStartsVisible.Name = "chkTrapStartsVisible";
+            chkTrapStartsVisible.Size = new System.Drawing.Size(102, 19);
+            chkTrapStartsVisible.TabIndex = 233;
+            chkTrapStartsVisible.Text = "Spawns visible";
+            chkTrapStartsVisible.UseVisualStyleBackColor = true;
+            chkTrapStartsVisible.CheckedChanged += chkTrapStartsVisible_CheckedChanged;
             // 
             // label116
             // 
-            this.label116.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label116.Location = (new global::System.Drawing.Point(390, 20));
-            this.label116.Name = ("label116");
-            this.label116.Size = (new global::System.Drawing.Size(131, 52));
-            this.label116.TabIndex = (226);
-            this.label116.Text = ("Appearance");
-            this.label116.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label116.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label116.Location = new System.Drawing.Point(390, 20);
+            label116.Name = "label116";
+            label116.Size = new System.Drawing.Size(131, 52);
+            label116.TabIndex = 226;
+            label116.Text = "Appearance";
+            label116.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // fklblTrapDescriptionLocale
             // 
-            this.fklblTrapDescriptionLocale.Enabled = (false);
-            this.fklblTrapDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblTrapDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblTrapDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblTrapDescriptionLocale.Image")));
-            this.fklblTrapDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblTrapDescriptionLocale.Location = (new global::System.Drawing.Point(13, 153));
-            this.fklblTrapDescriptionLocale.Name = ("fklblTrapDescriptionLocale");
-            this.fklblTrapDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblTrapDescriptionLocale.TabIndex = (225);
-            this.fklblTrapDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblTrapDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblTrapDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblTrapDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblTrapDescriptionLocale.Visible = (false);
+            fklblTrapDescriptionLocale.Enabled = false;
+            fklblTrapDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblTrapDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblTrapDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblTrapDescriptionLocale.Image");
+            fklblTrapDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblTrapDescriptionLocale.Location = new System.Drawing.Point(13, 153);
+            fklblTrapDescriptionLocale.Name = "fklblTrapDescriptionLocale";
+            fklblTrapDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblTrapDescriptionLocale.TabIndex = 225;
+            fklblTrapDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblTrapDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblTrapDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblTrapDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblTrapDescriptionLocale.Visible = false;
             // 
             // txtTrapDescription
             // 
-            this.txtTrapDescription.Location = (new global::System.Drawing.Point(13, 124));
-            this.txtTrapDescription.Name = ("txtTrapDescription");
-            this.txtTrapDescription.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtTrapDescription.TabIndex = (224);
-            this.txtTrapDescription.TextChanged += (this.txtTrapDescription_TextChanged);
+            txtTrapDescription.Location = new System.Drawing.Point(13, 124);
+            txtTrapDescription.Name = "txtTrapDescription";
+            txtTrapDescription.Size = new System.Drawing.Size(350, 23);
+            txtTrapDescription.TabIndex = 224;
+            txtTrapDescription.TextChanged += txtTrapDescription_TextChanged;
             // 
             // label117
             // 
-            this.label117.AutoSize = (true);
-            this.label117.Location = (new global::System.Drawing.Point(13, 106));
-            this.label117.Name = ("label117");
-            this.label117.Size = (new global::System.Drawing.Size(67, 15));
-            this.label117.TabIndex = (223);
-            this.label117.Text = ("Description");
+            label117.AutoSize = true;
+            label117.Location = new System.Drawing.Point(13, 106);
+            label117.Name = "label117";
+            label117.Size = new System.Drawing.Size(67, 15);
+            label117.TabIndex = 223;
+            label117.Text = "Description";
             // 
             // fklblTrapNameLocale
             // 
-            this.fklblTrapNameLocale.Enabled = (false);
-            this.fklblTrapNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblTrapNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblTrapNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblTrapNameLocale.Image")));
-            this.fklblTrapNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblTrapNameLocale.Location = (new global::System.Drawing.Point(13, 55));
-            this.fklblTrapNameLocale.Name = ("fklblTrapNameLocale");
-            this.fklblTrapNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblTrapNameLocale.TabIndex = (222);
-            this.fklblTrapNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblTrapNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblTrapNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblTrapNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblTrapNameLocale.Visible = (false);
+            fklblTrapNameLocale.Enabled = false;
+            fklblTrapNameLocale.FlatAppearance.BorderSize = 0;
+            fklblTrapNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblTrapNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblTrapNameLocale.Image");
+            fklblTrapNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblTrapNameLocale.Location = new System.Drawing.Point(13, 55);
+            fklblTrapNameLocale.Name = "fklblTrapNameLocale";
+            fklblTrapNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblTrapNameLocale.TabIndex = 222;
+            fklblTrapNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblTrapNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblTrapNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblTrapNameLocale.UseVisualStyleBackColor = true;
+            fklblTrapNameLocale.Visible = false;
             // 
             // txtTrapName
             // 
-            this.txtTrapName.Location = (new global::System.Drawing.Point(13, 26));
-            this.txtTrapName.Name = ("txtTrapName");
-            this.txtTrapName.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtTrapName.TabIndex = (221);
-            this.txtTrapName.TextChanged += (this.txtTrapName_TextChanged);
+            txtTrapName.Location = new System.Drawing.Point(13, 26);
+            txtTrapName.Name = "txtTrapName";
+            txtTrapName.Size = new System.Drawing.Size(350, 23);
+            txtTrapName.TabIndex = 221;
+            txtTrapName.TextChanged += txtTrapName_TextChanged;
             // 
             // label118
             // 
-            this.label118.AutoSize = (true);
-            this.label118.Location = (new global::System.Drawing.Point(13, 8));
-            this.label118.Name = ("label118");
-            this.label118.Size = (new global::System.Drawing.Size(80, 15));
-            this.label118.TabIndex = (220);
-            this.label118.Text = ("Default Name");
+            label118.AutoSize = true;
+            label118.Location = new System.Drawing.Point(13, 8);
+            label118.Name = "label118";
+            label118.Size = new System.Drawing.Size(80, 15);
+            label118.TabIndex = 220;
+            label118.Text = "Default Name";
             // 
             // crsTrap
             // 
-            this.crsTrap.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsTrap.BackgroundColor")));
-            this.crsTrap.Character = ('\0');
-            this.crsTrap.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsTrap.ForegroundColor")));
-            this.crsTrap.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsTrap.Name = ("crsTrap");
-            this.crsTrap.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsTrap.TabIndex = (239);
-            this.crsTrap.PropertyChanged += (this.crsTrap_PropertyChanged);
+            crsTrap.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsTrap.BackgroundColor");
+            crsTrap.Character = '\0';
+            crsTrap.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsTrap.ForegroundColor");
+            crsTrap.Location = new System.Drawing.Point(524, 9);
+            crsTrap.Name = "crsTrap";
+            crsTrap.Size = new System.Drawing.Size(211, 83);
+            crsTrap.TabIndex = 239;
+            crsTrap.PropertyChanged += crsTrap_PropertyChanged;
             // 
             // tpAlteredStatus
             // 
-            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnAttacked);
-            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusBeforeAttack);
-            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnRemove);
-            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnTurnStart);
-            this.tpAlteredStatus.Controls.Add(this.saeAlteredStatusOnApply);
-            this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCleansedOnCleanseActions);
-            this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCleanseOnFloorChange);
-            this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCanOverwrite);
-            this.tpAlteredStatus.Controls.Add(this.chkAlteredStatusCanStack);
-            this.tpAlteredStatus.Controls.Add(this.label111);
-            this.tpAlteredStatus.Controls.Add(this.fklblAlteredStatusDescriptionLocale);
-            this.tpAlteredStatus.Controls.Add(this.txtAlteredStatusDescription);
-            this.tpAlteredStatus.Controls.Add(this.label114);
-            this.tpAlteredStatus.Controls.Add(this.fklblAlteredStatusNameLocale);
-            this.tpAlteredStatus.Controls.Add(this.txtAlteredStatusName);
-            this.tpAlteredStatus.Controls.Add(this.label115);
-            this.tpAlteredStatus.Controls.Add(this.crsAlteredStatus);
-            this.tpAlteredStatus.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpAlteredStatus.Name = ("tpAlteredStatus");
-            this.tpAlteredStatus.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpAlteredStatus.TabIndex = (8);
-            this.tpAlteredStatus.Text = ("Altered Status");
-            this.tpAlteredStatus.UseVisualStyleBackColor = (true);
+            tpAlteredStatus.Controls.Add(saeAlteredStatusOnAttacked);
+            tpAlteredStatus.Controls.Add(saeAlteredStatusBeforeAttack);
+            tpAlteredStatus.Controls.Add(saeAlteredStatusOnRemove);
+            tpAlteredStatus.Controls.Add(saeAlteredStatusOnTurnStart);
+            tpAlteredStatus.Controls.Add(saeAlteredStatusOnApply);
+            tpAlteredStatus.Controls.Add(chkAlteredStatusCleansedOnCleanseActions);
+            tpAlteredStatus.Controls.Add(chkAlteredStatusCleanseOnFloorChange);
+            tpAlteredStatus.Controls.Add(chkAlteredStatusCanOverwrite);
+            tpAlteredStatus.Controls.Add(chkAlteredStatusCanStack);
+            tpAlteredStatus.Controls.Add(label111);
+            tpAlteredStatus.Controls.Add(fklblAlteredStatusDescriptionLocale);
+            tpAlteredStatus.Controls.Add(txtAlteredStatusDescription);
+            tpAlteredStatus.Controls.Add(label114);
+            tpAlteredStatus.Controls.Add(fklblAlteredStatusNameLocale);
+            tpAlteredStatus.Controls.Add(txtAlteredStatusName);
+            tpAlteredStatus.Controls.Add(label115);
+            tpAlteredStatus.Controls.Add(crsAlteredStatus);
+            tpAlteredStatus.Location = new System.Drawing.Point(4, 24);
+            tpAlteredStatus.Name = "tpAlteredStatus";
+            tpAlteredStatus.Size = new System.Drawing.Size(740, 356);
+            tpAlteredStatus.TabIndex = 8;
+            tpAlteredStatus.Text = "Altered Status";
+            tpAlteredStatus.UseVisualStyleBackColor = true;
             // 
             // saeAlteredStatusOnAttacked
             // 
-            this.saeAlteredStatusOnAttacked.Action = (null);
-            this.saeAlteredStatusOnAttacked.ActionDescription = ("When someone afflicted  \r\nby it is attacked...");
-            this.saeAlteredStatusOnAttacked.ActionTypeText = ("On Statused Attacked");
-            this.saeAlteredStatusOnAttacked.AutoSize = (true);
-            this.saeAlteredStatusOnAttacked.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeAlteredStatusOnAttacked.ClassId = (null);
-            this.saeAlteredStatusOnAttacked.Dungeon = (null);
-            this.saeAlteredStatusOnAttacked.EffectParamData = (null);
-            this.saeAlteredStatusOnAttacked.Location = (new global::System.Drawing.Point(391, 266));
-            this.saeAlteredStatusOnAttacked.Name = ("saeAlteredStatusOnAttacked");
-            this.saeAlteredStatusOnAttacked.PlaceholderActionName = ("OnAttacked");
-            this.saeAlteredStatusOnAttacked.RequiresActionName = (false);
-            this.saeAlteredStatusOnAttacked.RequiresCondition = (false);
-            this.saeAlteredStatusOnAttacked.RequiresDescription = (false);
-            this.saeAlteredStatusOnAttacked.Size = (new global::System.Drawing.Size(276, 32));
-            this.saeAlteredStatusOnAttacked.SourceDescription = ("Whoever it's inflicting");
-            this.saeAlteredStatusOnAttacked.TabIndex = (265);
-            this.saeAlteredStatusOnAttacked.TargetDescription = ("Whoever attacked them");
-            this.saeAlteredStatusOnAttacked.ThisDescription = ("The Altered Status");
-            this.saeAlteredStatusOnAttacked.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeAlteredStatusOnAttacked.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeAlteredStatusOnAttacked.Action = null;
+            saeAlteredStatusOnAttacked.ActionDescription = "When someone afflicted  \r\nby it is attacked...";
+            saeAlteredStatusOnAttacked.ActionTypeText = "On Statused Attacked";
+            saeAlteredStatusOnAttacked.AutoSize = true;
+            saeAlteredStatusOnAttacked.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeAlteredStatusOnAttacked.ClassId = null;
+            saeAlteredStatusOnAttacked.Dungeon = null;
+            saeAlteredStatusOnAttacked.EffectParamData = null;
+            saeAlteredStatusOnAttacked.Location = new System.Drawing.Point(391, 266);
+            saeAlteredStatusOnAttacked.Name = "saeAlteredStatusOnAttacked";
+            saeAlteredStatusOnAttacked.PlaceholderActionName = "OnAttacked";
+            saeAlteredStatusOnAttacked.RequiresActionName = false;
+            saeAlteredStatusOnAttacked.RequiresCondition = false;
+            saeAlteredStatusOnAttacked.RequiresDescription = false;
+            saeAlteredStatusOnAttacked.Size = new System.Drawing.Size(276, 32);
+            saeAlteredStatusOnAttacked.SourceDescription = "Whoever it's inflicting";
+            saeAlteredStatusOnAttacked.TabIndex = 265;
+            saeAlteredStatusOnAttacked.TargetDescription = "Whoever attacked them";
+            saeAlteredStatusOnAttacked.ThisDescription = "The Altered Status";
+            saeAlteredStatusOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeAlteredStatusOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeAlteredStatusBeforeAttack
             // 
-            this.saeAlteredStatusBeforeAttack.Action = (null);
-            this.saeAlteredStatusBeforeAttack.ActionDescription = ("When someone afflicted\r\nby it is about to attack...   ");
-            this.saeAlteredStatusBeforeAttack.ActionTypeText = ("Before Statused Attack");
-            this.saeAlteredStatusBeforeAttack.AutoSize = (true);
-            this.saeAlteredStatusBeforeAttack.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeAlteredStatusBeforeAttack.ClassId = (null);
-            this.saeAlteredStatusBeforeAttack.Dungeon = (null);
-            this.saeAlteredStatusBeforeAttack.EffectParamData = (null);
-            this.saeAlteredStatusBeforeAttack.Location = (new global::System.Drawing.Point(391, 229));
-            this.saeAlteredStatusBeforeAttack.Name = ("saeAlteredStatusBeforeAttack");
-            this.saeAlteredStatusBeforeAttack.PlaceholderActionName = ("BeforeAttack");
-            this.saeAlteredStatusBeforeAttack.RequiresActionName = (false);
-            this.saeAlteredStatusBeforeAttack.RequiresCondition = (false);
-            this.saeAlteredStatusBeforeAttack.RequiresDescription = (false);
-            this.saeAlteredStatusBeforeAttack.Size = (new global::System.Drawing.Size(276, 32));
-            this.saeAlteredStatusBeforeAttack.SourceDescription = ("Whoever it's inflicting");
-            this.saeAlteredStatusBeforeAttack.TabIndex = (264);
-            this.saeAlteredStatusBeforeAttack.TargetDescription = ("Whoever is being targeted");
-            this.saeAlteredStatusBeforeAttack.ThisDescription = ("The Altered Status");
-            this.saeAlteredStatusBeforeAttack.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeAlteredStatusBeforeAttack.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeAlteredStatusBeforeAttack.Action = null;
+            saeAlteredStatusBeforeAttack.ActionDescription = "When someone afflicted\r\nby it is about to attack...   ";
+            saeAlteredStatusBeforeAttack.ActionTypeText = "Before Statused Attack";
+            saeAlteredStatusBeforeAttack.AutoSize = true;
+            saeAlteredStatusBeforeAttack.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeAlteredStatusBeforeAttack.ClassId = null;
+            saeAlteredStatusBeforeAttack.Dungeon = null;
+            saeAlteredStatusBeforeAttack.EffectParamData = null;
+            saeAlteredStatusBeforeAttack.Location = new System.Drawing.Point(391, 229);
+            saeAlteredStatusBeforeAttack.Name = "saeAlteredStatusBeforeAttack";
+            saeAlteredStatusBeforeAttack.PlaceholderActionName = "BeforeAttack";
+            saeAlteredStatusBeforeAttack.RequiresActionName = false;
+            saeAlteredStatusBeforeAttack.RequiresCondition = false;
+            saeAlteredStatusBeforeAttack.RequiresDescription = false;
+            saeAlteredStatusBeforeAttack.Size = new System.Drawing.Size(276, 32);
+            saeAlteredStatusBeforeAttack.SourceDescription = "Whoever it's inflicting";
+            saeAlteredStatusBeforeAttack.TabIndex = 264;
+            saeAlteredStatusBeforeAttack.TargetDescription = "Whoever is being targeted";
+            saeAlteredStatusBeforeAttack.ThisDescription = "The Altered Status";
+            saeAlteredStatusBeforeAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeAlteredStatusBeforeAttack.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeAlteredStatusOnRemove
             // 
-            this.saeAlteredStatusOnRemove.Action = (null);
-            this.saeAlteredStatusOnRemove.ActionDescription = ("When someone gets this\r\nAltered Status removed... ");
-            this.saeAlteredStatusOnRemove.ActionTypeText = ("On Status Remove");
-            this.saeAlteredStatusOnRemove.AutoSize = (true);
-            this.saeAlteredStatusOnRemove.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeAlteredStatusOnRemove.ClassId = (null);
-            this.saeAlteredStatusOnRemove.Dungeon = (null);
-            this.saeAlteredStatusOnRemove.EffectParamData = (null);
-            this.saeAlteredStatusOnRemove.Location = (new global::System.Drawing.Point(391, 153));
-            this.saeAlteredStatusOnRemove.Name = ("saeAlteredStatusOnRemove");
-            this.saeAlteredStatusOnRemove.PlaceholderActionName = ("OnRemove");
-            this.saeAlteredStatusOnRemove.RequiresActionName = (false);
-            this.saeAlteredStatusOnRemove.RequiresCondition = (false);
-            this.saeAlteredStatusOnRemove.RequiresDescription = (false);
-            this.saeAlteredStatusOnRemove.Size = (new global::System.Drawing.Size(276, 32));
-            this.saeAlteredStatusOnRemove.SourceDescription = ("The Altered Status");
-            this.saeAlteredStatusOnRemove.TabIndex = (263);
-            this.saeAlteredStatusOnRemove.TargetDescription = ("Whoever it's targeting");
-            this.saeAlteredStatusOnRemove.ThisDescription = ("The Altered Status");
-            this.saeAlteredStatusOnRemove.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeAlteredStatusOnRemove.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeAlteredStatusOnRemove.Action = null;
+            saeAlteredStatusOnRemove.ActionDescription = "When someone gets this\r\nAltered Status removed... ";
+            saeAlteredStatusOnRemove.ActionTypeText = "On Status Remove";
+            saeAlteredStatusOnRemove.AutoSize = true;
+            saeAlteredStatusOnRemove.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeAlteredStatusOnRemove.ClassId = null;
+            saeAlteredStatusOnRemove.Dungeon = null;
+            saeAlteredStatusOnRemove.EffectParamData = null;
+            saeAlteredStatusOnRemove.Location = new System.Drawing.Point(391, 153);
+            saeAlteredStatusOnRemove.Name = "saeAlteredStatusOnRemove";
+            saeAlteredStatusOnRemove.PlaceholderActionName = "OnRemove";
+            saeAlteredStatusOnRemove.RequiresActionName = false;
+            saeAlteredStatusOnRemove.RequiresCondition = false;
+            saeAlteredStatusOnRemove.RequiresDescription = false;
+            saeAlteredStatusOnRemove.Size = new System.Drawing.Size(276, 32);
+            saeAlteredStatusOnRemove.SourceDescription = "The Altered Status";
+            saeAlteredStatusOnRemove.TabIndex = 263;
+            saeAlteredStatusOnRemove.TargetDescription = "Whoever it's targeting";
+            saeAlteredStatusOnRemove.ThisDescription = "The Altered Status";
+            saeAlteredStatusOnRemove.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeAlteredStatusOnRemove.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeAlteredStatusOnTurnStart
             // 
-            this.saeAlteredStatusOnTurnStart.Action = (null);
-            this.saeAlteredStatusOnTurnStart.ActionDescription = ("When someone afflicted\r\nby it begins a new turn...  ");
-            this.saeAlteredStatusOnTurnStart.ActionTypeText = ("Turn Start");
-            this.saeAlteredStatusOnTurnStart.AutoSize = (true);
-            this.saeAlteredStatusOnTurnStart.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeAlteredStatusOnTurnStart.ClassId = (null);
-            this.saeAlteredStatusOnTurnStart.Dungeon = (null);
-            this.saeAlteredStatusOnTurnStart.EffectParamData = (null);
-            this.saeAlteredStatusOnTurnStart.Location = (new global::System.Drawing.Point(391, 191));
-            this.saeAlteredStatusOnTurnStart.Name = ("saeAlteredStatusOnTurnStart");
-            this.saeAlteredStatusOnTurnStart.PlaceholderActionName = ("TurnStart");
-            this.saeAlteredStatusOnTurnStart.RequiresActionName = (false);
-            this.saeAlteredStatusOnTurnStart.RequiresCondition = (false);
-            this.saeAlteredStatusOnTurnStart.RequiresDescription = (false);
-            this.saeAlteredStatusOnTurnStart.Size = (new global::System.Drawing.Size(276, 32));
-            this.saeAlteredStatusOnTurnStart.SourceDescription = ("The Altered Status");
-            this.saeAlteredStatusOnTurnStart.TabIndex = (262);
-            this.saeAlteredStatusOnTurnStart.TargetDescription = ("Whoever it's inflicting");
-            this.saeAlteredStatusOnTurnStart.ThisDescription = ("The Altered Status");
-            this.saeAlteredStatusOnTurnStart.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeAlteredStatusOnTurnStart.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeAlteredStatusOnTurnStart.Action = null;
+            saeAlteredStatusOnTurnStart.ActionDescription = "When someone afflicted\r\nby it begins a new turn...  ";
+            saeAlteredStatusOnTurnStart.ActionTypeText = "Turn Start";
+            saeAlteredStatusOnTurnStart.AutoSize = true;
+            saeAlteredStatusOnTurnStart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeAlteredStatusOnTurnStart.ClassId = null;
+            saeAlteredStatusOnTurnStart.Dungeon = null;
+            saeAlteredStatusOnTurnStart.EffectParamData = null;
+            saeAlteredStatusOnTurnStart.Location = new System.Drawing.Point(391, 191);
+            saeAlteredStatusOnTurnStart.Name = "saeAlteredStatusOnTurnStart";
+            saeAlteredStatusOnTurnStart.PlaceholderActionName = "TurnStart";
+            saeAlteredStatusOnTurnStart.RequiresActionName = false;
+            saeAlteredStatusOnTurnStart.RequiresCondition = false;
+            saeAlteredStatusOnTurnStart.RequiresDescription = false;
+            saeAlteredStatusOnTurnStart.Size = new System.Drawing.Size(276, 32);
+            saeAlteredStatusOnTurnStart.SourceDescription = "The Altered Status";
+            saeAlteredStatusOnTurnStart.TabIndex = 262;
+            saeAlteredStatusOnTurnStart.TargetDescription = "Whoever it's inflicting";
+            saeAlteredStatusOnTurnStart.ThisDescription = "The Altered Status";
+            saeAlteredStatusOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeAlteredStatusOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeAlteredStatusOnApply
             // 
-            this.saeAlteredStatusOnApply.Action = (null);
-            this.saeAlteredStatusOnApply.ActionDescription = ("When someone gets this\r\nAltered Status inflicted...  ");
-            this.saeAlteredStatusOnApply.ActionTypeText = ("On Status Apply");
-            this.saeAlteredStatusOnApply.AutoSize = (true);
-            this.saeAlteredStatusOnApply.AutoSizeMode = (global::System.Windows.Forms.AutoSizeMode.GrowAndShrink);
-            this.saeAlteredStatusOnApply.ClassId = (null);
-            this.saeAlteredStatusOnApply.Dungeon = (null);
-            this.saeAlteredStatusOnApply.EffectParamData = (null);
-            this.saeAlteredStatusOnApply.Location = (new global::System.Drawing.Point(392, 115));
-            this.saeAlteredStatusOnApply.Name = ("saeAlteredStatusOnApply");
-            this.saeAlteredStatusOnApply.PlaceholderActionName = ("StatusApply");
-            this.saeAlteredStatusOnApply.RequiresActionName = (false);
-            this.saeAlteredStatusOnApply.RequiresCondition = (false);
-            this.saeAlteredStatusOnApply.RequiresDescription = (false);
-            this.saeAlteredStatusOnApply.Size = (new global::System.Drawing.Size(275, 32));
-            this.saeAlteredStatusOnApply.SourceDescription = ("The Altered Status");
-            this.saeAlteredStatusOnApply.TabIndex = (261);
-            this.saeAlteredStatusOnApply.TargetDescription = ("Whoever it's targeting");
-            this.saeAlteredStatusOnApply.ThisDescription = ("The Altered Status");
-            this.saeAlteredStatusOnApply.TurnEndCriteria = (global::RogueCustomsDungeonEditor.HelperForms.TurnEndCriteria.CannotEndTurn);
-            this.saeAlteredStatusOnApply.UsageCriteria = (global::RogueCustomsDungeonEditor.HelperForms.UsageCriteria.AnyTargetAnyTime);
+            saeAlteredStatusOnApply.Action = null;
+            saeAlteredStatusOnApply.ActionDescription = "When someone gets this\r\nAltered Status inflicted...  ";
+            saeAlteredStatusOnApply.ActionTypeText = "On Status Apply";
+            saeAlteredStatusOnApply.AutoSize = true;
+            saeAlteredStatusOnApply.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saeAlteredStatusOnApply.ClassId = null;
+            saeAlteredStatusOnApply.Dungeon = null;
+            saeAlteredStatusOnApply.EffectParamData = null;
+            saeAlteredStatusOnApply.Location = new System.Drawing.Point(392, 115);
+            saeAlteredStatusOnApply.Name = "saeAlteredStatusOnApply";
+            saeAlteredStatusOnApply.PlaceholderActionName = "StatusApply";
+            saeAlteredStatusOnApply.RequiresActionName = false;
+            saeAlteredStatusOnApply.RequiresCondition = false;
+            saeAlteredStatusOnApply.RequiresDescription = false;
+            saeAlteredStatusOnApply.Size = new System.Drawing.Size(275, 32);
+            saeAlteredStatusOnApply.SourceDescription = "The Altered Status";
+            saeAlteredStatusOnApply.TabIndex = 261;
+            saeAlteredStatusOnApply.TargetDescription = "Whoever it's targeting";
+            saeAlteredStatusOnApply.ThisDescription = "The Altered Status";
+            saeAlteredStatusOnApply.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeAlteredStatusOnApply.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // chkAlteredStatusCleansedOnCleanseActions
             // 
-            this.chkAlteredStatusCleansedOnCleanseActions.AutoSize = (true);
-            this.chkAlteredStatusCleansedOnCleanseActions.Location = (new global::System.Drawing.Point(13, 291));
-            this.chkAlteredStatusCleansedOnCleanseActions.Name = ("chkAlteredStatusCleansedOnCleanseActions");
-            this.chkAlteredStatusCleansedOnCleanseActions.Size = (new global::System.Drawing.Size(247, 19));
-            this.chkAlteredStatusCleansedOnCleanseActions.TabIndex = (257);
-            this.chkAlteredStatusCleansedOnCleanseActions.Text = ("Can be removed by 'Cleanse' Action steps");
-            this.chkAlteredStatusCleansedOnCleanseActions.UseVisualStyleBackColor = (true);
-            this.chkAlteredStatusCleansedOnCleanseActions.CheckedChanged += (this.chkAlteredStatusCleansedOnCleanseActions_CheckedChanged);
+            chkAlteredStatusCleansedOnCleanseActions.AutoSize = true;
+            chkAlteredStatusCleansedOnCleanseActions.Location = new System.Drawing.Point(13, 291);
+            chkAlteredStatusCleansedOnCleanseActions.Name = "chkAlteredStatusCleansedOnCleanseActions";
+            chkAlteredStatusCleansedOnCleanseActions.Size = new System.Drawing.Size(247, 19);
+            chkAlteredStatusCleansedOnCleanseActions.TabIndex = 257;
+            chkAlteredStatusCleansedOnCleanseActions.Text = "Can be removed by 'Cleanse' Action steps";
+            chkAlteredStatusCleansedOnCleanseActions.UseVisualStyleBackColor = true;
+            chkAlteredStatusCleansedOnCleanseActions.CheckedChanged += chkAlteredStatusCleansedOnCleanseActions_CheckedChanged;
             // 
             // chkAlteredStatusCleanseOnFloorChange
             // 
-            this.chkAlteredStatusCleanseOnFloorChange.AutoSize = (true);
-            this.chkAlteredStatusCleanseOnFloorChange.Location = (new global::System.Drawing.Point(13, 266));
-            this.chkAlteredStatusCleanseOnFloorChange.Name = ("chkAlteredStatusCleanseOnFloorChange");
-            this.chkAlteredStatusCleanseOnFloorChange.Size = (new global::System.Drawing.Size(330, 19));
-            this.chkAlteredStatusCleanseOnFloorChange.TabIndex = (256);
-            this.chkAlteredStatusCleanseOnFloorChange.Text = ("Is removed if the afflicted Character moves to a new Floor");
-            this.chkAlteredStatusCleanseOnFloorChange.UseVisualStyleBackColor = (true);
-            this.chkAlteredStatusCleanseOnFloorChange.CheckedChanged += (this.chkAlteredStatusCleanseOnFloorChange_CheckedChanged);
+            chkAlteredStatusCleanseOnFloorChange.AutoSize = true;
+            chkAlteredStatusCleanseOnFloorChange.Location = new System.Drawing.Point(13, 266);
+            chkAlteredStatusCleanseOnFloorChange.Name = "chkAlteredStatusCleanseOnFloorChange";
+            chkAlteredStatusCleanseOnFloorChange.Size = new System.Drawing.Size(330, 19);
+            chkAlteredStatusCleanseOnFloorChange.TabIndex = 256;
+            chkAlteredStatusCleanseOnFloorChange.Text = "Is removed if the afflicted Character moves to a new Floor";
+            chkAlteredStatusCleanseOnFloorChange.UseVisualStyleBackColor = true;
+            chkAlteredStatusCleanseOnFloorChange.CheckedChanged += chkAlteredStatusCleanseOnFloorChange_CheckedChanged;
             // 
             // chkAlteredStatusCanOverwrite
             // 
-            this.chkAlteredStatusCanOverwrite.AutoSize = (true);
-            this.chkAlteredStatusCanOverwrite.Location = (new global::System.Drawing.Point(13, 241));
-            this.chkAlteredStatusCanOverwrite.Name = ("chkAlteredStatusCanOverwrite");
-            this.chkAlteredStatusCanOverwrite.Size = (new global::System.Drawing.Size(342, 19));
-            this.chkAlteredStatusCanOverwrite.TabIndex = (255);
-            this.chkAlteredStatusCanOverwrite.Text = ("Overwrites other Altered Statuses with the same Id if applied");
-            this.chkAlteredStatusCanOverwrite.UseVisualStyleBackColor = (true);
-            this.chkAlteredStatusCanOverwrite.CheckedChanged += (this.chkAlteredStatusCanOverwrite_CheckedChanged);
+            chkAlteredStatusCanOverwrite.AutoSize = true;
+            chkAlteredStatusCanOverwrite.Location = new System.Drawing.Point(13, 241);
+            chkAlteredStatusCanOverwrite.Name = "chkAlteredStatusCanOverwrite";
+            chkAlteredStatusCanOverwrite.Size = new System.Drawing.Size(342, 19);
+            chkAlteredStatusCanOverwrite.TabIndex = 255;
+            chkAlteredStatusCanOverwrite.Text = "Overwrites other Altered Statuses with the same Id if applied";
+            chkAlteredStatusCanOverwrite.UseVisualStyleBackColor = true;
+            chkAlteredStatusCanOverwrite.CheckedChanged += chkAlteredStatusCanOverwrite_CheckedChanged;
             // 
             // chkAlteredStatusCanStack
             // 
-            this.chkAlteredStatusCanStack.AutoSize = (true);
-            this.chkAlteredStatusCanStack.Location = (new global::System.Drawing.Point(13, 216));
-            this.chkAlteredStatusCanStack.Name = ("chkAlteredStatusCanStack");
-            this.chkAlteredStatusCanStack.Size = (new global::System.Drawing.Size(311, 19));
-            this.chkAlteredStatusCanStack.TabIndex = (250);
-            this.chkAlteredStatusCanStack.Text = ("Can stack with other Altered Statuses with the same Id");
-            this.chkAlteredStatusCanStack.UseVisualStyleBackColor = (true);
-            this.chkAlteredStatusCanStack.CheckedChanged += (this.chkAlteredStatusCanStack_CheckedChanged);
+            chkAlteredStatusCanStack.AutoSize = true;
+            chkAlteredStatusCanStack.Location = new System.Drawing.Point(13, 216);
+            chkAlteredStatusCanStack.Name = "chkAlteredStatusCanStack";
+            chkAlteredStatusCanStack.Size = new System.Drawing.Size(311, 19);
+            chkAlteredStatusCanStack.TabIndex = 250;
+            chkAlteredStatusCanStack.Text = "Can stack with other Altered Statuses with the same Id";
+            chkAlteredStatusCanStack.UseVisualStyleBackColor = true;
+            chkAlteredStatusCanStack.CheckedChanged += chkAlteredStatusCanStack_CheckedChanged;
             // 
             // label111
             // 
-            this.label111.Font = (new global::System.Drawing.Font("Segoe UI", 14.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label111.Location = (new global::System.Drawing.Point(390, 20));
-            this.label111.Name = ("label111");
-            this.label111.Size = (new global::System.Drawing.Size(131, 52));
-            this.label111.TabIndex = (245);
-            this.label111.Text = ("Appearance");
-            this.label111.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            label111.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label111.Location = new System.Drawing.Point(390, 20);
+            label111.Name = "label111";
+            label111.Size = new System.Drawing.Size(131, 52);
+            label111.TabIndex = 245;
+            label111.Text = "Appearance";
+            label111.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // fklblAlteredStatusDescriptionLocale
             // 
-            this.fklblAlteredStatusDescriptionLocale.Enabled = (false);
-            this.fklblAlteredStatusDescriptionLocale.FlatAppearance.BorderSize = (0);
-            this.fklblAlteredStatusDescriptionLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblAlteredStatusDescriptionLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblAlteredStatusDescriptionLocale.Image")));
-            this.fklblAlteredStatusDescriptionLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblAlteredStatusDescriptionLocale.Location = (new global::System.Drawing.Point(13, 153));
-            this.fklblAlteredStatusDescriptionLocale.Name = ("fklblAlteredStatusDescriptionLocale");
-            this.fklblAlteredStatusDescriptionLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblAlteredStatusDescriptionLocale.TabIndex = (244);
-            this.fklblAlteredStatusDescriptionLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblAlteredStatusDescriptionLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblAlteredStatusDescriptionLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblAlteredStatusDescriptionLocale.UseVisualStyleBackColor = (true);
-            this.fklblAlteredStatusDescriptionLocale.Visible = (false);
+            fklblAlteredStatusDescriptionLocale.Enabled = false;
+            fklblAlteredStatusDescriptionLocale.FlatAppearance.BorderSize = 0;
+            fklblAlteredStatusDescriptionLocale.FlatStyle = FlatStyle.Flat;
+            fklblAlteredStatusDescriptionLocale.Image = (System.Drawing.Image)resources.GetObject("fklblAlteredStatusDescriptionLocale.Image");
+            fklblAlteredStatusDescriptionLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblAlteredStatusDescriptionLocale.Location = new System.Drawing.Point(13, 153);
+            fklblAlteredStatusDescriptionLocale.Name = "fklblAlteredStatusDescriptionLocale";
+            fklblAlteredStatusDescriptionLocale.Size = new System.Drawing.Size(331, 42);
+            fklblAlteredStatusDescriptionLocale.TabIndex = 244;
+            fklblAlteredStatusDescriptionLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblAlteredStatusDescriptionLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblAlteredStatusDescriptionLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblAlteredStatusDescriptionLocale.UseVisualStyleBackColor = true;
+            fklblAlteredStatusDescriptionLocale.Visible = false;
             // 
             // txtAlteredStatusDescription
             // 
-            this.txtAlteredStatusDescription.Location = (new global::System.Drawing.Point(13, 124));
-            this.txtAlteredStatusDescription.Name = ("txtAlteredStatusDescription");
-            this.txtAlteredStatusDescription.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtAlteredStatusDescription.TabIndex = (243);
-            this.txtAlteredStatusDescription.TextChanged += (this.txtAlteredStatusDescription_TextChanged);
+            txtAlteredStatusDescription.Location = new System.Drawing.Point(13, 124);
+            txtAlteredStatusDescription.Name = "txtAlteredStatusDescription";
+            txtAlteredStatusDescription.Size = new System.Drawing.Size(350, 23);
+            txtAlteredStatusDescription.TabIndex = 243;
+            txtAlteredStatusDescription.TextChanged += txtAlteredStatusDescription_TextChanged;
             // 
             // label114
             // 
-            this.label114.AutoSize = (true);
-            this.label114.Location = (new global::System.Drawing.Point(13, 106));
-            this.label114.Name = ("label114");
-            this.label114.Size = (new global::System.Drawing.Size(67, 15));
-            this.label114.TabIndex = (242);
-            this.label114.Text = ("Description");
+            label114.AutoSize = true;
+            label114.Location = new System.Drawing.Point(13, 106);
+            label114.Name = "label114";
+            label114.Size = new System.Drawing.Size(67, 15);
+            label114.TabIndex = 242;
+            label114.Text = "Description";
             // 
             // fklblAlteredStatusNameLocale
             // 
-            this.fklblAlteredStatusNameLocale.Enabled = (false);
-            this.fklblAlteredStatusNameLocale.FlatAppearance.BorderSize = (0);
-            this.fklblAlteredStatusNameLocale.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.fklblAlteredStatusNameLocale.Image = ((global::System.Drawing.Image)(resources.GetObject("fklblAlteredStatusNameLocale.Image")));
-            this.fklblAlteredStatusNameLocale.ImageAlign = (global::System.Drawing.ContentAlignment.TopLeft);
-            this.fklblAlteredStatusNameLocale.Location = (new global::System.Drawing.Point(13, 55));
-            this.fklblAlteredStatusNameLocale.Name = ("fklblAlteredStatusNameLocale");
-            this.fklblAlteredStatusNameLocale.Size = (new global::System.Drawing.Size(331, 42));
-            this.fklblAlteredStatusNameLocale.TabIndex = (241);
-            this.fklblAlteredStatusNameLocale.Text = ("This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.");
-            this.fklblAlteredStatusNameLocale.TextAlign = (global::System.Drawing.ContentAlignment.MiddleLeft);
-            this.fklblAlteredStatusNameLocale.TextImageRelation = (global::System.Windows.Forms.TextImageRelation.ImageBeforeText);
-            this.fklblAlteredStatusNameLocale.UseVisualStyleBackColor = (true);
-            this.fklblAlteredStatusNameLocale.Visible = (false);
+            fklblAlteredStatusNameLocale.Enabled = false;
+            fklblAlteredStatusNameLocale.FlatAppearance.BorderSize = 0;
+            fklblAlteredStatusNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblAlteredStatusNameLocale.Image = (System.Drawing.Image)resources.GetObject("fklblAlteredStatusNameLocale.Image");
+            fklblAlteredStatusNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblAlteredStatusNameLocale.Location = new System.Drawing.Point(13, 55);
+            fklblAlteredStatusNameLocale.Name = "fklblAlteredStatusNameLocale";
+            fklblAlteredStatusNameLocale.Size = new System.Drawing.Size(331, 42);
+            fklblAlteredStatusNameLocale.TabIndex = 241;
+            fklblAlteredStatusNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblAlteredStatusNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblAlteredStatusNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblAlteredStatusNameLocale.UseVisualStyleBackColor = true;
+            fklblAlteredStatusNameLocale.Visible = false;
             // 
             // txtAlteredStatusName
             // 
-            this.txtAlteredStatusName.Location = (new global::System.Drawing.Point(13, 26));
-            this.txtAlteredStatusName.Name = ("txtAlteredStatusName");
-            this.txtAlteredStatusName.Size = (new global::System.Drawing.Size(350, 23));
-            this.txtAlteredStatusName.TabIndex = (240);
-            this.txtAlteredStatusName.TextChanged += (this.txtAlteredStatusName_TextChanged);
+            txtAlteredStatusName.Location = new System.Drawing.Point(13, 26);
+            txtAlteredStatusName.Name = "txtAlteredStatusName";
+            txtAlteredStatusName.Size = new System.Drawing.Size(350, 23);
+            txtAlteredStatusName.TabIndex = 240;
+            txtAlteredStatusName.TextChanged += txtAlteredStatusName_TextChanged;
             // 
             // label115
             // 
-            this.label115.AutoSize = (true);
-            this.label115.Location = (new global::System.Drawing.Point(13, 8));
-            this.label115.Name = ("label115");
-            this.label115.Size = (new global::System.Drawing.Size(80, 15));
-            this.label115.TabIndex = (239);
-            this.label115.Text = ("Default Name");
+            label115.AutoSize = true;
+            label115.Location = new System.Drawing.Point(13, 8);
+            label115.Name = "label115";
+            label115.Size = new System.Drawing.Size(80, 15);
+            label115.TabIndex = 239;
+            label115.Text = "Default Name";
             // 
             // crsAlteredStatus
             // 
-            this.crsAlteredStatus.BackgroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsAlteredStatus.BackgroundColor")));
-            this.crsAlteredStatus.Character = ('\0');
-            this.crsAlteredStatus.ForegroundColor = ((global::RogueCustomsGameEngine.Utils.Representation.GameColor)(resources.GetObject("crsAlteredStatus.ForegroundColor")));
-            this.crsAlteredStatus.Location = (new global::System.Drawing.Point(524, 9));
-            this.crsAlteredStatus.Name = ("crsAlteredStatus");
-            this.crsAlteredStatus.Size = (new global::System.Drawing.Size(211, 83));
-            this.crsAlteredStatus.TabIndex = (260);
-            this.crsAlteredStatus.PropertyChanged += (this.crsAlteredStatus_PropertyChanged);
+            crsAlteredStatus.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsAlteredStatus.BackgroundColor");
+            crsAlteredStatus.Character = '\0';
+            crsAlteredStatus.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsAlteredStatus.ForegroundColor");
+            crsAlteredStatus.Location = new System.Drawing.Point(524, 9);
+            crsAlteredStatus.Name = "crsAlteredStatus";
+            crsAlteredStatus.Size = new System.Drawing.Size(211, 83);
+            crsAlteredStatus.TabIndex = 260;
+            crsAlteredStatus.PropertyChanged += crsAlteredStatus_PropertyChanged;
             // 
             // tpValidation
             // 
-            this.tpValidation.Controls.Add(this.tvValidationResults);
-            this.tpValidation.Location = (new global::System.Drawing.Point(4, 24));
-            this.tpValidation.Name = ("tpValidation");
-            this.tpValidation.Size = (new global::System.Drawing.Size(740, 356));
-            this.tpValidation.TabIndex = (9);
-            this.tpValidation.Text = ("Validation Results");
-            this.tpValidation.UseVisualStyleBackColor = (true);
+            tpValidation.Controls.Add(tvValidationResults);
+            tpValidation.Location = new System.Drawing.Point(4, 24);
+            tpValidation.Name = "tpValidation";
+            tpValidation.Size = new System.Drawing.Size(740, 356);
+            tpValidation.TabIndex = 9;
+            tpValidation.Text = "Validation Results";
+            tpValidation.UseVisualStyleBackColor = true;
             // 
             // tvValidationResults
             // 
-            this.tvValidationResults.Dock = (global::System.Windows.Forms.DockStyle.Fill);
-            this.tvValidationResults.Location = (new global::System.Drawing.Point(0, 0));
-            this.tvValidationResults.Name = ("tvValidationResults");
-            this.tvValidationResults.Size = (new global::System.Drawing.Size(740, 356));
-            this.tvValidationResults.TabIndex = (0);
+            tvValidationResults.Dock = DockStyle.Fill;
+            tvValidationResults.Location = new System.Drawing.Point(0, 0);
+            tvValidationResults.Name = "tvValidationResults";
+            tvValidationResults.Size = new System.Drawing.Size(740, 356);
+            tvValidationResults.TabIndex = 0;
             // 
             // ofdDungeon
             // 
-            this.ofdDungeon.Filter = ("Dungeon JSON|*.json");
-            this.ofdDungeon.Title = ("Select a Dungeon JSON file");
+            ofdDungeon.Filter = "Dungeon JSON|*.json";
+            ofdDungeon.Title = "Select a Dungeon JSON file";
             // 
             // sfdDungeon
             // 
-            this.sfdDungeon.Filter = ("Dungeon JSON|*.json");
-            this.sfdDungeon.Title = ("Set a Dungeon JSON file name to save");
+            sfdDungeon.Filter = "Dungeon JSON|*.json";
+            sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = (new global::System.Drawing.SizeF(7F, 15F));
-            this.AutoScaleMode = (global::System.Windows.Forms.AutoScaleMode.Font);
-            this.ClientSize = (new global::System.Drawing.Size(967, 450));
-            this.Controls.Add(this.tbTabs);
-            this.Controls.Add(this.tvDungeonInfo);
-            this.Controls.Add(this.tsButtons);
-            this.Controls.Add(this.msMenu);
-            this.FormBorderStyle = (global::System.Windows.Forms.FormBorderStyle.FixedSingle);
-            this.Icon = ((global::System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = (this.msMenu);
-            this.MaximizeBox = (false);
-            this.Name = ("frmMain");
-            this.StartPosition = (global::System.Windows.Forms.FormStartPosition.CenterScreen);
-            this.Text = ("Rogue Customs Dungeon Editor");
-            this.FormClosing += (this.frmMain_FormClosing);
-            this.msMenu.ResumeLayout(false);
-            this.msMenu.PerformLayout();
-            this.tsButtons.ResumeLayout(false);
-            this.tsButtons.PerformLayout();
-            this.tbTabs.ResumeLayout(false);
-            this.tpBasicInfo.ResumeLayout(false);
-            this.tpBasicInfo.PerformLayout();
-            this.tpLocales.ResumeLayout(false);
-            this.tpLocales.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.dgvLocales)).EndInit();
-            this.tpTileSetInfos.ResumeLayout(false);
-            this.tpFloorInfos.ResumeLayout(false);
-            this.tpFloorInfos.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudRoomFusionOdds)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudExtraRoomConnectionOdds)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMaxRoomConnections)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMaxFloorLevel)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudMinFloorLevel)).EndInit();
-            this.tpFactionInfos.ResumeLayout(false);
-            this.tpFactionInfos.PerformLayout();
-            this.tpPlayerClass.ResumeLayout(false);
-            this.tpPlayerClass.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudPlayerInventorySize)).EndInit();
-            this.tpNPC.ResumeLayout(false);
-            this.tpNPC.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCOddsToTargetSelf)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.nudNPCInventorySize)).EndInit();
-            this.tpItem.ResumeLayout(false);
-            this.tpItem.PerformLayout();
-            this.tpTrap.ResumeLayout(false);
-            this.tpTrap.PerformLayout();
-            this.tpAlteredStatus.ResumeLayout(false);
-            this.tpAlteredStatus.PerformLayout();
-            this.tpValidation.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(967, 450);
+            Controls.Add(tbTabs);
+            Controls.Add(tvDungeonInfo);
+            Controls.Add(tsButtons);
+            Controls.Add(msMenu);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            MainMenuStrip = msMenu;
+            MaximizeBox = false;
+            Name = "frmMain";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Rogue Customs Dungeon Editor";
+            FormClosing += frmMain_FormClosing;
+            msMenu.ResumeLayout(false);
+            msMenu.PerformLayout();
+            tsButtons.ResumeLayout(false);
+            tsButtons.PerformLayout();
+            tbTabs.ResumeLayout(false);
+            tpBasicInfo.ResumeLayout(false);
+            tpBasicInfo.PerformLayout();
+            tpLocales.ResumeLayout(false);
+            tpLocales.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLocales).EndInit();
+            tpTileSetInfos.ResumeLayout(false);
+            tpFloorInfos.ResumeLayout(false);
+            tpFloorInfos.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxRoomConnections).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudHeight).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudWidth).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxFloorLevel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMinFloorLevel).EndInit();
+            tpFactionInfos.ResumeLayout(false);
+            tpFactionInfos.PerformLayout();
+            tpPlayerClass.ResumeLayout(false);
+            tpPlayerClass.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).EndInit();
+            tpNPC.ResumeLayout(false);
+            tpNPC.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudNPCOddsToTargetSelf).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
+            tpItem.ResumeLayout(false);
+            tpItem.PerformLayout();
+            tpTrap.ResumeLayout(false);
+            tpTrap.PerformLayout();
+            tpAlteredStatus.ResumeLayout(false);
+            tpAlteredStatus.PerformLayout();
+            tpValidation.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -3949,5 +3982,7 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.ComboBox cmbNPCAIType;
         private global::System.Windows.Forms.Label label20;
         private global::System.Windows.Forms.Label lblNPCAIOddsToTargetSelfB;
+        private NumericUpDown nudHungerLostPerTurn;
+        private Label label31;
     }
 }
