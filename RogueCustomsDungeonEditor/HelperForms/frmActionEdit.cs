@@ -824,6 +824,44 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             ClipboardManager.RemoveData(FormConstants.StepClipboardKey);
         }
+
+        private void tvEffectSequence_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        {
+            string keywordPattern = @"\(([^()]+|(?<Depth>)\(|(?<-Depth>)\))*(?(Depth)(?!))\)";
+            var nodeWords = e.Node.Text.SplitStringWithPattern(keywordPattern).ToList();
+
+            e.Node.BackColor = Color.LightSkyBlue;
+
+            int x = e.Bounds.Left;
+            var spaceWidth = (int) e.Graphics.MeasureString(" ", tvEffectSequence.Font).Width;
+
+            var nodeAsItIsDrawn = string.Empty;
+
+            foreach (var word in nodeWords)
+            {
+                if (string.IsNullOrEmpty(word)) continue;
+                var brushColor = Regex.IsMatch(word, keywordPattern)
+                    ? Color.Blue
+                    : Color.Black;
+
+                var spacesToRemove = 1;
+                if (word == " - ") spacesToRemove--;
+                if (word.Contains("Remove")) spacesToRemove++;
+
+                var wordToDraw = brushColor == Color.Blue
+                    ? word.Substring(1, word.Length - 2)
+                    : word;
+
+                nodeAsItIsDrawn += wordToDraw;
+
+                using (Brush brush = new SolidBrush(brushColor))
+                {
+                    SizeF wordSize = e.Graphics.MeasureString(wordToDraw != " - " ? wordToDraw.Trim() : wordToDraw, tvEffectSequence.Font);
+                    e.Graphics.DrawString(wordToDraw != " - " ? wordToDraw.Trim() : wordToDraw, tvEffectSequence.Font, brush, x, e.Bounds.Top);
+                    x += (int)wordSize.Width - (spaceWidth * spacesToRemove); // Close the gap between words
+                }
+            }
+        }
     }
 
     public class EffectInfoDto
