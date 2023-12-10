@@ -104,6 +104,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // tvEffectSequence
             // 
+            tvEffectSequence.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            tvEffectSequence.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             tvEffectSequence.FullRowSelect = true;
             tvEffectSequence.HideSelection = false;
             tvEffectSequence.Location = new Point(3, 31);
@@ -111,6 +113,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tvEffectSequence.ShowNodeToolTips = true;
             tvEffectSequence.Size = new Size(467, 248);
             tvEffectSequence.TabIndex = 1;
+            tvEffectSequence.DrawNode += tvEffectSequence_DrawNode;
             tvEffectSequence.AfterSelect += tvEffectSequence_AfterSelect;
             // 
             // btnCancel
