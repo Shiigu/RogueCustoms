@@ -30,7 +30,9 @@ SaveSettingsButtonText = SAVE SETTINGS
 
 ; PickDungeonConsole
 PickDungeonHeaderText = PICK A DUNGEON
-DungeonDisplayNameText = {DungeonName} - by {Author}
+DungeonNameHeaderText = Dungeon Name
+AuthorHeaderText = Author
+VersionHeaderText = Version
 NoDungeonsText = There are no Dungeons to show.
 NoLocalDungeonsSubtext = Put Dungeons in the JSON folder first.
 NoServerDungeonsSubtext = Server has no Dungeons installed.

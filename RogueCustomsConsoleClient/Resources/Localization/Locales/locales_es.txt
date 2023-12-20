@@ -30,7 +30,9 @@ SaveSettingsButtonText = GUARDAR OPCIONES
 
 ; PickDungeonConsole
 PickDungeonHeaderText = ELEGIR MAZMORRA
-DungeonDisplayNameText = {DungeonName} - por {Author}
+DungeonNameHeaderText = Nombre de Mazmorra
+AuthorHeaderText = Autor
+VersionHeaderText = Versión
 NoDungeonsText = No hay Mazmorras para elegir.
 NoLocalDungeonsSubtext = Pon Mazmorras en la carpeta JSON.
 NoServerDungeonsSubtext = El Servidor no tiene Mazmorras.
