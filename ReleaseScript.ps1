@@ -34,7 +34,7 @@ function Export-GodotProject {
 
     Write-Host "Exporting $projectPath with Godot executable at $godotPath..."
 
-    $exportCommand = "& `"$godotPath`" --export-release `"Windows Desktop`" `"$outputFolder\RogueCustomsGodotClient.exe`" --path `"$projectPath`""
+    $exportCommand = "& `"$godotPath`" --headless --export-release `"Windows Desktop`" `"$outputFolder\RogueCustomsGodotClient.exe`" --path `"$projectPath`""
     Write-Host "Running command: $exportCommand"
 
     Invoke-Expression $exportCommand
@@ -48,10 +48,11 @@ function Export-GodotProject {
     }
 }
 
-# Function to get or prompt for Godot executable path
 function Get-GodotPath {
     if (Test-Path $godotPathFile) {
         $storedPath = Get-Content $godotPathFile -Raw
+        $storedPath = $storedPath.Trim() # Remove any extra newline or whitespace
+
         if (Test-Path $storedPath) {
             return $storedPath
         } else {
@@ -61,6 +62,8 @@ function Get-GodotPath {
     }
     
     $godotPath = Read-Host "Please provide the path to the Godot executable"
+    $godotPath = $godotPath.Trim() # Remove any extra newline or whitespace
+
     if (Test-Path $godotPath) {
         Set-Content $godotPathFile -Value $godotPath
         return $godotPath
@@ -70,11 +73,19 @@ function Get-GodotPath {
     }
 }
 
-# Create or rename Release folder
+# Check if Release.old already exists and remove it
+if (Test-Path "$solutionRoot\Release.old") {
+    Remove-Item "$solutionRoot\Release.old" -Recurse -Force
+    Write-Host "Removed existing Release.old folder"
+}
+
+# Rename existing Release folder
 if (Test-Path $releaseFolder) {
     Rename-Item $releaseFolder "$solutionRoot\Release.old"
     Write-Host "Renamed existing Release folder to Release.old"
 }
+
+# Create new Release folder
 New-Item -ItemType Directory -Path $releaseFolder
 Write-Host "Created new Release folder"
 
