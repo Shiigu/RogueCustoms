@@ -17,6 +17,7 @@
             { "Key": "FloorEnter", "Value": "Entering Floor {FloorLevel}..." },
             { "Key": "FloorLeave", "Value": "Leaving Floor {FloorLevel}..." },
             { "Key": "CharacterSwitchedPlacesWithPlayer", "Value": "{CharacterName} let {PlayerName} pass."},
+            { "Key": "PlayerEquippedItem", "Value": "{CharacterName} equips {ItemName}." },
             { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} put {ItemName} on the bag."},
             { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} put {ItemName} on the floor."},
             { "Key": "NPCPickItem", "Value": "{CharacterName} picked up {ItemName}."},

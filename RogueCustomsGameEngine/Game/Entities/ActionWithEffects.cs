@@ -241,7 +241,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (MPCost > 0)
             {
-                descriptionWithUsageNotes.Append('\n').Append(Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost }));
+                descriptionWithUsageNotes.Append("\n\n").Append(Locale["MPCost"].Format(new { MPStat = Map.Locale["CharacterMPStat"], MPCost = MPCost }));
             }
 
             var distance = target != null ? (int)GamePoint.Distance(target.Position, sourceAsCharacter.Position) : -1;

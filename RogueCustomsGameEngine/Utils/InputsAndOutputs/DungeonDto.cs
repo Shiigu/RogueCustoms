@@ -26,10 +26,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int TurnCount { get; set; }
 
         public List<TileDto> Tiles { get; set; }
-        public List<AlteredStatusDto> AlteredStatuses { get; set; }
         public List<EntityDto> Entities { get; set; }
         public List<MessageDto> LogMessages { get; set; }
         public List<MessageBoxDto> MessageBoxes { get; set; }
+        public ConsoleRepresentation EmptyTile { get; set; }
 
         public EntityDto PlayerEntity => Entities.Find(e => e.Type == EntityDtoType.Player);
         public bool IsAlive => PlayerEntity.HP > 0;
@@ -50,9 +50,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Width = map.Width;
             Height = map.Height;
             TurnCount = map.TurnCount;
+            EmptyTile = map.TileSet.Empty;
             Entities = new List<EntityDto>();
             var _tiles = new ConcurrentBag<TileDto>();
-            AlteredStatuses = new List<AlteredStatusDto>();
             PlayerTookDamage = map.PlayerTookDamage;
             PlayerGotHealed = map.PlayerGotHealed;
             PlayerGotMPBurned = map.PlayerGotMPBurned;
@@ -78,7 +78,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             map.GetEntities()
                 .Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone && playerEntity?.CanSee(e) == true)
                 .ForEach(e => Entities.Add(new EntityDto(e, map)));
-            playerEntity.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDto(als)));
+            playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
+            playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             LogMessages = dungeon.Messages.TakeLast(Constants.LogMessagesToSend).ToList();
             MessageBoxes = new List<MessageBoxDto>(dungeon.MessageBoxes);
         }
@@ -106,23 +107,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Visible = tile.Visible;
             Targetable = tile.IsWalkable && tile.Visible;
             ConsoleRepresentation = map.GetConsoleRepresentationForCoordinates(tile.Position.X, tile.Position.Y);
-        }
-    }
-
-    [Serializable]
-    public class AlteredStatusDto
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; set; }
-
-        public AlteredStatusDto() { }
-
-        public AlteredStatusDto(AlteredStatus status)
-        {
-            Name = status.Name;
-            Description = status.ToString();
-            ConsoleRepresentation = status.ConsoleRepresentation;
         }
     }
 
@@ -162,17 +146,30 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public SimpleEntityDto Weapon { get; set; }
         public string DamageStatName { get; set; }
         public string Damage { get; set; }
+        public string WeaponDamage { get; set; }
+        public int StatDamage { get; set; }
         public SimpleEntityDto Armor { get; set; }
         public string MitigationStatName { get; set; }
         public string Mitigation { get; set; }
+        public string ArmorMitigation { get; set; }
+        public int StatMitigation { get; set; }
         public string MovementStatName { get; set; }
         public int Movement { get; set; }
+        public int BaseMovement { get; set; }
+        public string AccuracyStatName { get; set; }
+        public decimal BaseAccuracy { get; set; }
+        public decimal Accuracy { get; set; }
+        public string EvasionStatName { get; set; }
+        public decimal BaseEvasion { get; set; }
+        public decimal Evasion { get; set; }
         public bool UsesHunger { get; set; }
         public string HungerStatName { get; set; }
         public int Hunger { get; set; }
         public int MaxHunger { get; set; }
         public bool CanMove { get; set; }
         public bool CanTakeAction { get; set; }
+        public List<SimpleEntityDto> AlteredStatuses { get; set; }
+        public List<SimpleEntityDto> Inventory { get; set; }
         #endregion
 
         public EntityDto() { }
@@ -217,17 +214,30 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Weapon = new SimpleEntityDto(pc.Weapon);
                 DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;
+                WeaponDamage = pc.Weapon.Power;
+                StatDamage = pc.Attack;
                 Armor = new SimpleEntityDto(pc.Armor);
                 MitigationStatName = map.Locale["CharacterMitigationStat"];
                 Mitigation = pc.Mitigation;
+                ArmorMitigation = pc.Armor.Power;
+                StatMitigation = pc.Defense;
                 MovementStatName = map.Locale["CharacterMovementStat"];
+                BaseMovement = pc.BaseMovement;
                 Movement = pc.Movement;
+                AccuracyStatName = map.Locale["CharacterAccuracyStat"];
+                BaseAccuracy = pc.BaseAccuracy;
+                Accuracy = pc.Accuracy;
+                EvasionStatName = map.Locale["CharacterEvasionStat"];
+                BaseEvasion = pc.BaseEvasion;
+                Evasion = pc.Evasion;
                 CanMove = pc.Movement > 0;
                 CanTakeAction = pc.CanTakeAction;
                 UsesHunger = pc.UsesHunger;
                 HungerStatName = map.Locale["CharacterHungerStat"];
                 Hunger = pc.Hunger;
                 MaxHunger = pc.MaxHunger;
+                AlteredStatuses = new List<SimpleEntityDto>();
+                Inventory = new List<SimpleEntityDto>();
             }
         }
     }

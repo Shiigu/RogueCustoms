@@ -1,0 +1,86 @@
+[gd_scene load_steps=7 format=3 uid="uid://cjqsmvexdyc6y"]
+
+[ext_resource type="Script" path="res://Screens/MessageScreen.cs" id="1_348ed"]
+[ext_resource type="StyleBox" uid="uid://dn4dot3w6yl35" path="res://Styles/PressEnterStyle.tres" id="2_gybik"]
+
+[sub_resource type="SystemFont" id="SystemFont_oax02"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nwihw"]
+font = SubResource("SystemFont_oax02")
+font_size = 72
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu3dt"]
+content_margin_left = 8.0
+content_margin_top = 12.0
+content_margin_right = 8.0
+content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_ilnit"]
+
+[node name="MessageScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_348ed")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -668.0
+theme_override_font_sizes/font_size = 72
+text = "{title}"
+label_settings = SubResource("LabelSettings_nwihw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+offset_left = 15.0
+offset_top = 105.0
+offset_right = 1353.0
+offset_bottom = 680.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_iu3dt")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="MessageLabel" type="RichTextLabel" parent="ScrollContainer"]
+custom_minimum_size = Vector2(1306, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "Texto de ejemplo"
+
+[node name="PressEnterToContinueButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 700.0
+offset_right = -30.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = SubResource("SystemFont_ilnit")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = ExtResource("2_gybik")
+theme_override_styles/normal = ExtResource("2_gybik")
+text = "{pressEnterToContinue}"

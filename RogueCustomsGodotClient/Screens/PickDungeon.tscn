@@ -1,0 +1,144 @@
+[gd_scene load_steps=8 format=3 uid="uid://by7jytywk68n8"]
+
+[ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="1_4dkxd"]
+[ext_resource type="Script" path="res://Screens/PickDungeon.cs" id="1_sl5pq"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="2_awo5v"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="3_sxe5j"]
+
+[sub_resource type="SystemFont" id="SystemFont_oax02"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nwihw"]
+font = SubResource("SystemFont_oax02")
+font_size = 72
+
+[sub_resource type="SystemFont" id="SystemFont_ilnit"]
+
+[node name="PickDungeon" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sl5pq")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -668.0
+theme_override_font_sizes/font_size = 72
+text = "{title}"
+label_settings = SubResource("LabelSettings_nwihw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DungeonTableHeader" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 105.0
+offset_right = 1336.0
+offset_bottom = 137.0
+theme_override_constants/separation = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 137.0
+offset_right = 1336.0
+offset_bottom = 564.0
+horizontal_scroll_mode = 0
+
+[node name="DungeonTable" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="NoDungeonsTextContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 137.0
+offset_right = 1336.0
+offset_bottom = 564.0
+alignment = 1
+
+[node name="NoDungeonsText" type="RichTextLabel" parent="NoDungeonsTextContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[center][color=#FF0000FF]No dungeons![/color][/center][p] [p][center]Please get some![/center]"
+
+[node name="PickDungeonButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 580.0
+offset_right = -329.0
+offset_bottom = -140.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_ilnit")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/disabled = ExtResource("1_4dkxd")
+theme_override_styles/hover = ExtResource("2_awo5v")
+theme_override_styles/normal = ExtResource("3_sxe5j")
+disabled = true
+text = "{pickSelectedDungeon}"
+
+[node name="AddDungeonButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 640.0
+offset_right = -329.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_ilnit")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/disabled = ExtResource("1_4dkxd")
+theme_override_styles/hover = ExtResource("2_awo5v")
+theme_override_styles/normal = ExtResource("3_sxe5j")
+text = "{addDungeon}"
+
+[node name="ReturnToMainMenuButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 700.0
+offset_right = -329.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_ilnit")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = ExtResource("2_awo5v")
+theme_override_styles/normal = ExtResource("3_sxe5j")
+text = "{returnToMainMenu}"
+
+[node name="OpenFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 1
+size = Vector2i(900, 600)
+unresizable = true
+always_on_top = true
+popup_window = true
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json")

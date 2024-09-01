@@ -1,0 +1,132 @@
+[gd_scene load_steps=6 format=3 uid="uid://11gl47has08k"]
+
+[ext_resource type="StyleBox" uid="uid://b2d7mwnj72vwx" path="res://Styles/ClassSelectBorder.tres" id="1_bnm48"]
+[ext_resource type="Script" path="res://Pop-ups/SelectClass.cs" id="1_h53wd"]
+[ext_resource type="StyleBox" uid="uid://uy7a2ykcf8b3" path="res://Styles/SelectClassTitle.tres" id="2_o008a"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="3_h2t1i"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="4_5uyvq"]
+
+[node name="SelectClass" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h53wd")
+
+[node name="Border" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 900.0
+offset_bottom = 585.0
+theme_override_styles/panel = ExtResource("1_bnm48")
+
+[node name="Border2" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 104.0
+theme_override_styles/panel = ExtResource("1_bnm48")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 25.0
+offset_right = 875.0
+offset_bottom = 600.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_o008a")
+text = "Select a Class"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LeftButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = ExtResource("3_h2t1i")
+theme_override_styles/normal = ExtResource("4_5uyvq")
+disabled = true
+text = "<-"
+
+[node name="ClassNameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NOMBRE DE LA CLASE"
+horizontal_alignment = 1
+
+[node name="RightButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = ExtResource("3_h2t1i")
+theme_override_styles/normal = ExtResource("4_5uyvq")
+text = "->"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 25.0
+offset_top = 85.0
+offset_right = 875.0
+offset_bottom = 600.0
+size_flags_vertical = 8
+theme_override_constants/separation = 16
+
+[node name="DetailsSectionLabel" type="Label" parent="VBoxContainer2"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_o008a")
+text = "DETAILS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ClassDescriptionLabel" type="RichTextLabel" parent="VBoxContainer2"]
+texture_filter = 1
+clip_contents = false
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/text_highlight_v_padding = 0
+theme_override_constants/text_highlight_h_padding = 0
+bbcode_enabled = true
+text = "DESCRIPCIÓN DE CLASE"
+
+[node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="SelectButton" type="Button" parent="VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(100, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/hover = ExtResource("3_h2t1i")
+theme_override_styles/normal = ExtResource("4_5uyvq")
+text = "SELECT"
+
+[node name="CancelButton" type="Button" parent="VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(100, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/hover = ExtResource("3_h2t1i")
+theme_override_styles/normal = ExtResource("4_5uyvq")
+text = "CANCEL"

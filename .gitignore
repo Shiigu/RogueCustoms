@@ -363,3 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 /Release - copia
 /Release.old
+/godot_path.txt
+/RogueCustomsGodotClient/.godot
+/RogueCustomsGodotClient/data_Rogue Customs Godot Client_windows_x86_64
+/RogueCustomsGodotClient/JSON
+/RogueCustomsGodotClient/Settings.cfg

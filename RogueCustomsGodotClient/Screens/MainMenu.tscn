@@ -1,0 +1,122 @@
+[gd_scene load_steps=8 format=3 uid="uid://bsg0w4aoa06ld"]
+
+[ext_resource type="Script" path="res://Screens/MainMenu.cs" id="1_h1n6r"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="2_0hon0"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="3_36s23"]
+
+[sub_resource type="SystemFont" id="SystemFont_plyqd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_loqg1"]
+font = SubResource("SystemFont_plyqd")
+font_size = 72
+
+[sub_resource type="SystemFont" id="SystemFont_k2sba"]
+
+[sub_resource type="SystemFont" id="SystemFont_ps8ca"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchor_right = 1.186
+anchor_bottom = 1.185
+offset_right = -254.076
+offset_bottom = -142.08
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h1n6r")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -384.0
+theme_override_font_sizes/font_size = 96
+text = "{title}"
+label_settings = SubResource("LabelSettings_loqg1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartDungeonButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 427.0
+offset_right = -329.0
+offset_bottom = -293.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_k2sba")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = ExtResource("2_0hon0")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/normal = ExtResource("3_36s23")
+text = "{startDungeon}"
+
+[node name="LoadSavedDungeonButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 502.0
+offset_right = -329.0
+offset_bottom = -218.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_k2sba")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = ExtResource("2_0hon0")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/normal = ExtResource("3_36s23")
+text = "{loadSavegame}"
+
+[node name="LanguageDropdown" type="OptionButton" parent="."]
+layout_mode = 0
+offset_left = 337.0
+offset_top = 586.0
+offset_right = 1037.0
+offset_bottom = 626.0
+focus_mode = 1
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = ExtResource("2_0hon0")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/normal = ExtResource("3_36s23")
+alignment = 1
+
+[node name="ExitButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 337.0
+offset_top = 662.0
+offset_right = -329.0
+offset_bottom = -58.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_k2sba")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = ExtResource("2_0hon0")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/normal = ExtResource("3_36s23")
+text = "{exit}"
+
+[node name="VersionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 852.0
+offset_top = 749.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_ps8ca")
+theme_override_font_sizes/font_size = 18
+text = "{gameVersion}"
+horizontal_alignment = 2
+vertical_alignment = 1
