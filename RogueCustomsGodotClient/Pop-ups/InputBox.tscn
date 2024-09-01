@@ -1,0 +1,86 @@
+[gd_scene load_steps=6 format=3 uid="uid://ce0gyhsrfwxa7"]
+
+[ext_resource type="Script" path="res://Pop-ups/InputBox.cs" id="1_ruwe6"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="2_bocj3"]
+[ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="2_fe22l"]
+[ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_shkel"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="3_mt0js"]
+
+[node name="InputBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ruwe6")
+
+[node name="Border" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 25.0
+offset_right = 900.0
+offset_bottom = 166.0
+theme_override_styles/panel = ExtResource("2_shkel")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 170.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_fe22l")
+text = "TÍTULO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PromptTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+clip_contents = false
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/text_highlight_v_padding = 0
+theme_override_constants/text_highlight_h_padding = 0
+bbcode_enabled = true
+text = "TEXTO INTERIOR"
+scroll_active = false
+
+[node name="InputTextBox" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+placeholder_text = "TextEdit"
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="OkButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(50, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = ExtResource("2_bocj3")
+theme_override_styles/normal = ExtResource("3_mt0js")
+text = "OK"
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(50, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = ExtResource("2_bocj3")
+theme_override_styles/normal = ExtResource("3_mt0js")
+text = "CANCEL"

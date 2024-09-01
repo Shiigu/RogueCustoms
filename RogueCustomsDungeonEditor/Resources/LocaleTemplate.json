@@ -38,6 +38,10 @@
       "Value": "{CharacterName} got an {ItemName} from {SourceName}."
     },
     {
+      "Key": "PlayerEquippedItem",
+      "Value": "{CharacterName} equips {ItemName}."
+    },
+    {
       "Key": "PlayerPutItemOnBag",
       "Value": "{CharacterName} put {ItemName} on the bag."
     },

@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO.Compression;
 using RogueCustomsGameEngine.Utils.Representation;
+using RogueCustomsGameEngine.Game.Entities;
 
 namespace RogueCustomsGameEngine.Management
 {
@@ -48,6 +49,24 @@ namespace RogueCustomsGameEngine.Management
             foreach(var removedDungeon in dungeonsSinceLastRetrieval.Except(dungeonsInNewRetrieval))
             {
                 AvailableDungeonInfos.Remove(removedDungeon);
+            }
+        }
+
+        public bool AddDungeonIfPossible(string filePath, string dungeonContents)
+        {
+            try
+            {
+                var parsedDungeon = JsonSerializer.Deserialize<DungeonInfo>(dungeonContents, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                });
+                File.Copy(filePath, $"./JSON/{Path.GetFileName(filePath)}", true);
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -114,7 +133,10 @@ namespace RogueCustomsGameEngine.Management
         {
             using var memoryStream = new MemoryStream(dungeonSaveGame.DungeonData);
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
-            IFormatter formatter = new BinaryFormatter();
+            IFormatter formatter = new BinaryFormatter()
+            {
+                Binder = new CustomSerializationBinder()
+            };
             var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
             if (!restoredDungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
                 throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {Constants.CurrentDungeonJsonVersion}.");
@@ -237,6 +259,14 @@ namespace RogueCustomsGameEngine.Management
         {
             var dungeon = GetDungeonById(dungeonId);
             dungeon.PlayerTakeStairs();
+        }
+    }
+
+    public class CustomSerializationBinder : SerializationBinder
+    {
+        public override Type BindToType(string assemblyName, string typeName)
+        {
+            return Type.GetType($"{typeName}, {assemblyName}");
         }
     }
 }

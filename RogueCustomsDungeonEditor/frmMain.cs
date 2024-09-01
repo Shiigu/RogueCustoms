@@ -32,7 +32,7 @@ namespace RogueCustomsDungeonEditor
 #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public partial class frmMain : Form
     {
-        private readonly Dictionary<TabTypes, TabPage> TabsForNodeTypes = new();
+        private readonly Dictionary<RogueTabTypes, TabPage> TabsForNodeTypes = new();
         private readonly List<string> MandatoryLocaleKeys = new();
         private readonly List<string> BaseLocaleLanguages = new();
         private readonly LocaleInfo LocaleTemplate;
@@ -71,17 +71,17 @@ namespace RogueCustomsDungeonEditor
         public frmMain()
         {
             InitializeComponent();
-            TabsForNodeTypes[TabTypes.BasicInfo] = tpBasicInfo;
-            TabsForNodeTypes[TabTypes.Locales] = tpLocales;
-            TabsForNodeTypes[TabTypes.TileSetInfo] = tpTileSetInfos;
-            TabsForNodeTypes[TabTypes.FloorInfo] = tpFloorInfos;
-            TabsForNodeTypes[TabTypes.FactionInfo] = tpFactionInfos;
-            TabsForNodeTypes[TabTypes.PlayerClass] = tpPlayerClass;
-            TabsForNodeTypes[TabTypes.NPC] = tpNPC;
-            TabsForNodeTypes[TabTypes.Item] = tpItem;
-            TabsForNodeTypes[TabTypes.Trap] = tpTrap;
-            TabsForNodeTypes[TabTypes.AlteredStatus] = tpAlteredStatus;
-            TabsForNodeTypes[TabTypes.Validator] = tpValidation;
+            TabsForNodeTypes[RogueTabTypes.BasicInfo] = tpBasicInfo;
+            TabsForNodeTypes[RogueTabTypes.Locales] = tpLocales;
+            TabsForNodeTypes[RogueTabTypes.TileSetInfo] = tpTileSetInfos;
+            TabsForNodeTypes[RogueTabTypes.FloorInfo] = tpFloorInfos;
+            TabsForNodeTypes[RogueTabTypes.FactionInfo] = tpFactionInfos;
+            TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
+            TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
+            TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
+            TabsForNodeTypes[RogueTabTypes.Trap] = tpTrap;
+            TabsForNodeTypes[RogueTabTypes.AlteredStatus] = tpAlteredStatus;
+            TabsForNodeTypes[RogueTabTypes.Validator] = tpValidation;
             tbTabs.TabPages.Clear();
 
             ofdDungeon.InitialDirectory = Application.StartupPath;
@@ -202,7 +202,7 @@ namespace RogueCustomsDungeonEditor
                 }
                 foreach (TabPage tabPage in tbTabs.TabPages)
                 {
-                    if (tabPage != TabsForNodeTypes[TabTypes.Validator])
+                    if (tabPage != TabsForNodeTypes[RogueTabTypes.Validator])
                         tbTabs.TabPages.Remove(tabPage);
                 }
                 tbTabs.TabPages.Insert(0, TabsForNodeTypes[tag.TabToOpen]);
@@ -218,7 +218,7 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewElement = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != TabTypes.BasicInfo;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo;
                 DirtyTab = false;
             }
             else
@@ -235,47 +235,47 @@ namespace RogueCustomsDungeonEditor
                     case "Locales":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.Locales;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.Locales;
                         break;
                     case "Tilesets":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.TileSetInfo;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.TileSetInfo;
                         break;
                     case "Floor Groups":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.FloorInfo;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.FloorInfo;
                         break;
                     case "Factions":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.FactionInfo;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.FactionInfo;
                         break;
                     case "Player Classes":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.PlayerClass;
+                        tsbSaveElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.PlayerClass;
                         break;
                     case "NPCs":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.NPC;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.NPC;
                         break;
                     case "Items":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.Item;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.Item;
                         break;
                     case "Traps":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.Trap;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.Trap;
                         break;
                     case "Altered Statuses":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == TabTypes.AlteredStatus;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.AlteredStatus;
                         break;
                 }
             }
@@ -289,7 +289,7 @@ namespace RogueCustomsDungeonEditor
 
             var basicInfoNode = new TreeNode("Basic Information")
             {
-                Tag = new NodeTag { TabToOpen = TabTypes.BasicInfo, DungeonElement = null },
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.BasicInfo, DungeonElement = null },
                 Name = "Basic Information"
             };
             tvDungeonInfo.Nodes.Add(basicInfoNode);
@@ -299,7 +299,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var localeNode = new TreeNode(locale.Language)
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.Locales, DungeonElement = locale },
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.Locales, DungeonElement = locale },
                     Name = locale.Language
                 };
                 localesRootNode.Nodes.Add(localeNode);
@@ -311,7 +311,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var tileSetInfoNode = new TreeNode(tileSetInfo.Id)
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.TileSetInfo, DungeonElement = tileSetInfo },
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.TileSetInfo, DungeonElement = tileSetInfo },
                     Name = tileSetInfo.Id
                 };
                 tileSetsRootNode.Nodes.Add(tileSetInfoNode);
@@ -323,7 +323,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var floorInfoNode = new TreeNode()
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.FloorInfo, DungeonElement = floorInfo }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.FloorInfo, DungeonElement = floorInfo }
                 };
                 if (floorInfo.MinFloorLevel != floorInfo.MaxFloorLevel)
                     floorInfoNode.Text = $"Floors {floorInfo.MinFloorLevel}-{floorInfo.MaxFloorLevel}";
@@ -339,7 +339,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var factionInfoNode = new TreeNode(factionInfo.Id)
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.FactionInfo, DungeonElement = factionInfo },
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.FactionInfo, DungeonElement = factionInfo },
                     Name = factionInfo.Id
                 };
                 factionInfosRootNode.Nodes.Add(factionInfoNode);
@@ -351,7 +351,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var playerClassNode = new TreeNode($"{playerClass.ConsoleRepresentation.Character} - {playerClass.Id}")
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.PlayerClass, DungeonElement = playerClass }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.PlayerClass, DungeonElement = playerClass }
                 };
                 playerClassNode.Name = playerClassNode.Text;
                 playerClassRootNode.Nodes.Add(playerClassNode);
@@ -363,7 +363,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var npcNode = new TreeNode($"{npc.ConsoleRepresentation.Character} - {npc.Id}")
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.NPC, DungeonElement = npc }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.NPC, DungeonElement = npc }
                 };
                 npcNode.Name = npcNode.Text;
                 npcRootNode.Nodes.Add(npcNode);
@@ -375,7 +375,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var itemNode = new TreeNode($"{item.ConsoleRepresentation.Character} - {item.Id}")
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.Item, DungeonElement = item }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.Item, DungeonElement = item }
                 };
                 itemNode.Name = itemNode.Text;
                 itemRootNode.Nodes.Add(itemNode);
@@ -387,7 +387,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var trapNode = new TreeNode($"{trap.ConsoleRepresentation.Character} - {trap.Id}")
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.Trap, DungeonElement = trap }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.Trap, DungeonElement = trap }
                 };
                 trapNode.Name = trapNode.Text;
                 trapRootNode.Nodes.Add(trapNode);
@@ -399,7 +399,7 @@ namespace RogueCustomsDungeonEditor
             {
                 var alteredStatusNode = new TreeNode($"{alteredStatus.ConsoleRepresentation.Character} - {alteredStatus.Id}")
                 {
-                    Tag = new NodeTag { TabToOpen = TabTypes.AlteredStatus, DungeonElement = alteredStatus }
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.AlteredStatus, DungeonElement = alteredStatus }
                 };
                 alteredStatusNode.Name = alteredStatusNode.Text;
                 alteredStatusRootNode.Nodes.Add(alteredStatusNode);
@@ -593,7 +593,7 @@ namespace RogueCustomsDungeonEditor
 
         private void tsbAddElement_Click(object sender, EventArgs e)
         {
-            var tabToOpen = TabTypes.BasicInfo;
+            var tabToOpen = RogueTabTypes.BasicInfo;
             if (tvDungeonInfo.SelectedNode?.Tag != null)
             {
                 tabToOpen = ActiveNodeTag.TabToOpen;
@@ -603,31 +603,31 @@ namespace RogueCustomsDungeonEditor
                 switch (tvDungeonInfo.SelectedNode.Text)
                 {
                     case "Locales":
-                        tabToOpen = TabTypes.Locales;
+                        tabToOpen = RogueTabTypes.Locales;
                         break;
                     case "Tilesets":
-                        tabToOpen = TabTypes.TileSetInfo;
+                        tabToOpen = RogueTabTypes.TileSetInfo;
                         break;
                     case "Floor Groups":
-                        tabToOpen = TabTypes.FloorInfo;
+                        tabToOpen = RogueTabTypes.FloorInfo;
                         break;
                     case "Factions":
-                        tabToOpen = TabTypes.FactionInfo;
+                        tabToOpen = RogueTabTypes.FactionInfo;
                         break;
                     case "Player Classes":
-                        tabToOpen = TabTypes.PlayerClass;
+                        tabToOpen = RogueTabTypes.PlayerClass;
                         break;
                     case "NPCs":
-                        tabToOpen = TabTypes.NPC;
+                        tabToOpen = RogueTabTypes.NPC;
                         break;
                     case "Items":
-                        tabToOpen = TabTypes.Item;
+                        tabToOpen = RogueTabTypes.Item;
                         break;
                     case "Traps":
-                        tabToOpen = TabTypes.Trap;
+                        tabToOpen = RogueTabTypes.Trap;
                         break;
                     case "Altered Statuses":
-                        tabToOpen = TabTypes.AlteredStatus;
+                        tabToOpen = RogueTabTypes.AlteredStatus;
                         break;
                 }
                 tbTabs.TabPages.Clear();
@@ -636,31 +636,31 @@ namespace RogueCustomsDungeonEditor
             ActiveNodeTag = new NodeTag { TabToOpen = tabToOpen };
             switch (tabToOpen)
             {
-                case TabTypes.Locales:
+                case RogueTabTypes.Locales:
                     ActiveNodeTag.DungeonElement = LocaleTemplate.Clone(MandatoryLocaleKeys);
                     break;
-                case TabTypes.TileSetInfo:
+                case RogueTabTypes.TileSetInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateDefaultTileSet();
                     break;
-                case TabTypes.FloorInfo:
+                case RogueTabTypes.FloorInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFloorGroupTemplate();
                     break;
-                case TabTypes.FactionInfo:
+                case RogueTabTypes.FactionInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFactionTemplate();
                     break;
-                case TabTypes.PlayerClass:
+                case RogueTabTypes.PlayerClass:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate();
                     break;
-                case TabTypes.NPC:
+                case RogueTabTypes.NPC:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCTemplate();
                     break;
-                case TabTypes.Item:
+                case RogueTabTypes.Item:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateItemTemplate();
                     break;
-                case TabTypes.Trap:
+                case RogueTabTypes.Trap:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateTrapTemplate();
                     break;
-                case TabTypes.AlteredStatus:
+                case RogueTabTypes.AlteredStatus:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateAlteredStatusTemplate();
                     break;
                 default:
@@ -684,25 +684,25 @@ namespace RogueCustomsDungeonEditor
             {
                 switch (ActiveNodeTag.TabToOpen)
                 {
-                    case TabTypes.BasicInfo:
+                    case RogueTabTypes.BasicInfo:
                         return SaveBasicInfo();
-                    case TabTypes.Locales:
+                    case RogueTabTypes.Locales:
                         return SaveLocale();
-                    case TabTypes.TileSetInfo:
+                    case RogueTabTypes.TileSetInfo:
                         return SaveTileSet(null);
-                    case TabTypes.FloorInfo:
+                    case RogueTabTypes.FloorInfo:
                         return SaveFloorGroup();
-                    case TabTypes.FactionInfo:
+                    case RogueTabTypes.FactionInfo:
                         return SaveFaction(null);
-                    case TabTypes.PlayerClass:
+                    case RogueTabTypes.PlayerClass:
                         return SavePlayerClass(null);
-                    case TabTypes.NPC:
+                    case RogueTabTypes.NPC:
                         return SaveNPC(null);
-                    case TabTypes.Item:
+                    case RogueTabTypes.Item:
                         return SaveItem(null);
-                    case TabTypes.Trap:
+                    case RogueTabTypes.Trap:
                         return SaveTrap(null);
-                    case TabTypes.AlteredStatus:
+                    case RogueTabTypes.AlteredStatus:
                         return SaveAlteredStatus(null);
                     default:
                         return true;
@@ -724,23 +724,23 @@ namespace RogueCustomsDungeonEditor
         {
             switch (ActiveNodeTag.TabToOpen)
             {
-                case TabTypes.Locales:
+                case RogueTabTypes.Locales:
                     return SaveLocaleAs();
-                case TabTypes.TileSetInfo:
+                case RogueTabTypes.TileSetInfo:
                     return SaveTileSetAs();
-                case TabTypes.FloorInfo:
+                case RogueTabTypes.FloorInfo:
                     return SaveFloorGroupAs();
-                case TabTypes.FactionInfo:
+                case RogueTabTypes.FactionInfo:
                     return SaveFactionAs();
-                case TabTypes.PlayerClass:
+                case RogueTabTypes.PlayerClass:
                     return SavePlayerClassAs();
-                case TabTypes.NPC:
+                case RogueTabTypes.NPC:
                     return SaveNPCAs();
-                case TabTypes.Item:
+                case RogueTabTypes.Item:
                     return SaveItemAs();
-                case TabTypes.Trap:
+                case RogueTabTypes.Trap:
                     return SaveTrapAs();
-                case TabTypes.AlteredStatus:
+                case RogueTabTypes.AlteredStatus:
                     return SaveAlteredStatusAs();
                 default:
                     return true;
@@ -751,31 +751,31 @@ namespace RogueCustomsDungeonEditor
         {
             switch (ActiveNodeTag.TabToOpen)
             {
-                case TabTypes.Locales:
+                case RogueTabTypes.Locales:
                     DeleteLocale();
                     break;
-                case TabTypes.TileSetInfo:
+                case RogueTabTypes.TileSetInfo:
                     DeleteTileSet();
                     break;
-                case TabTypes.FloorInfo:
+                case RogueTabTypes.FloorInfo:
                     DeleteFloorGroup();
                     break;
-                case TabTypes.FactionInfo:
+                case RogueTabTypes.FactionInfo:
                     DeleteFaction();
                     break;
-                case TabTypes.PlayerClass:
+                case RogueTabTypes.PlayerClass:
                     DeletePlayerClass();
                     break;
-                case TabTypes.NPC:
+                case RogueTabTypes.NPC:
                     DeleteNPC();
                     break;
-                case TabTypes.Item:
+                case RogueTabTypes.Item:
                     DeleteItem();
                     break;
-                case TabTypes.Trap:
+                case RogueTabTypes.Trap:
                     DeleteTrap();
                     break;
-                case TabTypes.AlteredStatus:
+                case RogueTabTypes.AlteredStatus:
                     DeleteAlteredStatus();
                     break;
                 default:
@@ -785,9 +785,9 @@ namespace RogueCustomsDungeonEditor
 
         private void tsbValidateDungeon_Click(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Validator]))
-                tbTabs.TabPages.Add(TabsForNodeTypes[TabTypes.Validator]);
-            tbTabs.SelectTab(TabsForNodeTypes[TabTypes.Validator]);
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
+                tbTabs.TabPages.Add(TabsForNodeTypes[RogueTabTypes.Validator]);
+            tbTabs.SelectTab(TabsForNodeTypes[RogueTabTypes.Validator]);
             ValidateDungeon();
         }
 
@@ -806,10 +806,10 @@ namespace RogueCustomsDungeonEditor
             DirtyTab = false;
             switch (tag.TabToOpen)
             {
-                case TabTypes.BasicInfo:
+                case RogueTabTypes.BasicInfo:
                     LoadBasicInfo();
                     break;
-                case TabTypes.Locales:
+                case RogueTabTypes.Locales:
                     var tagLocale = (LocaleInfo)tag.DungeonElement;
                     LoadLocaleInfoFor(tagLocale);
                     if (!IsNewElement)
@@ -818,7 +818,7 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale";
                     dgvLocales.Rows[0].Selected = true;
                     break;
-                case TabTypes.TileSetInfo:
+                case RogueTabTypes.TileSetInfo:
                     var tagTileSet = (TileSetInfo)tag.DungeonElement;
                     LoadTileSetInfoFor(tagTileSet);
                     if (!IsNewElement)
@@ -826,7 +826,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Tileset";
                     break;
-                case TabTypes.FloorInfo:
+                case RogueTabTypes.FloorInfo:
                     var tagFloorGroup = (FloorInfo)tag.DungeonElement;
                     LoadFloorInfoFor(tagFloorGroup);
                     if (!IsNewElement)
@@ -842,7 +842,7 @@ namespace RogueCustomsDungeonEditor
                     }
 
                     break;
-                case TabTypes.FactionInfo:
+                case RogueTabTypes.FactionInfo:
                     var tagFaction = (FactionInfo)tag.DungeonElement;
                     LoadFactionInfoFor(tagFaction);
                     if (!IsNewElement)
@@ -850,7 +850,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction";
                     break;
-                case TabTypes.PlayerClass:
+                case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
                     LoadPlayerClassInfoFor(tagPlayerClass);
                     if (!IsNewElement)
@@ -858,7 +858,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Player Class";
                     break;
-                case TabTypes.NPC:
+                case RogueTabTypes.NPC:
                     var tagNPC = (NPCInfo)tag.DungeonElement;
                     LoadNPCInfoFor(tagNPC);
                     if (!IsNewElement)
@@ -866,7 +866,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"NPC";
                     break;
-                case TabTypes.Item:
+                case RogueTabTypes.Item:
                     var tagItem = (ItemInfo)tag.DungeonElement;
                     LoadItemInfoFor(tagItem);
                     if (!IsNewElement)
@@ -874,7 +874,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Item";
                     break;
-                case TabTypes.Trap:
+                case RogueTabTypes.Trap:
                     var tagTrap = (TrapInfo)tag.DungeonElement;
                     LoadTrapInfoFor(tagTrap);
                     if (!IsNewElement)
@@ -882,7 +882,7 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Trap";
                     break;
-                case TabTypes.AlteredStatus:
+                case RogueTabTypes.AlteredStatus:
                     var tagAlteredStatus = (AlteredStatusInfo)tag.DungeonElement;
                     LoadAlteredStatusInfoFor(tagAlteredStatus);
                     if (!IsNewElement)
@@ -1390,7 +1390,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -1593,7 +1593,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -1939,7 +1939,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -2017,12 +2017,12 @@ namespace RogueCustomsDungeonEditor
 
         private void nudMinFloorLevel_Leave(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.FloorInfo])) return;
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
         private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.FloorInfo])) return;
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.FloorInfo])) return;
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
 
@@ -2387,7 +2387,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -2794,7 +2794,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -3145,7 +3145,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -3158,7 +3158,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtNPCExperiencePayout_Leave(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.NPC])) return;
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.NPC])) return;
 
             if (!PreviousTextBoxValue.Equals(txtNPCExperiencePayout.Text))
             {
@@ -3457,7 +3457,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -3560,7 +3560,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtItemPower_Leave(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Item])) return;
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Item])) return;
 
             if (!PreviousTextBoxValue.Equals(txtItemPower.Text))
             {
@@ -3766,7 +3766,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -3792,7 +3792,7 @@ namespace RogueCustomsDungeonEditor
 
         private void txtTrapPower_Leave(object sender, EventArgs e)
         {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Trap])) return;
+            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Trap])) return;
 
             if (!PreviousTextBoxValue.Equals(txtTrapPower.Text))
             {
@@ -4002,7 +4002,7 @@ namespace RogueCustomsDungeonEditor
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
-                ActiveNodeTag.TabToOpen = TabTypes.BasicInfo;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
                 RefreshTreeNodes();
                 tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
                 tvDungeonInfo.Focus();
@@ -4138,8 +4138,8 @@ namespace RogueCustomsDungeonEditor
                 MessageBox.Show($"Attempting to Validate this Dungeon threw an error:\n\n{ex.Message}\n\nPlease fix it.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 PassedValidation = true;
                 tvValidationResults.Visible = false;
-                if (tbTabs.TabPages.Contains(TabsForNodeTypes[TabTypes.Validator]))
-                    tbTabs.TabPages.Remove(TabsForNodeTypes[TabTypes.Validator]);
+                if (tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
+                    tbTabs.TabPages.Remove(TabsForNodeTypes[RogueTabTypes.Validator]);
             }
         }
 
@@ -4191,11 +4191,11 @@ namespace RogueCustomsDungeonEditor
 
     public class NodeTag
     {
-        public TabTypes TabToOpen { get; set; }
+        public RogueTabTypes TabToOpen { get; set; }
         public object? DungeonElement { get; set; }
     }
 
-    public enum TabTypes
+    public enum RogueTabTypes
     {
         BasicInfo,
         Locales,

@@ -1,0 +1,40 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://b8tlbgfcm8cor"
+path="res://.godot/imported/PxPlus_Tandy1K-II_200L.ttf-942b7315c5e499d9c97148a6485e3101.fontdata"
+
+[deps]
+
+source_file="res://Fonts/PxPlus_Tandy1K-II_200L.ttf"
+dest_files=["res://.godot/imported/PxPlus_Tandy1K-II_200L.ttf-942b7315c5e499d9c97148a6485e3101.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=0
+generate_mipmaps=false
+disable_embedded_bitmaps=false
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=false
+force_autohinter=false
+hinting=1
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(14, 0),
+"variation_embolden": 0.0
+}]
+language_support={}
+script_support={}
+opentype_features={}

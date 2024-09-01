@@ -410,12 +410,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
+                {
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
+                }
             }
             foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
+                {
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
+                    if (EntityType == EntityType.Player)
+                        Map.PlayerGotStatusChange = true;
+                }
             }
             TryDegenerateHunger();
             TryRegenerateHP();

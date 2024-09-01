@@ -1,0 +1,122 @@
+Key,es,en
+AimModeControlsText,<ARROWS> Mover <A> Elegir Acción <V> Ver Info de Objeto <ESC> Cancelar,<ARROWS> Move <A> Open Action Window <V> View Object Info <ESC> Cancel
+ActionWindowTitleText,Acciones hacia {TargetName},Actions on {TargetName}
+AddDungeonDialogTitleText,Agregar o Actualizar Mazmorra,Add or Update Dungeon
+AddDungeonOkDialogText,Agregar,Add
+AddDungeonCancelDialogText,Cancelar,Cancel
+AddDungeonButtonText,AGREGAR/ACTUALIZAR MAZMORRA,ADD/UPDATE DUNGEON
+AddDungeonOverwriteHeaderText,LA MAZMORRA YA EXISTE,DUNGEON ALREADY EXISTS
+AddDungeonOverwritePromptText,{FileName} ya está en la lista de Mazmorras.\n\n¿Quieres sobreescribirla?,{FileName} is already part of the Dungeon list.\n\nDo you want to overwrite it?
+AddDungeonOverwriteSuccessText,"La mazmorra seleccionada se ha sobreescrito exitosamente, y ahora está presente en la lista de mazmorras jugables.","The chosen dungeon has been successfully overwritten, and you can choose it in the dungeon list."
+AddDungeonOverwriteSuccessHeaderText,MAZMORRA SOBREESCRITA,DUNGEON OVERWRITTEN
+AddDungeonSuccessHeaderText,MAZMORRA AÑADIDA,DUNGEON ADDED
+AddDungeonSuccessText,"La mazmorra seleccionada se ha añadido exitosamente, y ahora está presente en la lista de mazmorras jugables.","The chosen dungeon has been successfully added, and you can choose it in the dungeon list."
+AddDungeonFailureHeaderText,NO SE PUDO AÑADIR,COULD NOT ADD
+AddDungeonFailureText,"No se pudo añadir la mazmorra seleccionada.\n\nPor favor, comprueba si es una Mazmorra válida.",The chosen dungeon could not be added.\n\nPlease check if it's a valid Dungeon.
+AuthorHeaderText,Autor,Author
+BriefingMessageHeader,RESUMEN,BRIEFING
+CancelButtonText,CANCELAR,CANCEL
+CloseButtonText,CERRAR,CLOSE
+DetailsButtonText,DETALLES,DETAILS
+DetailsSubconsoleTitleText,DETALLES,DETAILS
+DoButtonText,REALIZAR,DO
+DropButtonText,SOLTAR,DROP
+DungeonNameHeaderText,Nombre de Mazmorra,Dungeon Name
+EntityDetailTitleText,EXAMINAR,EXAMINE
+EquipButtonText,EQUIPAR,EQUIP
+EquippedItemDescriptionText,(Este objeto está equipado),(This item is currently\nequipped)
+EquippedItemNamePrefix,(E),(E)
+ErrorMessageHeader,ERROR,ERROR
+ErrorText,¡OH NO!\n\n¡Ha habido un error!\n\nPrepárate para volver al menú\nprincipal...,OH NO!\n\nAn error has occured!\n\nGet ready to return to the main menu...
+ExitButtonText,SALIR,EXIT
+ExitDungeonButtonText,SALIR,EXIT
+ExitPromptText,¿Quieres dejar de jugar y\nregresar al menú principal?,Do you want to stop playing\nand return to the main menu?
+ExperienceBarDisplayText,Experiencia: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% del nivel actual),Experience: {CurrentExperience}/{ExperienceToLevelUp} ({Percentage}% of current level)
+FailedDungeonHeader,NO SE PUEDE REANUDAR LA MAZMORRA,CANNOT RESUME THIS DUNGEON
+FailedDungeonLoadText,"No se pudo cargar esta mazmorra.\n\nPor favor comprueba si la Mazmorra es una partida válida, y\nsi está guardada con la última versión.","This Dungeon could not be loaded.\n\nPlease check if it's a valid Dungeon savegame, and\nif it's saved with the current Dungeon File version."
+FailedSaveText,No se pudo guardar la mazmorra.,Dungeon could not be saved.
+FloorItemDescriptionText,(Este objeto está en el piso),(This item is in the floor)
+FloorItemNamePrefix,(P),(F)
+GameTitle,Rogue Customs,Rogue Customs
+GameVersionText,Versión de Juego {GameVersion},Game Version {GameVersion}
+IncompatibleDungeonMessageBoxHeader,NO SE PUEDE JUGAR ESTA MAZMORRA,CANNOT PLAY THIS DUNGEON
+IncompatibleDungeonMessageBoxText,"Esta mazmorra está en la versión {DungeonJsonVersion}.\nLa versión de este juego requiere mazmorras en la versión {RequiredDungeonJsonVersion}.\n\nPor favor, contacta con el creador de la mazmorra para obtener la versión correcta.",This Dungeon is at version {DungeonJsonVersion}.\nThis game's version requires Dungeons at version {RequiredDungeonJsonVersion}.\n\nPlease contact the Dungeon creator to get the correct version.
+InputBoxAffirmativeButtonText,ELEGIR,CHOOSE
+InputBoxPromptText,Elige el nombre para {ClassName},Choose the name for {ClassName}
+InputBoxSingleClassPromptText,Elige el nombre para {ClassName}\n\nPresiona ESC para regresar al menú principal,Choose the name for {ClassName}\n\nPress ESC to return to the main menu
+InputBoxTitleText,Nombre,Name
+InventoryWindowTitleText,Inventario,Inventory
+LanguageListHeaderText,IDIOMA,LANGUAGE
+LanguageLocale,es,en
+LanguageName,Español,English
+LeftButtonText,<-,<-
+LoadDungeonText,CARGAR MAZMORRA GUARDADA,LOAD SAVED DUNGEON
+LocalRadioButtonText,LOCAL,LOCAL
+MenuControlsSubText,<F5> Guardar <ESC> Salir,<F5> Save Game <ESC> Exit
+MessageHeaderText,MENSAJES,MESSAGES
+MessageLogButtonText,REGISTRO DE MENSAJES,MESSAGE LOG
+MessageWindowTitleText,REGISTRO DE MENSAJES,MESSAGE LOG
+MoveModeNoneControlsText,<M> Registro de Mensajes <D> Detalles de Jugador <ESC> Salir,<M> Open Message Log <D> View Player Details <ESC> Exit
+MoveModeCannotActControlsText,<I> Inventario <S> Saltar Turno,<I> Inventory Menu <S> Skip Turn
+MoveModeControlsSubText,<M> Registro de Mensajes <D> Detalles de Jugador,<M> Open Message Log <D> View Player Details
+MoveModeImmobilizedControlsText,<A> Apuntar <I> Inventario <S> Saltar Turno,<A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeImmobilizedOnStairsControlsText,<A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno,<A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
+MoveModeNormalControlsText,<FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno,<ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn
+MoveModeOnStairsControlsText,<FLECHAS> Mover <A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno,<ARROWS> Move <A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
+NoButtonText,NO,NO
+NoDungeonsText,No hay Mazmorras para elegir.,There are no Dungeons to show.
+NoLocalDungeonsSubtext,Usa el botón Agregar or Actualizar Mazmorra primero.,Use the Add or Update Dungeon button first.
+NoServerDungeonsSubtext,El Servidor no tiene Mazmorras.,Server has no Dungeons installed.
+OKButtonText,OK,OK
+OccupiedTileDescriptionText,"(No se puede soltar,\nbaldosa ocupada)","(Tile is occupied,\ncan't drop)"
+OptionsHeaderText,ELEGIR OPCIONES,SELECT OPTIONS
+OptionsText,OPCIONES,OPTIONS
+PickButtonText,JUGAR MAZMORRA,PLAY SELECTED DUNGEON
+PickDungeonHeaderText,ELEGIR MAZMORRA,PICK A DUNGEON
+PlayerCharacterDetailAlteredStatusDescriptionText,- {StatusName}: {StatusDescription},- {StatusName}: {StatusDescription}
+PlayerCharacterDetailAlteredStatusDescriptionTextWithTurns,- {StatusName}: {StatusDescription} [QUEDA(N) {RemainingTurns} TURNO(S)],- {StatusName}: {StatusDescription} [{RemainingTurns} TURNS LEFT]
+PlayerCharacterDetailAlteredStatusesHeaderText,ESTADOS ALTERADOS,ALTERED STATUSES
+PlayerCharacterDetailAtMaxLevelText,¡AL MÁXIMO NIVEL!,AT MAX LEVEL!
+PlayerCharacterDetailBaseText,Base,Base
+PlayerCharacterDetailCurrentExperienceText,Experiencia Actual: {CurrentExperience},Current Experience: {CurrentExperience}
+PlayerCharacterDetailEquippedArmorHeader,ARMADURA ACTUAL,CURRENT ARMOR
+PlayerCharacterDetailEquippedWeaponHeader,ARMA ACTUAL,CURRENT WEAPON
+PlayerCharacterDetailExperienceToLevelUpText,Experiencia para llegar al Nivel {NextLevel}: {RequiredExperience},Experience to Level {NextLevel}: {RequiredExperience}
+PlayerCharacterDetailMaxBaseText,Máx. Base,Max Base
+PlayerCharacterDetailStatAlterationText,{Alteration} por {Source},{Alteration} from {Source}
+PlayerCharacterDetailStatsHeader,ESTADÍSTICAS,STATS
+PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO
+PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
+PlayerClassNoStartingInventoryText,NADA,NONE
+PlayerClassStartingArmorHeader,ARMADURA INICIAL,STARTING ARMOR
+PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
+PlayerClassStartingWeaponHeader,ARMA INICIAL,STARTING WEAPON
+PlayerClassStatsHeader,ESTADÍSTICAS,STATS
+PlayerClassWindowTitleText,Elija una Clase,Select a Class
+PlayerHasNothingText,¡NADA!,NONE!
+PlayerInfoArmorHeader,ARMADURA,ARMOR
+PlayerInfoConsoleTitle,TÚ,YOU
+PlayerInfoInventoryHeader,INVENTARIO,INVENTORY
+PlayerInfoStatusesHeader,ESTADOS,STATUSES
+PlayerInfoTooManyText,¡CLICK DEBAJO!,CLICK BELOW!
+PlayerInfoWeaponHeader,ARMA,WEAPON
+PlayerLevelText,NIVEL {CurrentLevel},LEVEL {CurrentLevel}
+PressEnterText,Presiona Enter para Continuar...,Press Enter to Continue...
+RadioButtonHeaderText,UBICACIÓN DEL HOST,GAME HOST LOCATION
+ReturnToMainMenuText,IR AL MENU PRINCIPAL,RETURN TO MAIN MENU
+RightButtonText,->,->
+SaveDungeonButtonText,GUARDAR JUEGO,SAVE GAME
+SaveSettingsButtonText,GUARDAR OPCIONES,SAVE SETTINGS
+SelectButtonText,ELEGIR,SELECT
+SelectDungeonText,INICIAR MAZMORRA,START A DUNGEON
+ServerAddressTextBoxHeaderText,DIRECCIÓN DE SERVIDOR,SERVER ADDRESS
+ServerRadioButtonText,EN SERVIDOR,IN A SERVER
+StairsPromptText,¿Quieres usar las escaleras?,Do you want to use the stairs?
+SuccessfulSavePromptText,Mazmorra guardada exitosamente.\n\n¿Quieres dejar de jugar\ny regresar al menú principal?,Dungeon has been successfully saved.\n\nDo you want to stop playing and\nreturn to the main menu?
+SwapButtonText,CAMBIAR,SWAP
+TheEndMessageHeader,FIN,THE END
+TurnNumberText,TURNO {TurnNumber},TURN {TurnNumber}
+UseButtonText,USAR,USE
+VersionHeaderText,Versión,Version
+ViewModeControlsText,<ARROWS> Mover <V> Ver detalles <ESC> Cancelar,<ARROWS> Move <V> View Details <ESC> Cancel
+YesButtonText,SÍ,YES

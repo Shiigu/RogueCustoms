@@ -833,6 +833,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else
             {
+                AppendMessage(Locale["PlayerEquippedItem"].Format(new { CharacterName = Player.Name, ItemName = item.Name }), Color.Yellow);
                 Player.EquipItem(item);
                 Player.TookAction = true;
             }
@@ -1038,15 +1039,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 roomIsValid = false;
                 var possibleNonDummyRoom = nonDummyRooms.TakeRandomElement(Rng);
-                if(!possibleNonDummyRoom.GetTiles().Exists(t => CanBeConsideredEmpty(t)))
+                var validEmptyTiles = possibleNonDummyRoom.GetTiles().Where(t => CanBeConsideredEmpty(t));
+                if (!validEmptyTiles.Any())
                 {
                     nonDummyRooms.Remove(possibleNonDummyRoom);
                 }
                 else
                 {
                     roomIsValid = true;
-                    rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
-                    rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
+                    var aRandomTile = validEmptyTiles.TakeRandomElement(Rng);
+                    rngX = aRandomTile.Position.X;
+                    rngY = aRandomTile.Position.Y;
+                    //rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
+                    //rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
                 }
             }
             while (nonDummyRooms.Any() && (!roomIsValid || !CanBeConsideredEmpty(GetTileFromCoordinates(rngX, rngY))));

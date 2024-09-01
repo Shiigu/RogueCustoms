@@ -9,6 +9,7 @@ CharacterSwitchedPlacesWithPlayer
 CharacterGotAnItem
 PlayerPutItemOnBag
 PlayerPutItemOnFloor
+PlayerEquippedItem
 NPCPickItem
 NPCPutItemOnFloor
 NPCItemCannotBePutOnFloor

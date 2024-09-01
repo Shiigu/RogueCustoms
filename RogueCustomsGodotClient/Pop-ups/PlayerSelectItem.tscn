@@ -1,0 +1,154 @@
+[gd_scene load_steps=7 format=3 uid="uid://be5ynekb1bmnx"]
+
+[ext_resource type="Script" path="res://Pop-ups/PlayerSelectItem.cs" id="1_ltxjj"]
+[ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_0p0v7"]
+[ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="3_fsijt"]
+[ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="4_3wtt2"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="4_cff7q"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="5_evv5s"]
+
+[node name="PlayerSelectItem" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ltxjj")
+
+[node name="OuterBorder" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 900.0
+offset_bottom = 585.0
+theme_override_styles/panel = ExtResource("2_0p0v7")
+
+[node name="VerticalBorder" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 30.0
+offset_right = 452.0
+offset_bottom = 560.0
+theme_override_styles/panel = ExtResource("2_0p0v7")
+
+[node name="OverlappingVerticalBorder" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 558.0
+offset_right = 452.0
+offset_bottom = 583.0
+theme_override_styles/panel = ExtResource("2_0p0v7")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 35.0
+offset_right = 438.0
+offset_bottom = 550.0
+horizontal_scroll_mode = 0
+
+[node name="SelectionList" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="ItemDescriptionLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+offset_left = 462.0
+offset_top = 35.0
+offset_right = 887.0
+offset_bottom = 550.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 25.0
+offset_right = 875.0
+offset_bottom = 600.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("3_fsijt")
+text = "TÍTULO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="EquipButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "EQUIP"
+
+[node name="SwapButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "EQUIP"
+
+[node name="UseButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "USE"
+
+[node name="DropButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "DROP"
+
+[node name="DoButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "DO"
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "CANCEL"
