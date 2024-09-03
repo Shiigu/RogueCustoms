@@ -24,8 +24,10 @@ public partial class GameScreen : Control
     private ScreenFlash _screenFlash;
     private int _lastTurn;
     private ControlMode _previousControlMode;
+    private InputManager _inputManager;
 
     private List<GamePanel> _children;
+    private CoordinateInput _coords;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -39,6 +41,7 @@ public partial class GameScreen : Control
         _controlsPanel = GetNode<GamePanel>("ControlsPanel");
         _children = new List<GamePanel> { _mapPanel, _infoPanel, _messageLogPanel, _experienceBarPanel, _controlsPanel };
         _screenFlash = GetNode<ScreenFlash>("ScreenFlash");
+        _inputManager = GetNode<InputManager>("/root/InputManager");
         SetUp();
     }
 
@@ -48,6 +51,13 @@ public partial class GameScreen : Control
         _lastTurn = -1;
         _saveGameButton.Pressed += SaveGameButton_Pressed;
         _exitButton.Pressed += ExitButton_Pressed;
+
+        _coords = new CoordinateInput
+        {
+            X = 0,
+            Y = 0
+        };
+
         _Process(0);
     }
 
@@ -126,6 +136,28 @@ public partial class GameScreen : Control
                 ShowMessagesIfNeeded(0);
             _globalState.MustUpdateGameScreen = false;
             _lastTurn = dungeonStatus.TurnCount;
+        }
+
+        if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
+        {
+            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, _coords);
+            _globalState.MustUpdateGameScreen = true;
+
+            _coords = new CoordinateInput
+            {
+                X = 0,
+                Y = 0
+            };
+        }
+        else if ((_globalState.PlayerControlMode == ControlMode.Targeting) && (_coords.X != 0 || _coords.Y != 0))
+        {
+            _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
+
+            _coords = new CoordinateInput
+            {
+                X = 0,
+                Y = 0
+            };
         }
     }
     private void ShowMessagesIfNeeded(int index = 0)
@@ -234,12 +266,6 @@ public partial class GameScreen : Control
 
     private void CheckNormalModeInput(InputEvent @event)
     {
-        var coordinateInput = new CoordinateInput{
-            X = 0,
-            Y = 0
-        };
-        var didTurn = false;
-
         if (_globalState.PlayerControlMode == ControlMode.NormalOnStairs && @event.IsActionPressed("ui_use"))
         {
             this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
@@ -258,7 +284,11 @@ public partial class GameScreen : Control
         }
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
-            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, coordinateInput);
+            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, new CoordinateInput
+                                                                        {
+                                                                            X = 0,
+                                                                            Y = 0
+                                                                        });
             AcceptEvent();
             _globalState.MustUpdateGameScreen = true;
             return;
@@ -280,34 +310,31 @@ public partial class GameScreen : Control
         }
         else
         {
-            if (@event.IsActionPressed("ui_up"))
-                coordinateInput.Y = -1;
-            else if (@event.IsActionPressed("ui_down"))
-                coordinateInput.Y = 1;
-            if (@event.IsActionPressed("ui_left"))
-                coordinateInput.X = -1;
-            else if (@event.IsActionPressed("ui_right"))
-                coordinateInput.X = 1;
-            if (coordinateInput.X != 0 || coordinateInput.Y != 0)
-                didTurn = true;
-        }
-
-        if (didTurn)
-        {
-            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, coordinateInput);
-            AcceptEvent();
-            _globalState.MustUpdateGameScreen = true;
+            if ((@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true))) && _coords.Y == 0)
+            {
+                _coords.Y = -1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true))) && _coords.Y == 0)
+            {
+                _coords.Y = 1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true))) && _coords.X == 0)
+            {
+                _coords.X = -1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true))) && _coords.X == 0)
+            {
+                _coords.X = 1;
+                AcceptEvent();
+            }
         }
     }
 
     private void CheckImmobilizedModeInput(InputEvent @event)
     {
-        var coordinateInput = new CoordinateInput
-        {
-            X = 0,
-            Y = 0
-        };
-
         if (_globalState.PlayerControlMode == ControlMode.ImmobilizedOnStairs && @event.IsActionPressed("ui_use"))
         {
             this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
@@ -326,7 +353,11 @@ public partial class GameScreen : Control
         }
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
-            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, coordinateInput);
+            _globalState.DungeonManager.MovePlayer(_globalState.DungeonId, new CoordinateInput
+                                                                                {
+                                                                                    X = 0,
+                                                                                    Y = 0
+                                                                                });
             AcceptEvent();
             _globalState.MustUpdateGameScreen = true;
             return;
@@ -408,16 +439,26 @@ public partial class GameScreen : Control
         }
         else
         {
-            if (@event.IsActionPressed("ui_up"))
-                coordinateInput = new(coordinateInput.X, -1);
-            else if (@event.IsActionPressed("ui_down"))
-                coordinateInput = new(coordinateInput.X, 1);
-            if (@event.IsActionPressed("ui_left"))
-                coordinateInput = new(-1, coordinateInput.Y);
-            else if (@event.IsActionPressed("ui_right"))
-                coordinateInput = new(1, coordinateInput.Y);
-            if (coordinateInput.X != 0 || coordinateInput.Y != 0)
-                _mapPanel.MoveTarget(coordinateInput);
+            if ((@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true))) && _coords.Y == 0)
+            {
+                _coords.Y = -1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true))) && _coords.Y == 0)
+            {
+                _coords.Y = 1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true))) && _coords.X == 0)
+            {
+                _coords.X = -1;
+                AcceptEvent();
+            }
+            if ((@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true))) && _coords.X == 0)
+            {
+                _coords.X = 1;
+                AcceptEvent();
+            }
         }
 
         AcceptEvent();
