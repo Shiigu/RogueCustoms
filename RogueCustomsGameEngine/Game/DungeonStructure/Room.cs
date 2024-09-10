@@ -22,6 +22,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public GamePoint BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
 
         public bool IsDummy => Width == 1 && Height == 1;
+        public bool IsFused { get; set; }
 
         public List<Tile> GetTiles() => Map.Tiles.Where(t => t.Position.X.Between(TopLeft.X, TopRight.X) && t.Position.Y.Between(TopLeft.Y, BottomRight.Y)).ToList();
 

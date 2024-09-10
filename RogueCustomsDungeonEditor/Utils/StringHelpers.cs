@@ -91,5 +91,12 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return result.ToArray();
         }
+
+        public static bool IsBooleanExpression(this string input)
+        {
+            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false|HasStatus|DoesNotHaveStatus)\b";
+
+            return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+        }
     }
 }

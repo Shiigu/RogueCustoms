@@ -26,7 +26,7 @@ public partial class MapPanel : GamePanel
         get
         {
             if (CursorMapLocation == null) return null;
-            return new(CursorMapLocation.Value.X - TopLeftCornerCoords.X,  CursorMapLocation.Value.Y - TopLeftCornerCoords.Y);
+            return new(CursorMapLocation.Value.X, CursorMapLocation.Value.Y );
         }
     }
 
@@ -149,7 +149,6 @@ public partial class MapPanel : GamePanel
             }
             _tileMap.PopAll();
         }
-        _tileMap.Size = new(1024, 512);
     }
 
     private Vector2 GetPositionForCoordinates(Vector2 coords)
@@ -178,8 +177,9 @@ public partial class MapPanel : GamePanel
         if (newCoordinates.Y < 0 || newCoordinates.Y >= dungeonStatus.Height) return;
         var tile = dungeonStatus.GetTileFromCoordinates((int) newCoordinates.X, (int) newCoordinates.Y);
         if (!tile.Targetable) return;
-        _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
         CursorMapLocation = newCoordinates;
+        Update();
+        _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
     }
 
     public void StopTargeting()
@@ -187,5 +187,6 @@ public partial class MapPanel : GamePanel
         if (_aimingSquare.Disabled) return;
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
+        Update();
     }
 }

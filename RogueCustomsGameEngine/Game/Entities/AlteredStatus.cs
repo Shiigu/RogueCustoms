@@ -65,7 +65,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return true;
         }
 
-        private AlteredStatus Clone()
+        private new AlteredStatus Clone()
         {
             return new AlteredStatus(Class, Map);
         }

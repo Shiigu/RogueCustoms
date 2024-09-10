@@ -123,6 +123,8 @@ namespace RogueCustomsDungeonEditor
             label130 = new Label();
             csrTopLeftWall = new Controls.ConsoleRepresentationSelector();
             tpFloorInfos = new TabPage();
+            btnPasteAlgorithm = new Button();
+            btnCopyAlgorithm = new Button();
             nudHungerLostPerTurn = new NumericUpDown();
             label31 = new Label();
             saeOnFloorStart = new Controls.SingleActionEditor();
@@ -1360,6 +1362,8 @@ namespace RogueCustomsDungeonEditor
             // tpFloorInfos
             // 
             tpFloorInfos.AutoScroll = true;
+            tpFloorInfos.Controls.Add(btnPasteAlgorithm);
+            tpFloorInfos.Controls.Add(btnCopyAlgorithm);
             tpFloorInfos.Controls.Add(nudHungerLostPerTurn);
             tpFloorInfos.Controls.Add(label31);
             tpFloorInfos.Controls.Add(saeOnFloorStart);
@@ -1399,6 +1403,28 @@ namespace RogueCustomsDungeonEditor
             tpFloorInfos.TabIndex = 2;
             tpFloorInfos.Text = "Floor Group";
             tpFloorInfos.UseVisualStyleBackColor = true;
+            // 
+            // btnPasteAlgorithm
+            // 
+            btnPasteAlgorithm.Enabled = false;
+            btnPasteAlgorithm.Location = new System.Drawing.Point(583, 173);
+            btnPasteAlgorithm.Name = "btnPasteAlgorithm";
+            btnPasteAlgorithm.Size = new System.Drawing.Size(60, 23);
+            btnPasteAlgorithm.TabIndex = 44;
+            btnPasteAlgorithm.Text = "Paste";
+            btnPasteAlgorithm.UseVisualStyleBackColor = true;
+            btnPasteAlgorithm.Click += btnPasteAlgorithm_Click;
+            // 
+            // btnCopyAlgorithm
+            // 
+            btnCopyAlgorithm.Enabled = false;
+            btnCopyAlgorithm.Location = new System.Drawing.Point(517, 173);
+            btnCopyAlgorithm.Name = "btnCopyAlgorithm";
+            btnCopyAlgorithm.Size = new System.Drawing.Size(60, 23);
+            btnCopyAlgorithm.TabIndex = 43;
+            btnCopyAlgorithm.Text = "Copy";
+            btnCopyAlgorithm.UseVisualStyleBackColor = true;
+            btnCopyAlgorithm.Click += btnCopyAlgorithm_Click;
             // 
             // nudHungerLostPerTurn
             // 
@@ -1521,9 +1547,9 @@ namespace RogueCustomsDungeonEditor
             // btnRemoveAlgorithm
             // 
             btnRemoveAlgorithm.Enabled = false;
-            btnRemoveAlgorithm.Location = new System.Drawing.Point(583, 173);
+            btnRemoveAlgorithm.Location = new System.Drawing.Point(649, 173);
             btnRemoveAlgorithm.Name = "btnRemoveAlgorithm";
-            btnRemoveAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnRemoveAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnRemoveAlgorithm.TabIndex = 29;
             btnRemoveAlgorithm.Text = "Remove";
             btnRemoveAlgorithm.UseVisualStyleBackColor = true;
@@ -1532,9 +1558,9 @@ namespace RogueCustomsDungeonEditor
             // btnEditAlgorithm
             // 
             btnEditAlgorithm.Enabled = false;
-            btnEditAlgorithm.Location = new System.Drawing.Point(502, 173);
+            btnEditAlgorithm.Location = new System.Drawing.Point(451, 173);
             btnEditAlgorithm.Name = "btnEditAlgorithm";
-            btnEditAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnEditAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnEditAlgorithm.TabIndex = 28;
             btnEditAlgorithm.Text = "Edit";
             btnEditAlgorithm.UseVisualStyleBackColor = true;
@@ -1542,9 +1568,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // btnAddAlgorithm
             // 
-            btnAddAlgorithm.Location = new System.Drawing.Point(421, 173);
+            btnAddAlgorithm.Location = new System.Drawing.Point(385, 173);
             btnAddAlgorithm.Name = "btnAddAlgorithm";
-            btnAddAlgorithm.Size = new System.Drawing.Size(75, 23);
+            btnAddAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnAddAlgorithm.TabIndex = 27;
             btnAddAlgorithm.Text = "New...";
             btnAddAlgorithm.UseVisualStyleBackColor = true;
@@ -1642,6 +1668,7 @@ namespace RogueCustomsDungeonEditor
             // nudHeight
             // 
             nudHeight.Location = new System.Drawing.Point(51, 91);
+            nudHeight.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
             nudHeight.Name = "nudHeight";
             nudHeight.Size = new System.Drawing.Size(54, 23);
             nudHeight.TabIndex = 17;
@@ -1650,6 +1677,7 @@ namespace RogueCustomsDungeonEditor
             // nudWidth
             // 
             nudWidth.Location = new System.Drawing.Point(51, 58);
+            nudWidth.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
             nudWidth.Name = "nudWidth";
             nudWidth.Size = new System.Drawing.Size(54, 23);
             nudWidth.TabIndex = 16;
@@ -3984,5 +4012,7 @@ namespace RogueCustomsDungeonEditor
         private global::System.Windows.Forms.Label lblNPCAIOddsToTargetSelfB;
         private NumericUpDown nudHungerLostPerTurn;
         private Label label31;
+        private Button btnPasteAlgorithm;
+        private Button btnCopyAlgorithm;
     }
 }

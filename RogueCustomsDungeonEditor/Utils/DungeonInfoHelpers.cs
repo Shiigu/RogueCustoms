@@ -345,13 +345,16 @@ namespace RogueCustomsDungeonEditor.Utils
                 PossibleMonsters = new(),
                 PossibleItems = new(),
                 PossibleTraps = new(),
-                PossibleGeneratorAlgorithms = new()
+                PossibleLayouts = new()
                 {
-                    new GeneratorAlgorithmInfo
+                    new FloorLayoutGenerationInfo
                     {
-                        Name = "OneBigRoom",
-                        Rows = 1,
-                        Columns = 1
+                        Name = "Default",
+                        Rows = 4,
+                        Columns = 4,
+                        MinRoomSize = new() {Width = 5, Height = 5 },
+                        MaxRoomSize = new() {Width = 5, Height = 5 },
+                        RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
                     }
                 },
                 OnFloorStart = new()
@@ -588,17 +591,58 @@ namespace RogueCustomsDungeonEditor.Utils
                 Width = info.Width,
                 Height = info.Height,
                 GenerateStairsOnStart = info.GenerateStairsOnStart,
-                PossibleMonsters = new List<ClassInFloorInfo>(info.PossibleMonsters),
-                PossibleItems = new List<ClassInFloorInfo>(info.PossibleItems),
-                PossibleTraps = new List<ClassInFloorInfo>(info.PossibleTraps),
-                PossibleGeneratorAlgorithms = new List<GeneratorAlgorithmInfo>(info.PossibleGeneratorAlgorithms),
+                PossibleMonsters = new List<ClassInFloorInfo>(),
+                PossibleItems = new List<ClassInFloorInfo>(),
+                PossibleTraps = new List<ClassInFloorInfo>(),
+                PossibleLayouts = new List<FloorLayoutGenerationInfo>(),
                 MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms,
                 OddsForExtraConnections = info.OddsForExtraConnections,
                 RoomFusionOdds = info.RoomFusionOdds,
                 OnFloorStart = info.OnFloorStart.Clone()
             };
 
+            info.PossibleMonsters.ForEach(pm => clonedFloor.PossibleMonsters.Add(pm.Clone()));
+            info.PossibleItems.ForEach(pi => clonedFloor.PossibleItems.Add(pi.Clone()));
+            info.PossibleTraps.ForEach(pt => clonedFloor.PossibleTraps.Add(pt.Clone()));
+            info.PossibleLayouts.ForEach(pl => clonedFloor.PossibleLayouts.Add(pl.Clone()));
+
             return clonedFloor;
+        }
+
+        public static FloorLayoutGenerationInfo Clone(this FloorLayoutGenerationInfo info)
+        {
+            if (info == null) return null;
+
+            var clonedLayout = new FloorLayoutGenerationInfo
+            {
+                Name = info.Name,
+                MinRoomSize = new() { Width = info.MinRoomSize.Width, Height = info.MinRoomSize.Height },
+                MaxRoomSize = new() { Width = info.MaxRoomSize.Width, Height = info.MaxRoomSize.Height },
+                Columns = info.Columns,
+                Rows = info.Rows,
+                RoomDisposition = new string(info.RoomDisposition)
+            };
+
+            return clonedLayout;
+        }
+
+        public static ClassInFloorInfo Clone(this ClassInFloorInfo info)
+        {
+            if (info == null) return null;
+
+            var clonedClassInFloor = new ClassInFloorInfo
+            {
+                ClassId = info.ClassId,
+                MinLevel = info.MinLevel,
+                MaxLevel = info.MaxLevel,
+                OverallMaxForKindInFloor = info.OverallMaxForKindInFloor,
+                CanSpawnOnFirstTurn = info.CanSpawnOnFirstTurn,
+                CanSpawnAfterFirstTurn = info.CanSpawnAfterFirstTurn,
+                SimultaneousMaxForKindInFloor = info.SimultaneousMaxForKindInFloor,
+                ChanceToPick = info.ChanceToPick
+            };
+
+            return clonedClassInFloor;
         }
 
         public static ActionWithEffectsInfo Clone(this ActionWithEffectsInfo info)

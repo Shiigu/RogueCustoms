@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RogueCustomsGameEngine.Utils.JsonImports
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11;
+
+using RogueCustomsGameEngine.Utils.JsonImports;
+
+namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V13
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    [Serializable]
-    public class FloorInfo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+
+    public class FloorInfoV13
     {
         public int MinFloorLevel { get; set; }
         public int MaxFloorLevel { get; set; }
@@ -16,16 +20,16 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
 
         public string TileSetId { get; set; }
 
-        public List<ClassInFloorInfo> PossibleMonsters { get; set; }
+        public List<ClassInFloorInfoV13> PossibleMonsters { get; set; }
         public int SimultaneousMinMonstersAtStart { get; set; }
         public int SimultaneousMaxMonstersInFloor { get; set; }
         public int TurnsPerMonsterGeneration { get; set; }
 
-        public List<ClassInFloorInfo> PossibleItems { get; set; }
+        public List<ClassInFloorInfoV13> PossibleItems { get; set; }
         public int MinItemsInFloor { get; set; }
         public int MaxItemsInFloor { get; set; }
 
-        public List<ClassInFloorInfo> PossibleTraps { get; set; }
+        public List<ClassInFloorInfoV13> PossibleTraps { get; set; }
         public int MinTrapsInFloor { get; set; }
         public int MaxTrapsInFloor { get; set; }
 
@@ -34,12 +38,13 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int RoomFusionOdds { get; set; }
 
         public decimal HungerDegeneration { get; set; }
-        public List<FloorLayoutGenerationInfo> PossibleLayouts { get; set; }
+
+        public List<GeneratorAlgorithmInfoV13> PossibleGeneratorAlgorithms { get; set; }
         public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
     }
 
     [Serializable]
-    public class ClassInFloorInfo
+    public class ClassInFloorInfoV13
     {
         public string ClassId { get; set; }
 
@@ -50,27 +55,16 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanSpawnOnFirstTurn { get; set; }
         public bool CanSpawnAfterFirstTurn { get; set; }
         #endregion
-
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
     }
 
     [Serializable]
-    public class FloorLayoutGenerationInfo
+    public class GeneratorAlgorithmInfoV13
     {
         public string Name { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
-        public string RoomDisposition { get; set; }
-        public RoomDimensionsInfo MinRoomSize { get; set; }
-        public RoomDimensionsInfo MaxRoomSize { get; set; }
-    }
-
-    [Serializable]
-    public class RoomDimensionsInfo
-    {
-        public int Width { get; set; }
-        public int Height { get; set; }
     }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

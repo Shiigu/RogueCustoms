@@ -1,0 +1,56 @@
+[
+  {
+    "InternalName": "RandomRoom",
+    "DisplayName": "Any possible Room type here",
+    "DispositionItemType": "Room",
+    "ImagePath": "./FloorInfos/RandomRoom.png"
+  },
+  {
+    "InternalName": "GuaranteedRoom",
+    "DisplayName": "A guaranteed normal Room here",
+    "DispositionItemType": "Room",
+    "ImagePath": "./FloorInfos/GuaranteedRoom.png"
+  },
+  {
+    "InternalName": "GuaranteedDummyRoom",
+    "DisplayName": "A guaranteed Dummy (1x1) Room here",
+    "DispositionItemType": "Room",
+    "ImagePath": "./FloorInfos/GuaranteedDummyRoom.png"
+  },
+  {
+    "InternalName": "NoRoom",
+    "DisplayName": "No Room here",
+    "DispositionItemType": "Room",
+    "ImagePath": "./FloorInfos/NoRoom.png"
+  },
+  {
+    "InternalName": "RandomConnection",
+    "DisplayName": "A random Room Connection here",
+    "DispositionItemType": "Connection",
+    "ImagePath": "./FloorInfos/RandomConnection.png"
+  },
+  {
+    "InternalName": "GuaranteedHallway",
+    "DisplayName": "A guaranteed Hallway here",
+    "DispositionItemType": "Connection",
+    "ImagePath": "./FloorInfos/GuaranteedHallway.png"
+  },
+  {
+    "InternalName": "GuaranteedFusion",
+    "DisplayName": "A guaranteed Room Fusion here",
+    "DispositionItemType": "Connection",
+    "ImagePath": "./FloorInfos/GuaranteedFusion.png"
+  },
+  {
+    "InternalName": "NoConnection",
+    "DisplayName": "Disconnected Rooms here",
+    "DispositionItemType": "Connection",
+    "ImagePath": "./FloorInfos/NoConnection.png"
+  },
+  {
+    "InternalName": "ConnectionImpossible",
+    "DisplayName": "Nothing can be placed here",
+    "DispositionItemType": "Connection",
+    "ImagePath": "./FloorInfos/ConnectionImpossible.png"
+  }
+]

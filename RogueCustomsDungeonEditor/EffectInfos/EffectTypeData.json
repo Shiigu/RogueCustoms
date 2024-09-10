@@ -1448,7 +1448,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "Description": "Indicates the odds for Target to get an Item given. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],
@@ -1499,7 +1499,7 @@
       {
         "InternalName": "Accuracy",
         "DisplayName": "Accuracy",
-        "Description": "Indicates the odds for Target to get their Visibility changed. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "Description": "Indicates the odds for the Tile to be transformed. Final Accuracy is calculated with Accuracy * User's Accuracy%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
         "ValidValues": [],

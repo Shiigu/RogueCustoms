@@ -43,7 +43,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly decimal HungerDegeneration;
 
-        public List<GeneratorAlgorithm> PossibleGeneratorAlgorithms { get; private set; }
+        public List<FloorLayoutGenerator> PossibleLayouts { get; private set; }
 
         public readonly ActionWithEffects OnFloorStart;
 
@@ -69,16 +69,31 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             OddsForExtraConnections = floorInfo.OddsForExtraConnections;
             RoomFusionOdds = floorInfo.RoomFusionOdds;
             HungerDegeneration = floorInfo.HungerDegeneration;
-            PossibleGeneratorAlgorithms = new List<GeneratorAlgorithm>();
-            floorInfo.PossibleGeneratorAlgorithms.ForEach(pga => PossibleGeneratorAlgorithms.Add(new GeneratorAlgorithm
+            PossibleLayouts = new List<FloorLayoutGenerator>();
+            foreach (var layout in floorInfo.PossibleLayouts)
             {
-                Type = (GeneratorAlgorithmTypes)Enum.Parse(typeof(GeneratorAlgorithmTypes), pga.Name),
-                Rows = pga.Rows,
-                Columns = pga.Columns
-            }));
+                var matrixColumns = layout.Columns * 2 - 1;
+                var matrixRows = layout.Rows * 2 - 1;
+                var dispositionMatrix = new RoomDispositionType[matrixRows, matrixColumns];
+                for (int i = 0; i < layout.RoomDisposition.Length; i++)
+                {
+                    var roomTile = layout.RoomDisposition[i];
+                    (int X, int Y) = (i / matrixColumns, i % matrixColumns);
+                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
+                    dispositionMatrix[X, Y] = roomTile.ToRoomDispositionIndicator(isHallwayTile);
+                }
+                PossibleLayouts.Add(new FloorLayoutGenerator
+                {
+                    Rows = layout.Rows,
+                    Columns = layout.Columns,
+                    RoomDisposition = dispositionMatrix,
+                    MinRoomSize = layout.MinRoomSize,
+                    MaxRoomSize = layout.MaxRoomSize,
+                });
+            }
             OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart);
 
-            if (!PossibleGeneratorAlgorithms.Any())
+            if (!PossibleLayouts.Any())
                 throw new InvalidDataException("There's no valid generator algorithms for the current floor");
         }
 
@@ -145,5 +160,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
     }
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+
+    [Serializable]
+    public class FloorLayoutGenerator
+    {
+        public int Rows { get; set; }
+        public int Columns { get; set; }
+        public RoomDispositionType[,] RoomDisposition { get; set; }
+        public RoomDimensionsInfo MinRoomSize { get; set; }
+        public RoomDimensionsInfo MaxRoomSize { get; set; }
+    }
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }
