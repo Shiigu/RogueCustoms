@@ -18,6 +18,7 @@ using System.Collections.Immutable;
 using System.Text.Json;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using org.matheval.Functions;
+using org.matheval.Node;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -105,7 +106,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RngHandler Rng { get; private set; }
         private (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
         private List<(Room RoomA, Room RoomB)> Hallways { get; set; }
-        private List<(Room RoomA, Room RoomB)> Fusions { get; set; }
+        private List<(Room RoomA, Room RoomB, Room FusedRoom)> Fusions { get; set; }
 
         public Tile[,] Tiles { get; private set; }
 
@@ -182,15 +183,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 success = false;
                 _generationTries++;
-                ResetAndCreateTiles();
 
                 Hallways = new();
                 Fusions = new();
 
+                ResetAndCreateTiles();
                 CreateRooms();
-                Parallel.ForEach(Rooms, r => r.CreateTiles());
+                FuseRooms();
+                Rooms = Rooms.Distinct().ToList();
                 if (Rooms.Count(r => !r.IsDummy) > 1)
                     ConnectRooms();
+                Parallel.ForEach(Rooms, r => r.CreateTiles());
                 if (Rooms.Count == 1 || Rooms.Count(r => !r.IsDummy) > 1)
                 {
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
@@ -212,11 +215,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 success = false;
                 GeneratorToUse = DefaultGeneratorToUse;
-                ResetAndCreateTiles();
-                CreateRooms();
 
                 Hallways = new();
                 Fusions = new();
+
+                ResetAndCreateTiles();
+                CreateRooms();
+                FuseRooms();
                 Parallel.ForEach(Rooms, r => r.CreateTiles());
                 ConnectRooms();
                 if (Rooms.Count == 1 || Rooms.Count(r => !r.IsDummy) != 1)
@@ -249,12 +254,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             GetPossibleRoomData();
             Rooms = new List<Room>();
 
-            for (var row = 0; row < RoomCountRows; row++)
+            for (var row = 0; row < GeneratorToUse.RoomDisposition.GetLength(0); row++)
             {
-                for (var column = 0; column < RoomCountColumns; column++)
+                for (var column = 0; column < GeneratorToUse.RoomDisposition.GetLength(1); column++)
                 {
-                    var roomTile = GeneratorToUse.RoomDisposition[column * 2, row * 2];
+                    var roomTile = GeneratorToUse.RoomDisposition[row, column];
                     if (!validRoomTileTypes.Contains(roomTile)) continue;
+                    var roomRow = row / 2;
+                    var roomColumn = column / 2;
 
                     var roomType = roomTile;
                     if (roomType == RoomDispositionType.RandomRoom)
@@ -271,7 +278,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
 
-                    var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(row, column);
+                    var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(roomRow, roomColumn);
 
                     if (roomType == RoomDispositionType.GuaranteedRoom)
                     {
@@ -284,55 +291,42 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         var rngY2 = Math.Max(rngY1 + MinRoomHeight, Rng.NextInclusive(rngY1 + MinRoomHeight, MaxY));
                         var roomHeight = rngY2 - rngY1 + 1;
 
-                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), row, column, roomWidth, roomHeight));
+                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
                     }
                     else if (roomType == RoomDispositionType.GuaranteedDummyRoom)
                     {
                         // Dummy rooms are 1x1
                         var rngX = Rng.NextInclusive(MinX + 1, MaxX - 1);
                         var rngY = Rng.NextInclusive(MinY + 1, MaxY - 1);
-                        Rooms.Add(new Room(this, new GamePoint(rngX, rngY), row, column, 1, 1));
+                        Rooms.Add(new Room(this, new GamePoint(rngX, rngY), roomRow, roomColumn, 1, 1));
                     }
                 }
             }
         }
 
-
-        private void ConnectRooms()
+        private void FuseRooms()
         {
-            var validHallwayTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedFusion, RoomDispositionType.GuaranteedHallway, RoomDispositionType.RandomConnection };
+            var validFusionTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedFusion, RoomDispositionType.RandomConnection };
 
-            var totalRandomConnections = GeneratorToUse.RoomDisposition.Where(rd => rd == RoomDispositionType.RandomConnection).Count;
-            var randomConnectionsRemoved = 0;
-            var maximumRandomConnectionsToRemove = Math.Max(1, totalRandomConnections / (3 + (_generationTries * 2) / Constants.MaxGenerationTries));
-            for (var row = 0; row < GeneratorToUse.RoomDisposition.GetLength(1); row++)
+            for (var row = 0; row < GeneratorToUse.RoomDisposition.GetLength(0); row++)
             {
-                for (var column = 0; column < GeneratorToUse.RoomDisposition.GetLength(0); column++)
+                for (var column = 0; column < GeneratorToUse.RoomDisposition.GetLength(1); column++)
                 {
-                    var connectionTile = GeneratorToUse.RoomDisposition[column, row];
-                    if (!validHallwayTileTypes.Contains(connectionTile)) continue;
-                    var leftRoom = Rooms.FirstOrDefault(r => r.RoomColumn == (column - 1) / 2 && r.RoomRow == row / 2);
-                    var rightRoom = Rooms.FirstOrDefault(r => r.RoomColumn == (column + 1) / 2 && r.RoomRow == row / 2);
-                    var upRoom = Rooms.FirstOrDefault(r => r.RoomColumn == column / 2 && r.RoomRow == (row - 1) / 2);
-                    var downRoom = Rooms.FirstOrDefault(r => r.RoomColumn == column / 2 && r.RoomRow == (row + 1) / 2);
+                    var connectionTile = GeneratorToUse.RoomDisposition[row, column];
+                    if (!validFusionTileTypes.Contains(connectionTile)) continue;
+                    var leftRoom = GetRoomByRowAndColumn(row / 2, (column - 1) / 2);
+                    var rightRoom = GetRoomByRowAndColumn(row / 2, (column + 1) / 2);
+                    var upRoom = GetRoomByRowAndColumn((row - 1) / 2, column / 2);
+                    var downRoom = GetRoomByRowAndColumn((row + 1) / 2, column / 2);
                     var isVerticalConnection = column % 2 == 0 && row % 2 != 0;
                     var isHorizontalConnection = column % 2 != 0 && row % 2 == 0;
                     var connectionType = connectionTile;
                     if (connectionType == RoomDispositionType.RandomConnection)
                     {
-                        if(((isHorizontalConnection && leftRoom != null && !leftRoom.IsDummy && !leftRoom.IsFused && rightRoom != null && !rightRoom.IsDummy && !rightRoom.IsFused)
+                        if (((isHorizontalConnection && leftRoom != null && !leftRoom.IsDummy && !leftRoom.IsFused && rightRoom != null && !rightRoom.IsDummy && !rightRoom.IsFused)
                             || (isVerticalConnection && upRoom != null && !upRoom.IsDummy && !upRoom.IsFused && downRoom != null && !downRoom.IsDummy && !downRoom.IsFused))
                             && Rng.RollProbability() < RoomFusionOdds)
                             connectionType = RoomDispositionType.GuaranteedFusion;
-                        else if (randomConnectionsRemoved < maximumRandomConnectionsToRemove && Rng.RollProbability() < 30)
-                        {
-                            connectionType = RoomDispositionType.NoConnection;
-                            randomConnectionsRemoved++;
-                        }
-                        else
-                        {
-                            connectionType = RoomDispositionType.GuaranteedHallway;
-                        }
                     }
                     if (connectionType == RoomDispositionType.GuaranteedFusion)
                     {
@@ -342,8 +336,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             fusedRoom = FuseRooms(leftRoom, rightRoom);
                             if (fusedRoom != null)
                             {
+                                Fusions.Add((leftRoom, rightRoom, fusedRoom));
+                                Rooms[Rooms.IndexOf(leftRoom)] = Rooms[Rooms.IndexOf(rightRoom)] = fusedRoom;
                                 leftRoom = rightRoom = fusedRoom;
-                                Fusions.Add((leftRoom, rightRoom));
                             }
                         }
                         else if (isVerticalConnection && downRoom != null && !downRoom.IsDummy && upRoom != null && !upRoom.IsDummy)
@@ -351,12 +346,49 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             fusedRoom = FuseRooms(downRoom, upRoom);
                             if (fusedRoom != null)
                             {
+                                Fusions.Add((upRoom, downRoom, fusedRoom));
+                                Rooms[Rooms.IndexOf(upRoom)] = Rooms[Rooms.IndexOf(downRoom)] = fusedRoom;
                                 downRoom = upRoom = fusedRoom;
-                                Fusions.Add((downRoom, upRoom));
                             }
                         }
                         else
-                            connectionType = validHallwayTileTypes.TakeRandomElement(Rng);
+                            connectionType = validFusionTileTypes.TakeRandomElement(Rng);
+                    }
+                }
+            }
+        }
+        private void ConnectRooms()
+        {
+            var validHallwayTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedFusion, RoomDispositionType.GuaranteedHallway, RoomDispositionType.RandomConnection };
+
+            var totalRandomConnections = GeneratorToUse.RoomDisposition.Where(rd => rd == RoomDispositionType.RandomConnection).Count;
+            var randomConnectionsRemoved = 0;
+            var maximumRandomConnectionsToRemove = Math.Max(1, totalRandomConnections / (3 + (_generationTries * 2) / Constants.MaxGenerationTries));
+
+            for (var row = 0; row < GeneratorToUse.RoomDisposition.GetLength(0); row++)
+            {
+                for (var column = 0; column < GeneratorToUse.RoomDisposition.GetLength(1); column++)
+                {
+                    var connectionTile = GeneratorToUse.RoomDisposition[row, column];
+                    if (!validHallwayTileTypes.Contains(connectionTile)) continue;
+                    var leftRoom = GetRoomOrFusionByRowAndColumn(row / 2, (column - 1) / 2);
+                    var rightRoom = GetRoomOrFusionByRowAndColumn(row / 2, (column + 1) / 2);
+                    var upRoom = GetRoomOrFusionByRowAndColumn((row - 1) / 2, column / 2);
+                    var downRoom = GetRoomOrFusionByRowAndColumn((row + 1) / 2, column / 2);
+                    var isVerticalConnection = column % 2 == 0 && row % 2 != 0;
+                    var isHorizontalConnection = column % 2 != 0 && row % 2 == 0;
+                    var connectionType = connectionTile;
+                    if (connectionType == RoomDispositionType.RandomConnection)
+                    {
+                        if (randomConnectionsRemoved < maximumRandomConnectionsToRemove && Rng.RollProbability() < 30)
+                        {
+                            connectionType = RoomDispositionType.NoConnection;
+                            randomConnectionsRemoved++;
+                        }
+                        else
+                        {
+                            connectionType = RoomDispositionType.GuaranteedHallway;
+                        }
                     }
                     if (connectionType == RoomDispositionType.GuaranteedHallway)
                     {
@@ -412,6 +444,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
 
         private Room? GetRoomByRowAndColumn(int row, int column) => Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
+
+        private Room? GetRoomOrFusionByRowAndColumn(int row, int column)
+        {
+            var room = GetRoomByRowAndColumn(row, column);
+            if (room == null)
+            {
+                var fusionWithRoom = Fusions.FirstOrDefault(f => (f.RoomA.RoomColumn == column && f.RoomA.RoomRow == row)
+                                                        || f.RoomB.RoomColumn == column && f.RoomB.RoomRow == row);
+                if (fusionWithRoom != default)
+                    room = fusionWithRoom.FusedRoom;
+            }
+            return room;
+        }
 
         public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent));
         public void AppendMessage(string message, Color foregroundColor) => AppendMessage(message, new GameColor(foregroundColor));
@@ -1064,8 +1109,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     var aRandomTile = validEmptyTiles.TakeRandomElement(Rng);
                     rngX = aRandomTile.Position.X;
                     rngY = aRandomTile.Position.Y;
-                    //rngX = Rng.NextInclusive(possibleNonDummyRoom.Position.X + 1, possibleNonDummyRoom.Position.X + possibleNonDummyRoom.Width - 2);
-                    //rngY = Rng.NextInclusive(possibleNonDummyRoom.Position.Y + 1, possibleNonDummyRoom.Position.Y + possibleNonDummyRoom.Height - 2);
                 }
             }
             while (nonDummyRooms.Any() && (!roomIsValid || !CanBeConsideredEmpty(GetTileFromCoordinates(rngX, rngY))));
@@ -1076,16 +1119,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (t == null) return false;
             var position = t.Position;
+
+            if (!t.IsWalkable) return false;
+            if (t.Type != TileType.Floor) return false;
+            if (t.LivingCharacter != null) return false;
+            if (t.GetItems().Any()) return false;
+            if (t.Trap != null) return false;
+
             var hasLaterallyAdjacentHallways = GetTileFromCoordinates(position.X - 1, position.Y)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X + 1, position.Y)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y - 1)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Hallway;
-            return t.IsWalkable &&
-                    t.Type == TileType.Floor &&
-                    t.LivingCharacter == null &&
-                    !t.GetItems().Any() &&
-                    t.Trap == null &&
-                    !hasLaterallyAdjacentHallways;
+            return !hasLaterallyAdjacentHallways;
         }
 
         #endregion
@@ -1335,18 +1380,22 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 if (edge.Tag == RoomConnectionType.Horizontal)
                 {
-                    if (roomA.RoomColumn < roomB.RoomColumn)
+                    if (roomA.BottomRight.X < roomB.BottomLeft.X)
                         CreateHorizontalHallway(roomA, roomB);
-                    else
+                    else if (roomA.BottomRight.X > roomB.BottomLeft.X)
                         CreateHorizontalHallway(roomB, roomA);
+                    else
+                        return;
                     Hallways.Add((roomA, roomB));
                 }
                 else if (edge.Tag == RoomConnectionType.Vertical)
                 {
-                    if (roomA.RoomRow < roomB.RoomRow)
+                    if (roomA.BottomLeft.Y < roomB.BottomRight.Y)
                         CreateVerticalHallway(roomA, roomB);
-                    else
+                    else if (roomA.BottomLeft.Y > roomB.BottomRight.Y)
                         CreateVerticalHallway(roomB, roomA);
+                    else
+                        return;
                     Hallways.Add((roomA, roomB));
                 }
             }
@@ -1368,15 +1417,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var leftRoomMinY = leftRoom.Position.Y + 1;
             var leftRoomMaxY = leftRoom.Position.Y + leftRoom.Height - 2;
 
+            var rightRoomMinY = rightRoom.Position.Y + 1;
+            var rightRoomMaxY = rightRoom.Position.Y + rightRoom.Height - 2;
+
+            var largerMinY = leftRoomMinY > rightRoomMinY ? leftRoomMinY : rightRoomMinY;
+            var lowerMaxY = leftRoomMaxY > rightRoomMaxY ? rightRoomMaxY : leftRoomMaxY;
+
+            var minY = largerMinY > lowerMaxY ? lowerMaxY : largerMinY;
+            var maxY = largerMinY > lowerMaxY ? largerMinY : lowerMaxY;
+
             if (leftConnector == null)
             {
                 var x = leftRoom.Position.X + leftRoom.Width - 1;
                 var y = Rng.NextInclusive(leftRoomMinY, leftRoomMaxY);
                 leftConnector = GetTileFromCoordinates(x, y);
             }
-
-            var rightRoomMinY = rightRoom.Position.Y + 1;
-            var rightRoomMaxY = rightRoom.Position.Y + rightRoom.Height - 2;
 
             if (rightConnector == null)
             {
@@ -1410,30 +1465,32 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (InBetweenConnectorPosition != null)
                 {
                     // Horizontal line from Left Room to Hallway connection column
-                    for (var i = leftConnector.Position.X; i <= InBetweenConnectorPosition.X; i++)
+                    for (var i = ConnectorAPosition.X; i <= InBetweenConnectorPosition.X; i++)
                     {
-                        tilesToConvert.Add(GetTileFromCoordinates(i, leftConnector.Position.Y));
+                        tilesToConvert.Add(GetTileFromCoordinates(i, ConnectorAPosition.Y));
                     }
 
                     // Horizontal line from Right Room to Hallway connection column
-                    for (var i = InBetweenConnectorPosition.X; i <= rightConnector.Position.X; i++)
+                    for (var i = InBetweenConnectorPosition.X; i <= ConnectorBPosition.X; i++)
                     {
-                        tilesToConvert.Add(GetTileFromCoordinates(i, rightConnector.Position.Y));
+                        tilesToConvert.Add(GetTileFromCoordinates(i, ConnectorBPosition.Y));
                     }
 
                     // Draw a downwards line in case entryGamePoint from left is higher or equal to entryGamePoint from right
-                    for (var i = rightConnector.Position.Y + 1; i < leftConnector.Position.Y; i++)
+                    for (var i = rightConnector.Position.Y + 1; i < ConnectorAPosition.Y; i++)
                     {
                         tilesToConvert.Add(GetTileFromCoordinates(InBetweenConnectorPosition.X, i));
                     }
                     // Draw an upwards line in case entryGamePoint from left is lower than entryGamePoint from right
-                    for (var i = leftConnector.Position.Y + 1; i < rightConnector.Position.Y; i++)
+                    for (var i = ConnectorAPosition.Y + 1; i < ConnectorBPosition.Y; i++)
                     {
                         tilesToConvert.Add(GetTileFromCoordinates(InBetweenConnectorPosition.X, i));
                     }
                 }
 
-                isValidHallway = IsHallwayTileGroupValid(tilesToConvert, leftConnector, rightConnector);
+                tilesToConvert = tilesToConvert.Distinct().OrderByDescending(t => t.Position.Y).ThenBy(t => t.Position.X).ToList();
+
+                isValidHallway = IsHallwayTileGroupValid(tilesToConvert, connectorA, connectorB);
             }
             while (!isValidHallway && hallwayGenerationTries < Constants.MaxGenerationTriesForHallway);
 
@@ -1455,15 +1512,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var topRoomMinX = topRoom.Position.X + 1;
             var topRoomMaxX = topRoom.Position.X + topRoom.Width - 2;
 
+            var downRoomMinX = downRoom.Position.X + 1;
+            var downRoomMaxX = downRoom.Position.X + downRoom.Width - 2;
+
+            var largerMinX = topRoomMinX > downRoomMinX ? topRoomMinX : downRoomMinX;
+            var lowerMaxX = topRoomMinX > downRoomMinX ? downRoomMinX : topRoomMinX;
+
+            var minX = largerMinX > lowerMaxX ? lowerMaxX : largerMinX;
+            var maxX = largerMinX > lowerMaxX ? largerMinX : lowerMaxX;
+
             if (topConnector == null)
             {
                 var x = Rng.NextInclusive(topRoomMinX, topRoomMaxX);
                 var y = topRoom.Position.Y + topRoom.Height - 1;
                 topConnector = GetTileFromCoordinates(x, y);
             }
-
-            var downRoomMinX = downRoom.Position.X + 1;
-            var downRoomMaxX = downRoom.Position.X + downRoom.Width - 2;
 
             if (downConnector == null)
             {
@@ -1497,29 +1560,30 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (InBetweenConnectorPosition != null)
                 {
                     // Vertical line from Up Room to Hallway connection row
-                    for (var i = topConnector.Position.Y; i <= InBetweenConnectorPosition.Y; i++)
+                    for (var i = ConnectorAPosition.Y; i <= InBetweenConnectorPosition.Y; i++)
                     {
-                        tilesToConvert.Add(GetTileFromCoordinates(topConnector.Position.X, i));
+                        tilesToConvert.Add(GetTileFromCoordinates(ConnectorAPosition.X, i));
                     }
 
                     // Vertical line from Down Room to Hallway connection row
-                    for (var i = InBetweenConnectorPosition.Y; i <= downConnector.Position.Y; i++)
+                    for (var i = InBetweenConnectorPosition.Y; i <= ConnectorBPosition.Y; i++)
                     {
-                        tilesToConvert.Add(GetTileFromCoordinates(downConnector.Position.X, i));
+                        tilesToConvert.Add(GetTileFromCoordinates(ConnectorBPosition.X, i));
                     }
 
                     // Draw a rightwards line in case entryGamePoint from up is more or equal to the right to entryGamePoint from below
-                    for (var i = downConnector.Position.X + 1; i < topConnector.Position.X; i++)
+                    for (var i = ConnectorBPosition.X + 1; i < ConnectorAPosition.X; i++)
                     {
                         tilesToConvert.Add(GetTileFromCoordinates(i, InBetweenConnectorPosition.Y));
                     }
                     // Draw a leftwards line in case entryGamePoint from up is more to the left than entryGamePoint from below
-                    for (var i = topConnector.Position.X + 1; i < downConnector.Position.X; i++)
+                    for (var i = ConnectorAPosition.X + 1; i < ConnectorBPosition.X; i++)
                     {
                         tilesToConvert.Add(GetTileFromCoordinates(i, InBetweenConnectorPosition.Y));
                     }
                 }
 
+                tilesToConvert = tilesToConvert.Distinct().OrderBy(t => t.Position.Y).ThenBy(t => t.Position.X).ToList();
                 isValidHallway = IsHallwayTileGroupValid(tilesToConvert, topConnector, downConnector);
             }
             while (!isValidHallway && hallwayGenerationTries < Constants.MaxGenerationTriesForHallway);
@@ -1538,6 +1602,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (connectionType == RoomConnectionType.Horizontal)
             {
+                if (connectorB.Position.X < connectorA.Position.X)
+                {
+                    (connectorB, connectorA) = (connectorA, connectorB);
+                    (connectorBPosition, connectorAPosition) = (connectorAPosition, connectorBPosition);
+                }
                 if (Math.Abs(connectorA.Position.X - connectorB.Position.X) == 1)
                 {
                     if (connectorA.Position.Y == connectorB.Position.Y)
@@ -1559,6 +1628,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else if (connectionType == RoomConnectionType.Vertical)
             {
+                if(connectorB.Position.Y < connectorA.Position.Y)
+                {
+                    (connectorB, connectorA) = (connectorA, connectorB);
+                    (connectorBPosition, connectorAPosition) = (connectorAPosition, connectorBPosition);
+                }
+
                 if (Math.Abs(connectorA.Position.Y - connectorB.Position.Y) == 1)
                 {
                     if (connectorA.Position.X == connectorB.Position.X)

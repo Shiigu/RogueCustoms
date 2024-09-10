@@ -74,13 +74,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 var matrixColumns = layout.Columns * 2 - 1;
                 var matrixRows = layout.Rows * 2 - 1;
-                var dispositionMatrix = new RoomDispositionType[matrixColumns, matrixRows];
+                var dispositionMatrix = new RoomDispositionType[matrixRows, matrixColumns];
                 for (int i = 0; i < layout.RoomDisposition.Length; i++)
                 {
                     var roomTile = layout.RoomDisposition[i];
                     (int X, int Y) = (i / matrixColumns, i % matrixColumns);
                     var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
-                    dispositionMatrix[Y, X] = roomTile.ToRoomDispositionIndicator(isHallwayTile);
+                    dispositionMatrix[X, Y] = roomTile.ToRoomDispositionIndicator(isHallwayTile);
                 }
                 PossibleLayouts.Add(new FloorLayoutGenerator
                 {
