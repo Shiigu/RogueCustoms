@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsDungeonEditor.Clipboard;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -36,7 +38,7 @@ namespace RogueCustomsDungeonEditor
         private readonly List<string> MandatoryLocaleKeys = new();
         private readonly List<string> BaseLocaleLanguages = new();
         private readonly LocaleInfo LocaleTemplate;
-        private readonly List<FloorTypeData> BaseGeneratorAlgorithms = new();
+        private readonly List<RoomDispositionData> RoomDispositionData = new();
         private readonly List<EffectTypeData> EffectParamData = new();
         private readonly Dictionary<string, string> BaseSightRangeDisplayNames = new Dictionary<string, string> {
             { "FullMap", "The whole map" },
@@ -97,8 +99,8 @@ namespace RogueCustomsDungeonEditor
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
-            jsonString = File.ReadAllText("./FloorInfos/FloorTypeData.json");
-            BaseGeneratorAlgorithms = JsonSerializer.Deserialize<List<FloorTypeData>>(jsonString, new JsonSerializerOptions
+            jsonString = File.ReadAllText("./FloorInfos/RoomDispositionData.json");
+            RoomDispositionData = JsonSerializer.Deserialize<List<RoomDispositionData>>(jsonString, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -111,17 +113,13 @@ namespace RogueCustomsDungeonEditor
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
-            var algorithmIcons = new ImageList
+            foreach (var roomTile in RoomDispositionData)
             {
-                ImageSize = new Size(64, 64),
-                ColorDepth = ColorDepth.Depth32Bit
-            };
-            foreach (var algorithm in BaseGeneratorAlgorithms)
-            {
-                algorithm.PreviewImage = Image.FromFile(algorithm.ImagePath);
-                algorithmIcons.Images.Add(algorithm.InternalName, algorithm.PreviewImage);
+                roomTile.TileImage = Image.FromFile(roomTile.ImagePath);
+                roomTile.RoomDispositionIndicator = Enum.Parse<RoomDispositionType>(roomTile.InternalName);
             }
-            lvFloorAlgorithms.LargeImageList = algorithmIcons;
+
+            ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -1768,8 +1766,8 @@ namespace RogueCustomsDungeonEditor
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
             errorMessages = new List<string>();
 
-            if ((lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>)?.Any() != true)
-                errorMessages.Add("This Floor Group has been given no Floor Generation Algorithms.");
+            if ((lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>)?.Any() != true)
+                errorMessages.Add("This Floor Group has been given no Floor Layouts.");
             if (string.IsNullOrEmpty(cmbTilesets.Text))
                 errorMessages.Add("This Floor Group lacks a Tileset.");
             if (IsOverlappingWithOtherFloorInfos((int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, activeFloorGroup))
@@ -1846,6 +1844,7 @@ namespace RogueCustomsDungeonEditor
                 {
                     floorGroup = activeFloorGroup.Clone();
                 }
+                floorGroup.PossibleLayouts = new List<FloorLayoutGenerationInfo>((List<FloorLayoutGenerationInfo>)lvFloorAlgorithms.Tag);
                 floorGroup.MinFloorLevel = (int)nudMinFloorLevel.Value;
                 floorGroup.MaxFloorLevel = (int)nudMaxFloorLevel.Value;
                 floorGroup.TileSetId = cmbTilesets.Text;
@@ -1865,7 +1864,6 @@ namespace RogueCustomsDungeonEditor
                 floorGroup.PossibleTraps = trapGenerationParams.ObjectList;
                 floorGroup.MinTrapsInFloor = trapGenerationParams.MinInFloor;
                 floorGroup.MaxTrapsInFloor = trapGenerationParams.MaxInFloor;
-                floorGroup.PossibleGeneratorAlgorithms = lvFloorAlgorithms.Tag as List<GeneratorAlgorithmInfo>;
                 floorGroup.MaxConnectionsBetweenRooms = (int)nudMaxRoomConnections.Value;
                 floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
                 floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
@@ -1948,14 +1946,41 @@ namespace RogueCustomsDungeonEditor
 
         private void RefreshGenerationAlgorithmList()
         {
-            var algorithmList = (List<GeneratorAlgorithmInfo>)lvFloorAlgorithms.Tag ?? ((FloorInfo)ActiveNodeTag.DungeonElement).PossibleGeneratorAlgorithms;
-            lvFloorAlgorithms.Tag = algorithmList;
-            lvFloorAlgorithms.Items.Clear();
-            foreach (var generationAlgorithm in algorithmList)
+            var layoutList = (List<FloorLayoutGenerationInfo>)lvFloorAlgorithms.Tag ?? null;
+            if (layoutList == null)
             {
-                lvFloorAlgorithms.Items.Add($"{generationAlgorithm.Name}\n{generationAlgorithm.Columns}c x {generationAlgorithm.Rows}r", generationAlgorithm.Name);
+                layoutList = new List<FloorLayoutGenerationInfo>();
+                foreach (var layout in ((FloorInfo)ActiveNodeTag.DungeonElement).PossibleLayouts)
+                {
+                    layoutList.Add(new FloorLayoutGenerationInfo
+                    {
+                        Columns = layout.Columns,
+                        Rows = layout.Rows,
+                        MinRoomSize = new() { Width = layout.MinRoomSize.Width, Height = layout.MinRoomSize.Height },
+                        MaxRoomSize = new() { Width = layout.MaxRoomSize.Width, Height = layout.MaxRoomSize.Height },
+                        RoomDisposition = layout.RoomDisposition,
+                        Name = layout.Name
+                    });
+                }
             }
-            nudMaxRoomConnections.Enabled = algorithmList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
+            lvFloorAlgorithms.Tag = layoutList;
+            lvFloorAlgorithms.Items.Clear();
+            var algorithmIcons = new ImageList
+            {
+                ImageSize = new Size(64, 64),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
+            foreach (var layoutGenerator in layoutList)
+            {
+                var layoutThumbnail = ConstructLayoutThumbnail(layoutGenerator);
+                algorithmIcons.Images.Add(layoutGenerator.Name, layoutThumbnail);
+            }
+            lvFloorAlgorithms.LargeImageList = algorithmIcons;
+            foreach (var layoutGenerator in layoutList)
+            {
+                lvFloorAlgorithms.Items.Add(layoutGenerator.Name, layoutGenerator.Name);
+            }
+            nudMaxRoomConnections.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
             if (nudMaxRoomConnections.Enabled)
             {
                 nudMaxRoomConnections.Minimum = 1;
@@ -1966,13 +1991,42 @@ namespace RogueCustomsDungeonEditor
                 nudMaxRoomConnections.Minimum = 0;
                 nudMaxRoomConnections.Value = 0;
             }
-            nudExtraRoomConnectionOdds.Enabled = algorithmList.Count > 1 && nudMaxRoomConnections.Value > 1;
+            nudExtraRoomConnectionOdds.Enabled = layoutList.Count > 1 && nudMaxRoomConnections.Value > 1;
             nudExtraRoomConnectionOdds.Value = !nudMaxRoomConnections.Enabled ? 0 : nudExtraRoomConnectionOdds.Value;
-            nudRoomFusionOdds.Enabled = algorithmList.Count > 1;
+            nudRoomFusionOdds.Enabled = layoutList.Count > 1;
             nudRoomFusionOdds.Value = !nudRoomFusionOdds.Enabled ? 0 : nudRoomFusionOdds.Value;
             btnAddAlgorithm.Enabled = true;
             btnEditAlgorithm.Enabled = false;
             btnRemoveAlgorithm.Enabled = false;
+        }
+
+        private Image ConstructLayoutThumbnail(FloorLayoutGenerationInfo layout)
+        {
+            var rows = layout.Rows + layout.Rows - 1;
+            var columns = layout.Columns + layout.Columns - 1;
+            var width = 48 * columns;
+            var height = 48 * rows;
+            var thumbnail = new Bitmap(width, height);
+
+            using (var graphics = Graphics.FromImage(thumbnail))
+            {
+                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                // Fill it with Black to ensure it looks uniform
+                graphics.Clear(Color.Black);
+                for (int i = 0; i < layout.RoomDisposition.Length; i++)
+                {
+                    var tile = layout.RoomDisposition[i];
+                    (int X, int Y) = ((int)Math.Floor((double)i / columns), i % columns);
+                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
+                    var roomDispositionData = RoomDispositionData.FirstOrDefault(rdd => rdd.RoomDispositionIndicator == tile.ToRoomDispositionIndicator(isHallwayTile));
+                    graphics.DrawImage(roomDispositionData.TileImage, 48 * Y, 48 * X);
+                }
+            }
+
+            return thumbnail;
         }
 
         private void nudMinFloorLevel_ValueChanged(object sender, EventArgs e)
@@ -2074,17 +2128,17 @@ namespace RogueCustomsDungeonEditor
         private void btnAddAlgorithm_Click(object sender, EventArgs e)
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var frmAlgorithmWindow = new frmFloorGeneratorAlgorithm(activeFloorGroup, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, null, BaseGeneratorAlgorithms);
-            frmAlgorithmWindow.ShowDialog();
-            if (frmAlgorithmWindow.Saved)
+            var frmFloorLayoutWindow = new frmFloorLayout(lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, RoomDispositionData, null);
+            frmFloorLayoutWindow.ShowDialog();
+            if (frmFloorLayoutWindow.Saved)
             {
-                if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms)
+                if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> layoutGenerators)
                 {
-                    generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
-                    generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
+                    layoutGenerators = new List<FloorLayoutGenerationInfo>();
+                    layoutGenerators.AddRange(activeFloorGroup.PossibleLayouts);
                 }
-                generatorAlgorithms.Add(frmAlgorithmWindow.AlgorithmToSave);
-                lvFloorAlgorithms.Tag = generatorAlgorithms;
+                layoutGenerators.Add(frmFloorLayoutWindow.GeneratorToSave);
+                lvFloorAlgorithms.Tag = layoutGenerators;
                 RefreshGenerationAlgorithmList();
                 lvFloorAlgorithms.Items[lvFloorAlgorithms.Items.Count - 1].Selected = true;
                 lvFloorAlgorithms.Select();
@@ -2097,15 +2151,15 @@ namespace RogueCustomsDungeonEditor
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
             var selectedIndex = lvFloorAlgorithms.SelectedIndices[0];
-            if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms) return;
-            var algorithmToSave = generatorAlgorithms[lvFloorAlgorithms.SelectedIndices[0]];
-            var frmAlgorithmWindow = new frmFloorGeneratorAlgorithm(activeFloorGroup, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, algorithmToSave, BaseGeneratorAlgorithms);
-            frmAlgorithmWindow.ShowDialog();
-            if (frmAlgorithmWindow.Saved)
+            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> layoutGenerators) return;
+            var generatorToSave = layoutGenerators[lvFloorAlgorithms.SelectedIndices[0]];
+            var frmFloorLayoutWindow = new frmFloorLayout(lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, RoomDispositionData, generatorToSave);
+            frmFloorLayoutWindow.ShowDialog();
+            if (frmFloorLayoutWindow.Saved)
             {
-                generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
-                generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
-                generatorAlgorithms[lvFloorAlgorithms.SelectedIndices[0]] = frmAlgorithmWindow.AlgorithmToSave;
+                layoutGenerators = new List<FloorLayoutGenerationInfo>();
+                layoutGenerators.AddRange(activeFloorGroup.PossibleLayouts);
+                layoutGenerators[lvFloorAlgorithms.SelectedIndices[0]] = frmFloorLayoutWindow.GeneratorToSave;
                 RefreshGenerationAlgorithmList();
                 lvFloorAlgorithms.Items[selectedIndex].Selected = true;
                 lvFloorAlgorithms.Select();
@@ -2117,22 +2171,22 @@ namespace RogueCustomsDungeonEditor
         private void btnRemoveAlgorithm_Click(object sender, EventArgs e)
         {
             var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            if (lvFloorAlgorithms.Tag is not List<GeneratorAlgorithmInfo> generatorAlgorithms)
+            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayout)
             {
-                generatorAlgorithms = new List<GeneratorAlgorithmInfo>();
-                generatorAlgorithms.AddRange(activeFloorGroup.PossibleGeneratorAlgorithms);
+                floorLayout = new List<FloorLayoutGenerationInfo>();
+                floorLayout.AddRange(activeFloorGroup.PossibleLayouts);
             }
             var messageBoxResult = MessageBox.Show(
-                $"Do you want to remove your currently-selected Floor Algorithm?",
-                "Floor Algorithm",
+                $"Do you want to remove your currently-selected Floor Layout?",
+                "Floor Layout",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                generatorAlgorithms.RemoveAt(lvFloorAlgorithms.SelectedIndices[0]);
-                lvFloorAlgorithms.Tag = generatorAlgorithms;
+                floorLayout.RemoveAt(lvFloorAlgorithms.SelectedIndices[0]);
+                lvFloorAlgorithms.Tag = floorLayout;
                 RefreshGenerationAlgorithmList();
                 DirtyTab = true;
             }
@@ -2142,7 +2196,36 @@ namespace RogueCustomsDungeonEditor
         {
             btnAddAlgorithm.Enabled = true;
             btnEditAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
+            btnCopyAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
             btnRemoveAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
+        }
+
+        private void btnCopyAlgorithm_Click(object sender, EventArgs e)
+        {
+            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayouts)
+                return;
+            ClipboardManager.Copy(FormConstants.LayoutClipboardKey, floorLayouts[lvFloorAlgorithms.SelectedIndices[0]]);
+        }
+
+        private void btnPasteAlgorithm_Click(object sender, EventArgs e)
+        {
+            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayouts)
+                return;
+            var copiedLayout = ClipboardManager.Paste<FloorLayoutGenerationInfo>(FormConstants.LayoutClipboardKey);
+            if(floorLayouts.Any(fl => fl.Name.Equals(copiedLayout.Name)))
+            {
+                MessageBox.Show(
+                $"This Floor Group already has a Layout with the name {copiedLayout.Name}",
+                "Cannot Paste Floor Layout",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error
+                );
+                return;
+            }
+            floorLayouts.Add(copiedLayout);
+            RefreshGenerationAlgorithmList();
+            ClipboardManager.RemoveData(FormConstants.LayoutClipboardKey);
+            lvFloorAlgorithms.SelectedItems.Clear();
         }
 
         private void nudMaxRoomConnections_ValueChanged(object sender, EventArgs e)
@@ -4187,6 +4270,11 @@ namespace RogueCustomsDungeonEditor
         }
 
         #endregion
+
+        private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
+        {
+            btnPasteAlgorithm.Enabled = ClipboardManager.ContainsData(FormConstants.LayoutClipboardKey);
+        }
     }
 
     public class NodeTag

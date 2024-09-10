@@ -1,6 +1,10 @@
-﻿using RogueCustomsDungeonEditor.EffectInfos;
+﻿using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11;
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V13;
+
 using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
@@ -23,14 +27,21 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
         public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, string dungeonJson, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
             var convertedLocales = false;
-            var V10to11Dungeon = JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
+            var V10to11Dungeon = dungeon.Version.Equals("1.0") ? JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            });
+            }) : null;
+            var V13to14Dungeon = dungeon.Version.Equals("1.3") ? JsonSerializer.Deserialize<DungeonInfoV13>(dungeonJson, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            }) : null;
             while (!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
             {
                 switch (dungeon.Version)
                 {
+                    case "1.3":
+                        dungeon = V13to14Dungeon.ConvertDungeonInfoToV14();
+                        break;
                     case "1.2":
                         dungeon = dungeon.ConvertDungeonInfoToV13();
                         break;
@@ -705,6 +716,230 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
             dungeon.Version = "1.3";
             return dungeon;
+        }
+
+        #endregion
+
+        #region 1.3 to 1.4
+
+        private static DungeonInfo ConvertDungeonInfoToV14(this DungeonInfoV13 V13Dungeon)
+        {
+            var V13DungeonAsJSON = JsonSerializer.Serialize(V13Dungeon, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            var V14Dungeon = JsonSerializer.Deserialize<DungeonInfo>(V13DungeonAsJSON, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+
+            for (var i = 0; i < V13Dungeon.FloorInfos.Count; i++)
+            {
+                var v13FloorInfo = V13Dungeon.FloorInfos[i];
+                var v14FloorInfo = V14Dungeon.FloorInfos[i];
+                v14FloorInfo.PossibleLayouts = new List<FloorLayoutGenerationInfo>();
+                foreach (var generatorAlgorithm in v13FloorInfo.PossibleGeneratorAlgorithms)
+                {
+                    switch (generatorAlgorithm.Name)
+                    {
+                        case "Standard":
+                            v14FloorInfo.PossibleLayouts.Add(ConstructFullRandom(generatorAlgorithm, v13FloorInfo.Width, v13FloorInfo.Height));
+                            break;
+                        case "OuterDummyRing":
+                            v14FloorInfo.PossibleLayouts.Add(ConstructOuterDummyRing(generatorAlgorithm, v13FloorInfo.Width, v13FloorInfo.Height));
+                            break;
+                        case "InnerDummyRing":
+                            v14FloorInfo.PossibleLayouts.Add(ConstructInnerDummyRing(generatorAlgorithm, v13FloorInfo.Width, v13FloorInfo.Height));
+                            break;
+                        case "OneBigRoom":
+                            v14FloorInfo.PossibleLayouts.Add(ConstructOneBigRoom(generatorAlgorithm, v13FloorInfo.Width, v13FloorInfo.Height));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            V14Dungeon.Version = "1.4";
+            return V14Dungeon;
+        }
+
+        private static FloorLayoutGenerationInfo ConstructFullRandom(GeneratorAlgorithmInfoV13 generatorToConvert, int width, int height)
+        {
+            var maxWidth = Math.Max(5, width / generatorToConvert.Columns);
+            var maxHeight = Math.Max(5, height / generatorToConvert.Rows);
+            var rows = generatorToConvert.Rows + generatorToConvert.Rows - 1;
+            var columns = generatorToConvert.Columns + generatorToConvert.Columns - 1;
+            var floorLayoutDispositon = new StringBuilder();
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    if (x % 2 == 0 && y % 2 == 0)
+                        floorLayoutDispositon.Append(RoomDispositionType.RandomRoom.ToChar());
+                    else if ((x % 2 != 0 && y % 2 == 0) || (x % 2 == 0 && y % 2 != 0))
+                        floorLayoutDispositon.Append(RoomDispositionType.RandomConnection.ToChar());
+                    else
+                        floorLayoutDispositon.Append(RoomDispositionType.ConnectionImpossible.ToChar());
+                }
+            }
+            var floorLayout = new FloorLayoutGenerationInfo
+            {
+                Name = $"{generatorToConvert.Name} - {generatorToConvert.Columns}c x {generatorToConvert.Rows}r",
+                Rows = generatorToConvert.Rows,
+                Columns = generatorToConvert.Columns,
+                MinRoomSize = new RoomDimensionsInfo { Width = 5, Height = 5 },
+                MaxRoomSize = new RoomDimensionsInfo { Width = maxWidth, Height = maxHeight },
+                RoomDisposition = floorLayoutDispositon.ToString()
+            };
+            return floorLayout;
+        }
+
+        private static FloorLayoutGenerationInfo ConstructOuterDummyRing(GeneratorAlgorithmInfoV13 generatorToConvert, int width, int height)
+        {
+            var maxWidth = Math.Max(5, width / generatorToConvert.Columns);
+            var maxHeight = Math.Max(5, height / generatorToConvert.Rows);
+            var rows = generatorToConvert.Rows + generatorToConvert.Rows - 1;
+            var columns = generatorToConvert.Columns + generatorToConvert.Columns - 1;
+            var floorLayoutDispositon = new StringBuilder();
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    // Calculate which ring we are in (0-based index)
+                    int ringNumber = Math.Min(Math.Min(x, columns - 1 - x), Math.Min(y, rows - 1 - y)) / 2;
+
+                    // Determine if this ring should have Dummy rooms or Normal rooms
+                    bool isDummyRing = ringNumber % 2 == 0;
+
+                    if (y % 2 == 0) // Rows with rooms or dummy rooms
+                    {
+                        if (x % 2 == 0)
+                        {
+                            if(isDummyRing)
+                                floorLayoutDispositon.Append(RoomDispositionType.GuaranteedDummyRoom.ToChar());
+                            else
+                                floorLayoutDispositon.Append(RoomDispositionType.GuaranteedRoom.ToChar());
+                        }
+                        else
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.RandomConnection.ToChar());
+                        }
+                    }
+                    else // Rows with connection/impossible spaces
+                    {
+                        if (x % 2 == 0)
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.RandomConnection.ToChar());
+                        }
+                        else
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.ConnectionImpossible.ToChar());
+                        }
+                    }
+                }
+            }
+            var floorLayout = new FloorLayoutGenerationInfo
+            {
+                Name = $"{generatorToConvert.Name} - {generatorToConvert.Columns}c x {generatorToConvert.Rows}r",
+                Rows = generatorToConvert.Rows,
+                Columns = generatorToConvert.Columns,
+                MinRoomSize = new RoomDimensionsInfo { Width = 5, Height = 5 },
+                MaxRoomSize = new RoomDimensionsInfo { Width = maxWidth, Height = maxHeight },
+                RoomDisposition = floorLayoutDispositon.ToString()
+            };
+            return floorLayout;
+        }
+
+        private static FloorLayoutGenerationInfo ConstructInnerDummyRing(GeneratorAlgorithmInfoV13 generatorToConvert, int width, int height)
+        {
+            var maxWidth = Math.Max(5, width / generatorToConvert.Columns);
+            var maxHeight = Math.Max(5, height / generatorToConvert.Rows);
+            var rows = generatorToConvert.Rows + generatorToConvert.Rows - 1;
+            var columns = generatorToConvert.Columns + generatorToConvert.Columns - 1;
+            var floorLayoutDispositon = new StringBuilder();
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    // Calculate which ring we are in (0-based index)
+                    int ringNumber = Math.Min(Math.Min(x, columns - 1 - x), Math.Min(y, rows - 1 - y)) / 2;
+
+                    // Determine if this ring should have Dummy rooms or Normal rooms
+                    bool isDummyRing = ringNumber % 2 != 0;
+
+                    if (y % 2 == 0) // Rows with rooms or dummy rooms
+                    {
+                        if (x % 2 == 0)
+                        {
+                            if (isDummyRing)
+                                floorLayoutDispositon.Append(RoomDispositionType.GuaranteedDummyRoom.ToChar());
+                            else
+                                floorLayoutDispositon.Append(RoomDispositionType.GuaranteedRoom.ToChar());
+                        }
+                        else
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.RandomConnection.ToChar());
+                        }
+                    }
+                    else // Rows with connection/impossible spaces
+                    {
+                        if (x % 2 == 0)
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.RandomConnection.ToChar());
+                        }
+                        else
+                        {
+                            floorLayoutDispositon.Append(RoomDispositionType.ConnectionImpossible.ToChar());
+                        }
+                    }
+                }
+            }
+            var floorLayout = new FloorLayoutGenerationInfo
+            {
+                Name = $"{generatorToConvert.Name} - {generatorToConvert.Columns}c x {generatorToConvert.Rows}r",
+                Rows = generatorToConvert.Rows,
+                Columns = generatorToConvert.Columns,
+                MinRoomSize = new RoomDimensionsInfo { Width = 5, Height = 5 },
+                MaxRoomSize = new RoomDimensionsInfo { Width = maxWidth, Height = maxHeight },
+                RoomDisposition = floorLayoutDispositon.ToString()
+            };
+            return floorLayout;
+        }
+
+        private static FloorLayoutGenerationInfo ConstructOneBigRoom(GeneratorAlgorithmInfoV13 generatorToConvert, int width, int height)
+        {
+            var maxWidth = Math.Max(5, width / generatorToConvert.Columns);
+            var maxHeight = Math.Max(5, height / generatorToConvert.Rows);
+            var rows = generatorToConvert.Rows + generatorToConvert.Rows - 1;
+            var columns = generatorToConvert.Columns + generatorToConvert.Columns - 1;
+            var floorLayoutDispositon = new StringBuilder();
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    if (x == 0 && y == 0)
+                        floorLayoutDispositon.Append(RoomDispositionType.GuaranteedRoom.ToChar());
+                    else if (x % 2 == 0 && y % 2 == 0)
+                        floorLayoutDispositon.Append(RoomDispositionType.NoRoom.ToChar());
+                    else if ((x % 2 != 0 && y % 2 == 0) || (x % 2 == 0 && y % 2 != 0))
+                        floorLayoutDispositon.Append(RoomDispositionType.NoConnection.ToChar());
+                    else
+                        floorLayoutDispositon.Append(RoomDispositionType.ConnectionImpossible.ToChar());
+                }
+            }
+            var floorLayout = new FloorLayoutGenerationInfo
+            {
+                Name = $"{generatorToConvert.Name} - {generatorToConvert.Columns}c x {generatorToConvert.Rows}r",
+                Rows = generatorToConvert.Rows,
+                Columns = generatorToConvert.Columns,
+                MinRoomSize = new RoomDimensionsInfo { Width = 5, Height = 5 },
+                MaxRoomSize = new RoomDimensionsInfo { Width = maxWidth, Height = maxHeight },
+                RoomDisposition = floorLayoutDispositon.ToString()
+            };
+            return floorLayout;
         }
 
         #endregion

@@ -10,5 +10,6 @@ namespace RogueCustomsDungeonEditor.Utils
     {
         public const string ActionClipboardKey = "ActionWithEffects";
         public const string StepClipboardKey = "Effect";
+        public const string LayoutClipboardKey = "Layout";
     }
 }

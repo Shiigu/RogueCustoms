@@ -1,4 +1,5 @@
-﻿using RogueCustomsDungeonEditor.Utils;
+﻿using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
@@ -179,44 +180,64 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("MaxConnectionsBetweenRooms is higher than 1 but OddsForExtraConnections is 0. No extra connections will be generated.");
             else if (floorJson.MaxConnectionsBetweenRooms == 1 && floorJson.OddsForExtraConnections > 0)
                 messages.AddWarning("MaxConnectionsBetweenRooms is 1 but OddsForExtraConnections is higher than 0. No extra connections will be generated.");
-            else if (floorJson.MaxConnectionsBetweenRooms > 0 && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
-                messages.AddWarning("MaxConnectionsBetweenRooms is higher than 0 but OneBigRoom is a possible generator. No extra connections will be generated for OneBigRoom.");
-            else if (floorJson.OddsForExtraConnections > 0 && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
-                messages.AddWarning("OddsForExtraConnections is higher than 0 but OneBigRoom is a possible generator. No extra connections will be generated for OneBigRoom.");
 
             if (!floorJson.RoomFusionOdds.Between(0, 100))
                 messages.AddError("RoomFusionOdds must be an integer number between 0 and 100.");
-            else if (floorJson.RoomFusionOdds.Between(1, 100) && floorJson.PossibleGeneratorAlgorithms.Exists(pga => pga.Name == "OneBigRoom"))
-                messages.AddWarning("RoomFusionOdds is higher than 0 but OneBigRoom is a possible generator. No rooms will be fused for OneBigRoom.");
 
-            foreach (var possibleGeneratorAlgorithm in floorJson.PossibleGeneratorAlgorithms)
+            var roomTypesToNotCount = new List<RoomDispositionType> { RoomDispositionType.NoRoom, RoomDispositionType.NoConnection, RoomDispositionType.ConnectionImpossible };
+
+            foreach (var floorLayoutGenerator in floorJson.PossibleLayouts)
             {
-                if (possibleGeneratorAlgorithm.Rows <= 0)
-                    messages.AddError($"{possibleGeneratorAlgorithm.Name}'s Rows must be an integer number higher than 0.");
-                else if (possibleGeneratorAlgorithm.Rows > 1 && possibleGeneratorAlgorithm.Name == "OneBigRoom")
-                    messages.AddWarning($"{possibleGeneratorAlgorithm.Name}'s Rows is higher than 1. It will be ignored.");
-                if (possibleGeneratorAlgorithm.Columns <= 0)
-                    messages.AddError($"{possibleGeneratorAlgorithm.Name}'s Columns must be an integer number higher than 0.");
-                else if (possibleGeneratorAlgorithm.Columns > 1 && possibleGeneratorAlgorithm.Name == "OneBigRoom")
-                    messages.AddWarning($"{possibleGeneratorAlgorithm.Name}'s Columns is higher than 1. It will be ignored.");
-                if (possibleGeneratorAlgorithm.Name != "OneBigRoom")
+                if (floorLayoutGenerator.Rows <= 0)
+                    messages.AddError($"{floorLayoutGenerator.Name}'s Rows must be an integer number higher than 0.");
+                if (floorLayoutGenerator.Columns <= 0)
+                    messages.AddError($"{floorLayoutGenerator.Name}'s Columns must be an integer number higher than 0.");
+                if (floorLayoutGenerator.Rows > 1 || floorLayoutGenerator.Columns > 1)
                 {
-                    if (5 * possibleGeneratorAlgorithm.Rows > floorJson.Height)
-                        messages.AddError($"With a Floor Height of {floorJson.Height}, it's not possible to create {possibleGeneratorAlgorithm.Rows} non-Dummy rooms with the minimum 5 Height. Change Height or Rows.");
-                    if (5 * possibleGeneratorAlgorithm.Columns > floorJson.Width)
-                        messages.AddError($"With a Floor Width of {floorJson.Width}, it's not possible to create {possibleGeneratorAlgorithm.Columns} non-Dummy rooms with the minimum 5 Width. Change Width or Columns.");
+                    if (5 * floorLayoutGenerator.Rows > floorJson.Height)
+                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create {floorLayoutGenerator.Rows} non-Dummy rooms with the minimum 5 Height. Change Height or Rows.");
+                    if (5 * floorLayoutGenerator.Columns > floorJson.Width)
+                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create {floorLayoutGenerator.Columns} non-Dummy rooms with the minimum 5 Width. Change Width or Columns.");
                 }
                 else
                 {
                     if (floorJson.Height < 5)
-                        messages.AddError($"With a Floor Height of {floorJson.Height}, it's not possible to create a {possibleGeneratorAlgorithm.Name} floor. Height must be at least 5.");
+                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create a {floorLayoutGenerator.Name} floor. Height must be at least 5.");
                     if (floorJson.Width < 5)
-                        messages.AddError($"With a Floor Width of {floorJson.Width}, it's not possible to create a {possibleGeneratorAlgorithm.Name} floor. Width must be at least 5.");
+                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create a {floorLayoutGenerator.Name} floor. Width must be at least 5.");
                 }
+                var expandedColumns = floorLayoutGenerator.Columns * 2 - 1;
+                var expandedRows = floorLayoutGenerator.Rows * 2 - 1;
+                var roomDispositionMatrix = new RoomDispositionType[expandedRows, expandedColumns];
+                for (int i = 0; i < floorLayoutGenerator.RoomDisposition.Length; i++)
+                {
+                    var tile = floorLayoutGenerator.RoomDisposition[i];
+                    (int X, int Y) = (i / expandedColumns, i % expandedColumns);
+                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
+                    roomDispositionMatrix[X, Y] = tile.ToRoomDispositionIndicator(isHallwayTile);
+                }
+
+                var roomTilesToCount = roomDispositionMatrix.Where(rdt => !roomTypesToNotCount.Contains(rdt));
+                var guaranteedFuseTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedFusion);
+                var normalRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom || rdt == RoomDispositionType.RandomRoom);
+                var guaranteedRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom);
+
+                var validationErrors = new List<string>();
+
+                if (!guaranteedRoomTiles.Any() && normalRoomTiles.Count == 1)
+                    messages.AddError($"{floorLayoutGenerator.Name}: When making a Single-Room layout, the room must be guaranteed.");
+                if ((normalRoomTiles.Count - guaranteedFuseTiles.Count) <= 1 && roomTilesToCount.Count > 1)
+                    messages.AddError($"{floorLayoutGenerator.Name}: When making a layout that is not Single-Room layout, at least two normal, non-fused rooms must be possible.");
+                if (normalRoomTiles.Count < 1)
+                    messages.AddError($"{floorLayoutGenerator.Name}: At least one non-Guaranteed Dummy Room is required.");
+                if (!RoomsHaveNoMoreThanOneFusion(roomDispositionMatrix))
+                    messages.AddError($"{floorLayoutGenerator.Name}: At least one Room is guaranteed more than one Fusion, which is not allowed.");
+                if (!ConnectionsHaveBothEndsCovered(roomDispositionMatrix))
+                    messages.AddError($"{floorLayoutGenerator.Name}: At least one possible Connection is missing one of its ends.");
             }
 
             var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-            floorAsInstance.GenerateDummyMap();
+            floorAsInstance.GenerateDebugMap();
 
             if (floorJson.OnFloorStart != null)
             {
@@ -226,6 +247,85 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 
             return messages;
+        }
+        private static bool RoomsHaveNoMoreThanOneFusion(RoomDispositionType[,] roomDispositionMatrix)
+        {
+            var validRoomTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedRoom, RoomDispositionType.GuaranteedDummyRoom, RoomDispositionType.RandomRoom };
+            for (int i = 0; i < roomDispositionMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < roomDispositionMatrix.GetLength(1); j++)
+                {
+                    var tile = roomDispositionMatrix[i, j];
+                    if (!validRoomTileTypes.Contains(tile)) continue;
+                    RoomDispositionType? upHallway = null, downHallway = null, leftHallway = null, rightHallway = null;
+                    try
+                    {
+                        upHallway = roomDispositionMatrix[i, j - 1];
+                    }
+                    catch { }
+                    try
+                    {
+                        downHallway = roomDispositionMatrix[i, j + 1];
+                    }
+                    catch { }
+                    try
+                    {
+                        leftHallway = roomDispositionMatrix[i - 1, j];
+                    }
+                    catch { }
+                    try
+                    {
+                        rightHallway = roomDispositionMatrix[i + 1, j];
+                    }
+                    catch { }
+                    var hallwayList = new List<RoomDispositionType?> { upHallway, downHallway, leftHallway, rightHallway };
+                    if (hallwayList.Count(rdt => rdt != null && rdt == RoomDispositionType.GuaranteedFusion) > 1)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool ConnectionsHaveBothEndsCovered(RoomDispositionType[,] roomDispositionMatrix)
+        {
+            var validHallwayTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedFusion, RoomDispositionType.GuaranteedHallway, RoomDispositionType.RandomConnection };
+            var invalidEndTileTypes = new List<RoomDispositionType>() { RoomDispositionType.NoRoom, RoomDispositionType.ConnectionImpossible };
+            for (int i = 0; i < roomDispositionMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < roomDispositionMatrix.GetLength(1); j++)
+                {
+                    var tile = roomDispositionMatrix[i, j];
+                    if (!validHallwayTileTypes.Contains(tile)) continue;
+                    RoomDispositionType? upRoom = null, downRoom = null, leftRoom = null, rightRoom = null;
+                    try
+                    {
+                        upRoom = roomDispositionMatrix[i, j - 1];
+                    }
+                    catch { }
+                    try
+                    {
+                        downRoom = roomDispositionMatrix[i, j + 1];
+                    }
+                    catch { }
+                    try
+                    {
+                        leftRoom = roomDispositionMatrix[i - 1, j];
+                    }
+                    catch { }
+                    try
+                    {
+                        rightRoom = roomDispositionMatrix[i + 1, j];
+                    }
+                    catch { }
+                    var isVerticalConnection = j % 2 != 0 && i % 2 == 0;
+                    var isHorizontalConnection = j % 2 == 0 && i % 2 != 0;
+                    if (isVerticalConnection && ((upRoom == null || downRoom == null) || (invalidEndTileTypes.Contains(upRoom.Value) || invalidEndTileTypes.Contains(downRoom.Value))))
+                        return false;
+                    else if (isHorizontalConnection && ((leftRoom == null || rightRoom == null) || (invalidEndTileTypes.Contains(leftRoom.Value) || invalidEndTileTypes.Contains(rightRoom.Value))))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }
