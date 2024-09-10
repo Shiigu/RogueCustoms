@@ -208,16 +208,6 @@
         /0tM0w0EOZV8M2Mx+AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="fklblStairsReminder.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAPZJREFUSEvd
-        lbkNwkAQRVcgMmgEyqACArogoA1ow5REgKALiIjgP8sT7amVJoAvPcneueyZ9Tr8vRZiLwZxF68JrlnD
-        hk+XduIhPhXwwbdZM3ESluAqjmItlhNcs4bN/IghtqqzIOAtDmIucsKGD77EEFsUr2rJtyw0Cl8rkm0X
-        w7Ke81QpYYOUiMFGjuTg2RE40NdcW0oFiLGZkCvSRWBkeL0ilhzkinQTGDfjXZ+IJQe5Ij0FxtV4lxZ2
-        yIlY7OSK5F6gpUW1AsUWtQy5VqA4ZPdt6v6hIdejwuR62CH349rEq9pMSuBTbUtODIsd4fLL/AWF8AXC
-        dX/dtfQp6AAAAABJRU5ErkJggg==
-</value>
-  </data>
   <data name="fklblEndingMessageLocale.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAPZJREFUSEvd
@@ -268,12 +258,6 @@
         dX/dtfQp6AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="cmKey.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="cmValue.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <metadata name="cmKey.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -614,6 +598,16 @@
         YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
         cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
         aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAA/////ws=
+</value>
+  </data>
+  <data name="fklblStairsReminder.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAPZJREFUSEvd
+        lbkNwkAQRVcgMmgEyqACArogoA1ow5REgKALiIjgP8sT7amVJoAvPcneueyZ9Tr8vRZiLwZxF68JrlnD
+        hk+XduIhPhXwwbdZM3ESluAqjmItlhNcs4bN/IghtqqzIOAtDmIucsKGD77EEFsUr2rJtyw0Cl8rkm0X
+        w7Ke81QpYYOUiMFGjuTg2RE40NdcW0oFiLGZkCvSRWBkeL0ilhzkinQTGDfjXZ+IJQe5Ij0FxtV4lxZ2
+        yIlY7OSK5F6gpUW1AsUWtQy5VqA4ZPdt6v6hIdejwuR62CH349rEq9pMSuBTbUtODIsd4fLL/AWF8AXC
+        dX/dtfQp6AAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="fklblFactionDescriptionLocale.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

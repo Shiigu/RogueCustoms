@@ -31,7 +31,7 @@ namespace RogueCustomsDungeonEditor
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            var dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            var dataGridViewCellStyle1 = new DataGridViewCellStyle();
             msMenu = new MenuStrip();
             editorToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
@@ -123,6 +123,8 @@ namespace RogueCustomsDungeonEditor
             label130 = new Label();
             csrTopLeftWall = new Controls.ConsoleRepresentationSelector();
             tpFloorInfos = new TabPage();
+            btnPasteAlgorithm = new Button();
+            btnCopyAlgorithm = new Button();
             nudHungerLostPerTurn = new NumericUpDown();
             label31 = new Label();
             saeOnFloorStart = new Controls.SingleActionEditor();
@@ -297,8 +299,6 @@ namespace RogueCustomsDungeonEditor
             tvValidationResults = new TreeView();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            btnCopyAlgorithm = new Button();
-            btnPasteAlgorithm = new Button();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -820,8 +820,8 @@ namespace RogueCustomsDungeonEditor
             // 
             // cmKey
             // 
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            cmKey.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            cmKey.DefaultCellStyle = dataGridViewCellStyle1;
             cmKey.HeaderText = "Key";
             cmKey.Name = "cmKey";
             cmKey.ReadOnly = true;
@@ -1404,6 +1404,28 @@ namespace RogueCustomsDungeonEditor
             tpFloorInfos.Text = "Floor Group";
             tpFloorInfos.UseVisualStyleBackColor = true;
             // 
+            // btnPasteAlgorithm
+            // 
+            btnPasteAlgorithm.Enabled = false;
+            btnPasteAlgorithm.Location = new System.Drawing.Point(583, 173);
+            btnPasteAlgorithm.Name = "btnPasteAlgorithm";
+            btnPasteAlgorithm.Size = new System.Drawing.Size(60, 23);
+            btnPasteAlgorithm.TabIndex = 44;
+            btnPasteAlgorithm.Text = "Paste";
+            btnPasteAlgorithm.UseVisualStyleBackColor = true;
+            btnPasteAlgorithm.Click += btnPasteAlgorithm_Click;
+            // 
+            // btnCopyAlgorithm
+            // 
+            btnCopyAlgorithm.Enabled = false;
+            btnCopyAlgorithm.Location = new System.Drawing.Point(517, 173);
+            btnCopyAlgorithm.Name = "btnCopyAlgorithm";
+            btnCopyAlgorithm.Size = new System.Drawing.Size(60, 23);
+            btnCopyAlgorithm.TabIndex = 43;
+            btnCopyAlgorithm.Text = "Copy";
+            btnCopyAlgorithm.UseVisualStyleBackColor = true;
+            btnCopyAlgorithm.Click += btnCopyAlgorithm_Click;
+            // 
             // nudHungerLostPerTurn
             // 
             nudHungerLostPerTurn.DecimalPlaces = 4;
@@ -1646,6 +1668,7 @@ namespace RogueCustomsDungeonEditor
             // nudHeight
             // 
             nudHeight.Location = new System.Drawing.Point(51, 91);
+            nudHeight.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
             nudHeight.Name = "nudHeight";
             nudHeight.Size = new System.Drawing.Size(54, 23);
             nudHeight.TabIndex = 17;
@@ -1654,6 +1677,7 @@ namespace RogueCustomsDungeonEditor
             // nudWidth
             // 
             nudWidth.Location = new System.Drawing.Point(51, 58);
+            nudWidth.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
             nudWidth.Name = "nudWidth";
             nudWidth.Size = new System.Drawing.Size(54, 23);
             nudWidth.TabIndex = 16;
@@ -3662,28 +3686,6 @@ namespace RogueCustomsDungeonEditor
             // 
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
-            // 
-            // btnCopyAlgorithm
-            // 
-            btnCopyAlgorithm.Enabled = false;
-            btnCopyAlgorithm.Location = new System.Drawing.Point(517, 173);
-            btnCopyAlgorithm.Name = "btnCopyAlgorithm";
-            btnCopyAlgorithm.Size = new System.Drawing.Size(60, 23);
-            btnCopyAlgorithm.TabIndex = 43;
-            btnCopyAlgorithm.Text = "Copy";
-            btnCopyAlgorithm.UseVisualStyleBackColor = true;
-            btnCopyAlgorithm.Click += btnCopyAlgorithm_Click;
-            // 
-            // btnPasteAlgorithm
-            // 
-            btnPasteAlgorithm.Enabled = false;
-            btnPasteAlgorithm.Location = new System.Drawing.Point(583, 173);
-            btnPasteAlgorithm.Name = "btnPasteAlgorithm";
-            btnPasteAlgorithm.Size = new System.Drawing.Size(60, 23);
-            btnPasteAlgorithm.TabIndex = 44;
-            btnPasteAlgorithm.Text = "Paste";
-            btnPasteAlgorithm.UseVisualStyleBackColor = true;
-            btnPasteAlgorithm.Click += btnPasteAlgorithm_Click;
             // 
             // frmMain
             // 
