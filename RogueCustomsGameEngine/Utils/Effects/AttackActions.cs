@@ -6,6 +6,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System.Drawing;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -34,7 +35,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
+            {
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.Miss);
                 return false;
+            }
             var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
             if (damageDealt > 0 && damageDealt < 1)
                 damageDealt = 1;
@@ -45,7 +49,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             else
                 Map.CreateFlag($"DamageTaken_{c.Id}", damageDealt, true);
             if (damageDealt <= 0)
+            {
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.Miss);
                 return false;
+            }
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
             {
@@ -58,8 +65,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"] }), forecolorToUse);
-                if (c.EntityType == EntityType.Player)
-                    Map.PlayerTookDamage = true;
+
+                if (Source == Map.Player && c.EntityType == EntityType.NPC)
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.NPCDamaged);
+                else if (c == Map.Player)
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.PlayerDamaged);
             }
             c.HP = Math.Max(0, c.HP - damageDealt);
             if (c.HP == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
@@ -106,8 +116,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), forecolorToUse);
-                if (c.EntityType == EntityType.Player)
-                    Map.PlayerGotMPBurned = true;
+                if (c == Map.Player)
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.MPDown);
             }
             c.MP = Math.Max(0, c.MP - burnAmount);
             return true;
@@ -137,9 +147,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
-            {
                 Map.AppendMessage(Map.Locale["CharacterLosesHunger"].Format(new { CharacterName = c.Name, LostHunger = paramsObject.Power, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
-            }
+            if (c == Map.Player)
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.HungerDown);
             c.MP = Math.Max(0, c.MP - hungerAmount);
             return true;
         }

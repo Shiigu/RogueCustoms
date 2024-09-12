@@ -92,11 +92,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int MinRoomHeight { get; set; }
         private int MaxRoomHeight { get; set; }
         public bool StairsAreSet { get; set; } = false;
-        public bool PlayerTookDamage { get; set; } = false;
-        public bool PlayerGotHealed { get; set; } = false;
-        public bool PlayerGotMPBurned { get; set; } = false;
-        public bool PlayerGotMPReplenished { get; set; } = false;
-        public bool PlayerGotStatusChange { get; set; } = false;
+        public List<SpecialEffect> SpecialEffectsThatHappened { get; set; }
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
         public List<Item> Traps { get; set; }
@@ -140,7 +136,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             GeneratorToUse = FloorConfigurationToUse.PossibleLayouts.TakeRandomElement(Rng);
             DefaultGeneratorToUse.MaxRoomSize = new() { Width = Width, Height = Height };
             DefaultGeneratorToUse.RoomDisposition[0, 0] = RoomDispositionType.GuaranteedRoom;
-
+            SpecialEffectsThatHappened = new();
             PossibleStatuses = new List<AlteredStatus>();
             Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
             SetActionParams();
@@ -831,10 +827,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     ?? throw new ArgumentException("PlayerEntity is about to move to a nonexistent Tile");
                 if (Tiles.GetAdjacentElements(currentTile, true).Contains(targetTile))
                 {
-                    if (!targetTile.IsWalkable) return;
-                    if (x != 0 && y != 0 && (!GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y).IsWalkable
+                    var bumps = false;
+                    if (!targetTile.IsWalkable)
+                        bumps = true;
+                    else if (x != 0 && y != 0 && (!GetTileFromCoordinates(Player.Position.X + x, Player.Position.Y).IsWalkable
                             || !GetTileFromCoordinates(Player.Position.X, Player.Position.Y + y).IsWalkable))
+                        bumps = true;
+                    if(bumps)
                     {
+                        SpecialEffectsThatHappened.Add(SpecialEffect.Bumped);
                         return;
                     }
                     TryMoveCharacter(Player, targetTile);
@@ -1732,6 +1733,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Map Clone()
         {
             return JsonSerializer.Deserialize<Map>(JsonSerializer.Serialize(this));
+        }
+
+        public void AddSpecialEffectIfNeeded(SpecialEffect specialEffect)
+        {
+            if (SpecialEffectsThatHappened.Any(se => se == specialEffect))
+                return;
+            SpecialEffectsThatHappened.Add(specialEffect);
         }
         #endregion
     }

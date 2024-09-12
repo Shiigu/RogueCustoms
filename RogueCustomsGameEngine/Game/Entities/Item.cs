@@ -7,6 +7,7 @@ using System;
 using static System.Collections.Specialized.BitVector32;
 using RogueCustomsGameEngine.Utils;
 using MathNet.Numerics.Statistics.Mcmc;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -41,6 +42,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void Stepped(Character stomper)
         {
+            if (EntityType == EntityType.Trap)
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.TrapActivate);
             var successfulEffects = OnStepped?.Do(this, stomper, true);
             if (successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 stomper.AttackedBy(null);

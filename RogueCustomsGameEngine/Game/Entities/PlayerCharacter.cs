@@ -31,6 +31,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             base.GainExperience(GamePointsToAdd);
             if (Level > oldLevel)
             {
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.LevelUp);
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
                 levelUpMessage.AppendLine();
                 levelUpMessage.AppendLine();
@@ -65,8 +66,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override void Die(Entity? attacker = null)
         {
             base.Die(attacker);
-            if(ExistenceStatus == EntityExistenceStatus.Dead)
+            if (ExistenceStatus == EntityExistenceStatus.Dead)
+            {
                 Map.DungeonStatus = DungeonStatus.GameOver;
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.GameOver);
+            }
         }
 
         public void DropItem(int slot)
@@ -98,6 +102,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
+            Map.AddSpecialEffectIfNeeded(SpecialEffect.ItemGet);
             Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
     }

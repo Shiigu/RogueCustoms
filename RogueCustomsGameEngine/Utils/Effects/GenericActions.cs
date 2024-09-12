@@ -10,6 +10,7 @@ using System.Drawing;
 using org.matheval;
 using MathNet.Numerics.Statistics.Mcmc;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -85,7 +86,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             if (t.EntityType == EntityType.Player)
-                Map.PlayerGotHealed = true;
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.HPUp);
             return true;
         }
 
@@ -132,7 +133,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Map.AppendMessage(Map.Locale["CharacterStatusGotRefreshed"].Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
                 }
                 if (statusTarget == Map.Player)
-                    Map.PlayerGotStatusChange = true;
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.Statused);
                 return success;
             }
             return false;
@@ -239,6 +240,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     var amountString = isAccuracyOrEvasion ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
                     var messageKey = alterationAmount > 0 ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
+                    var specialEffect = alterationAmount > 0 ? SpecialEffect.StatBuff : SpecialEffect.StatNerf;
 
                     var message = Map.Locale[messageKey].Format(new
                     {
@@ -246,6 +248,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         StatName = Map.Locale[$"Character{statName}Stat"],
                         Amount = amountString
                     });
+
+                    if (statAlterationTarget == Map.Player)
+                        Map.AddSpecialEffectIfNeeded(specialEffect);
 
                     Map.AppendMessage(message, Color.DeepSkyBlue);
                 }
@@ -282,7 +287,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
                 }
                 if (c == Map.Player)
-                    Map.PlayerGotStatusChange = true;
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.StatusLeaves);
                 return true;
             }
             return false;
@@ -300,6 +305,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (statAlterations?.Any() == true && Rng.RollProbability() <= accuracyCheck)
             {
+                var amount = statAlterations.Sum(sa => sa.Amount);
                 statAlterations.Clear();
 
                 if (t.EntityType == EntityType.Player
@@ -313,6 +319,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     else if (isMPRegeneration)
                         statName = "MPRegeneration";
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
+                    if(t == Map.Player)
+                    {
+                        if (amount < 0)
+                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatBuff);
+                        else if (amount > 0)
+                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatNerf);
+                    }
                 }
                 return true;
             }
@@ -339,6 +352,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         modifications.Clear();
                         if (c == Map.Player || Map.Player.CanSee(c))
                             Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = statName }), Color.DeepSkyBlue);
+                        if (c == Map.Player)
+                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatBuff);
                     }
                 }
             }
@@ -372,7 +387,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     }
                 });
                 if (c == Map.Player)
-                    Map.PlayerGotStatusChange = true;
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.StatusLeaves);
                 return true;
             }
             return false;
@@ -409,6 +424,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.AppendMessage(Map.Locale["CharacterWasTeleported"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue);
                 }
+                if (c == Map.Player)
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.Teleport);
                 c.Position = Map.PickEmptyPosition(true);
                 return true;
             }
@@ -422,6 +439,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 Map.SetStairs();
                 Map.AppendMessage(Map.Locale["StairsGotRevealed"], Color.Lime);
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.StairsReveal);
                 return true;
             }
             return false;
@@ -473,7 +491,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             if (paramsObject.Target.EntityType == EntityType.Player)
-                Map.PlayerGotMPReplenished = true;
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.MPUp);
             return true;
         }
         public static bool ReplenishHunger(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
@@ -501,6 +519,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeHunger"].Format(new { CharacterName = t.Name, ReplenishAmount = replenishAmount.ToString(), CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
             }
+
+            if (paramsObject.Target.EntityType == EntityType.Player)
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.HungerUp);
             return true;
         }
 
@@ -563,6 +584,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 itemToGive.Owner = t;
                 itemToGive.Position = null;
                 Map.AppendMessage(Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name }), Color.DeepSkyBlue);
+                if (t == Map.Player)
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.ItemGet);
                 return true;
             }
             return false;

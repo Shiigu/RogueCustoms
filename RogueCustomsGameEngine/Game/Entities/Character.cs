@@ -412,6 +412,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
+                    if (EntityType == EntityType.Player)
+                    {
+                        var totalNeutralization = modificationList?.Where(mhm => mhm.RemainingTurns == 0).Sum(mhm => mhm.Amount);
+                        if(totalNeutralization < 0)
+                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatBuff);
+                        else if (totalNeutralization > 0)
+                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatNerf);
+                    }
                 }
             }
             foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
@@ -420,7 +428,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
                     if (EntityType == EntityType.Player)
-                        Map.PlayerGotStatusChange = true;
+                        Map.AddSpecialEffectIfNeeded(SpecialEffect.StatusLeaves);
                 }
             }
             TryDegenerateHunger();
@@ -459,7 +467,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CarriedHPRegeneration = fractionalPart;
                 if (oldHP > HP && IsStarving)
                 {
-                    Map.PlayerTookDamage = true;
+                    Map.AddSpecialEffectIfNeeded(SpecialEffect.PlayerDamaged);
                     Map.AppendMessage(Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldHP - HP, CharacterHPStat = Map.Locale["CharacterHPStat"], CharacterHungerStat = Map.Locale["CharacterHungerStat"] }));
                 }
             }
@@ -572,6 +580,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
             SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
+            if (this == Map.Player)
+                Map.AddSpecialEffectIfNeeded(SpecialEffect.ItemEquip);
         }
 
         private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
