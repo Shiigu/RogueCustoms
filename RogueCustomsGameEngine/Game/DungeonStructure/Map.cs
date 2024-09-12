@@ -1735,11 +1735,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return JsonSerializer.Deserialize<Map>(JsonSerializer.Serialize(this));
         }
 
-        public void AddSpecialEffectIfNeeded(SpecialEffect specialEffect)
+        public void AddSpecialEffectIfPossible(SpecialEffect specialEffect)
         {
-            if (SpecialEffectsThatHappened.Any(se => se == specialEffect))
-                return;
             SpecialEffectsThatHappened.Add(specialEffect);
+        }
+        public void AddSpecialEffectIfPossible(SpecialEffect specialEffect, int position)
+        {
+            SpecialEffectsThatHappened.Insert(position, specialEffect);
+        }
+        public void MoveSpecialEffectToTheEndIfPossible(SpecialEffect specialEffect)
+        {
+            if (!SpecialEffectsThatHappened.Contains(specialEffect)) return;
+            SpecialEffectsThatHappened.Remove(specialEffect);
+            SpecialEffectsThatHappened.Insert(SpecialEffectsThatHappened.Count, specialEffect);
         }
         #endregion
     }

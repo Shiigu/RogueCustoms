@@ -140,6 +140,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
             CurrentFloor.Generate();
+            if (CurrentFloorLevel > 1)
+                CurrentFloor.AddSpecialEffectIfPossible(SpecialEffect.TakeStairs, 0);
         }
 
         public void SetPlayerName(string name)

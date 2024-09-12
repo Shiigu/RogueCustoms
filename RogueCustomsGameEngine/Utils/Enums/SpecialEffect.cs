@@ -19,16 +19,23 @@ namespace RogueCustomsGameEngine.Utils.Enums
         HungerUp,
         MPDown,
         MPUp,
+        ItemDrop,
         ItemEquip,
+        ItemUse,
+        NPCItemUse,
         NPCItemGet,
         ItemGet,
         StairsReveal,
         NPCDeath,
+        NPCRevive,
         StatBuff,
         StatNerf,
         Statused,
         StatusLeaves,
+        Summon,
+        TakeStairs,
         Teleport,
-        TrapActivate
+        TrapActivate,
+        TrapSet
     }
 }

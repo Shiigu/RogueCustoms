@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://dfdco3q0bqw0y"
-path="res://.godot/imported/3steps.wav-ef9c9ae9c3b2c2a0a66ea4e4e105f262.sample"
+uid="uid://ca7camq6ng36q"
+path="res://.godot/imported/revive.wav-4fe1105e929502df61adc410d6dbcaf7.sample"
 
 [deps]
 
-source_file="res://Sounds/3steps.wav"
-dest_files=["res://.godot/imported/3steps.wav-ef9c9ae9c3b2c2a0a66ea4e4e105f262.sample"]
+source_file="res://Sounds/revive.wav"
+dest_files=["res://.godot/imported/revive.wav-4fe1105e929502df61adc410d6dbcaf7.sample"]
 
 [params]
 

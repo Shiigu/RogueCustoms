@@ -49,6 +49,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             EmptyTile = map.TileSet.Empty;
             Entities = new List<EntityDto>();
             var _tiles = new ConcurrentBag<TileDto>();
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.LevelUp);
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.StairsReveal);
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.GameOver);
             SpecialEffectsThatHappened = new(map.SpecialEffectsThatHappened);
             if (DungeonStatus != DungeonStatus.Completed)
             {

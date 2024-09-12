@@ -416,9 +416,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                     {
                         var totalNeutralization = modificationList?.Where(mhm => mhm.RemainingTurns == 0).Sum(mhm => mhm.Amount);
                         if(totalNeutralization < 0)
-                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatBuff);
+                            Map.AddSpecialEffectIfPossible(SpecialEffect.StatBuff);
                         else if (totalNeutralization > 0)
-                            Map.AddSpecialEffectIfNeeded(SpecialEffect.StatNerf);
+                            Map.AddSpecialEffectIfPossible(SpecialEffect.StatNerf);
                     }
                 }
             }
@@ -428,7 +428,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
                     if (EntityType == EntityType.Player)
-                        Map.AddSpecialEffectIfNeeded(SpecialEffect.StatusLeaves);
+                        Map.AddSpecialEffectIfPossible(SpecialEffect.StatusLeaves);
                 }
             }
             TryDegenerateHunger();
@@ -467,7 +467,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CarriedHPRegeneration = fractionalPart;
                 if (oldHP > HP && IsStarving)
                 {
-                    Map.AddSpecialEffectIfNeeded(SpecialEffect.PlayerDamaged);
+                    Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
                     Map.AppendMessage(Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldHP - HP, CharacterHPStat = Map.Locale["CharacterHPStat"], CharacterHungerStat = Map.Locale["CharacterHungerStat"] }));
                 }
             }
@@ -581,7 +581,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
             SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
             if (this == Map.Player)
-                Map.AddSpecialEffectIfNeeded(SpecialEffect.ItemEquip);
+                Map.AddSpecialEffectIfPossible(SpecialEffect.ItemEquip);
         }
 
         private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)

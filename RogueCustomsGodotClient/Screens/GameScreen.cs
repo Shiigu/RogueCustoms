@@ -32,6 +32,7 @@ public partial class GameScreen : Control
 
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
     private List<(SpecialEffect SpecialEffect, string Path)> SpecialEffectsWithSound;
+    private Queue<string> _soundQueue = new Queue<string>();
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -60,6 +61,10 @@ public partial class GameScreen : Control
             (SpecialEffect.HungerDown, "res://Sounds/hungerdown.wav"),
             (SpecialEffect.HungerUp, "res://Sounds/hungerup.wav"),
             (SpecialEffect.NPCDeath, "res://Sounds/npcdeath.wav"),
+            (SpecialEffect.NPCRevive, "res://Sounds/npcrevive.wav"),
+            (SpecialEffect.ItemUse, "res://Sounds/itemuse.wav"),
+            (SpecialEffect.NPCItemUse, "res://Sounds/npcitemuse.wav"),
+            (SpecialEffect.ItemDrop, "res://Sounds/itemdrop.wav"),
             (SpecialEffect.ItemGet, "res://Sounds/itemget.wav"),
             (SpecialEffect.ItemEquip, "res://Sounds/itemequip.wav"),
             (SpecialEffect.NPCItemGet, "res://Sounds/npcitemget.wav"),
@@ -67,8 +72,11 @@ public partial class GameScreen : Control
             (SpecialEffect.StatNerf, "res://Sounds/statnerf.wav"),
             (SpecialEffect.Statused, "res://Sounds/statused.wav"),
             (SpecialEffect.StatusLeaves, "res://Sounds/statusleaves.wav"),
+            (SpecialEffect.Summon, "res://Sounds/summon.wav"),
+            (SpecialEffect.TakeStairs, "res://Sounds/3steps.wav"),
             (SpecialEffect.Teleport, "res://Sounds/teleport.wav"),
             (SpecialEffect.TrapActivate, "res://Sounds/trapactivate.wav"),
+            (SpecialEffect.TrapSet, "res://Sounds/trapset.wav"),
         };
 
 
@@ -95,6 +103,7 @@ public partial class GameScreen : Control
         _lastTurn = -1;
         _saveGameButton.Pressed += SaveGameButton_Pressed;
         _exitButton.Pressed += ExitButton_Pressed;
+        _audioStreamPlayer.Finished += PlayNextSound;
 
         _coords = new CoordinateInput
         {
@@ -164,14 +173,7 @@ public partial class GameScreen : Control
                 }
             }
 
-            foreach (var specialEffect in SpecialEffectsWithSound)
-            {
-                if (dungeonStatus.SpecialEffectsThatHappened.Contains(specialEffect.SpecialEffect))
-                {
-                    PlaySound(specialEffect.Path);
-                    break;
-                }
-            }
+            PlaySounds();
 
             if (dungeonStatus.TurnCount != _lastTurn)
                 ShowMessagesIfNeeded(0);
@@ -550,7 +552,6 @@ public partial class GameScreen : Control
                                     {
                                         new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
                                                     {
-                                                        PlaySound("res://Sounds/3steps.wav");
                                                         _globalState.DungeonManager.PlayerTakeStairs(_globalState.DungeonId);
                                                         _globalState.MustUpdateGameScreen = true;
                                                     }, ActionPress = "ui_accept" },
@@ -558,11 +559,31 @@ public partial class GameScreen : Control
                                     }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
     }
 
-    private void PlaySound(string path)
+    private void PlaySounds()
     {
-        if (!_audioStreamPlayer.Playing)
+        var dungeonStatus = _globalState.DungeonInfo;
+
+        foreach (var specialEffect in dungeonStatus.SpecialEffectsThatHappened)
         {
-            _audioStreamPlayer.Stream = (AudioStream)GD.Load(path);
+            var specialEffectWithSound = SpecialEffectsWithSound.FirstOrDefault(s => s.SpecialEffect == specialEffect);
+            if (specialEffectWithSound != default)
+            {
+                _soundQueue.Enqueue(specialEffectWithSound.Path);
+            }
+        }
+
+        if (_soundQueue.Count > 0)
+        {
+            PlayNextSound();
+        }
+    }
+
+    private void PlayNextSound()
+    {
+        if (_soundQueue.Count > 0)
+        {
+            var soundPath = _soundQueue.Dequeue();
+            _audioStreamPlayer.Stream = (AudioStream)GD.Load(soundPath);
             _audioStreamPlayer.Play();
         }
     }
