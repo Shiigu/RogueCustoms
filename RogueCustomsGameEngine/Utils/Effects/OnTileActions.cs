@@ -1,6 +1,7 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Helpers;
 using System;
 using System.Collections.Generic;
@@ -121,6 +122,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
             {
+                Map.AddSpecialEffectIfPossible(SpecialEffect.TrapSet);
                 Map.AppendMessage(Map.Locale["CharacterCreatedATrap"].Format(new { CharacterName = c.Name, TrapName = trap.Name }), Color.DeepSkyBlue);
             }
 
@@ -163,7 +165,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     // Failed to spawn NPC
                     return false;
                 npc.Faction = c.Faction;
-                Map.AppendMessage(Map.Locale["CharacterCreatedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
+                if (c.EntityType == EntityType.Player
+                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                {
+                    Map.AddSpecialEffectIfPossible(SpecialEffect.Summon);
+                    Map.AppendMessage(Map.Locale["CharacterCreatedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
+                }
                 return true;
             }
             return false;
@@ -202,7 +209,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 npc.ConsoleRepresentation.BackgroundColor = npc.BaseConsoleRepresentation.BackgroundColor;
                 npc.ConsoleRepresentation.ForegroundColor = npc.BaseConsoleRepresentation.ForegroundColor;
                 npc.ClearKnownCharacters();
-                Map.AppendMessage(Map.Locale["CharacterRevivedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
+                if (c.EntityType == EntityType.Player
+                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                {
+                    Map.AddSpecialEffectIfPossible(Enums.SpecialEffect.NPCRevive);
+                    Map.AppendMessage(Map.Locale["CharacterRevivedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
+                }                
                 return true;
             }
             return false;

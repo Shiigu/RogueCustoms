@@ -407,6 +407,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
             }
+            if (attacker == Map.Player)
+                Map.AddSpecialEffectIfPossible(SpecialEffect.NPCDeath);
         }
 
         public override void PickItem(Item item)
@@ -415,6 +417,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
+            Map.AddSpecialEffectIfPossible(SpecialEffect.NPCItemGet);
             Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 

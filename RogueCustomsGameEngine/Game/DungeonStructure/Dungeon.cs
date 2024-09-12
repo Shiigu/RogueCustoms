@@ -140,6 +140,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
             CurrentFloor.Generate();
+            if (CurrentFloorLevel > 1)
+                CurrentFloor.AddSpecialEffectIfPossible(SpecialEffect.TakeStairs, 0);
         }
 
         public void SetPlayerName(string name)
@@ -160,11 +162,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (CurrentFloor == null)
                 NewMap();
             var dungeonStatus = new DungeonDto(this, CurrentFloor);
-            CurrentFloor.PlayerTookDamage = false;
-            CurrentFloor.PlayerGotHealed = false;
-            CurrentFloor.PlayerGotMPBurned = false;
-            CurrentFloor.PlayerGotMPReplenished = false;
-            CurrentFloor.PlayerGotStatusChange = false;
+            CurrentFloor.SpecialEffectsThatHappened = new();
             return dungeonStatus;
         }
 

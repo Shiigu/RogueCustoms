@@ -66,16 +66,7 @@ public partial class MessageScreen : Control
         _pressEnterToContinueButton.Text = TranslationServer.Translate("PressEnterText");
         _pressEnterToContinueButton.Pressed += PressEnterToContinueButton_Pressed;
 
-        _messagelabel.Text = "";
-        _messagelabel.BbcodeEnabled = true;
-        var messageLines = messageText.Split('\n');
-        for (int i = 0; i < messageLines.Length; i++)
-        {
-            _messagelabel.AppendText("[p]");
-            _messagelabel.AppendText(messageLines[i]);
-            if (string.IsNullOrEmpty(messageLines[i]))
-                _messagelabel.AppendText(" ");
-        }
+        _messagelabel.Text = messageText.ToBbCodeAppropriateString();
 
         _scrollContainer.GrabFocus();
     }

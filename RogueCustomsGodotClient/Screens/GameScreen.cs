@@ -28,9 +28,59 @@ public partial class GameScreen : Control
 
     private List<GamePanel> _children;
     private CoordinateInput _coords;
+    private AudioStreamPlayer _audioStreamPlayer;
+
+    private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
+    private List<(SpecialEffect SpecialEffect, string Path)> SpecialEffectsWithSound;
+    private Queue<string> _soundQueue = new Queue<string>();
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        SpecialEffectsWithFlash = new()
+        {
+            (SpecialEffect.PlayerDamaged, new Color { R8 = 255, G8 = 0, B8 = 0, A = 1 }),
+            (SpecialEffect.Statused, new Color { R8 = 238, G8 = 130, B8 = 238, A = 1 }),
+            (SpecialEffect.HPUp, new Color { R8 = 0, G8 = 255, B8 = 0, A = 1 }),
+            (SpecialEffect.MPDown, new Color { R8 =  0, G8 = 0, B8 = 139, A = 1 }),
+            (SpecialEffect.MPUp, new Color { R8 = 0, G8 = 0, B8 = 139, A = 1 }),
+        };
+
+        SpecialEffectsWithSound = new()
+        {
+            (SpecialEffect.GameOver, "res://Sounds/gameover.wav"),
+            (SpecialEffect.StairsReveal, "res://Sounds/stairsreveal.wav"),
+            (SpecialEffect.Bumped, "res://Sounds/bump.wav"),
+            (SpecialEffect.LevelUp, "res://Sounds/levelup.wav"),
+            (SpecialEffect.Miss, "res://Sounds/miss.wav"),
+            (SpecialEffect.PlayerDamaged, "res://Sounds/playerdamaged.wav"),
+            (SpecialEffect.NPCDamaged, "res://Sounds/npcdamaged.wav"),
+            (SpecialEffect.HPUp, "res://Sounds/hpup.wav"),
+            (SpecialEffect.MPDown, "res://Sounds/mpdown.wav"),
+            (SpecialEffect.MPUp, "res://Sounds/mpup.wav"),
+            (SpecialEffect.HungerDown, "res://Sounds/hungerdown.wav"),
+            (SpecialEffect.HungerUp, "res://Sounds/hungerup.wav"),
+            (SpecialEffect.NPCDeath, "res://Sounds/npcdeath.wav"),
+            (SpecialEffect.NPCRevive, "res://Sounds/npcrevive.wav"),
+            (SpecialEffect.ItemUse, "res://Sounds/itemuse.wav"),
+            (SpecialEffect.NPCItemUse, "res://Sounds/npcitemuse.wav"),
+            (SpecialEffect.ItemDrop, "res://Sounds/itemdrop.wav"),
+            (SpecialEffect.ItemGet, "res://Sounds/itemget.wav"),
+            (SpecialEffect.ItemEquip, "res://Sounds/itemequip.wav"),
+            (SpecialEffect.NPCItemGet, "res://Sounds/npcitemget.wav"),
+            (SpecialEffect.StatBuff, "res://Sounds/statbuff.wav"),
+            (SpecialEffect.StatNerf, "res://Sounds/statnerf.wav"),
+            (SpecialEffect.Statused, "res://Sounds/statused.wav"),
+            (SpecialEffect.StatusLeaves, "res://Sounds/statusleaves.wav"),
+            (SpecialEffect.Summon, "res://Sounds/summon.wav"),
+            (SpecialEffect.TakeStairs, "res://Sounds/3steps.wav"),
+            (SpecialEffect.Teleport, "res://Sounds/teleport.wav"),
+            (SpecialEffect.TrapActivate, "res://Sounds/trapactivate.wav"),
+            (SpecialEffect.TrapSet, "res://Sounds/trapset.wav"),
+        };
+
+
+
         _globalState = GetNode<GlobalState>("/root/GlobalState");
         _saveGameButton = GetNode<Button>("ButtonsBorder/ButtonsPanel/SaveGameButton");
         _exitButton = GetNode<Button>("ButtonsBorder/ButtonsPanel/ExitButton");
@@ -42,6 +92,8 @@ public partial class GameScreen : Control
         _children = new List<GamePanel> { _mapPanel, _infoPanel, _messageLogPanel, _experienceBarPanel, _controlsPanel };
         _screenFlash = GetNode<ScreenFlash>("ScreenFlash");
         _inputManager = GetNode<InputManager>("/root/InputManager");
+        _audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
+
         SetUp();
     }
 
@@ -51,6 +103,7 @@ public partial class GameScreen : Control
         _lastTurn = -1;
         _saveGameButton.Pressed += SaveGameButton_Pressed;
         _exitButton.Pressed += ExitButton_Pressed;
+        _audioStreamPlayer.Finished += PlayNextSound;
 
         _coords = new CoordinateInput
         {
@@ -111,26 +164,16 @@ public partial class GameScreen : Control
                 child.Update();
             }
 
-            if (dungeonStatus.PlayerTookDamage)
+            foreach (var specialEffect in SpecialEffectsWithFlash)
             {
-                _screenFlash.Flash(new Color { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+                if (dungeonStatus.SpecialEffectsThatHappened.Contains(specialEffect.SpecialEffect))
+                {
+                    _screenFlash.Flash(specialEffect.Color);
+                    break;
+                }
             }
-            else if (dungeonStatus.PlayerGotStatusChange)
-            {
-                _screenFlash.Flash(new Color { R8 = 238, G8 = 130, B8 = 238, A = 1 });
-            }
-            else if (dungeonStatus.PlayerGotHealed)
-            {
-                _screenFlash.Flash(new Color { R8 = 0, G8 = 255, B8 = 0, A = 1 });
-            }
-            else if (dungeonStatus.PlayerGotMPBurned)
-            {
-                _screenFlash.Flash(new Color { R8 = 0, G8 = 0, B8 = 139, A = 1 });
-            }
-            else if (dungeonStatus.PlayerGotMPReplenished)
-            {
-                _screenFlash.Flash(new Color { R8 = 0, G8 = 0, B8 = 139, A = 1 });
-            }
+
+            PlaySounds();
 
             if (dungeonStatus.TurnCount != _lastTurn)
                 ShowMessagesIfNeeded(0);
@@ -268,17 +311,7 @@ public partial class GameScreen : Control
     {
         if (_globalState.PlayerControlMode == ControlMode.NormalOnStairs && @event.IsActionPressed("ui_use"))
         {
-            this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
-                                        TranslationServer.Translate("StairsPromptText"),
-                                        new PopUpButton[]
-                                        {
-                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
-                                                    {
-                                                        _globalState.DungeonManager.PlayerTakeStairs(_globalState.DungeonId);
-                                                        _globalState.MustUpdateGameScreen = true;
-                                                    }, ActionPress = "ui_accept" },
-                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = null, ActionPress = "ui_cancel" }
-                                        }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+            TakeStairsPrompt();
             AcceptEvent();
             return;
         }
@@ -337,17 +370,7 @@ public partial class GameScreen : Control
     {
         if (_globalState.PlayerControlMode == ControlMode.ImmobilizedOnStairs && @event.IsActionPressed("ui_use"))
         {
-            this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
-                                        TranslationServer.Translate("StairsPromptText"),
-                                        new PopUpButton[]
-                                        {
-                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
-                                                    {
-                                                        _globalState.DungeonManager.PlayerTakeStairs(_globalState.DungeonId);
-                                                        _globalState.MustUpdateGameScreen = true;
-                                                    }, ActionPress = "ui_accept" },
-                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = null, ActionPress = "ui_cancel" }
-                                        }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+            TakeStairsPrompt();
             AcceptEvent();
             return;
         }
@@ -518,6 +541,50 @@ public partial class GameScreen : Control
             _messageLogPanel.MessageWindowButton.EmitSignal("pressed");
             _messageLogPanel.MessageWindowButton.ButtonPressed = true;
             AcceptEvent();
+        }
+    }
+
+    private void TakeStairsPrompt()
+    {
+        this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
+                                    TranslationServer.Translate("StairsPromptText"),
+                                    new PopUpButton[]
+                                    {
+                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
+                                                    {
+                                                        _globalState.DungeonManager.PlayerTakeStairs(_globalState.DungeonId);
+                                                        _globalState.MustUpdateGameScreen = true;
+                                                    }, ActionPress = "ui_accept" },
+                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = null, ActionPress = "ui_cancel" }
+                                    }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+    }
+
+    private void PlaySounds()
+    {
+        var dungeonStatus = _globalState.DungeonInfo;
+
+        foreach (var specialEffect in dungeonStatus.SpecialEffectsThatHappened)
+        {
+            var specialEffectWithSound = SpecialEffectsWithSound.FirstOrDefault(s => s.SpecialEffect == specialEffect);
+            if (specialEffectWithSound != default)
+            {
+                _soundQueue.Enqueue(specialEffectWithSound.Path);
+            }
+        }
+
+        if (_soundQueue.Count > 0)
+        {
+            PlayNextSound();
+        }
+    }
+
+    private void PlayNextSound()
+    {
+        if (_soundQueue.Count > 0)
+        {
+            var soundPath = _soundQueue.Dequeue();
+            _audioStreamPlayer.Stream = (AudioStream)GD.Load(soundPath);
+            _audioStreamPlayer.Play();
         }
     }
 }

@@ -16,28 +16,24 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     [Serializable]
     public class DungeonDto
     {
-        public string DungeonName { get; set; }
-        public string FloorName { get; set; }
-        public int DungeonId { get; set; }
-        public DungeonStatus DungeonStatus { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public string DungeonName { get; private set; }
+        public string FloorName { get; private set; }
+        public int DungeonId { get; private set; }
+        public DungeonStatus DungeonStatus { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
-        public int TurnCount { get; set; }
+        public int TurnCount { get; private set; }
 
-        public List<TileDto> Tiles { get; set; }
-        public List<EntityDto> Entities { get; set; }
-        public List<MessageDto> LogMessages { get; set; }
-        public List<MessageBoxDto> MessageBoxes { get; set; }
-        public ConsoleRepresentation EmptyTile { get; set; }
+        public List<TileDto> Tiles { get; private set; }
+        public List<EntityDto> Entities { get; private set; }
+        public List<MessageDto> LogMessages { get; private set; }
+        public List<MessageBoxDto> MessageBoxes { get; private set; }
+        public ConsoleRepresentation EmptyTile { get; private set; }
 
         public EntityDto PlayerEntity => Entities.Find(e => e.Type == EntityDtoType.Player);
         public bool IsAlive => PlayerEntity.HP > 0;
-        public bool PlayerTookDamage { get; set; }
-        public bool PlayerGotHealed { get; set; }
-        public bool PlayerGotMPBurned { get; set; }
-        public bool PlayerGotMPReplenished { get; set; }
-        public bool PlayerGotStatusChange { get; set; }
+        public List<SpecialEffect> SpecialEffectsThatHappened { get; private set; }
 
         public DungeonDto() { }
 
@@ -53,11 +49,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             EmptyTile = map.TileSet.Empty;
             Entities = new List<EntityDto>();
             var _tiles = new ConcurrentBag<TileDto>();
-            PlayerTookDamage = map.PlayerTookDamage;
-            PlayerGotHealed = map.PlayerGotHealed;
-            PlayerGotMPBurned = map.PlayerGotMPBurned;
-            PlayerGotMPReplenished = map.PlayerGotMPReplenished;
-            PlayerGotStatusChange = map.PlayerGotStatusChange;
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.LevelUp);
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.StairsReveal);
+            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.GameOver);
+            SpecialEffectsThatHappened = new(map.SpecialEffectsThatHappened);
             if (DungeonStatus != DungeonStatus.Completed)
             {
                 Parallel.For(0, map.Tiles.GetLength(0), y =>
@@ -88,13 +83,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     [Serializable]
     public class TileDto
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public bool Discovered { get; set; }
-        public bool Visible { get; set; }
-        public bool Targetable { get; set; }
-        public bool IsStairs { get; set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public bool Discovered { get; private set; }
+        public bool Visible { get; private set; }
+        public bool Targetable { get; private set; }
+        public bool IsStairs { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
 
         public TileDto() { }
 
@@ -113,21 +108,21 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     [Serializable]
     public class EntityDto
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public string Name { get; set; }
-        public bool OnTop { get; set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public string Name { get; private set; }
+        public bool OnTop { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
 
-        public EntityDtoType Type { get; set; }
+        public EntityDtoType Type { get; private set; }
 
         public bool IsPlayer => Type == EntityDtoType.Player;
 
         #region Player-only fields
-        public int Level { get; set; }
-        public int Experience { get; set; }
-        public int ExperienceToLevelUp { get; set; }
-        public int CurrentExperiencePercentage { get; set; }
+        public int Level { get; private set; }
+        public int Experience { get; private set; }
+        public int ExperienceToLevelUp { get; private set; }
+        public int CurrentExperiencePercentage { get; private set; }
 
         private static int CalculateExperienceBarPercentage(Character entity)
         {
@@ -135,41 +130,41 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             var experienceBetweenLevels = entity.ExperienceToLevelUp - entity.LastLevelUpExperience;
             return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
         }
-        public string HPStatName { get; set; }
-        public int HP { get; set; }
-        public int MaxHP { get; set; }
+        public string HPStatName { get; private set; }
+        public int HP { get; private set; }
+        public int MaxHP { get; private set; }
 
-        public bool UsesMP { get; set; }
-        public string MPStatName { get; set; }
-        public int MP { get; set; }
-        public int MaxMP { get; set; }
-        public SimpleEntityDto Weapon { get; set; }
-        public string DamageStatName { get; set; }
-        public string Damage { get; set; }
-        public string WeaponDamage { get; set; }
-        public int StatDamage { get; set; }
-        public SimpleEntityDto Armor { get; set; }
-        public string MitigationStatName { get; set; }
-        public string Mitigation { get; set; }
-        public string ArmorMitigation { get; set; }
-        public int StatMitigation { get; set; }
-        public string MovementStatName { get; set; }
-        public int Movement { get; set; }
-        public int BaseMovement { get; set; }
-        public string AccuracyStatName { get; set; }
-        public decimal BaseAccuracy { get; set; }
-        public decimal Accuracy { get; set; }
-        public string EvasionStatName { get; set; }
-        public decimal BaseEvasion { get; set; }
-        public decimal Evasion { get; set; }
-        public bool UsesHunger { get; set; }
-        public string HungerStatName { get; set; }
-        public int Hunger { get; set; }
-        public int MaxHunger { get; set; }
-        public bool CanMove { get; set; }
-        public bool CanTakeAction { get; set; }
-        public List<SimpleEntityDto> AlteredStatuses { get; set; }
-        public List<SimpleEntityDto> Inventory { get; set; }
+        public bool UsesMP { get; private set; }
+        public string MPStatName { get; private set; }
+        public int MP { get; private set; }
+        public int MaxMP { get; private set; }
+        public SimpleEntityDto Weapon { get; private set; }
+        public string DamageStatName { get; private set; }
+        public string Damage { get; private set; }
+        public string WeaponDamage { get; private set; }
+        public int StatDamage { get; private set; }
+        public SimpleEntityDto Armor { get; private set; }
+        public string MitigationStatName { get; private set; }
+        public string Mitigation { get; private set; }
+        public string ArmorMitigation { get; private set; }
+        public int StatMitigation { get; private set; }
+        public string MovementStatName { get; private set; }
+        public int Movement { get; private set; }
+        public int BaseMovement { get; private set; }
+        public string AccuracyStatName { get; private set; }
+        public decimal BaseAccuracy { get; private set; }
+        public decimal Accuracy { get; private set; }
+        public string EvasionStatName { get; private set; }
+        public decimal BaseEvasion { get; private set; }
+        public decimal Evasion { get; private set; }
+        public bool UsesHunger { get; private set; }
+        public string HungerStatName { get; private set; }
+        public int Hunger { get; private set; }
+        public int MaxHunger { get; private set; }
+        public bool CanMove { get; private set; }
+        public bool CanTakeAction { get; private set; }
+        public List<SimpleEntityDto> AlteredStatuses { get; private set; }
+        public List<SimpleEntityDto> Inventory { get; private set; }
         #endregion
 
         public EntityDto() { }
@@ -245,8 +240,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     [Serializable]
     public class SimpleEntityDto
     {
-        public string Name { get; set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; set; }
+        public string Name { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
 
         public SimpleEntityDto(Entity e)
         {
