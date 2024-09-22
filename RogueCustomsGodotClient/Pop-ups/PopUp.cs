@@ -51,16 +51,8 @@ public partial class PopUp : Control
         _originalLabelSize = _innerTextLabel.Size;
         _innerTextWithoutBbCode = Regex.Replace(innerText, @"\[(.*?)\]", string.Empty);
         _titleLabel.Text = titleText;
-        _innerTextLabel.Text = "";
         _innerTextLabel.BbcodeEnabled = true;
-        var innerTextLines = innerText.Split('\n');
-        for (int i = 0; i < innerTextLines.Length; i++)
-        {
-            _innerTextLabel.AppendText("[p]");
-            _innerTextLabel.AppendText(innerTextLines[i].Replace("\r", ""));
-            if (string.IsNullOrEmpty(innerTextLines[i].Replace("\r", "")))
-                _innerTextLabel.AppendText(" ");
-        }
+        _innerTextLabel.Text = innerText.ToBbCodeAppropriateString();
 
         foreach (var child in _buttonContainer.GetChildren())
         {

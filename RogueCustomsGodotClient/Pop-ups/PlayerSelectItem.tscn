@@ -23,6 +23,19 @@ offset_right = 900.0
 offset_bottom = 585.0
 theme_override_styles/panel = ExtResource("2_0p0v7")
 
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 35.0
+offset_right = 438.0
+offset_bottom = 550.0
+horizontal_scroll_mode = 0
+
+[node name="SelectionList" type="VBoxContainer" parent="ScrollContainer"]
+custom_minimum_size = Vector2(425, 515)
+layout_mode = 2
+theme_override_constants/separation = 0
+
 [node name="VerticalBorder" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 448.0
@@ -38,20 +51,6 @@ offset_top = 558.0
 offset_right = 452.0
 offset_bottom = 583.0
 theme_override_styles/panel = ExtResource("2_0p0v7")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_mode = 0
-offset_left = 13.0
-offset_top = 35.0
-offset_right = 438.0
-offset_bottom = 550.0
-horizontal_scroll_mode = 0
-
-[node name="SelectionList" type="VBoxContainer" parent="ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 0
 
 [node name="ItemDescriptionLabel" type="RichTextLabel" parent="."]
 layout_mode = 2

@@ -77,7 +77,7 @@ namespace RogueCustomsGodotClient.Helpers
         public static string ToBbCodeAppropriateString(this string input)
         {
             var bbCodeString = new StringBuilder();
-            var inputLines = Regex.Replace(input.Replace("\r", ""), @"(?<!\n)\n(?!\n)", " ").Split('\n');
+            var inputLines = input.Replace("\r", "").Split('\n');
             for (int i = 0; i < inputLines.Length; i++)
             {
                 bbCodeString.Append("[p]");

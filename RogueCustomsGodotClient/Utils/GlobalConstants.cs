@@ -83,6 +83,18 @@ namespace RogueCustomsGodotClient.Utils
             ContentMarginLeft = 12,
             ContentMarginRight = 12
         };
+        public static readonly StyleBoxFlat UnusableSelectedItemStyleBox = new()
+        {
+            BgColor = new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 },
+            BorderWidthBottom = 0,
+            BorderWidthLeft = 0,
+            BorderWidthRight = 0,
+            BorderWidthTop = 0,
+            ContentMarginBottom = 0,
+            ContentMarginTop = 0,
+            ContentMarginLeft = 12,
+            ContentMarginRight = 12
+        };
         public static readonly StyleBoxFlat TileStyleBox = new()
         {
             BgColor = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 },
