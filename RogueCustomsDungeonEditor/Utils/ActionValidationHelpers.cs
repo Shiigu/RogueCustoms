@@ -18,6 +18,7 @@ using RogueCustomsGameEngine.Utils.JsonImports;
 using System.Linq.Expressions;
 using Expression = org.matheval.Expression;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Exceptions;
 
 namespace RogueCustomsDungeonEditor.Utils
 {

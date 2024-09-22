@@ -3,6 +3,7 @@ using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
@@ -343,6 +344,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                     target.MP--;  // Slightly burn its MP so that replenishes may work
                             }
                         }
+                        catch (FlagNotFoundException ex)
+                        {
+                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated with autonomously. Make sure it generates previously, or the game will throw an error.");
+                        }
                         catch (Exception ex)
                         {
                             errorOnActionChain = true;
@@ -443,6 +448,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             {
                                 amountOfFailures++;
                             }
+                        }
+                        catch (FlagNotFoundException ex)
+                        {
+                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated autonomously. Make sure it generates previously, or the game will throw an error.");
                         }
                         catch (Exception ex)
                         {
