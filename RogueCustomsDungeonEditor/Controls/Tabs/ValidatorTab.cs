@@ -33,7 +33,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 PassedValidation = false;
                 tvValidationResults.Nodes.Clear();
                 var dungeonValidator = new DungeonValidator(dungeonToValidate);
-                PassedValidation = dungeonValidator.Validate(MandatoryLocaleKeys);
+                PassedValidation = dungeonValidator.Validate(MandatoryLocaleKeys, tsslValidationProgress, tspbValidationProgress);
 
                 tvValidationResults.Visible = true;
                 tvValidationResults.Font = new Font("Arial", 11, FontStyle.Regular);

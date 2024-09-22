@@ -19,6 +19,7 @@ using System.Text.Json;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using org.matheval.Functions;
 using org.matheval.Node;
+using RogueCustomsGameEngine.Utils.Exceptions;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -1705,7 +1706,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int GetFlagValue(string key)
         {
-            var flag = Flags.Find(f => f.Key.Equals(key)) ?? throw new ArgumentException($"There's no flag with key {key} in {FloorName}");
+            var flag = Flags.Find(f => f.Key.Equals(key)) 
+                ?? throw new FlagNotFoundException($"There's no flag with key {key} in {FloorName}", key);
             return flag.Value;
         }
 

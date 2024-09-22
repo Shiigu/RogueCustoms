@@ -258,26 +258,22 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     var tile = roomDispositionMatrix[i, j];
                     if (!validRoomTileTypes.Contains(tile)) continue;
                     RoomDispositionType? upHallway = null, downHallway = null, leftHallway = null, rightHallway = null;
-                    try
+                    if (i >= 0 && j - 1 >= 0 && j - 1 < roomDispositionMatrix.GetLength(1))
                     {
                         upHallway = roomDispositionMatrix[i, j - 1];
                     }
-                    catch { }
-                    try
+                    if (i >= 0 && j + 1 >= 0 && j + 1 < roomDispositionMatrix.GetLength(1))
                     {
                         downHallway = roomDispositionMatrix[i, j + 1];
                     }
-                    catch { }
-                    try
+                    if (i - 1 >= 0 && j >= 0 && i - 1 < roomDispositionMatrix.GetLength(0))
                     {
                         leftHallway = roomDispositionMatrix[i - 1, j];
                     }
-                    catch { }
-                    try
+                    if (i + 1 >= 0 && j >= 0 && i + 1 < roomDispositionMatrix.GetLength(0))
                     {
                         rightHallway = roomDispositionMatrix[i + 1, j];
                     }
-                    catch { }
                     var hallwayList = new List<RoomDispositionType?> { upHallway, downHallway, leftHallway, rightHallway };
                     if (hallwayList.Count(rdt => rdt != null && rdt == RoomDispositionType.GuaranteedFusion) > 1)
                         return false;
@@ -297,26 +293,22 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     var tile = roomDispositionMatrix[i, j];
                     if (!validHallwayTileTypes.Contains(tile)) continue;
                     RoomDispositionType? upRoom = null, downRoom = null, leftRoom = null, rightRoom = null;
-                    try
+                    if (i >= 0 && j - 1 >= 0 && j - 1 < roomDispositionMatrix.GetLength(1))
                     {
                         upRoom = roomDispositionMatrix[i, j - 1];
                     }
-                    catch { }
-                    try
+                    if (i >= 0 && j + 1 >= 0 && j + 1 < roomDispositionMatrix.GetLength(1))
                     {
                         downRoom = roomDispositionMatrix[i, j + 1];
                     }
-                    catch { }
-                    try
+                    if (i - 1 >= 0 && j >= 0 && i - 1 < roomDispositionMatrix.GetLength(0))
                     {
                         leftRoom = roomDispositionMatrix[i - 1, j];
                     }
-                    catch { }
-                    try
+                    if (i + 1 >= 0 && j >= 0 && i + 1 < roomDispositionMatrix.GetLength(0))
                     {
                         rightRoom = roomDispositionMatrix[i + 1, j];
                     }
-                    catch { }
                     var isVerticalConnection = j % 2 != 0 && i % 2 == 0;
                     var isHorizontalConnection = j % 2 == 0 && i % 2 != 0;
                     if (isVerticalConnection && ((upRoom == null || downRoom == null) || (invalidEndTileTypes.Contains(upRoom.Value) || invalidEndTileTypes.Contains(downRoom.Value))))

@@ -69,9 +69,9 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus = new TabPage();
             AlteredStatusTab = new Controls.Tabs.AlteredStatusTab();
             tpValidation = new TabPage();
+            ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            ValidatorTab = new Controls.Tabs.ValidatorTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -478,6 +478,14 @@ namespace RogueCustomsDungeonEditor
             tpValidation.Text = "Validation Results";
             tpValidation.UseVisualStyleBackColor = true;
             // 
+            // ValidatorTab
+            // 
+            ValidatorTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ValidatorTab.Location = new System.Drawing.Point(0, 0);
+            ValidatorTab.Name = "ValidatorTab";
+            ValidatorTab.Size = new System.Drawing.Size(742, 356);
+            ValidatorTab.TabIndex = 0;
+            // 
             // ofdDungeon
             // 
             ofdDungeon.Filter = "Dungeon JSON|*.json";
@@ -487,15 +495,6 @@ namespace RogueCustomsDungeonEditor
             // 
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
-            // 
-            // ValidatorTab
-            // 
-            ValidatorTab.AutoSize = true;
-            ValidatorTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ValidatorTab.Location = new System.Drawing.Point(0, 0);
-            ValidatorTab.Name = "ValidatorTab";
-            ValidatorTab.Size = new System.Drawing.Size(743, 359);
-            ValidatorTab.TabIndex = 0;
             // 
             // frmMain
             // 
@@ -540,7 +539,6 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.ResumeLayout(false);
             tpAlteredStatus.PerformLayout();
             tpValidation.ResumeLayout(false);
-            tpValidation.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }

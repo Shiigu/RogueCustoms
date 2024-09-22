@@ -5,6 +5,8 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.DiceNotation;
+using RogueCustomsGameEngine.Utils.Exceptions;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -214,6 +216,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                             paramsObject.Text = ParseValueForTextDisplay(value);
                             break;
                     }
+                }
+                catch (FlagNotFoundException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {

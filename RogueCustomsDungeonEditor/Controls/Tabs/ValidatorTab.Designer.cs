@@ -29,28 +29,62 @@
         private void InitializeComponent()
         {
             tvValidationResults = new System.Windows.Forms.TreeView();
+            ssValidatorStatus = new System.Windows.Forms.StatusStrip();
+            tsslValidationProgress = new System.Windows.Forms.ToolStripStatusLabel();
+            tspbValidationProgress = new System.Windows.Forms.ToolStripProgressBar();
+            ssValidatorStatus.SuspendLayout();
             SuspendLayout();
             // 
             // tvValidationResults
             // 
             tvValidationResults.Location = new System.Drawing.Point(1, 1);
             tvValidationResults.Name = "tvValidationResults";
-            tvValidationResults.Size = new System.Drawing.Size(738, 354);
+            tvValidationResults.Size = new System.Drawing.Size(738, 332);
             tvValidationResults.TabIndex = 1;
+            // 
+            // ssValidatorStatus
+            // 
+            ssValidatorStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tsslValidationProgress, tspbValidationProgress });
+            ssValidatorStatus.Location = new System.Drawing.Point(0, 334);
+            ssValidatorStatus.Name = "ssValidatorStatus";
+            ssValidatorStatus.Size = new System.Drawing.Size(740, 22);
+            ssValidatorStatus.SizingGrip = false;
+            ssValidatorStatus.TabIndex = 2;
+            // 
+            // tsslValidationProgress
+            // 
+            tsslValidationProgress.Name = "tsslValidationProgress";
+            tsslValidationProgress.Size = new System.Drawing.Size(16, 17);
+            tsslValidationProgress.Text = "...";
+            tsslValidationProgress.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tspbValidationProgress
+            // 
+            tspbValidationProgress.Name = "tspbValidationProgress";
+            tspbValidationProgress.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            tspbValidationProgress.Size = new System.Drawing.Size(720, 16);
+            tspbValidationProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
             // ValidatorTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(ssValidatorStatus);
             Controls.Add(tvValidationResults);
             Name = "ValidatorTab";
             Size = new System.Drawing.Size(740, 356);
+            ssValidatorStatus.ResumeLayout(false);
+            ssValidatorStatus.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.TreeView tvValidationResults;
+        private System.Windows.Forms.StatusStrip ssValidatorStatus;
+        private System.Windows.Forms.ToolStripStatusLabel tsslValidationProgress;
+        private System.Windows.Forms.ToolStripProgressBar tspbValidationProgress;
     }
 }
