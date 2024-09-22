@@ -22,6 +22,7 @@ using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsDungeonEditor.Clipboard;
+using RogueCustomsDungeonEditor.Controls.Tabs;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -58,9 +59,8 @@ namespace RogueCustomsDungeonEditor
         private TreeNode ActiveNode;
 
         private bool DirtyTab;
-        private bool DirtyEntry;
         private bool DirtyDungeon;
-        private bool AutomatedChange; // If true, does not set DirtyTab nor DirtyEntry to true
+        private bool AutomatedChange; // If true, does not set DirtyTab to true
         private bool IsNewElement;
         private bool PassedValidation;
         private bool ReclickOnFailedSave;
@@ -118,8 +118,18 @@ namespace RogueCustomsDungeonEditor
                 roomTile.TileImage = Image.FromFile(roomTile.ImagePath);
                 roomTile.RoomDispositionIndicator = Enum.Parse<RoomDispositionType>(roomTile.InternalName);
             }
-
-            ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
+            BasicInformationTab.TabInfoChanged += BasicInformationTab_TabInfoChanged;
+            LocaleEntriesTab.TabInfoChanged += LocaleEntriesTab_TabInfoChanged;
+            TilesetTab.TabInfoChanged += TilesetTab_TabInfoChanged;
+            FloorGroupTab.TabInfoChanged += FloorGroupTab_TabInfoChanged;
+            FactionTab.TabInfoChanged += FactionTab_TabInfoChanged;
+            PlayerClassTab.TabInfoChanged += PlayerClassTab_TabInfoChanged;
+            NPCTab.TabInfoChanged += NPCTab_TabInfoChanged;
+            ItemTab.TabInfoChanged += ItemTab_TabInfoChanged;
+            TrapTab.TabInfoChanged += TrapTab_TabInfoChanged;
+            AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
+            ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
+            ValidatorTab.OnError += ValidatorTab_OnError;
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -501,7 +511,6 @@ namespace RogueCustomsDungeonEditor
                     ActiveDungeon = ActiveDungeon.ConvertDungeonInfoIfNeeded(jsonString, LocaleTemplate, MandatoryLocaleKeys);
                     ActiveDungeon.PruneNullActions();
                     tbTabs.TabPages.Clear();
-                    DirtyEntry = false;
                     DirtyTab = false;
                     RefreshTreeNodes();
                     tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
@@ -580,7 +589,6 @@ namespace RogueCustomsDungeonEditor
                 sfdDungeon.InitialDirectory = Path.GetDirectoryName(filePath);
                 this.Text = $"Rogue Customs Dungeon Editor - [{Path.GetFileName(DungeonPath)}]";
                 DirtyDungeon = false;
-                DirtyEntry = false;
                 DirtyTab = false;
             }
             catch (Exception ex)
@@ -668,6 +676,7 @@ namespace RogueCustomsDungeonEditor
             ActiveNode = null;
             LoadTabDataForTag(ActiveNodeTag);
             DirtyTab = true;
+            tvDungeonInfo.SelectedNode = null;
         }
 
         private void tsbSaveElement_Click(object sender, EventArgs e)
@@ -687,21 +696,21 @@ namespace RogueCustomsDungeonEditor
                     case RogueTabTypes.Locales:
                         return SaveLocale();
                     case RogueTabTypes.TileSetInfo:
-                        return SaveTileSet(null);
+                        return SaveTileSet();
                     case RogueTabTypes.FloorInfo:
-                        return SaveFloorGroup();
+                        return SaveFloorGroup(false);
                     case RogueTabTypes.FactionInfo:
-                        return SaveFaction(null);
+                        return SaveFaction();
                     case RogueTabTypes.PlayerClass:
-                        return SavePlayerClass(null);
+                        return SavePlayerClass();
                     case RogueTabTypes.NPC:
-                        return SaveNPC(null);
+                        return SaveNPC();
                     case RogueTabTypes.Item:
-                        return SaveItem(null);
+                        return SaveItem();
                     case RogueTabTypes.Trap:
-                        return SaveTrap(null);
+                        return SaveTrap();
                     case RogueTabTypes.AlteredStatus:
-                        return SaveAlteredStatus(null);
+                        return SaveAlteredStatus();
                     default:
                         return true;
                 }
@@ -727,7 +736,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.TileSetInfo:
                     return SaveTileSetAs();
                 case RogueTabTypes.FloorInfo:
-                    return SaveFloorGroupAs();
+                    return SaveFloorGroup(true);
                 case RogueTabTypes.FactionInfo:
                     return SaveFactionAs();
                 case RogueTabTypes.PlayerClass:
@@ -786,7 +795,7 @@ namespace RogueCustomsDungeonEditor
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
                 tbTabs.TabPages.Add(TabsForNodeTypes[RogueTabTypes.Validator]);
             tbTabs.SelectTab(TabsForNodeTypes[RogueTabTypes.Validator]);
-            ValidateDungeon();
+            ValidatorTab.ValidateDungeon(ActiveDungeon, MandatoryLocaleKeys);
         }
 
         #endregion
@@ -814,7 +823,6 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale - {tagLocale.Language}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale";
-                    dgvLocales.Rows[0].Selected = true;
                     break;
                 case RogueTabTypes.TileSetInfo:
                     var tagTileSet = (TileSetInfo)tag.DungeonElement;
@@ -940,81 +948,6 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
-        #region Basic Information
-
-        private void LoadBasicInfo()
-        {
-            tsbAddElement.Visible = false;
-            tsbSaveElement.Visible = true;
-            tsbSaveElementAs.Visible = false;
-            tsbDeleteElement.Visible = false;
-            tssElementValidate.Visible = true;
-            txtDungeonName.Text = ActiveDungeon.Name;
-            txtAuthor.Text = ActiveDungeon.Author;
-            txtWelcomeMessage.Text = ActiveDungeon.WelcomeMessage;
-            txtEndingMessage.Text = ActiveDungeon.EndingMessage;
-            cmbDefaultLocale.Items.Clear();
-            foreach (var locale in ActiveDungeon.Locales)
-            {
-                cmbDefaultLocale.Items.Add(locale.Language);
-            }
-            cmbDefaultLocale.Text = ActiveDungeon.DefaultLocale;
-        }
-
-        private void txtDungeonName_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-            txtDungeonName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblDungeonNameLocale);
-        }
-
-        private void txtAuthor_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-            txtAuthor.ToggleEntryInLocaleWarning(ActiveDungeon, fklblAuthorLocale);
-        }
-
-        private void txtWelcomeMessage_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-            txtWelcomeMessage.ToggleEntryInLocaleWarning(ActiveDungeon, fklblWelcomeMessageLocale);
-        }
-
-        private void txtEndingMessage_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-            txtEndingMessage.ToggleEntryInLocaleWarning(ActiveDungeon, fklblEndingMessageLocale);
-        }
-
-        private void nudAmountOfFloors_ValueChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-        }
-        private void cmbDefaultLocale_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyTab = true;
-        }
-
-        private bool SaveBasicInfo()
-        {
-            ActiveDungeon.Name = txtDungeonName.Text;
-            ActiveDungeon.Author = txtAuthor.Text;
-            ActiveDungeon.WelcomeMessage = txtWelcomeMessage.Text;
-            ActiveDungeon.EndingMessage = txtEndingMessage.Text;
-            ActiveDungeon.DefaultLocale = cmbDefaultLocale.Text;
-            MessageBox.Show(
-                "Dungeon's Basic Information has been successfully updated!",
-                "Save Basic Information",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-            DirtyDungeon = true;
-            DirtyTab = false;
-            PassedValidation = false;
-            return true;
-        }
-
-        #endregion
-
         #region Shared Between Tabs
 
         private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
@@ -1036,6 +969,49 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
+        #region Basic Info
+
+        private void LoadBasicInfo()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            BasicInformationTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveBasicInfo()
+        {
+            var validationErrors = BasicInformationTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Basic Information cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                "Save Basic Information",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Basic Information has been successfully saved!",
+                "Save Basic Information",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+        private void BasicInformationTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
         #region Locales
 
         private void LoadLocaleInfoFor(LocaleInfo localeInfo)
@@ -1044,29 +1020,26 @@ namespace RogueCustomsDungeonEditor
             if (localeClone.AddMissingMandatoryLocalesIfNeeded(LocaleTemplate, MandatoryLocaleKeys))
             {
                 DirtyTab = true;
-                MessageBox.Show(
-                    "This Locale is missing some mandatory keys.\n\nThey have been added at the end of the table. Please check them.",
-                    "Locale",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                if(!IsNewElement)
+                    MessageBox.Show(
+                        "This Locale is missing some mandatory keys.\n\nThey have been added at the end of the table. Please check them.",
+                        "Locale",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
             }
             if (AddMissingCustomLocalesIfNeeded(localeClone))
             {
                 DirtyTab = true;
-                MessageBox.Show(
-                    "This Locale is missing some custom keys present in other Locales.\n\nThey have been added at the end of the table. Please check them.",
-                    "Locale",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                if (!IsNewElement)
+                    MessageBox.Show(
+                        "This Locale is missing some custom keys present in other Locales.\n\nThey have been added at the end of the table. Please check them.",
+                        "Locale",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
             }
-            dgvLocales.Tag = localeClone;
-            dgvLocales.Rows.Clear();
-            foreach (var entry in localeClone.LocaleStrings)
-            {
-                dgvLocales.Rows.Add(entry.Key, entry.Value);
-            }
+            LocaleEntriesTab.LoadData(ActiveDungeon, localeClone, MandatoryLocaleKeys);
         }
 
         private bool AddMissingCustomLocalesIfNeeded(LocaleInfo localeInfo)
@@ -1097,206 +1070,11 @@ namespace RogueCustomsDungeonEditor
             return missingCustomEntries.Any();
         }
 
-        private void dgvLocales_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dgvLocales.SelectedRows.Count == 0) return;
-            AutomatedChange = true;
-            var key = dgvLocales.SelectedRows[0].Cells[0].Value.ToString();
-            var locale = (LocaleInfo)dgvLocales.Tag;
-            if (DirtyEntry)
-            {
-                var messageBoxResult = MessageBox.Show(
-                    $"Do you want to save your current Locale Entry changes before moving to Entry {key}?",
-                    "Locale",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-
-                if (messageBoxResult == DialogResult.Yes)
-                {
-                    var localeStringToUpdate = locale.LocaleStrings.Find(ls => ls.Key.Equals(txtLocaleEntryValue.Text));
-                    if (localeStringToUpdate != null)
-                    {
-                        localeStringToUpdate.Value = txtLocaleEntryValue.Text;
-                        dgvLocales.Rows[locale.LocaleStrings.IndexOf(localeStringToUpdate)].SetValues(txtLocaleEntryKey.Text, txtLocaleEntryValue.Text);
-                    }
-                    else
-                    {
-                        locale.LocaleStrings.Add(new LocaleInfoString
-                        {
-                            Key = txtLocaleEntryKey.Text,
-                            Value = txtLocaleEntryValue.Text.Replace(Environment.NewLine, "\n")
-                        });
-                        dgvLocales.Rows.Add(txtLocaleEntryKey.Text, txtLocaleEntryValue.Text);
-                    }
-                    DirtyTab = true;
-                }
-            }
-            var localeString = locale.LocaleStrings.Find(ls => ls.Key.Equals(key));
-            dgvLocales.CurrentCell = dgvLocales.SelectedRows[0].Cells[0];
-            if (localeString != null)
-            {
-                SetLocaleStringForEdit(localeString);
-            }
-            AutomatedChange = false;
-            DirtyEntry = false;
-        }
-
-        private void SetLocaleStringForEdit(LocaleInfoString localeString)
-        {
-            txtLocaleEntryKey.Text = localeString.Key;
-            txtLocaleEntryKey.Enabled = true;
-            txtLocaleEntryValue.Text = localeString.Value.Replace("\n", Environment.NewLine);
-            txtLocaleEntryValue.Enabled = true;
-        }
-
-        private void txtLocaleEntryKey_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyEntry = true;
-            var locale = (LocaleInfo)dgvLocales.Tag;
-            var keyExistsInLocale = locale.LocaleStrings.Exists(ls => ls.Key == txtLocaleEntryKey.Text);
-            btnDeleteLocale.Enabled = !MandatoryLocaleKeys.Contains(txtLocaleEntryKey.Text) && keyExistsInLocale;
-            btnAddLocale.Enabled = !keyExistsInLocale;
-            btnUpdateLocale.Enabled = keyExistsInLocale;
-
-            if (keyExistsInLocale)
-            {
-                var missingLanguages = new List<string>();
-                foreach (var localeToCheck in ActiveDungeon.Locales)
-                {
-                    if (!localeToCheck.Language.Equals(locale.Language) && !localeToCheck.LocaleStrings.Exists(ls => ls.Key == txtLocaleEntryKey.Text))
-                    {
-                        missingLanguages.Add(localeToCheck.Language);
-                    }
-                }
-
-                if (missingLanguages.Any())
-                {
-                    fklblMissingLocale.Visible = true;
-                    fklblMissingLocale.Text = $"This locale is missing in the following languages:\n{string.Join(", ", missingLanguages)}";
-                }
-                else
-                {
-                    fklblMissingLocale.Visible = false;
-                }
-            }
-        }
-
-        private void txtLocaleEntryValue_TextChanged(object sender, EventArgs e)
-        {
-            if (!AutomatedChange) DirtyEntry = true;
-        }
-
-        private void btnUpdateLocale_Click(object sender, EventArgs e)
-        {
-            var locale = (LocaleInfo)dgvLocales.Tag;
-            var localeString = locale.LocaleStrings.Find(ls => ls.Key == txtLocaleEntryKey.Text);
-            if (localeString != null)
-            {
-                localeString.Value = txtLocaleEntryValue.Text;
-                dgvLocales.Rows[locale.LocaleStrings.IndexOf(localeString)].SetValues(txtLocaleEntryKey.Text, txtLocaleEntryValue.Text);
-                DirtyEntry = false;
-                AutomatedChange = true;
-                txtLocaleEntryKey_TextChanged(this, EventArgs.Empty);
-                AutomatedChange = false;
-                DirtyTab = true;
-            }
-            else
-            {
-                btnAddLocale_Click(null, EventArgs.Empty);
-            }
-        }
-
-        private void btnAddLocale_Click(object sender, EventArgs e)
-        {
-            var locale = (LocaleInfo)dgvLocales.Tag;
-            locale.LocaleStrings.Add(new LocaleInfoString
-            {
-                Key = txtLocaleEntryKey.Text,
-                Value = txtLocaleEntryValue.Text.Replace(Environment.NewLine, "\n")
-            });
-            DirtyEntry = false;
-            dgvLocales.Rows.Add(txtLocaleEntryKey.Text, txtLocaleEntryValue.Text);
-            dgvLocales.Rows[^1].Selected = true;
-            AutomatedChange = true;
-            txtLocaleEntryKey_TextChanged(this, EventArgs.Empty);
-            AutomatedChange = false;
-            DirtyTab = true;
-        }
-
-        private void btnDeleteLocale_Click(object sender, EventArgs e)
-        {
-            var messageBoxResult = MessageBox.Show(
-                $"Are you sure you want to delete the locale Entry {dgvLocales.SelectedRows[0].Cells[0].Value}?",
-                "Delete Locale Entry",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                AutomatedChange = true;
-                var locale = (LocaleInfo)dgvLocales.Tag;
-                locale.LocaleStrings.RemoveAll(ls => ls.Key.Equals(dgvLocales.SelectedRows[0].Cells[0].Value));
-                dgvLocales.Rows.RemoveAt(dgvLocales.SelectedRows[0].Index);
-                dgvLocales.Rows[^1].Selected = true;
-                AutomatedChange = false;
-                DirtyTab = true;
-                DirtyEntry = false;
-            }
-        }
-
-        private bool PromptLocaleUpdate(LocaleInfo locale)
-        {
-            if (DirtyEntry)
-            {
-                var updateEntryPromptResult = MessageBox.Show(
-                                $"Your currently-opened locale entry is not saved. Do you want to save before saving the entire Locale?\n\n(Clicking \"No\" will cancel the entire saving process)",
-                                "Update Locale",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning
-                            );
-
-                if (updateEntryPromptResult != DialogResult.Yes)
-                {
-                    return false;
-                }
-                btnUpdateLocale_Click(null, EventArgs.Empty);
-            }
-
-            var messageBoxResult = MessageBox.Show(
-                $"Are you sure you want to overwrite the existing values in Locale {locale.Language}?",
-                "Update Locale",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                var preExistingLocaleIndex = ActiveDungeon.Locales.FindIndex(l => l.Language.Equals(locale.Language));
-                ActiveDungeon.Locales[preExistingLocaleIndex] = ((LocaleInfo)dgvLocales.Tag).Clone(MandatoryLocaleKeys);
-                MessageBox.Show(
-                    $"Locale {locale.Language} has been successfully updated!",
-                    "Update Locale",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-                DirtyDungeon = true;
-                DirtyTab = false;
-                IsNewElement = false;
-                PassedValidation = false;
-                RefreshTreeNodes();
-                SelectNodeIfExists(locale.Language, "Locales");
-                return true;
-            }
-            return false;
-        }
-
         private bool SaveLocale()
         {
-            var locale = (LocaleInfo)dgvLocales.Tag;
-            PromptLocaleUpdate(locale);
-            return true;
+            if (string.IsNullOrWhiteSpace(LocaleEntriesTab.LoadedLocale.Language))
+                return SaveLocaleAs();
+            return SaveLocaleToDungeon(LocaleEntriesTab.LoadedLocale.Language);
         }
 
         private bool SaveLocaleAs()
@@ -1306,6 +1084,19 @@ namespace RogueCustomsDungeonEditor
             {
                 inputBoxResult = InputBox.Show("Indicate the Locale Identifier. It must be exactly two characters long.\n\n(For example, \"en\" or \"es\")", "Save Locale As");
                 if (inputBoxResult == null) return false;
+                if (ActiveDungeon.Locales.Exists(l => l.Language.Equals(inputBoxResult)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Locale named {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Locale As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveLocaleToDungeon(inputBoxResult);
+                    }
+                }
                 if (inputBoxResult.Length > 2)
                 {
                     MessageBox.Show(
@@ -1319,38 +1110,54 @@ namespace RogueCustomsDungeonEditor
             while (inputBoxResult.Length > 2);
             if (!string.IsNullOrWhiteSpace(inputBoxResult))
             {
-                IsNewElement = false;
-                var preExistingLocale = ActiveDungeon.Locales.Find(l => l.Language.Equals(inputBoxResult));
-                if (preExistingLocale == null)
-                {
-                    var newLocale = ((LocaleInfo)dgvLocales.Tag).Clone(MandatoryLocaleKeys);
-                    newLocale.Language = inputBoxResult;
-                    ActiveDungeon.Locales.Add(newLocale);
-                    MessageBox.Show(
-                        $"Locale {inputBoxResult} has been successfully created!",
-                        "Create Locale",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                    DirtyDungeon = true;
-                    DirtyTab = false;
-                    IsNewElement = false;
-                    PassedValidation = false;
-                    RefreshTreeNodes();
-                    SelectNodeIfExists(inputBoxResult, "Locales");
-                    return true;
-                }
-                else
-                {
-                    return PromptLocaleUpdate(preExistingLocale);
-                }
+                SaveLocaleToDungeon(inputBoxResult);
             }
             return false;
         }
 
+        private bool SaveLocaleToDungeon(string language)
+        {
+            var validationErrors = LocaleEntriesTab.SaveData(language);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Locale. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Locale",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var localeToSave = LocaleEntriesTab.LoadedLocale;
+            var preExistingLocale = ActiveDungeon.Locales.FirstOrDefault(l => l.Language.Equals(language));
+            var isNewLocale = preExistingLocale == null;
+            if (isNewLocale)
+            {
+                ActiveDungeon.Locales.Add(localeToSave);
+            }
+            else
+            {
+                ActiveDungeon.Locales[ActiveDungeon.Locales.IndexOf(preExistingLocale)] = localeToSave.Clone(MandatoryLocaleKeys);
+            }
+            var verb = isNewLocale ? "Save" : "Update";
+            MessageBox.Show(
+                $"Locale {language} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Locale",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(localeToSave.Language, "Locales");
+            return true;
+        }
+
         private void DeleteLocale()
         {
-            var activeLocale = (LocaleInfo)dgvLocales.Tag;
+            var activeLocale = LocaleEntriesTab.LoadedLocale;
             var deleteLocalePrompt = IsNewElement
                 ? "Do you want to remove this unsaved Locale?"
                 : $"Do you want to PERMANENTLY delete Locale \"{activeLocale.Language}\"?";
@@ -1384,7 +1191,6 @@ namespace RogueCustomsDungeonEditor
                     }
                 }
                 IsNewElement = false;
-                DirtyEntry = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1394,6 +1200,10 @@ namespace RogueCustomsDungeonEditor
                 tvDungeonInfo.Focus();
             }
         }
+        private void LocaleEntriesTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
 
         #endregion
 
@@ -1401,169 +1211,85 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadTileSetInfoFor(TileSetInfo tileSet)
         {
-            csrTopLeftWall.SetConsoleRepresentation(tileSet.TopLeftWall);
-            csrTopRightWall.SetConsoleRepresentation(tileSet.TopRightWall);
-            csrBottomLeftWall.SetConsoleRepresentation(tileSet.BottomLeftWall);
-            csrBottomRightWall.SetConsoleRepresentation(tileSet.BottomRightWall);
-            csrHorizontalWall.SetConsoleRepresentation(tileSet.HorizontalWall);
-            csrConnectorWall.SetConsoleRepresentation(tileSet.ConnectorWall);
-            csrVerticalWall.SetConsoleRepresentation(tileSet.VerticalWall);
-            csrTopLeftHallway.SetConsoleRepresentation(tileSet.TopLeftHallway);
-            csrTopRightHallway.SetConsoleRepresentation(tileSet.TopRightHallway);
-            csrBottomLeftHallway.SetConsoleRepresentation(tileSet.BottomLeftHallway);
-            csrBottomRightHallway.SetConsoleRepresentation(tileSet.BottomRightHallway);
-            csrHorizontalHallway.SetConsoleRepresentation(tileSet.HorizontalHallway);
-            csrHorizontalBottomHallway.SetConsoleRepresentation(tileSet.HorizontalBottomHallway);
-            csrHorizontalTopHallway.SetConsoleRepresentation(tileSet.HorizontalTopHallway);
-            csrVerticalHallway.SetConsoleRepresentation(tileSet.VerticalHallway);
-            csrVerticalLeftHallway.SetConsoleRepresentation(tileSet.VerticalLeftHallway);
-            csrVerticalRightHallway.SetConsoleRepresentation(tileSet.VerticalRightHallway);
-            csrCentralHallway.SetConsoleRepresentation(tileSet.CentralHallway);
-            csrFloor.SetConsoleRepresentation(tileSet.Floor);
-            csrStairs.SetConsoleRepresentation(tileSet.Stairs);
-            csrEmpty.SetConsoleRepresentation(tileSet.Empty);
+            TilesetTab.LoadData(tileSet);
         }
 
-        private bool SaveTileSet(string id)
+        private bool SaveTileSet()
         {
-            if (!ValidateTileSetDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Tileset. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Tileset",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var tileSet = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.TileSetInfos.Find(tsi => tsi.Id.Equals(id)) ?? new TileSetInfo() { Id = id }
-                : (TileSetInfo)ActiveNodeTag.DungeonElement;
-            tileSet.TopLeftWall = csrTopLeftWall.ConsoleRepresentation;
-            tileSet.TopRightWall = csrTopRightWall.ConsoleRepresentation;
-            tileSet.BottomLeftWall = csrBottomLeftWall.ConsoleRepresentation;
-            tileSet.BottomRightWall = csrBottomRightWall.ConsoleRepresentation;
-            tileSet.HorizontalWall = csrHorizontalWall.ConsoleRepresentation;
-            tileSet.ConnectorWall = csrConnectorWall.ConsoleRepresentation;
-            tileSet.VerticalWall = csrVerticalWall.ConsoleRepresentation;
-            tileSet.TopLeftHallway = csrTopLeftHallway.ConsoleRepresentation;
-            tileSet.TopRightHallway = csrTopRightHallway.ConsoleRepresentation;
-            tileSet.BottomLeftHallway = csrBottomLeftHallway.ConsoleRepresentation;
-            tileSet.BottomRightHallway = csrBottomRightHallway.ConsoleRepresentation;
-            tileSet.HorizontalHallway = csrHorizontalHallway.ConsoleRepresentation;
-            tileSet.HorizontalBottomHallway = csrHorizontalBottomHallway.ConsoleRepresentation;
-            tileSet.HorizontalTopHallway = csrHorizontalTopHallway.ConsoleRepresentation;
-            tileSet.VerticalHallway = csrVerticalHallway.ConsoleRepresentation;
-            tileSet.VerticalLeftHallway = csrVerticalLeftHallway.ConsoleRepresentation;
-            tileSet.VerticalRightHallway = csrVerticalRightHallway.ConsoleRepresentation;
-            tileSet.CentralHallway = csrCentralHallway.ConsoleRepresentation;
-            tileSet.Floor = csrFloor.ConsoleRepresentation;
-            tileSet.Stairs = csrStairs.ConsoleRepresentation;
-            tileSet.Empty = csrEmpty.ConsoleRepresentation;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(id)))
-            {
-                ActiveDungeon.TileSetInfos.Add(tileSet);
-                MessageBox.Show(
-                    $"Tileset {id} has been successfully created!",
-                    "Create Tileset",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Tileset {tileSet.Id} has been successfully updated!",
-                    "Update Tileset",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            SelectNodeIfExists(tileSet.Id, "Tilesets");
-            PassedValidation = false;
-            return true;
+            if (string.IsNullOrWhiteSpace(TilesetTab.LoadedTileSet.Id))
+                return SaveTileSetAs();
+            return SaveTileSetToDungeon(TilesetTab.LoadedTileSet.Id);
         }
 
         private bool SaveTileSetAs()
         {
-            if (!ValidateTileSetDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Tileset. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Tileset",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As");
             if (inputBoxResult != null)
             {
-                var saveResult = false;
                 if (ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"A Tileset with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Tileset Status",
+                        "Save Tileset As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        saveResult = SaveTileSet(inputBoxResult);
+                        return SaveTileSetToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    saveResult = SaveTileSet(inputBoxResult);
+                    return SaveTileSetToDungeon(inputBoxResult);
                 }
-                var savedTileSet = ActiveDungeon.AlteredStatuses.Find(tsi => tsi.Id.Equals(inputBoxResult));
-                if (savedTileSet != null)
-                {
-                    SelectNodeIfExists(savedTileSet.Id, "Tilesets");
-                }
-                return saveResult;
             }
             return false;
         }
 
-        private bool ValidateTileSetDataForSave(out List<string> errorMessages)
+        private bool SaveTileSetToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            errorMessages.AddRange(csrTopLeftWall.ConsoleRepresentation.Validate("Top Left Wall"));
-            errorMessages.AddRange(csrTopRightWall.ConsoleRepresentation.Validate("Top Right Wall"));
-            errorMessages.AddRange(csrBottomLeftWall.ConsoleRepresentation.Validate("Bottom Left Wall"));
-            errorMessages.AddRange(csrBottomRightWall.ConsoleRepresentation.Validate("Bottom Right Wall"));
-            errorMessages.AddRange(csrHorizontalWall.ConsoleRepresentation.Validate("Horizontal Wall"));
-            errorMessages.AddRange(csrConnectorWall.ConsoleRepresentation.Validate("Connector Wall"));
-            errorMessages.AddRange(csrVerticalWall.ConsoleRepresentation.Validate("Vertical Wall"));
-            errorMessages.AddRange(csrTopLeftHallway.ConsoleRepresentation.Validate("Top Left Hallway"));
-            errorMessages.AddRange(csrTopRightHallway.ConsoleRepresentation.Validate("Top Right Hallway"));
-            errorMessages.AddRange(csrBottomLeftHallway.ConsoleRepresentation.Validate("Bottom Left Hallway"));
-            errorMessages.AddRange(csrBottomRightHallway.ConsoleRepresentation.Validate("Bottom Right Hallway"));
-            errorMessages.AddRange(csrHorizontalHallway.ConsoleRepresentation.Validate("Horizontal Hallway"));
-            errorMessages.AddRange(csrHorizontalBottomHallway.ConsoleRepresentation.Validate("Horizontal Bottom Hallway"));
-            errorMessages.AddRange(csrHorizontalTopHallway.ConsoleRepresentation.Validate("Horizontal Top Hallway"));
-            errorMessages.AddRange(csrVerticalHallway.ConsoleRepresentation.Validate("Vertical Hallway"));
-            errorMessages.AddRange(csrVerticalLeftHallway.ConsoleRepresentation.Validate("Vertical Left Hallway"));
-            errorMessages.AddRange(csrVerticalRightHallway.ConsoleRepresentation.Validate("Vertical Right Hallway"));
-            errorMessages.AddRange(csrCentralHallway.ConsoleRepresentation.Validate("Central Hallway"));
-            errorMessages.AddRange(csrFloor.ConsoleRepresentation.Validate("Floor"));
-            errorMessages.AddRange(csrStairs.ConsoleRepresentation.Validate("Stairs"));
-            errorMessages.AddRange(csrEmpty.ConsoleRepresentation.Validate("Empty (inaccessible)"));
-
-            return !errorMessages.Any();
+            var validationErrors = TilesetTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Tileset. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Tileset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var tilesetToSave = TilesetTab.LoadedTileSet;
+            var preExistingTileset = ActiveDungeon.TileSetInfos.FirstOrDefault(ti => ti.Id.Equals(id));
+            var isNewTileSet = preExistingTileset == null;
+            if (isNewTileSet)
+            {
+                ActiveDungeon.TileSetInfos.Add(tilesetToSave);
+            }
+            else
+            {
+                ActiveDungeon.TileSetInfos[ActiveDungeon.TileSetInfos.IndexOf(preExistingTileset)] = tilesetToSave;
+            }
+            var verb = isNewTileSet ? "Save" : "Update";
+            MessageBox.Show(
+                $"Tileset {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Tileset",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(tilesetToSave.Id, "Tilesets");
+            return true;
         }
 
         public void DeleteTileSet()
         {
-            var activeTileSet = (TileSetInfo)ActiveNodeTag.DungeonElement;
+            var activeTileSet = TilesetTab.LoadedTileSet;
             var deleteTileSetPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Tileset?"
                 : $"Do you want to PERMANENTLY delete Tileset {activeTileSet.Id}?";
@@ -1598,114 +1324,9 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void csrTopLeftWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void TilesetTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            DirtyTab = true;
-        }
-
-        private void csrTopRightWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrVerticalWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrBottomLeftWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrBottomRightWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrHorizontalWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrVerticalConnectorWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrConnectorWall_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrTopLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrTopRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrVerticalHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrBottomLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrBottomRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrHorizontalHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrHorizontalBottomHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrHorizontalTopHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrVerticalLeftHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrVerticalRightHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrCentralHallway_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrFloor_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrStairs_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void csrEmpty_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
@@ -1714,200 +1335,62 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadFloorInfoFor(FloorInfo floorGroup)
         {
-            nudMinFloorLevel.Minimum = 0;
-            nudMinFloorLevel.Maximum = 99;
-            nudMaxFloorLevel.Minimum = 0;
-            nudMaxFloorLevel.Maximum = 99;
-            nudMinFloorLevel.Value = floorGroup.MinFloorLevel;
-            nudMaxFloorLevel.Value = floorGroup.MaxFloorLevel;
-            nudWidth.Value = floorGroup.Width;
-            nudHeight.Value = floorGroup.Height;
-            lvFloorAlgorithms.Tag = null;
-            btnNPCGenerator.Tag = new NPCGenerationParams
-            {
-                NPCList = floorGroup.PossibleMonsters,
-                MinNPCSpawnsAtStart = floorGroup.SimultaneousMinMonstersAtStart,
-                SimultaneousMaxNPCs = floorGroup.SimultaneousMaxMonstersInFloor,
-                TurnsPerNPCGeneration = floorGroup.TurnsPerMonsterGeneration
-            };
-            btnItemGenerator.Tag = new ObjectGenerationParams
-            {
-                ObjectList = floorGroup.PossibleItems,
-                MinInFloor = floorGroup.MinItemsInFloor,
-                MaxInFloor = floorGroup.MaxItemsInFloor
-            };
-            btnTrapGenerator.Tag = new ObjectGenerationParams
-            {
-                ObjectList = floorGroup.PossibleTraps,
-                MinInFloor = floorGroup.MinTrapsInFloor,
-                MaxInFloor = floorGroup.MaxTrapsInFloor
-            };
-            cmbTilesets.Items.Clear();
-            cmbTilesets.Items.AddRange(ActiveDungeon.TileSetInfos.Select(tileSet => tileSet.Id).ToArray());
-
-            var selectedTilesetId = floorGroup.TileSetId;
-            if (ActiveDungeon.TileSetInfos.Exists(tileSet => tileSet.Id.Equals(selectedTilesetId)))
-            {
-                cmbTilesets.Text = selectedTilesetId;
-            }
-            SetSingleActionEditorParams(saeOnFloorStart, string.Empty, floorGroup.OnFloorStart);
-
-            chkGenerateStairsOnStart.Checked = floorGroup.GenerateStairsOnStart;
-            fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
-            RefreshGenerationAlgorithmList();
-            nudMaxRoomConnections.Value = floorGroup.MaxConnectionsBetweenRooms;
-            nudExtraRoomConnectionOdds.Value = floorGroup.OddsForExtraConnections;
-            nudRoomFusionOdds.Value = floorGroup.RoomFusionOdds;
-            nudHungerLostPerTurn.Value = floorGroup.HungerDegeneration;
+            tsbSaveElementAs.Visible = false;
+            FloorGroupTab.LoadData(ActiveDungeon, floorGroup, EffectParamData, RoomDispositionData);
         }
 
-        private bool ValidateFloorGroupDataForSave(out List<string> errorMessages)
+        private bool SaveFloorGroup(bool saveAsNew)
         {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            errorMessages = new List<string>();
-
-            if ((lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>)?.Any() != true)
-                errorMessages.Add("This Floor Group has been given no Floor Layouts.");
-            if (string.IsNullOrEmpty(cmbTilesets.Text))
-                errorMessages.Add("This Floor Group lacks a Tileset.");
-            if (IsOverlappingWithOtherFloorInfos((int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, activeFloorGroup))
-                errorMessages.Add("This Floor Group overlaps with another in at least one Floor Level.");
-
-            return !errorMessages.Any();
-        }
-
-        private bool SaveFloorGroup()
-        {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            if (!ValidateFloorGroupDataForSave(out List<string> errorMessages))
+            var validationErrors = FloorGroupTab.SaveData(saveAsNew);
+            if (validationErrors.Any())
             {
                 MessageBox.Show(
-                    $"Cannot save Floor Group. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    $"Cannot save Floor Group. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
                     "Save Floor Group",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
                 return false;
             }
-            return PromptFloorInfoUpdate(activeFloorGroup);
+            var floorGroupToSave = FloorGroupTab.LoadedFloorGroup;
+            var preExistingFloorGroup = ActiveDungeon.FloorInfos.FirstOrDefault(fg => fg == FloorGroupTab.OpenedFloorGroup);
+            var isNewFloorGroup = saveAsNew || preExistingFloorGroup == null;
+            if (isNewFloorGroup)
+            {
+                ActiveDungeon.FloorInfos.Add(floorGroupToSave);
+            }
+            else
+            {
+                ActiveDungeon.FloorInfos[ActiveDungeon.FloorInfos.IndexOf(preExistingFloorGroup)] = floorGroupToSave;
+            }
+            var floorLevelString = (floorGroupToSave.MinFloorLevel != floorGroupToSave.MaxFloorLevel)
+                    ? $"{floorGroupToSave.MinFloorLevel}-{floorGroupToSave.MaxFloorLevel}"
+                    : floorGroupToSave.MinFloorLevel.ToString();
+            var verb = isNewFloorGroup ? "Save" : "Update";
+            MessageBox.Show(
+                $"Floor Group {floorLevelString} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Floor Group",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            var floorInfoNodeText = string.Empty;
+            if (floorGroupToSave.MinFloorLevel != floorGroupToSave.MaxFloorLevel)
+                floorInfoNodeText = $"Floors {floorLevelString}";
+            else
+                floorInfoNodeText = $"Floor {floorLevelString}";
+
+            DirtyDungeon = true;
+            DirtyTab = false;
+            IsNewElement = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(floorInfoNodeText, "Floor Groups");
+            return true;
         }
 
-        private bool SaveFloorGroupAs()
-        {
-            if (!ValidateFloorGroupDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Floor Group. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Floor Group",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            return PromptFloorInfoUpdate(null);
-        }
-
-        private bool IsOverlappingWithOtherFloorInfos(int minFloor, int maxFloor, FloorInfo floorGroup)
-        {
-            foreach (var floorGroupToCheck in ActiveDungeon.FloorInfos)
-            {
-                if (floorGroup == floorGroupToCheck) continue;
-                if (IntHelpers.DoIntervalsIntersect(minFloor, maxFloor, floorGroupToCheck.MinFloorLevel, floorGroupToCheck.MaxFloorLevel))
-                    return true;
-            }
-            return false;
-        }
-
-        private bool PromptFloorInfoUpdate(FloorInfo floorGroup)
-        {
-            string floorLevelString = string.Empty;
-            var messageBoxResult = DialogResult.Yes;
-            var saveAsNew = floorGroup == null;
-
-            if (floorGroup != null)
-            {
-                floorLevelString = (floorGroup.MinFloorLevel != floorGroup.MaxFloorLevel)
-                    ? $"{floorGroup.MinFloorLevel}-{floorGroup.MaxFloorLevel}"
-                    : floorGroup.MinFloorLevel.ToString();
-                messageBoxResult = MessageBox.Show(
-                    $"Are you sure you want to overwrite the existing values in Floor Group {floorLevelString}?",
-                    "Update Locale",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-            }
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-                if (floorGroup == null)
-                {
-                    floorGroup = activeFloorGroup.Clone();
-                }
-                floorGroup.PossibleLayouts = new List<FloorLayoutGenerationInfo>((List<FloorLayoutGenerationInfo>)lvFloorAlgorithms.Tag);
-                floorGroup.MinFloorLevel = (int)nudMinFloorLevel.Value;
-                floorGroup.MaxFloorLevel = (int)nudMaxFloorLevel.Value;
-                floorGroup.TileSetId = cmbTilesets.Text;
-                floorGroup.Width = (int)nudWidth.Value;
-                floorGroup.Height = (int)nudHeight.Value;
-                floorGroup.GenerateStairsOnStart = chkGenerateStairsOnStart.Checked;
-                var npcGenerationParams = btnNPCGenerator.Tag as NPCGenerationParams;
-                floorGroup.PossibleMonsters = npcGenerationParams.NPCList;
-                floorGroup.SimultaneousMinMonstersAtStart = npcGenerationParams.MinNPCSpawnsAtStart;
-                floorGroup.SimultaneousMaxMonstersInFloor = npcGenerationParams.SimultaneousMaxNPCs;
-                floorGroup.TurnsPerMonsterGeneration = npcGenerationParams.TurnsPerNPCGeneration;
-                var itemGenerationParams = btnItemGenerator.Tag as ObjectGenerationParams;
-                floorGroup.PossibleItems = itemGenerationParams.ObjectList;
-                floorGroup.MinItemsInFloor = itemGenerationParams.MinInFloor;
-                floorGroup.MaxItemsInFloor = itemGenerationParams.MaxInFloor;
-                var trapGenerationParams = btnTrapGenerator.Tag as ObjectGenerationParams;
-                floorGroup.PossibleTraps = trapGenerationParams.ObjectList;
-                floorGroup.MinTrapsInFloor = trapGenerationParams.MinInFloor;
-                floorGroup.MaxTrapsInFloor = trapGenerationParams.MaxInFloor;
-                floorGroup.MaxConnectionsBetweenRooms = (int)nudMaxRoomConnections.Value;
-                floorGroup.OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value;
-                floorGroup.RoomFusionOdds = (int)nudRoomFusionOdds.Value;
-                floorGroup.OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null;
-                floorGroup.HungerDegeneration = nudHungerLostPerTurn.Value;
-
-                if (saveAsNew)
-                {
-                    ActiveDungeon.FloorInfos.Add(floorGroup);
-                    ActiveDungeon.FloorInfos = ActiveDungeon.FloorInfos.OrderBy(fi => fi.MinFloorLevel).ToList();
-                }
-
-                ActiveDungeon.AmountOfFloors = ActiveDungeon.FloorInfos.Max(fi => fi.MaxFloorLevel);
-
-                floorLevelString = (floorGroup.MinFloorLevel != floorGroup.MaxFloorLevel)
-                    ? $"{floorGroup.MinFloorLevel}-{floorGroup.MaxFloorLevel}"
-                    : floorGroup.MinFloorLevel.ToString();
-
-                MessageBox.Show(
-                    $"Floor Group {floorLevelString} has been successfully saved!",
-                    "Save Floor Info",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-
-                var floorInfoNodeText = string.Empty;
-                if (floorGroup.MinFloorLevel != floorGroup.MaxFloorLevel)
-                    floorInfoNodeText = $"Floors {floorGroup.MinFloorLevel}-{floorGroup.MaxFloorLevel}";
-                else
-                    floorInfoNodeText = $"Floor {floorGroup.MinFloorLevel}";
-
-                DirtyDungeon = true;
-                DirtyTab = false;
-                IsNewElement = false;
-                RefreshTreeNodes();
-                SelectNodeIfExists(floorInfoNodeText, "Floor Groups");
-                return true;
-            }
-            return false;
-        }
 
         private void DeleteFloorGroup()
         {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
+            var activeFloorGroup = FloorGroupTab.LoadedFloorGroup;
             var floorLevelString = (activeFloorGroup.MinFloorLevel != activeFloorGroup.MaxFloorLevel)
                     ? $"{activeFloorGroup.MinFloorLevel}-{activeFloorGroup.MaxFloorLevel}"
                     : activeFloorGroup.MinFloorLevel.ToString();
@@ -1944,499 +1427,114 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void RefreshGenerationAlgorithmList()
+        private void FloorGroupTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            var layoutList = (List<FloorLayoutGenerationInfo>)lvFloorAlgorithms.Tag ?? null;
-            if (layoutList == null)
-            {
-                layoutList = new List<FloorLayoutGenerationInfo>();
-                foreach (var layout in ((FloorInfo)ActiveNodeTag.DungeonElement).PossibleLayouts)
-                {
-                    layoutList.Add(new FloorLayoutGenerationInfo
-                    {
-                        Columns = layout.Columns,
-                        Rows = layout.Rows,
-                        MinRoomSize = new() { Width = layout.MinRoomSize.Width, Height = layout.MinRoomSize.Height },
-                        MaxRoomSize = new() { Width = layout.MaxRoomSize.Width, Height = layout.MaxRoomSize.Height },
-                        RoomDisposition = layout.RoomDisposition,
-                        Name = layout.Name
-                    });
-                }
-            }
-            lvFloorAlgorithms.Tag = layoutList;
-            lvFloorAlgorithms.Items.Clear();
-            var algorithmIcons = new ImageList
-            {
-                ImageSize = new Size(64, 64),
-                ColorDepth = ColorDepth.Depth32Bit
-            };
-            foreach (var layoutGenerator in layoutList)
-            {
-                var layoutThumbnail = ConstructLayoutThumbnail(layoutGenerator);
-                algorithmIcons.Images.Add(layoutGenerator.Name, layoutThumbnail);
-            }
-            lvFloorAlgorithms.LargeImageList = algorithmIcons;
-            foreach (var layoutGenerator in layoutList)
-            {
-                lvFloorAlgorithms.Items.Add(layoutGenerator.Name, layoutGenerator.Name);
-            }
-            nudMaxRoomConnections.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
-            if (nudMaxRoomConnections.Enabled)
-            {
-                nudMaxRoomConnections.Minimum = 1;
-                nudMaxRoomConnections.Value = Math.Max(1, nudMaxRoomConnections.Value);
-            }
-            else
-            {
-                nudMaxRoomConnections.Minimum = 0;
-                nudMaxRoomConnections.Value = 0;
-            }
-            nudExtraRoomConnectionOdds.Enabled = layoutList.Count > 1 && nudMaxRoomConnections.Value > 1;
-            nudExtraRoomConnectionOdds.Value = !nudMaxRoomConnections.Enabled ? 0 : nudExtraRoomConnectionOdds.Value;
-            nudRoomFusionOdds.Enabled = layoutList.Count > 1;
-            nudRoomFusionOdds.Value = !nudRoomFusionOdds.Enabled ? 0 : nudRoomFusionOdds.Value;
-            btnAddAlgorithm.Enabled = true;
-            btnEditAlgorithm.Enabled = false;
-            btnRemoveAlgorithm.Enabled = false;
-        }
-
-        private Image ConstructLayoutThumbnail(FloorLayoutGenerationInfo layout)
-        {
-            var rows = layout.Rows + layout.Rows - 1;
-            var columns = layout.Columns + layout.Columns - 1;
-            var width = 48 * columns;
-            var height = 48 * rows;
-            var thumbnail = new Bitmap(width, height);
-
-            using (var graphics = Graphics.FromImage(thumbnail))
-            {
-                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                // Fill it with Black to ensure it looks uniform
-                graphics.Clear(Color.Black);
-                for (int i = 0; i < layout.RoomDisposition.Length; i++)
-                {
-                    var tile = layout.RoomDisposition[i];
-                    (int X, int Y) = ((int)Math.Floor((double)i / columns), i % columns);
-                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
-                    var roomDispositionData = RoomDispositionData.FirstOrDefault(rdd => rdd.RoomDispositionIndicator == tile.ToRoomDispositionIndicator(isHallwayTile));
-                    graphics.DrawImage(roomDispositionData.TileImage, 48 * Y, 48 * X);
-                }
-            }
-
-            return thumbnail;
-        }
-
-        private void nudMinFloorLevel_ValueChanged(object sender, EventArgs e)
-        {
-            nudMaxFloorLevel.Minimum = nudMinFloorLevel.Value;
-            DirtyTab = true;
-        }
-
-        private void nudMaxFloorLevel_ValueChanged(object sender, EventArgs e)
-        {
-            nudMinFloorLevel.Maximum = nudMaxFloorLevel.Value;
-            DirtyTab = true;
-        }
-
-        private void nudWidth_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudHeight_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudHungerLostPerTurn_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void ValidateOverlappingFloorGroupLevelsAndInformIfNeeded()
-        {
-            if (ActiveDungeon.HasOverlappingFloorInfosForLevels((int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, (FloorInfo)ActiveNodeTag.DungeonElement))
-            {
-                MessageBox.Show(
-                    "Your current Floor Group's Level interval overlaps with another Floor Group's.\n\nPlease correct it.",
-                    "Floor Group",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
-        }
-
-        private void nudMinFloorLevel_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.FloorInfo])) return;
-            ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
-        }
-        private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.FloorInfo])) return;
-            ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
-        }
-
-        private void chkGenerateStairsOnStart_CheckedChanged(object sender, EventArgs e)
-        {
-            fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
-            DirtyTab = true;
-        }
-
-        private void btnNPCGenerator_Click(object sender, EventArgs e)
-        {
-            var floorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var npcGenerationParams = btnNPCGenerator.Tag as NPCGenerationParams;
-            var frmGeneratorWindow = new frmNPCGeneration(floorGroup, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, npcGenerationParams, ActiveDungeon);
-            frmGeneratorWindow.ShowDialog();
-            if (frmGeneratorWindow.Saved)
-            {
-                btnNPCGenerator.Tag = frmGeneratorWindow.NPCGenerationParams;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnItemGenerator_Click(object sender, EventArgs e)
-        {
-            var floorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var itemGenerationParams = btnItemGenerator.Tag as ObjectGenerationParams;
-            var frmGeneratorWindow = new frmObjectGeneration(floorGroup, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, itemGenerationParams, EntityTypeForForm.Item, ActiveDungeon);
-            frmGeneratorWindow.ShowDialog();
-            if (frmGeneratorWindow.Saved)
-            {
-                btnItemGenerator.Tag = frmGeneratorWindow.ObjectGenerationParams;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnTrapGenerator_Click(object sender, EventArgs e)
-        {
-            var floorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var trapGenerationParams = btnTrapGenerator.Tag as ObjectGenerationParams;
-            var frmGeneratorWindow = new frmObjectGeneration(floorGroup, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, trapGenerationParams, EntityTypeForForm.Trap, ActiveDungeon);
-            frmGeneratorWindow.ShowDialog();
-            if (frmGeneratorWindow.Saved)
-            {
-                btnTrapGenerator.Tag = frmGeneratorWindow.ObjectGenerationParams;
-                DirtyTab = true;
-            }
-        }
-
-        private void btnAddAlgorithm_Click(object sender, EventArgs e)
-        {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var frmFloorLayoutWindow = new frmFloorLayout(lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, RoomDispositionData, null);
-            frmFloorLayoutWindow.ShowDialog();
-            if (frmFloorLayoutWindow.Saved)
-            {
-                if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> layoutGenerators)
-                {
-                    layoutGenerators = new List<FloorLayoutGenerationInfo>();
-                    layoutGenerators.AddRange(activeFloorGroup.PossibleLayouts);
-                }
-                layoutGenerators.Add(frmFloorLayoutWindow.GeneratorToSave);
-                lvFloorAlgorithms.Tag = layoutGenerators;
-                RefreshGenerationAlgorithmList();
-                lvFloorAlgorithms.Items[lvFloorAlgorithms.Items.Count - 1].Selected = true;
-                lvFloorAlgorithms.Select();
-                lvFloorAlgorithms.EnsureVisible(lvFloorAlgorithms.Items.Count - 1);
-                DirtyTab = true;
-            }
-        }
-
-        private void btnEditAlgorithm_Click(object sender, EventArgs e)
-        {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            var selectedIndex = lvFloorAlgorithms.SelectedIndices[0];
-            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> layoutGenerators) return;
-            var generatorToSave = layoutGenerators[lvFloorAlgorithms.SelectedIndices[0]];
-            var frmFloorLayoutWindow = new frmFloorLayout(lvFloorAlgorithms.Tag as List<FloorLayoutGenerationInfo>, (int)nudWidth.Value, (int)nudHeight.Value, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, RoomDispositionData, generatorToSave);
-            frmFloorLayoutWindow.ShowDialog();
-            if (frmFloorLayoutWindow.Saved)
-            {
-                layoutGenerators = new List<FloorLayoutGenerationInfo>();
-                layoutGenerators.AddRange(activeFloorGroup.PossibleLayouts);
-                layoutGenerators[lvFloorAlgorithms.SelectedIndices[0]] = frmFloorLayoutWindow.GeneratorToSave;
-                RefreshGenerationAlgorithmList();
-                lvFloorAlgorithms.Items[selectedIndex].Selected = true;
-                lvFloorAlgorithms.Select();
-                lvFloorAlgorithms.EnsureVisible(selectedIndex);
-                DirtyTab = true;
-            }
-        }
-
-        private void btnRemoveAlgorithm_Click(object sender, EventArgs e)
-        {
-            var activeFloorGroup = (FloorInfo)ActiveNodeTag.DungeonElement;
-            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayout)
-            {
-                floorLayout = new List<FloorLayoutGenerationInfo>();
-                floorLayout.AddRange(activeFloorGroup.PossibleLayouts);
-            }
-            var messageBoxResult = MessageBox.Show(
-                $"Do you want to remove your currently-selected Floor Layout?",
-                "Floor Layout",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
-
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                floorLayout.RemoveAt(lvFloorAlgorithms.SelectedIndices[0]);
-                lvFloorAlgorithms.Tag = floorLayout;
-                RefreshGenerationAlgorithmList();
-                DirtyTab = true;
-            }
-        }
-
-        private void lvFloorAlgorithms_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnAddAlgorithm.Enabled = true;
-            btnEditAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
-            btnCopyAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
-            btnRemoveAlgorithm.Enabled = lvFloorAlgorithms.SelectedItems.Count > 0;
-        }
-
-        private void btnCopyAlgorithm_Click(object sender, EventArgs e)
-        {
-            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayouts)
-                return;
-            ClipboardManager.Copy(FormConstants.LayoutClipboardKey, floorLayouts[lvFloorAlgorithms.SelectedIndices[0]]);
-        }
-
-        private void btnPasteAlgorithm_Click(object sender, EventArgs e)
-        {
-            if (lvFloorAlgorithms.Tag is not List<FloorLayoutGenerationInfo> floorLayouts)
-                return;
-            var copiedLayout = ClipboardManager.Paste<FloorLayoutGenerationInfo>(FormConstants.LayoutClipboardKey);
-            if(floorLayouts.Any(fl => fl.Name.Equals(copiedLayout.Name)))
-            {
-                MessageBox.Show(
-                $"This Floor Group already has a Layout with the name {copiedLayout.Name}",
-                "Cannot Paste Floor Layout",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-                );
-                return;
-            }
-            floorLayouts.Add(copiedLayout);
-            RefreshGenerationAlgorithmList();
-            ClipboardManager.RemoveData(FormConstants.LayoutClipboardKey);
-            lvFloorAlgorithms.SelectedItems.Clear();
-        }
-
-        private void nudMaxRoomConnections_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (nudMaxRoomConnections.Value == 1)
-            {
-                nudExtraRoomConnectionOdds.Enabled = false;
-                nudExtraRoomConnectionOdds.Value = 0;
-            }
-            else
-            {
-                nudExtraRoomConnectionOdds.Enabled = true;
-            }
-        }
-
-        private void nudRoomConnectionOdds_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            if (nudExtraRoomConnectionOdds.Value == 0)
-            {
-                nudMaxRoomConnections.Enabled = false;
-                nudMaxRoomConnections.Value = 1;
-            }
-            else
-            {
-                nudMaxRoomConnections.Enabled = true;
-            }
-        }
-
-        private void nudRoomFusionOdds_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbTilesets_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
 
         #region Faction
-
+        
         public void LoadFactionInfoFor(FactionInfo faction)
         {
-            txtFactionName.Text = faction.Name;
-            txtFactionName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblFactionNameLocale);
-            txtFactionDescription.Text = faction.Description;
-            txtFactionDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblFactionDescriptionLocale);
-            lbAllies.Items.Clear();
-            lbEnemies.Items.Clear();
-            lbNeutrals.Items.Clear();
-
-            var factionId = faction.Id;
-            var allies = ActiveDungeon.FactionInfos
-                .Where(otherFaction => otherFaction.Id != factionId && faction.AlliedWith.Contains(otherFaction.Id))
-                .Select(otherFaction => otherFaction.Id);
-            var enemies = ActiveDungeon.FactionInfos
-                .Where(otherFaction => otherFaction.Id != factionId && faction.EnemiesWith.Contains(otherFaction.Id))
-                .Select(otherFaction => otherFaction.Id);
-            var neutrals = ActiveDungeon.FactionInfos
-                .Where(otherFaction => otherFaction.Id != factionId && !faction.AlliedWith.Contains(otherFaction.Id) && !faction.EnemiesWith.Contains(otherFaction.Id))
-                .Select(otherFaction => otherFaction.Id);
-
-            lbAllies.Items.AddRange(allies.ToArray());
-            lbEnemies.Items.AddRange(enemies.ToArray());
-            lbNeutrals.Items.AddRange(neutrals.ToArray());
-
-            btnAlliesToNeutrals.Enabled = lbAllies.Items.Count > 0;
-            btnNeutralsToAllies.Enabled = lbNeutrals.Items.Count > 0;
-            btnNeutralsToEnemies.Enabled = lbNeutrals.Items.Count > 0;
-            btnEnemiesToNeutrals.Enabled = lbEnemies.Items.Count > 0;
+            FactionTab.LoadData(ActiveDungeon, faction);
         }
 
-        public bool ValidateFactionDataForSave(out List<string> errorMessages)
+        private bool SaveFaction()
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtFactionName.Text))
-                errorMessages.Add("Enter a Faction Name first.");
-            if (string.IsNullOrWhiteSpace(txtFactionDescription.Text))
-                errorMessages.Add("Enter a Faction Description first.");
-            return !errorMessages.Any();
+            if (string.IsNullOrWhiteSpace(FactionTab.LoadedFaction.Id))
+                return SaveFactionAs();
+            return SaveFactionToDungeon(FactionTab.LoadedFaction.Id);
         }
 
-        public bool SaveFaction(string id)
+        private bool SaveFactionAs()
         {
-            if (!ValidateFactionDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Faction. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Faction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var faction = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.FactionInfos.Find(fi => fi.Id.Equals(id)) ?? new FactionInfo() { Id = id }
-                : (FactionInfo)ActiveNodeTag.DungeonElement;
-            faction.Name = txtFactionName.Text;
-            faction.Description = txtFactionDescription.Text;
-            faction.AlliedWith = new List<string>();
-            foreach (string allyId in lbAllies.Items)
-            {
-                faction.AlliedWith.Add(allyId);
-                var alliedFaction = ActiveDungeon.FactionInfos.Find(fi => fi.Id.Equals(allyId));
-                if (!alliedFaction.AlliedWith.Contains(faction.Id))
-                    alliedFaction.AlliedWith.Add(faction.Id);
-                if (alliedFaction.NeutralWith.Contains(faction.Id))
-                    alliedFaction.NeutralWith.Remove(faction.Id);
-                if (alliedFaction.EnemiesWith.Contains(faction.Id))
-                    alliedFaction.EnemiesWith.Remove(faction.Id);
-            }
-            faction.NeutralWith = new List<string>();
-            foreach (string neutralId in lbNeutrals.Items)
-            {
-                faction.NeutralWith.Add(neutralId);
-                var neutralFaction = ActiveDungeon.FactionInfos.Find(fi => fi.Id.Equals(neutralId));
-                if (neutralFaction.AlliedWith.Contains(faction.Id))
-                    neutralFaction.AlliedWith.Remove(faction.Id);
-                if (!neutralFaction.NeutralWith.Contains(faction.Id))
-                    neutralFaction.NeutralWith.Add(faction.Id);
-                if (neutralFaction.EnemiesWith.Contains(faction.Id))
-                    neutralFaction.EnemiesWith.Remove(faction.Id);
-            }
-            faction.EnemiesWith = new List<string>();
-            foreach (string enemyId in lbEnemies.Items)
-            {
-                faction.EnemiesWith.Add(enemyId);
-                var enemyFaction = ActiveDungeon.FactionInfos.Find(fi => fi.Id.Equals(enemyId));
-                if (enemyFaction.AlliedWith.Contains(faction.Id))
-                    enemyFaction.AlliedWith.Remove(faction.Id);
-                if (enemyFaction.NeutralWith.Contains(faction.Id))
-                    enemyFaction.NeutralWith.Remove(faction.Id);
-                if (!enemyFaction.EnemiesWith.Contains(faction.Id))
-                    enemyFaction.EnemiesWith.Add(faction.Id);
-            }
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(id)))
-            {
-                ActiveDungeon.FactionInfos.Add(faction);
-                MessageBox.Show(
-                    $"Faction {id} has been successfully created!\n\n(Keep in mind that Factions whose allegiances you've changed have also changed)",
-                    "Create Faction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Faction {faction.Id} has been successfully updated!\n\n(Keep in mind that Factions whose allegiances you've changed have also changed)",
-                    "Update Faction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            SelectNodeIfExists(id ?? faction.Id, "Factions");
-            PassedValidation = false;
-            return true;
-        }
-
-        public bool SaveFactionAs()
-        {
-            if (!ValidateFactionDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Faction. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Faction",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As");
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
-                        $"A faction with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Faction",
+                        $"A Faction with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Faction As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveFaction(inputBoxResult);
-                        SelectNodeIfExists(inputBoxResult, "Factions");
+                        return SaveFactionToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    SaveFaction(inputBoxResult);
-                    if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
-                        SelectNodeIfExists(inputBoxResult, "Factions");
+                    return SaveFactionToDungeon(inputBoxResult);
                 }
-                return true;
             }
             return false;
         }
 
+        private bool SaveFactionToDungeon(string id)
+        {
+            var validationErrors = FactionTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Faction. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Faction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var factionToSave = FactionTab.LoadedFaction;
+            var preExistingFaction = ActiveDungeon.FactionInfos.FirstOrDefault(fi => fi.Id.Equals(id));
+            var isNewFaction = preExistingFaction == null;
+            if (isNewFaction)
+            {
+                ActiveDungeon.FactionInfos.Add(factionToSave);
+            }
+            else
+            {
+                ActiveDungeon.FactionInfos[ActiveDungeon.FactionInfos.IndexOf(preExistingFaction)] = factionToSave;
+            }
+            foreach (var alliedFaction in ActiveDungeon.FactionInfos.Where(fi => factionToSave.AlliedWith.Contains(fi.Id)))
+            {
+                alliedFaction.AlliedWith.Add(factionToSave.Id);
+                alliedFaction.NeutralWith.Remove(factionToSave.Id);
+                alliedFaction.EnemiesWith.Remove(factionToSave.Id);
+            }
+            foreach (var neutralFaction in ActiveDungeon.FactionInfos.Where(fi => factionToSave.NeutralWith.Contains(fi.Id)))
+            {
+                neutralFaction.AlliedWith.Remove(factionToSave.Id);
+                neutralFaction.NeutralWith.Add(factionToSave.Id);
+                neutralFaction.EnemiesWith.Remove(factionToSave.Id);
+            }
+            foreach (var enemyFaction in ActiveDungeon.FactionInfos.Where(fi => factionToSave.EnemiesWith.Contains(fi.Id)))
+            {
+                enemyFaction.AlliedWith.Remove(factionToSave.Id);
+                enemyFaction.NeutralWith.Remove(factionToSave.Id);
+                enemyFaction.EnemiesWith.Add(factionToSave.Id);
+            }
+            var verb = isNewFaction ? "Save" : "Update";
+            MessageBox.Show(
+                $"Faction {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Faction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(factionToSave.Id, "Factions");
+            return true;
+        }
+
         public void DeleteFaction()
         {
-            var activeFaction = (FactionInfo)ActiveNodeTag.DungeonElement;
+            var activeFaction = FactionTab.LoadedFaction;
             var deleteFactionPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Faction?"
                 : $"Do you want to PERMANENTLY delete Faction {activeFaction.Id}?";
@@ -2477,132 +1575,9 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void txtFactionName_TextChanged(object sender, EventArgs e)
+        private void FactionTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            txtFactionName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblFactionNameLocale);
-            DirtyTab = true;
-        }
-
-        private void txtFactionDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtFactionDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblFactionDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void lbAllies_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnAllyToNeutral.Enabled = lbAllies.SelectedItem != null;
-        }
-
-        private void lbNeutrals_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnNeutralToAlly.Enabled = lbNeutrals.SelectedItem != null;
-            btnNeutralToEnemy.Enabled = lbNeutrals.SelectedItem != null;
-        }
-
-        private void lbEnemies_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnEnemyToNeutral.Enabled = lbEnemies.SelectedItem != null;
-        }
-
-        private void btnNeutralToAlly_Click(object sender, EventArgs e)
-        {
-            lbAllies.Items.Add(lbNeutrals.SelectedItem);
-            lbNeutrals.Items.Remove(lbNeutrals.SelectedItem);
-            DirtyTab = true;
-            btnNeutralToAlly.Enabled = false;
-        }
-
-        private void btnAllyToNeutral_Click(object sender, EventArgs e)
-        {
-            lbNeutrals.Items.Add(lbAllies.SelectedItem);
-            lbAllies.Items.Remove(lbAllies.SelectedItem);
-            DirtyTab = true;
-            btnAllyToNeutral.Enabled = false;
-        }
-
-        private void btnEnemyToNeutral_Click(object sender, EventArgs e)
-        {
-            lbNeutrals.Items.Add(lbEnemies.SelectedItem);
-            lbEnemies.Items.Remove(lbEnemies.SelectedItem);
-            DirtyTab = true;
-            btnEnemyToNeutral.Enabled = false;
-        }
-
-        private void btnNeutralToEnemy_Click(object sender, EventArgs e)
-        {
-            lbEnemies.Items.Add(lbNeutrals.SelectedItem);
-            lbNeutrals.Items.Remove(lbNeutrals.SelectedItem);
-            DirtyTab = true;
-            btnNeutralToEnemy.Enabled = false;
-        }
-
-        private void btnNeutralsToAllies_Click(object sender, EventArgs e)
-        {
-            var neutralsToRemove = new List<string>();
-            foreach (string neutralId in lbNeutrals.Items)
-            {
-                lbAllies.Items.Add(neutralId);
-                neutralsToRemove.Add(neutralId);
-            }
-            foreach (var neutralToRemove in neutralsToRemove)
-            {
-                lbNeutrals.Items.Remove(neutralToRemove);
-            }
-            DirtyTab = true;
-            btnNeutralsToAllies.Enabled = false;
-            btnNeutralToAlly.Enabled = false;
-        }
-
-        private void btnAlliesToNeutrals_Click(object sender, EventArgs e)
-        {
-            var alliesToRemove = new List<string>();
-            foreach (string allyId in lbAllies.Items)
-            {
-                lbNeutrals.Items.Add(allyId);
-                alliesToRemove.Add(allyId);
-            }
-            foreach (var allyToRemove in alliesToRemove)
-            {
-                lbAllies.Items.Remove(allyToRemove);
-            }
-            DirtyTab = true;
-            btnAllyToNeutral.Enabled = false;
-            btnAlliesToNeutrals.Enabled = false;
-        }
-
-        private void btnEnemiesToNeutrals_Click(object sender, EventArgs e)
-        {
-            var enemiesToRemove = new List<string>();
-            foreach (string enemyId in lbEnemies.Items)
-            {
-                lbNeutrals.Items.Add(enemyId);
-                enemiesToRemove.Add(enemyId);
-            }
-            foreach (var enemyToRemove in enemiesToRemove)
-            {
-                lbEnemies.Items.Remove(enemyToRemove);
-            }
-            DirtyTab = true;
-            btnEnemiesToNeutrals.Enabled = false;
-            btnEnemyToNeutral.Enabled = false;
-        }
-
-        private void btnNeutralsToEnemies_Click(object sender, EventArgs e)
-        {
-            var neutralsToRemove = new List<string>();
-            foreach (string neutralId in lbNeutrals.Items)
-            {
-                lbEnemies.Items.Add(neutralId);
-                neutralsToRemove.Add(neutralId);
-            }
-            foreach (var neutralToRemove in neutralsToRemove)
-            {
-                lbNeutrals.Items.Remove(neutralToRemove);
-            }
-            DirtyTab = true;
-            btnNeutralsToEnemies.Enabled = false;
-            btnNeutralToEnemy.Enabled = false;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
@@ -2611,245 +1586,86 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadPlayerClassInfoFor(PlayerClassInfo playerClass)
         {
-            txtPlayerClassName.Text = playerClass.Name;
-            chkRequirePlayerPrompt.Checked = playerClass.RequiresNamePrompt;
-            txtPlayerClassDescription.Text = playerClass.Description;
-            try
-            {
-                crsPlayer.Character = playerClass.ConsoleRepresentation.Character;
-                crsPlayer.BackgroundColor = playerClass.ConsoleRepresentation.BackgroundColor;
-                crsPlayer.ForegroundColor = playerClass.ConsoleRepresentation.ForegroundColor;
-            }
-            catch
-            {
-                crsPlayer.Character = '\0';
-                crsPlayer.BackgroundColor = new GameColor(Color.Black);
-                crsPlayer.ForegroundColor = new GameColor(Color.White);
-            }
-            cmbPlayerFaction.Items.Clear();
-            cmbPlayerFaction.Text = "";
-            foreach (var factionId in ActiveDungeon.FactionInfos.Select(fi => fi.Id))
-            {
-                cmbPlayerFaction.Items.Add(factionId);
-                if (factionId.Equals(playerClass.Faction))
-                    cmbPlayerFaction.Text = factionId;
-            }
-            chkPlayerStartsVisible.Checked = playerClass.StartsVisible;
-            ssPlayer.StatsChanged += (_, _) => DirtyTab = true;
-            ssPlayer.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
-            ssPlayer.BaseHP = playerClass.BaseHP;
-            ssPlayer.HPPerLevelUp = playerClass.MaxHPIncreasePerLevel;
-            ssPlayer.BaseHPRegeneration = playerClass.BaseHPRegeneration;
-            ssPlayer.HPRegenerationPerLevelUp = playerClass.HPRegenerationIncreasePerLevel;
-            ssPlayer.UsesMP = playerClass.UsesMP;
-            ssPlayer.BaseMP = playerClass.BaseMP;
-            ssPlayer.MPPerLevelUp = playerClass.MaxMPIncreasePerLevel;
-            ssPlayer.BaseMPRegeneration = playerClass.BaseMPRegeneration;
-            ssPlayer.MPRegenerationPerLevelUp = playerClass.MPRegenerationIncreasePerLevel;
-            ssPlayer.BaseAttack = playerClass.BaseAttack;
-            ssPlayer.AttackPerLevelUp = playerClass.AttackIncreasePerLevel;
-            ssPlayer.BaseDefense = playerClass.BaseDefense;
-            ssPlayer.DefensePerLevelUp = playerClass.DefenseIncreasePerLevel;
-            ssPlayer.BaseMovement = playerClass.BaseMovement;
-            ssPlayer.MovementPerLevelUp = playerClass.MovementIncreasePerLevel;
-            ssPlayer.BaseAccuracy = playerClass.BaseAccuracy;
-            ssPlayer.BaseEvasion = playerClass.BaseEvasion;
-            ssPlayer.BaseSightRange = playerClass.BaseSightRange;
-            ssPlayer.UsesHunger = playerClass.UsesHunger;
-            ssPlayer.BaseHunger = playerClass.BaseHunger;
-            ssPlayer.HungerHPDegeneration = playerClass.HungerHPDegeneration;
-            ssPlayer.CanGainExperience = playerClass.CanGainExperience;
-            ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
-            ssPlayer.MaxLevel = playerClass.MaxLevel;
-            cmbPlayerStartingWeapon.Items.Clear();
-            cmbPlayerStartingWeapon.Text = "";
-            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
-            {
-                cmbPlayerStartingWeapon.Items.Add(weaponId);
-                if (weaponId.Equals(playerClass.StartingWeapon))
-                    cmbPlayerStartingWeapon.Text = weaponId;
-            }
-            cmbPlayerStartingArmor.Items.Clear();
-            cmbPlayerStartingArmor.Text = "";
-            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
-            {
-                cmbPlayerStartingArmor.Items.Add(armorId);
-                if (armorId.Equals(playerClass.StartingArmor))
-                    cmbPlayerStartingArmor.Text = armorId;
-            }
-            nudPlayerInventorySize.Value = playerClass.InventorySize;
-            sisPlayerStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
-            sisPlayerStartingInventory.InventorySize = playerClass.InventorySize;
-            sisPlayerStartingInventory.Inventory = playerClass.StartingInventory;
-            sisPlayerStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
-            SetSingleActionEditorParams(saePlayerOnTurnStart, playerClass.Id, playerClass.OnTurnStart);
-            SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
-            SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
-            SetSingleActionEditorParams(saePlayerOnDeath, playerClass.Id, playerClass.OnDeath);
+            PlayerClassTab.LoadData(ActiveDungeon, playerClass, EffectParamData, BaseSightRangeDisplayNames);
         }
 
-        private bool SavePlayerClass(string id)
+        private bool SavePlayerClass()
         {
-            if (!ValidatePlayerClassDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Player Class. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Player Class",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var playerClass = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.PlayerClasses.Find(p => p.Id.Equals(id)) ?? new PlayerClassInfo() { Id = id }
-                : (PlayerClassInfo)ActiveNodeTag.DungeonElement;
-            playerClass.Name = txtPlayerClassName.Text;
-            playerClass.RequiresNamePrompt = chkRequirePlayerPrompt.Checked;
-            playerClass.Description = txtPlayerClassDescription.Text;
-            playerClass.ConsoleRepresentation = crsPlayer.ConsoleRepresentation;
-            playerClass.Faction = cmbPlayerFaction.Text;
-            playerClass.StartsVisible = chkPlayerStartsVisible.Checked;
-            playerClass.BaseHP = ssPlayer.BaseHP;
-            playerClass.UsesMP = ssPlayer.UsesMP;
-            playerClass.BaseMP = ssPlayer.BaseMP;
-            playerClass.BaseAttack = ssPlayer.BaseAttack;
-            playerClass.BaseDefense = ssPlayer.BaseDefense;
-            playerClass.BaseMovement = ssPlayer.BaseMovement;
-            playerClass.BaseAccuracy = ssPlayer.BaseAccuracy;
-            playerClass.BaseEvasion = ssPlayer.BaseEvasion;
-            playerClass.BaseHPRegeneration = ssPlayer.BaseHPRegeneration;
-            playerClass.BaseMPRegeneration = ssPlayer.BaseMPRegeneration;
-            playerClass.BaseSightRange = ssPlayer.BaseSightRange;
-            playerClass.CanGainExperience = ssPlayer.CanGainExperience;
-            playerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
-            playerClass.MaxHPIncreasePerLevel = ssPlayer.HPPerLevelUp;
-            playerClass.MaxMPIncreasePerLevel = ssPlayer.MPPerLevelUp;
-            playerClass.AttackIncreasePerLevel = ssPlayer.AttackPerLevelUp;
-            playerClass.DefenseIncreasePerLevel = ssPlayer.DefensePerLevelUp;
-            playerClass.MovementIncreasePerLevel = ssPlayer.MovementPerLevelUp;
-            playerClass.HPRegenerationIncreasePerLevel = ssPlayer.HPRegenerationPerLevelUp;
-            playerClass.MPRegenerationIncreasePerLevel = ssPlayer.MPRegenerationPerLevelUp;
-            playerClass.MaxLevel = ssPlayer.MaxLevel;
-
-            playerClass.UsesHunger = ssPlayer.UsesHunger;
-            playerClass.BaseHunger = ssPlayer.BaseHunger;
-            playerClass.HungerHPDegeneration = ssPlayer.HungerHPDegeneration;
-
-            playerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
-            playerClass.StartingArmor = cmbPlayerStartingArmor.Text;
-
-            playerClass.InventorySize = (int)nudPlayerInventorySize.Value;
-            playerClass.StartingInventory = sisPlayerStartingInventory.Inventory;
-
-            playerClass.OnTurnStart = saePlayerOnTurnStart.Action;
-            playerClass.OnAttack = maePlayerOnAttack.Actions;
-            playerClass.OnAttacked = saePlayerOnAttacked.Action;
-            playerClass.OnDeath = saePlayerOnDeath.Action;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.PlayerClasses.Exists(p => p.Id.Equals(id)))
-            {
-                ActiveDungeon.PlayerClasses.Add(playerClass);
-                MessageBox.Show(
-                    $"Player Class {id} has been successfully created!",
-                    "Create Player Class",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Player Class {playerClass.Id} has been successfully updated!",
-                    "Update Player Class",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            var nodeText = $"{playerClass.ConsoleRepresentation.Character} - {playerClass.Id}";
-            SelectNodeIfExists(nodeText, "Player Classes");
-            PassedValidation = false;
-            return true;
+            if (string.IsNullOrWhiteSpace(PlayerClassTab.LoadedPlayerClass.Id))
+                return SavePlayerClassAs();
+            return SavePlayerClassToDungeon(PlayerClassTab.LoadedPlayerClass.Id);
         }
 
         private bool SavePlayerClassAs()
         {
-            if (!ValidatePlayerClassDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Player Class. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Player Class",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As");
             if (inputBoxResult != null)
             {
-                var saveResult = false;
                 if (ActiveDungeon.PlayerClasses.Exists(pc => pc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"A Player Class with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Player Class",
+                        "Save Player Class As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        saveResult = SavePlayerClass(inputBoxResult);
+                        return SavePlayerClassToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    saveResult = SavePlayerClass(inputBoxResult);
+                    return SavePlayerClassToDungeon(inputBoxResult);
                 }
-                var savedClass = ActiveDungeon.PlayerClasses.Find(pc => pc.Id.Equals(inputBoxResult));
-                if (savedClass != null)
-                {
-                    var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
-                    SelectNodeIfExists(nodeText, "Player Classes");
-                }
-                return saveResult;
             }
             return false;
         }
 
-        private bool ValidatePlayerClassDataForSave(out List<string> errorMessages)
+        private bool SavePlayerClassToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtPlayerClassName.Text))
-                errorMessages.Add("Enter a Player Class Name first.");
-            if (string.IsNullOrWhiteSpace(txtPlayerClassDescription.Text))
-                errorMessages.Add("Enter a Player Class Description first.");
-            if (crsPlayer.ConsoleRepresentation.Character == '\0')
-                errorMessages.Add("This Player Class does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(ssPlayer.BaseSightRange))
-                errorMessages.Add("This Player Class does not have a Sight Range set.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerFaction.Text))
-                errorMessages.Add("This Player Class does not have a Faction.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerStartingWeapon.Text))
-                errorMessages.Add("This Player Class does not have an Emergency Weapon.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerStartingArmor.Text))
-                errorMessages.Add("This Player Class does not have an Emergency Armor.");
-            if (ssPlayer.CanGainExperience && string.IsNullOrWhiteSpace(ssPlayer.ExperienceToLevelUpFormula))
-                errorMessages.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
-            if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
-                errorMessages.Add("This Player Class can gain experience, but cannot level up.");
-            if (ssPlayer.UsesHunger && ssPlayer.BaseHunger <= 0)
-                errorMessages.Add("This Player Class uses a Hunger System but has no Hunger.");
-
-            return !errorMessages.Any();
+            var validationErrors = PlayerClassTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Player Class. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Player Class",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var playerClassToSave = PlayerClassTab.LoadedPlayerClass;
+            var preExistingPlayerClass = ActiveDungeon.PlayerClasses.FirstOrDefault(pc => pc.Id.Equals(id));
+            var isNewPlayerClass = preExistingPlayerClass == null;
+            if (isNewPlayerClass)
+            {
+                ActiveDungeon.PlayerClasses.Add(playerClassToSave);
+            }
+            else
+            {
+                ActiveDungeon.PlayerClasses[ActiveDungeon.PlayerClasses.IndexOf(preExistingPlayerClass)] = playerClassToSave;
+            }
+            var verb = isNewPlayerClass ? "Save" : "Update";
+            MessageBox.Show(
+                $"Player Class {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Player Class",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = $"{playerClassToSave.ConsoleRepresentation.Character} - {playerClassToSave.Id}";
+            SelectNodeIfExists(nodeText, "Player Classes");
+            PassedValidation = false;
+            return true;
         }
 
         public void DeletePlayerClass()
         {
-            var activePlayerClass = (PlayerClassInfo)ActiveNodeTag.DungeonElement;
+            var activePlayerClass = PlayerClassTab.LoadedPlayerClass;
             var deletePlayerClassPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Player Class?"
                 : $"Do you want to PERMANENTLY delete Player Class {activePlayerClass.Id}?";
@@ -2883,53 +1699,10 @@ namespace RogueCustomsDungeonEditor
                 tvDungeonInfo.Focus();
             }
         }
-
-        private void txtPlayerClassName_TextChanged(object sender, EventArgs e)
+        
+        private void PlayerClassTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            txtPlayerClassName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblPlayerClassNameLocale);
-            DirtyTab = true;
-        }
-
-        private void chkRequirePlayerPrompt_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void txtPlayerClassDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtPlayerClassDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblPlayerClassDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void cmbPlayerFaction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkPlayerStartsVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbPlayerStartingWeapon_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbPlayerStartingArmor_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudPlayerInventorySize_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            sisPlayerStartingInventory.InventorySize = (int)nudPlayerInventorySize.Value;
-        }
-
-        private void crsPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
@@ -2937,270 +1710,86 @@ namespace RogueCustomsDungeonEditor
         #region NPC
         private void LoadNPCInfoFor(NPCInfo npc)
         {
-            txtNPCName.Text = npc.Name;
-            txtNPCDescription.Text = npc.Description;
-            try
-            {
-                crsNPC.Character = npc.ConsoleRepresentation.Character;
-                crsNPC.BackgroundColor = npc.ConsoleRepresentation.BackgroundColor;
-                crsNPC.ForegroundColor = npc.ConsoleRepresentation.ForegroundColor;
-            }
-            catch
-            {
-                crsNPC.Character = '\0';
-                crsNPC.BackgroundColor = new GameColor(Color.Black);
-                crsNPC.ForegroundColor = new GameColor(Color.White);
-            }
-            cmbNPCFaction.Items.Clear();
-            cmbNPCFaction.Text = "";
-            foreach (var factionId in ActiveDungeon.FactionInfos.Select(fi => fi.Id))
-            {
-                cmbNPCFaction.Items.Add(factionId);
-                if (factionId.Equals(npc.Faction))
-                    cmbNPCFaction.Text = factionId;
-            }
-            chkNPCStartsVisible.Checked = npc.StartsVisible;
-            chkNPCKnowsAllCharacterPositions.Checked = npc.KnowsAllCharacterPositions;
-            txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
-
-            ssNPC.StatsChanged += (_, _) => DirtyTab = true;
-            ssNPC.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
-            ssNPC.BaseHP = npc.BaseHP;
-            ssNPC.HPPerLevelUp = npc.MaxHPIncreasePerLevel;
-            ssNPC.BaseHPRegeneration = npc.BaseHPRegeneration;
-            ssNPC.HPRegenerationPerLevelUp = npc.HPRegenerationIncreasePerLevel;
-            ssNPC.UsesMP = npc.UsesMP;
-            ssNPC.BaseMP = npc.BaseMP;
-            ssNPC.MPPerLevelUp = npc.MaxMPIncreasePerLevel;
-            ssNPC.BaseMPRegeneration = npc.BaseMPRegeneration;
-            ssNPC.MPRegenerationPerLevelUp = npc.MPRegenerationIncreasePerLevel;
-            ssNPC.BaseAttack = npc.BaseAttack;
-            ssNPC.AttackPerLevelUp = npc.AttackIncreasePerLevel;
-            ssNPC.BaseDefense = npc.BaseDefense;
-            ssNPC.DefensePerLevelUp = npc.DefenseIncreasePerLevel;
-            ssNPC.BaseMovement = npc.BaseMovement;
-            ssNPC.MovementPerLevelUp = npc.MovementIncreasePerLevel;
-            ssNPC.BaseAccuracy = npc.BaseAccuracy;
-            ssNPC.BaseEvasion = npc.BaseEvasion;
-            ssNPC.BaseSightRange = npc.BaseSightRange;
-            ssNPC.UsesHunger = npc.UsesHunger;
-            ssNPC.BaseHunger = npc.BaseHunger;
-            ssNPC.HungerHPDegeneration = npc.HungerHPDegeneration;
-            ssNPC.CanGainExperience = npc.CanGainExperience;
-            ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
-            ssNPC.MaxLevel = npc.MaxLevel;
-            cmbNPCStartingWeapon.Items.Clear();
-            cmbNPCStartingWeapon.Text = "";
-            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
-            {
-                cmbNPCStartingWeapon.Items.Add(weaponId);
-                if (weaponId.Equals(npc.StartingWeapon))
-                    cmbNPCStartingWeapon.Text = weaponId;
-            }
-            cmbNPCStartingArmor.Items.Clear();
-            cmbNPCStartingArmor.Text = "";
-            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
-            {
-                cmbNPCStartingArmor.Items.Add(armorId);
-                if (armorId.Equals(npc.StartingArmor))
-                    cmbNPCStartingArmor.Text = armorId;
-            }
-            nudNPCInventorySize.Value = npc.InventorySize;
-            sisNPCStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
-            sisNPCStartingInventory.InventorySize = npc.InventorySize;
-            sisNPCStartingInventory.Inventory = npc.StartingInventory;
-            sisNPCStartingInventory.InventoryContentsChanged += (_, _) => DirtyTab = true;
-            SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
-            SetSingleActionEditorParams(saeNPCOnSpawn, npc.Id, npc.OnSpawn);
-            SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
-            SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
-            SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
-            SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
-            cmbNPCAIType.Items.Clear();
-            cmbNPCAIType.Text = "";
-            nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
-            foreach (var aiType in NPCAITypeDisplayNames)
-            {
-                cmbNPCAIType.Items.Add(aiType.Value);
-                if (aiType.Key.Equals(npc.AIType))
-                {
-                    cmbNPCAIType.Text = aiType.Value;
-                    cmbNPCAIType_SelectedIndexChanged(null, EventArgs.Empty);
-                }
-            }
+            NPCTab.LoadData(ActiveDungeon, npc, EffectParamData, BaseSightRangeDisplayNames, NPCAITypeDisplayNames);
         }
 
-        private bool SaveNPC(string id)
+        private bool SaveNPC()
         {
-            if (!ValidateNPCDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save NPC. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save NPC",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var npc = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.NPCs.Find(n => n.Id.Equals(id)) ?? new NPCInfo() { Id = id }
-                : (NPCInfo)ActiveNodeTag.DungeonElement;
-            npc.Name = txtNPCName.Text;
-            npc.Description = txtNPCDescription.Text;
-            npc.ConsoleRepresentation = crsNPC.ConsoleRepresentation;
-            npc.Faction = cmbNPCFaction.Text;
-            npc.StartsVisible = chkNPCStartsVisible.Checked;
-            npc.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
-            npc.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
-            npc.BaseHP = ssNPC.BaseHP;
-            npc.UsesMP = ssNPC.UsesMP;
-            npc.BaseMP = ssNPC.BaseMP;
-            npc.BaseAttack = ssNPC.BaseAttack;
-            npc.BaseDefense = ssNPC.BaseDefense;
-            npc.BaseMovement = ssNPC.BaseMovement;
-            npc.BaseAccuracy = ssNPC.BaseAccuracy;
-            npc.BaseEvasion = ssNPC.BaseEvasion;
-            npc.BaseHPRegeneration = ssNPC.BaseHPRegeneration;
-            npc.BaseMPRegeneration = ssNPC.BaseMPRegeneration;
-            npc.BaseSightRange = ssNPC.BaseSightRange;
-            npc.CanGainExperience = ssNPC.CanGainExperience;
-            npc.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
-            npc.MaxLevel = ssNPC.MaxLevel;
-            npc.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
-            npc.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
-            npc.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;
-            npc.DefenseIncreasePerLevel = ssNPC.DefensePerLevelUp;
-            npc.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
-            npc.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
-            npc.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
-
-            npc.UsesHunger = ssNPC.UsesHunger;
-            npc.BaseHunger = ssNPC.BaseHunger;
-            npc.HungerHPDegeneration = ssNPC.HungerHPDegeneration;
-
-            npc.StartingWeapon = cmbNPCStartingWeapon.Text;
-            npc.StartingArmor = cmbNPCStartingArmor.Text;
-
-            npc.InventorySize = (int)nudNPCInventorySize.Value;
-            npc.StartingInventory = sisNPCStartingInventory.Inventory;
-
-            npc.OnSpawn = saeNPCOnSpawn.Action;
-            npc.OnTurnStart = saeNPCOnTurnStart.Action;
-            npc.OnAttack = maeNPCOnAttack.Actions;
-            npc.OnAttacked = saeNPCOnAttacked.Action;
-            npc.OnInteracted = maeNPCOnInteracted.Actions;
-            npc.OnDeath = saeNPCOnDeath.Action;
-            foreach (var aiType in NPCAITypeDisplayNames)
-            {
-                if (aiType.Value.Equals(cmbNPCAIType.Text))
-                {
-                    npc.AIType = aiType.Key;
-                }
-            }
-            npc.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.NPCs.Exists(n => n.Id.Equals(id)))
-            {
-                ActiveDungeon.NPCs.Add(npc);
-                MessageBox.Show(
-                    $"NPC {id} has been successfully created!",
-                    "Create NPC",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"NPC {npc.Id} has been successfully updated!",
-                    "Update NPC",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            PassedValidation = false;
-            RefreshTreeNodes();
-            var nodeText = $"{npc.ConsoleRepresentation.Character} - {npc.Id}";
-            SelectNodeIfExists(nodeText, "NPCs");
-            return true;
+            if (string.IsNullOrWhiteSpace(NPCTab.LoadedNPC.Id))
+                return SaveNPCAs();
+            return SaveNPCToDungeon(NPCTab.LoadedNPC.Id);
         }
-
+        
         private bool SaveNPCAs()
         {
-            if (!ValidateNPCDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save NPC. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save NPC",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As");
             if (inputBoxResult != null)
             {
-                if (ActiveDungeon.NPCs.Exists(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.NPCs.Exists(npc => npc.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An NPC with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "NPC",
+                        "Save NPC As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        return SaveNPC(inputBoxResult);
+                        return SaveNPCToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    return SaveNPC(inputBoxResult);
+                    return SaveNPCToDungeon(inputBoxResult);
                 }
             }
             return false;
         }
 
-        private bool ValidateNPCDataForSave(out List<string> errorMessages)
+        private bool SaveNPCToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtNPCName.Text))
-                errorMessages.Add("Enter an NPC Name first.");
-            if (string.IsNullOrWhiteSpace(txtNPCDescription.Text))
-                errorMessages.Add("Enter an NPC Description first.");
-            if (crsNPC.Character == '\0')
-                errorMessages.Add("This NPC does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(ssNPC.BaseSightRange))
-                errorMessages.Add("This NPC does not have a Sight Range set.");
-            if (string.IsNullOrWhiteSpace(cmbNPCFaction.Text))
-                errorMessages.Add("This NPC does not have a Faction.");
-            if (string.IsNullOrWhiteSpace(cmbNPCStartingWeapon.Text))
-                errorMessages.Add("This NPC does not have an Emergency Weapon.");
-            if (string.IsNullOrWhiteSpace(cmbNPCStartingArmor.Text))
-                errorMessages.Add("This NPC does not have an Emergency Armor.");
-            if (string.IsNullOrWhiteSpace(txtNPCExperiencePayout.Text))
-                errorMessages.Add("This NPC does not have an Experience Payout Formula.");
-            if (ssNPC.CanGainExperience && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
-                errorMessages.Add("This NPC can gain experience, but does not have a Level Up Formula.");
-            if (ssNPC.CanGainExperience && ssNPC.MaxLevel == 1)
-                errorMessages.Add("This NPC can gain experience, but cannot level up.");
-            if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
-                errorMessages.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
-            if (ssNPC.UsesHunger && ssNPC.BaseHunger <= 0)
-                errorMessages.Add("This NPC uses a Hunger System but has no Hunger.");
-            if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
-                errorMessages.Add("This NPC does not have a set AI strategy.");
-
-            return !errorMessages.Any();
+            var validationErrors = NPCTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save NPC. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save NPC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var npcToSave = NPCTab.LoadedNPC;
+            var preExistingNPC = ActiveDungeon.NPCs.FirstOrDefault(npc => npc.Id.Equals(id));
+            var isNewNPC = preExistingNPC == null;
+            if (isNewNPC)
+            {
+                ActiveDungeon.NPCs.Add(npcToSave);
+            }
+            else
+            {
+                ActiveDungeon.NPCs[ActiveDungeon.NPCs.IndexOf(preExistingNPC)] = npcToSave;
+            }
+            var verb = isNewNPC ? "Save" : "Update";
+            MessageBox.Show(
+                $"NPC {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} NPC",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = $"{npcToSave.ConsoleRepresentation.Character} - {npcToSave.Id}";
+            SelectNodeIfExists(nodeText, "NPCs");
+            PassedValidation = false;
+            return true;
         }
 
         public void DeleteNPC()
         {
-            var activeNPC = (NPCInfo)ActiveNodeTag.DungeonElement;
+            var activeNPC = NPCTab.LoadedNPC;
             var deleteNPCPrompt = IsNewElement
                 ? "Do you want to remove this unsaved NPC?"
                 : $"Do you want to PERMANENTLY delete NPC {activeNPC.Id}?";
@@ -3234,280 +1823,92 @@ namespace RogueCustomsDungeonEditor
                 tvDungeonInfo.Focus();
             }
         }
-        private void txtNPCExperiencePayout_Enter(object sender, EventArgs e)
+
+        private void NPCTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            PreviousTextBoxValue = txtNPCExperiencePayout.Text;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
-        private void txtNPCExperiencePayout_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.NPC])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtNPCExperiencePayout.Text))
-            {
-                var parsedPayoutFormula = Regex.Replace(txtNPCExperiencePayout.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
-
-                if (!string.IsNullOrWhiteSpace(parsedPayoutFormula) && !parsedPayoutFormula.TestNumericExpression(false, out string errorMessage))
-                {
-                    MessageBox.Show(
-                        $"You have entered an invalid Experience Formula: {errorMessage}",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtNPCExperiencePayout.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void chkNPCKnowsAllCharacterPositions_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCOddsToTargetSelf_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void txtNPCName_TextChanged(object sender, EventArgs e)
-        {
-            txtNPCName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblNPCNameLocale);
-            DirtyTab = true;
-        }
-
-        private void txtNPCDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtNPCDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblNPCDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void cmbNPCFaction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkNPCStartsVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbNPCStartingWeapon_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbNPCStartingArmor_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void nudNPCInventorySize_ValueChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-            sisNPCStartingInventory.InventorySize = (int)nudNPCInventorySize.Value;
-        }
-
-        private void crsNPC_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void cmbNPCAIType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbNPCAIType.Text == NPCAITypeDisplayNames["Random"])
-            {
-                lblNPCAIOddsToTargetSelfA.Visible = true;
-                lblNPCAIOddsToTargetSelfB.Visible = true;
-                nudNPCOddsToTargetSelf.Visible = true;
-            }
-            else
-            {
-                lblNPCAIOddsToTargetSelfA.Visible = false;
-                lblNPCAIOddsToTargetSelfB.Visible = false;
-                nudNPCOddsToTargetSelf.Visible = false;
-                nudNPCOddsToTargetSelf.Value = 0;
-            }
-            DirtyTab = true;
-        }
         #endregion
 
         #region Item
         private void LoadItemInfoFor(ItemInfo item)
         {
-            txtItemName.Text = item.Name;
-            txtItemDescription.Text = item.Description;
-            try
-            {
-                crsItem.Character = item.ConsoleRepresentation.Character;
-                crsItem.BackgroundColor = item.ConsoleRepresentation.BackgroundColor;
-                crsItem.ForegroundColor = item.ConsoleRepresentation.ForegroundColor;
-            }
-            catch
-            {
-                crsItem.Character = '\0';
-                crsItem.BackgroundColor = new GameColor(Color.Black);
-                crsItem.ForegroundColor = new GameColor(Color.White);
-            }
-            cmbItemType.Text = "";
-            cmbItemType.Items.Clear();
-            cmbItemType.Items.AddRange(new string[] { "Weapon", "Armor", "Consumable" });
-            PreviousItemType = "";
-            var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
-
-            if (itemType != null)
-            {
-                PreviousItemType = itemType;
-                cmbItemType.Text = itemType;
-            }
-            ToggleItemTypeControlsVisibility();
-            txtItemPower.Text = item.Power;
-            chkItemStartsVisible.Checked = item.StartsVisible;
-            chkItemCanBePickedUp.Checked = item.CanBePickedUp;
-            SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
-            SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
-            SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
-            SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
-            SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
-            SetSingleActionEditorParams(saeItemOnStepped, item.Id, item.OnStepped);
+            ItemTab.LoadData(ActiveDungeon, item, EffectParamData);
         }
 
-        private bool SaveItem(string id)
+        private bool SaveItem()
         {
-            if (!ValidateItemDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Item. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Item",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var item = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.Items.Find(i => i.Id.Equals(id)) ?? new ItemInfo() { Id = id }
-                : (ItemInfo)ActiveNodeTag.DungeonElement;
-            item.Name = txtItemName.Text;
-            item.Description = txtItemDescription.Text;
-            item.ConsoleRepresentation = crsItem.ConsoleRepresentation;
-            item.StartsVisible = chkItemStartsVisible.Checked;
-            item.CanBePickedUp = chkItemCanBePickedUp.Checked;
-            item.EntityType = cmbItemType.Text;
-            item.Power = txtItemPower.Text;
-
-            item.OnTurnStart = null;
-            item.OnAttacked = null;
-
-            if (item.EntityType == "Weapon" || item.EntityType == "Armor")
-            {
-                item.OnTurnStart = saeItemOnTurnStart.Action;
-                item.OnAttacked = saeItemOnAttacked.Action;
-                item.OnUse = null;
-            }
-            else if (item.EntityType == "Consumable")
-            {
-                item.OnUse = saeItemOnUse.Action;
-            }
-
-            item.OnAttack = maeItemOnAttack.Actions;
-            item.OnStepped = saeItemOnStepped.Action;
-            item.OnDeath = saeItemOnDeath.Action;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Items.Exists(i => i.Id.Equals(id)))
-            {
-                ActiveDungeon.Items.Add(item);
-                MessageBox.Show(
-                    $"Item {id} has been successfully created!",
-                    "Create Item",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Item {item.Id} has been successfully updated!",
-                    "Update Item",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            var nodeText = $"{item.ConsoleRepresentation.Character} - {item.Id}";
-            SelectNodeIfExists(nodeText, "Items");
-            PassedValidation = false;
-            return true;
+            if (string.IsNullOrWhiteSpace(ItemTab.LoadedItem.Id))
+                return SaveItemAs();
+            return SaveItemToDungeon(ItemTab.LoadedItem.Id);
         }
 
         private bool SaveItemAs()
         {
-            if (!ValidateItemDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Item. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Item",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As");
             if (inputBoxResult != null)
             {
-                var saveResult = false;
-                if (ActiveDungeon.Items.Exists(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.Items.Exists(i => i.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Item with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Item",
+                        "Save Item As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        saveResult = SaveItem(inputBoxResult);
+                        return SaveItemToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    saveResult = SaveItem(inputBoxResult);
+                    return SaveItemToDungeon(inputBoxResult);
                 }
-                var savedClass = ActiveDungeon.Items.Find(pc => pc.Id.Equals(inputBoxResult));
-                if (savedClass != null)
-                {
-                    var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
-                    SelectNodeIfExists(nodeText, "Items");
-                }
-                return saveResult;
             }
             return false;
         }
 
-        private bool ValidateItemDataForSave(out List<string> errorMessages)
+        private bool SaveItemToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtItemName.Text))
-                errorMessages.Add("Enter an Item Name first.");
-            if (string.IsNullOrWhiteSpace(txtItemDescription.Text))
-                errorMessages.Add("Enter an Item Description first.");
-            if (crsItem.Character == '\0')
-                errorMessages.Add("This Item does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(cmbItemType.Text))
-                errorMessages.Add("This Item does not have an Item Type.");
-            if (string.IsNullOrWhiteSpace(txtItemPower.Text))
-                errorMessages.Add("This Item does not have a Power.");
-
-            return !errorMessages.Any();
+            var validationErrors = ItemTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Item. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Item",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var itemToSave = ItemTab.LoadedItem;
+            var preExistingItem = ActiveDungeon.Items.FirstOrDefault(i => i.Id.Equals(id));
+            var isNewItem = preExistingItem == null;
+            if (isNewItem)
+            {
+                ActiveDungeon.Items.Add(itemToSave);
+            }
+            else
+            {
+                ActiveDungeon.Items[ActiveDungeon.Items.IndexOf(preExistingItem)] = itemToSave;
+            }
+            var verb = isNewItem ? "Save" : "Update";
+            MessageBox.Show(
+                $"Item {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Item",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = $"{itemToSave.ConsoleRepresentation.Character} - {itemToSave.Id}";
+            SelectNodeIfExists(nodeText, "Items");
+            PassedValidation = false;
+            return true;
         }
 
         public void DeleteItem()
@@ -3547,276 +1948,92 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void txtItemName_TextChanged(object sender, EventArgs e)
+        private void ItemTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            txtItemName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblItemNameLocale);
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
-        private void txtItemDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtItemDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblItemDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void ToggleItemTypeControlsVisibility()
-        {
-            if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
-            {
-                saeItemOnStepped.Visible = true;
-                saeItemOnUse.Visible = false;
-                saeItemOnUse.Action = null;
-                saeItemOnTurnStart.Visible = true;
-                maeItemOnAttack.Visible = true;
-                maeItemOnAttack.ActionDescription = "The Item's Owner can\ninteract with someone else\nwith the following:";
-                maeItemOnAttack.SourceDescription = "Whoever is equipping This";
-                saeItemOnDeath.Visible = true;
-                saeItemOnDeath.ActionDescription = "When someone equipping it dies...               ";
-                saeItemOnDeath.SourceDescription = "Whoever is equipping This";
-                saeItemOnAttacked.Visible = true;
-            }
-            else if (cmbItemType.Text == "Consumable")
-            {
-                saeItemOnStepped.Visible = true;
-                saeItemOnUse.Visible = true;
-                saeItemOnTurnStart.Visible = false;
-                saeItemOnTurnStart.Action = null;
-                maeItemOnAttack.Visible = true;
-                maeItemOnAttack.ActionDescription = "Someone can use it to\ninteract with someone else\nwith the following:";
-                maeItemOnAttack.SourceDescription = "Whoever is about to use This";
-                saeItemOnDeath.Visible = true;
-                saeItemOnDeath.ActionDescription = "When someone carrying it dies...                ";
-                saeItemOnDeath.SourceDescription = "Whoever is has This in their Inventory";
-                saeItemOnAttacked.Visible = false;
-                saeItemOnAttacked.Action = null;
-            }
-            else
-            {
-                saeItemOnStepped.Visible = false;
-                saeItemOnUse.Visible = false;
-                saeItemOnUse.Action = null;
-                saeItemOnTurnStart.Visible = false;
-                saeItemOnTurnStart.Action = null;
-                maeItemOnAttack.Visible = false;
-                maeItemOnAttack.ActionDescription = "You shouldn't see this.";
-                saeItemOnAttacked.Visible = false;
-                saeItemOnAttacked.Action = null;
-                saeItemOnDeath.Visible = false;
-                saeItemOnDeath.Action = null;
-                saeItemOnStepped.Visible = false;
-                saeItemOnStepped.Action = null;
-            }
-        }
-
-        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ((PreviousItemType.Equals("Consumable") && (cmbItemType.Text.Equals("Weapon") || cmbItemType.Text.Equals("Armor")))
-                || ((PreviousItemType.Equals("Weapon") || PreviousItemType.Equals("Armor")) && cmbItemType.Text.Equals("Consumable")))
-            {
-                var changeItemTypePrompt = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
-                    ? "Changing an Item Type from Consumable to Equippable will delete some saved Actions.\n\nNOTE: This is NOT reversible."
-                    : "Changing an Item Type from Equippable to Consumable will delete some saved Actions.\n\nNOTE: This is NOT reversible.";
-                var messageBoxResult = MessageBox.Show(
-                    $"{changeItemTypePrompt}\n\nDo you wish to continue?",
-                    "Change Item Type",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-
-                if (messageBoxResult == DialogResult.No)
-                {
-                    cmbItemType.Text = PreviousItemType;
-                    return;
-                }
-            }
-
-            ToggleItemTypeControlsVisibility();
-
-            DirtyTab = true;
-            PreviousItemType = cmbItemType.Text;
-        }
-
-        private void txtItemPower_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtItemPower.Text;
-        }
-
-        private void txtItemPower_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Item])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtItemPower.Text))
-            {
-                if (!string.IsNullOrWhiteSpace(txtItemPower.Text) && !txtItemPower.Text.IsDiceNotation() && !int.TryParse(txtItemPower.Text, out _))
-                {
-                    MessageBox.Show(
-                        $"Item Power must be either a flat integer or a Dice Notation expression",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtItemPower.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void chkItemStartsVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkItemCanBePickedUp_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void crsItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
         #endregion
 
         #region Trap
 
         private void LoadTrapInfoFor(TrapInfo trap)
         {
-            txtTrapName.Text = trap.Name;
-            txtTrapDescription.Text = trap.Description;
-            try
-            {
-                crsTrap.Character = trap.ConsoleRepresentation.Character;
-                crsTrap.BackgroundColor = trap.ConsoleRepresentation.BackgroundColor;
-                crsTrap.ForegroundColor = trap.ConsoleRepresentation.ForegroundColor;
-            }
-            catch
-            {
-                crsTrap.Character = '\0';
-                crsTrap.BackgroundColor = new GameColor(Color.Black);
-                crsTrap.ForegroundColor = new GameColor(Color.White);
-            }
-            txtTrapPower.Text = trap.Power;
-            chkTrapStartsVisible.Checked = trap.StartsVisible;
-            var toolTip = new ToolTip();
-            toolTip.SetToolTip(chkTrapStartsVisible, "The 'spirit' of a Trap is that it spawns invisible.\n\nHowever, it can be enabled for debugging purposes.");
-            SetSingleActionEditorParams(saeTrapOnStepped, trap.Id, trap.OnStepped);
+            TrapTab.LoadData(ActiveDungeon, trap, EffectParamData);
         }
 
-        private bool SaveTrap(string id)
+        private bool SaveTrap()
         {
-            if (!ValidateTrapDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Trap. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Trap",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var trap = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.Traps.Find(t => t.Id.Equals(id)) ?? new TrapInfo() { Id = id }
-                : (TrapInfo)ActiveNodeTag.DungeonElement;
-            trap.Name = txtTrapName.Text;
-            trap.Description = txtTrapDescription.Text;
-            trap.ConsoleRepresentation = crsTrap.ConsoleRepresentation;
-            trap.StartsVisible = chkTrapStartsVisible.Checked;
-            trap.Power = txtTrapPower.Text;
-
-            trap.OnStepped = saeTrapOnStepped.Action;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.Traps.Exists(t => t.Id.Equals(id)))
-            {
-                ActiveDungeon.Traps.Add(trap);
-                MessageBox.Show(
-                    $"Trap {id} has been successfully created!",
-                    "Create Trap",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Trap {trap.Id} has been successfully updated!",
-                    "Update Trap",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            var nodeText = $"{trap.ConsoleRepresentation.Character} - {trap.Id}";
-            SelectNodeIfExists(nodeText, "Traps");
-            PassedValidation = false;
-            return true;
+            if (string.IsNullOrWhiteSpace(TrapTab.LoadedTrap.Id))
+                return SaveTrapAs();
+            return SaveTrapToDungeon(TrapTab.LoadedTrap.Id);
         }
 
         private bool SaveTrapAs()
         {
-            if (!ValidateTrapDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Trap. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Trap",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As");
             if (inputBoxResult != null)
             {
-                var saveResult = false;
-                if (ActiveDungeon.Traps.Exists(pc => pc.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.Traps.Exists(i => i.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Trap with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Trap",
+                        "Save Trap As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        saveResult = SaveTrap(inputBoxResult);
+                        return SaveTrapToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    saveResult = SaveTrap(inputBoxResult);
+                    return SaveTrapToDungeon(inputBoxResult);
                 }
-                var savedClass = ActiveDungeon.Traps.Find(pc => pc.Id.Equals(inputBoxResult));
-                if (savedClass != null)
-                {
-                    var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
-                    SelectNodeIfExists(nodeText, "Traps");
-                }
-                return saveResult;
             }
             return false;
         }
 
-        private bool ValidateTrapDataForSave(out List<string> errorMessages)
+        private bool SaveTrapToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtTrapName.Text))
-                errorMessages.Add("Enter an Trap Name first.");
-            if (string.IsNullOrWhiteSpace(txtTrapDescription.Text))
-                errorMessages.Add("Enter an Trap Description first.");
-            if (crsTrap.Character == '\0')
-                errorMessages.Add("This Trap does not have a Console Representation character.");
-            if (string.IsNullOrWhiteSpace(txtTrapPower.Text))
-                errorMessages.Add("This Trap does not have a Power.");
-
-            return !errorMessages.Any();
+            var validationErrors = TrapTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Trap. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Trap",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var TrapToSave = TrapTab.LoadedTrap;
+            var preExistingTrap = ActiveDungeon.Traps.FirstOrDefault(t => t.Id.Equals(id));
+            var isNewTrap = preExistingTrap == null;
+            if (isNewTrap)
+            {
+                ActiveDungeon.Traps.Add(TrapToSave);
+            }
+            else
+            {
+                ActiveDungeon.Traps[ActiveDungeon.Traps.IndexOf(preExistingTrap)] = TrapToSave;
+            }
+            var verb = isNewTrap ? "Save" : "Update";
+            MessageBox.Show(
+                $"Trap {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Trap",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = $"{TrapToSave.ConsoleRepresentation.Character} - {TrapToSave.Id}";
+            SelectNodeIfExists(nodeText, "Traps");
+            PassedValidation = false;
+            return true;
         }
 
         public void DeleteTrap()
@@ -3856,56 +2073,9 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void txtTrapName_TextChanged(object sender, EventArgs e)
+        private void TrapTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            txtTrapName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblTrapNameLocale);
-            DirtyTab = true;
-        }
-
-        private void txtTrapDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtTrapDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblTrapDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void txtTrapPower_Enter(object sender, EventArgs e)
-        {
-            PreviousTextBoxValue = txtTrapPower.Text;
-        }
-
-        private void txtTrapPower_Leave(object sender, EventArgs e)
-        {
-            if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Trap])) return;
-
-            if (!PreviousTextBoxValue.Equals(txtTrapPower.Text))
-            {
-                if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !int.TryParse(txtTrapPower.Text, out _))
-                {
-                    MessageBox.Show(
-                        $"Trap Power must be either a flat integer or a Dice Notation expression",
-                        "Invalid Formula",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    txtTrapPower.Text = PreviousTextBoxValue;
-                }
-                else
-                {
-                    DirtyTab = true;
-                }
-            }
-
-            PreviousTextBoxValue = "";
-        }
-
-        private void chkTrapStartsVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void crsTrap_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
@@ -3914,145 +2084,81 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadAlteredStatusInfoFor(AlteredStatusInfo alteredStatus)
         {
-            txtAlteredStatusName.Text = alteredStatus.Name;
-            txtAlteredStatusDescription.Text = alteredStatus.Description;
-            try
-            {
-                crsAlteredStatus.Character = alteredStatus.ConsoleRepresentation.Character;
-                crsAlteredStatus.BackgroundColor = alteredStatus.ConsoleRepresentation.BackgroundColor;
-                crsAlteredStatus.ForegroundColor = alteredStatus.ConsoleRepresentation.ForegroundColor;
-            }
-            catch
-            {
-                crsAlteredStatus.Character = '\0';
-                crsAlteredStatus.BackgroundColor = new GameColor(Color.Black);
-                crsAlteredStatus.ForegroundColor = new GameColor(Color.White);
-            }
-            chkAlteredStatusCanStack.Checked = alteredStatus.CanStack;
-            chkAlteredStatusCanOverwrite.Checked = alteredStatus.CanOverwrite;
-            chkAlteredStatusCleanseOnFloorChange.Checked = alteredStatus.CleanseOnFloorChange;
-            chkAlteredStatusCleansedOnCleanseActions.Checked = alteredStatus.CleansedByCleanseActions;
-            SetSingleActionEditorParams(saeAlteredStatusOnApply, alteredStatus.Id, alteredStatus.OnApply);
-            SetSingleActionEditorParams(saeAlteredStatusOnTurnStart, alteredStatus.Id, alteredStatus.OnTurnStart);
-            SetSingleActionEditorParams(saeAlteredStatusBeforeAttack, alteredStatus.Id, alteredStatus.BeforeAttack);
-            SetSingleActionEditorParams(saeAlteredStatusOnAttacked, alteredStatus.Id, alteredStatus.OnAttacked);
-            SetSingleActionEditorParams(saeAlteredStatusOnRemove, alteredStatus.Id, alteredStatus.OnRemove);
+            AlteredStatusTab.LoadData(ActiveDungeon, alteredStatus, EffectParamData);
         }
 
-        private bool SaveAlteredStatus(string id)
+        private bool SaveAlteredStatus()
         {
-            if (!ValidateAlteredStatusDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Altered Status. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Altered Status",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-            var alteredStatus = !string.IsNullOrWhiteSpace(id)
-                ? ActiveDungeon.AlteredStatuses.Find(als => als.Id.Equals(id)) ?? new AlteredStatusInfo() { Id = id }
-                : (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
-            alteredStatus.Name = txtAlteredStatusName.Text;
-            alteredStatus.Description = txtAlteredStatusDescription.Text;
-            alteredStatus.ConsoleRepresentation = crsAlteredStatus.ConsoleRepresentation;
-            alteredStatus.CanStack = chkAlteredStatusCanStack.Checked;
-            alteredStatus.CanOverwrite = chkAlteredStatusCanOverwrite.Checked;
-            alteredStatus.CleanseOnFloorChange = chkAlteredStatusCleanseOnFloorChange.Checked;
-            alteredStatus.CleansedByCleanseActions = chkAlteredStatusCleansedOnCleanseActions.Checked;
-
-            alteredStatus.OnApply = saeAlteredStatusOnApply.Action;
-            alteredStatus.OnTurnStart = saeAlteredStatusOnTurnStart.Action;
-            alteredStatus.BeforeAttack = saeAlteredStatusBeforeAttack.Action;
-            alteredStatus.OnAttacked = saeAlteredStatusOnAttacked.Action;
-            alteredStatus.OnRemove = saeAlteredStatusOnRemove.Action;
-
-            if (!string.IsNullOrWhiteSpace(id) && !ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(id)))
-            {
-                ActiveDungeon.AlteredStatuses.Add(alteredStatus);
-                MessageBox.Show(
-                    $"Altered Status {id} has been successfully created!",
-                    "Create Altered Status",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                MessageBox.Show(
-                    $"Altered Status {alteredStatus.Id} has been successfully updated!",
-                    "Update Altered Status",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            IsNewElement = false;
-            DirtyDungeon = true;
-            DirtyTab = false;
-            RefreshTreeNodes();
-            var nodeText = $"{alteredStatus.ConsoleRepresentation.Character} - {alteredStatus.Id}";
-            SelectNodeIfExists(nodeText, "Altered Statuses");
-            PassedValidation = false;
-            return true;
+            if (string.IsNullOrWhiteSpace(AlteredStatusTab.LoadedAlteredStatus.Id))
+                return SaveAlteredStatusAs();
+            return SaveAlteredStatusToDungeon(AlteredStatusTab.LoadedAlteredStatus.Id);
         }
 
         private bool SaveAlteredStatusAs()
         {
-            if (!ValidateAlteredStatusDataForSave(out List<string> errorMessages))
-            {
-                MessageBox.Show(
-                    $"Cannot save Altered Status. Please correct the following errors:\n- {string.Join("\n- ", errorMessages)}",
-                    "Save Altered Status",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
             var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As");
             if (inputBoxResult != null)
             {
-                var saveResult = false;
-                if (ActiveDungeon.AlteredStatuses.Exists(als => als.Id.Equals(inputBoxResult)))
+                if (ActiveDungeon.AlteredStatuses.Exists(i => i.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
                         $"An Altered Status with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
-                        "Altered Status",
+                        "Save Altered Status As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        saveResult = SaveAlteredStatus(inputBoxResult);
+                        return SaveAlteredStatusToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    saveResult = SaveAlteredStatus(inputBoxResult);
+                    return SaveAlteredStatusToDungeon(inputBoxResult);
                 }
-                var savedClass = ActiveDungeon.AlteredStatuses.Find(pc => pc.Id.Equals(inputBoxResult));
-                if (savedClass != null)
-                {
-                    var nodeText = $"{savedClass.ConsoleRepresentation.Character} - {savedClass.Id}";
-                    SelectNodeIfExists(nodeText, "Altered Statuses");
-                }
-                return saveResult;
             }
             return false;
         }
 
-        private bool ValidateAlteredStatusDataForSave(out List<string> errorMessages)
+        private bool SaveAlteredStatusToDungeon(string id)
         {
-            errorMessages = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(txtAlteredStatusName.Text))
-                errorMessages.Add("Enter an Altered Status Name first.");
-            if (string.IsNullOrWhiteSpace(txtAlteredStatusDescription.Text))
-                errorMessages.Add("Enter an Altered Status Description first.");
-            if (crsAlteredStatus.Character == '\0')
-                errorMessages.Add("This Altered Status does not have a Console Representation character.");
-
-            return !errorMessages.Any();
+            var validationErrors = AlteredStatusTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save AlteredStatus. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save AlteredStatus",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var AlteredStatusToSave = AlteredStatusTab.LoadedAlteredStatus;
+            var preExistingAlteredStatus = ActiveDungeon.AlteredStatuses.FirstOrDefault(t => t.Id.Equals(id));
+            var isNewAlteredStatus = preExistingAlteredStatus == null;
+            if (isNewAlteredStatus)
+            {
+                ActiveDungeon.AlteredStatuses.Add(AlteredStatusToSave);
+            }
+            else
+            {
+                ActiveDungeon.AlteredStatuses[ActiveDungeon.AlteredStatuses.IndexOf(preExistingAlteredStatus)] = AlteredStatusToSave;
+            }
+            var verb = isNewAlteredStatus ? "Save" : "Update";
+            MessageBox.Show(
+                $"Altered Status {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Altered Status",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewElement = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = $"{AlteredStatusToSave.ConsoleRepresentation.Character} - {AlteredStatusToSave.Id}";
+            SelectNodeIfExists(nodeText, "Altered Statuses");
+            PassedValidation = false;
+            return true;
         }
 
         public void DeleteAlteredStatus()
@@ -4092,189 +2198,28 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void txtAlteredStatusName_TextChanged(object sender, EventArgs e)
+        private void AlteredStatusTab_TabInfoChanged(object? sender, EventArgs e)
         {
-            txtAlteredStatusName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblAlteredStatusNameLocale);
-            DirtyTab = true;
-        }
-
-        private void txtAlteredStatusDescription_TextChanged(object sender, EventArgs e)
-        {
-            txtAlteredStatusDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblAlteredStatusDescriptionLocale);
-            DirtyTab = true;
-        }
-
-        private void crsAlteredStatus_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkAlteredStatusCanStack_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkAlteredStatusCanStack.Checked)
-            {
-                chkAlteredStatusCanOverwrite.Checked = false;
-                chkAlteredStatusCanOverwrite.Enabled = false;
-            }
-            DirtyTab = true;
-        }
-
-        private void chkAlteredStatusCanOverwrite_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkAlteredStatusCanOverwrite.Checked)
-            {
-                chkAlteredStatusCanStack.Checked = false;
-                chkAlteredStatusCanStack.Enabled = false;
-            }
-            DirtyTab = true;
-        }
-
-        private void chkAlteredStatusCleanseOnFloorChange_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
-        }
-
-        private void chkAlteredStatusCleansedOnCleanseActions_CheckedChanged(object sender, EventArgs e)
-        {
-            DirtyTab = true;
+            if (!AutomatedChange) DirtyTab = true;
         }
 
         #endregion
 
         #region Validator
 
-        private void ValidateDungeon()
+        private void ValidatorTab_OnValidationComplete(object? sender, EventArgs e)
         {
-            try
-            {
-                PassedValidation = false;
-                tvValidationResults.Nodes.Clear();
-                var dungeonValidator = new DungeonValidator(ActiveDungeon);
-                PassedValidation = dungeonValidator.Validate(MandatoryLocaleKeys);
-
-                tvValidationResults.Visible = true;
-                tvValidationResults.Font = new Font("Arial", 11, FontStyle.Regular);
-
-                AddValidationResultNode("Name", dungeonValidator.NameValidationMessages);
-                AddValidationResultNode("Author", dungeonValidator.AuthorValidationMessages);
-                AddValidationResultNode("Welcome/Ending Message", dungeonValidator.MessageValidationMessages);
-                AddValidationResultNode("Default Locale", dungeonValidator.DefaultLocaleValidationMessages);
-                AddValidationResultNode("General Floor Plan", dungeonValidator.FloorPlanValidationMessages);
-
-                AddValidationResultNode("Object Ids", dungeonValidator.IdValidationMessages);
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.TileSetValidationMessages)
-                {
-                    AddValidationResultNode($"Tileset {Id}", ValidationMessages);
-                }
-
-                foreach (var (FloorMinimumLevel, FloorMaximumLevel, ValidationMessages) in dungeonValidator.FloorGroupValidationMessages)
-                {
-                    if (FloorMinimumLevel != FloorMaximumLevel)
-                        AddValidationResultNode($"Floor Group for Levels {FloorMinimumLevel}-{FloorMaximumLevel}", ValidationMessages);
-                    else
-                        AddValidationResultNode($"Floor Group for Level {FloorMinimumLevel}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.FactionValidationMessages)
-                {
-                    AddValidationResultNode($"Faction {Id}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)
-                {
-                    AddValidationResultNode($"Player Class {Id}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.NPCValidationMessages)
-                {
-                    AddValidationResultNode($"NPC {Id}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.ItemValidationMessages)
-                {
-                    AddValidationResultNode($"Item {Id}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.TrapValidationMessages)
-                {
-                    AddValidationResultNode($"Trap {Id}", ValidationMessages);
-                }
-
-                foreach (var (Id, ValidationMessages) in dungeonValidator.AlteredStatusValidationMessages)
-                {
-                    AddValidationResultNode($"Altered Status {Id}", ValidationMessages);
-                }
-
-                foreach (var (Language, ValidationMessages) in dungeonValidator.LocaleStringValidationMessages)
-                {
-                    AddValidationResultNode($"Locale {Language}", ValidationMessages);
-                }
-
-                if (PassedValidation)
-                    MessageBox.Show($"This Dungeon has passed Validation. You can save and play with it, assured no known game-breaking bugs will happen.\nCheck Validation Results for more info.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                else
-                    MessageBox.Show($"This Dungeon has failed Validation. Please fix it, as playing with it can cause known game-breaking bugs to happen.\nCheck Validation Results for more info.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Attempting to Validate this Dungeon threw an error:\n\n{ex.Message}\n\nPlease fix it.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                PassedValidation = true;
-                tvValidationResults.Visible = false;
-                if (tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
-                    tbTabs.TabPages.Remove(TabsForNodeTypes[RogueTabTypes.Validator]);
-            }
+            PassedValidation = ValidatorTab.PassedValidation;
         }
 
-        private void AddValidationResultNode(string rootNodeName, DungeonValidationMessages validationMessages)
+        private void ValidatorTab_OnError(object? sender, EventArgs e)
         {
-            var nameNode = new TreeNode(rootNodeName)
-            {
-                NodeFont = new Font("Arial", 10, FontStyle.Bold)
-            };
-            if (validationMessages.HasErrors)
-            {
-                nameNode.ForeColor = Color.Red;
-            }
-            else if (validationMessages.HasWarnings)
-            {
-                nameNode.ForeColor = Color.DarkOrange;
-            }
-            else
-            {
-                nameNode.ForeColor = Color.Green;
-            }
-
-            foreach (var validationMessage in validationMessages.ValidationMessages)
-            {
-                var childNode = new TreeNode(validationMessage.Message)
-                {
-                    NodeFont = new Font("Arial", 10, FontStyle.Regular)
-                };
-                if (validationMessage.Type == DungeonValidationMessageType.Error)
-                {
-                    childNode.ForeColor = Color.Red;
-                }
-                else if (validationMessage.Type == DungeonValidationMessageType.Warning)
-                {
-                    childNode.ForeColor = Color.DarkOrange;
-                }
-                else if (validationMessage.Type == DungeonValidationMessageType.Success)
-                {
-                    childNode.ForeColor = Color.Green;
-                }
-                nameNode.Nodes.Add(childNode);
-            }
-
-            tvValidationResults.Nodes.Add(nameNode);
+            PassedValidation = false;
+            if (tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
+                tbTabs.TabPages.Remove(TabsForNodeTypes[RogueTabTypes.Validator]);
         }
 
         #endregion
-
-        private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
-        {
-            btnPasteAlgorithm.Enabled = ClipboardManager.ContainsData(FormConstants.LayoutClipboardKey);
-        }
     }
 
     public class NodeTag

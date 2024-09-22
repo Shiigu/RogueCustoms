@@ -338,10 +338,22 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new FloorInfo()
             {
+                GenerateStairsOnStart = true,
+                HungerDegeneration = 0,
                 MinFloorLevel = 1,
                 MaxFloorLevel = 1,
-                Width = 5,
-                Height = 5,
+                MaxConnectionsBetweenRooms = 1,
+                OddsForExtraConnections = 0,
+                RoomFusionOdds = 0,
+                TurnsPerMonsterGeneration = 35,
+                MinItemsInFloor = 0,
+                MaxItemsInFloor = 0,
+                MinTrapsInFloor = 0,
+                MaxTrapsInFloor = 0,
+                SimultaneousMaxMonstersInFloor = 0,
+                SimultaneousMinMonstersAtStart = 0,
+                Width = 64,
+                Height = 32,
                 PossibleMonsters = new(),
                 PossibleItems = new(),
                 PossibleTraps = new(),
@@ -352,12 +364,12 @@ namespace RogueCustomsDungeonEditor.Utils
                         Name = "Default",
                         Rows = 4,
                         Columns = 4,
-                        MinRoomSize = new() {Width = 5, Height = 5 },
-                        MaxRoomSize = new() {Width = 5, Height = 5 },
+                        MinRoomSize = new() { Width = 5, Height = 5 },
+                        MaxRoomSize = new() { Width = 5, Height = 5 },
                         RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
                     }
                 },
-                OnFloorStart = new()
+                OnFloorStart = new(),
             };
         }
 
@@ -588,6 +600,7 @@ namespace RogueCustomsDungeonEditor.Utils
             {
                 MinFloorLevel = info.MinFloorLevel,
                 MaxFloorLevel = info.MaxFloorLevel,
+                TileSetId = info.TileSetId,
                 Width = info.Width,
                 Height = info.Height,
                 GenerateStairsOnStart = info.GenerateStairsOnStart,
@@ -598,7 +611,15 @@ namespace RogueCustomsDungeonEditor.Utils
                 MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms,
                 OddsForExtraConnections = info.OddsForExtraConnections,
                 RoomFusionOdds = info.RoomFusionOdds,
-                OnFloorStart = info.OnFloorStart.Clone()
+                OnFloorStart = info.OnFloorStart.Clone(),
+                SimultaneousMinMonstersAtStart = info.SimultaneousMinMonstersAtStart,
+                SimultaneousMaxMonstersInFloor = info.SimultaneousMaxMonstersInFloor,
+                TurnsPerMonsterGeneration = info.TurnsPerMonsterGeneration,
+                HungerDegeneration = info.HungerDegeneration,
+                MinItemsInFloor = info.MinItemsInFloor,
+                MaxItemsInFloor = info.MaxItemsInFloor,
+                MinTrapsInFloor = info.MinTrapsInFloor,
+                MaxTrapsInFloor = info.MaxTrapsInFloor,
             };
 
             info.PossibleMonsters.ForEach(pm => clonedFloor.PossibleMonsters.Add(pm.Clone()));
@@ -794,6 +815,12 @@ namespace RogueCustomsDungeonEditor.Utils
         public static bool IsNullOrEmpty(this EffectInfo? effect)
         {
             return effect == null || string.IsNullOrWhiteSpace(effect.EffectName);
+        }
+
+        public static List<FloorInfo> FindIntersectingFloorGroups(this DungeonInfo dungeonInfo, int minFloorLevel, int maxFloorLevel)
+        {
+            if (dungeonInfo == null || dungeonInfo.FloorInfos == null) return new();
+            return dungeonInfo.FloorInfos.Where(fi => IntHelpers.DoIntervalsIntersect(minFloorLevel, maxFloorLevel, fi.MinFloorLevel, fi.MaxFloorLevel)).ToList();
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
