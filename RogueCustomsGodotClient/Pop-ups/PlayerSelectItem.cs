@@ -37,6 +37,7 @@ public partial class PlayerSelectItem : Control
 
     private readonly StyleBoxFlat normalItemStyleBox = (StyleBoxFlat)GlobalConstants.NormalItemStyleBox.Duplicate();
     private readonly StyleBoxFlat selectItemStyleBox = (StyleBoxFlat)GlobalConstants.SelectedItemStyleBox.Duplicate();
+    private readonly StyleBoxFlat unusableSelectItemStyleBox = (StyleBoxFlat)GlobalConstants.UnusableSelectedItemStyleBox.Duplicate();
 
     private const int _scrollStep = 20;
 
@@ -167,17 +168,24 @@ public partial class PlayerSelectItem : Control
 
         foreach (var item in _itemListInfo.InventoryItems)
         {
-            var itemLabel = new Label { HorizontalAlignment = HorizontalAlignment.Left, 
+            var itemLabel = new ScalableLabel { HorizontalAlignment = HorizontalAlignment.Left, 
                                 SizeFlagsHorizontal = SizeFlags.ExpandFill, 
-                                SizeFlagsVertical = SizeFlags.ShrinkCenter };
+                                SizeFlagsVertical = SizeFlags.ShrinkCenter,
+                                MinFontSize = 8,
+                                DefaultFontSize = 16,
+                                Size = new() { X = _selectionList.Size.X, Y = 16 }
+            };
             if (item.IsEquipped)
-                itemLabel.Text = $"{TranslationServer.Translate("EquippedItemNamePrefix")} {item.Name}";
+                itemLabel.SetText($"{TranslationServer.Translate("EquippedItemNamePrefix")} {item.Name}");
             else if (item.IsInFloor)
-                itemLabel.Text = $"{TranslationServer.Translate("FloorItemNamePrefix")} {item.Name}";
+                itemLabel.SetText($"{TranslationServer.Translate("FloorItemNamePrefix")} {item.Name}");
             else
-                itemLabel.Text = item.Name;
+                itemLabel.SetText(item.Name);
             itemLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            if(item.CanBeUsed)
+                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            else
+                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
             _selectionList.AddChild(itemLabel);
         }
 
@@ -206,15 +214,21 @@ public partial class PlayerSelectItem : Control
 
         foreach (var action in _actionListInfo.Actions)
         {
-            var actionLabel = new Label
+            var actionLabel = new ScalableLabel
             {
-                Text = action.Name,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 SizeFlagsHorizontal = SizeFlags.ExpandFill,
-                SizeFlagsVertical = SizeFlags.ShrinkCenter
+                SizeFlagsVertical = SizeFlags.ShrinkCenter,
+                MinFontSize = 8,
+                DefaultFontSize = 16,
+                Size = new() { X = _selectionList.Size.X, Y = 16}
             };
+            actionLabel.SetText(action.Name);
             actionLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            if(action.CanBeUsed)
+                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            else
+                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
             _selectionList.AddChild(actionLabel);
         }
 
@@ -223,22 +237,36 @@ public partial class PlayerSelectItem : Control
 
     private void SelectRow(int index)
     {
-        if(_selectedIndex != -1)
+        var selectedItem = _itemListInfo != null && _selectedIndex != -1
+            ? _itemListInfo.InventoryItems[_selectedIndex]
+            : null;
+        var selectedAction = _actionListInfo != null && _selectedIndex != -1
+            ? _actionListInfo.Actions[_selectedIndex]
+            : null;
+        if (_selectedIndex != -1)
         {
             var selectedLabel = (Label) _selectionList.GetChildren()[_selectedIndex];
             selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            if((selectedItem != null && !selectedItem.CanBeUsed)
+                || (selectedAction != null && !selectedAction.CanBeUsed))
+                selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
+            else
+                selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
         }
         _selectedIndex = index;
         var newSelectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
-        newSelectedLabel.AddThemeStyleboxOverride("normal", selectItemStyleBox);
-        newSelectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 });
-        var selectedItem = _itemListInfo != null
+        selectedItem = _itemListInfo != null
             ? _itemListInfo.InventoryItems[_selectedIndex]
             : null;
-        var selectedAction = _actionListInfo != null
+        selectedAction = _actionListInfo != null
             ? _actionListInfo.Actions[_selectedIndex]
             : null;
+        if ((selectedItem != null && !selectedItem.CanBeUsed)
+            || (selectedAction != null && !selectedAction.CanBeUsed))
+            newSelectedLabel.AddThemeStyleboxOverride("normal", unusableSelectItemStyleBox);
+        else
+            newSelectedLabel.AddThemeStyleboxOverride("normal", selectItemStyleBox);
+        newSelectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 });
 
         _itemDescriptionLabel.Text = "";
 
