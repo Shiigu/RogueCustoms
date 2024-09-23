@@ -444,8 +444,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (HP > MaxHP) HP = MaxHP;
             var hpRegenerationToUse = IsStarving ? HungerHPDegeneration * -1 : HPRegeneration;
             if (IsStarving && CarriedHPRegeneration > 0)
+            {
                 CarriedHPRegeneration = 0;
-            if ((hpRegenerationToUse > 0 && HP == MaxHP) || hpRegenerationToUse == 0)
+                return;
+            }
+            if (Map.TurnCount == 1 || (hpRegenerationToUse > 0 && HP == MaxHP) || hpRegenerationToUse == 0)
             {
                 CarriedHPRegeneration = 0;
                 return;
@@ -478,7 +481,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (!UsesMP) return;
             if (MP > MaxMP) MP = MaxMP;
-            if ((MPRegeneration > 0 && MP == MaxMP) || MPRegeneration == 0)
+            if (Map.TurnCount == 1 || (MPRegeneration > 0 && MP == MaxMP) || MPRegeneration == 0)
             {
                 CarriedMPRegeneration = 0;
                 return;
@@ -505,6 +508,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (!UsesHunger || Map.HungerDegeneration <= 0 || Hunger == 0) return;
             if (Hunger > MaxHunger) Hunger = MaxHunger;
+            if (Map.TurnCount == 1)
+            {
+                CarriedHungerDegeneration = 0;
+                return;
+            }
             CarriedHungerDegeneration += Map.HungerDegeneration;
             if (CarriedHungerDegeneration >= 1)
             {
