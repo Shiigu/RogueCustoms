@@ -280,13 +280,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     if (roomType == RoomDispositionType.GuaranteedRoom)
                     {
                         // Adjust room width and height ensuring they meet the min size requirements
-                        var rngX1 = Rng.NextInclusive(MinX, MaxX - MinRoomWidth);
+                        var rngX1 = Rng.NextInclusive(MinX, MaxX - GeneratorToUse.MinRoomSize.Width);
                         var rngX2 = Math.Max(rngX1 + MinRoomWidth, Rng.NextInclusive(rngX1 + MinRoomWidth, MaxX));
-                        var roomWidth = rngX2 - rngX1 + 1;
+                        var roomWidth = Math.Min(GeneratorToUse.MaxRoomSize.Width, rngX2 - rngX1 + 1);
 
-                        var rngY1 = Rng.NextInclusive(MinY, MaxY - MinRoomHeight);
+                        var rngY1 = Rng.NextInclusive(MinY, MaxY - GeneratorToUse.MinRoomSize.Height);
                         var rngY2 = Math.Max(rngY1 + MinRoomHeight, Rng.NextInclusive(rngY1 + MinRoomHeight, MaxY));
-                        var roomHeight = rngY2 - rngY1 + 1;
+                        var roomHeight = Math.Min(GeneratorToUse.MaxRoomSize.Height, rngY2 - rngY1 + 1);
 
                         Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
                     }
