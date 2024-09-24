@@ -278,12 +278,40 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void nudMinFloorLevel_Leave(object sender, EventArgs e)
         {
+            // Check if we are in design mode
+            if (DesignMode || this.DesignMode || IsControlInDesignMode(this))
+            {
+                return; // Do nothing in design mode
+            }
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
         }
 
         private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
         {
+            // Check if we are in design mode
+            if (DesignMode || this.DesignMode || IsControlInDesignMode(this))
+            {
+                return; // Do nothing in design mode
+            }
             ValidateOverlappingFloorGroupLevelsAndInformIfNeeded();
+        }
+
+
+        private bool IsControlInDesignMode(Control control)
+        {
+            if (control == null)
+                return false;
+
+            // Traverse up the control hierarchy to check if any parent is in design mode
+            while (control != null)
+            {
+                if (control.Site != null && control.Site.DesignMode)
+                {
+                    return true;
+                }
+                control = control.Parent;
+            }
+            return false;
         }
 
         private void chkGenerateStairsOnStart_CheckedChanged(object sender, EventArgs e)

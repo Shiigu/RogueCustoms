@@ -323,10 +323,9 @@ namespace RogueCustomsDungeonEditor
             // 
             // TilesetTab
             // 
-            TilesetTab.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             TilesetTab.AutoSize = true;
             TilesetTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            TilesetTab.Location = new System.Drawing.Point(20, 0);
+            TilesetTab.Location = new System.Drawing.Point(19, 0);
             TilesetTab.Name = "TilesetTab";
             TilesetTab.Size = new System.Drawing.Size(676, 1173);
             TilesetTab.TabIndex = 0;
