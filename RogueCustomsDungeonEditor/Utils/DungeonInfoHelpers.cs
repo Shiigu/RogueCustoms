@@ -555,8 +555,8 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             for (int i = minFloorLevel; i <= maxFloorLevel; i++)
             {
-                var typesForFloorLevel = dungeon.FloorInfos.Where(fi => (floorBeingEdited == null || floorBeingEdited != fi) && fi.MinFloorLevel <= fi.MaxFloorLevel && i.Between(fi.MinFloorLevel, fi.MaxFloorLevel));
-                if (typesForFloorLevel.Count() > 1)
+                var typesForFloorLevel = dungeon.FloorInfos.Where(fi => (floorBeingEdited == null || floorBeingEdited != fi) && i.Between(fi.MinFloorLevel, fi.MaxFloorLevel));
+                if (typesForFloorLevel.Count() > 0)
                     return true;
             }
             return false;
