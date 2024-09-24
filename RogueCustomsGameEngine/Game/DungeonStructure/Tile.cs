@@ -28,7 +28,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 _consoleRepresentation = null;
             }
         }
-        public bool IsConnectorTile { get; set; } = false;
+        private bool _isConnectorTile = false;
+        public bool IsConnectorTile
+        {
+            get { return _isConnectorTile; }
+            set
+            {
+                _isConnectorTile = value;
+                _consoleRepresentation = null;
+            }
+        }
         public bool IsWalkable => Type != TileType.Empty && Type != TileType.Wall;
         public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
 
@@ -78,7 +87,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     else if (Type == TileType.Hallway)
                     {
-                        if (IsConnectorTile && (Room.Width > 1 || Room.Height > 1))
+                        if (_isConnectorTile && !Room.IsDummy)
                         {
                             _consoleRepresentation = Map.TileSet.ConnectorWall;
                         }
@@ -218,7 +227,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                    EqualityComparer<GamePoint>.Default.Equals(Position, other.Position) &&
                    _type == other._type &&
                    Type == other.Type &&
-                   IsConnectorTile == other.IsConnectorTile &&
+                   _isConnectorTile == other._isConnectorTile &&
                    IsWalkable == other.IsWalkable &&
                    IsOccupied == other.IsOccupied &&
                    EqualityComparer<ConsoleRepresentation>.Default.Equals(_consoleRepresentation, other._consoleRepresentation) &&
@@ -236,7 +245,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var hash = new HashCode();
             hash.Add(Position);
             hash.Add(Type);
-            hash.Add(IsConnectorTile);
+            hash.Add(_isConnectorTile);
             hash.Add(IsWalkable);
             hash.Add(IsOccupied);
             hash.Add(ConsoleRepresentation);
