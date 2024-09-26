@@ -32,6 +32,20 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return messages;
         }
+        public static DungeonValidationMessages ValidateStandalone(this ConsoleRepresentation representation, string name, DungeonInfo dungeonJson)
+        {
+            var messages = new DungeonValidationMessages();
+
+            if (representation.Character is '\0' or ' ')
+                messages.AddWarning($"{name}'s Console Representation lacks a visible Character. If the object is supposed to be printed to console, consider changing it.");
+            if (representation.ForegroundColor == representation.BackgroundColor)
+                messages.AddWarning($"{name}'s Console Representation's background and foreground are of the same color. Its Character won't be visible to the player.");
+            if (!representation.Character.ToString().CanBeEncodedToIBM437())
+                messages.AddWarning($"{name}'s Console Representation cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
+            
+
+            return messages;
+        }
 
         private static DungeonValidationMessages CheckIdenticalRepresentations(this ConsoleRepresentation representation, string ownerClassId, List<(string Id, ConsoleRepresentation ConsoleRepresentation)> classes)
         {

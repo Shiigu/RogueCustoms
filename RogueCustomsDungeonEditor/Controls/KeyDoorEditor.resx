@@ -117,4 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="fklblKeyDoorNameLocale.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAPZJREFUSEvd
+        lbkNwkAQRVcgMmgEyqACArogoA1ow5REgKALiIjgP8sT7amVJoAvPcneueyZ9Tr8vRZiLwZxF68JrlnD
+        hk+XduIhPhXwwbdZM3ESluAqjmItlhNcs4bN/IghtqqzIOAtDmIucsKGD77EEFsUr2rJtyw0Cl8rkm0X
+        w7Ke81QpYYOUiMFGjuTg2RE40NdcW0oFiLGZkCvSRWBkeL0ilhzkinQTGDfjXZ+IJQe5Ij0FxtV4lxZ2
+        yIlY7OSK5F6gpUW1AsUWtQy5VqA4ZPdt6v6hIdejwuR62CH349rEq9pMSuBTbUtODIsd4fLL/AWF8AXC
+        dX/dtfQp6AAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="crsKey.BackgroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAAAAAA/ws=
+</value>
+  </data>
+  <data name="crsKey.ForegroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAA/////ws=
+</value>
+  </data>
+  <data name="crsDoor.BackgroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAAAAAA/ws=
+</value>
+  </data>
+  <data name="crsDoor.ForegroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAA/////ws=
+</value>
+  </data>
 </root>

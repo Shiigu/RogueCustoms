@@ -36,6 +36,9 @@ namespace RogueCustomsGameEngine.Utils.Enums
         TakeStairs,
         Teleport,
         TrapActivate,
-        TrapSet
+        TrapSet,
+        DoorClosed,
+        DoorOpen,
+        KeyGet
     }
 }

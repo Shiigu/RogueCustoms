@@ -69,7 +69,7 @@ namespace RogueCustomsDungeonEditor.Controls
             // 
             // lblConsoleRepresentation
             // 
-            lblConsoleRepresentation.Font = new Font("Courier New", 36F, FontStyle.Bold, GraphicsUnit.Point);
+            lblConsoleRepresentation.Font = new Font("Consolas", 36F, FontStyle.Regular, GraphicsUnit.Point);
             lblConsoleRepresentation.Location = new Point(0, 9);
             lblConsoleRepresentation.Name = "lblConsoleRepresentation";
             lblConsoleRepresentation.Size = new Size(64, 64);

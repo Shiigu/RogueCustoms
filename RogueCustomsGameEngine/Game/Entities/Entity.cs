@@ -96,6 +96,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         Weapon,
         Armor,
         Trap,
+        Key,
         AlteredStatus
     }
     public enum EntityExistenceStatus

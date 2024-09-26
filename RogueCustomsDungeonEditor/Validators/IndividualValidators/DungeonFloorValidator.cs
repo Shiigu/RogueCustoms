@@ -184,6 +184,42 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (!floorJson.RoomFusionOdds.Between(0, 100))
                 messages.AddError("RoomFusionOdds must be an integer number between 0 and 100.");
 
+            if (floorJson.PossibleKeys == null || floorJson.PossibleKeys.KeyTypes == null)
+                messages.AddError("Floor Key Generation info is null.");
+            else if (floorJson.PossibleKeys.KeyTypes.Any())
+            {
+                foreach (var keyType in floorJson.PossibleKeys.KeyTypes)
+                {
+                    messages.AddRange(dungeonJson.ValidateString($"KeyType{keyType.KeyTypeName}", $"Key Type {keyType.KeyTypeName}", "Key Type Name", true));
+                    messages.AddRange(dungeonJson.ValidateString($"DoorType{keyType.KeyTypeName}", $"Key Type {keyType.KeyTypeName}", "Door Type Name", false));
+                    messages.AddRange(keyType.KeyConsoleRepresentation.ValidateStandalone($"Key Type {keyType.KeyTypeName}", dungeonJson));
+                    messages.AddRange(keyType.DoorConsoleRepresentation.ValidateStandalone($"Door Type {keyType.KeyTypeName}", dungeonJson));
+
+                    if (!keyType.CanLockStairs && !keyType.CanLockItems)
+                        messages.AddError("At least one Key Type is set to not lock anything.");
+                    if (floorJson.PossibleKeys.KeyTypes.Any(kt => kt != keyType && kt.KeyTypeName.Equals(keyType)))
+                        messages.AddError("At least two Key Types have the same name.");
+                    if (floorJson.PossibleKeys.KeyTypes.Any(kt => kt != keyType && kt.KeyConsoleRepresentation.Equals(keyType.KeyConsoleRepresentation)))
+                        messages.AddError("At least two Key Types have the same Key Appearance.");
+                    if (floorJson.PossibleKeys.KeyTypes.Any(kt => kt != keyType && kt.DoorConsoleRepresentation.Equals(keyType.DoorConsoleRepresentation)))
+                        messages.AddError("At least two Key Types have the same Door Appearance.");
+                    if (keyType.KeyConsoleRepresentation.Equals(keyType.DoorConsoleRepresentation))
+                        messages.AddWarning("The Key and Door have the same Appearance. Consider changing either to avoid visual confusion.");
+
+                }
+                if (floorJson.PossibleKeys.MaxPercentageOfLockedCandidateRooms == 0 && floorJson.PossibleKeys.LockedRoomOdds == 0 && floorJson.PossibleKeys.KeySpawnInEnemyInventoryOdds == 0)
+                {
+                    messages.AddError("Keys have been defined, but odds and distribution values are all 0");
+                }
+            }
+            else
+            {
+                if (floorJson.PossibleKeys.MaxPercentageOfLockedCandidateRooms > 0 || floorJson.PossibleKeys.LockedRoomOdds > 0 || floorJson.PossibleKeys.KeySpawnInEnemyInventoryOdds > 0)
+                {
+                    messages.AddError("Keys have not been defined, but at least some of the odds and distribution values are above 0");
+                }
+            }
+
             var roomTypesToNotCount = new List<RoomDispositionType> { RoomDispositionType.NoRoom, RoomDispositionType.NoConnection, RoomDispositionType.ConnectionImpossible };
 
             foreach (var floorLayoutGenerator in floorJson.PossibleLayouts)
@@ -236,7 +272,34 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError($"{floorLayoutGenerator.Name}: At least one possible Connection is missing one of its ends.");
             }
 
+            var mapSuccesses = 0;
+            var keySuccesses = 0;
+            var mapFailures = 0;
+            var keyFailures = 0;
+
             var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+
+            for (int i = 0; i < 100; i++)
+            {
+                floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                var (MapGenerationSuccess, KeyGenerationSuccess) = floorAsInstance.Generate();
+                if (MapGenerationSuccess)
+                {
+                    mapSuccesses++;
+                    if (KeyGenerationSuccess)
+                        keySuccesses++;
+                    else
+                        keyFailures++;
+                }
+                else
+                    mapFailures++;
+            }
+
+            if(mapSuccesses == 0)
+                messages.AddError("After 100 attempts, not a single valid Map Generation was produced. Please check, or try again if you think this is an error.");
+            else if(keySuccesses == 0)
+                messages.AddWarning("After 100 attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
+
             floorAsInstance.GenerateDebugMap();
 
             if (floorJson.OnFloorStart != null)

@@ -1,6 +1,9 @@
 ﻿using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
+using RogueCustomsGameEngine.Utils.Representation;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -44,10 +47,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly decimal HungerDegeneration;
 
         public List<FloorLayoutGenerator> PossibleLayouts { get; private set; }
+        public KeyDoorGenerator PossibleKeys { get; private set; }
 
         public readonly ActionWithEffects OnFloorStart;
 
-        public FloorType(FloorInfo floorInfo)
+        public FloorType(FloorInfo floorInfo, Locale locale)
         {
             MinFloorLevel = floorInfo.MinFloorLevel;
             MaxFloorLevel = floorInfo.MaxFloorLevel;
@@ -92,6 +96,42 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 });
             }
             OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart);
+            PossibleKeys = new();
+            if(floorInfo.PossibleKeys != null)
+            {
+                PossibleKeys.MaxPercentageOfLockedCandidateRooms = floorInfo.PossibleKeys.MaxPercentageOfLockedCandidateRooms;
+                PossibleKeys.KeySpawnInEnemyInventoryOdds = floorInfo.PossibleKeys.KeySpawnInEnemyInventoryOdds;
+                PossibleKeys.LockedRoomOdds = floorInfo.PossibleKeys.LockedRoomOdds;
+                PossibleKeys.KeyTypes = new();
+                foreach (var keyType in floorInfo.PossibleKeys.KeyTypes)
+                {
+                    var keyClassTemplate = new ItemInfo()
+                    {
+                        Id = $"KeyType{keyType.KeyTypeName}",
+                        Name = $"KeyType{keyType.KeyTypeName}",
+                        ConsoleRepresentation = keyType.KeyConsoleRepresentation,
+                        Description = "KeyDescription",
+                        EntityType = "Key",
+                        CanBePickedUp = true,
+                        StartsVisible = true,
+                        Power = "0",
+                        OnAttacked = new(),
+                        OnDeath = new(),
+                        OnStepped = new(),
+                        OnTurnStart = new(),
+                        OnUse = new(),
+                        OnAttack = new() { ActionHelpers.GetOpenDoorActionForKey(keyType.KeyTypeName) }
+                    };
+                    PossibleKeys.KeyTypes.Add(new()
+                    {
+                        KeyTypeName = keyType.KeyTypeName,
+                        CanLockItems = keyType.CanLockItems,
+                        CanLockStairs = keyType.CanLockStairs,
+                        DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
+                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key)
+                    });
+                }
+            }
 
             if (!PossibleLayouts.Any())
                 throw new InvalidDataException("There's no valid generator algorithms for the current floor");
@@ -138,6 +178,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 });
             });
         }
+
         protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
         {
             actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
@@ -169,6 +210,25 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RoomDispositionType[,] RoomDisposition { get; set; }
         public RoomDimensionsInfo MinRoomSize { get; set; }
         public RoomDimensionsInfo MaxRoomSize { get; set; }
+    }
+
+    [Serializable]
+    public class KeyDoorGenerator
+    {
+        public int LockedRoomOdds { get; set; }
+        public int KeySpawnInEnemyInventoryOdds { get; set; }
+        public int MaxPercentageOfLockedCandidateRooms { get; set; }
+        public List<KeyType> KeyTypes { get; set; }
+    }
+
+    [Serializable]
+    public class KeyType
+    {
+        public string KeyTypeName { get; set; }
+        public EntityClass KeyClass { get; set; }
+        public bool CanLockStairs { get; set; }
+        public bool CanLockItems { get; set; }
+        public ConsoleRepresentation DoorConsoleRepresentation { get; set; }
     }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

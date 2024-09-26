@@ -107,6 +107,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (target == null && !TargetTypes.Contains(TargetType.Tile)) return false;
 
             Character sourceAsCharacter = null;
+            var userAsItem = User as Item;
 
             if (source != null)
             {
@@ -118,16 +119,17 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     sourceAsCharacter = c;
                 }
-                else if (User is Item i)
+                else if (userAsItem != null)
                 {
-                    if (i.Owner != null)
-                        sourceAsCharacter = i.Owner;
-                    else if (i.Position != null && i.ContainingTile.LivingCharacter != null)
-                        sourceAsCharacter = i.ContainingTile.LivingCharacter;
+                    if (userAsItem.Owner != null)
+                        sourceAsCharacter = userAsItem.Owner;
+                    else if (userAsItem.Position != null && userAsItem.ContainingTile.LivingCharacter != null)
+                        sourceAsCharacter = userAsItem.ContainingTile.LivingCharacter;
                 }
             }
 
             if (sourceAsCharacter == null) return false;
+            if (userAsItem != null && userAsItem.EntityType == EntityType.Key && sourceAsCharacter is NonPlayableCharacter) return false;
             if (!MayBeUsed) return false;
 
             if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
@@ -169,6 +171,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
             if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
+
+            if(target.Type != TileType.Door && User.EntityType != EntityType.Key) return false;
 
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
 

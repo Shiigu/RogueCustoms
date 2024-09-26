@@ -88,4 +88,10 @@ CharacterConvertedTile
 CharacterCreatedATrap
 CharacterCreatedAnNPC
 CharacterRevivedAnNPC
+CharacterBumpedDoor
+CharacterUnlockedDoor
 StairsGotRevealed
+KeyDescription
+DoorDescription
+UnlockDoorName
+UnlockDoorDescription

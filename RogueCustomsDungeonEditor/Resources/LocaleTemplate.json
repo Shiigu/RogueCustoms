@@ -362,6 +362,30 @@
       "Value": "{NPCName} has been revived by {CharacterName}!"
     },
     {
+      "Key": "CharacterBumpedDoor",
+      "Value": "{CharacterName} has bumped into the {DoorName}."
+    },
+    {
+      "Key": "CharacterUnlockedDoor",
+      "Value": "{CharacterName} has unlocked the {DoorName}!"
+    },
+    {
+      "Key": "KeyDescription",
+      "Value": "A key.\n\nUse it on a matching door to permanently open it.\n\nThe Key is destroyed when all matching doors are open, or when you enter a new Floor.\n\n(Keys do not occupy Inventory space)"
+    },
+    {
+      "Key": "DoorDescription",
+      "Value": "A Door that seals access to something important.\n\nUse a matching Key to permanently open it."
+    },
+    {
+      "Key": "UnlockDoorName",
+      "Value": "Unlock Door"
+    },
+    {
+      "Key": "UnlockDoorDescription",
+      "Value": "Try to put the Key into the Door's Lockset to open it.\n\nWorks only if the Key and Door match."
+    },
+    {
       "Key": "StairsGotRevealed",
       "Value": "The stairs have been revealed!"
     }

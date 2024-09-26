@@ -1039,6 +1039,17 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Warning
                     );
             }
+            if (AddMissingKeyDoorLocalesIfNeeded(localeClone))
+            {
+                DirtyTab = true;
+                if (!IsNewElement)
+                    MessageBox.Show(
+                        "This Locale is missing some custom keys related to Keys and Doors.\n\nThey have been added at the end of the table. Please check them.",
+                        "Locale",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+            }
             LocaleEntriesTab.LoadData(ActiveDungeon, localeClone, MandatoryLocaleKeys);
         }
 
@@ -1051,6 +1062,46 @@ namespace RogueCustomsDungeonEditor
                 {
                     if (MandatoryLocaleKeys.Contains(localeString.Key)) continue;
                     customEntriesList.Add(localeString);
+                }
+            }
+            customEntriesList = customEntriesList
+                          .GroupBy(ck => ck.Key)
+                          .Select(ck => ck.First())
+                          .ToList();
+            var missingCustomEntries = customEntriesList.Where(ck => !localeInfo.LocaleStrings.Exists(ls => ls.Key.Equals(ck.Key))).ToList();
+            foreach (var missingEntry in missingCustomEntries)
+            {
+                var customLocaleEntry = customEntriesList.Find(ck => ck.Key.Equals(missingEntry.Key));
+                localeInfo.LocaleStrings.Add(new LocaleInfoString
+                {
+                    Key = customLocaleEntry.Key,
+                    Value = customLocaleEntry.Value
+                });
+            }
+            return missingCustomEntries.Any();
+        }
+
+        private bool AddMissingKeyDoorLocalesIfNeeded(LocaleInfo localeInfo)
+        {
+            var customEntriesList = new List<LocaleInfoString>();
+            foreach (var floorInfo in ActiveDungeon.FloorInfos)
+            {
+                foreach (var keyType in floorInfo.PossibleKeys.KeyTypes)
+                {
+                    if (!MandatoryLocaleKeys.Contains($"KeyType{keyType.KeyTypeName}"))
+                    {
+                        customEntriesList.Add(new()
+                        {
+                            Key = $"KeyType{keyType.KeyTypeName}",
+                            Value = $"{keyType.KeyTypeName} Key"
+                        });
+                    }
+                    if (MandatoryLocaleKeys.Contains($"DoorType{keyType.KeyTypeName}")) continue;
+                    customEntriesList.Add(new()
+                    {
+                        Key = $"DoorType{keyType.KeyTypeName}",
+                        Value = $"{keyType.KeyTypeName} Door"
+                    });
                 }
             }
             customEntriesList = customEntriesList

@@ -23,6 +23,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool IsDummy => Width == 1 && Height == 1;
         public bool IsFused { get; set; }
+        public bool HasStairs => GetTiles().Any(t => t.Type == TileType.Stairs);
+        public bool HasItems => GetTiles().Any(t => t.GetItems().Any());
 
         public List<Tile> GetTiles() => Map.Tiles.Where(t => t.Position.X.Between(TopLeft.X, TopRight.X) && t.Position.Y.Between(TopLeft.Y, BottomRight.Y)).ToList();
 

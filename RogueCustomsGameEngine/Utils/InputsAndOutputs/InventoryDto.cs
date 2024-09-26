@@ -29,6 +29,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsEquippable { get; set; }
         public bool IsEquipped { get; set; }
         public bool CanBeUsed { get; set; }
+        public bool CanBeDropped { get; set; }
         public bool IsInFloor { get; set; }
         public int ItemId { get; set; }
 
@@ -40,6 +41,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Description = item.Description;
             ConsoleRepresentation = item.ConsoleRepresentation;
             CanBeUsed = item.IsEquippable || item.OnUse?.CanBeUsedOn(player) == true;
+            CanBeDropped = item.EntityType != EntityType.Key;
             IsEquipped = player.EquippedWeapon == item || player.EquippedArmor == item;
             IsEquippable = item.IsEquippable;
             IsInFloor = item.Position != null && item.Owner == null;

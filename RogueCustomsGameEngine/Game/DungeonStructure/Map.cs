@@ -96,12 +96,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<SpecialEffect> SpecialEffectsThatHappened { get; set; }
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
+        public List<Item> Keys { get; set; }
+        public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
         public List<Item> Traps { get; set; }
 
         public List<AlteredStatus> PossibleStatuses { get; private set; }
 
         public RngHandler Rng { get; private set; }
-        private (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
+        public (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
         private List<(Room RoomA, Room RoomB)> Hallways { get; set; }
         private List<(Room RoomA, Room RoomB, Room FusedRoom)> Fusions { get; set; }
 
@@ -123,6 +125,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             FloorLevel = floorLevel;
             AICharacters = new List<NonPlayableCharacter>();
             Items = new List<Item>();
+            Keys = new List<Item>();
             Traps = new List<Item>();
             FloorConfigurationToUse = Dungeon.FloorTypes.Find(ft => floorLevel.Between(ft.MinFloorLevel, ft.MaxFloorLevel));
             if (FloorConfigurationToUse == null)
@@ -172,7 +175,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             AppendMessage("This is a dummy map");
         }
 
-        public void Generate()
+        public (bool MapGenerationSuccess, bool KeyGenerationSuccess) Generate()
         {
             _generationTries = 0;
             bool success;
@@ -236,9 +239,54 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
+                success = false;
             }
 
             NewTurn();
+
+            var mapGenerationSuccess = success;
+
+            if(Rooms.Count(r => !r.IsDummy) > 1)
+            {
+                do
+                {
+                    PlaceKeysAndDoors();
+                    success = IsFullyConnectedWithKeys();
+                    if (success)
+                    {
+                        foreach (var door in Doors)
+                        {
+                            try
+                            {
+                                var existingValue = GetFlagValue($"Doors_{door.DoorId}");
+                                SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
+                            }
+                            catch (FlagNotFoundException)
+                            {
+                                CreateFlag($"Doors_{door.DoorId}", 1, true);
+                            }
+                        }
+                    }
+                }
+                while (!success && _generationTries < Constants.MaxGenerationTries);
+                if (!success)
+                {
+                    foreach (var key in Keys)
+                    {
+                        key.ExistenceStatus = EntityExistenceStatus.Gone;
+                        key.Owner = null;
+                        key.Position = null;
+                    }
+                    Keys.Clear();
+                    GetEntities().RemoveAll(e => e.EntityType == EntityType.Key);
+                    Tiles.Where(t => t.Type == TileType.Door).ForEach(t =>
+                    {
+                        t.Type = TileType.Hallway;
+                        t.DoorId = string.Empty;
+                    });
+                }
+            }
+            return (mapGenerationSuccess, success);
         }
 
         private void CreateRooms()
@@ -277,18 +325,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                     var (MinX, MinY, MaxX, MaxY) = GetPossibleCoordinatesForRoom(roomRow, roomColumn);
 
+                    var actualMaxX = MaxX - GeneratorToUse.MinRoomSize.Width;
+                    var actualMaxY = MaxY - GeneratorToUse.MinRoomSize.Height;
+
                     if (roomType == RoomDispositionType.GuaranteedRoom)
                     {
                         // Adjust room width and height ensuring they meet the min size requirements
-                        var rngX1 = Rng.NextInclusive(MinX, MaxX - GeneratorToUse.MinRoomSize.Width);
-                        var rngX2 = Math.Max(rngX1 + MinRoomWidth, Rng.NextInclusive(rngX1 + MinRoomWidth, MaxX));
+                        var rngX1 = Rng.NextInclusive(MinX, actualMaxX);
+                        var rngX2 = Rng.NextInclusive(rngX1 + GeneratorToUse.MinRoomSize.Width, MaxX);
                         var roomWidth = Math.Min(GeneratorToUse.MaxRoomSize.Width, rngX2 - rngX1 + 1);
 
-                        var rngY1 = Rng.NextInclusive(MinY, MaxY - GeneratorToUse.MinRoomSize.Height);
-                        var rngY2 = Math.Max(rngY1 + MinRoomHeight, Rng.NextInclusive(rngY1 + MinRoomHeight, MaxY));
+                        var rngY1 = Rng.NextInclusive(MinY, actualMaxY);
+                        var rngY2 = Rng.NextInclusive(rngY1 + GeneratorToUse.MinRoomSize.Height, MaxY);
                         var roomHeight = Math.Min(GeneratorToUse.MaxRoomSize.Height, rngY2 - rngY1 + 1);
 
-                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
+                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));                        
                     }
                     else if (roomType == RoomDispositionType.GuaranteedDummyRoom)
                     {
@@ -404,40 +455,102 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public (Room? LeftRoom, Room? RightRoom, Room? UpRoom, Room? DownRoom) GetConnectedRooms(int expandedRow, int expandedColumn)
+        private void PlaceKeysAndDoors()
         {
-            Room? leftRoom = null, rightRoom = null, upRoom = null, downRoom = null;
-
-            // Check if it's a horizontal hallway
-            if (expandedRow % 2 == 1 && expandedColumn % 2 == 0)
+            var keyGenerationData = FloorConfigurationToUse.PossibleKeys;
+            if (!keyGenerationData.KeyTypes.Any() || keyGenerationData.MaxPercentageOfLockedCandidateRooms < 1) return;
+            foreach (var doorTile in Tiles.Where(t => t.Type == TileType.Door))
             {
-                // Horizontal Hallway
-                int roomRow = expandedRow / 2;
-
-                // Left room (if exists)
-                if (expandedColumn > 0)
-                    leftRoom = GetRoomByRowAndColumn(roomRow, (expandedColumn - 1) / 2);
-
-                // Right room (if exists)
-                if (expandedColumn < (RoomCountColumns * 2 - 2))
-                    rightRoom = GetRoomByRowAndColumn(roomRow, (expandedColumn + 1) / 2);
+                doorTile.Type = TileType.Hallway;
+                doorTile.DoorId = string.Empty;
             }
-            // Check if it's a vertical hallway
-            else if (expandedRow % 2 == 0 && expandedColumn % 2 == 1)
+            var nonDummyRooms = Rooms.Where(r => !r.IsDummy).ToList().Shuffle(Rng);
+            if (nonDummyRooms.Count == 1) return;
+            var maximumLockableRooms = (int) Math.Round(nonDummyRooms.Count * ((decimal) keyGenerationData.MaxPercentageOfLockedCandidateRooms / 100), 0, MidpointRounding.AwayFromZero);
+            var lockedRooms = 0;
+            var usedKeyTypes = new List<KeyType>();
+            Keys.Clear();
+            foreach (var AICharacter in AICharacters)
             {
-                // Vertical Hallway
-                int roomCol = expandedColumn / 2;
+                var keysInInventory = AICharacter.Inventory.Where(i => i.EntityType == EntityType.Key);
+                AICharacter.Inventory = AICharacter.Inventory.Except(keysInInventory).ToList();
+                foreach (var key in keysInInventory)
+                {
+                    key.ExistenceStatus = EntityExistenceStatus.Gone;
+                    key.Owner = null;
+                    key.Position = null;
+                }
+            }
+            foreach (var room in nonDummyRooms)
+            {
+                if (usedKeyTypes.Count >= keyGenerationData.KeyTypes.Count) break;
+                if (lockedRooms >= maximumLockableRooms) break;
+                if(!IsCandidateRoom(room)) continue;
+                if (Rng.RollProbability() > keyGenerationData.LockedRoomOdds) continue;
+                var exitTiles = room.GetTiles().Where(t => t.IsConnectorTile);
+                var keyTypeToUse = keyGenerationData.KeyTypes.Where(kt => !usedKeyTypes.Contains(kt)).TakeRandomElement(Rng);
+                foreach (var tile in exitTiles)
+                {
+                    tile.Type = TileType.Door;
+                    tile.DoorId = keyTypeToUse.KeyTypeName;
+                }
+                lockedRooms++;
 
-                // Top room (if exists)
-                if (expandedRow > 0)
-                    upRoom = GetRoomByRowAndColumn((expandedRow - 1) / 2, roomCol);
+                var islands = Tiles.GetIslands(t => t.IsWalkable || usedKeyTypes.Select(ukt => ukt.KeyTypeName).Contains(t.DoorId));
+                var islandWithPlayer = islands.FirstOrDefault(i => i.Contains(Player.ContainingTile));
 
-                // Bottom room (if exists)
-                if (expandedRow < (RoomCountRows * 2 - 2))
-                    downRoom = GetRoomByRowAndColumn((expandedRow + 1) / 2, roomCol);
+                if (AddEntity(keyTypeToUse.KeyClass) is Item keyEntity && Rng.RollProbability() <= keyGenerationData.KeySpawnInEnemyInventoryOdds)
+                {
+                    var enemiesInPlayerIsland = AICharacters.Where(c => !c.Inventory.Any(i => i.EntityType == EntityType.Key) && islandWithPlayer.Contains(c.ContainingTile) && c.Faction.EnemiesWith.Contains(Player.Faction) && c.Visible);
+                    if (enemiesInPlayerIsland.Any())
+                        enemiesInPlayerIsland.TakeRandomElement(Rng).PickItem(keyEntity, false);
+                }
+
+                usedKeyTypes.Add(keyTypeToUse);
+            }
+        }
+
+        private bool IsCandidateRoom(Room room)
+        {
+            if (room.IsDummy) return false;
+            if (room.HasStairs)
+                return true;
+            if (room.HasItems)
+                return true;
+
+            foreach (var (RoomA, RoomB) in Hallways.Where(h => h.RoomA == room || h.RoomB == room))
+            {
+                if (RoomA == room)
+                    if (RoomB.GetTiles().Any(t => t.Type == TileType.Door))
+                        return true;
+                if (RoomB == room)
+                    if (RoomA.GetTiles().Any(t => t.Type == TileType.Door))
+                        return true;
             }
 
-            return (leftRoom, rightRoom, upRoom, downRoom);
+            return false;
+        }
+
+        private bool IsFullyConnectedWithKeys()
+        {
+            var availableKeyTypes = Keys.Select(k => k.Name).ToList();
+            var usedKeyTypes = new List<string>();
+            var foundNewKeys = false;
+            var islandCount = -1;
+            do
+            {
+                var islands = Tiles.GetIslands(t => t.IsWalkable || usedKeyTypes.Contains(t.DoorId));
+                islandCount = islands.Count;
+                if (islandCount == 1) break;
+                var islandWithPlayer = islands.FirstOrDefault(i => i.Contains(Player.ContainingTile));
+                if (islandWithPlayer == null) return false;
+                var newKeys = Keys.Where(k => (k.Position != null && islandWithPlayer.Contains(k.ContainingTile)) || (k.Owner != null && islandWithPlayer.Contains(k.Owner.ContainingTile))).ToList();
+                foundNewKeys = newKeys.Any(k => !usedKeyTypes.Contains(k.ClassId.Replace("KeyType", "")));
+                usedKeyTypes.AddRange(newKeys.Select(k => k.ClassId.Replace("KeyType", "")));
+                usedKeyTypes = usedKeyTypes.Distinct().ToList();
+            }
+            while (foundNewKeys && islandCount != 1);
+            return islandCount == 1;
         }
 
         private Room? GetRoomByRowAndColumn(int row, int column) => Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
@@ -524,6 +637,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var entityClass = Dungeon.Classes.Find(c => c.Id.Equals(classId))
                 ?? throw new InvalidDataException("Class does not exist!");
+            return AddEntity(entityClass, level, predeterminatePosition);
+        }
+
+        public Entity AddEntity(EntityClass entityClass, int level = 1, GamePoint predeterminatePosition = null)
+        {
             Entity entity = null;
             switch (entityClass.EntityType)
             {
@@ -547,6 +665,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.Armor:
                 case EntityType.Consumable:
                 case EntityType.Trap:
+                case EntityType.Key:
                     entity = new Item(entityClass, this)
                     {
                         Id = CurrentEntityId,
@@ -560,9 +679,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (entity.Position == null) return entity;
             if (entity is Item i)
             {
-                if (i.EntityType != EntityType.Trap)
+                if (i.EntityType != EntityType.Trap && i.EntityType != EntityType.Key)
                     Items.Add(i);
-                else
+                else if (i.EntityType == EntityType.Key)
+                    Keys.Add(i);
+                else if (i.EntityType == EntityType.Trap)
                     Traps.Add(i);
             }
             if (entity is Character c)
@@ -601,7 +722,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 else if (entity is NonPlayableCharacter npc)
                 {
                     AICharacters.Add(npc);
-                    if(npc.OnSpawn?.ChecksCondition(npc, npc) == true)
+                    if (npc.OnSpawn?.ChecksCondition(npc, npc) == true)
                         npc.OnSpawn?.Do(npc, npc, false);
                 }
             }
@@ -668,8 +789,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #endregion
 
                 #region Generate Items
-
-                if(FloorConfigurationToUse.PossibleItems.Any())
+                if (FloorConfigurationToUse.PossibleItems.Any())
                 {
                     var totalItemGeneratorChance = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.ChanceToPick);
                     if (!totalItemGeneratorChance.Between(1, 100)) throw new InvalidDataException("Item generation odds are not 1-100%");
@@ -836,7 +956,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         bumps = true;
                     if(bumps)
                     {
-                        SpecialEffectsThatHappened.Add(SpecialEffect.Bumped);
+                        if (targetTile.Type == TileType.Door)
+                        {
+                            SpecialEffectsThatHappened.Add(SpecialEffect.DoorClosed);
+                            AppendMessage(Locale["CharacterBumpedDoor"].Format(new { CharacterName = Player.Name, DoorName = Locale[$"DoorType{targetTile.DoorId}"] }), Color.White);
+                        }
+                        else
+                            SpecialEffectsThatHappened.Add(SpecialEffect.Bumped);
                         return;
                     }
                     TryMoveCharacter(Player, targetTile);
@@ -867,6 +993,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             character.Position = targetTile.Position;
 
+            if (targetTile.Key != null)
+                character.TryToPickItem(targetTile.Key);
             targetTile.GetItems().ForEach(i => character.TryToPickItem(i));
             targetTile.Trap?.Stepped(character);
 
@@ -920,13 +1048,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 .Find(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive && e.CanBePickedUp);
             if (itemThatCanBePickedUp == null)
                 return;
-            if (Player.Inventory.Count == Player.InventorySize)
+            if (Player.ItemCount == Player.InventorySize)
             {
                 AppendMessage(Locale["InventoryIsFull"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBePickedUp.Name }));
             }
             else
             {
-                Player.PickItem(itemThatCanBePickedUp);
+                Player.PickItem(itemThatCanBePickedUp, true);
                 Player.TookAction = true;
                 Player.RemainingMovement = 0;
                 ProcessTurn();
@@ -1045,10 +1173,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
 
         public ActionListDto GetPlayerAttackActions(int x, int y)
-        {
+        {            
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
-            var actionList = new ActionListDto((characterInTile != null) ? characterInTile.Name : Locale[$"TileType{tile.Type}"]);
+            var targetName = string.Empty;
+            if (characterInTile != null)
+                targetName = characterInTile.Name;
+            else if (tile.Type == TileType.Door)
+                targetName = Locale[$"DoorType{tile.DoorId}"];
+            else
+                targetName = Locale[$"TileType{tile.Type}"];
+            var actionList = new ActionListDto(targetName);
 
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, tile, this, true));
 
@@ -1085,6 +1220,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void SetStairs()
         {
+            var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
+            if(stairsTile != null)
+                stairsTile.Type = TileType.Floor;
             SetStairs(PickEmptyPosition(true));
         }
 
@@ -1126,13 +1264,24 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (t.Type != TileType.Floor) return false;
             if (t.LivingCharacter != null) return false;
             if (t.GetItems().Any()) return false;
+            if (t.Key != null) return false;
             if (t.Trap != null) return false;
 
             var hasLaterallyAdjacentHallways = GetTileFromCoordinates(position.X - 1, position.Y)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X + 1, position.Y)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y - 1)?.Type == TileType.Hallway
                                             || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Hallway;
-            return !hasLaterallyAdjacentHallways;
+            if (hasLaterallyAdjacentHallways)
+                return false;
+
+            var hasLaterallyAdjacentDoors = GetTileFromCoordinates(position.X - 1, position.Y)?.Type == TileType.Door
+                                            || GetTileFromCoordinates(position.X + 1, position.Y)?.Type == TileType.Door
+                                            || GetTileFromCoordinates(position.X, position.Y - 1)?.Type == TileType.Door
+                                            || GetTileFromCoordinates(position.X, position.Y + 1)?.Type == TileType.Door;
+            if (hasLaterallyAdjacentDoors)
+                return !hasLaterallyAdjacentDoors;
+
+            return true;
         }
 
         #endregion
@@ -1276,6 +1425,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var visibleItems = tile.GetItems().Where(i => i.CanBeSeenBy(Player));
             if (visibleItems.Any())
                 return visibleItems.First().ConsoleRepresentation;
+            if (tile.Key != null)
+                return tile.Key.ConsoleRepresentation;
             if (tile.Trap?.CanBeSeenBy(Player) == true)
                 return tile.Trap.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);

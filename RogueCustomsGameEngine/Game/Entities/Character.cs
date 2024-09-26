@@ -32,6 +32,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Item Armor => EquippedArmor ?? StartingArmor;
 
         public List<Item> Inventory { get; set; }
+        public int ItemCount => Inventory.Where(i => i.EntityType != EntityType.Key).Count();
 
         public readonly string ExperiencePayoutFormula;
         public int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
@@ -579,7 +580,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public abstract void DropItem(Item item);
 
-        public abstract void PickItem(Item item);
+        public abstract void PickItem(Item item, bool informToPlayer);
 
         public void EquipItem(Item item)
         {
@@ -626,9 +627,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void TryToPickItem(Item item)
         {
-            if (item.CanBePickedUp && Inventory.Count < InventorySize)
+            if ((EntityType == EntityType.Player && item.EntityType == EntityType.Key) || (item.EntityType != EntityType.Key && item.CanBePickedUp && ItemCount < InventorySize))
             {
-                PickItem(item);
+                PickItem(item, true);
             }
             else
             {

@@ -7,6 +7,8 @@ using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 using System;
 using System.Runtime.InteropServices.ObjectiveC;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.Exceptions;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -38,7 +40,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 _consoleRepresentation = null;
             }
         }
-        public bool IsWalkable => Type != TileType.Empty && Type != TileType.Wall;
+        private string _doorId;
+        public string DoorId
+        {
+            get { return Type == TileType.Door ? _doorId : string.Empty; }
+            set
+            {
+                if (Type == TileType.Door)
+                    _doorId = value;
+                _consoleRepresentation = null;
+            }
+        }
+        public bool IsWalkable => Type != TileType.Empty && Type != TileType.Door && Type != TileType.Wall;
         public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
 
         private ConsoleRepresentation _consoleRepresentation;
@@ -60,6 +73,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     else if (Type == TileType.Floor)
                     {
                         _consoleRepresentation = Map.TileSet.Floor;
+                    }
+                    else if (Type == TileType.Door)
+                    {
+                        var keyType = Map.FloorConfigurationToUse.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(DoorId));
+                        _consoleRepresentation = keyType.DoorConsoleRepresentation;
                     }
                     else if (Type == TileType.Wall)
                     {
@@ -205,12 +223,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Discovered { get; set; }
 
         public bool Visible { get; set; }
+        public bool Targetable => (IsWalkable || Type == TileType.Door) && Visible;
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
         public Character LivingCharacter => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
+        public Item Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
         public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
@@ -271,6 +291,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         Floor,
         Wall,
         Hallway,
+        Door,
         Stairs
     }
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo

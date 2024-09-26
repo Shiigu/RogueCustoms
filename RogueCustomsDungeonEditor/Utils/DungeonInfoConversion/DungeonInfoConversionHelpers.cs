@@ -739,6 +739,13 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             {
                 var v13FloorInfo = V13Dungeon.FloorInfos[i];
                 var v14FloorInfo = V14Dungeon.FloorInfos[i];
+                v14FloorInfo.PossibleKeys = new()
+                {
+                    LockedRoomOdds = 0,
+                    KeySpawnInEnemyInventoryOdds = 0,
+                    MaxPercentageOfLockedCandidateRooms = 0,
+                    KeyTypes = new()
+                };
                 v14FloorInfo.PossibleLayouts = new List<FloorLayoutGenerationInfo>();
                 foreach (var generatorAlgorithm in v13FloorInfo.PossibleGeneratorAlgorithms)
                 {

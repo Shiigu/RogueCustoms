@@ -80,7 +80,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "StealItem":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || Source.Inventory.Count >= Source.InventorySize)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || Source.ItemCount >= Source.InventorySize)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -259,7 +259,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "GiveItem":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.Inventory.Count >= targetAsCharacter.InventorySize)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.ItemCount >= targetAsCharacter.InventorySize)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;

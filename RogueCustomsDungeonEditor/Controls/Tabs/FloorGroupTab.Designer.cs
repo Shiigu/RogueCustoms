@@ -64,6 +64,8 @@
             label10 = new System.Windows.Forms.Label();
             nudMinFloorLevel = new System.Windows.Forms.NumericUpDown();
             label9 = new System.Windows.Forms.Label();
+            btnFloorKeys = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).BeginInit();
@@ -318,7 +320,7 @@
             // 
             // btnNPCGenerator
             // 
-            btnNPCGenerator.Location = new System.Drawing.Point(93, 250);
+            btnNPCGenerator.Location = new System.Drawing.Point(9, 253);
             btnNPCGenerator.Name = "btnNPCGenerator";
             btnNPCGenerator.Size = new System.Drawing.Size(151, 23);
             btnNPCGenerator.TabIndex = 56;
@@ -330,7 +332,7 @@
             // 
             label13.AutoSize = true;
             label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label13.Location = new System.Drawing.Point(105, 216);
+            label13.Location = new System.Drawing.Point(21, 219);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(126, 21);
             label13.TabIndex = 55;
@@ -440,11 +442,33 @@
             label9.TabIndex = 45;
             label9.Text = "From Level";
             // 
+            // btnFloorKeys
+            // 
+            btnFloorKeys.Location = new System.Drawing.Point(175, 253);
+            btnFloorKeys.Name = "btnFloorKeys";
+            btnFloorKeys.Size = new System.Drawing.Size(151, 23);
+            btnFloorKeys.TabIndex = 81;
+            btnFloorKeys.Text = "Keys to be generated...";
+            btnFloorKeys.UseVisualStyleBackColor = true;
+            btnFloorKeys.Click += btnFloorKeys_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Location = new System.Drawing.Point(187, 219);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(121, 21);
+            label1.TabIndex = 80;
+            label1.Text = "Floor Key Data";
+            // 
             // FloorGroupTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(btnFloorKeys);
+            Controls.Add(label1);
             Controls.Add(btnPasteAlgorithm);
             Controls.Add(btnCopyAlgorithm);
             Controls.Add(nudHungerLostPerTurn);
@@ -531,5 +555,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown nudMinFloorLevel;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button btnFloorKeys;
+        private System.Windows.Forms.Label label1;
     }
 }

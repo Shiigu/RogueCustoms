@@ -102,10 +102,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (intersectingFloorGroups.Any(fi => saveAsNew || fi != OpenedFloorGroup))
                 validationErrors.Add($"The Floor Level you chose, {floorLevelString}, intersects with at least another one.");
 
-            if(string.IsNullOrWhiteSpace(cmbTilesets.Text))
+            if (string.IsNullOrWhiteSpace(cmbTilesets.Text))
                 validationErrors.Add($"The Floor Group lacks a Tileset.");
 
-            if(!layoutList.Any())
+            if (!layoutList.Any())
                 validationErrors.Add($"The Floor Group lacks any possible Layouts.");
 
             if (!validationErrors.Any())
@@ -113,6 +113,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var npcGenerationParams = btnNPCGenerator.Tag as NPCGenerationParams;
                 var itemGenerationParams = btnItemGenerator.Tag as ObjectGenerationParams;
                 var trapGenerationParams = btnTrapGenerator.Tag as ObjectGenerationParams;
+                var keyTypes = ((layoutList.Any(l => l.Rows > 1 || l.Columns > 1))                    
+                    ? btnFloorKeys.Tag as KeyGenerationInfo
+                    : null) ?? new()
+                    {
+                        KeySpawnInEnemyInventoryOdds = 0,
+                        MaxPercentageOfLockedCandidateRooms = 0,
+                        LockedRoomOdds = 0,
+                        KeyTypes = new()
+                    };
                 LoadedFloorGroup = new()
                 {
                     PossibleLayouts = layoutList,
@@ -136,7 +145,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value,
                     RoomFusionOdds = (int)nudRoomFusionOdds.Value,
                     OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null,
-                    HungerDegeneration = nudHungerLostPerTurn.Value
+                    HungerDegeneration = nudHungerLostPerTurn.Value,
+                    PossibleKeys = keyTypes
                 };
             }
 
@@ -205,6 +215,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             btnAddAlgorithm.Enabled = true;
             btnEditAlgorithm.Enabled = false;
             btnRemoveAlgorithm.Enabled = false;
+            btnFloorKeys.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
+            if (!btnFloorKeys.Enabled)
+                btnFloorKeys.Tag = new KeyGenerationInfo()
+                {
+                    KeySpawnInEnemyInventoryOdds = 0,
+                    MaxPercentageOfLockedCandidateRooms = 0,
+                    LockedRoomOdds = 0,
+                    KeyTypes = new()
+                };
         }
 
         private Image ConstructLayoutThumbnail(FloorLayoutGenerationInfo layout)
@@ -328,6 +347,27 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (frmGeneratorWindow.Saved)
             {
                 btnNPCGenerator.Tag = frmGeneratorWindow.NPCGenerationParams;
+                TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            }
+        }
+
+        private void btnFloorKeys_Click(object sender, EventArgs e)
+        {
+            if (btnFloorKeys.Tag == null)
+            {
+                btnFloorKeys.Tag = LoadedFloorGroup.PossibleKeys ?? new()
+                {
+                    KeySpawnInEnemyInventoryOdds = 0,
+                    LockedRoomOdds = 0,
+                    MaxPercentageOfLockedCandidateRooms = 0,
+                    KeyTypes = new()
+                };
+            }
+            var frmFloorKeys = new frmFloorKeys(LoadedFloorGroup, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, ActiveDungeon, btnFloorKeys.Tag as KeyGenerationInfo);
+            frmFloorKeys.ShowDialog();
+            if (frmFloorKeys.Saved)
+            {
+                btnFloorKeys.Tag = frmFloorKeys.KeyGenerationInfo;
                 TabInfoChanged?.Invoke(null, EventArgs.Empty);
             }
         }
