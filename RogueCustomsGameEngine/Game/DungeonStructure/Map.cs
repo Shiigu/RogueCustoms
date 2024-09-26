@@ -488,7 +488,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if(!IsCandidateRoom(room)) continue;
                 if (Rng.RollProbability() > keyGenerationData.LockedRoomOdds) continue;
                 var exitTiles = room.GetTiles().Where(t => t.IsConnectorTile);
-                var keyTypeToUse = keyGenerationData.KeyTypes.Where(kt => !usedKeyTypes.Contains(kt)).TakeRandomElement(Rng);
+                var usableKeyTypes = keyGenerationData.KeyTypes.Where(kt => !usedKeyTypes.Contains(kt)
+                && ((room.HasStairs && kt.CanLockStairs) || (room.HasItems && kt.CanLockItems)));
+                if (!usableKeyTypes.Any()) continue;
+                var keyTypeToUse = usableKeyTypes.TakeRandomElement(Rng);
                 foreach (var tile in exitTiles)
                 {
                     tile.Type = TileType.Door;
