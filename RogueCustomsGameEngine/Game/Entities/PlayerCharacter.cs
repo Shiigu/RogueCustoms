@@ -97,14 +97,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 
-        public override void PickItem(Item item)
+        public override void PickItem(Item item, bool informToPlayer)
         {
             Inventory.Add(item);
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
-            Map.AddSpecialEffectIfPossible(SpecialEffect.ItemGet);
-            Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            if (informToPlayer)
+            {
+                if(item.EntityType == EntityType.Key)
+                    Map.AddSpecialEffectIfPossible(SpecialEffect.KeyGet);
+                else
+                    Map.AddSpecialEffectIfPossible(SpecialEffect.ItemGet);
+                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            }
         }
     }
     #pragma warning restore CS8604 // Posible argumento de referencia nulo

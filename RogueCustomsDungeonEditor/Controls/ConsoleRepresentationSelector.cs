@@ -6,14 +6,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Controls
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class ConsoleRepresentationSelector : UserControl
     {
         private ConsoleRepresentation consoleRepresentation = new();
@@ -76,6 +80,17 @@ namespace RogueCustomsDungeonEditor.Controls
         public ConsoleRepresentationSelector()
         {
             InitializeComponent();
+
+            var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
+            var fontName = "PxPlus Tandy1K-II 200L";
+            if (FontHelper.LoadFont(fontPath))
+            {
+                var loadedFont = FontHelper.GetFontByName(fontName);
+                if (loadedFont != null)
+                {
+                    lblConsoleRepresentation.Font = new Font(loadedFont, 24f, FontStyle.Regular);
+                }
+            }
         }
 
         public void SetConsoleRepresentation(ConsoleRepresentation consoleRepresentation)
@@ -127,5 +142,6 @@ namespace RogueCustomsDungeonEditor.Controls
             UpdateLabel();
         }
     }
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
 }

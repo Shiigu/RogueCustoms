@@ -71,7 +71,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap)));
             dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus)));
             FloorTypes = new List<FloorType>();
-            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi)));
+            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse)));
             FloorTypes.ForEach(ft => {
                 ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId))
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");
@@ -136,6 +136,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
 
                 PlayerCharacter.AlteredStatuses.RemoveAll(als => als.CleanseOnFloorChange);
+                PlayerCharacter.Inventory.RemoveAll(i => i.EntityType == EntityType.Key);
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);

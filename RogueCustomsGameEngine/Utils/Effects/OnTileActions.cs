@@ -1,7 +1,10 @@
-﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+﻿using Newtonsoft.Json.Linq;
+
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using System;
 using System.Collections.Generic;
@@ -218,6 +221,54 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return true;
             }
             return false;
+        }
+        public static bool UnlockDoor(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        {
+            output = 0;
+            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+
+            if (Source is not Character c)
+                // Source must be a Character
+                return false;
+
+            if (Target is not Tile t)
+                // Target must be a Tile
+                return false;
+
+            if (t.Type != TileType.Door)
+                // Tile to be unlocked must be a Door
+                return false;
+
+            if (paramsObject.DoorId != t.DoorId)
+                // Cannot unlock a Door of the wrong Id
+                return false;
+
+            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+
+            if (Rng.RollProbability() > accuracyCheck)
+                return false;
+
+            t.Type = TileType.Hallway;
+            t.DoorId = string.Empty;
+
+            try
+            {
+                var existingValue = Map.GetFlagValue($"Doors_{paramsObject.DoorId}");
+                Map.SetFlagValue($"Doors_{paramsObject.DoorId}", existingValue - 1);
+            }
+            catch (FlagNotFoundException)
+            {
+                Map.CreateFlag($"Doors_{paramsObject.DoorId}", 0, true);
+            }
+
+            if (c.EntityType == EntityType.Player
+                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            {
+                Map.AddSpecialEffectIfPossible(SpecialEffect.DoorOpen);
+                Map.AppendMessage(Map.Locale["CharacterUnlockedDoor"].Format(new { CharacterName = c.Name, DoorName = Map.Locale[$"DoorType{paramsObject.DoorId}"] }), Color.DeepSkyBlue);
+            }
+
+            return true;
         }
     }
     #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL

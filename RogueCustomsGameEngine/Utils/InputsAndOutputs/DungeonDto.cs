@@ -100,7 +100,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             IsStairs = tile.Type == TileType.Stairs;
             Discovered = tile.Discovered;
             Visible = tile.Visible;
-            Targetable = tile.IsWalkable && tile.Visible;
+            Targetable = tile.Targetable;
             ConsoleRepresentation = map.GetConsoleRepresentationForCoordinates(tile.Position.X, tile.Position.Y);
         }
     }

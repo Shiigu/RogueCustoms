@@ -46,6 +46,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddValidationResultNode("Object Ids", dungeonValidator.IdValidationMessages);
 
+                foreach (var (Language, ValidationMessages) in dungeonValidator.LocaleStringValidationMessages)
+                {
+                    AddValidationResultNode($"Locale {Language}", ValidationMessages);
+                }
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.TileSetValidationMessages)
                 {
                     AddValidationResultNode($"Tileset {Id}", ValidationMessages);
@@ -87,11 +92,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 foreach (var (Id, ValidationMessages) in dungeonValidator.AlteredStatusValidationMessages)
                 {
                     AddValidationResultNode($"Altered Status {Id}", ValidationMessages);
-                }
-
-                foreach (var (Language, ValidationMessages) in dungeonValidator.LocaleStringValidationMessages)
-                {
-                    AddValidationResultNode($"Locale {Language}", ValidationMessages);
                 }
 
                 if (PassedValidation)

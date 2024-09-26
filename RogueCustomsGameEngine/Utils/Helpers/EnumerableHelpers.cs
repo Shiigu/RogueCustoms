@@ -73,7 +73,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             }
         }
 
-        public static List<T> Shuffle<T>(this List<T> list, Random rng)
+        public static List<T> Shuffle<T>(this List<T> list, RngHandler rng)
         {
             var shuffledList = new List<T>(list);
 

@@ -1,9 +1,4 @@
 ﻿using RogueCustomsGameEngine.Utils.JsonImports;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Utils
@@ -14,20 +9,30 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             if (warningControl == null) return;
 
-            var isPartOfLocale = false;
+            warningControl.Visible = textBox.Text.IsPartOfLocale(activeDungeon);
+        }
 
+        private static bool IsPartOfLocale(this string text, DungeonInfo activeDungeon)
+        {
             foreach (var locale in activeDungeon.Locales)
             {
-                if (isPartOfLocale) break;
                 foreach (var entry in locale.LocaleStrings)
                 {
-                    if (isPartOfLocale) break;
-                    if (entry.Key.Equals(textBox.Text))
-                        isPartOfLocale = true;
+                    if (entry.Key.Equals(text))
+                        return true;
                 }
             }
 
-            warningControl.Visible = isPartOfLocale;
+            return false;
+        }
+
+        public static void ToggleConcatenatedEntryInLocaleWarning(this TextBox textBox, string prefix, string suffix, DungeonInfo activeDungeon, Control warningControl)
+        {
+            if (warningControl == null) return;
+
+            var textToCheck = $"{prefix}{textBox.Text}{suffix}";
+
+            warningControl.Visible = textToCheck.IsPartOfLocale(activeDungeon);
         }
     }
 }

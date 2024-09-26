@@ -77,6 +77,9 @@ public partial class GameScreen : Control
             (SpecialEffect.Teleport, "res://Sounds/teleport.wav"),
             (SpecialEffect.TrapActivate, "res://Sounds/trapactivate.wav"),
             (SpecialEffect.TrapSet, "res://Sounds/trapset.wav"),
+            (SpecialEffect.KeyGet, "res://Sounds/keyget.wav"),
+            (SpecialEffect.DoorClosed, "res://Sounds/doorclosed.wav"),
+            (SpecialEffect.DoorOpen, "res://Sounds/dooropen.wav"),
         };
 
 

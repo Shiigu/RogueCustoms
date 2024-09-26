@@ -120,6 +120,9 @@
     <None Update="Resources\MandatoryLocaleKeys.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\PxPlus_Tandy1K-II_200L.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

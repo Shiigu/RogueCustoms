@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RogueCustomsGameEngine.Utils.Representation;
+
 namespace RogueCustomsGameEngine.Utils.JsonImports
 {
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -35,6 +37,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
 
         public decimal HungerDegeneration { get; set; }
         public List<FloorLayoutGenerationInfo> PossibleLayouts { get; set; }
+        public KeyGenerationInfo PossibleKeys { get; set; }
         public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
     }
 
@@ -71,6 +74,25 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public int Width { get; set; }
         public int Height { get; set; }
+    }
+
+    [Serializable]
+    public class KeyGenerationInfo
+    {
+        public int LockedRoomOdds { get; set; }
+        public int KeySpawnInEnemyInventoryOdds { get; set; }
+        public int MaxPercentageOfLockedCandidateRooms { get; set; }
+        public List<KeyTypeInfo> KeyTypes { get; set; }
+    }
+
+    [Serializable]
+    public class KeyTypeInfo
+    {
+        public string KeyTypeName { get; set; }
+        public bool CanLockStairs { get; set; }
+        public bool CanLockItems { get; set; }
+        public ConsoleRepresentation KeyConsoleRepresentation { get; set; }
+        public ConsoleRepresentation DoorConsoleRepresentation { get; set; }
     }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

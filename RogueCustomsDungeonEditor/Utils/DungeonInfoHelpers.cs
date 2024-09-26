@@ -354,22 +354,47 @@ namespace RogueCustomsDungeonEditor.Utils
                 SimultaneousMinMonstersAtStart = 0,
                 Width = 64,
                 Height = 32,
+                PossibleKeys = new(),
                 PossibleMonsters = new(),
                 PossibleItems = new(),
                 PossibleTraps = new(),
-                PossibleLayouts = new()
-                {
-                    new FloorLayoutGenerationInfo
-                    {
-                        Name = "Default",
-                        Rows = 4,
-                        Columns = 4,
-                        MinRoomSize = new() { Width = 5, Height = 5 },
-                        MaxRoomSize = new() { Width = 5, Height = 5 },
-                        RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
-                    }
-                },
+                PossibleLayouts = new() { CreateFloorLayoutGenerationInfoTemplate() },
                 OnFloorStart = new(),
+            };
+        }
+
+        public static FloorLayoutGenerationInfo CreateFloorLayoutGenerationInfoTemplate()
+        {
+            return new FloorLayoutGenerationInfo
+            {
+                Name = "Default",
+                Rows = 4,
+                Columns = 4,
+                MinRoomSize = new() { Width = 5, Height = 5 },
+                MaxRoomSize = new() { Width = 5, Height = 5 },
+                RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
+            };
+        }
+
+        public static KeyTypeInfo CreateKeyTypeInfoTemplate()
+        {
+            return new KeyTypeInfo
+            {
+                KeyTypeName = "Standard",
+                CanLockStairs = true,
+                CanLockItems = true,
+                KeyConsoleRepresentation = new()
+                {
+                    Character = '¥',
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.White),
+                },
+                DoorConsoleRepresentation = new()
+                {
+                    Character = 'Θ',
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.White),
+                }
             };
         }
 
@@ -620,6 +645,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 MaxItemsInFloor = info.MaxItemsInFloor,
                 MinTrapsInFloor = info.MinTrapsInFloor,
                 MaxTrapsInFloor = info.MaxTrapsInFloor,
+                PossibleKeys = info.PossibleKeys.Clone(),
             };
 
             info.PossibleMonsters.ForEach(pm => clonedFloor.PossibleMonsters.Add(pm.Clone()));
@@ -664,6 +690,38 @@ namespace RogueCustomsDungeonEditor.Utils
             };
 
             return clonedClassInFloor;
+        }
+
+        public static KeyGenerationInfo Clone(this KeyGenerationInfo info)
+        {
+            if (info == null) return null;
+
+            var clonedKeyGenerationInfo = new KeyGenerationInfo
+            {
+                LockedRoomOdds = info.LockedRoomOdds,
+                KeySpawnInEnemyInventoryOdds = info.KeySpawnInEnemyInventoryOdds,
+                MaxPercentageOfLockedCandidateRooms = info.MaxPercentageOfLockedCandidateRooms,
+                KeyTypes = new()
+            };
+            info.KeyTypes.ForEach(pk => clonedKeyGenerationInfo.KeyTypes.Add(pk.Clone()));
+
+            return clonedKeyGenerationInfo;
+        }
+
+        public static KeyTypeInfo Clone(this KeyTypeInfo info)
+        {
+            if (info == null) return null;
+
+            var clonedKeyType = new KeyTypeInfo
+            {
+                KeyTypeName = info.KeyTypeName,
+                CanLockItems = info.CanLockItems,
+                CanLockStairs = info.CanLockStairs,
+                DoorConsoleRepresentation = info.DoorConsoleRepresentation.Clone(),
+                KeyConsoleRepresentation = info.KeyConsoleRepresentation.Clone()
+            };
+
+            return clonedKeyType;
         }
 
         public static ActionWithEffectsInfo Clone(this ActionWithEffectsInfo info)

@@ -5,7 +5,9 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.DiceNotation;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Exceptions;
+using RogueCustomsGameEngine.Utils.JsonImports;
 
 using System;
 using System.Collections.Generic;
@@ -24,7 +26,153 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class ActionHelpers
     {
-        private readonly static List<string> FieldsToConsider = new()
+        public static ActionWithEffectsInfo GetOpenDoorActionForKey(string keyName)
+        {
+            return new ActionWithEffectsInfo()
+            {
+                CooldownBetweenUses = 0,
+                Description = "UnlockDoorDescription",
+                FinishesTurnWhenUsed = false,
+                MinimumRange = 1,
+                MaximumRange = 1,
+                MaximumUses = 0,
+                MPCost = 0,
+                Name = $"KeyType{keyName}",
+                StartingCooldown = 0,
+                TargetTypes = new() { "Tile" },
+                UseCondition = $"{{target.Type}} == \"Door\" && {{target.DoorId}} == \"{keyName}\"",
+                Effect = new()
+                {
+                    EffectName = "PrintText",
+                    Params = new[]
+                    {
+                        new Parameter
+                        {
+                            ParamName = "Text",
+                            Value = "ObjectUsedText"
+                        },
+                        new Parameter
+                        {
+                            ParamName = "Color",
+                            Value = "255,255,255,255"
+                        },
+                        new Parameter
+                        {
+                            ParamName = "BypassesVisibilityCheck",
+                            Value = "False"
+                        }
+                    },
+                    Then = new()
+                    {
+                        EffectName = "UnlockDoor",
+                        Params = new[]
+                        {
+                            new Parameter
+                            {
+                                ParamName = "Target",
+                                Value = "target"
+                            },
+                            new Parameter
+                            {
+                                ParamName = "DoorId",
+                                Value = keyName
+                            },
+                            new Parameter
+                            {
+                                ParamName = "Accuracy",
+                                Value = "100"
+                            },
+                            new Parameter
+                            {
+                                ParamName = "BypassesAccuracyCheck",
+                                Value = "True"
+                            }
+                        },
+                        OnSuccess = new()
+                        {
+                            EffectName = "CheckCondition",
+                            Params = new[]
+                            {
+                                new Parameter
+                                {
+                                    ParamName = "Condition",
+                                    Value = $"[Doors_{keyName}] < 1"
+                                }
+                            },
+                            OnSuccess = new()
+                            {
+                                EffectName = "Remove",
+                                Params = new[]
+                                {
+                                    new Parameter
+                                    {
+                                        ParamName = "Target",
+                                        Value = "this"
+                                    },
+                                    new Parameter
+                                    {
+                                        ParamName = "Accuracy",
+                                        Value = "100"
+                                    },
+                                    new Parameter
+                                    {
+                                        ParamName = "BypassesAccuracyCheck",
+                                        Value = "True"
+                                    }
+                                },
+                                OnSuccess = new()
+                                {
+                                    EffectName = "PrintText",
+                                    Params = new[]
+                                    {
+                                        new Parameter
+                                        {
+                                            ParamName = "Text",
+                                            Value = "ObjectDisappearedText"
+                                        },
+                                        new Parameter
+                                        {
+                                            ParamName = "Color",
+                                            Value = "255,255,255,255"
+                                        },
+                                        new Parameter
+                                        {
+                                            ParamName = "BypassesVisibilityCheck",
+                                            Value = "False"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        OnFailure = new()
+                        {
+                            EffectName = "PrintText",
+                            Params = new[]
+                            {
+                                new Parameter
+                                {
+                                    ParamName = "Text",
+                                    Value = "FailedAttackText"
+                                },
+                                new Parameter
+                                {
+                                    ParamName = "Color",
+                                    Value = "255,255,255,255"
+                                },
+                                new Parameter
+                                {
+                                    ParamName = "BypassesVisibilityCheck",
+                                    Value = "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+
+        private readonly static List<string> PropertiesToParse = new()
         {
             "Id",
             "ClassId",
@@ -49,7 +197,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             "ExperiencePayout",
             "Owner",
             "Power",
-            "TurnLength"
+            "TurnLength",
+            "Type",
+            "DoorId"
         };
 
         private static RngHandler Rng;
@@ -206,6 +356,9 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "tiletype":
                             paramsObject.TileType = Enum.Parse<TileType>(value, true);
                             break;
+                        case "doorid":
+                            paramsObject.DoorId = value;
+                            break;
                         case "id":
                             paramsObject.Id = value;
                             break;
@@ -260,7 +413,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
             parsedArg = ParseArgForEntity(parsedArg, This, "this");
             parsedArg = ParseArgForEntity(parsedArg, Source, "source");
-            parsedArg = ParseArgForEntity(parsedArg, Target as Entity, "target");
+            if(Target is Entity e)
+                parsedArg = ParseArgForEntity(parsedArg, e, "target");
+            else if (Target is Tile t)
+                parsedArg = ParseArgForTile(parsedArg, t, "target");
 
             return parsedArg;
         }
@@ -271,11 +427,21 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             var parsedArg = arg;
 
             parsedArg = ParseEntityNames(parsedArg, e, eName);
-            parsedArg = ParseEntityProperties(parsedArg, e, eName);
+            parsedArg = ParseObjectProperties(parsedArg, e, eName);
             parsedArg = ParseRngExpressions(parsedArg);
             parsedArg = ParseFlagExistsExpressions(parsedArg);
             parsedArg = ParseNamedFlags(parsedArg);
             parsedArg = ParseStatusCheck(parsedArg, e, eName);
+
+            return parsedArg;
+        }
+
+        private static string ParseArgForTile(string arg, Tile t, string eName)
+        {
+            if (t == null) return arg;
+            var parsedArg = arg;
+
+            parsedArg = ParseObjectProperties(parsedArg, t, eName);
 
             return parsedArg;
         }
@@ -289,19 +455,19 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return parsedArg;
         }
 
-        private static string ParseEntityProperties(string arg, Entity e, string eName)
+        private static string ParseObjectProperties(string arg, object o, string eName)
         {
             var parsedArg = arg;
 
-            var entityType = e.GetType();
-            foreach (var property in entityType.GetProperties().Where(p => FieldsToConsider.Contains(p.Name)))
+            var entityType = o.GetType();
+            foreach (var property in entityType.GetProperties().Where(p => PropertiesToParse.Contains(p.Name)))
             {
                 string propertyName = property.Name;
                 string fieldToken = $"{{{eName}.{propertyName}}}";
 
                 if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    object propertyValue = property.GetValue(e);
+                    object propertyValue = property.GetValue(o);
                     if (propertyValue != null)
                     {
                         if (propertyValue is Entity entityProperty)
@@ -312,11 +478,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                                  entityType.GetProperty("AlteredStatuses") != null &&
                                  entityType.GetProperty("AlteredStatuses").PropertyType == typeof(List<AlteredStatus>))
                         {
-                            var alteredStatuses = (List<AlteredStatus>)entityType.GetProperty("AlteredStatuses").GetValue(e);
+                            var alteredStatuses = (List<AlteredStatus>)entityType.GetProperty("AlteredStatuses").GetValue(o);
                             var statusString = string.Join("/", alteredStatuses.Select(als => als.Id));
                             parsedArg = parsedArg.Replace(fieldToken, statusString, StringComparison.InvariantCultureIgnoreCase);
                         }
-                        else if (propertyName.Equals("ClassId") || propertyName.Equals("Name"))
+                        else if (propertyName.Equals("ClassId") || propertyName.Equals("Name") || propertyName.Equals("Type") || propertyName.Equals("DoorId"))
                         {
                             parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue($"\"{propertyValue}\""), StringComparison.InvariantCultureIgnoreCase);
                         }

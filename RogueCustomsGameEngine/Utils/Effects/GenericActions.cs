@@ -552,7 +552,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             t = paramsObject.Target as Character;
 
-            if (t.Inventory.Count == t.InventorySize)
+            if (t.ItemCount == t.InventorySize)
                 // Attempted to give Target an Item when their inventory is full.
                 return false;
 

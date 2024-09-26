@@ -23,6 +23,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class NonPlayableCharacter : Character, IAIControlled
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
+        private List<(Character Character, TargetType TargetType)> PursuableCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
 
 
         // This is used to prevent continuous shuffling between tiles if it does not find an open path
@@ -73,7 +74,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 PickADistantTargetIfPossible();
             }
             // If the picked next tile is inaccessible, invisible, or contains a visible trap, and it does not contain the target, find another tile.
-            if(PathToUse.Route?.Count > 1 && !TileCanBeApproached(PathToUse.Route?[1]) || PathToUse.Route?[1].Trap?.CanBeSeenBy(this) == true)
+            if(PathToUse.Route?.Count > 1 && (!TileCanBeApproached(PathToUse.Route?[1]) || PathToUse.Route?[1].Trap?.CanBeSeenBy(this) == true))
             {
                 var adjacentTiles = Map.GetAdjacentWalkableTiles(Position, true);
                 var visibleAdjacentTiles = FOVTiles.Intersect(adjacentTiles);
@@ -94,7 +95,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private IEnumerable<(ActionWithEffects Action, List<(ITargetable Target, int Distance)> PossibleTargets)> LookForAttackActionsWithValidTargets()
         {
-            foreach (var action in OnAttack)
+            foreach (var action in OnAttack.Where(oa => oa.User.EntityType != EntityType.Key))
             {
                 if (action.MayBeUsed)
                 {
@@ -336,6 +337,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void UpdateKnownCharacterList()
         {
+            PursuableCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
             KnownCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
             if(KnowsAllCharacterPositions)
             {
@@ -357,12 +359,21 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 });
             }
+            FOVTiles.ForEach(t =>
+            {
+                if (Map.GetEntitiesFromCoordinates(t.Position).Find(e => !e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive) is Character characterInTile
+                    && CanSee(characterInTile)
+                    && !PursuableCharacters.Select(kc => kc.Character).Contains(characterInTile))
+                {
+                    PursuableCharacters.Add((characterInTile, CalculateTargetTypeFor(characterInTile)));
+                }
+            });
         }
 
         public List<Character> GetClosestTargets(ActionWithEffects action)
         {
             List<(Character target, int distance)> targetsAndDistances = new();
-            KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType) && CanSee(kc.Character))
+            PursuableCharacters.Where(pc => action.TargetTypes.Contains(pc.TargetType))
                 .ForEach(t => targetsAndDistances.Add((t.Character, (int)Math.Ceiling(GamePoint.Distance(Position, t.Character.Position)))));
             if (!targetsAndDistances.Any()) return new List<Character>();
             var minimumDistance = targetsAndDistances.Min(tad => tad.distance);
@@ -411,14 +422,17 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Map.AddSpecialEffectIfPossible(SpecialEffect.NPCDeath);
         }
 
-        public override void PickItem(Item item)
+        public override void PickItem(Item item, bool informToPlayer)
         {
             Inventory.Add(item);
             item.Owner = this;
             item.Position = null;
             item.ExistenceStatus = EntityExistenceStatus.Gone;
-            Map.AddSpecialEffectIfPossible(SpecialEffect.NPCItemGet);
-            Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            if (informToPlayer)
+            {
+                Map.AddSpecialEffectIfPossible(SpecialEffect.NPCItemGet);
+                Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            }
         }
 
         public override void DropItem(Item item)
@@ -428,7 +442,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 pickedEmptyTile = ContainingTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetItems().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetItems().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (t.Key == null || t.Key.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => GamePoint.Distance(t.Position, Position)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => GamePoint.Distance(t.Position, Position) <= closestDistance);
                 if (closestEmptyTiles.Any())
