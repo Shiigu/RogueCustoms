@@ -382,3 +382,7 @@ FodyWeavers.xsd
 /RogueCustomsGodotClient/Textures/HungerBarForeground.png.import
 /RogueCustomsGodotClient/Textures/MPBarBackground.png.import
 /RogueCustomsGodotClient/Textures/MPBarForeground.png.import
+/RogueCustomsGodotClient/savedDungeon.rcs
+/RogueCustomsGodotClient/Sounds/doorclosed.wav.import
+/RogueCustomsGodotClient/Sounds/dooropen.wav.import
+/RogueCustomsGodotClient/Sounds/keyget.wav.import

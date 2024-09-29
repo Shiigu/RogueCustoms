@@ -370,6 +370,14 @@
       "Value": "{CharacterName} has unlocked the {DoorName}!"
     },
     {
+      "Key": "AttackCriticalHitText",
+      "Value": "CRITICAL HIT!"
+    },
+    {
+      "Key": "AttackDealtNoDamageText",
+      "Value": "The attack dealt no damage..."
+    },
+    {
       "Key": "KeyDescription",
       "Value": "A key.\n\nUse it on a matching door to permanently open it.\n\nThe Key is destroyed when all matching doors are open, or when you enter a new Floor.\n\n(Keys do not occupy Inventory space)"
     },

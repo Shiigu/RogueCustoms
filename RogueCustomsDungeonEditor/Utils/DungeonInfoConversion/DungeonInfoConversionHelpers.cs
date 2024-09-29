@@ -768,6 +768,55 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     }
                 }
             }
+            foreach (var playerClass in V14Dungeon.PlayerClasses)
+            {
+                foreach (var action in playerClass.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV14();
+                }
+                playerClass.OnAttacked?.UpdateDealDamageStepsToV14();
+                playerClass.OnDeath?.UpdateDealDamageStepsToV14();
+                playerClass.OnTurnStart?.UpdateDealDamageStepsToV14();
+            }
+            foreach (var npc in V14Dungeon.NPCs)
+            {
+                foreach (var action in npc.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV14();
+                }
+                foreach (var action in npc.OnInteracted)
+                {
+                    action.UpdateDealDamageStepsToV14();
+                }
+                npc.OnAttacked?.UpdateDealDamageStepsToV14();
+                npc.OnDeath?.UpdateDealDamageStepsToV14();
+                npc.OnTurnStart?.UpdateDealDamageStepsToV14();
+                npc.OnSpawn?.UpdateDealDamageStepsToV14();
+            }
+            foreach (var item in V14Dungeon.Items)
+            {
+                foreach (var action in item.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV14();
+                }
+                item.OnAttacked?.UpdateDealDamageStepsToV14();
+                item.OnDeath?.UpdateDealDamageStepsToV14();
+                item.OnTurnStart?.UpdateDealDamageStepsToV14();
+                item.OnStepped?.UpdateDealDamageStepsToV14();
+                item.OnUse?.UpdateDealDamageStepsToV14();
+            }
+            foreach (var trap in V14Dungeon.Traps)
+            {
+                trap.OnStepped?.UpdateDealDamageStepsToV14();
+            }
+            foreach (var alteredStatus in V14Dungeon.AlteredStatuses)
+            {
+                alteredStatus.BeforeAttack?.UpdateDealDamageStepsToV14();
+                alteredStatus.OnAttacked?.UpdateDealDamageStepsToV14();
+                alteredStatus.OnApply?.UpdateDealDamageStepsToV14();
+                alteredStatus.OnTurnStart?.UpdateDealDamageStepsToV14();
+                alteredStatus.OnRemove?.UpdateDealDamageStepsToV14();
+            }
 
             V14Dungeon.Version = "1.4";
             return V14Dungeon;
@@ -947,6 +996,49 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 RoomDisposition = floorLayoutDispositon.ToString()
             };
             return floorLayout;
+        }
+
+        private static void UpdateDealDamageStepsToV14(this ActionWithEffectsInfo? actionWithEffects)
+        {
+            if (actionWithEffects == null) return;
+            actionWithEffects.Effect.UpdateDealDamageParametersToV14();
+        }
+
+        private static void UpdateDealDamageParametersToV14(this EffectInfo? effect)
+        {
+            if (effect == null) return;
+            if (effect.EffectName.Equals("DealDamage"))
+            {
+                var effectParams = effect.Params.ToList();
+                if (!effectParams.Any(param => param.ParamName.Equals("CriticalHitChance", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "CriticalHitChance",
+                        Value = "0"
+                    });
+                if (!effectParams.Any(param => param.ParamName.Equals("CriticalHitFormula", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "CriticalHitFormula",
+                        Value = "{CalculatedDamage}"
+                    });
+                if (!effectParams.Any(param => param.ParamName.Equals("CriticalHitText", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "CriticalHitText",
+                        Value = "AttackCriticalHitText"
+                    });
+                if (!effectParams.Any(param => param.ParamName.Equals("NoDamageText", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "NoDamageText",
+                        Value = "AttackDealtNoDamageText"
+                    });
+                effect.Params = effectParams.ToArray();
+            }
+            effect.Then?.UpdateDealDamageParametersToV14();
+            effect.OnSuccess?.UpdateDealDamageParametersToV14();
+            effect.OnFailure?.UpdateDealDamageParametersToV14();
         }
 
         #endregion

@@ -65,6 +65,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             var parsedArg = arg;
 
+            parsedArg = parsedArg.Replace("{CalculatedDamage}", "1");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
             parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
