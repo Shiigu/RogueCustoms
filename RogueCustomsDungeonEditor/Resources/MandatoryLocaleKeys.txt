@@ -95,3 +95,5 @@ KeyDescription
 DoorDescription
 UnlockDoorName
 UnlockDoorDescription
+AttackCriticalHitText
+AttackDealtNoDamageText

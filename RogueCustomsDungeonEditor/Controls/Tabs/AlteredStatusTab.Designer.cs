@@ -142,7 +142,7 @@
             saeAlteredStatusOnTurnStart.TargetDescription = "Whoever it's inflicting";
             saeAlteredStatusOnTurnStart.ThisDescription = "The Altered Status";
             saeAlteredStatusOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeAlteredStatusOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
+            saeAlteredStatusOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTarget;
             // 
             // saeAlteredStatusOnApply
             // 

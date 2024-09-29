@@ -158,6 +158,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 nudMinRange.Enabled = false;
                 nudMaxRange.Enabled = false;
                 nudMPCost.Enabled = false;
+                nudCooldown.Value = ActionToSave?.CooldownBetweenUses ?? 0;
+                nudInitialCooldown.Value = ActionToSave?.StartingCooldown ?? 0;
+                nudMaximumUses.Value = ActionToSave?.MaximumUses ?? 0;
             }
             else
             {

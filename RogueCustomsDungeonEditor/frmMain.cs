@@ -1086,6 +1086,7 @@ namespace RogueCustomsDungeonEditor
             var customEntriesList = new List<LocaleInfoString>();
             foreach (var floorInfo in ActiveDungeon.FloorInfos)
             {
+                if (floorInfo.PossibleKeys == null || !floorInfo.PossibleKeys.KeyTypes.Any()) continue;
                 foreach (var keyType in floorInfo.PossibleKeys.KeyTypes)
                 {
                     if (!MandatoryLocaleKeys.Contains($"KeyType{keyType.KeyTypeName}"))

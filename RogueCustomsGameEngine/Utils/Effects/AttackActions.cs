@@ -51,19 +51,25 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (damageDealt <= 0)
             {
                 Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
+                Map.AppendMessage(paramsObject.NoDamageText, Color.White);
                 return false;
+            }
+            Faction targetFaction = c.Faction;
+            Color forecolorToUse;
+            if (c.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
+                forecolorToUse = Color.Red;
+            else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
+                forecolorToUse = Color.Lime;
+            else
+                forecolorToUse = Color.DeepSkyBlue;
+            if (Rng.RollProbability() <= paramsObject.CriticalHitChance)
+            {
+                Map.AppendMessage(paramsObject.CriticalHitText, forecolorToUse);
+                damageDealt = (int) ActionHelpers.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
             {
-                Faction targetFaction = c.Faction;
-                Color forecolorToUse;
-                if (c.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
-                    forecolorToUse = Color.Red;
-                else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
-                    forecolorToUse = Color.Lime;
-                else
-                    forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"] }), forecolorToUse);
 
                 if (Source == Map.Player && c.EntityType == EntityType.NPC)

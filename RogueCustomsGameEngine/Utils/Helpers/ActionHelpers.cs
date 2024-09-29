@@ -368,6 +368,18 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "text":
                             paramsObject.Text = ParseValueForTextDisplay(value);
                             break;
+                        case "criticalhitchance":
+                            paramsObject.CriticalHitChance = CalculateDiceNotationIfNeeded(value);
+                            break;
+                        case "criticalhitformula":
+                            paramsObject.CriticalHitFormula = value;
+                            break;
+                        case "criticalhittext":
+                            paramsObject.CriticalHitText = ParseValueForTextDisplay(value);
+                            break;
+                        case "nodamagetext":
+                            paramsObject.NoDamageText = ParseValueForTextDisplay(value);
+                            break;
                     }
                 }
                 catch (FlagNotFoundException)
@@ -382,7 +394,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return paramsObject;
         }
 
-        private static decimal CalculateDiceNotationIfNeeded(string value)
+        public static decimal CalculateDiceNotationIfNeeded(string value)
         {
             if (value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is a boolean expression, but is being evaluated as a number.");

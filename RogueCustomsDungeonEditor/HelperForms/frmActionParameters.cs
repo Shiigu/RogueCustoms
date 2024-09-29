@@ -227,7 +227,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Odds:
                         control = new NumericUpDown
                         {
-                            Minimum = 1,
+                            Minimum = 0,
                             Maximum = 100
                         };
                         if (originalValue != null && int.TryParse(originalValue, out int parsedIntValue))
@@ -575,6 +575,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
 
                 var toolTip = new ToolTip();
+                if (nameLabel.PreferredSize.Width > nameLabel.Width)
+                {
+                    tlpParameters.Width += (nameLabel.PreferredSize.Width - nameLabel.Width);
+                    this.Width += (nameLabel.PreferredSize.Width - nameLabel.Width);
+                    btnSave.Left += (nameLabel.PreferredSize.Width - nameLabel.Width) / 2;
+                    btnCancel.Left += (nameLabel.PreferredSize.Width - nameLabel.Width) / 2;
+                }
                 if (control is TableLayoutPanel tlp)
                     toolTip.SetToolTip(tlp.Controls[0], parameter.Description);
                 else
