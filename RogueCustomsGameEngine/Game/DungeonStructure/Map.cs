@@ -96,9 +96,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<SpecialEffect> SpecialEffectsThatHappened { get; set; }
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Item> Items { get; set; }
-        public List<Item> Keys { get; set; }
+        public List<Key> Keys { get; set; }
         public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
-        public List<Item> Traps { get; set; }
+        public List<Trap> Traps { get; set; }
 
         public List<AlteredStatus> PossibleStatuses { get; private set; }
 
@@ -125,8 +125,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             FloorLevel = floorLevel;
             AICharacters = new List<NonPlayableCharacter>();
             Items = new List<Item>();
-            Keys = new List<Item>();
-            Traps = new List<Item>();
+            Keys = new List<Key>();
+            Traps = new List<Trap>();
             FloorConfigurationToUse = Dungeon.FloorTypes.Find(ft => floorLevel.Between(ft.MinFloorLevel, ft.MaxFloorLevel));
             if (FloorConfigurationToUse == null)
                 throw new InvalidDataException("There's no valid configuration for the current floor");
@@ -667,9 +667,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.Weapon:
                 case EntityType.Armor:
                 case EntityType.Consumable:
-                case EntityType.Trap:
-                case EntityType.Key:
                     entity = new Item(entityClass, this)
+                    {
+                        Id = CurrentEntityId,
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                    };
+                    break;
+                case EntityType.Trap:
+                    entity = new Trap(entityClass, this)
+                    {
+                        Id = CurrentEntityId,
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                    };
+                    break;
+                case EntityType.Key:
+                    entity = new Key(entityClass, this)
                     {
                         Id = CurrentEntityId,
                         Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
@@ -682,14 +694,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (entity.Position == null) return entity;
             if (entity is Item i)
             {
-                if (i.EntityType != EntityType.Trap && i.EntityType != EntityType.Key)
-                    Items.Add(i);
-                else if (i.EntityType == EntityType.Key)
-                    Keys.Add(i);
-                else if (i.EntityType == EntityType.Trap)
-                    Traps.Add(i);
+                Items.Add(i);
             }
-            if (entity is Character c)
+            else if (entity is Key k)
+            {
+                Keys.Add(k);
+            }
+            else if (entity is Trap t)
+            {
+                Traps.Add(t);
+            }
+            else if (entity is Character c)
             {
                 var weaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingWeaponId))
                     ?? throw new InvalidDataException("Class does not have a valid starting weapon!");
@@ -998,7 +1013,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (targetTile.Key != null)
                 character.TryToPickItem(targetTile.Key);
-            targetTile.GetItems().ForEach(i => character.TryToPickItem(i));
+            targetTile.GetPickableObjects().Cast<IPickable>().ForEach(i => character.TryToPickItem(i));
             targetTile.Trap?.Stepped(character);
 
             character.RemainingMovement--;
@@ -1048,7 +1063,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBePickedUp = GetEntitiesFromCoordinates(Player.Position.X, Player.Position.Y)
                 .ConvertAll(e => e as Item)
-                .Find(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive && e.CanBePickedUp);
+                .Find(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive);
             if (itemThatCanBePickedUp == null)
                 return;
             if (Player.ItemCount == Player.InventorySize)
@@ -1205,7 +1220,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTile = tile.LivingCharacter;
             if (characterInTile?.Visible == true)
                 return new EntityDetailDto(characterInTile);
-            var itemInTile = tile.GetItems().FirstOrDefault();
+            var itemInTile = tile.GetPickableObjects().FirstOrDefault();
             if(itemInTile?.Visible == true)
                 return new EntityDetailDto(itemInTile);
             var trapInTile = tile.Trap;
@@ -1425,7 +1440,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
-            var visibleItems = tile.GetItems().Where(i => i.CanBeSeenBy(Player));
+            var visibleItems = tile.GetPickableObjects().Where(i => i.CanBeSeenBy(Player));
             if (visibleItems.Any())
                 return visibleItems.First().ConsoleRepresentation;
             if (tile.Key != null)

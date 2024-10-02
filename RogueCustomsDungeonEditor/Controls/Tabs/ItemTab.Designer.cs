@@ -34,10 +34,8 @@
             saeItemOnAttacked = new SingleActionEditor();
             maeItemOnAttack = new MultiActionEditor();
             saeItemOnUse = new SingleActionEditor();
-            saeItemOnStepped = new SingleActionEditor();
             txtItemPower = new System.Windows.Forms.TextBox();
             label108 = new System.Windows.Forms.Label();
-            chkItemCanBePickedUp = new System.Windows.Forms.CheckBox();
             chkItemStartsVisible = new System.Windows.Forms.CheckBox();
             cmbItemType = new System.Windows.Forms.ComboBox();
             label107 = new System.Windows.Forms.Label();
@@ -48,7 +46,6 @@
             fklblItemNameLocale = new System.Windows.Forms.Button();
             txtItemName = new System.Windows.Forms.TextBox();
             label106 = new System.Windows.Forms.Label();
-            crsItem = new ConsoleRepresentationSelector();
             SuspendLayout();
             // 
             // saeItemOnDeath
@@ -148,50 +145,26 @@
             // saeItemOnUse
             // 
             saeItemOnUse.Action = null;
-            saeItemOnUse.ActionDescription = "When someone uses it on     \r\nthemselves...";
+            saeItemOnUse.ActionDescription = "When someone uses it on themselves...     ";
             saeItemOnUse.ActionTypeText = "Item Use";
             saeItemOnUse.AutoSize = true;
             saeItemOnUse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeItemOnUse.ClassId = null;
             saeItemOnUse.Dungeon = null;
             saeItemOnUse.EffectParamData = null;
-            saeItemOnUse.Location = new System.Drawing.Point(8, 313);
+            saeItemOnUse.Location = new System.Drawing.Point(362, 279);
             saeItemOnUse.Name = "saeItemOnUse";
             saeItemOnUse.PlaceholderActionName = "ItemUse";
             saeItemOnUse.RequiresActionName = false;
             saeItemOnUse.RequiresCondition = true;
             saeItemOnUse.RequiresDescription = false;
-            saeItemOnUse.Size = new System.Drawing.Size(292, 32);
+            saeItemOnUse.Size = new System.Drawing.Size(363, 32);
             saeItemOnUse.SourceDescription = "The item";
             saeItemOnUse.TabIndex = 242;
             saeItemOnUse.TargetDescription = "Whoever is using it";
             saeItemOnUse.ThisDescription = "The item";
             saeItemOnUse.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
             saeItemOnUse.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
-            // 
-            // saeItemOnStepped
-            // 
-            saeItemOnStepped.Action = null;
-            saeItemOnStepped.ActionDescription = "When someone steps on it... ";
-            saeItemOnStepped.ActionTypeText = "Stepped";
-            saeItemOnStepped.AutoSize = true;
-            saeItemOnStepped.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            saeItemOnStepped.ClassId = null;
-            saeItemOnStepped.Dungeon = null;
-            saeItemOnStepped.EffectParamData = null;
-            saeItemOnStepped.Location = new System.Drawing.Point(8, 275);
-            saeItemOnStepped.Name = "saeItemOnStepped";
-            saeItemOnStepped.PlaceholderActionName = "Stepped";
-            saeItemOnStepped.RequiresActionName = false;
-            saeItemOnStepped.RequiresCondition = false;
-            saeItemOnStepped.RequiresDescription = false;
-            saeItemOnStepped.Size = new System.Drawing.Size(293, 32);
-            saeItemOnStepped.SourceDescription = "The item";
-            saeItemOnStepped.TabIndex = 241;
-            saeItemOnStepped.TargetDescription = "Whoever stepped on it";
-            saeItemOnStepped.ThisDescription = "The item";
-            saeItemOnStepped.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeItemOnStepped.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // txtItemPower
             // 
@@ -210,16 +183,6 @@
             label108.Size = new System.Drawing.Size(67, 15);
             label108.TabIndex = 238;
             label108.Text = "Item Power";
-            // 
-            // chkItemCanBePickedUp
-            // 
-            chkItemCanBePickedUp.AutoSize = true;
-            chkItemCanBePickedUp.Location = new System.Drawing.Point(237, 242);
-            chkItemCanBePickedUp.Name = "chkItemCanBePickedUp";
-            chkItemCanBePickedUp.Size = new System.Drawing.Size(118, 19);
-            chkItemCanBePickedUp.TabIndex = 237;
-            chkItemCanBePickedUp.Text = "Can be picked up";
-            chkItemCanBePickedUp.UseVisualStyleBackColor = true;
             // 
             // chkItemStartsVisible
             // 
@@ -328,17 +291,6 @@
             label106.TabIndex = 227;
             label106.Text = "Default Name";
             // 
-            // crsItem
-            // 
-            crsItem.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.BackgroundColor");
-            crsItem.Character = '\0';
-            crsItem.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.ForegroundColor");
-            crsItem.Location = new System.Drawing.Point(519, 6);
-            crsItem.Name = "crsItem";
-            crsItem.Size = new System.Drawing.Size(211, 83);
-            crsItem.TabIndex = 240;
-            crsItem.PropertyChanged += crsItem_PropertyChanged;
-            // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -349,10 +301,8 @@
             Controls.Add(saeItemOnAttacked);
             Controls.Add(maeItemOnAttack);
             Controls.Add(saeItemOnUse);
-            Controls.Add(saeItemOnStepped);
             Controls.Add(txtItemPower);
             Controls.Add(label108);
-            Controls.Add(chkItemCanBePickedUp);
             Controls.Add(chkItemStartsVisible);
             Controls.Add(cmbItemType);
             Controls.Add(label107);
@@ -363,7 +313,6 @@
             Controls.Add(fklblItemNameLocale);
             Controls.Add(txtItemName);
             Controls.Add(label106);
-            Controls.Add(crsItem);
             Name = "ItemTab";
             Size = new System.Drawing.Size(733, 348);
             ResumeLayout(false);
@@ -377,10 +326,8 @@
         private SingleActionEditor saeItemOnAttacked;
         private MultiActionEditor maeItemOnAttack;
         private SingleActionEditor saeItemOnUse;
-        private SingleActionEditor saeItemOnStepped;
         private System.Windows.Forms.TextBox txtItemPower;
         private System.Windows.Forms.Label label108;
-        private System.Windows.Forms.CheckBox chkItemCanBePickedUp;
         private System.Windows.Forms.CheckBox chkItemStartsVisible;
         private System.Windows.Forms.ComboBox cmbItemType;
         private System.Windows.Forms.Label label107;

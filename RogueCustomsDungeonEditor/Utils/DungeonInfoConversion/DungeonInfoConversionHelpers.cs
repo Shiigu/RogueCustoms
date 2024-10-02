@@ -537,8 +537,6 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 v12Item.OnAttacked.UpdateActionParametersToV12(false);
                 v12Item.OnUse = v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12();
                 v12Item.OnUse.UpdateActionParametersToV12(false);
-                v12Item.OnStepped = v11Item.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnStepped.UpdateActionParametersToV12(false);
             }
 
             foreach (var v12Trap in V12Dungeon.Traps)
@@ -802,7 +800,6 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 item.OnAttacked?.UpdateDealDamageStepsToV14();
                 item.OnDeath?.UpdateDealDamageStepsToV14();
                 item.OnTurnStart?.UpdateDealDamageStepsToV14();
-                item.OnStepped?.UpdateDealDamageStepsToV14();
                 item.OnUse?.UpdateDealDamageStepsToV14();
             }
             foreach (var trap in V14Dungeon.Traps)

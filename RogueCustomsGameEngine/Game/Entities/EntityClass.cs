@@ -74,8 +74,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly string Power;
 
         #region Item-only data
-
-        public readonly bool CanBePickedUp;
         public ActionWithEffects OnStepped { get; set; }
         public ActionWithEffects OnUse { get; set; }
 
@@ -111,13 +109,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Power = itemInfo.Power;
                 StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
-                CanBePickedUp = itemInfo.CanBePickedUp;
                 OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart);
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, itemInfo.OnAttack);
                 OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked);
                 OnDeath = ActionWithEffects.Create(itemInfo.OnDeath);
-                OnStepped = ActionWithEffects.Create(itemInfo.OnStepped);
                 OnUse = ActionWithEffects.Create(itemInfo.OnUse);
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
@@ -264,7 +260,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Power = trapInfo.Power;
                 StartsVisible = trapInfo.StartsVisible;
                 Passable = true;
-                CanBePickedUp = false;
                 OnStepped = ActionWithEffects.Create(trapInfo.OnStepped);
             }
             else if (classInfo is AlteredStatusInfo alteredStatusInfo)

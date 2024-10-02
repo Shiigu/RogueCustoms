@@ -81,6 +81,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
 
         public override string ToString() => $"Position: {Position}; Name: {Name}; Char: {ConsoleRepresentation.Character}";
+        public bool CanBeSeenBy(Character c)
+        {
+            if (c == null) return false;
+            if (c.CanSee(this)) return true;
+            return false;
+        }
 
         public Entity Clone()
         {

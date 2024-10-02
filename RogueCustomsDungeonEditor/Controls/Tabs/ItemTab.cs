@@ -63,13 +63,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ToggleItemTypeControlsVisibility();
             txtItemPower.Text = item.Power;
             chkItemStartsVisible.Checked = item.StartsVisible;
-            chkItemCanBePickedUp.Checked = item.CanBePickedUp;
             SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
             SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
             SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
             SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
-            SetSingleActionEditorParams(saeItemOnStepped, item.Id, item.OnStepped);
         }
 
         public List<string> SaveData(string id)
@@ -95,7 +93,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItem.Description = txtItemDescription.Text;
                 LoadedItem.ConsoleRepresentation = crsItem.ConsoleRepresentation;
                 LoadedItem.StartsVisible = chkItemStartsVisible.Checked;
-                LoadedItem.CanBePickedUp = chkItemCanBePickedUp.Checked;
                 LoadedItem.EntityType = cmbItemType.Text;
                 LoadedItem.Power = txtItemPower.Text;
 
@@ -114,7 +111,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 }
 
                 LoadedItem.OnAttack = maeItemOnAttack.Actions;
-                LoadedItem.OnStepped = saeItemOnStepped.Action;
                 LoadedItem.OnDeath = saeItemOnDeath.Action;
             }
 
@@ -154,7 +150,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
             {
-                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = true;
@@ -168,7 +163,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             else if (cmbItemType.Text == "Consumable")
             {
-                saeItemOnStepped.Visible = true;
                 saeItemOnUse.Visible = true;
                 saeItemOnTurnStart.Visible = false;
                 saeItemOnTurnStart.Action = null;
@@ -183,7 +177,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             else
             {
-                saeItemOnStepped.Visible = false;
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
                 saeItemOnTurnStart.Visible = false;
@@ -194,8 +187,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnAttacked.Action = null;
                 saeItemOnDeath.Visible = false;
                 saeItemOnDeath.Action = null;
-                saeItemOnStepped.Visible = false;
-                saeItemOnStepped.Action = null;
             }
         }
 
