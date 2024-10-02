@@ -11,6 +11,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
+using System.Numerics;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -32,6 +33,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Item Armor => EquippedArmor ?? StartingArmor;
 
         public List<Item> Inventory { get; set; }
+        public List<Key> KeySet { get; set; }
+        public List<IPickable> FullInventory => Inventory.Cast<IPickable>().Union(KeySet.Cast<IPickable>()).ToList();
+
         public int ItemCount => Inventory.Where(i => i.EntityType != EntityType.Key).Count();
 
         public readonly string ExperiencePayoutFormula;
@@ -180,6 +184,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (i?.OwnOnAttack != null && !i.IsEquippable)
                         actionList.AddRange(i.OwnOnAttack);
                 });
+                KeySet?.ForEach(k =>
+                {
+                    if (k?.OwnOnAttack != null)
+                        actionList.AddRange(k.OwnOnAttack);
+                });
 
                 for (int i = 0; i < actionList.Count; i++)
                 {
@@ -325,6 +334,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             BaseEvasion = entityClass.BaseEvasion;
             InventorySize = entityClass.InventorySize;
             Inventory = new List<Item>(InventorySize);
+            KeySet = new List<Key>();
 
             AlteredStatuses = new List<AlteredStatus>();
 
@@ -581,6 +591,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public abstract void DropItem(Item item);
 
         public abstract void PickItem(Item item, bool informToPlayer);
+        public abstract void PickKey(Key key, bool informToPlayer);
 
         public void EquipItem(Item item)
         {
@@ -625,15 +636,26 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void TryToPickItem(Item item)
+        public void TryToPickItem(IPickable p)
         {
-            if ((EntityType == EntityType.Player && item.EntityType == EntityType.Key) || (item.EntityType != EntityType.Key && item.CanBePickedUp && ItemCount < InventorySize))
+            if (!Visible) return;
+            var item = p as Item;
+            var key = p as Key;
+            if(item == null && key == null) return;
+            if(key != null && EntityType == EntityType.Player)
             {
-                PickItem(item, true);
+                PickKey(key, true);
             }
-            else
+            else if (item != null)
             {
-                item.Stepped(this);
+                if(ItemCount < InventorySize)
+                {
+                    PickItem(item, true);
+                }
+                else
+                {
+                    Map.AppendMessage(Map.Locale["ItemSteppedText"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                }
             }
         }
 

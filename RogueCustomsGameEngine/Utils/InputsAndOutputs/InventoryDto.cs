@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -35,17 +36,20 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public InventoryItemDto() { }
 
-        public InventoryItemDto(Item item, PlayerCharacter player, Map map)
+        public InventoryItemDto(IPickable p, PlayerCharacter player, Map map)
         {
-            Name = map.Locale[item.Name];
-            Description = item.Description;
-            ConsoleRepresentation = item.ConsoleRepresentation;
-            CanBeUsed = item.IsEquippable || item.OnUse?.CanBeUsedOn(player) == true;
-            CanBeDropped = item.EntityType != EntityType.Key;
-            IsEquipped = player.EquippedWeapon == item || player.EquippedArmor == item;
-            IsEquippable = item.IsEquippable;
-            IsInFloor = item.Position != null && item.Owner == null;
-            ItemId = item.Id;
+            var pickableAsEntity = p as Entity;
+            if (p == null) return;
+            var pickableAsItem = p as Item;
+            Name = map.Locale[pickableAsEntity.Name];
+            Description = pickableAsEntity.Description;
+            ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
+            CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(player) == true;
+            CanBeDropped = p is not Key;
+            IsEquipped = player.EquippedWeapon == pickableAsItem || player.EquippedArmor == pickableAsItem;
+            IsEquippable = pickableAsItem?.IsEquippable == true;
+            IsInFloor = pickableAsItem.Position != null && pickableAsItem.Owner == null;
+            ItemId = pickableAsEntity.Id;
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

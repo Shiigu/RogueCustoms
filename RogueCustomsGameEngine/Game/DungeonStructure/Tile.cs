@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.ObjectiveC;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Exceptions;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -230,8 +231,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Character LivingCharacter => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
-        public Item Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
-        public Item Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
+        public Key Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
+        public List<Entity> GetPickableObjects() {
+            var itemsAsEntities = GetItems().Cast<Entity>().ToList();
+            if (Key != null)
+                itemsAsEntities.Add(Key);
+            return itemsAsEntities;
+        }
+        public Trap Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
 
@@ -257,7 +264,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                    EqualityComparer<Map>.Default.Equals(Map, other.Map) &&
                    EqualityComparer<Room>.Default.Equals(Room, other.Room) &&
                    EqualityComparer<Character>.Default.Equals(LivingCharacter, other.LivingCharacter) &&
-                   EqualityComparer<Item>.Default.Equals(Trap, other.Trap);
+                   EqualityComparer<Trap>.Default.Equals(Trap, other.Trap);
         }
 
         public override int GetHashCode()

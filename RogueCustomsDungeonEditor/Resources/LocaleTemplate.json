@@ -396,6 +396,10 @@
     {
       "Key": "StairsGotRevealed",
       "Value": "The stairs have been revealed!"
+    },
+    {
+      "Key": "ItemSteppedText",
+      "Value": "{CharacterName} stepped over {ItemName}."
     }
   ]
 }

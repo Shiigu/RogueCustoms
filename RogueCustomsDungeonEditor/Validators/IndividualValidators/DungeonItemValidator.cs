@@ -74,11 +74,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            if (itemJson.OnStepped != null)
-            {
-                messages.AddRange(ActionValidator.Validate(itemAsInstance.OnStepped, dungeonJson, sampleDungeon));
-            }
-
             if (itemJson.OnDeath != null)
             {
                 messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));

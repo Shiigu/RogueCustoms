@@ -105,11 +105,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                if(item.EntityType == EntityType.Key)
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.KeyGet);
-                else
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.ItemGet);
+                Map.AddSpecialEffectIfPossible(SpecialEffect.ItemGet);
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            }
+        }
+
+        public override void PickKey(Key key, bool informToPlayer)
+        {
+            KeySet.Add(key);
+            key.Owner = this;
+            key.Position = null;
+            key.ExistenceStatus = EntityExistenceStatus.Gone;
+            if (informToPlayer)
+            {
+                Map.AddSpecialEffectIfPossible(SpecialEffect.KeyGet);
+                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
             }
         }
     }

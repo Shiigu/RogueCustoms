@@ -63,7 +63,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var success = false;
             var oldType = t.Type;
 
-            if (t.LivingCharacter == null && t.Trap == null && t.GetItems().Count == 0)
+            if (t.LivingCharacter == null && t.Trap == null && t.GetPickableObjects().Count == 0)
             {
                 t.Type = paramsObject.TileType;
                 success = Map.Tiles.IsFullyConnected(t => t.IsWalkable);
@@ -114,7 +114,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Must have a valid Trap class to spawn
                 return false;
 
-            var trap = Map.AddEntity(paramsObject.Id, 1, Target.Position) as Item;
+            var trap = Map.AddEntity(paramsObject.Id, 1, Target.Position) as Trap;
 
             if (trap == null || trap.Position == null)
                 return false;

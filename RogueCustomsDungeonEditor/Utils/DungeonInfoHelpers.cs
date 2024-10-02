@@ -523,11 +523,9 @@ namespace RogueCustomsDungeonEditor.Utils
                     BackgroundColor = new GameColor(Color.Black),
                     ForegroundColor = new GameColor(Color.MediumPurple)
                 },
-                CanBePickedUp = true,
                 StartsVisible = true,
                 Power = "0",
                 EntityType = "",
-                OnStepped = new(),
                 OnTurnStart = new(),
                 OnAttack = new(),
                 OnAttacked = new(),
@@ -820,8 +818,6 @@ namespace RogueCustomsDungeonEditor.Utils
                     item.OnAttacked = null;
                 if (item.OnUse.IsNullOrEmpty())
                     item.OnUse = null;
-                if (item.OnStepped.IsNullOrEmpty())
-                    item.OnStepped = null;
                 if (item.OnDeath.IsNullOrEmpty())
                     item.OnDeath = null;
             }

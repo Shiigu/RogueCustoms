@@ -9,7 +9,6 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     public abstract class CharacterInfo : ClassInfo
     {
         public string Faction { get; set; }
-        public bool CanBePickedUp { get; set; }
         public bool StartsVisible { get; set; }
         public bool UsesMP { get; set; }
         public bool UsesHunger { get; set; }

@@ -136,7 +136,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
 
                 PlayerCharacter.AlteredStatuses.RemoveAll(als => als.CleanseOnFloorChange);
-                PlayerCharacter.Inventory.RemoveAll(i => i.EntityType == EntityType.Key);
+                PlayerCharacter.KeySet.Clear();
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);

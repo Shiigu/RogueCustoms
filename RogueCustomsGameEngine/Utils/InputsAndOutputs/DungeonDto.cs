@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -75,6 +76,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 .ForEach(e => Entities.Add(new EntityDto(e, map)));
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
             playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
+            playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             LogMessages = dungeon.Messages.TakeLast(Constants.LogMessagesToSend).ToList();
             MessageBoxes = new List<MessageBoxDto>(dungeon.MessageBoxes);
         }
@@ -243,7 +245,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Name { get; private set; }
         public ConsoleRepresentation ConsoleRepresentation { get; private set; }
 
-        public SimpleEntityDto(Entity e)
+        public SimpleEntityDto(Entity? e)
         {
             if (e == null) return;
             Name = e.Name;

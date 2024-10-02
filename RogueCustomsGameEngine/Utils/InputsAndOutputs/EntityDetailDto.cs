@@ -1,4 +1,5 @@
 ﻿using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
         public EntityDetailDto() { }
 
-        public EntityDetailDto(Entity entity)
+        public EntityDetailDto(Entity? entity)
         {
+            if (entity == null) return;
             Name = entity.Name;
             Description = entity.Description;
             ConsoleRepresentation = entity.ConsoleRepresentation;

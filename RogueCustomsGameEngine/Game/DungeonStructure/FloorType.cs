@@ -112,15 +112,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         ConsoleRepresentation = keyType.KeyConsoleRepresentation,
                         Description = "KeyDescription",
                         EntityType = "Key",
-                        CanBePickedUp = true,
                         StartsVisible = true,
                         Power = "0",
                         OnAttacked = new(),
                         OnDeath = new(),
-                        OnStepped = new(),
                         OnTurnStart = new(),
                         OnUse = new(),
-                        OnAttack = new() { ActionHelpers.GetOpenDoorActionForKey(keyType.KeyTypeName) }
+                        OnAttack = new() { Key.GetOpenDoorActionForKey(keyType.KeyTypeName) }
                     };
                     PossibleKeys.KeyTypes.Add(new()
                     {
