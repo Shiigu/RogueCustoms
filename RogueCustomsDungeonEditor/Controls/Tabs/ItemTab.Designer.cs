@@ -46,6 +46,7 @@
             fklblItemNameLocale = new System.Windows.Forms.Button();
             txtItemName = new System.Windows.Forms.TextBox();
             label106 = new System.Windows.Forms.Label();
+            crsItem = new ConsoleRepresentationSelector();
             SuspendLayout();
             // 
             // saeItemOnDeath
@@ -291,11 +292,23 @@
             label106.TabIndex = 227;
             label106.Text = "Default Name";
             // 
+            // crsItem
+            // 
+            crsItem.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.BackgroundColor");
+            crsItem.Character = '\0';
+            crsItem.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.ForegroundColor");
+            crsItem.Location = new System.Drawing.Point(519, 5);
+            crsItem.Name = "crsItem";
+            crsItem.Size = new System.Drawing.Size(211, 83);
+            crsItem.TabIndex = 247;
+            crsItem.PropertyChanged += crsItem_PropertyChanged;
+            // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(crsItem);
             Controls.Add(saeItemOnDeath);
             Controls.Add(saeItemOnTurnStart);
             Controls.Add(saeItemOnAttacked);

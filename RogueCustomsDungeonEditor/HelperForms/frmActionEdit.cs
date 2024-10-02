@@ -899,7 +899,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     foreach (var parameter in info.Params)
                     {
                         var paramData = effectData.Parameters.Find(p => p.InternalName.Equals(parameter.ParamName, StringComparison.InvariantCultureIgnoreCase));
-                        Parameters.Add((paramData.DisplayName, parameter.Value));
+                        if(paramData != null)
+                            Parameters.Add((paramData.DisplayName, parameter.Value));
                     }
                 }
                 else

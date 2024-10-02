@@ -81,15 +81,28 @@ namespace RogueCustomsDungeonEditor.Controls
         {
             InitializeComponent();
 
-            var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
-            var fontName = "PxPlus Tandy1K-II 200L";
-            if (FontHelper.LoadFont(fontPath))
+            // Check if we are in design mode
+            if (DesignMode || this.DesignMode || IsControlInDesignMode(this))
             {
-                var loadedFont = FontHelper.GetFontByName(fontName);
-                if (loadedFont != null)
+                return; // Do nothing in design mode
+            }
+
+            try
+            {
+                var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
+                var fontName = "PxPlus Tandy1K-II 200L";
+                if (FontHelper.LoadFont(fontPath))
                 {
-                    lblConsoleRepresentation.Font = new Font(loadedFont, 24f, FontStyle.Regular);
+                    var loadedFont = FontHelper.GetFontByName(fontName);
+                    if (loadedFont != null)
+                    {
+                        lblConsoleRepresentation.Font = new Font(loadedFont, 24f, FontStyle.Regular);
+                    }
                 }
+            }
+            catch
+            {
+                // Do nothing if the Font can't be found
             }
         }
 
@@ -140,6 +153,24 @@ namespace RogueCustomsDungeonEditor.Controls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             UpdateLabel();
+        }
+
+
+        private bool IsControlInDesignMode(Control control)
+        {
+            if (control == null)
+                return false;
+
+            // Traverse up the control hierarchy to check if any parent is in design mode
+            while (control != null)
+            {
+                if (control.Site != null && control.Site.DesignMode)
+                {
+                    return true;
+                }
+                control = control.Parent;
+            }
+            return false;
         }
     }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

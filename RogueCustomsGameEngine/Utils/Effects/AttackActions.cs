@@ -36,6 +36,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (Rng.RollProbability() > accuracyCheck)
             {
+                Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White);
                 Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
                 return false;
             }
@@ -51,7 +52,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (damageDealt <= 0)
             {
                 Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
-                Map.AppendMessage(paramsObject.NoDamageText, Color.White);
+                Map.AppendMessage(Map.Locale["AttackDealtNoDamageText"], Color.White);
                 return false;
             }
             Faction targetFaction = c.Faction;
@@ -64,7 +65,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 forecolorToUse = Color.DeepSkyBlue;
             if (Rng.RollProbability() <= paramsObject.CriticalHitChance)
             {
-                Map.AppendMessage(paramsObject.CriticalHitText, forecolorToUse);
+                Map.AppendMessage(Map.Locale["AttackCriticalHitText"], forecolorToUse);
                 damageDealt = (int) ActionHelpers.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
             if (c.EntityType == EntityType.Player

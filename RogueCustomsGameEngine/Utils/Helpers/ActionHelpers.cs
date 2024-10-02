@@ -26,8 +26,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class ActionHelpers
     {
-
-
         private readonly static List<string> PropertiesToParse = new()
         {
             "Id",
@@ -230,12 +228,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         case "criticalhitformula":
                             paramsObject.CriticalHitFormula = value;
                             break;
-                        case "criticalhittext":
-                            paramsObject.CriticalHitText = ParseValueForTextDisplay(value);
-                            break;
-                        case "nodamagetext":
-                            paramsObject.NoDamageText = ParseValueForTextDisplay(value);
-                            break;
                     }
                 }
                 catch (FlagNotFoundException)
@@ -254,9 +246,18 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         {
             if (value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is a boolean expression, but is being evaluated as a number.");
-            if (value.IsDiceNotation())
-                return new Dice().Roll(value, new LCGDieRoller(Rng)).Value;
-            return new Expression(value).Eval<decimal>();
+            var valueWithCalculatedDiceExpressions = ReplaceDiceNotationWithValues(value);
+            return new Expression(valueWithCalculatedDiceExpressions).Eval<decimal>();
+        }
+
+        public static string ReplaceDiceNotationWithValues(string expression)
+        {
+            return Regex.Replace(expression, Constants.DiceNotationRegexPattern, match =>
+            {
+                string diceNotation = match.Value;
+                decimal rollResult = new Dice().Roll(diceNotation, new LCGDieRoller(Rng)).Value;
+                return rollResult.ToString();
+            }, RegexOptions.IgnoreCase);
         }
 
         public static bool CalculateBooleanExpression(string value)

@@ -374,6 +374,10 @@
       "Value": "CRITICAL HIT!"
     },
     {
+      "Key": "AttackMissedText",
+      "Value": "But it missed!"
+    },
+    {
       "Key": "AttackDealtNoDamageText",
       "Value": "The attack dealt no damage..."
     },
