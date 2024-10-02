@@ -18,25 +18,27 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
-    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
-    #pragma warning disable S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
-    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
+#pragma warning disable S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+
     public static class DungeonInfoConversionHelpers
     {
         public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, string dungeonJson, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
             var convertedLocales = false;
-            var V10to11Dungeon = dungeon.Version.Equals("1.0") ? JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            }) : null;
-            var V13to14Dungeon = dungeon.Version.Equals("1.3") ? JsonSerializer.Deserialize<DungeonInfoV13>(dungeonJson, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            }) : null;
             while (!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
             {
+                var V10to11Dungeon = dungeon.Version.Equals("1.0") ? JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) : null;
+                var V13to14Dungeon = dungeon.Version.Equals("1.3") ? JsonSerializer.Deserialize<DungeonInfoV13>(dungeonJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) : null;
                 switch (dungeon.Version)
                 {
                     case "1.3":
@@ -700,7 +702,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
             foreach (var npc in dungeon.NPCs)
             {
-                npc.AIType = "Random";
+                npc.AIType = "Default";
                 npc.UsesHunger = false;
                 npc.BaseHunger = 0;
                 npc.HungerHPDegeneration = 0;
@@ -1019,18 +1021,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                         ParamName = "CriticalHitFormula",
                         Value = "{CalculatedDamage}"
                     });
-                if (!effectParams.Any(param => param.ParamName.Equals("CriticalHitText", StringComparison.InvariantCultureIgnoreCase)))
-                    effectParams.Add(new()
-                    {
-                        ParamName = "CriticalHitText",
-                        Value = "AttackCriticalHitText"
-                    });
-                if (!effectParams.Any(param => param.ParamName.Equals("NoDamageText", StringComparison.InvariantCultureIgnoreCase)))
-                    effectParams.Add(new()
-                    {
-                        ParamName = "NoDamageText",
-                        Value = "AttackDealtNoDamageText"
-                    });
+                if (effect.OnFailure != null && effect.OnFailure.EffectName.Equals("PrintText") && effect.OnFailure.Then == null)
+                {
+                    // DealDamage with a only a PrintText as OnFailure are assumed to only be telling the player it failed, so it's removed due to the refactor.
+                    effect.OnFailure = null;
+                }
                 effect.Params = effectParams.ToArray();
             }
             effect.Then?.UpdateDealDamageParametersToV14();
@@ -1044,4 +1039,5 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 #pragma warning restore S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
 #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
 #pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

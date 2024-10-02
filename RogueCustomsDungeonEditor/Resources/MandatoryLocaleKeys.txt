@@ -96,5 +96,6 @@ DoorDescription
 UnlockDoorName
 UnlockDoorDescription
 AttackCriticalHitText
+AttackMissedText
 AttackDealtNoDamageText
 ItemSteppedText

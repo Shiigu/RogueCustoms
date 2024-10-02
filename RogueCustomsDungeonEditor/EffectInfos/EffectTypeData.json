@@ -106,26 +106,6 @@
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
-      },
-      {
-        "InternalName": "CriticalHitText",
-        "DisplayName": "Crit Text",
-        "Description": "What will be printed if the Attack scores a Critical Hit. Can be a Locale.",
-        "ParameterType": "Text",
-        "Default": "AttackCriticalHitText",
-        "ValidValues": [],
-        "Required": true,
-        "OptionalIfFieldsHaveValue": []
-      },
-      {
-        "InternalName": "NoDamageText",
-        "DisplayName": "No Damage Text",
-        "Description": "What will be printed if the Attack lands, but deals no damage. Can be a Locale.",
-        "ParameterType": "Text",
-        "Default": "AttackDealtNoDamageText",
-        "ValidValues": [],
-        "Required": true,
-        "OptionalIfFieldsHaveValue": []
       }
     ]
   },

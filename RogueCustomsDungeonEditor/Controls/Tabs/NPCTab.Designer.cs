@@ -516,7 +516,7 @@
             crsNPC.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.BackgroundColor");
             crsNPC.Character = '\0';
             crsNPC.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.ForegroundColor");
-            crsNPC.Location = new System.Drawing.Point(499, 6);
+            crsNPC.Location = new System.Drawing.Point(500, 5);
             crsNPC.Name = "crsNPC";
             crsNPC.Size = new System.Drawing.Size(211, 83);
             crsNPC.TabIndex = 242;

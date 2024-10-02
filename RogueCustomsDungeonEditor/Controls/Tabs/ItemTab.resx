@@ -151,4 +151,20 @@
         dX/dtfQp6AAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="crsItem.BackgroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAAAAAA/ws=
+</value>
+  </data>
+  <data name="crsItem.ForegroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAADxSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLCBDdWx0dXJlPW5ldXRy
+        YWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAADVSb2d1ZUN1c3RvbXNHYW1lRW5naW5lLlV0aWxzLlJl
+        cHJlc2VudGF0aW9uLkdhbWVDb2xvcgQAAAASPFI+a19fQmFja2luZ0ZpZWxkEjxHPmtfX0JhY2tpbmdG
+        aWVsZBI8Qj5rX19CYWNraW5nRmllbGQSPEE+a19fQmFja2luZ0ZpZWxkAAAAAAICAgICAAAA/////ws=
+</value>
+  </data>
 </root>

@@ -194,7 +194,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (Rooms.Count(r => !r.IsDummy) > 1)
                     ConnectRooms();
                 Parallel.ForEach(Rooms, r => r.CreateTiles());
-                if (Rooms.Count == 1 || Rooms.Count(r => !r.IsDummy) > 1)
+                if ((Rooms.Count == 1 && !Rooms.Any(r => r.IsDummy)) || Rooms.Count(r => !r.IsDummy) > 1)
                 {
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
                     if (success)

@@ -383,10 +383,10 @@
             crsPlayer.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.BackgroundColor");
             crsPlayer.Character = '\0';
             crsPlayer.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.ForegroundColor");
-            crsPlayer.Location = new System.Drawing.Point(499, 5);
+            crsPlayer.Location = new System.Drawing.Point(500, 5);
             crsPlayer.Name = "crsPlayer";
             crsPlayer.Size = new System.Drawing.Size(211, 83);
-            crsPlayer.TabIndex = 148;
+            crsPlayer.TabIndex = 155;
             crsPlayer.PropertyChanged += crsPlayer_PropertyChanged;
             // 
             // PlayerClassTab
@@ -394,6 +394,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(crsPlayer);
             Controls.Add(ssPlayer);
             Controls.Add(sisPlayerStartingInventory);
             Controls.Add(saePlayerOnDeath);
@@ -418,7 +419,6 @@
             Controls.Add(fklblPlayerClassNameLocale);
             Controls.Add(txtPlayerClassName);
             Controls.Add(label27);
-            Controls.Add(crsPlayer);
             Name = "PlayerClassTab";
             Size = new System.Drawing.Size(714, 866);
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).EndInit();
