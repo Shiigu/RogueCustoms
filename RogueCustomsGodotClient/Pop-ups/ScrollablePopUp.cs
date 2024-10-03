@@ -52,11 +52,17 @@ public partial class ScrollablePopUp : Control
         borderStyleBox.BorderColor = borderColor;
         _border.AddThemeStyleboxOverride("panel", borderStyleBox);
 
-        _scrollContainer.ScrollVertical = 0;
+        if (scrollToEnd)
+            CallDeferred(MethodName.ScrollToEnd);
+
         _scrollContainer.GrabFocus();
 
         var screenSize = GetViewportRect().Size;
         Position = (screenSize - _border.Size) / 2;
+    }
+    private void ScrollToEnd()
+    {
+        _scrollContainer.ScrollVertical = int.MaxValue;
     }
 
     public override void _Input(InputEvent @event)

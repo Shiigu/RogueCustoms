@@ -26,6 +26,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ItemDetailDto WeaponInfo { get; set; }
         public ItemDetailDto ArmorInfo { get; set; }
 
+        public List<SimpleInventoryDto> Inventory { get; set; }
+
         public PlayerInfoDto() { }
 
         public PlayerInfoDto(PlayerCharacter character, Map map)
@@ -73,6 +75,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
             WeaponInfo = new ItemDetailDto(character.Weapon);
             ArmorInfo = new ItemDetailDto(character.Armor);
+            Inventory = new List<SimpleInventoryDto>();
+            character.Inventory.ForEach(i => Inventory.Add(new SimpleInventoryDto(i)));
+            character.KeySet.ForEach(i => Inventory.Add(new SimpleInventoryDto(i)));
         }
     }
 
@@ -89,32 +94,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool HasMaxStat { get; set; }
         public bool Visible { get; set; }
         public List<StatModificationDto> Modifications { get; set; }
-    }
-
-    [Serializable]
-    public class StatModificationDto
-    {
-        public string Source { get; set; }
-        public decimal Amount { get; set; }
-
-        public StatModificationDto() { }
-
-        public StatModificationDto(StatModification source, StatDto stat, Map map)
-        {
-            Source = map.Locale[source.Id];
-            if(stat.IsDecimalStat)
-                Amount = source.Amount;
-            else
-                Amount = (int)source.Amount;
-        }
-        public StatModificationDto(string source, decimal amount, StatDto stat, Map map)
-        {
-            Source = source;
-            if (stat.IsDecimalStat)
-                Amount = amount;
-            else
-                Amount = (int)amount;
-        }
     }
 
     [Serializable]
@@ -135,5 +114,24 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ConsoleRepresentation = als.ConsoleRepresentation;
         }
     }
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+
+    [Serializable]
+    public class SimpleInventoryDto
+    {
+        public string Name { get; set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; set; }
+
+        public SimpleInventoryDto(Key k)
+        {
+            Name = k.Name;
+            ConsoleRepresentation = k.ConsoleRepresentation;
+        }
+        public SimpleInventoryDto(Item i)
+        {
+            Name = i.Name;
+            ConsoleRepresentation = i.ConsoleRepresentation;
+        }
+    }
+
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

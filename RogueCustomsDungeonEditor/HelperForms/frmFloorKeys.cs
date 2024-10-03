@@ -133,11 +133,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (!keyType.CanLockStairs && !keyType.CanLockItems)
                     validationErrors.Add("At least one Key Type is set to not lock anything.");
-                if (KeyGenerationInfo.KeyTypes.Any(kt => kt != keyType && kt.KeyTypeName.Equals(keyType)))
+                if (KeyGenerationInfo.KeyTypes.Count(kt => kt.KeyTypeName.Equals(keyType.KeyTypeName)) > 1)
                     validationErrors.Add("At least two Key Types have the same name.");
-                if (KeyGenerationInfo.KeyTypes.Any(kt => kt != keyType && kt.KeyConsoleRepresentation.Equals(keyType.KeyConsoleRepresentation)))
+                if (KeyGenerationInfo.KeyTypes.Count(kt => kt.KeyConsoleRepresentation.Equals(keyType.KeyConsoleRepresentation)) > 1)
                     validationErrors.Add("At least two Key Types have the same Key Appearance.");
-                if (KeyGenerationInfo.KeyTypes.Any(kt => kt != keyType && kt.DoorConsoleRepresentation.Equals(keyType.DoorConsoleRepresentation)))
+                if (KeyGenerationInfo.KeyTypes.Count(kt => kt.DoorConsoleRepresentation.Equals(keyType.DoorConsoleRepresentation))> 1)
                     validationErrors.Add("At least two Key Types have the same Door Appearance.");
             }
             if (!KeyGenerationInfo.KeyTypes.Any() && (nudMaxLockedDoorsPercentage.Value > 0 || nudLockedDoorOdds.Value > 0 || nudKeyInEnemyInventoryOdds.Value > 0))

@@ -216,14 +216,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             btnEditAlgorithm.Enabled = false;
             btnRemoveAlgorithm.Enabled = false;
             btnFloorKeys.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
-            if (!btnFloorKeys.Enabled)
-                btnFloorKeys.Tag = new KeyGenerationInfo()
-                {
-                    KeySpawnInEnemyInventoryOdds = 0,
-                    MaxPercentageOfLockedCandidateRooms = 0,
-                    LockedRoomOdds = 0,
-                    KeyTypes = new()
-                };
+
+            btnFloorKeys.Tag = btnFloorKeys.Enabled ? LoadedFloorGroup.PossibleKeys : new()
+            {
+                KeySpawnInEnemyInventoryOdds = 0,
+                LockedRoomOdds = 0,
+                MaxPercentageOfLockedCandidateRooms = 0,
+                KeyTypes = new()
+            };
         }
 
         private Image ConstructLayoutThumbnail(FloorLayoutGenerationInfo layout)

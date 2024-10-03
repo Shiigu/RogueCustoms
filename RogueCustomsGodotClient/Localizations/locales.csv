@@ -46,6 +46,11 @@ InputBoxPromptText,Elige el nombre para {ClassName},Choose the name for {ClassNa
 InputBoxSingleClassPromptText,Elige el nombre para {ClassName}\n\nPresiona ESC para regresar al menú principal,Choose the name for {ClassName}\n\nPress ESC to return to the main menu
 InputBoxTitleText,Nombre,Name
 InventoryWindowTitleText,Inventario,Inventory
+InventoryWindowStatModifiersHeaderText,Aplica {Situation}:,Applies {Situation}:
+InventoryWindowStatModifierText,{Number} de {StatName},{Number} to {StatName}
+InventoryWindowOnEquipText,al Equipar,on Equip
+InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventory
+InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
 LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English
@@ -85,6 +90,7 @@ PlayerCharacterDetailExperienceToLevelUpText,Experiencia para llegar al Nivel {N
 PlayerCharacterDetailMaxBaseText,Máx. Base,Max Base
 PlayerCharacterDetailStatAlterationText,{Alteration} por {Source},{Alteration} from {Source}
 PlayerCharacterDetailStatsHeader,ESTADÍSTICAS,STATS
+PlayerCharacterDetailInventoryHeader,INVENTARIO,INVENTORY
 PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO
 PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
 PlayerClassNoStartingInventoryText,NADA,NONE
