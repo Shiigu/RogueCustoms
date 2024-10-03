@@ -298,7 +298,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void nudMinFloorLevel_Leave(object sender, EventArgs e)
         {
             // Check if we are in design mode
-            if (DesignMode || this.DesignMode || IsControlInDesignMode(this))
+            if (ActiveDungeon == null || DesignMode || this.DesignMode || IsControlInDesignMode(this))
             {
                 return; // Do nothing in design mode
             }
@@ -308,7 +308,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void nudMaxFloorLevel_Leave(object sender, EventArgs e)
         {
             // Check if we are in design mode
-            if (DesignMode || this.DesignMode || IsControlInDesignMode(this))
+            if (ActiveDungeon == null || DesignMode || this.DesignMode || IsControlInDesignMode(this))
             {
                 return; // Do nothing in design mode
             }

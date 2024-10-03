@@ -412,6 +412,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpItem
             // 
+            tpItem.AutoScroll = true;
             tpItem.Controls.Add(ItemTab);
             tpItem.Location = new System.Drawing.Point(4, 24);
             tpItem.Name = "tpItem";
@@ -424,9 +425,9 @@ namespace RogueCustomsDungeonEditor
             // 
             ItemTab.AutoSize = true;
             ItemTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ItemTab.Location = new System.Drawing.Point(3, 4);
+            ItemTab.Location = new System.Drawing.Point(-5, 1);
             ItemTab.Name = "ItemTab";
-            ItemTab.Size = new System.Drawing.Size(733, 348);
+            ItemTab.Size = new System.Drawing.Size(733, 536);
             ItemTab.TabIndex = 0;
             // 
             // tpTrap

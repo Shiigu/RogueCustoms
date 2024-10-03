@@ -99,3 +99,4 @@ AttackCriticalHitText
 AttackMissedText
 AttackDealtNoDamageText
 ItemSteppedText
+TileIsOccupied

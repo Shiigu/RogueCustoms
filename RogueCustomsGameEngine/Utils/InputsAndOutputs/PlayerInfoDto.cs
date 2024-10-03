@@ -65,7 +65,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     Visible = statIsVisible,
                     Modifications = new List<StatModificationDto>()
                 };
-                stat.Modifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
+                stat.ActiveModifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
+                stat.PassiveModifications.ForEach(pm => statInfo.Modifications.Add(new StatModificationDto(pm.Source, pm.Amount, statInfo, map)));
                 Stats.Add(statInfo);
             }
             AlteredStatuses = new List<AlteredStatusDetailDto>();
@@ -105,6 +106,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Amount = source.Amount;
             else
                 Amount = (int)source.Amount;
+        }
+        public StatModificationDto(string source, decimal amount, StatDto stat, Map map)
+        {
+            Source = source;
+            if (stat.IsDecimalStat)
+                Amount = amount;
+            else
+                Amount = (int)amount;
         }
     }
 

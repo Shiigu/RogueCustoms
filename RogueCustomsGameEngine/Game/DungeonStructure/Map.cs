@@ -1232,7 +1232,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var entitiesInTile = GetEntitiesFromCoordinates(Player.Position);
             if (entitiesInTile.Exists(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
             {
-                AppendMessage(Locale["TilesIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
+                AppendMessage(Locale["TileIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
             }
             else
             {

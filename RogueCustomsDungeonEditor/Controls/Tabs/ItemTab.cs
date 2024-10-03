@@ -14,6 +14,7 @@ using RogueCustomsDungeonEditor.Utils;
 
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 
 namespace RogueCustomsDungeonEditor.Controls.Tabs
 {
@@ -55,6 +56,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             PreviousItemType = "";
             var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
 
+            ItemStatsSheet.Stats = item.StatModifiers;
             if (itemType != null)
             {
                 PreviousItemType = itemType;
@@ -95,7 +97,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItem.StartsVisible = chkItemStartsVisible.Checked;
                 LoadedItem.EntityType = cmbItemType.Text;
                 LoadedItem.Power = txtItemPower.Text;
-
+                LoadedItem.StatModifiers = ItemStatsSheet.Stats;
                 LoadedItem.OnTurnStart = null;
                 LoadedItem.OnAttacked = null;
                 LoadedItem.OnUse = null;
@@ -148,6 +150,19 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void ToggleItemTypeControlsVisibility()
         {
+            lblPower.Text = cmbItemType.Text switch { 
+                "Weapon" => "Weapon Damage",
+                "Armor" => "Armor Mitigation",
+                "Consumable" => "Consumable Power",
+                _ => "Item Power"
+            };
+            lblStatsModifier.Text = cmbItemType.Text switch
+            {
+                "Weapon" => "When Equipped, it modifies:",
+                "Armor" => "When Equipped, it modifies:",
+                "Consumable" => "When in Inventory, it modifies:",
+                _ => string.Empty
+            };
             if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
             {
                 saeItemOnUse.Visible = false;
@@ -187,6 +202,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnAttacked.Action = null;
                 saeItemOnDeath.Visible = false;
                 saeItemOnDeath.Action = null;
+                ItemStatsSheet.Visible = false;
             }
         }
 
@@ -262,3 +278,4 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
     }
 }
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

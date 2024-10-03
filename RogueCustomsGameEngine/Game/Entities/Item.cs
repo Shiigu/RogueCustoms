@@ -19,6 +19,8 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public bool IsEquippable => EntityType == EntityType.Weapon || EntityType == EntityType.Armor;
         public string Power { get; set; }
+        public List<PassiveStatModifier> StatModifiers { get; set; }
+
         public Character Owner { get; set; }
         public ActionWithEffects OnUse { get; set; }
 
@@ -31,6 +33,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             MapClassActions(entityClass.OnAttack, OwnOnAttack);
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
+            StatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
         }
         public void Used(Entity user)
         {

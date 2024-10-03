@@ -209,18 +209,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var modifications = new List<(string StatName, List<StatModification> Modifications)>();
 
-                modifications.Add((HP.Name, HP.Modifications));
-                modifications.Add((HPRegeneration.Name, HPRegeneration.Modifications));
+                modifications.Add((HP.Name, HP.ActiveModifications));
+                modifications.Add((HPRegeneration.Name, HPRegeneration.ActiveModifications));
                 if (UsesMP)
                 {
-                    modifications.Add((MP.Name, MP.Modifications));
-                    modifications.Add((MPRegeneration.Name, MPRegeneration.Modifications));
+                    modifications.Add((MP.Name, MP.ActiveModifications));
+                    modifications.Add((MPRegeneration.Name, MPRegeneration.ActiveModifications));
                 }
-                modifications.Add((Attack.Name, Attack.Modifications));
-                modifications.Add((Defense.Name, Defense.Modifications));
-                modifications.Add((Movement.Name, Movement.Modifications));
-                modifications.Add((Accuracy.Name, Accuracy.Modifications));
-                modifications.Add((Evasion.Name, Evasion.Modifications));
+                modifications.Add((Attack.Name, Attack.ActiveModifications));
+                modifications.Add((Defense.Name, Defense.ActiveModifications));
+                modifications.Add((Movement.Name, Movement.ActiveModifications));
+                modifications.Add((Accuracy.Name, Accuracy.ActiveModifications));
+                modifications.Add((Evasion.Name, Evasion.ActiveModifications));
 
                 return modifications;
             }

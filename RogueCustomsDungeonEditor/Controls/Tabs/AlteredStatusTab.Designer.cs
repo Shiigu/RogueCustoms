@@ -124,7 +124,7 @@
             // 
             saeAlteredStatusOnTurnStart.Action = null;
             saeAlteredStatusOnTurnStart.ActionDescription = "When someone afflicted\r\nby it begins a new turn...  ";
-            saeAlteredStatusOnTurnStart.ActionTypeText = "Turn Start";
+            saeAlteredStatusOnTurnStart.ActionTypeText = "On Statused Turn Start";
             saeAlteredStatusOnTurnStart.AutoSize = true;
             saeAlteredStatusOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeAlteredStatusOnTurnStart.ClassId = null;
