@@ -370,6 +370,7 @@ public partial class InfoPanel : GamePanel
 
     private static void AddPlayerInventoryInfo(StringBuilder innerText, string inventoryHeader, List<SimpleInventoryDto> items)
     {
+        if (items == null || !items.Any()) return;
         innerText.Append("[p] [p]");
         innerText.Append($"[center]{inventoryHeader}[/center]");
         innerText.Append("[p]");
