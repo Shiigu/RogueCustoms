@@ -70,13 +70,16 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly int AIOddsToUseActionsOnSelf;
 
         #endregion
-
         public readonly string Power;
 
         #region Item-only data
-        public ActionWithEffects OnStepped { get; set; }
         public ActionWithEffects OnUse { get; set; }
+        public List<PassiveStatModifier> StatModifiers { get; set; }
+       
+        #endregion
 
+        #region Trap-only data
+        public ActionWithEffects OnStepped { get; set; }
         #endregion
 
         public ActionWithEffects OnTurnStart { get; set; }
@@ -107,6 +110,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 EntityType = entityType ?? (EntityType)Enum.Parse(typeof(EntityType), itemInfo.EntityType);
                 Power = itemInfo.Power;
+                StatModifiers = new();
+                if(itemInfo.StatModifiers != null)
+                {
+                    foreach (var statModifier in itemInfo.StatModifiers)
+                    {
+                        StatModifiers.Add(new PassiveStatModifier
+                        {
+                            Id = statModifier.Id,
+                            Amount = statModifier.Amount
+                        });
+                    }
+                }
                 StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
                 OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart);

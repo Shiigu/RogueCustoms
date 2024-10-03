@@ -48,9 +48,43 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool IsDecimal { get; set; }
         public bool HasMax { get; set; }
         public decimal IncreasePerLevel { get; set; }
-        public List<StatModification> Modifications { get; set; } = new();
+        public List<StatModification> ActiveModifications { get; set; } = new();
+        public List<(string Source, decimal Amount)> PassiveModifications
+        {
+            get
+            {
+                var passiveModifications = new List<(string Source, decimal Amount)>();
 
-        public decimal TotalModificationAmount => Modifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
+                if (Character.Weapon != null)
+                {
+                    var weaponModification = Character.Weapon.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
+                    if (weaponModification != null)
+                        passiveModifications.Add((Character.Weapon.Name, weaponModification.Amount));
+                }
+                if(Character.Armor != null)
+                {
+                    var armorModification = Character.Armor.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
+                    if (armorModification != null)
+                        passiveModifications.Add((Character.Armor.Name, armorModification.Amount));
+                }
+                Character.Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable)
+                    {
+                        var itemModification = i.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
+                        if (itemModification != null)
+                            passiveModifications.Add((i.Name, itemModification.Amount));
+                    }
+                });
+
+                return passiveModifications;
+            }
+        }
+
+        public decimal TotalActiveModificationAmount => ActiveModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
+        public decimal TotalPassiveModificationAmount => PassiveModifications.Sum(pm => pm.Amount);
+        public decimal TotalModificationAmount => TotalActiveModificationAmount + TotalPassiveModificationAmount;
+
         public decimal BaseAfterModifications
         {
             get

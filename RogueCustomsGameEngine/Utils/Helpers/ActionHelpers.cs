@@ -107,31 +107,31 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                             switch (value.ToLowerInvariant())
                             {
                                 case "maxhp":
-                                    paramsObject.StatAlterationList = c.HP.Modifications;
+                                    paramsObject.StatAlterationList = c.HP.ActiveModifications;
                                     break;
                                 case "maxmp":
-                                    paramsObject.StatAlterationList = c.MP.Modifications;
+                                    paramsObject.StatAlterationList = c.MP.ActiveModifications;
                                     break;
                                 case "attack":
-                                    paramsObject.StatAlterationList = c.Attack.Modifications;
+                                    paramsObject.StatAlterationList = c.Attack.ActiveModifications;
                                     break;
                                 case "defense":
-                                    paramsObject.StatAlterationList = c.Defense.Modifications;
+                                    paramsObject.StatAlterationList = c.Defense.ActiveModifications;
                                     break;
                                 case "movement":
-                                    paramsObject.StatAlterationList = c.Movement.Modifications;
+                                    paramsObject.StatAlterationList = c.Movement.ActiveModifications;
                                     break;
                                 case "hpregeneration":
-                                    paramsObject.StatAlterationList = c.HPRegeneration.Modifications;
+                                    paramsObject.StatAlterationList = c.HPRegeneration.ActiveModifications;
                                     break;
                                 case "mpregeneration":
-                                    paramsObject.StatAlterationList = c.MPRegeneration.Modifications;
+                                    paramsObject.StatAlterationList = c.MPRegeneration.ActiveModifications;
                                     break;
                                 case "accuracy":
-                                    paramsObject.StatAlterationList = c.Accuracy.Modifications;
+                                    paramsObject.StatAlterationList = c.Accuracy.ActiveModifications;
                                     break;
                                 case "evasion":
-                                    paramsObject.StatAlterationList = c.Evasion.Modifications;
+                                    paramsObject.StatAlterationList = c.Evasion.ActiveModifications;
                                     break;
                             }
                             break;

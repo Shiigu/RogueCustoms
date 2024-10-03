@@ -301,10 +301,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             target.HP.Current = target.MaxHP;
                             if(target.MP != null)
                                 target.MP.Current = target.MaxMP;
-                            var defenseTestModification = target.Defense.Modifications.Find(dm => dm.Id == "defenseTest");
+                            var defenseTestModification = target.Defense.ActiveModifications.Find(dm => dm.Id == "defenseTest");
                             if (defenseTestModification == null)
                             {
-                                target.Defense.Modifications.Add(new StatModification
+                                target.Defense.ActiveModifications.Add(new StatModification
                                 {
                                     Id = "defenseTest",
                                     Amount = target.Defense.Base * -1, // Defense is turned into 0
@@ -332,7 +332,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 {
                                     amountOfFailures++;
                                 }
-                                defenseTestModification = target.Defense.Modifications.Find(dm => dm.Id == "defenseTest");
+                                defenseTestModification = target.Defense.ActiveModifications.Find(dm => dm.Id == "defenseTest");
                                 if (defenseTestModification != null)
                                     defenseTestModification.Amount++;
                                 if (target.HP.Current <= 0)
