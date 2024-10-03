@@ -67,19 +67,19 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 // Attempted to heal Target when it's not a Character.
                 return false;
-            if (t.HP >= t.MaxHP)
+            if (t.HP.Current >= t.MaxHP)
                 return false;
-            var healAmount = Math.Min(t.MaxHP - t.HP, paramsObject.Power);
+            var healAmount = Math.Min(t.MaxHP - t.HP.Current, paramsObject.Power);
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 healAmount = 1;
             healAmount = (int)healAmount;
             output = (int)healAmount;
-            t.HP = Math.Min(t.MaxHP, t.HP + healAmount);
+            t.HP.Current = Math.Min(t.MaxHP, t.HP.Current + healAmount);
 
             if (t.EntityType == EntityType.Player
                 || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
             {
-                if (t.HP == t.MaxHP)
+                if (t.MaxHP == t.HP.BaseAfterModifications)
                     Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = t.Name }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = t.Name, HealAmount = healAmount.ToString(), CharacterHPStat = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue);
@@ -160,40 +160,40 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 case "hp":
                 case "maxhp":
-                    statValue = statAlterationTarget.HP;
+                    statValue = statAlterationTarget.HP.Current;
                     statCap = Constants.RESOURCE_STAT_CAP;
                     break;
                 case "mp":
                 case "maxmp":
-                    statValue = statAlterationTarget.MP;
+                    statValue = statAlterationTarget.MP.Current;
                     statCap = Constants.RESOURCE_STAT_CAP;
                     break;
                 case "attack":
-                    statValue = statAlterationTarget.Attack;
+                    statValue = statAlterationTarget.Attack.Current;
                     statCap = Constants.NORMAL_STAT_CAP;
                     break;
                 case "defense":
-                    statValue = statAlterationTarget.Defense;
+                    statValue = statAlterationTarget.Defense.Current;
                     statCap = Constants.NORMAL_STAT_CAP;
                     break;
                 case "movement":
-                    statValue = statAlterationTarget.Movement;
+                    statValue = statAlterationTarget.Movement.Current;
                     statCap = Constants.MOVEMENT_STAT_CAP;
                     break;
                 case "hpregeneration":
-                    statValue = statAlterationTarget.HPRegeneration;
+                    statValue = statAlterationTarget.HPRegeneration.Current;
                     statCap = Constants.REGEN_STAT_CAP;
                     break;
                 case "mpregeneration":
-                    statValue = statAlterationTarget.MPRegeneration;
+                    statValue = statAlterationTarget.MPRegeneration.Current;
                     statCap = Constants.REGEN_STAT_CAP;
                     break;
                 case "accuracy":
-                    statValue = statAlterationTarget.Accuracy;
+                    statValue = statAlterationTarget.Accuracy.Current;
                     statCap = Constants.MAX_ACCURACY_CAP;
                     break;
                 case "evasion":
-                    statValue = statAlterationTarget.Evasion;
+                    statValue = statAlterationTarget.Evasion.Current;
                     statCap = Constants.MAX_EVASION_CAP;
                     break;
                 default:
@@ -471,20 +471,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character)
                 // Attempted to recover Target's MP when it's not a Character.
                 return false;
-            if (!paramsObject.Target.UsesMP) return false;
-            if (paramsObject.Target.MP >= paramsObject.Target.MaxMP)
+            if (!paramsObject.Target.UsesMP || paramsObject.Target.MP == null) return false;
+            if (paramsObject.Target.MP.Current >= paramsObject.Target.MP.BaseAfterModifications)
                 return false;
-            var replenishAmount = Math.Min(paramsObject.Target.MaxMP - paramsObject.Target.MP, paramsObject.Power);
+            var replenishAmount = Math.Min(paramsObject.Target.MP.BaseAfterModifications - paramsObject.Target.MP.Current, paramsObject.Power);
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 replenishAmount = 1;
             replenishAmount = (int)replenishAmount;
             output = (int)replenishAmount;
-            paramsObject.Target.MP = Math.Min(paramsObject.Target.MaxMP, paramsObject.Target.MP + replenishAmount);
+            paramsObject.Target.MP.Current = Math.Min(paramsObject.Target.MP.BaseAfterModifications, paramsObject.Target.MP.Current + replenishAmount);
 
             if (paramsObject.Target.EntityType == EntityType.Player
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
-                if (paramsObject.Target.MP == paramsObject.Target.MaxMP)
+                if (paramsObject.Target.MP == paramsObject.Target.MP.BaseAfterModifications)
                     Map.AppendMessage(Map.Locale["CharacterRecoversAllMP"].Format(new { CharacterName = paramsObject.Target.Name, CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeMP"].Format(new { CharacterName = paramsObject.Target.Name, ReplenishAmount = replenishAmount.ToString(), CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
@@ -501,20 +501,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 // Attempted to recover Target's Hunger when it's not a Character.
                 return false;
-            if (!t.UsesHunger) return false;
-            if (t.Hunger >= t.MaxHunger)
+            if (!t.UsesHunger || t.Hunger == null) return false;
+            if (t.Hunger.Current >= t.Hunger.Base)
                 return false;
-            var replenishAmount = Math.Min(t.MaxHunger - t.Hunger, paramsObject.Power);
+            var replenishAmount = Math.Min(t.Hunger.Base - t.Hunger.Current, paramsObject.Power);
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 replenishAmount = 1;
             replenishAmount = (int)replenishAmount;
             output = (int)replenishAmount;
-            t.Hunger = Math.Min(t.MaxHunger, t.Hunger + replenishAmount);
+            t.Hunger = Math.Min(t.Hunger.Base, t.Hunger + replenishAmount);
 
             if (t.EntityType == EntityType.Player
                 || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
             {
-                if (t.Hunger == t.MaxHunger)
+                if (t.Hunger.Current == t.Hunger.Base)
                     Map.AppendMessage(Map.Locale["CharacterRecoversAllHunger"].Format(new { CharacterName = t.Name, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeHunger"].Format(new { CharacterName = t.Name, ReplenishAmount = replenishAmount.ToString(), CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);

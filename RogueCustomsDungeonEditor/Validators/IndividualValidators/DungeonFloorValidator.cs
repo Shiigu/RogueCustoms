@@ -281,8 +281,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             for (int i = 0; i < 100; i++)
             {
-                floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-                var (MapGenerationSuccess, KeyGenerationSuccess) = floorAsInstance.Generate();
+                var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                var (MapGenerationSuccess, KeyGenerationSuccess) = generationAttempt.DebugGenerate();
                 if (MapGenerationSuccess)
                 {
                     mapSuccesses++;

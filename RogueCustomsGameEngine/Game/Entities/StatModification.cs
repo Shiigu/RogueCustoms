@@ -6,8 +6,6 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class StatModification
     {
-        // TO DO: Include stat name for when the stat themselves become customizable
-
         // Indicates which action, item or whatever created this alteration. Used for "CanBeStacked" checks.
         public string Id { get; set; }
 

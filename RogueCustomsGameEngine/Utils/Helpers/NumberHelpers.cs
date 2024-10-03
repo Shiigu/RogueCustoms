@@ -28,5 +28,13 @@
                 return max;
             return num;
         }
+        public static decimal Clamp(this decimal num, decimal min, decimal max)
+        {
+            if (num < min)
+                return min;
+            if (num > max)
+                return max;
+            return num;
+        }
     }
 }
