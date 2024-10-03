@@ -13,6 +13,7 @@ using System.Runtime.Serialization;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Drawing;
 using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
+using System.Globalization;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -241,6 +242,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             descriptionWithUsageNotes.AppendLine();
 
+            var imperfectAccuracyParam = FindFirstImperfectAccuracyParameter(Effect);
+
+            if (!string.IsNullOrWhiteSpace(imperfectAccuracyParam))
+            {
+                descriptionWithUsageNotes.Append($"\n\n{Locale["CharacterAccuracyStat"]}: {imperfectAccuracyParam:0}%");
+            }
+
             if (MaximumRange == 0)
             {
                 descriptionWithUsageNotes.Append('\n').Append(Locale["SelfRange"]);
@@ -330,7 +338,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
 
-                if (sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
+                if ((sourceAsCharacter.MP == null && MPCost > 0) || sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                         descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
@@ -352,6 +360,33 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
 
             return descriptionWithUsageNotes.ToString();
+        }
+
+        private string FindFirstImperfectAccuracyParameter(Effect effect)
+        {
+            if (effect == null) return string.Empty;
+            var accuracyParam = string.Empty;
+
+            foreach (var param in effect.Params)
+            {
+                if (param.ParamName.Equals("Accuracy", StringComparison.InvariantCultureIgnoreCase) && decimal.TryParse(param.Value, out decimal paramValue))
+                {
+                    if(paramValue < 100)
+                    {
+                        accuracyParam = param.Value;
+                        break;
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(accuracyParam))
+                accuracyParam = FindFirstImperfectAccuracyParameter(effect.Then);
+            if (string.IsNullOrWhiteSpace(accuracyParam))
+                accuracyParam = FindFirstImperfectAccuracyParameter(effect.OnSuccess);
+            if (string.IsNullOrWhiteSpace(accuracyParam))
+                accuracyParam = FindFirstImperfectAccuracyParameter(effect.OnFailure);
+
+            return accuracyParam;
         }
 
         public bool ChecksCondition(Character character, Character target)

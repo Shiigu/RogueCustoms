@@ -111,6 +111,7 @@ public partial class InfoPanel : GamePanel
         AddPlayerAlteredStatusesInfo(innerText, playerInfo.AlteredStatuses);
         AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedWeaponHeader"), playerInfo.WeaponInfo);
         AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedArmorHeader"), playerInfo.ArmorInfo);
+        AddPlayerInventoryInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailInventoryHeader"), playerInfo.Inventory);
 
         Parent?.CreateScrollablePopup(titleText, innerText.ToString(), new Color { R8 = 200, G8 = 100, B8 = 200, A8 = 255 }, false);
     }
@@ -365,6 +366,17 @@ public partial class InfoPanel : GamePanel
         innerText.Append($"[center]{item.Name} - {item.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]");
         innerText.Append("[p] [p]");
         innerText.Append(item.Description.ToBbCodeAppropriateString());
+    }
+
+    private static void AddPlayerInventoryInfo(StringBuilder innerText, string inventoryHeader, List<SimpleInventoryDto> items)
+    {
+        innerText.Append("[p] [p]");
+        innerText.Append($"[center]{inventoryHeader}[/center]");
+        innerText.Append("[p]");
+        foreach (var item in items)
+        {
+            innerText.Append($"[p]{item.ConsoleRepresentation.ToBbCodeRepresentation()} - {item.Name}");
+        }
     }
 
     #endregion

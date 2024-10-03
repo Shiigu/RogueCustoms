@@ -274,6 +274,32 @@ public partial class PlayerSelectItem : Control
         {
             _itemDescriptionLabel.AppendText($"{selectedItem.Name}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
             _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
+
+            if(!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{selectedItem.PowerName}: {selectedItem.Power}");
+            }
+
+            if (selectedItem.StatModifications.Any())
+            {
+                var situationText = selectedItem.IsEquippable ? TranslationServer.Translate("InventoryWindowOnEquipText") : TranslationServer.Translate("InventoryWindowOnCarryText");
+                _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowStatModifiersHeaderText").ToString().Format(new { Situation = situationText })}[/color]");
+                foreach (var modifiedStat in selectedItem.StatModifications)
+                {
+                    var amountString = modifiedStat.Amount.ToString("+0.####;-0.####") + (modifiedStat.IsPercentage ? "%" : "");
+                    _itemDescriptionLabel.AppendText($"[p][color=#8B83D9]   {TranslationServer.Translate("InventoryWindowStatModifierText").ToString().Format(new { Number = amountString, StatName = modifiedStat.Name })}[/color]");
+                }
+            }
+
+            if (selectedItem.OnAttackActions.Any())
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowActionsHeaderText")}[/color]");
+                foreach (var action in selectedItem.OnAttackActions)
+                {
+                    _itemDescriptionLabel.AppendText($"[p][color=#8B83D9]   {action}[/color]");
+                }
+            }
+
             if (selectedItem.IsInFloor)
             {
                 _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("FloorItemDescriptionText")}");

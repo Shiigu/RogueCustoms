@@ -188,7 +188,7 @@
             // 
             nudLockedDoorOdds.Location = new System.Drawing.Point(157, 275);
             nudLockedDoorOdds.Name = "nudLockedDoorOdds";
-            nudLockedDoorOdds.Size = new System.Drawing.Size(33, 23);
+            nudLockedDoorOdds.Size = new System.Drawing.Size(40, 23);
             nudLockedDoorOdds.TabIndex = 72;
             // 
             // label5
@@ -196,15 +196,15 @@
             label5.AutoSize = true;
             label5.Location = new System.Drawing.Point(23, 277);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(356, 15);
+            label5.Size = new System.Drawing.Size(362, 15);
             label5.TabIndex = 71;
-            label5.Text = "A candidate Room has a             % chance of having Locked Doors.";
+            label5.Text = "A candidate Room has a               % chance of having Locked Doors.";
             // 
             // nudKeyInEnemyInventoryOdds
             // 
             nudKeyInEnemyInventoryOdds.Location = new System.Drawing.Point(92, 304);
             nudKeyInEnemyInventoryOdds.Name = "nudKeyInEnemyInventoryOdds";
-            nudKeyInEnemyInventoryOdds.Size = new System.Drawing.Size(33, 23);
+            nudKeyInEnemyInventoryOdds.Size = new System.Drawing.Size(40, 23);
             nudKeyInEnemyInventoryOdds.TabIndex = 76;
             // 
             // label1
@@ -212,9 +212,9 @@
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(23, 306);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(786, 15);
+            label1.Size = new System.Drawing.Size(795, 15);
             label1.TabIndex = 75;
-            label1.Text = "Keys have a             % chance of spawning in the Inventory of a visible Enemy NPC that spawned on the first turn (keys don't occupy inventory slots).";
+            label1.Text = "Keys have a                % chance of spawning in the Inventory of a visible Enemy NPC that spawned on the first turn (keys don't occupy inventory slots).";
             // 
             // flpKeySettings
             // 
