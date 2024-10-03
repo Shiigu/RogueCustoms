@@ -51,101 +51,52 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanTakeAction { get; set; }
         public bool UsesMP { get; set; }
         public bool UsesHunger { get; set; }
-        public int HP { get; set; }
-
-        public readonly int BaseMaxHP;
-        public readonly decimal MaxHPIncreasePerLevel;
-        public List<StatModification> MaxHPModifications { get; set; }
-        public int TotalMaxHPIncrements => MaxHPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int MaxHP => Math.Min(BaseMaxHP + (int)(MaxHPIncreasePerLevel * (Level - 1)) + TotalMaxHPIncrements, Constants.RESOURCE_STAT_CAP);
-        public int MP { get; set; }
-
-        public readonly int BaseMaxMP;
-        public readonly decimal MaxMPIncreasePerLevel;
-        public List<StatModification> MaxMPModifications { get; set; }
-        public int TotalMaxMPIncrements => MaxMPModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int MaxMP => Math.Min(BaseMaxMP + (int)(MaxMPIncreasePerLevel * (Level - 1)) + TotalMaxMPIncrements, Constants.RESOURCE_STAT_CAP);
-
-        public readonly int BaseAttack;
-        public readonly decimal AttackIncreasePerLevel;
-        public List<StatModification> AttackModifications { get; set; }
-        public int TotalAttackIncrements => AttackModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int Attack => Math.Min(BaseAttack + (int)(AttackIncreasePerLevel * (Level - 1)) + TotalAttackIncrements, Constants.NORMAL_STAT_CAP);
+        public Stat HP { get; set; }
+        public decimal MaxHP => HP.BaseAfterModifications;
+        public Stat HPRegeneration { get; set; }
+        public Stat MP { get; set; }
+        public decimal MaxMP => MP != null ? MP.BaseAfterModifications : 0;
+        public Stat MPRegeneration { get; set; }
+        public Stat Hunger { get; set; }
+        public decimal MaxHunger => Hunger != null ? Hunger.BaseAfterModifications : 0;
+        public Stat HungerDegeneration { get; set; }
+        public bool IsStarving => Hunger.Current <= 0;
+        public Stat Attack { get; set; }
         public string Damage
         {
             get
             {
-                if (Attack >= 0)
-                    return $"{Weapon.Power}+{Attack}";
-                return $"{Weapon.Power}-{Math.Abs(Attack)}";
+                if (Attack.BaseAfterModifications >= 0)
+                    return $"{Weapon.Power}+{Attack.BaseAfterModifications}";
+                return $"{Weapon.Power}-{Math.Abs((int)Attack.BaseAfterModifications)}";
             }
         }
 
-        public readonly int BaseDefense;
-        public readonly decimal DefenseIncreasePerLevel;
-        public List<StatModification> DefenseModifications { get; set; }
-        public int TotalDefenseIncrements => DefenseModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int Defense => Math.Min(BaseDefense + (int)(DefenseIncreasePerLevel * (Level - 1)) + TotalDefenseIncrements, Constants.NORMAL_STAT_CAP);
+        public Stat Defense { get; set; }
         public string Mitigation
         {
             get
             {
-                if (Defense >= 0)
-                    return $"{Armor.Power}+{Defense}";
-                return $"{Armor.Power}-{Math.Abs(Defense)}";
+                if (Defense.BaseAfterModifications >= 0)
+                    return $"{Armor.Power}+{Defense.BaseAfterModifications}";
+                return $"{Armor.Power}-{Math.Abs((int)Defense.BaseAfterModifications)}";
             }
         }
 
-        public readonly int BaseMovement;
-        public readonly decimal MovementIncreasePerLevel;
-
-        public List<StatModification> MovementModifications { get; set; }
-        public int TotalMovementIncrements => MovementModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int Movement => Math.Min(BaseMovement + (int)(MovementIncreasePerLevel * (Level - 1)) + TotalMovementIncrements, Constants.MOVEMENT_STAT_CAP);
-
+        public Stat Movement { get; set; }
         public int RemainingMovement { get; set; }
-        public bool TookAction { get; set; }
+        public Stat Accuracy { get; set; }
+        public Stat Evasion { get; set; }
 
-        public readonly decimal BaseHPRegeneration;
-        public readonly decimal HPRegenerationIncreasePerLevel;
-        public List<StatModification> HPRegenerationModifications { get; set; }
-        public decimal TotalHPRegenerationIncrements => HPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal HPRegeneration => Math.Min(BaseHPRegeneration + (HPRegenerationIncreasePerLevel * (Level - 1)) + TotalHPRegenerationIncrements, Constants.REGEN_STAT_CAP);
-        private decimal CarriedHPRegeneration;
+        private List<Stat> BasicStats => new() { HP, HPRegeneration, MP, MPRegeneration, Hunger, HungerDegeneration, Attack, Defense, Movement, Accuracy, Evasion };
 
-        public readonly decimal BaseMPRegeneration;
-        public readonly decimal MPRegenerationIncreasePerLevel;
-        public List<StatModification> MPRegenerationModifications { get; set; }
-        public decimal TotalMPRegenerationIncrements => MPRegenerationModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal MPRegeneration => Math.Min(BaseMPRegeneration + (MPRegenerationIncreasePerLevel * (Level - 1)) + TotalMPRegenerationIncrements, Constants.REGEN_STAT_CAP);
-        private decimal CarriedMPRegeneration;
+        public List<Stat> Stats => BasicStats.Where(s => s != null).ToList();
 
         public readonly int BaseSightRange;
         public int TotalSightRangeIncrements { get; set; } = 0;
         public int SightRange => BaseSightRange + TotalSightRangeIncrements;
 
-        public int Hunger { get; set; }
-
-        public readonly int BaseMaxHunger;
-        public List<StatModification> MaxHungerModifications { get; set; }
-        public int TotalMaxHungerIncrements => MaxHungerModifications.Where(a => a.RemainingTurns != 0).Sum(a => (int)a.Amount);
-        public int MaxHunger => (int) Math.Min(BaseMaxHunger + TotalMaxHungerIncrements, Constants.REGEN_STAT_CAP);
-
-        public readonly decimal HungerHPDegeneration;
-        private decimal CarriedHungerDegeneration;
-
-        public bool IsStarving => UsesHunger && Hunger <= 0;
-
-        public readonly int BaseAccuracy;
-        public List<StatModification> AccuracyModifications { get; set; }
-        public decimal TotalAccuracyIncrements => AccuracyModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal Accuracy => Math.Max(Constants.MIN_ACCURACY_CAP, Math.Min(Constants.MAX_ACCURACY_CAP, BaseAccuracy + TotalAccuracyIncrements));
-
-        public readonly int BaseEvasion;
-        public List<StatModification> EvasionModifications { get; set; }
-        public decimal TotalEvasionIncrements => EvasionModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
-        public decimal Evasion => Math.Max(Constants.MIN_EVASION_CAP, Math.Min(Constants.MAX_EVASION_CAP, BaseEvasion + TotalEvasionIncrements));
-
+        public bool TookAction { get; set; }
         public List<AlteredStatus> AlteredStatuses { get; set; }
 
         public readonly int InventorySize;
@@ -258,19 +209,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var modifications = new List<(string StatName, List<StatModification> Modifications)>();
 
-                modifications.Add((Map.Locale["CharacterMaxHPStat"], MaxHPModifications));
-                if(UsesMP)
-                    modifications.Add((Map.Locale["CharacterMaxMPStat"], MaxMPModifications));
-                modifications.Add((Map.Locale["CharacterAttackStat"], AttackModifications));
-                modifications.Add((Map.Locale["CharacterDefenseStat"], DefenseModifications));
-                modifications.Add((Map.Locale["CharacterMovementStat"], MovementModifications));
-                modifications.Add((Map.Locale["CharacterHPRegenerationStat"], HPRegenerationModifications));
-                modifications.Add((Map.Locale["CharacterAccuracyStat"], AccuracyModifications));
-                modifications.Add((Map.Locale["CharacterEvasionStat"], EvasionModifications));
-                if (UsesMP) 
-                    modifications.Add((Map.Locale["CharacterMPRegenerationStat"], MPRegenerationModifications));
-                if (UsesHunger)
-                    modifications.Add((Map.Locale["CharacterHungerStat"], MaxHungerModifications));
+                modifications.Add((HP.Name, HP.Modifications));
+                modifications.Add((HPRegeneration.Name, HPRegeneration.Modifications));
+                if (UsesMP)
+                {
+                    modifications.Add((MP.Name, MP.Modifications));
+                    modifications.Add((MPRegeneration.Name, MPRegeneration.Modifications));
+                }
+                modifications.Add((Attack.Name, Attack.Modifications));
+                modifications.Add((Defense.Name, Defense.Modifications));
+                modifications.Add((Movement.Name, Movement.Modifications));
+                modifications.Add((Accuracy.Name, Accuracy.Modifications));
+                modifications.Add((Evasion.Name, Evasion.Modifications));
 
                 return modifications;
             }
@@ -283,27 +233,171 @@ namespace RogueCustomsGameEngine.Game.Entities
             StartingArmorId = entityClass.StartingArmorId;
             UsesMP = entityClass.UsesMP;
             UsesHunger = entityClass.UsesHunger;
-            HP = entityClass.BaseHP;
-            BaseMaxHP = entityClass.BaseHP;
-            MaxHPIncreasePerLevel = entityClass.MaxHPIncreasePerLevel;
-            MP = entityClass.BaseMP;
-            BaseMaxMP = entityClass.BaseMP;
-            MaxMPIncreasePerLevel = entityClass.MaxMPIncreasePerLevel;
-            BaseAttack = entityClass.BaseAttack;
-            AttackIncreasePerLevel = entityClass.AttackIncreasePerLevel;
-            BaseDefense = entityClass.BaseDefense;
-            DefenseIncreasePerLevel = entityClass.DefenseIncreasePerLevel;
-            BaseMovement = entityClass.BaseMovement;
-            MovementIncreasePerLevel = entityClass.MovementIncreasePerLevel;
-            BaseHPRegeneration = entityClass.BaseHPRegeneration;
-            HPRegenerationIncreasePerLevel = entityClass.HPRegenerationIncreasePerLevel;
-            BaseMPRegeneration = entityClass.BaseMPRegeneration;
-            MPRegenerationIncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel;
+            HP = new()
+            {
+                Id = "HP",
+                StatType = StatType.HP,
+                Name = Map.Locale["CharacterHPStat"],
+                Base = entityClass.BaseHP,
+                Current = entityClass.BaseHP,
+                HasMax = true,
+                IsDecimal = false,
+                IncreasePerLevel = entityClass.MaxHPIncreasePerLevel,
+                MinCap = 0,
+                MaxCap = Constants.RESOURCE_STAT_CAP,
+                Character = this
+            };
+            HPRegeneration = new()
+            {
+                Id = "HPRegeneration",
+                StatType = StatType.Regeneration,
+                Name = Map.Locale["CharacterHPRegenerationStat"],
+                Base = entityClass.BaseHPRegeneration,
+                Current = entityClass.BaseHPRegeneration,
+                HasMax = false,
+                IsDecimal = true,
+                IncreasePerLevel = entityClass.HPRegenerationIncreasePerLevel,
+                MinCap = 0,
+                MaxCap = Constants.REGEN_STAT_CAP,
+                Character = this,
+                RegenerationTarget = HP
+            };
+            if(UsesMP)
+            {
+                MP = new()
+                {
+                    Id = "MP",
+                    StatType = StatType.MP,
+                    Name = Map.Locale["CharacterMPStat"],
+                    Base = entityClass.BaseMP,
+                    Current = entityClass.BaseMP,
+                    HasMax = true,
+                    IsDecimal = false,
+                    IncreasePerLevel = entityClass.MaxMPIncreasePerLevel,
+                    MinCap = 0,
+                    MaxCap = Constants.RESOURCE_STAT_CAP,
+                    Character = this
+                };
+                MPRegeneration = new()
+                {
+                    Id = "MPRegeneration",
+                    StatType = StatType.Regeneration,
+                    Name = Map.Locale["CharacterMPRegenerationStat"],
+                    Base = entityClass.BaseMPRegeneration,
+                    Current = entityClass.BaseMPRegeneration,
+                    HasMax = false,
+                    IsDecimal = true,
+                    IncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel,
+                    MinCap = 0,
+                    MaxCap = Constants.REGEN_STAT_CAP,
+                    Character = this,
+                    RegenerationTarget = MP
+                };
+            }
+            if (UsesHunger)
+            {
+                Hunger = new()
+                {
+                    Id = "Hunger",
+                    StatType = StatType.Hunger,
+                    Name = Map.Locale["CharacterHungerStat"],
+                    Base = entityClass.BaseHunger,
+                    Current = entityClass.BaseHunger,
+                    HasMax = true,
+                    IsDecimal = false,
+                    IncreasePerLevel = 0,
+                    MinCap = 0,
+                    MaxCap = Constants.RESOURCE_STAT_CAP,
+                    Character = this
+                };
+                HungerDegeneration = new()
+                {
+                    Id = "HungerRegeneration",
+                    StatType = StatType.Regeneration,
+                    Name = Map.Locale["CharacterHungerRegenerationStat"],
+                    Base = 0,
+                    Current = 0,
+                    HasMax = false,
+                    IsDecimal = true,
+                    IncreasePerLevel = 0,
+                    MinCap = 0,
+                    MaxCap = Constants.REGEN_STAT_CAP,
+                    Character = this,
+                    RegenerationTarget = Hunger
+                };
+            }
+            Attack = new()
+            {
+                Id = "Attack",
+                StatType = StatType.Attack,
+                Name = Map.Locale["CharacterAttackStat"],
+                Base = entityClass.BaseAttack,
+                Current = entityClass.BaseAttack,
+                HasMax = false,
+                IsDecimal = false,
+                IncreasePerLevel = entityClass.AttackIncreasePerLevel,
+                MinCap = 0,
+                MaxCap = Constants.NORMAL_STAT_CAP,
+                Character = this
+            };
+            Defense = new()
+            {
+                Id = "Defense",
+                StatType = StatType.Defense,
+                Name = Map.Locale["CharacterDefenseStat"],
+                Base = entityClass.BaseDefense,
+                Current = entityClass.BaseDefense,
+                HasMax = false,
+                IsDecimal = false,
+                IncreasePerLevel = entityClass.DefenseIncreasePerLevel,
+                MinCap = 0,
+                MaxCap = Constants.NORMAL_STAT_CAP,
+                Character = this
+            };
+            Movement = new()
+            {
+                Id = "Movement",
+                StatType = StatType.Movement,
+                Name = Map.Locale["CharacterMovementStat"],
+                Base = entityClass.BaseMovement,
+                Current = entityClass.BaseMovement,
+                HasMax = false,
+                IsDecimal = false,
+                IncreasePerLevel = entityClass.MovementIncreasePerLevel,
+                MinCap = 0,
+                MaxCap = Constants.MOVEMENT_STAT_CAP,
+                Character = this
+            };
+            Accuracy = new()
+            {
+                Id = "Accuracy",
+                StatType = StatType.Accuracy,
+                Name = Map.Locale["CharacterAccuracyStat"],
+                Base = entityClass.BaseAccuracy,
+                Current = entityClass.BaseAccuracy,
+                HasMax = false,
+                IsDecimal = false,
+                IncreasePerLevel = 0,
+                MinCap = Constants.MIN_ACCURACY_CAP,
+                MaxCap = Constants.MAX_ACCURACY_CAP,
+                Character = this
+            };
+            Evasion = new()
+            {
+                Id = "Evasion",
+                StatType = StatType.Evasion,
+                Name = Map.Locale["CharacterEvasionStat"],
+                Base = entityClass.BaseEvasion,
+                Current = entityClass.BaseEvasion,
+                HasMax = false,
+                IsDecimal = false,
+                IncreasePerLevel = 0,
+                MinCap = Constants.MIN_EVASION_CAP,
+                MaxCap = Constants.MAX_EVASION_CAP,
+                Character = this
+            };
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
-            Hunger = entityClass.BaseHunger;
-            BaseMaxHunger = entityClass.BaseHunger;
-            HungerHPDegeneration = entityClass.HungerHPDegeneration;
             CanGainExperience = entityClass.CanGainExperience;
             Level = level;
             MaxLevel = entityClass.MaxLevel;
@@ -318,20 +412,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Experience = 0;
             }
 
-            MaxHPModifications = new List<StatModification>();
-            MaxMPModifications = new List<StatModification>();
-            AttackModifications = new List<StatModification>();
-            DefenseModifications = new List<StatModification>();
-            MovementModifications = new List<StatModification>();
-            HPRegenerationModifications = new List<StatModification>();
-            MPRegenerationModifications = new List<StatModification>();
-            MaxHungerModifications = new List<StatModification>();
-            AccuracyModifications = new List<StatModification>();
-            EvasionModifications = new List<StatModification>();
-
             BaseSightRange = entityClass.BaseSightRange;
-            BaseAccuracy = entityClass.BaseAccuracy;
-            BaseEvasion = entityClass.BaseEvasion;
             InventorySize = entityClass.InventorySize;
             Inventory = new List<Item>(InventorySize);
             KeySet = new List<Key>();
@@ -339,9 +420,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             AlteredStatuses = new List<AlteredStatus>();
 
             LastLevelUpExperience = Experience;
-            CarriedHPRegeneration = 0;
-            CarriedMPRegeneration = 0;
-            CarriedHungerDegeneration = 0;
 
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             OwnOnAttack = new List<ActionWithEffects>();
@@ -442,97 +520,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                         Map.AddSpecialEffectIfPossible(SpecialEffect.StatusLeaves);
                 }
             }
-            TryDegenerateHunger();
-            TryRegenerateHP();
-            TryRegenerateMP();
-            if (HP <= 0)
+            foreach (var regeneration in Stats.Where(s => s.RegenerationTarget != null))
+            {
+                regeneration.TryToRegenerate();
+            }
+            if (HP.Current <= 0)
                 Die();
         }
 
-        public void TryRegenerateHP()
-        {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (HP > MaxHP) HP = MaxHP;
-            var hpRegenerationToUse = IsStarving ? HungerHPDegeneration * -1 : HPRegeneration;
-            if (IsStarving && CarriedHPRegeneration > 0)
-            {
-                CarriedHPRegeneration = 0;
-                return;
-            }
-            if (Map.TurnCount == 1 || (hpRegenerationToUse > 0 && HP == MaxHP) || hpRegenerationToUse == 0)
-            {
-                CarriedHPRegeneration = 0;
-                return;
-            }
-            CarriedHPRegeneration += hpRegenerationToUse;
-            if (CarriedHPRegeneration >= 1)
-            {
-                var wholePart = Math.Truncate(CarriedHPRegeneration);
-                var fractionalPart = CarriedHPRegeneration - wholePart;
-                HP = Math.Min(MaxHP, HP + (int)wholePart);
-                CarriedHPRegeneration = fractionalPart;
-            }
-            else if (CarriedHPRegeneration <= -1)
-            {
-                var oldHP = HP;
-                var wholePart = Math.Truncate(CarriedHPRegeneration);
-                var fractionalPart = CarriedHPRegeneration - wholePart;
-                HP = Math.Max(0, HP + (int)wholePart);
-                CarriedHPRegeneration = fractionalPart;
-                if (oldHP > HP && IsStarving)
-                {
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
-                    Map.AppendMessage(Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldHP - HP, CharacterHPStat = Map.Locale["CharacterHPStat"], CharacterHungerStat = Map.Locale["CharacterHungerStat"] }));
-                }
-            }
-        }
-
-        public void TryRegenerateMP()
-        {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (!UsesMP) return;
-            if (MP > MaxMP) MP = MaxMP;
-            if (Map.TurnCount == 1 || (MPRegeneration > 0 && MP == MaxMP) || MPRegeneration == 0)
-            {
-                CarriedMPRegeneration = 0;
-                return;
-            }
-            CarriedMPRegeneration += MPRegeneration;
-            if (CarriedMPRegeneration >= 1)
-            {
-                var wholePart = Math.Truncate(CarriedMPRegeneration);
-                var fractionalPart = CarriedMPRegeneration - wholePart;
-                MP = Math.Min(MaxMP, MP + (int)wholePart);
-                CarriedMPRegeneration = fractionalPart;
-            }
-            else if (CarriedMPRegeneration <= -1)
-            {
-                var wholePart = Math.Truncate(CarriedMPRegeneration);
-                var fractionalPart = CarriedMPRegeneration - wholePart;
-                MP = Math.Max(0, MP + (int)wholePart);
-                CarriedMPRegeneration = fractionalPart;
-            }
-        }
-
-        public void TryDegenerateHunger()
-        {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (!UsesHunger || Map.HungerDegeneration <= 0 || Hunger == 0) return;
-            if (Hunger > MaxHunger) Hunger = MaxHunger;
-            if (Map.TurnCount == 1)
-            {
-                CarriedHungerDegeneration = 0;
-                return;
-            }
-            CarriedHungerDegeneration += Map.HungerDegeneration;
-            if (CarriedHungerDegeneration >= 1)
-            {
-                var wholePart = Math.Truncate(CarriedHungerDegeneration);
-                var fractionalPart = CarriedHungerDegeneration - wholePart;
-                Hunger = Math.Min(MaxHunger, Hunger - (int)wholePart);
-                CarriedHungerDegeneration = fractionalPart;
-            }
-        }
 
         public bool CanSee(Entity entity)
         {
@@ -566,8 +561,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 else
                     forecolorToUse = Color.DeepSkyBlue;
                 Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}), forecolorToUse);
-                HP = MaxHP;
-                MP = MaxMP;
+                HP.Current = MaxHP;
+                if(MP != null)
+                    MP.Current = MaxMP;
             }
         }
 
@@ -664,7 +660,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             AlteredStatuses.Where(als => als.RemainingTurns > 0).ForEach(als => als.BeforeAttack?.Do(this, target, true));
             if (UsesMP)
-                MP = Math.Max(0, MP - action.MPCost);
+                MP.Current = Math.Max(0, MP.Current - action.MPCost);
             var successfulEffects = action?.Do(this, target, true);
             if(successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
@@ -677,7 +673,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (UsesMP)
-                MP = Math.Max(0, MP - action.MPCost);
+                MP.Current = Math.Max(0, MP.Current - action.MPCost);
             action?.Do(this, target, true);
             if (action?.FinishesTurnWhenUsed == true)
                 TookAction = true;
@@ -688,7 +684,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (UsesMP)
-                MP = Math.Max(0, MP - action.MPCost);
+                MP.Current = Math.Max(0, MP.Current - action.MPCost);
             action?.Do(this, target, true);
             if (action?.FinishesTurnWhenUsed == true)
                 TookAction = true;
@@ -720,7 +716,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (attacker == null || attacker is Character)
                 OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
-            if(this.HP <= 0)
+            if(HP.Current <= 0)
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;

@@ -20,7 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 return int.MinValue;
 
             var randomFactor = map.Rng.NextInclusive(50, 150) / 100f;
-            var mpUseFactor = Source.UsesMP ? ((double) action.MPCost / Source.MaxMP) * 1.5 : 0;
+            var mpUseFactor = Source.UsesMP ? (double) (action.MPCost / Source.MaxMP) * 1.5 : 0;
             var isItemFactor = action.User is Item ? 0.2 : 0;
             return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (randomFactor - mpUseFactor - isItemFactor));
         }

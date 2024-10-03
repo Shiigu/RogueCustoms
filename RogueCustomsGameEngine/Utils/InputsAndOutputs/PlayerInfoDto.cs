@@ -38,144 +38,36 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 CurrentExperience = character.Experience;
                 ExperienceToNextLevel = character.ExperienceToLevelUpDifference;
             }
-            var hpStat = new StatDto()
+            Stats = new();
+            foreach (var stat in character.Stats)
             {
-                Name = map.Locale["CharacterHPStat"],
-                MaxName = map.Locale["CharacterMaxHPStat"],
-                Current = character.HP,
-                Max = character.MaxHP,
-                Base = character.BaseMaxHP + (int)(character.MaxHPIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = true,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.MaxHPModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpStat.Modifications.Add(new StatModificationDto(hpm, hpStat, map)));
-            var mpStat = new StatDto()
-            {
-                Name = map.Locale["CharacterMPStat"],
-                MaxName = map.Locale["CharacterMaxMPStat"],
-                Current = character.MP,
-                Max = character.MaxMP,
-                Base = character.BaseMaxMP + (int)(character.MaxMPIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = true,
-                Visible = character.UsesMP,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.MaxMPModifications.Where(m => m.RemainingTurns != 0).ForEach(mpm => mpStat.Modifications.Add(new StatModificationDto(mpm, mpStat, map)));
-            var attackStat = new StatDto()
-            {
-                Name = map.Locale["CharacterAttackStat"],
-                Current = character.Attack,
-                Base = character.BaseAttack + (int)(character.AttackIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.AttackModifications.Where(m => m.RemainingTurns != 0).ForEach(am => attackStat.Modifications.Add(new StatModificationDto(am, attackStat, map)));
-            var defenseStat = new StatDto()
-            {
-                Name = map.Locale["CharacterDefenseStat"],
-                Current = character.Defense,
-                Base = character.BaseDefense + (int)(character.DefenseIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.DefenseModifications.Where(m => m.RemainingTurns != 0).ForEach(dm => defenseStat.Modifications.Add(new StatModificationDto(dm, defenseStat, map)));
-            var movementStat = new StatDto()
-            {
-                Name = map.Locale["CharacterMovementStat"],
-                Current = character.Movement,
-                Base = character.BaseMovement + (int)(character.MovementIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.MovementModifications.Where(m => m.RemainingTurns != 0).ForEach(mm => movementStat.Modifications.Add(new StatModificationDto(mm, movementStat, map)));
-            var hpRegenerationStat = new StatDto()
-            {
-                Name = map.Locale["CharacterHPRegenerationStat"],
-                Current = character.HPRegeneration,
-                Base = character.BaseHPRegeneration + (character.HPRegenerationIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = true,
-                IsPercentileStat = false,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.HPRegenerationModifications.Where(m => m.RemainingTurns != 0).ForEach(hpm => hpRegenerationStat.Modifications.Add(new StatModificationDto(hpm, hpRegenerationStat, map)));
-            var mpRegenerationStat = new StatDto()
-            {
-                Name = map.Locale["CharacterMPRegenerationStat"],
-                Current = character.MPRegeneration,
-                Base = character.BaseMPRegeneration + (character.MPRegenerationIncreasePerLevel * (character.Level - 1)),
-                IsDecimalStat = true,
-                IsPercentileStat = false,
-                HasMaxStat = false,
-                Visible = character.UsesMP,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.MPRegenerationModifications.Where(m => m.RemainingTurns != 0).ForEach(mpm => mpRegenerationStat.Modifications.Add(new StatModificationDto(mpm, mpRegenerationStat, map)));
-            var accuracyStat = new StatDto()
-            {
-                Name = map.Locale["CharacterAccuracyStat"],
-                Current = character.Accuracy,
-                Base = character.BaseAccuracy,
-                IsDecimalStat = false,
-                IsPercentileStat = true,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.AccuracyModifications.Where(m => m.RemainingTurns != 0).ForEach(am => accuracyStat.Modifications.Add(new StatModificationDto(am, accuracyStat, map)));
-            var evasionStat = new StatDto()
-            {
-                Name = map.Locale["CharacterEvasionStat"],
-                Current = character.Evasion,
-                Base = character.BaseEvasion,
-                IsDecimalStat = false,
-                IsPercentileStat = true,
-                HasMaxStat = false,
-                Visible = true,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.EvasionModifications.Where(m => m.RemainingTurns != 0).ForEach(em => evasionStat.Modifications.Add(new StatModificationDto(em, evasionStat, map)));
-            var hungerStat = new StatDto()
-            {
-                Name = map.Locale["CharacterHungerStat"],
-                Current = character.Hunger,
-                Max = character.MaxHunger,
-                Base = character.BaseMaxHunger,
-                IsDecimalStat = false,
-                IsPercentileStat = false,
-                HasMaxStat = true,
-                Visible = character.UsesHunger,
-                Modifications = new List<StatModificationDto>()
-            };
-            character.MaxHungerModifications.Where(m => m.RemainingTurns != 0).ForEach(hm => hungerStat.Modifications.Add(new StatModificationDto(hm, mpRegenerationStat, map)));
-            Stats = new List<StatDto>
-            {
-                hpStat,
-                mpStat,
-                attackStat,
-                defenseStat,
-                movementStat,
-                hpRegenerationStat,
-                mpRegenerationStat,
-                accuracyStat,
-                evasionStat,
-                hungerStat
-            };
+                var maxStatName = stat.StatType switch
+                {
+                    StatType.HP => map.Locale["CharacterMaxHPStat"],
+                    StatType.MP => map.Locale["CharacterMaxMPStat"],
+                    _ => string.Empty
+                };
+                var statIsVisible = true;
+                if (stat.StatType == StatType.MP && !character.UsesMP)
+                    statIsVisible = false;
+                if (stat.StatType == StatType.Hunger && !character.UsesHunger)
+                    statIsVisible = false;
+                var statInfo = new StatDto
+                {
+                    Name = stat.Name,
+                    MaxName = maxStatName,
+                    Current = stat.Current,
+                    Max = stat.BaseAfterModifications,
+                    Base = stat.Base + (int)(stat.IncreasePerLevel * (character.Level - 1)),
+                    IsDecimalStat = stat.IsDecimal,
+                    IsPercentileStat = stat.StatType == StatType.Accuracy || stat.StatType == StatType.Evasion || stat.StatType == StatType.CustomPercentage,
+                    HasMaxStat = stat.HasMax,
+                    Visible = statIsVisible,
+                    Modifications = new List<StatModificationDto>()
+                };
+                stat.Modifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
+                Stats.Add(statInfo);
+            }
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
             WeaponInfo = new ItemDetailDto(character.Weapon);

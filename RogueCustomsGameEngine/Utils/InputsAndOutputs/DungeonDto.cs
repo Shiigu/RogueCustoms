@@ -144,12 +144,12 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string DamageStatName { get; private set; }
         public string Damage { get; private set; }
         public string WeaponDamage { get; private set; }
-        public int StatDamage { get; private set; }
+        public int Attack { get; private set; }
         public SimpleEntityDto Armor { get; private set; }
         public string MitigationStatName { get; private set; }
         public string Mitigation { get; private set; }
         public string ArmorMitigation { get; private set; }
-        public int StatMitigation { get; private set; }
+        public int Defense { get; private set; }
         public string MovementStatName { get; private set; }
         public int Movement { get; private set; }
         public int BaseMovement { get; private set; }
@@ -202,37 +202,43 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 ExperienceToLevelUp = pc.ExperienceToLevelUp;
                 CurrentExperiencePercentage = CalculateExperienceBarPercentage(pc);
                 HPStatName = map.Locale["CharacterHPStat"];
-                HP = pc.HP;
-                MaxHP = pc.MaxHP;
+                HP = (int) pc.HP.Current;
+                MaxHP = (int)pc.MaxHP;
                 UsesMP = pc.UsesMP;
-                MPStatName = map.Locale["CharacterMPStat"];
-                MP = pc.MP;
-                MaxMP = pc.MaxMP;
+                if (UsesMP)
+                {
+                    MPStatName = map.Locale["CharacterMPStat"];
+                    MP = (int)pc.MP.Current;
+                    MaxMP = (int)pc.MaxMP;
+                }
                 Weapon = new SimpleEntityDto(pc.Weapon);
                 DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;
                 WeaponDamage = pc.Weapon.Power;
-                StatDamage = pc.Attack;
+                Attack = (int)pc.Attack.BaseAfterModifications;
                 Armor = new SimpleEntityDto(pc.Armor);
                 MitigationStatName = map.Locale["CharacterMitigationStat"];
                 Mitigation = pc.Mitigation;
                 ArmorMitigation = pc.Armor.Power;
-                StatMitigation = pc.Defense;
+                Defense = (int)pc.Defense.BaseAfterModifications;
                 MovementStatName = map.Locale["CharacterMovementStat"];
-                BaseMovement = pc.BaseMovement;
-                Movement = pc.Movement;
+                BaseMovement = (int) pc.Movement.Base;
+                Movement = (int) pc.Movement.Current;
                 AccuracyStatName = map.Locale["CharacterAccuracyStat"];
-                BaseAccuracy = pc.BaseAccuracy;
-                Accuracy = pc.Accuracy;
+                BaseAccuracy = (int)pc.Accuracy.Base;
+                Accuracy = (int)pc.Accuracy.Current;
                 EvasionStatName = map.Locale["CharacterEvasionStat"];
-                BaseEvasion = pc.BaseEvasion;
-                Evasion = pc.Evasion;
-                CanMove = pc.Movement > 0;
+                BaseEvasion = (int)pc.Evasion.Base;
+                Evasion = (int)pc.Evasion.Current;
+                CanMove = pc.Movement.Current > 0;
                 CanTakeAction = pc.CanTakeAction;
                 UsesHunger = pc.UsesHunger;
-                HungerStatName = map.Locale["CharacterHungerStat"];
-                Hunger = pc.Hunger;
-                MaxHunger = pc.MaxHunger;
+                if (UsesHunger)
+                {
+                    HungerStatName = map.Locale["CharacterHungerStat"];
+                    Hunger = (int)pc.Hunger.Current;
+                    MaxHunger = (int)pc.Hunger.Base;
+                }
                 AlteredStatuses = new List<SimpleEntityDto>();
                 Inventory = new List<SimpleEntityDto>();
             }

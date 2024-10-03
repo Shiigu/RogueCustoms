@@ -78,8 +78,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else if (c == Map.Player)
                     Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
             }
-            c.HP = Math.Max(0, c.HP - damageDealt);
-            if (c.HP == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
+            c.HP.Current = Math.Max(0, c.HP.Current - damageDealt);
+            if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);
             return true;
         }
@@ -93,7 +93,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
-            if (!c.UsesMP)
+            if (!c.UsesMP || c.MP == null)
                 return false;
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
@@ -126,7 +126,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (c == Map.Player)
                     Map.AddSpecialEffectIfPossible(SpecialEffect.MPDown);
             }
-            c.MP = Math.Max(0, c.MP - burnAmount);
+            c.MP.Current = Math.Max(0, c.MP.Current - burnAmount);
             return true;
         }
         public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
@@ -138,7 +138,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
-            if (!c.UsesMP)
+            if (!c.UsesMP || c.Hunger == null)
                 return false;
 
             var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
@@ -157,7 +157,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.AppendMessage(Map.Locale["CharacterLosesHunger"].Format(new { CharacterName = c.Name, LostHunger = paramsObject.Power, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
             if (c == Map.Player)
                 Map.AddSpecialEffectIfPossible(SpecialEffect.HungerDown);
-            c.MP = Math.Max(0, c.MP - hungerAmount);
+            c.Hunger.Current = Math.Max(0, c.Hunger.Current - hungerAmount);
             return true;
         }
     }

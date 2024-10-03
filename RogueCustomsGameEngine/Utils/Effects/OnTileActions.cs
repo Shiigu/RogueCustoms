@@ -204,9 +204,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Rng.RollProbability() <= accuracyCheck)
             {
                 var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
-                npc.HP = npc.MaxHP;
+                npc.HP.Current = npc.HP.Base;
                 if (npc.UsesMP)
-                    npc.MP = npc.MaxMP;
+                    npc.MP.Current = npc.MP.Base;
                 npc.ExistenceStatus = EntityExistenceStatus.Alive;
                 npc.ConsoleRepresentation.Character = npc.BaseConsoleRepresentation.Character;
                 npc.ConsoleRepresentation.BackgroundColor = npc.BaseConsoleRepresentation.BackgroundColor;

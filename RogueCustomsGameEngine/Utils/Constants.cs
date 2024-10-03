@@ -12,7 +12,6 @@ namespace RogueCustomsGameEngine.Utils
         public const int MaxGenerationTries = 1000;
         public const int MaxGenerationTriesForHallway = 10;
         public const int LogMessagesToSend = 200;
-        public const int MinCellWidthOrHeight = 7;
         public const int MinRoomWidthOrHeight = 5;
 
         public const int FullRoomSightRange = -1;

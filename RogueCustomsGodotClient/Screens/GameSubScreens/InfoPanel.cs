@@ -156,11 +156,11 @@ public partial class InfoPanel : GamePanel
 
         _weaponHeaderLabel.Text = TranslationServer.Translate("PlayerInfoWeaponHeader");
         _weaponNameLabel.Text = $"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name}[/center]";
-        _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(playerEntity.WeaponDamage, playerEntity.StatDamage)}[/center]";
+        _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(playerEntity.WeaponDamage, playerEntity.Attack)}[/center]";
 
         _armorHeaderLabel.Text = TranslationServer.Translate("PlayerInfoArmorHeader");
         _armorNameLabel.Text = $"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name}[/center]";
-        _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(playerEntity.ArmorMitigation, playerEntity.StatMitigation)}[/center]";
+        _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(playerEntity.ArmorMitigation, playerEntity.Defense)}[/center]";
 
         if(playerEntity.Movement > playerEntity.BaseMovement)
             _movementLabel.Text = $"[center]{playerEntity.MovementStatName}: [color=#00FF00FF]{playerEntity.Movement}[/color][/center]";

@@ -310,7 +310,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (RemainingMovement == 0)
             {
-                if(Movement == 0)
+                if(Movement.Current == 0)
                     TookAction = true;
                 return;
             }
@@ -329,7 +329,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     PathToUse.Destination = null;
                     RemainingMovement = 0;
-                    if (Movement == 0)
+                    if (Movement.Current == 0)
                         TookAction = true;
                 }
             }

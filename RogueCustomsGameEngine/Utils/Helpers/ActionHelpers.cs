@@ -107,31 +107,31 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                             switch (value.ToLowerInvariant())
                             {
                                 case "maxhp":
-                                    paramsObject.StatAlterationList = c.MaxHPModifications;
+                                    paramsObject.StatAlterationList = c.HP.Modifications;
                                     break;
                                 case "maxmp":
-                                    paramsObject.StatAlterationList = c.MaxMPModifications;
+                                    paramsObject.StatAlterationList = c.MP.Modifications;
                                     break;
                                 case "attack":
-                                    paramsObject.StatAlterationList = c.AttackModifications;
+                                    paramsObject.StatAlterationList = c.Attack.Modifications;
                                     break;
                                 case "defense":
-                                    paramsObject.StatAlterationList = c.DefenseModifications;
+                                    paramsObject.StatAlterationList = c.Defense.Modifications;
                                     break;
                                 case "movement":
-                                    paramsObject.StatAlterationList = c.MovementModifications;
+                                    paramsObject.StatAlterationList = c.Movement.Modifications;
                                     break;
                                 case "hpregeneration":
-                                    paramsObject.StatAlterationList = c.HPRegenerationModifications;
+                                    paramsObject.StatAlterationList = c.HPRegeneration.Modifications;
                                     break;
                                 case "mpregeneration":
-                                    paramsObject.StatAlterationList = c.MPRegenerationModifications;
+                                    paramsObject.StatAlterationList = c.MPRegeneration.Modifications;
                                     break;
                                 case "accuracy":
-                                    paramsObject.StatAlterationList = c.AccuracyModifications;
+                                    paramsObject.StatAlterationList = c.Accuracy.Modifications;
                                     break;
                                 case "evasion":
-                                    paramsObject.StatAlterationList = c.EvasionModifications;
+                                    paramsObject.StatAlterationList = c.Evasion.Modifications;
                                     break;
                             }
                             break;
@@ -329,9 +329,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             var parsedArg = arg;
 
             var entityType = o.GetType();
+            var properties = entityType.GetProperties().Select(p => p.Name);
             foreach (var property in entityType.GetProperties().Where(p => PropertiesToParse.Contains(p.Name)))
             {
-                string propertyName = property.Name;
+                var propertyName = property.Name;
                 string fieldToken = $"{{{eName}.{propertyName}}}";
 
                 if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
@@ -342,6 +343,14 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         if (propertyValue is Entity entityProperty)
                         {
                             parsedArg = parsedArg.Replace(fieldToken, entityProperty.Name, StringComparison.InvariantCultureIgnoreCase);
+                        }
+                        else if (propertyValue is Stat statProperty)
+                        {
+                            if(propertyName.Equals("maxhunger", StringComparison.InvariantCultureIgnoreCase))
+                                parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue(statProperty.Base), StringComparison.InvariantCultureIgnoreCase);
+                            else if (propertyName.Contains("max", StringComparison.InvariantCultureIgnoreCase))
+                                parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue(statProperty.BaseAfterModifications), StringComparison.InvariantCultureIgnoreCase);
+                            parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue(statProperty.Current), StringComparison.InvariantCultureIgnoreCase);
                         }
                         else if (propertyName.Equals("Status", StringComparison.InvariantCultureIgnoreCase) &&
                                  entityType.GetProperty("AlteredStatuses") != null &&
@@ -359,6 +368,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                         {
                             parsedArg = parsedArg.Replace(fieldToken, FormatParameterValue(propertyValue), StringComparison.InvariantCultureIgnoreCase);
                         }
+                    }
+                    else if (propertyName.Contains("mp", StringComparison.InvariantCultureIgnoreCase) || propertyName.Contains("hunger", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        parsedArg = parsedArg.Replace(fieldToken, "0", StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
             }
@@ -494,8 +507,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static int CalculateAdjustedAccuracy(Entity source, Entity target, dynamic paramsObject)
         {
-            var targetEvasion = (target is Character t) ? (int) t.Evasion : 0;
-            var sourceAccuracy = (source is Character s) ? (int) s.Accuracy : 0;
+            var targetEvasion = (target is Character t) ? (int) t.Evasion.Current : 0;
+            var sourceAccuracy = (source is Character s) ? (int) s.Accuracy.Current : 0;
             var baseAccuracy = (int) paramsObject.Accuracy;
 
             int adjustedAccuracy;

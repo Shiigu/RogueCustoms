@@ -157,7 +157,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
 
             if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
-            if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
+
+            if (MPCost > 0)
+            {
+                if (!source.UsesMP || source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
+                    return false;
+            }
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
@@ -178,9 +183,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool CanBeUsedOnTile(Tile target, Character source)
         {
             if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
-            if (source.MP < MPCost || (source.MaxMP == 0 && MPCost > 0) || (!source.UsesMP && MPCost > 0)) return false;
 
-            if(target.Type != TileType.Door && User.EntityType == EntityType.Key) return false;
+            if (MPCost > 0)
+            {
+                if (!source.UsesMP || source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
+                    return false;
+            }
+
+            if (target.Type != TileType.Door && User.EntityType == EntityType.Key) return false;
 
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
 
@@ -320,7 +330,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
 
-                if (sourceAsCharacter.MP < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
+                if (sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
                 {
                     if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                         descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");

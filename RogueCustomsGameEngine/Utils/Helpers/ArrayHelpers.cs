@@ -259,43 +259,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             DepthFirstSearchForIsland(grid, visited, predicate, i, j - 1, currentIsland);
         }
 
-        public static bool IsFullyConnectedAdjacencyMatrix<T>(this T[,] grid, Func<T, bool> predicate)
-        {
-            return grid.Count() == 1 || grid.GetNumberOfIslandsAdjacencyMatrix(predicate) == 1;
-        }
-
-        public static int GetNumberOfIslandsAdjacencyMatrix<T>(this T[,] grid, Func<T, bool> predicate)
-        {
-            var visited = new bool[grid.GetLength(0)];
-            var islandCount = 0;
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    if (predicate(grid[i, j]) && !visited[i])
-                    {
-                        DepthFirstSearchAdjacencyMatrix(grid, visited, predicate, i);
-                        islandCount++;
-                    }
-                }
-            }
-            return islandCount;
-        }
-
-        public static void DepthFirstSearchAdjacencyMatrix<T>(this T[,] grid, bool[] visited, Func<T, bool> predicate, int i)
-        {
-            if (i < 0 || i >= grid.GetLength(0)) return;
-            if (visited[i]) return;
-            visited[i] = true;
-            for (int j = 0; j < grid.GetLength(1); j++)
-            {
-                if (predicate(grid[i, j]) && !visited[j])
-                {
-                    DepthFirstSearchAdjacencyMatrix(grid, visited, predicate, j);
-                }
-            }
-        }
-
         public static List<T> ToList<T>(this T[,] array)
         {
             var itemList = new List<T>();
@@ -351,6 +314,26 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 if (item != null && !predicate(item)) return false;
             }
             return true;
+        }
+
+        public static T[,] Copy<T>(this T[,] original)
+        {
+            int rows = original.GetLength(0);
+            int cols = original.GetLength(1);
+
+            // Create a new array of the same size
+            T[,] copy = new T[rows, cols];
+
+            // Copy each element from 'original' to 'copy'
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    copy[i, j] = original[i, j];
+                }
+            }
+
+            return copy;
         }
 
         public static string Print<T>(this T[,] array)

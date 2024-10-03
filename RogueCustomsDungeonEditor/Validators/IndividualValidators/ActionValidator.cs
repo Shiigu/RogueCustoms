@@ -298,21 +298,22 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                         try
                         {
-                            target.HP = target.MaxHP;
-                            target.MP = target.MaxMP;
-                            var defenseTestModification = target.DefenseModifications.Find(dm => dm.Id == "defenseTest");
+                            target.HP.Current = target.MaxHP;
+                            if(target.MP != null)
+                                target.MP.Current = target.MaxMP;
+                            var defenseTestModification = target.Defense.Modifications.Find(dm => dm.Id == "defenseTest");
                             if (defenseTestModification == null)
                             {
-                                target.DefenseModifications.Add(new StatModification
+                                target.Defense.Modifications.Add(new StatModification
                                 {
                                     Id = "defenseTest",
-                                    Amount = target.BaseDefense * -1, // Defense is turned into 0
+                                    Amount = target.Defense.Base * -1, // Defense is turned into 0
                                     RemainingTurns = -1
                                 });
                             }
                             else
                             {
-                                defenseTestModification.Amount = target.BaseDefense * -1; // Defense is turned into 0
+                                defenseTestModification.Amount = target.Defense.Base * -1; // Defense is turned into 0
                             }
 
                             target.AlteredStatuses.Add(new AlteredStatus(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.AlteredStatus), sampleDungeon.CurrentFloor)
@@ -331,17 +332,20 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 {
                                     amountOfFailures++;
                                 }
-                                defenseTestModification = target.DefenseModifications.Find(dm => dm.Id == "defenseTest");
+                                defenseTestModification = target.Defense.Modifications.Find(dm => dm.Id == "defenseTest");
                                 if (defenseTestModification != null)
                                     defenseTestModification.Amount++;
-                                if (target.HP <= 0)
-                                    target.HP = target.MaxHP;
+                                if (target.HP.Current <= 0)
+                                    target.HP.Current = target.MaxHP;
                                 else
-                                    target.HP--;  // Slightly damage it so that heals may work
-                                if (target.MP <= 0)
-                                    target.MP = target.MaxMP;
-                                else
-                                    target.MP--;  // Slightly burn its MP so that replenishes may work
+                                    target.HP.Current--;  // Slightly damage it so that heals may work
+                                if(target.MP != null)
+                                {
+                                    if (target.MP.Current <= 0)
+                                        target.MP.Current = target.MaxMP;
+                                    else
+                                        target.MP.Current--;  // Slightly burn its MP so that replenishes may work
+                                }
                             }
                         }
                         catch (FlagNotFoundException ex)

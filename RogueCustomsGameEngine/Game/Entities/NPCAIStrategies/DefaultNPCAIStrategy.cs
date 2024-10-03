@@ -20,7 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 return int.MinValue;
 
             var randomFactor = map.Rng.NextInclusive(50, 150) / 100f;
-            var mpUseFactor = Source.UsesMP ? ((double) action.MPCost / Source.MaxMP) : 0;
+            var mpUseFactor = Source.UsesMP ? (double) (action.MPCost / Source.MaxMP) : 0;
             return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (randomFactor - mpUseFactor));
         }
 
@@ -97,36 +97,36 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "HealDamage":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.HP >= targetAsCharacter.MaxHP)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.HP.Current >= targetAsCharacter.MaxHP)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    var healAmount = Math.Min(targetAsCharacter.MaxHP - targetAsCharacter.HP, paramsObject.Power);
+                    var healAmount = Math.Min(targetAsCharacter.MaxHP - targetAsCharacter.HP.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         healAmount = 1;
                     weight = (int)((250 + healAmount * 50) * accuracyFactor);
                     break;
 
                 case "ReplenishMP":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP || targetAsCharacter.MP >= targetAsCharacter.MaxMP)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP || targetAsCharacter.MP.Current >= targetAsCharacter.MaxMP)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    var replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP, paramsObject.Power);
+                    var replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         replenishAmount = 1;
                     weight = (int)((250 + replenishAmount * 50) * accuracyFactor);
                     break;
 
                 case "ReplenishHunger":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger || targetAsCharacter.Hunger >= targetAsCharacter.MaxHunger)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger || targetAsCharacter.Hunger.Current >= targetAsCharacter.MaxHunger)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP, paramsObject.Power);
+                    replenishAmount = Math.Min(targetAsCharacter.MaxHunger - targetAsCharacter.Hunger.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         replenishAmount = 1;
                     weight = (int)((50 + replenishAmount * 50) * accuracyFactor);
