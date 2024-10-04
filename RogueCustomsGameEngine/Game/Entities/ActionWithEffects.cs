@@ -338,11 +338,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
 
-                if ((sourceAsCharacter.MP == null && MPCost > 0) || sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
+                if(MPCost > 0)
                 {
-                    if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
-                    descriptionWithUsageNotes.AppendLine(Locale["NotEnoughMP"].Format(new { MPStat = Map.Locale["CharacterMPStat"].ToUpperInvariant() }));
+                    if (sourceAsCharacter.MP == null || sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
+                    {
+                        if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                            descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
+                        descriptionWithUsageNotes.AppendLine(Locale["NotEnoughMP"].Format(new { MPStat = Map.Locale["CharacterMPStat"].ToUpperInvariant() }));
+                    }
                 }
             }
             else if (!TargetTypes.Contains(TargetType.Tile))

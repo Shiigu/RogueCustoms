@@ -43,6 +43,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Stats = new();
             foreach (var stat in character.Stats)
             {
+                if (stat.Id == "HungerDegeneration") continue;
                 var maxStatName = stat.StatType switch
                 {
                     StatType.HP => map.Locale["CharacterMaxHPStat"],
