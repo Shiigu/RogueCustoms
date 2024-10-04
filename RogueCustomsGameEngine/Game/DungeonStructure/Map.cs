@@ -257,7 +257,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             NewTurn();
 
-            if(Rooms.Count(r => !r.IsDummy) > 1)
+            if(Rooms.Count(r => !r.IsDummy) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
             {
                 do
                 {
@@ -368,7 +368,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var mapGenerationSuccess = success;
             var keyGenerationSuccess = success;
 
-            if (Rooms.Count(r => !r.IsDummy) > 1)
+            if (Rooms.Count(r => !r.IsDummy) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
             {
                 do
                 {
@@ -909,6 +909,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             Player.Position = PickEmptyPosition(false);
             Player.UpdateVisibility();
+            if(Player.UsesHunger)
+                Player.Stats.Where(s => s.RegenerationTarget != null && s.RegenerationTarget.StatType == StatType.Hunger).ForEach(s => s.Base = HungerDegeneration * -1);
         }
 
         private void NewTurn()

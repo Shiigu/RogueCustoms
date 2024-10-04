@@ -312,7 +312,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 };
                 HungerDegeneration = new()
                 {
-                    Id = "HungerRegeneration",
+                    Id = "HungerDegeneration",
                     StatType = StatType.Regeneration,
                     Name = Map.Locale["CharacterHungerRegenerationStat"],
                     Base = 0,
@@ -320,7 +320,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     HasMax = false,
                     IsDecimal = true,
                     IncreasePerLevel = 0,
-                    MinCap = 0,
+                    MinCap = -Constants.REGEN_STAT_CAP,
                     MaxCap = Constants.REGEN_STAT_CAP,
                     Character = this,
                     RegenerationTarget = Hunger
