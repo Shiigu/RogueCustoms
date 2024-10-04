@@ -51,6 +51,7 @@ public partial class MainMenu : Control
         LoadSavedLocalization();
 
         SetupLocalizationOptions();
+        _globalState.PlayerControlMode = ControlMode.NormalMove;
     }
 
     private void SelectButton(int index)
