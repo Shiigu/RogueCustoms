@@ -29,10 +29,19 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         {
             if (!validCellPredicate(grid[source.Y, source.X])) throw new ArgumentException("Cannot find a path from an invalid node!");
             if (!validCellPredicate(grid[target.Y, target.X])) throw new ArgumentException("Cannot find a path towards an invalid node!");
-            if (source.X == target.X && source.Y == target.Y) return new List<T> { grid[target.Y, target.X] };
 
             var sourceT = grid[source.Y, source.X];
             var targetT = grid[target.Y, target.X];
+
+            if (sourceT == targetT) return new List<T> { sourceT };
+
+
+            var gridIslands = grid.GetIslands(validCellPredicate);
+            if (!gridIslands.Any(i => i.Contains(sourceT) && i.Contains(targetT)))
+            {
+                // If the Target Tile is inaccessible, stop searching.
+                return new List<T> { sourceT };
+            }
 
             var openList = new Dictionary<T, AStarNodeData<T>>();
             var closedList = new Dictionary<T, AStarNodeData<T>>();
