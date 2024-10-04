@@ -36,8 +36,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (Rng.RollProbability() > accuracyCheck)
             {
-                Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White);
-                Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
+                if (c.EntityType == EntityType.Player
+                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                {
+                    Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White);
+                    Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
+                }
                 return false;
             }
             var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
