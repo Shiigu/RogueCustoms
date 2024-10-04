@@ -917,8 +917,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (TurnCount == 0)
             {
-                if(!HasFlag("TurnCount"))
+                if (!HasFlag("TurnCount"))
                     CreateFlag("TurnCount", TurnCount, false);
+                else
+                    SetFlagValue("TurnCount", TurnCount);
                 int generationAttempts, generationsToTry;
                 #region Generate Monsters
                 if(FloorConfigurationToUse.PossibleMonsters.Any())

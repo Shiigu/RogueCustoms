@@ -27,7 +27,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var oldDefense = Defense.BaseAfterLevelUp;
             var oldMovement = Movement.BaseAfterLevelUp;
             var oldHPRegeneration = HPRegeneration.BaseAfterLevelUp;
-            var oldMPRegeneration = MPRegeneration.BaseAfterLevelUp;
+            var oldMPRegeneration = MPRegeneration != null ? MPRegeneration.BaseAfterLevelUp : 0;
             base.GainExperience(GamePointsToAdd);
             if (Level > oldLevel)
             {

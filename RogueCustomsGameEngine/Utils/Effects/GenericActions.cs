@@ -147,11 +147,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to alter one of Target's stats when it's not a Character.
                 return false;
             var statAlterationTarget = paramsObject.Target as Character;
-            if ((string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase) || string.Equals(paramsObject.StatName, "mp", StringComparison.InvariantCultureIgnoreCase))
-                && !statAlterationTarget.UsesMP)
-            {
-                return false;
-            }
 
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             var statCap = 0m;
@@ -165,6 +160,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     break;
                 case "mp":
                 case "maxmp":
+                    if (!statAlterationTarget.UsesMP) return false;
                     statValue = statAlterationTarget.MP.Current;
                     statCap = Constants.RESOURCE_STAT_CAP;
                     break;
@@ -185,6 +181,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     statCap = Constants.REGEN_STAT_CAP;
                     break;
                 case "mpregeneration":
+                    if (!statAlterationTarget.UsesMP) return false;
                     statValue = statAlterationTarget.MPRegeneration.Current;
                     statCap = Constants.REGEN_STAT_CAP;
                     break;
