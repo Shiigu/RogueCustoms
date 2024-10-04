@@ -79,7 +79,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (t.EntityType == EntityType.Player
                 || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
             {
-                if (t.MaxHP == t.HP.BaseAfterModifications)
+                if (t.HP.Current == t.MaxHP)
                     Map.AppendMessage(Map.Locale["CharacterHealsAllHP"].Format(new { CharacterName = t.Name }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterHealsSomeHP"].Format(new { CharacterName = t.Name, HealAmount = healAmount.ToString(), CharacterHPStat = Map.Locale["CharacterHPStat"] }), Color.DeepSkyBlue);
@@ -484,7 +484,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target.EntityType == EntityType.Player
                 || (paramsObject.Target.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target)))
             {
-                if (paramsObject.Target.MP == paramsObject.Target.MP.BaseAfterModifications)
+                if (paramsObject.Target.MP.Current == paramsObject.Target.MaxMP)
                     Map.AppendMessage(Map.Locale["CharacterRecoversAllMP"].Format(new { CharacterName = paramsObject.Target.Name, CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeMP"].Format(new { CharacterName = paramsObject.Target.Name, ReplenishAmount = replenishAmount.ToString(), CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
@@ -514,7 +514,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (t.EntityType == EntityType.Player
                 || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
             {
-                if (t.Hunger.Current == t.Hunger.Base)
+                if (t.Hunger.Current == t.MaxHunger)
                     Map.AppendMessage(Map.Locale["CharacterRecoversAllHunger"].Format(new { CharacterName = t.Name, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
                 else
                     Map.AppendMessage(Map.Locale["CharacterRecoversSomeHunger"].Format(new { CharacterName = t.Name, ReplenishAmount = replenishAmount.ToString(), CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);

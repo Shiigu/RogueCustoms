@@ -47,7 +47,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     if (damageDealt > 0 && damageDealt < 1)
                         damageDealt = 1;
                     damageDealt = (int)damageDealt;
-                    if (damageDealt > targetAsCharacter.HP)
+                    if (damageDealt > targetAsCharacter.HP.Current)
                         weight = 5000000;
                     else
                         weight = 250 + damageDealt * 50;
