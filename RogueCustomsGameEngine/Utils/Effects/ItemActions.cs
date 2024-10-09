@@ -1,14 +1,14 @@
 ﻿using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsGameEngine.Utils.Helpers;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Text;
+using RogueCustomsGameEngine.Utils.Expressions;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public static class ItemActions
     {
         private static RngHandler Rng;
@@ -19,10 +19,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool Remove(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool Remove(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            _ = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             var targetItem = paramsObject.Target as Item;
             var targetKey = paramsObject.Target as Key;
@@ -30,7 +29,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (targetItem == null && targetKey == null && targetTrap == null)
                 throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name}, which isn't Removable.");
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() <= accuracyCheck)
             {

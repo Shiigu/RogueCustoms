@@ -59,7 +59,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             CanBeDropped = p is not Key;
             IsEquipped = player.EquippedWeapon == pickableAsItem || player.EquippedArmor == pickableAsItem;
             IsEquippable = pickableAsItem?.IsEquippable == true;
-            IsInFloor = pickableAsItem.Position != null && pickableAsItem.Owner == null;
+            IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
             StatModifications = new();
             pickableAsItem?.StatModifiers.ForEach(m => {

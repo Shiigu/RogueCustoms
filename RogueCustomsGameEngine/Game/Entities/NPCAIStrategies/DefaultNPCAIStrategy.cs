@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -30,9 +31,9 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
 
             var targetAsCharacter = Target is Character c ? c : null;
             var targetAsTile = Target is Tile t ? t : null;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, 0, effect.Params);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, effect.Params);
             var accuracyFactor = effect.Params.Any(p => p.ParamName == "Accuracy")
-                 ? Math.Min(1, ActionHelpers.CalculateAdjustedAccuracy(Source, targetAsCharacter, paramsObject) / 100f * 2)
+                 ? Math.Min(1, ExpressionParser.CalculateAdjustedAccuracy(Source, targetAsCharacter, paramsObject) / 100f * 2)
                  : 1;
 
             switch (effect.Function.Method.Name)

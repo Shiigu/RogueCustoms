@@ -5,7 +5,9 @@ using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Exceptions;
+using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,9 +18,9 @@ using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
-    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public static class OnTileActions
     {
         private static RngHandler Rng;
@@ -30,10 +32,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool TransformTile(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool TransformTile(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
                 // Source must be a Character
@@ -55,7 +56,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Cannot convert a Tile that is adjacent to an empty tile
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, null, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;
@@ -82,10 +83,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return success;
         }
 
-        public static bool PlaceTrap(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool PlaceTrap(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
                 // Source must be a Character
@@ -103,7 +103,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target Tile must not already have a Trap
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, null, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;
@@ -132,10 +132,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool SpawnNPC(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool SpawnNPC(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            _ = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
                 // Source must be a Character
@@ -158,7 +157,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Must have a valid NPC class to spawn
                 return false;
                         
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, null, paramsObject);
             if (Rng.RollProbability() <= accuracyCheck)
             {
                 var level = (int) paramsObject.Level;
@@ -179,10 +178,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool ReviveNPC(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ReviveNPC(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            _ = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
                 // Source must be a Character
@@ -200,7 +198,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to Revive when there are no dead Characters in the Tile that are of an allied Faction to Source's.
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, null, paramsObject);
             if (Rng.RollProbability() <= accuracyCheck)
             {
                 var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
@@ -222,10 +220,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
-        public static bool UnlockDoor(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool UnlockDoor(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
                 // Source must be a Character
@@ -243,7 +240,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Cannot unlock a Door of the wrong Id
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, null, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, null, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;

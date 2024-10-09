@@ -45,7 +45,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public ActionItemDto(ActionWithEffects action, Character source, ITargetable target, Map map)
         {
-            Name = map.Locale[action.Name];
+            Name = map.Locale[action.Name];            
             Description = action.GetDescriptionWithUsageNotes(target, source);
             CanBeUsed = action.CanBeUsedOn(target, source);
         }

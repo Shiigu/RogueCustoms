@@ -32,6 +32,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 || (stomper.EntityType == EntityType.NPC && Map.Player.CanSee(stomper)))
                 Map.AddSpecialEffectIfPossible(SpecialEffect.TrapActivate);
             var successfulEffects = OnStepped?.Do(this, stomper, true);
+            if (successfulEffects != null)
+                stomper.Visible = true;
             if (successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 stomper.AttackedBy(null);
         }

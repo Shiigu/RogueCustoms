@@ -6,11 +6,12 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Expressions;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
-    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     // Represents Actions that are only expected to be used by Characters.
     public static class CharacterActions
     {
@@ -23,40 +24,37 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (ExpandoObjectHelper.HasProperty(paramsObject, "Character"))
                 Source.ConsoleRepresentation.Character = paramsObject.Character;
             if (ExpandoObjectHelper.HasProperty(paramsObject, "ForeColor"))
                 Source.ConsoleRepresentation.ForegroundColor = paramsObject.ForeColor;
             if (ExpandoObjectHelper.HasProperty(paramsObject, "BackColor"))
                 Source.ConsoleRepresentation.BackgroundColor = paramsObject.BackColor;
-            _ = 0;
             return true;
         }
 
-        public static bool ResetConsoleRepresentation(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool ResetConsoleRepresentation(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             var baseConsoleRepresentation = Source.BaseConsoleRepresentation.Clone();
             Source.ConsoleRepresentation.Character = baseConsoleRepresentation.Character;
             Source.ConsoleRepresentation.ForegroundColor = baseConsoleRepresentation.ForegroundColor;
             Source.ConsoleRepresentation.BackgroundColor = baseConsoleRepresentation.BackgroundColor;
-            _ = 0;
             return true;
         }
 
-        public static bool StealItem(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int _, params (string ParamName, string Value)[] args)
+        public static bool StealItem(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            _ = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (Source is not Character s) throw new ArgumentException($"Attempted to have {Source.Name} steal an item when it's not a Character.");
             if (paramsObject.Target is not Character t)
                 // Attempted to steal an item from Target when it's not a Character.
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
             if (s.ItemCount < s.InventorySize && t.ItemCount > 0 && Rng.RollProbability() <= accuracyCheck)
             {

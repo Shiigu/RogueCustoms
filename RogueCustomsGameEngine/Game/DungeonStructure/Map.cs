@@ -22,14 +22,15 @@ using org.matheval.Node;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
+using RogueCustomsGameEngine.Utils.Expressions;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
-    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning disable CS8601 // Posible asignación de referencia nula
-    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     [Serializable]
     public class Map
     {
@@ -157,7 +158,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ItemActions.SetActionParams(Rng, this);
             GenericActions.SetActionParams(Rng, this);
             OnTileActions.SetActionParams(Rng, this);
-            ActionHelpers.SetActionParams(Rng, this);
+            ExpressionParser.Setup(Rng, this);
         }
 
         public void LoadRngState(int seed)
@@ -1233,8 +1234,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
-            var entitiesInTile = GetEntitiesFromCoordinates(Player.Position);
-            if (entitiesInTile.Exists(e => e.Passable && e.ExistenceStatus != EntityExistenceStatus.Gone))
+            if (Player.ContainingTile.GetItems().Any())
             {
                 AppendMessage(Locale["TileIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
             }
@@ -1277,6 +1277,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             for (int i = 0; i < Player.Inventory.Count; i++)
             {
                 inventory.InventoryItems.Add(new InventoryItemDto(Player.Inventory[i], Player, this));
+            }
+            for (int i = 0; i < Player.KeySet.Count; i++)
+            {
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.KeySet[i], Player, this));
             }
             for (int i = 0; i < itemsOnTile.Count; i++)
             {
