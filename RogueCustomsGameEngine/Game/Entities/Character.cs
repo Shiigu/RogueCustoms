@@ -634,7 +634,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void TryToPickItem(IPickable p)
         {
-            if (!Visible) return;
+            if (EntityType != EntityType.Player && !Visible) return;
             var item = p as Item;
             var key = p as Key;
             if(item == null && key == null) return;

@@ -7,10 +7,11 @@ using System.Drawing;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Expressions;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public static class AttackActions
     {
         private static RngHandler Rng;
@@ -22,17 +23,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool DealDamage(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool DealDamage(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to damage Target when it's not a Character.
                 return false;
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
             {
@@ -48,7 +48,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (damageDealt > 0 && damageDealt < 1)
                 damageDealt = 1;
             damageDealt = (int) damageDealt;
-            output = (int) damageDealt;
             if (Map.Flags.Exists(f => f.Key.Equals($"DamageTaken_{c.Id}")))
                 Map.SetFlagValue($"DamageTaken_{c.Id}", damageDealt);
             else
@@ -76,7 +75,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
                     Map.AppendMessage(Map.Locale["AttackCriticalHitText"], forecolorToUse);
-                damageDealt = (int) ActionHelpers.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
+                damageDealt = (int) ExpressionParser.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
@@ -94,10 +93,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool BurnMP(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool BurnMP(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to burn Target's MP when it's not a Character.
                 return false;
@@ -106,7 +104,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (!c.UsesMP || c.MP == null)
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;
@@ -114,7 +112,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 burnAmount = 1;
             burnAmount = (int)burnAmount;
-            output = burnAmount;
             if (Map.Flags.Exists(f => f.Key.Equals($"MPBurned_{c.Id}")))
                 Map.SetFlagValue($"MPBurned_{c.Id}", burnAmount);
             else
@@ -139,10 +136,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             c.MP.Current = Math.Max(0, c.MP.Current - burnAmount);
             return true;
         }
-        public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args)
+        public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
-            output = 0;
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, previousEffectOutput, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to remove Target's Hunger when it's not a Character.
                 return false;
@@ -151,7 +147,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (!c.UsesMP || c.Hunger == null)
                 return false;
 
-            var accuracyCheck = ActionHelpers.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;
@@ -159,7 +155,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 hungerAmount = 1;
             hungerAmount = (int)hungerAmount;
-            output = hungerAmount;
             if (hungerAmount <= 0)
                 return false;
             if (c.EntityType == EntityType.Player

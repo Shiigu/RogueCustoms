@@ -14,15 +14,16 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Drawing;
 using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
 using System.Globalization;
+using RogueCustomsGameEngine.Utils.Expressions;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
-    #pragma warning disable IDE0037 // Usar nombre de miembro inferido
-    #pragma warning disable CS8601 // Posible asignación de referencia nula
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable IDE0037 // Usar nombre de miembro inferido
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     [Serializable]
     public sealed class ActionWithEffects
     {
@@ -167,9 +168,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, source, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, source, target);
 
-                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+                if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
 
             if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.ContainingRoom) return false;
@@ -199,9 +200,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, source, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, source, target);
 
-                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+                if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
 
             if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.Room) return false;
@@ -246,7 +247,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (!string.IsNullOrWhiteSpace(imperfectAccuracyParam))
             {
-                descriptionWithUsageNotes.Append($"\n\n{Locale["CharacterAccuracyStat"]}: {imperfectAccuracyParam:0}%");
+                descriptionWithUsageNotes.Append($"\n{Locale["CharacterAccuracyStat"]}: {imperfectAccuracyParam:0}%");
             }
 
             if (MaximumRange == 0)
@@ -327,10 +328,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
 
                 if(!string.IsNullOrWhiteSpace(UseCondition))
-                {
-                    var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, sourceAsCharacter, target);
+                {                    
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, sourceAsCharacter, target);
 
-                    if (!ActionHelpers.CalculateBooleanExpression(parsedCondition))
+                    if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))
                     {
                         if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                             descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
@@ -397,9 +398,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!MayBeUsed) return false;
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ActionHelpers.ParseArgForExpression(UseCondition, User, character, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, character, target);
 
-                if (!ActionHelpers.CalculateBooleanExpression(parsedCondition)) return false;
+                if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
             return true;
         }
@@ -433,7 +434,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");
 
-        public delegate bool ActionMethod(Entity This, Entity Source, ITargetable Target, int previousEffectOutput, out int output, params (string ParamName, string Value)[] args);
+        public delegate bool ActionMethod(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args);
 
         public string EffectMethodName { get; set; }
         public string EffectClassName { get; set; }
@@ -488,8 +489,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             do
             {
-                int output = 0;
-                var success = currentEffect.Function(This, Source, Target, output, out output, currentEffect.Params);
+                var success = currentEffect.Function(This, Source, Target, currentEffect.Params);
                 if (success)
                     successfulEffects.Add(currentEffect.Function.Method.Name);
                 if (currentEffect.Then != null)

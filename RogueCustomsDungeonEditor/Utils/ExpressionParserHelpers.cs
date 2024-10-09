@@ -19,10 +19,14 @@ using System.Linq.Expressions;
 using Expression = org.matheval.Expression;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Exceptions;
+using RogueCustomsGameEngine.Utils.Expressions;
+using System.Reflection;
+using RogueCustomsDungeonEditor.Utils.ExpressionFunctions;
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 
 namespace RogueCustomsDungeonEditor.Utils
 {
-    public static class ActionValidationHelpers
+    public static class ExpressionParserHelpers
     {
         public static bool TestNumericExpression(this string expression, bool checkDiceNotationAsWell, out string errorMessage)
         {
@@ -63,14 +67,34 @@ namespace RogueCustomsDungeonEditor.Utils
 
         private static string ConvertArgsToPlaceholders(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder)
         {
-            var parsedArg = arg;
+            var tokens = ExpressionParser.SplitExpression(arg);
 
-            parsedArg = parsedArg.Replace("{CalculatedDamage}", "1");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
-            parsedArg = parsedArg.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var token = tokens[i];
+                token = token.Replace("{CalculatedDamage}", "1");
+                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
+                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
+                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
+                token = ParseNamedFlags(token, numericPlaceholder);
+                tokens[i] = token;
+            }
+            // Second pass: handle function parsing and execution
+            // Since logical operators might be in place, split the expression based on those, and handle function parsing for each part.
+            tokens = ExpressionParser.SplitExpression(string.Join("", tokens));
 
-            return parsedArg;
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var function = DummyFunction.FromExpression(tokens[i]);
+                if (function != null)
+                {
+                    // Execute the function and replace the token with its result
+                    tokens[i] = function.Execute(null, null, null);
+                }
+            }
+
+            // Return the fully parsed expression
+            return string.Join("", tokens);
         }
 
         private static string ParseArgsForPlaceHolder(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
@@ -78,11 +102,7 @@ namespace RogueCustomsDungeonEditor.Utils
             var parsedArg = arg;
 
             parsedArg = ParseEntityNames(parsedArg, stringPlaceholder, eName);
-            parsedArg = ParseEntityProperties(parsedArg, numericPlaceholder, stringPlaceholder, eName);
-            parsedArg = ParseRngExpressions(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
-            parsedArg = ParseFlagExistsExpressions(parsedArg, booleanPlaceholder);
-            parsedArg = ParseNamedFlags(parsedArg, numericPlaceholder);
-            parsedArg = ParseStatusCheck(parsedArg, numericPlaceholder, stringPlaceholder, booleanPlaceholder, eName);
+            parsedArg = ParseObjectProperties(parsedArg, numericPlaceholder, stringPlaceholder, eName);
 
             return parsedArg;
         }
@@ -96,11 +116,11 @@ namespace RogueCustomsDungeonEditor.Utils
             return parsedArg;
         }
 
-        private static string ParseEntityProperties(string arg, string numericPlaceholder, string stringPlaceholder, string eName)
+
+        private static string ParseObjectProperties(string arg, string numericPlaceholder, string stringPlaceholder, string eName)
         {
             var parsedArg = arg;
-
-            var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(AlteredStatus) };
+            var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(Trap), typeof(AlteredStatus), typeof(Tile) };
 
             foreach (var entityType in entityTypes)
             {
@@ -122,74 +142,6 @@ namespace RogueCustomsDungeonEditor.Utils
                         }
                     }
                 }
-            }
-
-            return parsedArg;
-        }
-
-        private static string ParseStatusCheck(string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
-        {
-            var parsedArg = arg;
-
-            var statusRegex = new Regex(@"HasStatus\(([^,]+),\s*([^)]+)\)|DoesNotHaveStatus\(([^,]+),\s*([^)]+)\)", RegexOptions.IgnoreCase);
-            if (statusRegex.IsMatch(parsedArg))
-            {
-                var logicalOperators = new string[] { "&&", "||" };
-                var subExpressions = parsedArg.Split(logicalOperators, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var subExpression in subExpressions)
-                {
-                    var parsedSubExpression = new string(subExpression.Trim());
-                    var match = statusRegex.Match(subExpression);
-
-                    if (match.Success)
-                    {
-                        if (match.Groups.Count < 5) continue;
-
-                        var isNot = subExpression.Contains("DoesNotHaveStatus", StringComparison.InvariantCultureIgnoreCase);
-
-                        var entityName = isNot ? match.Groups[3].Value : match.Groups[1].Value;
-
-                        if (!entityName.Equals(eName)) continue;
-
-                        parsedArg = parsedArg.Replace(match.Value.Trim(), booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                    }
-                }
-            }
-
-            return parsedArg;
-        }
-
-        private static string ParseRngExpressions(string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
-        {
-            var parsedArg = arg;
-            var rngRegex = @"rng\((\d+),\s*(\d+)\)";
-            var matches = Regex.Matches(arg, rngRegex, RegexOptions.IgnoreCase);
-
-            foreach (Match match in matches)
-            {
-                if (int.TryParse(match.Groups[1].Value, out int x) && int.TryParse(match.Groups[2].Value, out int y))
-                {
-                    if (x > y)
-                    {
-                        throw new ArgumentException($"Invalid rng({x},{y}) expression: first parameter cannot be greater than the second.");
-                    }
-
-                    parsedArg = parsedArg.Replace(match.Value, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                }
-            }
-
-            return parsedArg;
-        }
-        private static string ParseFlagExistsExpressions(string arg, string booleanPlaceholder)
-        {
-            string regexFlagExists = @"FlagExists\(([^)]+)\)";
-            string parsedArg = arg;
-            var matches = Regex.Matches(arg, regexFlagExists);
-
-            foreach (Match match in matches)
-            {
-                parsedArg = parsedArg.Replace(match.Value, booleanPlaceholder, StringComparison.InvariantCultureIgnoreCase);
             }
 
             return parsedArg;
@@ -263,16 +215,17 @@ namespace RogueCustomsDungeonEditor.Utils
                 flagsAreInvolved = true;
             }
 
-            dynamic paramsObject = ActionHelpers.ParseParams(This, Source, Target, 0, effect.Params);
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, effect.Params);
 
-            var paramsObjectAsDictionary = (IDictionary<string, object>)paramsObject;
+            var paramsObjectAsDictionary = paramsObject.ToDictionary();
 
             return paramsObjectAsDictionary.Count >= effect.Params.Count(p => !string.IsNullOrEmpty(p.Value));
         }
 
         public static bool TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
         {
-            return effect.Function(This, Source, Target, 0, out _, effect.Params);
+            return effect.Function(This, Source, Target, effect.Params);
         }
     }
 }
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

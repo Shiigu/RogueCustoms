@@ -1,4 +1,6 @@
-﻿using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+﻿using org.matheval;
+
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.ComponentModel;
@@ -12,6 +14,19 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         public static bool IsDiceNotation(this string s)
         {
             return Regex.Match(s, Constants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
+        }
+
+        public static bool IsMathExpression(this string input)
+        {
+            try
+            {
+                new Expression(input).Eval<decimal>();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static bool IsBooleanExpression(this string input)
