@@ -109,7 +109,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public RngHandler Rng { get; private set; }
         public (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
-        private List<(Room RoomA, Room RoomB)> Hallways { get; set; }
+        private List<(Room RoomA, Room RoomB, Tile ConnectorA, Tile ConnectorB, List<Tile> Tiles)> Hallways { get; set; }
         private List<(Room RoomA, Room RoomB, Room FusedRoom)> Fusions { get; set; }
 
         public Tile[,] Tiles { get; private set; }
@@ -122,6 +122,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<EntityClass> PossibleItemClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable).ToList();
         public List<EntityClass> PossibleTrapClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
 
+        public List<TileType> TileTypes { get; private set; }
+
+        public List<TileType> DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
+
         #endregion
 
         public Map(Dungeon dungeon, int floorLevel, List<Flag> flags)
@@ -132,16 +136,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Items = new List<Item>();
             Keys = new List<Key>();
             Traps = new List<Trap>();
+            TileTypes = dungeon.TileTypes;
             FloorConfigurationToUse = Dungeon.FloorTypes.Find(ft => floorLevel.Between(ft.MinFloorLevel, ft.MaxFloorLevel));
             if (FloorConfigurationToUse == null)
                 throw new InvalidDataException("There's no valid configuration for the current floor");
+            TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
             Width = FloorConfigurationToUse.Width;
             Height = FloorConfigurationToUse.Height;
             Rng = new RngHandler(Environment.TickCount);
             Flags = flags;
             if (!FloorConfigurationToUse.PossibleLayouts.Any())
                 throw new InvalidDataException("There's no valid Floor Layout for the current floor");
-            ConsoleRepresentation.EmptyTile = TileSet.Empty;
+            ConsoleRepresentation.EmptyTile = TileTypes.FirstOrDefault(tt => tt.Name.Equals("Empty"))?.TileTypeSet?.Central
+                                                ?? new() { BackgroundColor = new(Color.Black), ForegroundColor = new (Color.Black), Character = ' ' };
             GeneratorToUse = FloorConfigurationToUse.PossibleLayouts.TakeRandomElement(Rng);
             DefaultGeneratorToUse.MaxRoomSize = new() { Width = Width, Height = Height };
             DefaultGeneratorToUse.RoomDisposition[0, 0] = RoomDispositionType.GuaranteedRoom;
@@ -210,6 +217,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 Parallel.ForEach(Rooms, r => r.CreateTiles());
                 if ((Rooms.Count == 1 && !Rooms.Any(r => r.IsDummy)) || Rooms.Count(r => !r.IsDummy) > 1)
                 {
+                    var n = Tiles.GetIslands(t => t.IsWalkable);
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
                     if (success)
                     {
@@ -662,7 +670,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (room.HasItems)
                 return true;
 
-            foreach (var (RoomA, RoomB) in Hallways.Where(h => h.RoomA == room || h.RoomB == room))
+            foreach (var (RoomA, RoomB, _, _ , _) in Hallways.Where(h => h.RoomA == room || h.RoomB == room))
             {
                 if (RoomA == room)
                     if (RoomB.GetTiles().Any(t => t.Type == TileType.Door))
@@ -1168,8 +1176,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerUseStairs()
         {
-            var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
-            if (Player.ContainingTile != stairsTile)
+            if (Player.ContainingTile.Type != TileType.Stairs)
                 throw new ArgumentException($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
             AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }), Color.Yellow);
             Dungeon.TakeStairs();
@@ -1348,7 +1355,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else if (tile.Type == TileType.Door)
                 targetName = Locale[$"DoorType{tile.DoorId}"];
             else
-                targetName = Locale[$"TileType{tile.Type}"];
+                targetName = Locale[tile.Type.Name];
             var actionList = new ActionListDto(targetName);
 
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, tile, this, true));
@@ -1586,6 +1593,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     return characterBaseConsoleRepresentation;
                 }
             }
+            if (Player.ContainingTile == tile)
+                return Player.ConsoleRepresentation;
             if (tile.Type == TileType.Stairs)
                 return tileBaseConsoleRepresentation;
             var visibleItems = tile.GetPickableObjects().Where(i => i.CanBeSeenBy(Player));
@@ -1660,7 +1669,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public List<Tile> GetFOVTilesWithinDistance(GamePoint source, int distance)
         {
-            var tilesWithinDistance = Tiles.Where(t => t.Type != TileType.Empty && Math.Round(GamePoint.Distance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance);
+            var tilesWithinDistance = Tiles.Where(t => t.Type.IsVisible && Math.Round(GamePoint.Distance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance);
             var visibleTiles = new List<Tile>();
             foreach (var tile in tilesWithinDistance)
             {
@@ -1673,7 +1682,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var componentPositions = new List<GamePoint>();
             var sourcePosition = source.Position;
             var targetPosition = target.Position;
-            componentPositions.AddRange(MathAlgorithms.Raycast(sourcePosition, targetPosition, p => p.X, p => p.Y, (x, y) => new GamePoint(x, y), p => GetTileFromCoordinates(p).IsWalkable, p => GetTileFromCoordinates(p).Type == TileType.Hallway && GetTileFromCoordinates(p).Room == null, distance, (p1, p2) => GamePoint.Distance(p1, p2)).ToList());
+            componentPositions.AddRange(MathAlgorithms.Raycast(sourcePosition, targetPosition, p => p.X, p => p.Y, (x, y) => new GamePoint(x, y), p => !GetTileFromCoordinates(p).IsSolid, p => !GetTileFromCoordinates(p).IsSolid && GetTileFromCoordinates(p).Room == null, distance, (p1, p2) => GamePoint.Distance(p1, p2)).ToList());
             if(!componentPositions.Contains(sourcePosition))
                 componentPositions.Add(sourcePosition);
 
@@ -1683,7 +1692,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return componentPositions.OrderBy(p => GamePoint.Distance(p, sourcePosition))
                                      .ToList()
                                      .ConvertAll(p => GetTileFromCoordinates(p))
-                                     .TakeUntil(t => !t.IsWalkable)
+                                     .TakeUntil(t => t.IsSolid)
                                      .ToList();
         }
 
@@ -1705,7 +1714,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CreateHorizontalHallway(roomB, roomA);
                     else
                         return;
-                    Hallways.Add((roomA, roomB));
                 }
                 else if (edge.Tag == RoomConnectionType.Vertical)
                 {
@@ -1715,7 +1723,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CreateVerticalHallway(roomB, roomA);
                     else
                         return;
-                    Hallways.Add((roomA, roomB));
                 }
             }
             catch
@@ -1816,6 +1823,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (isValidHallway)
             {
                 BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
+                Hallways.Add((leftRoom, rightRoom, connectorA, connectorB, tilesToConvert));
             }
         }
 
@@ -1910,6 +1918,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (isValidHallway)
             {
                 BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
+                Hallways.Add((topRoom, downRoom, connectorA, connectorB, tilesToConvert));
             }
         }
 
@@ -2007,7 +2016,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             foreach (var tile in tilesToConvert)
             {
                 tile.Type = TileType.Hallway;
-                if (tile == connectorA || tile == connectorB)
+                if (tile.Room != null)
                     tile.IsConnectorTile = true;
             }
         }

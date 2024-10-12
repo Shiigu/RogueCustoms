@@ -214,7 +214,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.FromInventory = new Expression(value).Eval<bool>();
                     return true;
                 case "tiletype":
-                    paramsObject.TileType = Enum.Parse<TileType>(value, true);
+                    paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase));
                     return true;
                 case "value":
                     paramsObject.Value = (int)CalculateDiceNotationIfNeeded(value);

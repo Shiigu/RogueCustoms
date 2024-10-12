@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonTilesetValidator
@@ -16,89 +18,70 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         {
             var messages = new DungeonValidationMessages();
 
-            foreach (var errorMessage in tileSet.TopLeftWall.Validate($"{tileSet.Id ?? "NULL"}'s Top Left Wall"))
+            foreach (var tileTypeSet in tileSet.TileTypes)
             {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.TopRightWall.Validate($"{tileSet.Id ?? "NULL"}'s Top Right Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.BottomLeftWall.Validate($"{tileSet.Id ?? "NULL"}'s Bottom Left Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.BottomRightWall.Validate($"{tileSet.Id ?? "NULL"}'s Bottom Right Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.HorizontalWall.Validate($"{tileSet.Id ?? "NULL"}'s Horizontal Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.ConnectorWall.Validate($"{tileSet.Id ?? "NULL"}'s Connector Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.VerticalWall.Validate($"{tileSet.Id ?? "NULL"}'s Vertical Wall"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.TopLeftHallway.Validate($"{tileSet.Id ?? "NULL"}'s Top Left Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.TopRightHallway.Validate($"{tileSet.Id ?? "NULL"}'s Top Right Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.BottomLeftHallway.Validate($"{tileSet.Id ?? "NULL"}'s Bottom Left Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.BottomRightHallway.Validate($"{tileSet.Id ?? "NULL"}'s Bottom Right Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.HorizontalHallway.Validate($"{tileSet.Id ?? "NULL"}'s Horizontal Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.HorizontalBottomHallway.Validate($"{tileSet.Id ?? "NULL"}'s Horizontal Bottom Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.HorizontalTopHallway.Validate($"{tileSet.Id ?? "NULL"}'s Horizontal Top Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.VerticalHallway.Validate($"{tileSet.Id ?? "NULL"}'s Vertical Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.VerticalLeftHallway.Validate($"{tileSet.Id ?? "NULL"}'s Vertical Left Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.VerticalRightHallway.Validate($"{tileSet.Id ?? "NULL"}'s Vertical Right Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.CentralHallway.Validate($"{tileSet.Id ?? "NULL"}'s Central Hallway"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.Floor.Validate($"{tileSet.Id ?? "NULL"}'s Floor"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.Stairs.Validate($"{tileSet.Id ?? "NULL"}'s Stairs"))
-            {
-                messages.AddError(errorMessage);
-            }
-            foreach (var errorMessage in tileSet.Empty.Validate($"{tileSet.Id ?? "NULL"}'s Empty (inaccessible)"))
-            {
-                messages.AddError(errorMessage);
+                var tileType = dungeonJson.TileTypeInfos.Find(tti => tti.Id.Equals(tileTypeSet.TileTypeId));
+
+                foreach (var errorMessage in tileTypeSet.Central.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Central/Default"))
+                {
+                    messages.AddError(errorMessage);
+                }
+
+                if (tileType.CanVisiblyConnectWithOtherTiles && tileType.ProducesWallConnectors)
+                {
+                    foreach (var errorMessage in tileTypeSet.Connector.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Connector"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                }
+
+                if (tileType.CanVisiblyConnectWithOtherTiles)
+                {
+                    foreach (var errorMessage in tileTypeSet.TopLeft.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Top Left"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.TopRight.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Top Right"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.BottomLeft.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Bottom Left"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.BottomRight.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Bottom Right"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.Horizontal.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Horizontal"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.Vertical.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Vertical"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                }
+
+                if (tileType.CanVisiblyConnectWithOtherTiles && tileType.CanHaveMultilineConnections)
+                {
+                    foreach (var errorMessage in tileTypeSet.HorizontalBottom.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Horizontal Bottom"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.HorizontalTop.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Horizontal Top"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.VerticalLeft.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Vertical Left"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                    foreach (var errorMessage in tileTypeSet.VerticalRight.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Vertical Right"))
+                    {
+                        messages.AddError(errorMessage);
+                    }
+                }
             }
 
             if(!dungeonJson.FloorInfos.Exists(fi => fi.TileSetId.Equals(tileSet.Id)))

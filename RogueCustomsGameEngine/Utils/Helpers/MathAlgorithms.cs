@@ -114,13 +114,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                     x1 += sx;
                 }
 
-                //if (x1 == x2 && y1 == y2)
-                //{
-                //    var finalTValue = coordToTFunc(x1, y1);
-                //    yield return finalTValue;
-                //    break;
-                //}
-
                 if (e2 < dx)
                 {
                     err += dx;

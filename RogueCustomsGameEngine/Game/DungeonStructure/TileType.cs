@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.JsonImports;
+
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+
+namespace RogueCustomsGameEngine.Game.DungeonStructure
+{
+    public class TileType
+    {
+        public static TileType Empty;
+        public static TileType Floor;
+        public static TileType Wall;
+        public static TileType Hallway;
+        public static TileType Stairs;
+        public static readonly TileType Door = new ()
+        {
+            Name = "Door",
+            IsVisible = false,
+            CanTeleportFrom = false,
+            AcceptsItems = false,
+            IsWalkable = false,
+            IsSolid = true,
+            CanBeTransformed = false,
+            CanVisiblyConnectWithOtherTiles = false,
+            ProducesWallConnectors = false,
+            CanHaveMultilineConnections = false,
+        };
+
+        public override string ToString() => Name;
+
+        public string Name { get; set; }
+        public bool IsWalkable { get; set; }
+        public bool IsSolid { get; set; } // If true, it will end Line of Sight, Projectiles and Diagonal Attacks
+        public bool IsVisible { get; set; }
+        public bool CanTeleportFrom { get; set; }
+        public bool AcceptsItems { get; set; }
+        public bool CanBeTransformed { get; set; }
+        public bool ProducesWallConnectors { get; set; }
+        public bool CanVisiblyConnectWithOtherTiles { get; set; } // If true, it will make use of TopLeft, TopRight, Central, BottomVertical, etc. ConsoleRepresentations
+        public bool CanHaveMultilineConnections { get; set; }
+        public TileTypeSet TileTypeSet { get; set; }
+
+        public TileType() { }
+
+        public TileType(TileTypeInfo tileTypeInfo)
+        {
+            if (tileTypeInfo.Id.Equals("Empty"))
+                Empty = this;
+            else if (tileTypeInfo.Id.Equals("Floor"))
+                Floor = this;
+            else if (tileTypeInfo.Id.Equals("Wall"))
+                Wall = this;
+            else if (tileTypeInfo.Id.Equals("Hallway"))
+                Hallway = this;
+            else if (tileTypeInfo.Id.Equals("Stairs"))
+                Stairs = this;
+            Name = tileTypeInfo.Name;
+            IsVisible = tileTypeInfo.IsVisible;
+            IsWalkable = tileTypeInfo.IsWalkable;
+            IsSolid = tileTypeInfo.IsSolid;
+            CanTeleportFrom = tileTypeInfo.CanTeleportFrom;
+            AcceptsItems = tileTypeInfo.AcceptsItems;
+            CanBeTransformed = tileTypeInfo.CanBeTransformed;
+            ProducesWallConnectors = tileTypeInfo.ProducesWallConnectors;
+            CanVisiblyConnectWithOtherTiles = tileTypeInfo.CanVisiblyConnectWithOtherTiles;
+            CanHaveMultilineConnections = tileTypeInfo.CanHaveMultilineConnections;
+        }
+    }
+}
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

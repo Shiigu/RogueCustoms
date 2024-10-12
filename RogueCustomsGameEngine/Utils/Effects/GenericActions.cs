@@ -400,7 +400,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to teleport Target when it's not a Character.
                 return false;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
-            if ((c.ContainingTile.Type == TileType.Floor || c.ContainingTile.Type == TileType.Stairs) && Rng.RollProbability() <= accuracyCheck)
+            if (c.ContainingTile.Type.CanTeleportFrom && Rng.RollProbability() <= accuracyCheck)
             {
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))

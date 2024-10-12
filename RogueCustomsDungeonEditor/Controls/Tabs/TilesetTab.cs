@@ -25,84 +25,52 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             InitializeComponent();
         }
 
-        public void LoadData(TileSetInfo tilesetInfoToLoad)
+        public void LoadData(TileSetInfo tilesetInfoToLoad, DungeonInfo activeDungeon)
         {
+            ActiveDungeon = activeDungeon;
             LoadedTileSet = tilesetInfoToLoad;
-            csrTopLeftWall.SetConsoleRepresentation(tilesetInfoToLoad.TopLeftWall);
-            csrTopRightWall.SetConsoleRepresentation(tilesetInfoToLoad.TopRightWall);
-            csrBottomLeftWall.SetConsoleRepresentation(tilesetInfoToLoad.BottomLeftWall);
-            csrBottomRightWall.SetConsoleRepresentation(tilesetInfoToLoad.BottomRightWall);
-            csrHorizontalWall.SetConsoleRepresentation(tilesetInfoToLoad.HorizontalWall);
-            csrConnectorWall.SetConsoleRepresentation(tilesetInfoToLoad.ConnectorWall);
-            csrVerticalWall.SetConsoleRepresentation(tilesetInfoToLoad.VerticalWall);
-            csrTopLeftHallway.SetConsoleRepresentation(tilesetInfoToLoad.TopLeftHallway);
-            csrTopRightHallway.SetConsoleRepresentation(tilesetInfoToLoad.TopRightHallway);
-            csrBottomLeftHallway.SetConsoleRepresentation(tilesetInfoToLoad.BottomLeftHallway);
-            csrBottomRightHallway.SetConsoleRepresentation(tilesetInfoToLoad.BottomRightHallway);
-            csrHorizontalHallway.SetConsoleRepresentation(tilesetInfoToLoad.HorizontalHallway);
-            csrHorizontalBottomHallway.SetConsoleRepresentation(tilesetInfoToLoad.HorizontalBottomHallway);
-            csrHorizontalTopHallway.SetConsoleRepresentation(tilesetInfoToLoad.HorizontalTopHallway);
-            csrVerticalHallway.SetConsoleRepresentation(tilesetInfoToLoad.VerticalHallway);
-            csrVerticalLeftHallway.SetConsoleRepresentation(tilesetInfoToLoad.VerticalLeftHallway);
-            csrVerticalRightHallway.SetConsoleRepresentation(tilesetInfoToLoad.VerticalRightHallway);
-            csrCentralHallway.SetConsoleRepresentation(tilesetInfoToLoad.CentralHallway);
-            csrFloor.SetConsoleRepresentation(tilesetInfoToLoad.Floor);
-            csrStairs.SetConsoleRepresentation(tilesetInfoToLoad.Stairs);
-            csrEmpty.SetConsoleRepresentation(tilesetInfoToLoad.Empty);
+            flpTileTypeSets.Controls.Clear();
+            foreach (var tileTypeSet in tilesetInfoToLoad.TileTypes)
+            {
+                var correspondingTileType = ActiveDungeon.TileTypeInfos.Find(tti => tti.Id.Equals(tileTypeSet.TileTypeId));
+                if (correspondingTileType != null)
+                {
+                    AddTileTypeSetEditor(tileTypeSet, correspondingTileType);
+                }
+            }
+        }
+
+        private void AddTileTypeSetEditor(TileTypeSetInfo tileTypeSet, TileTypeInfo tileType)
+        {
+            var tileTypeSetEditor = new TileTypeSetEditor();
+
+            tileTypeSetEditor.LoadData(tileTypeSet, tileType);
+            tileTypeSetEditor.TabInfoChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
+
+            flpTileTypeSets.FlowDirection = FlowDirection.TopDown;
+            flpTileTypeSets.WrapContents = false;  // Ensures controls don't wrap
+            flpTileTypeSets.AutoScroll = true;
+            flpTileTypeSets.Controls.Add(tileTypeSetEditor);
         }
 
         public List<string> SaveData(string id)
         {
             var validationErrors = new List<string>();
 
-            validationErrors.AddRange(csrTopLeftWall.ConsoleRepresentation.Validate("Top Left Wall"));
-            validationErrors.AddRange(csrTopRightWall.ConsoleRepresentation.Validate("Top Right Wall"));
-            validationErrors.AddRange(csrBottomLeftWall.ConsoleRepresentation.Validate("Bottom Left Wall"));
-            validationErrors.AddRange(csrBottomRightWall.ConsoleRepresentation.Validate("Bottom Right Wall"));
-            validationErrors.AddRange(csrHorizontalWall.ConsoleRepresentation.Validate("Horizontal Wall"));
-            validationErrors.AddRange(csrConnectorWall.ConsoleRepresentation.Validate("Connector Wall"));
-            validationErrors.AddRange(csrVerticalWall.ConsoleRepresentation.Validate("Vertical Wall"));
-            validationErrors.AddRange(csrTopLeftHallway.ConsoleRepresentation.Validate("Top Left Hallway"));
-            validationErrors.AddRange(csrTopRightHallway.ConsoleRepresentation.Validate("Top Right Hallway"));
-            validationErrors.AddRange(csrBottomLeftHallway.ConsoleRepresentation.Validate("Bottom Left Hallway"));
-            validationErrors.AddRange(csrBottomRightHallway.ConsoleRepresentation.Validate("Bottom Right Hallway"));
-            validationErrors.AddRange(csrHorizontalHallway.ConsoleRepresentation.Validate("Horizontal Hallway"));
-            validationErrors.AddRange(csrHorizontalBottomHallway.ConsoleRepresentation.Validate("Horizontal Bottom Hallway"));
-            validationErrors.AddRange(csrHorizontalTopHallway.ConsoleRepresentation.Validate("Horizontal Top Hallway"));
-            validationErrors.AddRange(csrVerticalHallway.ConsoleRepresentation.Validate("Vertical Hallway"));
-            validationErrors.AddRange(csrVerticalLeftHallway.ConsoleRepresentation.Validate("Vertical Left Hallway"));
-            validationErrors.AddRange(csrVerticalRightHallway.ConsoleRepresentation.Validate("Vertical Right Hallway"));
-            validationErrors.AddRange(csrCentralHallway.ConsoleRepresentation.Validate("Central Hallway"));
-            validationErrors.AddRange(csrFloor.ConsoleRepresentation.Validate("Floor"));
-            validationErrors.AddRange(csrStairs.ConsoleRepresentation.Validate("Stairs"));
-            validationErrors.AddRange(csrEmpty.ConsoleRepresentation.Validate("Empty (inaccessible)"));
+            var tileTypeSetsToAdd = new List<TileTypeSetInfo>();
+
+            foreach (TileTypeSetEditor tileTypeSetEditor in flpTileTypeSets.Controls)
+            {
+                validationErrors.AddRange(tileTypeSetEditor.ValidateTiles());
+                tileTypeSetsToAdd.Add(tileTypeSetEditor.TileTypeSetInfo);
+            }
 
             if (!validationErrors.Any())
             {
                 LoadedTileSet = new TileSetInfo
                 {
                     Id = id,
-                    TopLeftWall = csrTopLeftWall.ConsoleRepresentation,
-                    TopRightWall = csrTopRightWall.ConsoleRepresentation,
-                    BottomLeftWall = csrBottomLeftWall.ConsoleRepresentation,
-                    BottomRightWall = csrBottomRightWall.ConsoleRepresentation,
-                    HorizontalWall = csrHorizontalWall.ConsoleRepresentation,
-                    ConnectorWall = csrConnectorWall.ConsoleRepresentation,
-                    VerticalWall = csrVerticalWall.ConsoleRepresentation,
-                    TopLeftHallway = csrTopLeftHallway.ConsoleRepresentation,
-                    TopRightHallway = csrTopRightHallway.ConsoleRepresentation,
-                    BottomLeftHallway = csrBottomLeftHallway.ConsoleRepresentation,
-                    BottomRightHallway = csrBottomRightHallway.ConsoleRepresentation,
-                    HorizontalHallway = csrHorizontalHallway.ConsoleRepresentation,
-                    HorizontalBottomHallway = csrHorizontalBottomHallway.ConsoleRepresentation,
-                    HorizontalTopHallway = csrHorizontalTopHallway.ConsoleRepresentation,
-                    VerticalHallway = csrVerticalHallway.ConsoleRepresentation,
-                    VerticalLeftHallway = csrVerticalLeftHallway.ConsoleRepresentation,
-                    VerticalRightHallway = csrVerticalRightHallway.ConsoleRepresentation,
-                    CentralHallway = csrCentralHallway.ConsoleRepresentation,
-                    Floor = csrFloor.ConsoleRepresentation,
-                    Stairs = csrStairs.ConsoleRepresentation,
-                    Empty = csrEmpty.ConsoleRepresentation
+                    TileTypes = tileTypeSetsToAdd
                 };
             }
 

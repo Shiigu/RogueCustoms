@@ -44,6 +44,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target must be a Tile
                 return false;
 
+            if (!t.Type.CanBeTransformed)
+                // Target must be a Tile that can be Transformed
+                return false;
+
             if (paramsObject.TileType != TileType.Floor && paramsObject.TileType != TileType.Wall)
                 // Cannot turn the tile into Hallway, Stairs or Empty
                 return false;
@@ -95,7 +99,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target must be a Tile
                 return false;
 
-            if (t.Type != TileType.Floor && t.Type != TileType.Hallway)
+            if (t.Type.AcceptsItems)
                 // Target Tile must be a Floor or Hallway
                 return false;
 

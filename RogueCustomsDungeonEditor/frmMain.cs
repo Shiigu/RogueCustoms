@@ -1263,7 +1263,7 @@ namespace RogueCustomsDungeonEditor
 
         private void LoadTileSetInfoFor(TileSetInfo tileSet)
         {
-            TilesetTab.LoadData(tileSet);
+            TilesetTab.LoadData(tileSet, ActiveDungeon);
         }
 
         private bool SaveTileSet()
