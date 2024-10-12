@@ -20,7 +20,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     public sealed class Tile : ITargetable, IEquatable<Tile?>
     {
         public GamePoint Position { get; set; }
-
         private TileType _type { get; set; } = TileType.Empty;
         public TileType Type
         {
@@ -52,7 +51,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 _consoleRepresentation = null;
             }
         }
-        public bool IsWalkable => Type != TileType.Empty && Type != TileType.Door && Type != TileType.Wall;
+        public bool IsWalkable => Type.IsWalkable;
+        public bool IsSolid => Type.IsSolid;
         public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
 
         private ConsoleRepresentation _consoleRepresentation;
@@ -62,160 +62,101 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 if (_consoleRepresentation == null)
                 {
-                    _consoleRepresentation = new ConsoleRepresentation();
-                    if (Type == TileType.Empty)
+                    if (!Map.DefaultTileTypes.Contains(Type))
+                        _consoleRepresentation = GetConsoleRepresentationOfCustomType();
+                    else
                     {
-                        _consoleRepresentation = Map.TileSet.Empty;
-                    }
-                    else if (Type == TileType.Stairs)
-                    {
-                        _consoleRepresentation = Map.TileSet.Stairs;
-                    }
-                    else if (Type == TileType.Floor)
-                    {
-                        _consoleRepresentation = Map.TileSet.Floor;
-                    }
-                    else if (Type == TileType.Door)
-                    {
-                        var keyType = Map.FloorConfigurationToUse.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(DoorId));
-                        _consoleRepresentation = keyType.DoorConsoleRepresentation;
-                    }
-                    else if (Type == TileType.Wall)
-                    {
-                        if (Room != null)
+                        _consoleRepresentation = new ConsoleRepresentation();
+                        if (Type == TileType.Empty)
                         {
-                            if (Position.Equals(Room.TopLeft))
-                                _consoleRepresentation = Map.TileSet.TopLeftWall;
-                            else if (Position.Equals(Room.TopRight))
-                                _consoleRepresentation = Map.TileSet.TopRightWall;
-                            else if (Position.Equals(Room.BottomLeft))
-                                _consoleRepresentation = Map.TileSet.BottomLeftWall;
-                            else if (Position.Equals(Room.BottomRight))
-                                _consoleRepresentation = Map.TileSet.BottomRightWall;
-                            else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
-                                _consoleRepresentation = Map.TileSet.VerticalWall;
-                            else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
-                                _consoleRepresentation = Map.TileSet.HorizontalWall;
-                            else // This should only trigger when it's a Wall that was created by a Character
-                                _consoleRepresentation = Map.TileSet.HorizontalWall;
+                            _consoleRepresentation = Type.TileTypeSet.Central;
                         }
-                        else // This should only trigger when it's a Wall that was created by a Character on a Hallway
+                        else if (Type == TileType.Stairs)
                         {
-                            _consoleRepresentation = Map.TileSet.HorizontalWall;
+                            _consoleRepresentation = Type.TileTypeSet.Central;
                         }
-                    }
-                    else if (Type == TileType.Hallway)
-                    {
-                        if (_isConnectorTile && !Room.IsDummy)
+                        else if (Type == TileType.Floor)
                         {
-                            _consoleRepresentation = Map.TileSet.ConnectorWall;
+                            _consoleRepresentation = Type.TileTypeSet.Central;
                         }
-                        else
+                        else if (Type == TileType.Door)
                         {
-                            if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                            && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                            && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                            && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                            var keyType = Map.FloorConfigurationToUse.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(DoorId));
+                            _consoleRepresentation = keyType.DoorConsoleRepresentation;
+                        }
+                        else if (Type == TileType.Wall)
+                        {
+                            if (Room != null)
                             {
-                                _consoleRepresentation = Map.TileSet.TopLeftHallway;
+                                if (Position.Equals(Room.TopLeft))
+                                    _consoleRepresentation = Type.TileTypeSet.TopLeft;
+                                else if (Position.Equals(Room.TopRight))
+                                    _consoleRepresentation = Type.TileTypeSet.TopRight;
+                                else if (Position.Equals(Room.BottomLeft))
+                                    _consoleRepresentation = Type.TileTypeSet.BottomLeft;
+                                else if (Position.Equals(Room.BottomRight))
+                                    _consoleRepresentation = Type.TileTypeSet.BottomRight;
+                                else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
+                                    _consoleRepresentation = Type.TileTypeSet.Vertical;
+                                else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
+                                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
+                                else // This should only trigger when it's a Wall that was created by a Character
+                                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
                             }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
+                            else // This should only trigger when it's a Wall that was created by a Character on a Hallway
                             {
-                                _consoleRepresentation = Map.TileSet.TopRightHallway;
+                                _consoleRepresentation = Type.TileTypeSet.Horizontal;
                             }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
+                        }
+                        else if (Type == TileType.Hallway)
+                        {
+                            if (_isConnectorTile && !Room.IsDummy)
                             {
-                                _consoleRepresentation = Map.TileSet.BottomLeftHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.BottomRightHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.VerticalHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.HorizontalTopHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.HorizontalBottomHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.VerticalLeftHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.VerticalRightHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.HorizontalHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type == TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.VerticalHallway;
-                            }
-                            else if (Map.GetTileFromCoordinates(Position.X - 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X + 1, Position.Y)?.Type != TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y - 1)?.Type == TileType.Hallway
-                                                        && Map.GetTileFromCoordinates(Position.X, Position.Y + 1)?.Type != TileType.Hallway)
-                            {
-                                _consoleRepresentation = Map.TileSet.VerticalHallway;
+                                _consoleRepresentation = Type.TileTypeSet.Connector;
                             }
                             else
                             {
-                                _consoleRepresentation = Map.TileSet.CentralHallway;
+
+                                var leftTile = Map.GetTileFromCoordinates(Position.X - 1, Position.Y);
+                                var rightTile = Map.GetTileFromCoordinates(Position.X + 1, Position.Y);
+                                var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
+                                var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
+
+                                bool leftIsHallway = leftTile?.Type == Type;
+                                bool rightIsHallway = rightTile?.Type == Type;
+                                bool topIsHallway = topTile?.Type == Type;
+                                bool bottomIsHallway = bottomTile?.Type == Type;
+
+                                // Logic for Hallway representation based on adjacent Hallway tiles
+                                if (!leftIsHallway && rightIsHallway && !topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.TopLeft;
+                                if (leftIsHallway && !rightIsHallway && !topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.TopRight;
+                                if (!leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.BottomLeft;
+                                if (leftIsHallway && !rightIsHallway && topIsHallway && !bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.BottomRight;
+                                if (leftIsHallway && rightIsHallway && !topIsHallway && !bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
+                                if (!leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.Vertical;
+
+                                // Top or bottom connectors
+                                if (leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.HorizontalTop;
+                                if (leftIsHallway && rightIsHallway && !topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.HorizontalBottom;
+
+                                // Left or right connectors
+                                if (leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.VerticalLeft;
+                                if (!leftIsHallway && rightIsHallway && topIsHallway && bottomIsHallway)
+                                    _consoleRepresentation = Type.TileTypeSet.VerticalRight;
+
+                                _consoleRepresentation = Type.TileTypeSet.Central; // Default if no clear adjacency pattern
                             }
                         }
-                    }
+                    }      
                 }
                 return _consoleRepresentation;
             }
@@ -224,7 +165,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Discovered { get; set; }
 
         public bool Visible { get; set; }
-        public bool Targetable => (IsWalkable || Type == TileType.Door) && Visible;
+        public bool Targetable => Type.IsVisible && (IsWalkable || Type == TileType.Door) && Visible;
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
@@ -290,16 +231,64 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return !(left == right);
         }
-    }
 
-    public enum TileType
-    {
-        Empty,
-        Floor,
-        Wall,
-        Hallway,
-        Door,
-        Stairs
+        private ConsoleRepresentation GetConsoleRepresentationOfCustomType()
+        {
+            var _consoleRepresentation = new ConsoleRepresentation();
+
+            if (!Type.CanVisiblyConnectWithOtherTiles)
+            {
+                _consoleRepresentation = Type.TileTypeSet.Central;
+            }
+            else if (Type.CanVisiblyConnectWithOtherTiles)
+            {
+                if (Type.ProducesWallConnectors)
+                {
+                    if (_isConnectorTile && !Room.IsDummy)
+                        _consoleRepresentation = Type.TileTypeSet.Connector;
+                }
+                else if (Type.CanHaveMultilineConnections)
+                {
+                    var leftTile = Map.GetTileFromCoordinates(Position.X - 1, Position.Y);
+                    var rightTile = Map.GetTileFromCoordinates(Position.X + 1, Position.Y);
+                    var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
+                    var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
+
+                    bool leftIsSameType = leftTile?.Type == Type;
+                    bool rightIsSameType = rightTile?.Type == Type;
+                    bool topIsSameType = topTile?.Type == Type;
+                    bool bottomIsSameType = bottomTile?.Type == Type;
+
+                    if (!leftIsSameType && rightIsSameType && !topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.TopLeft;
+                    if (leftIsSameType && !rightIsSameType && !topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.TopRight;
+                    if (!leftIsSameType && rightIsSameType && topIsSameType && !bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.BottomLeft;
+                    if (leftIsSameType && !rightIsSameType && topIsSameType && !bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.BottomRight;
+                    if (leftIsSameType && rightIsSameType && !topIsSameType && !bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.Horizontal;
+                    if (!leftIsSameType && !rightIsSameType && topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.Vertical;
+
+                    if (leftIsSameType && rightIsSameType && topIsSameType && !bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.HorizontalTop;
+                    if (leftIsSameType && rightIsSameType && !topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.HorizontalBottom;
+
+                    // Left or right connectors
+                    if (leftIsSameType && !rightIsSameType && topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.VerticalLeft;
+                    if (!leftIsSameType && rightIsSameType && topIsSameType && bottomIsSameType)
+                        _consoleRepresentation = Type.TileTypeSet.VerticalRight;
+
+                    _consoleRepresentation = Type.TileTypeSet.Central;
+                }
+            }
+
+            return _consoleRepresentation;
+        }
     }
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

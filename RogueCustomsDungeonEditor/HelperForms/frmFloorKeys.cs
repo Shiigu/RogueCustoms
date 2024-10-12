@@ -43,7 +43,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             nudLockedDoorOdds.Value = KeyGenerationInfo.LockedRoomOdds;
             nudMaxLockedDoorsPercentage.Value = KeyGenerationInfo.MaxPercentageOfLockedCandidateRooms;
             nudKeyInEnemyInventoryOdds.Value = KeyGenerationInfo.KeySpawnInEnemyInventoryOdds;
-            //flpKeySettings.Controls.Clear();
             foreach (var keyType in KeyGenerationInfo.KeyTypes)
             {
                 AddKeyDoorEditor(keyType);

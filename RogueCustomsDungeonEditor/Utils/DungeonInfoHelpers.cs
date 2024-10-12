@@ -71,131 +71,160 @@ namespace RogueCustomsDungeonEditor.Utils
             return new TileSetInfo
             {
                 Id = "Default",
-                TopLeftWall = new ConsoleRepresentation
+                TileTypes = new List<TileTypeSetInfo>
                 {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                TopRightWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                BottomLeftWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                BottomRightWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                HorizontalWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                VerticalWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '█'
-                },
-                ConnectorWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                TopLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                TopRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                BottomLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                BottomRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                HorizontalHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                VerticalHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                HorizontalTopHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                HorizontalBottomHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                VerticalRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                VerticalLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                CentralHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Blue),
-                    Character = '▒'
-                },
-                Floor = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.DarkGray),
-                    Character = '.'
-                },
-                Stairs = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Yellow),
-                    ForegroundColor = new GameColor(Color.DarkGreen),
-                    Character = '>'
-                },
-                Empty = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Black),
-                    Character = ' '
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Wall",
+                        Connector = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        TopLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        },
+                        TopRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        },
+                        BottomLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        },
+                        BottomRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        },
+                        Horizontal = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        },
+                        Vertical = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '█'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Hallway",
+                        Connector = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        TopLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        TopRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        BottomLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        BottomRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        Horizontal = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        HorizontalTop = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        HorizontalBottom = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        Vertical = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        VerticalLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        VerticalRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Floor",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.DarkGray),
+                            Character = '.'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Stairs",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Yellow),
+                            ForegroundColor = new GameColor(Color.DarkGreen),
+                            Character = '>'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Empty",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Black),
+                            Character = ' '
+                        }
+                    }
                 }
             };
         }
@@ -205,134 +234,164 @@ namespace RogueCustomsDungeonEditor.Utils
             return new TileSetInfo
             {
                 Id = "Retro",
-                TopLeftWall = new ConsoleRepresentation
+                TileTypes = new List<TileTypeSetInfo>
                 {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '╔'
-                },
-                TopRightWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '╗'
-                },
-                BottomLeftWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '╚'
-                },
-                BottomRightWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '╝'
-                },
-                HorizontalWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '═'
-                },
-                VerticalWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '║'
-                },
-                ConnectorWall = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
-                    Character = '╬'
-                },
-                TopLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                TopRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                BottomLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                BottomRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                HorizontalHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                VerticalHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                HorizontalTopHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                HorizontalBottomHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                VerticalRightHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                VerticalLeftHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                CentralHallway = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
-                    Character = '▒'
-                },
-                Floor = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 84, 252, 84)),
-                    Character = '.'
-                },
-                Stairs = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.FromArgb(255, 84, 252, 84)),
-                    Character = '╫'
-                },
-                Empty = new ConsoleRepresentation
-                {
-                    BackgroundColor = new GameColor(Color.Black),
-                    ForegroundColor = new GameColor(Color.Black),
-                    Character = ' '
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Wall",
+                        Connector = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╬'
+                        },
+                        TopLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╔'
+                        },
+                        TopRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╗'
+                        },
+                        BottomLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╚'
+                        },
+                        BottomRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╝'
+                        },
+                        Horizontal = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '═'
+                        },
+                        Vertical = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '║'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Hallway",
+                        Connector = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        TopLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        TopRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        BottomLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        BottomRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        Horizontal = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        HorizontalTop = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        HorizontalBottom = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        Vertical = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        VerticalLeft = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        VerticalRight = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        },
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 168, 168)),
+                            Character = '▒'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Floor",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 84, 84, 84)),
+                            Character = '·'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Stairs",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '>'
+                        }
+                    },
+                    new TileTypeSetInfo
+                    {
+                        TileTypeId = "Empty",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Black),
+                            Character = ' '
+                        }
+                    }
                 }
             };
         }
+
 
         public static FloorInfo CreateFloorGroupTemplate()
         {

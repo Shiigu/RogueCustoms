@@ -2,7 +2,9 @@
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V13;
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V14;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
@@ -39,8 +41,15 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 {
                     PropertyNameCaseInsensitive = true
                 }) : null;
+                var V14to15Dungeon = dungeon.Version.Equals("1.4") ? JsonSerializer.Deserialize<DungeonInfoV14>(dungeonJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) : null;
                 switch (dungeon.Version)
                 {
+                    case "1.4":
+                        dungeon = V14to15Dungeon.ConvertDungeonInfoToV15();
+                        break;
                     case "1.3":
                         dungeon = V13to14Dungeon.ConvertDungeonInfoToV14();
                         break;
@@ -50,9 +59,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     case "1.1":
                         dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
                         break;
-                    default:
+                    case "1.0":
                         V10to11Dungeon = V10to11Dungeon.ConvertDungeonInfoToV11();
                         break;
+                    default:
+                        throw new ArgumentException($"There's no conversion method for Dungeon Version {dungeon.Version}");
                 }
                 if (!convertedLocales)
                 {
@@ -1033,6 +1044,154 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             effect.OnFailure?.UpdateDealDamageParametersToV14();
         }
 
+        #endregion
+
+        #region 1.4 to 1.5
+        private static DungeonInfo ConvertDungeonInfoToV15(this DungeonInfoV14 V14Dungeon)
+        {
+            var V14DungeonAsJSON = JsonSerializer.Serialize(V14Dungeon, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            var V15Dungeon = JsonSerializer.Deserialize<DungeonInfo>(V14DungeonAsJSON, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+
+            var empty = new TileTypeInfo()
+            {
+                Id = "Empty",
+                Name = "Empty",
+                IsVisible = true,
+                CanTeleportFrom = false,
+                AcceptsItems = false,
+                IsWalkable = false,
+                IsSolid = false,
+                CanBeTransformed = false,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                ProducesWallConnectors = false
+            };
+            var floor = new TileTypeInfo()
+            {
+                Id = "Floor",
+                Name = "Floor",
+                IsVisible = true,
+                CanTeleportFrom = true,
+                AcceptsItems = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                ProducesWallConnectors = false
+            };
+            var wall = new TileTypeInfo()
+            {
+                Id = "Wall",
+                Name = "Wall",
+                IsVisible = false,
+                CanTeleportFrom = false,
+                AcceptsItems = false,
+                IsWalkable = false,
+                IsSolid = true,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = true,
+                CanHaveMultilineConnections = false,
+                ProducesWallConnectors = false
+            };
+            var hallway = new TileTypeInfo()
+            {
+                Id = "Hallway",
+                Name = "Hallway",
+                IsVisible = true,
+                CanTeleportFrom = false,
+                AcceptsItems = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = true,
+                CanHaveMultilineConnections = true,
+                ProducesWallConnectors = true
+            };
+            var stairs = new TileTypeInfo()
+            {
+                Id = "Stairs",
+                Name = "Stairs",
+                IsVisible = true,
+                CanTeleportFrom = true,
+                AcceptsItems = false,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = false,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                ProducesWallConnectors = false
+            };
+
+            V15Dungeon.TileTypeInfos = new() { floor, empty, wall, hallway, stairs };
+            V15Dungeon.TileSetInfos = new();
+
+            foreach (var v14TileSet in V14Dungeon.TileSetInfos)
+            {
+                var v15TileSet = new TileSetInfo() { Id = v14TileSet.Id, TileTypes = new() };
+
+                v15TileSet.TileTypes.Add(new()
+                {
+                    TileTypeId = "Empty",
+                    Central = v14TileSet.Empty
+                });
+
+                v15TileSet.TileTypes.Add(new()
+                {
+                    TileTypeId = "Floor",
+                    Central = v14TileSet.Floor
+                });
+
+                v15TileSet.TileTypes.Add(new()
+                {
+                    TileTypeId = "Wall",
+                    BottomLeft = v14TileSet.BottomLeftWall,
+                    BottomRight = v14TileSet.BottomRightWall,
+                    TopLeft = v14TileSet.TopLeftWall,
+                    TopRight = v14TileSet.TopRightWall,
+                    Horizontal = v14TileSet.HorizontalWall,
+                    Vertical = v14TileSet.VerticalWall,
+                    Connector = v14TileSet.ConnectorWall,
+                    Central = v14TileSet.ConnectorWall,
+                });
+
+                v15TileSet.TileTypes.Add(new()
+                {
+                    TileTypeId = "Hallway",
+                    BottomLeft = v14TileSet.BottomLeftHallway,
+                    BottomRight = v14TileSet.BottomRightHallway,
+                    TopLeft = v14TileSet.TopLeftHallway,
+                    TopRight = v14TileSet.TopRightHallway,
+                    Horizontal = v14TileSet.HorizontalHallway,
+                    Vertical = v14TileSet.VerticalHallway,
+                    HorizontalBottom = v14TileSet.HorizontalBottomHallway,
+                    HorizontalTop = v14TileSet.HorizontalTopHallway,
+                    VerticalLeft = v14TileSet.VerticalLeftHallway,
+                    VerticalRight = v14TileSet.VerticalRightHallway,
+                    Connector = v14TileSet.ConnectorWall,
+                    Central = v14TileSet.CentralHallway,
+                });
+
+                v15TileSet.TileTypes.Add(new()
+                {
+                    TileTypeId = "Stairs",
+                    Central = v14TileSet.Stairs
+                });
+
+                V15Dungeon.TileSetInfos.Add(v15TileSet);
+            }
+
+            V15Dungeon.Version = "1.5";
+            return V15Dungeon;
+        }
         #endregion
     }
 #pragma warning restore S2589 // Boolean expressions should not be gratuitous
