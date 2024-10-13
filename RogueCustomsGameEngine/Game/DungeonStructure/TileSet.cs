@@ -51,7 +51,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public TileTypeSet(TileTypeSetInfo importable, Dungeon dungeon)
         {
-            TileType = dungeon.TileTypes.FirstOrDefault(tt => tt.Name.Equals(importable.TileTypeId))
+            TileType = dungeon.TileTypes.FirstOrDefault(tt => tt.Id.Equals(importable.TileTypeId))
                             ?? throw new ArgumentException($"There is no Tile of Type {importable.TileTypeId}");
             TopLeft = importable.TopLeft;
             TopRight = importable.TopRight;

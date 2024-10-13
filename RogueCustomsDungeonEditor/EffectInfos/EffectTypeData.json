@@ -79,7 +79,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
@@ -179,7 +179,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
@@ -259,7 +259,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
@@ -326,7 +326,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -430,7 +430,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -816,7 +816,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -924,7 +924,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1025,7 +1025,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1123,7 +1123,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1174,7 +1174,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1225,7 +1225,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1276,7 +1276,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1336,7 +1336,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1387,7 +1387,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1477,7 +1477,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1528,7 +1528,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1570,7 +1570,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1622,7 +1622,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",
@@ -1654,7 +1654,7 @@
       },
       {
         "InternalName": "BypassesAccuracyCheck",
-        "DisplayName": "Bypasses Accuracy Check?",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "true",

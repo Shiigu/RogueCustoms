@@ -10,6 +10,8 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using System.Reflection.Metadata.Ecma335;
+using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -30,6 +32,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 _consoleRepresentation = null;
             }
         }
+
+        public string TypeName => Map.Locale[Type.Name];
+        public string TypeDescription => Map.Locale[Type.Description];
+
         private bool _isConnectorTile = false;
         public bool IsConnectorTile
         {
@@ -54,6 +60,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool IsWalkable => Type.IsWalkable;
         public bool IsSolid => Type.IsSolid;
         public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
+        public ActionWithEffects OnStood => Type.OnStood;
 
         private ConsoleRepresentation _consoleRepresentation;
         public ConsoleRepresentation ConsoleRepresentation
@@ -183,6 +190,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
 
+
+        public void StoodOn(Character stomper)
+        {
+            //if (stomper.EntityType == EntityType.Player
+            //    || (stomper.EntityType == EntityType.NPC && Map.Player.CanSee(stomper)))
+            //    Map.AddSpecialEffectIfPossible(SpecialEffect.TrapActivate);
+            if (OnStood == null || !OnStood.ChecksCondition(stomper, stomper)) return;
+            var successfulEffects = OnStood?.Do(null, stomper, true);
+            if (successfulEffects != null)
+                stomper.Visible = true;
+            if (successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+                stomper.AttackedBy(null);
+        }
+
         public override bool Equals(object? obj)
         {
             if (obj is not Tile t) return false;
@@ -234,7 +255,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private ConsoleRepresentation GetConsoleRepresentationOfCustomType()
         {
-            var _consoleRepresentation = new ConsoleRepresentation();
+            ConsoleRepresentation _consoleRepresentation = null;
 
             if (!Type.CanVisiblyConnectWithOtherTiles)
             {
@@ -242,49 +263,43 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else if (Type.CanVisiblyConnectWithOtherTiles)
             {
-                if (Type.ProducesWallConnectors)
+                var leftTile = Map.GetTileFromCoordinates(Position.X - 1, Position.Y);
+                var rightTile = Map.GetTileFromCoordinates(Position.X + 1, Position.Y);
+                var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
+                var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
+
+                bool leftIsSameType = leftTile?.Type == Type;
+                bool rightIsSameType = rightTile?.Type == Type;
+                bool topIsSameType = topTile?.Type == Type;
+                bool bottomIsSameType = bottomTile?.Type == Type;
+
+                if (!leftIsSameType && rightIsSameType && !topIsSameType && bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.TopLeft;
+                if (leftIsSameType && !rightIsSameType && !topIsSameType && bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.TopRight;
+                if (!leftIsSameType && rightIsSameType && topIsSameType && !bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.BottomLeft;
+                if (leftIsSameType && !rightIsSameType && topIsSameType && !bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.BottomRight;
+                if (leftIsSameType && rightIsSameType && !topIsSameType && !bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
+                if (!leftIsSameType && !rightIsSameType && topIsSameType && bottomIsSameType)
+                    _consoleRepresentation = Type.TileTypeSet.Vertical;
+
+                if (Type.CanHaveMultilineConnections)
                 {
-                    if (_isConnectorTile && !Room.IsDummy)
-                        _consoleRepresentation = Type.TileTypeSet.Connector;
-                }
-                else if (Type.CanHaveMultilineConnections)
-                {
-                    var leftTile = Map.GetTileFromCoordinates(Position.X - 1, Position.Y);
-                    var rightTile = Map.GetTileFromCoordinates(Position.X + 1, Position.Y);
-                    var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
-                    var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
-
-                    bool leftIsSameType = leftTile?.Type == Type;
-                    bool rightIsSameType = rightTile?.Type == Type;
-                    bool topIsSameType = topTile?.Type == Type;
-                    bool bottomIsSameType = bottomTile?.Type == Type;
-
-                    if (!leftIsSameType && rightIsSameType && !topIsSameType && bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.TopLeft;
-                    if (leftIsSameType && !rightIsSameType && !topIsSameType && bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.TopRight;
-                    if (!leftIsSameType && rightIsSameType && topIsSameType && !bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.BottomLeft;
-                    if (leftIsSameType && !rightIsSameType && topIsSameType && !bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.BottomRight;
-                    if (leftIsSameType && rightIsSameType && !topIsSameType && !bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.Horizontal;
-                    if (!leftIsSameType && !rightIsSameType && topIsSameType && bottomIsSameType)
-                        _consoleRepresentation = Type.TileTypeSet.Vertical;
-
                     if (leftIsSameType && rightIsSameType && topIsSameType && !bottomIsSameType)
                         _consoleRepresentation = Type.TileTypeSet.HorizontalTop;
                     if (leftIsSameType && rightIsSameType && !topIsSameType && bottomIsSameType)
                         _consoleRepresentation = Type.TileTypeSet.HorizontalBottom;
-
-                    // Left or right connectors
                     if (leftIsSameType && !rightIsSameType && topIsSameType && bottomIsSameType)
                         _consoleRepresentation = Type.TileTypeSet.VerticalLeft;
                     if (!leftIsSameType && rightIsSameType && topIsSameType && bottomIsSameType)
                         _consoleRepresentation = Type.TileTypeSet.VerticalRight;
-
-                    _consoleRepresentation = Type.TileTypeSet.Central;
                 }
+
+                if (_consoleRepresentation == null)
+                    _consoleRepresentation = Type.TileTypeSet.Central;
             }
 
             return _consoleRepresentation;

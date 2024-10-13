@@ -29,6 +29,81 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return elementList.ToList()[rng.NextInclusive(elementList.Count() - 1)];
         }
 
+        public static List<T> TakeNDifferentRandomElements<T>(this IEnumerable<T> elementList, int amount, RngHandler rng)
+        {
+            if (amount <= 0) return new();
+
+            var list = elementList.ToList();
+            if (amount >= list.Count) return list;
+
+            var selectedElements = new HashSet<int>();
+            var result = new List<T>();
+
+            while (selectedElements.Count < amount)
+            {
+                var randomIndex = rng.NextInclusive(0, list.Count - 1);
+                if (selectedElements.Add(randomIndex))
+                {
+                    result.Add(list[randomIndex]);
+                }
+            }
+
+            return result;
+        }
+
+        public static T? TakeRandomElement<T>(this T[][] jaggedArray, RngHandler rng)
+        {
+            if (jaggedArray == null || jaggedArray.Length == 0)
+                return default;
+
+            var randomInnerArray = jaggedArray[rng.NextInclusive(jaggedArray.Length - 1)];
+
+            if (randomInnerArray.Length == 0)
+                return default;
+
+            return randomInnerArray[rng.NextInclusive(randomInnerArray.Length - 1)];
+        }
+        public static List<T> TakeNDifferentRandomElements<T>(this T[][] jaggedArray, int amount, RngHandler rng)
+        {
+            var arrayAsList = jaggedArray.SelectMany(innerArray => innerArray).ToList();
+            if (amount >= arrayAsList.Count) return arrayAsList;
+
+            var shuffledList = arrayAsList.OrderBy(x => rng.NextInclusive(int.MaxValue)).ToList();
+
+            return shuffledList.Take(amount).ToList();
+        }
+
+        public static T? TakeRandomElement<T>(this T[,] multiArray, RngHandler rng)
+        {
+            var rows = multiArray.GetLength(0);
+            var cols = multiArray.GetLength(1);
+
+            if (rows == 0 || cols == 0)
+                return default;
+
+            var randomRow = rng.NextInclusive(rows - 1);
+            var randomCol = rng.NextInclusive(cols - 1);
+
+            return multiArray[randomRow, randomCol];
+        }
+        public static List<T> TakeNDifferentRandomElements<T>(this T[,] multiArray, int amount, RngHandler rng)
+        {
+            var arrayAsList = new List<T>();
+            for (int i = 0; i < multiArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < multiArray.GetLength(1); j++)
+                {
+                    arrayAsList.Add(multiArray[i, j]);
+                }
+            }
+
+            if (amount >= arrayAsList.Count) return arrayAsList; 
+
+            var shuffledList = arrayAsList.OrderBy(x => rng.NextInclusive(int.MaxValue)).ToList();
+
+            return shuffledList.Take(amount).ToList();
+        }
+
         public static T? GetWithProbability<T>(this IEnumerable<T> elementList, Func<T, int> probability, RngHandler rng, int odds = 100)
         {
             int totalProbability = 0, currentProbability = 0;

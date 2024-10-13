@@ -51,6 +51,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     AddValidationResultNode($"Locale {Language}", ValidationMessages);
                 }
 
+                foreach (var (Id, ValidationMessages) in dungeonValidator.TileTypeValidationMessages)
+                {
+                    AddValidationResultNode($"Tile Type {Id}", ValidationMessages);
+                }
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.TileSetValidationMessages)
                 {
                     AddValidationResultNode($"Tileset {Id}", ValidationMessages);

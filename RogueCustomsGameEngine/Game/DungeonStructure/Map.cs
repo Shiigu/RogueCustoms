@@ -113,6 +113,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private List<(Room RoomA, Room RoomB, Room FusedRoom)> Fusions { get; set; }
 
         public Tile[,] Tiles { get; private set; }
+        public Tile StairsTile => Tiles.Find(t => t.Type == TileType.Stairs);
 
         public List<Room> Rooms { get; private set; }
 
@@ -217,17 +218,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 Parallel.ForEach(Rooms, r => r.CreateTiles());
                 if ((Rooms.Count == 1 && !Rooms.Any(r => r.IsDummy)) || Rooms.Count(r => !r.IsDummy) > 1)
                 {
-                    var n = Tiles.GetIslands(t => t.IsWalkable);
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
                     if (success)
                     {
-                        PlacePlayer();
-                        success = Player.Position != null;
+                        PlaceSpecialTiles();
+                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
                         if (success)
                         {
-                            if (FloorConfigurationToUse.GenerateStairsOnStart)
-                                SetStairs();
-                            AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                            PlacePlayer();
+                            success = Player.Position != null;
+                            if (success)
+                            {
+                                if (FloorConfigurationToUse.GenerateStairsOnStart)
+                                    SetStairs();
+                                AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                            }
                         }
                     }
                 }
@@ -252,13 +257,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
                     if (success)
                     {
-                        PlacePlayer();
-                        success = Player.Position != null;
+                        PlaceSpecialTiles();
+                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
                         if (success)
                         {
-                            if (FloorConfigurationToUse.GenerateStairsOnStart)
-                                SetStairs();
-                            AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                            PlacePlayer();
+                            success = Player.Position != null;
+                            if (success)
+                            {
+                                if (FloorConfigurationToUse.GenerateStairsOnStart)
+                                    SetStairs();
+                                AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
+                            }
                         }
                     }
                 }
@@ -340,10 +350,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if ((Rooms.Count == 1 && !Rooms.Any(r => r.IsDummy)) || Rooms.Count(r => !r.IsDummy) > 1)
                 {
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
-                    if (success)
+                    if(success)
                     {
-                        PlacePlayer();
-                        success = Player.Position != null;
+                        PlaceSpecialTiles();
+                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
+                        if (success)
+                        {
+                            PlacePlayer();
+                            success = Player.Position != null;
+                        }
                     }
                 }
             }
@@ -367,8 +382,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     success = Tiles.IsFullyConnected(t => t.IsWalkable);
                     if (success)
                     {
-                        PlacePlayer();
-                        success = Player.Position != null;
+                        PlaceSpecialTiles();
+                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
+                        if (success)
+                        {
+                            PlacePlayer();
+                            success = Player.Position != null;
+                        }
                     }
                 }
                 success = false;
@@ -599,6 +619,32 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             else if (isVerticalConnection && downRoom != null && upRoom != null)
                                 CreateHallway((upRoom, downRoom, RoomConnectionType.Vertical));
                         }
+                    }
+                }
+            }
+        }
+
+        private void PlaceSpecialTiles()
+        {
+            if (FloorConfigurationToUse.PossibleSpecialTiles == null || !FloorConfigurationToUse.PossibleSpecialTiles.Any()) return;
+            foreach (var specialTileGenerator in FloorConfigurationToUse.PossibleSpecialTiles)
+            {
+                if(specialTileGenerator.GeneratorType == SpecialTileGenerationAlgorithm.Lake)
+                {
+                    var roomCellsToUse = RoomLimitsTable.TakeNDifferentRandomElements(Rng.NextInclusive(specialTileGenerator.MinSpecialTileGenerations, specialTileGenerator.MaxSpecialTileGenerations), Rng);
+                    foreach (var roomCell in roomCellsToUse)
+                    {
+                        CreateLake((roomCell.TopLeftCorner, roomCell.BottomRightCorner), specialTileGenerator.TileType);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Rng.NextInclusive(specialTileGenerator.MinSpecialTileGenerations, specialTileGenerator.MaxSpecialTileGenerations); i++)
+                    {
+                        var roomCellsToUse = RoomLimitsTable.TakeNDifferentRandomElements(2, Rng);
+                        var cellA = roomCellsToUse[0];
+                        var cellB = roomCellsToUse[1];
+                        CreateRiver((cellA.TopLeftCorner, cellA.BottomRightCorner), (cellB.TopLeftCorner, cellB.BottomRightCorner), specialTileGenerator.TileType);
                     }
                 }
             }
@@ -958,7 +1004,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
 
                 #endregion
-
+                
                 #region Generate Items
                 if (FloorConfigurationToUse.PossibleItems.Any())
                 {
@@ -1013,7 +1059,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #region Perform On Floor Start Actions
 
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
-                FloorConfigurationToUse.OnFloorStart?.Do(Player, Player, false);
+                FloorConfigurationToUse.OnFloorStart?.Do(null, Player, false);
 
                 #endregion
             }
@@ -1167,6 +1213,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (targetTile.Key != null)
                 character.TryToPickItem(targetTile.Key);
             targetTile.GetPickableObjects().Cast<IPickable>().ForEach(i => character.TryToPickItem(i));
+            targetTile.StoodOn(character);
             targetTile.Trap?.Stepped(character);
 
             character.RemainingMovement--;
@@ -1176,7 +1223,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerUseStairs()
         {
-            if (Player.ContainingTile.Type != TileType.Stairs)
+            if (Player.ContainingTile != StairsTile)
                 throw new ArgumentException($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
             AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }), Color.Yellow);
             Dungeon.TakeStairs();
@@ -1373,15 +1420,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
+            var showTileDescription = !DefaultTileTypes.Contains(tile.Type);
             if (characterInTile?.Visible == true)
-                return new EntityDetailDto(characterInTile);
+                return new EntityDetailDto(characterInTile, tile, showTileDescription);
             var itemInTile = tile.GetPickableObjects().FirstOrDefault();
             if(itemInTile?.Visible == true)
-                return new EntityDetailDto(itemInTile);
+                return new EntityDetailDto(itemInTile, tile, showTileDescription);
             var trapInTile = tile.Trap;
             if (trapInTile?.Visible == true)
-                return new EntityDetailDto(trapInTile);
-            return null;
+                return new EntityDetailDto(trapInTile, tile, showTileDescription);
+            return showTileDescription ? new EntityDetailDto(null, tile, showTileDescription) : null;
         }
 
         private void SetStairs(GamePoint p)
@@ -1393,9 +1441,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void SetStairs()
         {
-            var stairsTile = Tiles.Find(t => t.Type == TileType.Stairs);
-            if(stairsTile != null)
-                stairsTile.Type = TileType.Floor;
+            if(StairsTile != null)
+                StairsTile.Type = TileType.Floor;
             SetStairs(PickEmptyPosition(true));
         }
 
@@ -1572,7 +1619,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (tile.LivingCharacter != null)
             {
-                if(tile.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive && tile.Type == TileType.Stairs)
+                if(tile.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive && tile == StairsTile)
                         return tileBaseConsoleRepresentation;
 
                 var characterBaseConsoleRepresentation = new ConsoleRepresentation
@@ -1595,7 +1642,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             if (Player.ContainingTile == tile)
                 return Player.ConsoleRepresentation;
-            if (tile.Type == TileType.Stairs)
+            if (tile == StairsTile)
                 return tileBaseConsoleRepresentation;
             var visibleItems = tile.GetPickableObjects().Where(i => i.CanBeSeenBy(Player));
             if (visibleItems.Any())
@@ -2018,6 +2065,149 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 tile.Type = TileType.Hallway;
                 if (tile.Room != null)
                     tile.IsConnectorTile = true;
+            }
+        }
+
+        private void CreateRiver((GamePoint TopLeftCorner, GamePoint BottomRightCorner) topLimits, (GamePoint TopLeftCorner, GamePoint BottomRightCorner) downLimits, TileType specialTileType)
+        {
+            Tile? topConnector = null, downConnector = null, connectorA = null, connectorB = null;
+
+            var topLimitsMinX = topLimits.TopLeftCorner.X + 1;
+            var topLimitsMaxX = topLimits.BottomRightCorner.X - 1;
+            var topLimitsMinY = topLimits.TopLeftCorner.Y + 1;
+            var topLimitsMaxY = topLimits.BottomRightCorner.Y - 1;
+
+            var downLimitsMinX = downLimits.TopLeftCorner.X + 1;
+            var downLimitsMaxX = downLimits.BottomRightCorner.X - 1;
+            var downLimitsMinY = downLimits.TopLeftCorner.Y + 1;
+            var downLimitsMaxY = downLimits.BottomRightCorner.Y - 1;
+
+            if (topConnector == null)
+            {
+                var x = Rng.NextInclusive(topLimitsMinX, topLimitsMaxX);
+                var y = Rng.NextInclusive(topLimitsMinY, topLimitsMaxY);
+                topConnector = GetTileFromCoordinates(x, y);
+            }
+
+            if (downConnector == null)
+            {
+                var x = Rng.NextInclusive(downLimitsMinX, downLimitsMaxX);
+                var y = Rng.NextInclusive(downLimitsMinY, downLimitsMaxY);
+                downConnector = GetTileFromCoordinates(x, y);
+            }
+
+            var riverGenerationTries = 0;
+            List<Tile> tilesToConvert;
+            bool isValidRiver;
+
+            do
+            {
+                riverGenerationTries++;
+                tilesToConvert = new();
+
+                var (InBetweenConnectorPosition, ConnectorAPosition, ConnectorBPosition) = CalculateConnectionPosition(topConnector, downConnector, RoomConnectionType.Vertical);
+
+                if (ConnectorAPosition != null)
+                {
+                    connectorA = GetTileFromCoordinates(ConnectorAPosition);
+                    tilesToConvert.Add(connectorA);
+                }
+                if (ConnectorBPosition != null)
+                {
+                    connectorB = GetTileFromCoordinates(ConnectorBPosition);
+                    tilesToConvert.Add(connectorB);
+                }
+
+                if (InBetweenConnectorPosition != null)
+                {
+                    // Vertical line from Up Room to Hallway connection row
+                    for (var i = ConnectorAPosition.Y; i <= InBetweenConnectorPosition.Y; i++)
+                    {
+                        tilesToConvert.Add(GetTileFromCoordinates(ConnectorAPosition.X, i));
+                    }
+
+                    // Vertical line from Down Room to Hallway connection row
+                    for (var i = InBetweenConnectorPosition.Y; i <= ConnectorBPosition.Y; i++)
+                    {
+                        tilesToConvert.Add(GetTileFromCoordinates(ConnectorBPosition.X, i));
+                    }
+
+                    // Draw a rightwards line in case entryGamePoint from up is more or equal to the right to entryGamePoint from below
+                    for (var i = ConnectorBPosition.X + 1; i < ConnectorAPosition.X; i++)
+                    {
+                        tilesToConvert.Add(GetTileFromCoordinates(i, InBetweenConnectorPosition.Y));
+                    }
+                    // Draw a leftwards line in case entryGamePoint from up is more to the left than entryGamePoint from below
+                    for (var i = ConnectorAPosition.X + 1; i < ConnectorBPosition.X; i++)
+                    {
+                        tilesToConvert.Add(GetTileFromCoordinates(i, InBetweenConnectorPosition.Y));
+                    }
+                }
+
+                tilesToConvert = tilesToConvert.Distinct().OrderBy(t => t.Position.Y).ThenBy(t => t.Position.X).ToList();
+                isValidRiver = IsSpecialTileGroupValid(tilesToConvert);
+            }
+            while (!isValidRiver && riverGenerationTries < Constants.MaxGenerationTriesForRiver);
+
+            if (isValidRiver)
+            {
+                BuildSpecialTiles(tilesToConvert, specialTileType);
+            }
+        }
+
+        private void CreateLake((GamePoint TopLeftCorner, GamePoint BottomRightCorner) limits, TileType specialTileType)
+        {
+            var minX = limits.TopLeftCorner.X + 1;
+            var maxX = limits.BottomRightCorner.X - 1;
+            var minY = limits.TopLeftCorner.Y + 1;
+            var maxY = limits.BottomRightCorner.Y - 1;
+            var lakeGenerationTries = 0;
+
+            List<Tile> tilesToConvert;
+            bool isValidLake;
+
+            do
+            {
+                lakeGenerationTries++;
+                tilesToConvert = new();
+
+                var filteredTiles = Tiles.Where(tile =>
+                    tile.Position.X >= minX && tile.Position.X <= maxX &&
+                    tile.Position.Y >= minY && tile.Position.Y <= maxY);
+
+                // We remove all the picked Tiles that lack a direct connection with one that is already walkable (to avoid producing unnecessary Islands)
+                filteredTiles = filteredTiles.Where(tile => GetAdjacentWalkableTiles(tile.Position, false).Any()).ToList();
+
+                var maximumElements = filteredTiles.Count / 5;
+                tilesToConvert = filteredTiles.TakeNDifferentRandomElements(Rng.NextInclusive(maximumElements), Rng);
+
+                isValidLake = IsSpecialTileGroupValid(tilesToConvert);
+            }
+            while (!isValidLake && lakeGenerationTries < Constants.MaxGenerationTriesForRiver);
+
+            if (isValidLake)
+            {
+                BuildSpecialTiles(tilesToConvert, specialTileType);
+            }
+        }
+
+        private static bool IsSpecialTileGroupValid(List<Tile> tilesToConvert)
+        {
+            if (!tilesToConvert.Any()) return false;
+
+            foreach (var tile in tilesToConvert)
+            {
+                if (tile.Type == TileType.Stairs || (tile.Room != null && tile.Room.IsDummy))
+                    return false;
+            }
+            return true;
+        }
+
+        private static void BuildSpecialTiles(List<Tile> tilesToConvert, TileType tileType)
+        {
+            foreach (var tile in tilesToConvert)
+            {
+                tile.Type = tileType;
             }
         }
 

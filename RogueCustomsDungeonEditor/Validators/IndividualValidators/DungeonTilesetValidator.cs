@@ -27,7 +27,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError(errorMessage);
                 }
 
-                if (tileType.CanVisiblyConnectWithOtherTiles && tileType.ProducesWallConnectors)
+                if (tileType.Id.Equals("hallway", StringComparison.InvariantCultureIgnoreCase))
                 {
                     foreach (var errorMessage in tileTypeSet.Connector.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Connector"))
                     {
@@ -82,6 +82,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError(errorMessage);
                     }
                 }
+            }
+
+            foreach (var tileTypeId in dungeonJson.TileTypeInfos.Select(tt => tt.Id).Except(tileSet.TileTypes.Select(tst => tst.TileTypeId)))
+            {
+                messages.AddError($"{tileTypeId} is not present in the Tileset.");
             }
 
             if(!dungeonJson.FloorInfos.Exists(fi => fi.TileSetId.Equals(tileSet.Id)))

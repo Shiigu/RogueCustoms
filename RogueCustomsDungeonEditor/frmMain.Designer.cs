@@ -52,6 +52,8 @@ namespace RogueCustomsDungeonEditor
             BasicInformationTab = new Controls.Tabs.BasicInformationTab();
             tpLocales = new TabPage();
             LocaleEntriesTab = new Controls.Tabs.LocaleEntriesTab();
+            tpTileTypeInfo = new TabPage();
+            TileTypeTab = new Controls.Tabs.TileTypeTab();
             tpTileSetInfos = new TabPage();
             TilesetTab = new Controls.Tabs.TilesetTab();
             tpFloorInfos = new TabPage();
@@ -77,6 +79,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.SuspendLayout();
             tpBasicInfo.SuspendLayout();
             tpLocales.SuspendLayout();
+            tpTileTypeInfo.SuspendLayout();
             tpTileSetInfos.SuspendLayout();
             tpFloorInfos.SuspendLayout();
             tpFactionInfos.SuspendLayout();
@@ -252,6 +255,7 @@ namespace RogueCustomsDungeonEditor
             // 
             tbTabs.Controls.Add(tpBasicInfo);
             tbTabs.Controls.Add(tpLocales);
+            tbTabs.Controls.Add(tpTileTypeInfo);
             tbTabs.Controls.Add(tpTileSetInfos);
             tbTabs.Controls.Add(tpFloorInfos);
             tbTabs.Controls.Add(tpFactionInfos);
@@ -310,6 +314,23 @@ namespace RogueCustomsDungeonEditor
             LocaleEntriesTab.Size = new System.Drawing.Size(732, 352);
             LocaleEntriesTab.TabIndex = 0;
             // 
+            // tpTileTypeInfo
+            // 
+            tpTileTypeInfo.Controls.Add(TileTypeTab);
+            tpTileTypeInfo.Location = new System.Drawing.Point(4, 24);
+            tpTileTypeInfo.Name = "tpTileTypeInfo";
+            tpTileTypeInfo.Size = new System.Drawing.Size(740, 356);
+            tpTileTypeInfo.TabIndex = 11;
+            tpTileTypeInfo.Text = "Tile Type";
+            tpTileTypeInfo.UseVisualStyleBackColor = true;
+            // 
+            // TileTypeTab
+            // 
+            TileTypeTab.Location = new System.Drawing.Point(11, 23);
+            TileTypeTab.Name = "TileTypeTab";
+            TileTypeTab.Size = new System.Drawing.Size(718, 307);
+            TileTypeTab.TabIndex = 0;
+            // 
             // tpTileSetInfos
             // 
             tpTileSetInfos.AutoScroll = true;
@@ -327,7 +348,7 @@ namespace RogueCustomsDungeonEditor
             TilesetTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             TilesetTab.Location = new System.Drawing.Point(19, 0);
             TilesetTab.Name = "TilesetTab";
-            TilesetTab.Size = new System.Drawing.Size(676, 1173);
+            TilesetTab.Size = new System.Drawing.Size(676, 692);
             TilesetTab.TabIndex = 0;
             // 
             // tpFloorInfos
@@ -343,12 +364,11 @@ namespace RogueCustomsDungeonEditor
             // 
             // FloorGroupTab
             // 
-            FloorGroupTab.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             FloorGroupTab.AutoSize = true;
             FloorGroupTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             FloorGroupTab.Location = new System.Drawing.Point(0, 0);
             FloorGroupTab.Name = "FloorGroupTab";
-            FloorGroupTab.Size = new System.Drawing.Size(708, 346);
+            FloorGroupTab.Size = new System.Drawing.Size(708, 399);
             FloorGroupTab.TabIndex = 0;
             // 
             // tpFactionInfos
@@ -427,7 +447,7 @@ namespace RogueCustomsDungeonEditor
             ItemTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ItemTab.Location = new System.Drawing.Point(-5, 1);
             ItemTab.Name = "ItemTab";
-            ItemTab.Size = new System.Drawing.Size(733, 536);
+            ItemTab.Size = new System.Drawing.Size(712, 460);
             ItemTab.TabIndex = 0;
             // 
             // tpTrap
@@ -522,6 +542,7 @@ namespace RogueCustomsDungeonEditor
             tpBasicInfo.PerformLayout();
             tpLocales.ResumeLayout(false);
             tpLocales.PerformLayout();
+            tpTileTypeInfo.ResumeLayout(false);
             tpTileSetInfos.ResumeLayout(false);
             tpTileSetInfos.PerformLayout();
             tpFloorInfos.ResumeLayout(false);
@@ -586,5 +607,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.TrapTab TrapTab;
         private Controls.Tabs.AlteredStatusTab AlteredStatusTab;
         private Controls.Tabs.ValidatorTab ValidatorTab;
+        private TabPage tpTileTypeInfo;
+        private Controls.Tabs.TileTypeTab TileTypeTab;
     }
 }

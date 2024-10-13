@@ -44,6 +44,8 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.WelcomeMessage = "WelcomeMessage";
             templateDungeon.EndingMessage = "EndingMessage";
 
+            templateDungeon.TileTypeInfos = CreateDefaultTileTypes();
+
             templateDungeon.TileSetInfos.Add(CreateDefaultTileSet());
             templateDungeon.TileSetInfos.Add(CreateRetroTileSet());
 
@@ -66,6 +68,88 @@ namespace RogueCustomsDungeonEditor.Utils
             return templateDungeon;
         }
 
+        public static List<TileTypeInfo> CreateDefaultTileTypes()
+        {
+            var empty = new TileTypeInfo()
+            {
+                Id = "Empty",
+                Name = "TileTypeEmpty",
+                IsVisible = true,
+                IsWalkable = false,
+                IsSolid = false,
+                CanBeTransformed = false,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                AcceptsItems = false
+            };
+            var floor = new TileTypeInfo()
+            {
+                Id = "Floor",
+                Name = "TileTypeFloor",
+                IsVisible = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                AcceptsItems = true
+            };
+            var wall = new TileTypeInfo()
+            {
+                Id = "Wall",
+                Name = "TileTypeWall",
+                IsVisible = false,
+                IsWalkable = false,
+                IsSolid = true,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = true,
+                CanHaveMultilineConnections = false,
+                AcceptsItems = false
+            };
+            var hallway = new TileTypeInfo()
+            {
+                Id = "Hallway",
+                Name = "TileTypeHallway",
+                IsVisible = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = true,
+                CanVisiblyConnectWithOtherTiles = true,
+                CanHaveMultilineConnections = true,
+                AcceptsItems = true
+            };
+            var stairs = new TileTypeInfo()
+            {
+                Id = "Stairs",
+                Name = "TileTypeStairs",
+                IsVisible = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = false,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                AcceptsItems = false
+            };
+
+            return new() { floor, empty, wall, hallway, stairs };
+        }
+
+        public static TileTypeInfo CreateTileTypeTemplate()
+        {
+            return new TileTypeInfo()
+            {
+                Name = "TileTypeCustom",
+                Description = "TileTypeCustomDescription",
+                IsVisible = true,
+                IsWalkable = true,
+                IsSolid = false,
+                CanBeTransformed = false,
+                CanVisiblyConnectWithOtherTiles = false,
+                CanHaveMultilineConnections = false,
+                AcceptsItems = false
+            };
+        }
+
         public static TileSetInfo CreateDefaultTileSet()
         {
             return new TileSetInfo
@@ -76,6 +160,12 @@ namespace RogueCustomsDungeonEditor.Utils
                     new TileTypeSetInfo
                     {
                         TileTypeId = "Wall",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.Blue),
+                            Character = '▒'
+                        },
                         Connector = new ConsoleRepresentation
                         {
                             BackgroundColor = new GameColor(Color.Black),
@@ -392,7 +482,31 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-
+        public static TileTypeSetInfo CreateDefaultTileTypeSet(string tileTypeId)
+        {
+            var defaultConsoleRepresentation = new ConsoleRepresentation
+            {
+                BackgroundColor = new GameColor(Color.Black),
+                ForegroundColor = new GameColor(Color.Black),
+                Character = ' '
+            };
+            return new TileTypeSetInfo
+            {
+                TileTypeId = "tileTypeId",
+                Connector = defaultConsoleRepresentation,
+                TopLeft = defaultConsoleRepresentation,
+                TopRight = defaultConsoleRepresentation,
+                BottomLeft = defaultConsoleRepresentation,
+                BottomRight = defaultConsoleRepresentation,
+                Horizontal = defaultConsoleRepresentation,
+                HorizontalTop = defaultConsoleRepresentation,
+                HorizontalBottom = defaultConsoleRepresentation,
+                Vertical = defaultConsoleRepresentation,
+                VerticalLeft = defaultConsoleRepresentation,
+                VerticalRight = defaultConsoleRepresentation,
+                Central = defaultConsoleRepresentation
+            };
+        }
         public static FloorInfo CreateFloorGroupTemplate()
         {
             return new FloorInfo()
@@ -934,6 +1048,11 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             if (dungeonInfo == null || dungeonInfo.FloorInfos == null) return new();
             return dungeonInfo.FloorInfos.Where(fi => IntHelpers.DoIntervalsIntersect(minFloorLevel, maxFloorLevel, fi.MinFloorLevel, fi.MaxFloorLevel)).ToList();
+        }
+
+        public static List<TileTypeInfo> GetSpecialTileTypes(this DungeonInfo dungeonInfo, List<string> defaultTileTypeIds)
+        {
+            return dungeonInfo.TileTypeInfos.Where(tti => !defaultTileTypeIds.Contains(tti.Id, StringComparer.OrdinalIgnoreCase)).ToList();
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

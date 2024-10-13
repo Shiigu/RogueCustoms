@@ -30,13 +30,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ActiveDungeon = activeDungeon;
             LoadedTileSet = tilesetInfoToLoad;
             flpTileTypeSets.Controls.Clear();
-            foreach (var tileTypeSet in tilesetInfoToLoad.TileTypes)
+            foreach (var tileType in ActiveDungeon.TileTypeInfos)
             {
-                var correspondingTileType = ActiveDungeon.TileTypeInfos.Find(tti => tti.Id.Equals(tileTypeSet.TileTypeId));
-                if (correspondingTileType != null)
-                {
-                    AddTileTypeSetEditor(tileTypeSet, correspondingTileType);
-                }
+                var correspondingTileTypeSet = tilesetInfoToLoad.TileTypes.Find(tt => tt.TileTypeId.Equals(tileType.Id));
+                AddTileTypeSetEditor(correspondingTileTypeSet ?? DungeonInfoHelpers.CreateDefaultTileTypeSet(tileType.Id), tileType);
             }
         }
 

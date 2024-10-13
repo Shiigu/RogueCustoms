@@ -23,28 +23,26 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             Name = "Door",
             IsVisible = false,
-            CanTeleportFrom = false,
-            AcceptsItems = false,
             IsWalkable = false,
             IsSolid = true,
             CanBeTransformed = false,
             CanVisiblyConnectWithOtherTiles = false,
-            ProducesWallConnectors = false,
             CanHaveMultilineConnections = false,
         };
 
-        public override string ToString() => Name;
+        public override string ToString() => Id;
 
+        public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public bool IsWalkable { get; set; }
         public bool IsSolid { get; set; } // If true, it will end Line of Sight, Projectiles and Diagonal Attacks
         public bool IsVisible { get; set; }
-        public bool CanTeleportFrom { get; set; }
         public bool AcceptsItems { get; set; }
         public bool CanBeTransformed { get; set; }
-        public bool ProducesWallConnectors { get; set; }
         public bool CanVisiblyConnectWithOtherTiles { get; set; } // If true, it will make use of TopLeft, TopRight, Central, BottomVertical, etc. ConsoleRepresentations
         public bool CanHaveMultilineConnections { get; set; }
+        public ActionWithEffects OnStood { get; set; }
         public TileTypeSet TileTypeSet { get; set; }
 
         public TileType() { }
@@ -61,16 +59,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 Hallway = this;
             else if (tileTypeInfo.Id.Equals("Stairs"))
                 Stairs = this;
+            Id = tileTypeInfo.Id;
             Name = tileTypeInfo.Name;
+            Description = tileTypeInfo.Description;
             IsVisible = tileTypeInfo.IsVisible;
             IsWalkable = tileTypeInfo.IsWalkable;
             IsSolid = tileTypeInfo.IsSolid;
-            CanTeleportFrom = tileTypeInfo.CanTeleportFrom;
             AcceptsItems = tileTypeInfo.AcceptsItems;
             CanBeTransformed = tileTypeInfo.CanBeTransformed;
-            ProducesWallConnectors = tileTypeInfo.ProducesWallConnectors;
             CanVisiblyConnectWithOtherTiles = tileTypeInfo.CanVisiblyConnectWithOtherTiles;
             CanHaveMultilineConnections = tileTypeInfo.CanHaveMultilineConnections;
+            OnStood = ActionWithEffects.Create(tileTypeInfo.OnStood);
         }
     }
 }

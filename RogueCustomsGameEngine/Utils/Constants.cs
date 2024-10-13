@@ -11,7 +11,9 @@ namespace RogueCustomsGameEngine.Utils
                                         .Version;
 
         public const int MaxGenerationTries = 1000;
-        public const int MaxGenerationTriesForHallway = 10;
+        public const int MaxGenerationTriesForHallway = 50;
+        public const int MaxGenerationTriesForRiver = 50;
+        public const int MaxGenerationTriesForLake = 50;
         public const int LogMessagesToSend = 200;
         public const int MinRoomWidthOrHeight = 5;
 
