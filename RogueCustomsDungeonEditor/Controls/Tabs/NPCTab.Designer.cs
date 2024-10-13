@@ -507,9 +507,9 @@
             label101.AutoSize = true;
             label101.Location = new System.Drawing.Point(8, 6);
             label101.Name = "label101";
-            label101.Size = new System.Drawing.Size(80, 15);
+            label101.Size = new System.Drawing.Size(39, 15);
             label101.TabIndex = 218;
-            label101.Text = "Default Name";
+            label101.Text = "Name";
             // 
             // crsNPC
             // 

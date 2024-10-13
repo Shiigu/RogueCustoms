@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Utils.JsonImports
@@ -37,6 +38,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
 
         public decimal HungerDegeneration { get; set; }
         public List<FloorLayoutGenerationInfo> PossibleLayouts { get; set; }
+        public List<SpecialTileInFloorInfo> PossibleSpecialTiles { get; set; }
         public KeyGenerationInfo PossibleKeys { get; set; }
         public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
     }
@@ -56,6 +58,15 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
 
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
+    }
+
+    [Serializable]
+    public class SpecialTileInFloorInfo
+    {
+        public string TileTypeId { get; set; }
+        public SpecialTileGenerationAlgorithm? GeneratorType { get; set; }
+        public int MinSpecialTileGenerations { get; set; }
+        public int MaxSpecialTileGenerations { get; set; }
     }
 
     [Serializable]

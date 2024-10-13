@@ -65,6 +65,7 @@ namespace RogueCustomsDungeonEditor
         private bool PassedValidation;
         private bool ReclickOnFailedSave;
         private bool ReselectingNode;
+        private bool ClickedSave;
 
         private string PreviousTextBoxValue;
         private string PreviousItemType;
@@ -75,6 +76,7 @@ namespace RogueCustomsDungeonEditor
             InitializeComponent();
             TabsForNodeTypes[RogueTabTypes.BasicInfo] = tpBasicInfo;
             TabsForNodeTypes[RogueTabTypes.Locales] = tpLocales;
+            TabsForNodeTypes[RogueTabTypes.TileTypeInfo] = tpTileTypeInfo;
             TabsForNodeTypes[RogueTabTypes.TileSetInfo] = tpTileSetInfos;
             TabsForNodeTypes[RogueTabTypes.FloorInfo] = tpFloorInfos;
             TabsForNodeTypes[RogueTabTypes.FactionInfo] = tpFactionInfos;
@@ -120,6 +122,7 @@ namespace RogueCustomsDungeonEditor
             }
             BasicInformationTab.TabInfoChanged += BasicInformationTab_TabInfoChanged;
             LocaleEntriesTab.TabInfoChanged += LocaleEntriesTab_TabInfoChanged;
+            TileTypeTab.TabInfoChanged += TileTypeTab_TabInfoChanged;
             TilesetTab.TabInfoChanged += TilesetTab_TabInfoChanged;
             FloorGroupTab.TabInfoChanged += FloorGroupTab_TabInfoChanged;
             FactionTab.TabInfoChanged += FactionTab_TabInfoChanged;
@@ -178,6 +181,7 @@ namespace RogueCustomsDungeonEditor
                 ReclickOnFailedSave = false;
                 return;
             }
+            if (ClickedSave) return;
             if (ActiveNode == e.Node) return;
             ReselectingNode = true;
             if (e.Node.Tag is NodeTag tag)
@@ -244,6 +248,11 @@ namespace RogueCustomsDungeonEditor
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.Locales;
+                        break;
+                    case "Special Tiles":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.TileTypeInfo;
                         break;
                     case "Tilesets":
                         tssDungeonElement.Visible = true;
@@ -313,6 +322,18 @@ namespace RogueCustomsDungeonEditor
                 localesRootNode.Nodes.Add(localeNode);
             }
             tvDungeonInfo.Nodes.Add(localesRootNode);
+
+            var tileTypesRootNode = new TreeNode("Special Tiles");
+            foreach (var tileTypeInfo in ActiveDungeon.TileTypeInfos.Where(tt => !FormConstants.DefaultTileTypes.Any(dtt => dtt.Equals(tt.Id, StringComparison.InvariantCultureIgnoreCase))))
+            {
+                var tileTypeInfoNode = new TreeNode(tileTypeInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.TileTypeInfo, DungeonElement = tileTypeInfo },
+                    Name = tileTypeInfo.Id
+                };
+                tileTypesRootNode.Nodes.Add(tileTypeInfoNode);
+            }
+            tvDungeonInfo.Nodes.Add(tileTypesRootNode);
 
             var tileSetsRootNode = new TreeNode("Tilesets");
             foreach (var tileSetInfo in ActiveDungeon.TileSetInfos)
@@ -611,6 +632,9 @@ namespace RogueCustomsDungeonEditor
                     case "Locales":
                         tabToOpen = RogueTabTypes.Locales;
                         break;
+                    case "Special Tiles":
+                        tabToOpen = RogueTabTypes.TileTypeInfo;
+                        break;
                     case "Tilesets":
                         tabToOpen = RogueTabTypes.TileSetInfo;
                         break;
@@ -645,6 +669,9 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.Locales:
                     ActiveNodeTag.DungeonElement = LocaleTemplate.Clone(MandatoryLocaleKeys);
                     break;
+                case RogueTabTypes.TileTypeInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateTileTypeTemplate();
+                    break;
                 case RogueTabTypes.TileSetInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateDefaultTileSet();
                     break;
@@ -676,13 +703,14 @@ namespace RogueCustomsDungeonEditor
             ActiveNode = null;
             LoadTabDataForTag(ActiveNodeTag);
             DirtyTab = true;
-            tvDungeonInfo.SelectedNode = null;
         }
 
         private void tsbSaveElement_Click(object sender, EventArgs e)
         {
+            ClickedSave = true;
             ActiveControl = null;
             SaveElement();
+            ClickedSave = false;
         }
 
         private bool SaveElement()
@@ -695,6 +723,8 @@ namespace RogueCustomsDungeonEditor
                         return SaveBasicInfo();
                     case RogueTabTypes.Locales:
                         return SaveLocale();
+                    case RogueTabTypes.TileTypeInfo:
+                        return SaveTileType();
                     case RogueTabTypes.TileSetInfo:
                         return SaveTileSet();
                     case RogueTabTypes.FloorInfo:
@@ -723,8 +753,10 @@ namespace RogueCustomsDungeonEditor
 
         private void tsbSaveElementAs_Click(object sender, EventArgs e)
         {
+            ClickedSave = true;
             ActiveControl = null;
             SaveElementAs();
+            ClickedSave = false;
         }
 
         private bool SaveElementAs()
@@ -733,6 +765,8 @@ namespace RogueCustomsDungeonEditor
             {
                 case RogueTabTypes.Locales:
                     return SaveLocaleAs();
+                case RogueTabTypes.TileTypeInfo:
+                    return SaveTileTypeAs();
                 case RogueTabTypes.TileSetInfo:
                     return SaveTileSetAs();
                 case RogueTabTypes.FloorInfo:
@@ -760,6 +794,9 @@ namespace RogueCustomsDungeonEditor
             {
                 case RogueTabTypes.Locales:
                     DeleteLocale();
+                    break;
+                case RogueTabTypes.TileTypeInfo:
+                    DeleteTileType();
                     break;
                 case RogueTabTypes.TileSetInfo:
                     DeleteTileSet();
@@ -823,6 +860,14 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale - {tagLocale.Language}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale";
+                    break;
+                case RogueTabTypes.TileTypeInfo:
+                    var tagTileType = (TileTypeInfo)tag.DungeonElement;
+                    LoadTileTypeInfoFor(tagTileType);
+                    if (!IsNewElement)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Tile Type - {tagTileType.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Tile Type";
                     break;
                 case RogueTabTypes.TileSetInfo:
                     var tagTileSet = (TileSetInfo)tag.DungeonElement;
@@ -1253,6 +1298,144 @@ namespace RogueCustomsDungeonEditor
             }
         }
         private void LocaleEntriesTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
+        #region Tile Type
+
+        private void LoadTileTypeInfoFor(TileTypeInfo tileType)
+        {
+            TileTypeTab.LoadData(tileType, ActiveDungeon, EffectParamData);
+        }
+
+        private bool SaveTileType()
+        {
+            if (string.IsNullOrWhiteSpace(TileTypeTab.LoadedTileType.Id))
+                return SaveTileTypeAs();
+            return SaveTileTypeToDungeon(TileTypeTab.LoadedTileType.Id);
+        }
+
+        private bool SaveTileTypeAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Tile Type Identifier", "Save Special Tile As");
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.TileTypeInfos.Exists(tti => tti.Id.Equals(inputBoxResult)))
+                {
+                    if(FormConstants.DefaultTileTypes.Any(dtt => dtt.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        MessageBox.Show(
+                            $"{inputBoxResult} is a default Tile Type.\n\nPlease pick another.",
+                            "Save Special Tile As",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+                        return false;
+                    }
+                    else
+                    {
+                        var messageBoxResult = MessageBox.Show(
+                            $"A Special Tile with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                            "Save Special Tile As",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning
+                        );
+                        if (messageBoxResult == DialogResult.Yes)
+                        {
+                            return SaveTileTypeToDungeon(inputBoxResult);
+                        }
+                    }
+                }
+                else
+                {
+                    return SaveTileTypeToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveTileTypeToDungeon(string id)
+        {
+            var validationErrors = TileTypeTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save the Special Tile Type. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Special Tile",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var tileTypeToSave = TileTypeTab.LoadedTileType;
+            var preExistingTileType = ActiveDungeon.TileTypeInfos.FirstOrDefault(tti => tti.Id.Equals(id));
+            var isNewTileType = preExistingTileType == null;
+            if (isNewTileType)
+            {
+                ActiveDungeon.TileTypeInfos.Add(tileTypeToSave);
+            }
+            else
+            {
+                ActiveDungeon.TileTypeInfos[ActiveDungeon.TileTypeInfos.IndexOf(preExistingTileType)] = tileTypeToSave;
+            }
+            var verb = isNewTileType ? "Save" : "Update";
+            MessageBox.Show(
+                $"Special Tile {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Special Tile",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(tileTypeToSave.Id, "Special Tiles");
+            return true;
+        }
+
+        public void DeleteTileType()
+        {
+            var activeTileType = TileTypeTab.LoadedTileType;
+            var deleteTileTypePrompt = IsNewElement
+                ? "Do you want to remove this unsaved Special Tile?"
+                : $"Do you want to PERMANENTLY delete Special Tile {activeTileType.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteTileTypePrompt,
+                "Special Tile",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewElement)
+                {
+                    var removedId = new string(activeTileType.Id);
+                    ActiveDungeon.TileTypeInfos.RemoveAll(tti => tti.Id.Equals(activeTileType.Id));
+                    ActiveDungeon.FloorInfos.ForEach(fi => fi.PossibleSpecialTiles = fi.PossibleSpecialTiles.Where(pst => !pst.TileTypeId.Equals(activeTileType.Id, StringComparison.InvariantCultureIgnoreCase)).ToList());
+                    MessageBox.Show(
+                        $"Special Tile {removedId} has been successfully deleted.",
+                        "Delete Special Tile",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewElement = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void TileTypeTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
         }
@@ -2284,6 +2467,7 @@ namespace RogueCustomsDungeonEditor
     {
         BasicInfo,
         Locales,
+        TileTypeInfo,
         TileSetInfo,
         FloorInfo,
         FactionInfo,

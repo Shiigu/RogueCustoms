@@ -87,6 +87,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             nudExtraRoomConnectionOdds.Value = LoadedFloorGroup.OddsForExtraConnections;
             nudRoomFusionOdds.Value = LoadedFloorGroup.RoomFusionOdds;
             nudHungerLostPerTurn.Value = LoadedFloorGroup.HungerDegeneration;
+            var specialTileTypes = ActiveDungeon.GetSpecialTileTypes(FormConstants.DefaultTileTypes);
+            btnSpecialTileGenerator.Enabled = specialTileTypes.Any();
+            if (btnSpecialTileGenerator.Enabled)
+                btnSpecialTileGenerator.Tag = LoadedFloorGroup.PossibleSpecialTiles ?? new List<SpecialTileInFloorInfo>();
+            else
+                btnSpecialTileGenerator.Tag = null;
         }
 
         public List<string> SaveData(bool saveAsNew)
@@ -113,7 +119,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var npcGenerationParams = btnNPCGenerator.Tag as NPCGenerationParams;
                 var itemGenerationParams = btnItemGenerator.Tag as ObjectGenerationParams;
                 var trapGenerationParams = btnTrapGenerator.Tag as ObjectGenerationParams;
-                var keyTypes = ((layoutList.Any(l => l.Rows > 1 || l.Columns > 1))                    
+                var keyTypes = ((layoutList.Any(l => l.Rows > 1 || l.Columns > 1))
                     ? btnFloorKeys.Tag as KeyGenerationInfo
                     : null) ?? new()
                     {
@@ -122,6 +128,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                         LockedRoomOdds = 0,
                         KeyTypes = new()
                     };
+                var specialGenerationInfo = btnSpecialTileGenerator.Tag as List<SpecialTileInFloorInfo>;
                 LoadedFloorGroup = new()
                 {
                     PossibleLayouts = layoutList,
@@ -146,6 +153,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     RoomFusionOdds = (int)nudRoomFusionOdds.Value,
                     OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null,
                     HungerDegeneration = nudHungerLostPerTurn.Value,
+                    PossibleSpecialTiles = specialGenerationInfo,
                     PossibleKeys = keyTypes
                 };
             }
@@ -392,6 +400,18 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (frmGeneratorWindow.Saved)
             {
                 btnTrapGenerator.Tag = frmGeneratorWindow.ObjectGenerationParams;
+                TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            }
+        }
+
+        private void btnSpecialTileGenerator_Click(object sender, EventArgs e)
+        {
+            var specialTileGenerationInfo = btnSpecialTileGenerator.Tag as List<SpecialTileInFloorInfo>;
+            var frmGeneratorWindow = new frmSpecialTileGeneration(LoadedFloorGroup, (int)nudMinFloorLevel.Value, (int)nudMaxFloorLevel.Value, specialTileGenerationInfo, ActiveDungeon);
+            frmGeneratorWindow.ShowDialog();
+            if (frmGeneratorWindow.Saved)
+            {
+                btnSpecialTileGenerator.Tag = frmGeneratorWindow.SpecialTileGenerationInfoList;
                 TabInfoChanged?.Invoke(null, EventArgs.Empty);
             }
         }

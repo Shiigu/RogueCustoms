@@ -91,7 +91,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
             if (MaximumUses > 0) CurrentUses++;
 
-            if(turnSourceVisibleWhenDone)
+            if(source != null && turnSourceVisibleWhenDone)
                 source.Visible = true;
 
             return successfulEffects;

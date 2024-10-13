@@ -74,7 +74,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap)));
             dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus)));
             FloorTypes = new List<FloorType>();
-            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse)));
+            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes)));
             FloorTypes.ForEach(ft => {
                 ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId))
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");

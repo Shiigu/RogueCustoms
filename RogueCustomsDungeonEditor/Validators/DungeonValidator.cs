@@ -26,6 +26,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public DungeonValidationMessages MessageValidationMessages { get; private set; }
         public DungeonValidationMessages IdValidationMessages { get; private set; }
         public DungeonValidationMessages FloorPlanValidationMessages { get; private set; }
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> TileTypeValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> TileSetValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)> FloorGroupValidationMessages { get; private set; } = new List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> FactionValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -105,6 +106,13 @@ namespace RogueCustomsDungeonEditor.Validators
             UpdateProgressLabel("Running Floor Plan Validation...", false);
             FloorPlanValidationMessages = DungeonFloorValidator.ValidateGeneralFloorPlan(DungeonJson);
             UpdateProgressLabel("Floor Plan Validation complete!", true);
+
+            foreach (var tileTypeInfo in DungeonJson.TileTypeInfos)
+            {
+                UpdateProgressLabel($"Running Tile Type {tileTypeInfo.Id} Validation...", false);
+                TileTypeValidationMessages.Add((tileTypeInfo.Id, DungeonTileTypeValidator.Validate(tileTypeInfo, DungeonJson, sampleDungeon)));
+                UpdateProgressLabel($"Tile Type {tileTypeInfo.Id} Validation complete!", true);
+            }
 
             foreach (var tileSetInfo in DungeonJson.TileSetInfos)
             {

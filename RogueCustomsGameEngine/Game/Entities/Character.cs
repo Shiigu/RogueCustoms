@@ -526,6 +526,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             if (HP.Current <= 0)
                 Die();
+            ContainingTile?.StoodOn(this);
         }
 
 

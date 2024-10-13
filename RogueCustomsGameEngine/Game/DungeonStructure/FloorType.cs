@@ -47,11 +47,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly decimal HungerDegeneration;
 
         public List<FloorLayoutGenerator> PossibleLayouts { get; private set; }
+        public List<SpecialTileInFloor> PossibleSpecialTiles { get; private set; }
         public KeyDoorGenerator PossibleKeys { get; private set; }
 
         public readonly ActionWithEffects OnFloorStart;
 
-        public FloorType(FloorInfo floorInfo, Locale locale)
+        public FloorType(FloorInfo floorInfo, Locale locale, List<TileType> tileTypes)
         {
             MinFloorLevel = floorInfo.MinFloorLevel;
             MaxFloorLevel = floorInfo.MaxFloorLevel;
@@ -127,6 +128,25 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CanLockStairs = keyType.CanLockStairs,
                         DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
                         KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key)
+                    });
+                }
+            }
+
+            PossibleSpecialTiles = new();
+            if(floorInfo.PossibleSpecialTiles != null && floorInfo.PossibleSpecialTiles.Any())
+            {
+                foreach (var specialTileGenerator in floorInfo.PossibleSpecialTiles)
+                {
+                    var tileType = tileTypes.Find(tt => tt.Id.Equals(specialTileGenerator.TileTypeId))
+                        ?? throw new InvalidDataException($"There's a Special Tile generator algorithm with invalid Tile Type {specialTileGenerator.TileTypeId}");
+                    if(specialTileGenerator.GeneratorType == null)
+                        throw new InvalidDataException($"There's no Special Tile generator algorithm without a Generator Type");
+                    PossibleSpecialTiles.Add(new SpecialTileInFloor
+                    {
+                        TileType = tileType,
+                        MinSpecialTileGenerations = specialTileGenerator.MinSpecialTileGenerations,
+                        MaxSpecialTileGenerations = specialTileGenerator.MaxSpecialTileGenerations,
+                        GeneratorType = specialTileGenerator.GeneratorType.Value
                     });
                 }
             }
@@ -208,6 +228,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RoomDispositionType[,] RoomDisposition { get; set; }
         public RoomDimensionsInfo MinRoomSize { get; set; }
         public RoomDimensionsInfo MaxRoomSize { get; set; }
+    }
+
+    [Serializable]
+    public class SpecialTileInFloor
+    {
+        public TileType TileType { get; set; }
+        public SpecialTileGenerationAlgorithm GeneratorType { get; set; }
+        public int MinSpecialTileGenerations { get; set; }
+        public int MaxSpecialTileGenerations { get; set; }
+    }
+
+    public enum SpecialTileGenerationAlgorithm
+    {
+        River,
+        Lake
     }
 
     [Serializable]

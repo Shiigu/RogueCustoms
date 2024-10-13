@@ -172,6 +172,27 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (floorJson.MaxTrapsInFloor < floorJson.MinTrapsInFloor)
                 messages.AddError("MaxTrapsInFloor cannot be than its MinTrapsInFloor.");
 
+            if(floorJson.PossibleSpecialTiles != null && floorJson.PossibleSpecialTiles.Any())
+            {
+                foreach (var specialTileGenerator in floorJson.PossibleSpecialTiles)
+                {
+                    if (string.IsNullOrWhiteSpace(specialTileGenerator.TileTypeId))
+                        messages.AddError($"At least one Generator lacks a Tile Type");
+                    if (!dungeonJson.TileTypeInfos.Any(tti => tti.Id.Equals(specialTileGenerator.TileTypeId, StringComparison.InvariantCultureIgnoreCase)))
+                        messages.AddError($"The Generator's Tile Type, {specialTileGenerator.TileTypeId}, does not exist in the Dungeon");
+                    if (specialTileGenerator.MinSpecialTileGenerations < 0)
+                        messages.AddError($"A Generator of {specialTileGenerator.TileTypeId} as {specialTileGenerator.GeneratorType} has a Minimum lower than 0.");
+                    if (specialTileGenerator.MaxSpecialTileGenerations < 0)
+                        messages.AddError($"A Generator of {specialTileGenerator.TileTypeId} as {specialTileGenerator.GeneratorType} has a Maximum lower than 0.");
+                    if (specialTileGenerator.MinSpecialTileGenerations > specialTileGenerator.MaxSpecialTileGenerations)
+                        messages.AddError($"A Generator of {specialTileGenerator.TileTypeId} as {specialTileGenerator.GeneratorType} has a Minimum higher than its Maximum.");
+                    if (specialTileGenerator.GeneratorType == null)
+                        messages.AddError($"At least one Generator lacks a Generator Type");
+                    if (floorJson.PossibleSpecialTiles.Any(stl => stl != specialTileGenerator && stl.TileTypeId.Equals(specialTileGenerator.TileTypeId) && stl.GeneratorType == specialTileGenerator.GeneratorType))
+                        messages.AddError($"A Generator of {specialTileGenerator.TileTypeId} as {specialTileGenerator.GeneratorType} is present more than once");
+                }
+            }
+
             if (floorJson.MaxConnectionsBetweenRooms < 0)
                 messages.AddError("MaxConnectionsBetweenRooms must be an integer number equal to or higher than 0.");
             if (!floorJson.OddsForExtraConnections.Between(0, 100))

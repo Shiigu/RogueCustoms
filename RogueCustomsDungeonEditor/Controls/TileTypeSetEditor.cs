@@ -79,7 +79,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 csrVertical.Dispose();
                 lblVerticalHeader.Dispose();
             }
-            if (tileType.CanVisiblyConnectWithOtherTiles && tileType.ProducesWallConnectors)
+            if (tileType.Id.Equals("hallway", StringComparison.InvariantCultureIgnoreCase))
             {
                 csrConnector.SetConsoleRepresentation(tileTypeSetInfoToLoad.Connector);
             }
@@ -124,7 +124,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 validationErrors.AddRange(csrHorizontal.ConsoleRepresentation.Validate($"{_tileType.Id}'s Horizontal"));
                 validationErrors.AddRange(csrVertical.ConsoleRepresentation.Validate($"{_tileType.Id}'s Vertical"));
             }
-            if (_tileType.CanVisiblyConnectWithOtherTiles && _tileType.ProducesWallConnectors)
+            if (_tileType.Id.Equals("hallway", StringComparison.InvariantCultureIgnoreCase))
             {
                 validationErrors.AddRange(csrConnector.ConsoleRepresentation.Validate($"{_tileType.Id}'s Connector"));
             }

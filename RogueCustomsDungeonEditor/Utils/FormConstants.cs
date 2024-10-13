@@ -11,5 +11,6 @@ namespace RogueCustomsDungeonEditor.Utils
         public const string ActionClipboardKey = "ActionWithEffects";
         public const string StepClipboardKey = "Effect";
         public const string LayoutClipboardKey = "Layout";
+        public static readonly List<string> DefaultTileTypes = new() { "Empty", "Floor", "Wall", "Hallway", "Stairs", "Door" };
     }
 }

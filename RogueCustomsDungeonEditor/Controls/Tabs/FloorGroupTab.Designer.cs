@@ -66,6 +66,8 @@
             label9 = new System.Windows.Forms.Label();
             btnFloorKeys = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
+            btnSpecialTileGenerator = new System.Windows.Forms.Button();
+            label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).BeginInit();
@@ -102,7 +104,7 @@
             // 
             nudHungerLostPerTurn.DecimalPlaces = 4;
             nudHungerLostPerTurn.Increment = new decimal(new int[] { 25, 0, 0, 262144 });
-            nudHungerLostPerTurn.Location = new System.Drawing.Point(93, 184);
+            nudHungerLostPerTurn.Location = new System.Drawing.Point(93, 171);
             nudHungerLostPerTurn.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudHungerLostPerTurn.Name = "nudHungerLostPerTurn";
             nudHungerLostPerTurn.Size = new System.Drawing.Size(54, 23);
@@ -113,7 +115,7 @@
             // label31
             // 
             label31.AutoSize = true;
-            label31.Location = new System.Drawing.Point(7, 185);
+            label31.Location = new System.Drawing.Point(7, 172);
             label31.Name = "label31";
             label31.Size = new System.Drawing.Size(232, 15);
             label31.TabIndex = 76;
@@ -136,7 +138,7 @@
             saeOnFloorStart.RequiresCondition = false;
             saeOnFloorStart.RequiresDescription = false;
             saeOnFloorStart.Size = new System.Drawing.Size(260, 32);
-            saeOnFloorStart.SourceDescription = "The player";
+            saeOnFloorStart.SourceDescription = "None (Don't use)";
             saeOnFloorStart.TabIndex = 75;
             saeOnFloorStart.TargetDescription = "The player";
             saeOnFloorStart.ThisDescription = "None (Don't use)";
@@ -280,7 +282,7 @@
             // 
             // btnTrapGenerator
             // 
-            btnTrapGenerator.Location = new System.Drawing.Point(175, 318);
+            btnTrapGenerator.Location = new System.Drawing.Point(175, 305);
             btnTrapGenerator.Name = "btnTrapGenerator";
             btnTrapGenerator.Size = new System.Drawing.Size(151, 23);
             btnTrapGenerator.TabIndex = 60;
@@ -292,7 +294,7 @@
             // 
             label15.AutoSize = true;
             label15.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label15.Location = new System.Drawing.Point(186, 284);
+            label15.Location = new System.Drawing.Point(186, 271);
             label15.Name = "label15";
             label15.Size = new System.Drawing.Size(126, 21);
             label15.TabIndex = 59;
@@ -300,7 +302,7 @@
             // 
             // btnItemGenerator
             // 
-            btnItemGenerator.Location = new System.Drawing.Point(8, 318);
+            btnItemGenerator.Location = new System.Drawing.Point(8, 305);
             btnItemGenerator.Name = "btnItemGenerator";
             btnItemGenerator.Size = new System.Drawing.Size(151, 23);
             btnItemGenerator.TabIndex = 58;
@@ -312,7 +314,7 @@
             // 
             label14.AutoSize = true;
             label14.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label14.Location = new System.Drawing.Point(19, 284);
+            label14.Location = new System.Drawing.Point(19, 271);
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(128, 21);
             label14.TabIndex = 57;
@@ -320,7 +322,7 @@
             // 
             // btnNPCGenerator
             // 
-            btnNPCGenerator.Location = new System.Drawing.Point(9, 253);
+            btnNPCGenerator.Location = new System.Drawing.Point(9, 240);
             btnNPCGenerator.Name = "btnNPCGenerator";
             btnNPCGenerator.Size = new System.Drawing.Size(151, 23);
             btnNPCGenerator.TabIndex = 56;
@@ -332,7 +334,7 @@
             // 
             label13.AutoSize = true;
             label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label13.Location = new System.Drawing.Point(21, 219);
+            label13.Location = new System.Drawing.Point(21, 206);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(126, 21);
             label13.TabIndex = 55;
@@ -385,7 +387,7 @@
             fklblStairsReminder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             fklblStairsReminder.Image = (System.Drawing.Image)resources.GetObject("fklblStairsReminder.Image");
             fklblStairsReminder.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            fklblStairsReminder.Location = new System.Drawing.Point(4, 136);
+            fklblStairsReminder.Location = new System.Drawing.Point(4, 123);
             fklblStairsReminder.Name = "fklblStairsReminder";
             fklblStairsReminder.Size = new System.Drawing.Size(287, 42);
             fklblStairsReminder.TabIndex = 50;
@@ -398,7 +400,7 @@
             // chkGenerateStairsOnStart
             // 
             chkGenerateStairsOnStart.AutoSize = true;
-            chkGenerateStairsOnStart.Location = new System.Drawing.Point(4, 111);
+            chkGenerateStairsOnStart.Location = new System.Drawing.Point(4, 98);
             chkGenerateStairsOnStart.Name = "chkGenerateStairsOnStart";
             chkGenerateStairsOnStart.Size = new System.Drawing.Size(214, 19);
             chkGenerateStairsOnStart.TabIndex = 49;
@@ -444,7 +446,7 @@
             // 
             // btnFloorKeys
             // 
-            btnFloorKeys.Location = new System.Drawing.Point(175, 253);
+            btnFloorKeys.Location = new System.Drawing.Point(175, 240);
             btnFloorKeys.Name = "btnFloorKeys";
             btnFloorKeys.Size = new System.Drawing.Size(151, 23);
             btnFloorKeys.TabIndex = 81;
@@ -456,17 +458,39 @@
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label1.Location = new System.Drawing.Point(187, 219);
+            label1.Location = new System.Drawing.Point(187, 206);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(121, 21);
             label1.TabIndex = 80;
             label1.Text = "Floor Key Data";
+            // 
+            // btnSpecialTileGenerator
+            // 
+            btnSpecialTileGenerator.Location = new System.Drawing.Point(71, 373);
+            btnSpecialTileGenerator.Name = "btnSpecialTileGenerator";
+            btnSpecialTileGenerator.Size = new System.Drawing.Size(206, 23);
+            btnSpecialTileGenerator.TabIndex = 83;
+            btnSpecialTileGenerator.Text = "Special Tiles to be generated...";
+            btnSpecialTileGenerator.UseVisualStyleBackColor = true;
+            btnSpecialTileGenerator.Click += btnSpecialTileGenerator_Click;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label2.Location = new System.Drawing.Point(103, 343);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(137, 21);
+            label2.TabIndex = 82;
+            label2.Text = "Special Tile Data";
             // 
             // FloorGroupTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(btnSpecialTileGenerator);
+            Controls.Add(label2);
             Controls.Add(btnFloorKeys);
             Controls.Add(label1);
             Controls.Add(btnPasteAlgorithm);
@@ -505,7 +529,7 @@
             Controls.Add(nudMinFloorLevel);
             Controls.Add(label9);
             Name = "FloorGroupTab";
-            Size = new System.Drawing.Size(717, 348);
+            Size = new System.Drawing.Size(717, 404);
             ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).EndInit();
@@ -557,5 +581,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btnFloorKeys;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnSpecialTileGenerator;
+        private System.Windows.Forms.Label label2;
     }
 }

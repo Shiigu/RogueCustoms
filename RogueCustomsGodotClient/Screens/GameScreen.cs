@@ -450,9 +450,20 @@ public partial class GameScreen : Control
             if (entityDetails != null)
             {
                 var entityWindowText = new StringBuilder();
-                entityWindowText.Append($"[center]{entityDetails.Name}[/center]\n\n");
-                entityWindowText.Append($"[center]{entityDetails.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
-                entityWindowText.Append($"{entityDetails.Description}");
+                if (entityDetails.ShowEntityDescription)
+                {
+                    entityWindowText.Append($"[center]{entityDetails.EntityName}[/center]\n\n");
+                    entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
+                    entityWindowText.Append($"{entityDetails.EntityDescription}");
+                }
+                if(entityDetails.ShowTileDescription)
+                {
+                    if (entityDetails.ShowEntityDescription)
+                        entityWindowText.Append($"\n\n");
+                    entityWindowText.Append($"[center]{entityDetails.TileName}[/center]\n\n");
+                    entityWindowText.Append($"[center]{entityDetails.TileConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
+                    entityWindowText.Append($"{entityDetails.TileDescription}");
+                }
                 this.CreateStandardPopup(TranslationServer.Translate("EntityDetailTitleText"),
                                             entityWindowText.ToString(),
                                             new PopUpButton[]

@@ -1060,78 +1060,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
-            var empty = new TileTypeInfo()
-            {
-                Id = "Empty",
-                Name = "Empty",
-                IsVisible = true,
-                CanTeleportFrom = false,
-                AcceptsItems = false,
-                IsWalkable = false,
-                IsSolid = false,
-                CanBeTransformed = false,
-                CanVisiblyConnectWithOtherTiles = false,
-                CanHaveMultilineConnections = false,
-                ProducesWallConnectors = false
-            };
-            var floor = new TileTypeInfo()
-            {
-                Id = "Floor",
-                Name = "Floor",
-                IsVisible = true,
-                CanTeleportFrom = true,
-                AcceptsItems = true,
-                IsWalkable = true,
-                IsSolid = false,
-                CanBeTransformed = true,
-                CanVisiblyConnectWithOtherTiles = false,
-                CanHaveMultilineConnections = false,
-                ProducesWallConnectors = false
-            };
-            var wall = new TileTypeInfo()
-            {
-                Id = "Wall",
-                Name = "Wall",
-                IsVisible = false,
-                CanTeleportFrom = false,
-                AcceptsItems = false,
-                IsWalkable = false,
-                IsSolid = true,
-                CanBeTransformed = true,
-                CanVisiblyConnectWithOtherTiles = true,
-                CanHaveMultilineConnections = false,
-                ProducesWallConnectors = false
-            };
-            var hallway = new TileTypeInfo()
-            {
-                Id = "Hallway",
-                Name = "Hallway",
-                IsVisible = true,
-                CanTeleportFrom = false,
-                AcceptsItems = true,
-                IsWalkable = true,
-                IsSolid = false,
-                CanBeTransformed = true,
-                CanVisiblyConnectWithOtherTiles = true,
-                CanHaveMultilineConnections = true,
-                ProducesWallConnectors = true
-            };
-            var stairs = new TileTypeInfo()
-            {
-                Id = "Stairs",
-                Name = "Stairs",
-                IsVisible = true,
-                CanTeleportFrom = true,
-                AcceptsItems = false,
-                IsWalkable = true,
-                IsSolid = false,
-                CanBeTransformed = false,
-                CanVisiblyConnectWithOtherTiles = false,
-                CanHaveMultilineConnections = false,
-                ProducesWallConnectors = false
-            };
-
-            V15Dungeon.TileTypeInfos = new() { floor, empty, wall, hallway, stairs };
+            V15Dungeon.TileTypeInfos = DungeonInfoHelpers.CreateDefaultTileTypes();
             V15Dungeon.TileSetInfos = new();
 
             foreach (var v14TileSet in V14Dungeon.TileSetInfos)
