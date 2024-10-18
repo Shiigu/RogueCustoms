@@ -22,7 +22,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             messages.AddRange(DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
-            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
 
             if (npcJson.OnSpawn != null)
             {

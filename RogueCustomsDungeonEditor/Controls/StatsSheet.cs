@@ -1,4 +1,7 @@
 ﻿using RogueCustomsDungeonEditor.Utils;
+
+using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 
 namespace RogueCustomsDungeonEditor.Controls
 {
@@ -16,125 +20,60 @@ namespace RogueCustomsDungeonEditor.Controls
     {
         private string PreviousTextBoxValue = string.Empty;
 
-        public int BaseHP
-        {
-            get
-            {
-                return (int)nudBaseHP.Value;
-            }
-            set
-            {
-                nudBaseHP.Value = value;
-            }
-        }
+        public List<StatInfo> StatInfos { get; set; }
+        private List<CharacterStatInfoControlParams> CharacterStats;
 
-        public decimal BaseHPRegeneration
+        public List<CharacterStatInfo> Stats
         {
             get
             {
-                return nudBaseHPRegeneration.Value;
-            }
-            set
-            {
-                nudBaseHPRegeneration.Value = value;
-            }
-        }
+                var statsList = new List<CharacterStatInfo>();
 
-        public bool UsesMP
-        {
-            get
-            {
-                return chkUsesMP.Checked;
-            }
-            set
-            {
-                chkUsesMP.Checked = value;
-                ToggleMPControls();
-            }
-        }
+                foreach (var stat in CharacterStats)
+                {
+                    if (!stat.Used) continue;
+                    statsList.Add(new()
+                    {
+                        StatId = stat.StatId,
+                        Base = stat.Base,
+                        IncreasePerLevel = stat.IncreasePerLevel
+                    });
+                }
 
-        public int BaseMP
-        {
-            get
-            {
-                return UsesMP ? (int)nudBaseMP.Value : 0;
+                return statsList;
             }
             set
             {
-                if (UsesMP)
-                    nudBaseMP.Value = value;
-            }
-        }
+                CharacterStats = new();
 
-        public decimal BaseMPRegeneration
-        {
-            get
-            {
-                return UsesMP ? nudBaseMPRegeneration.Value : 0;
-            }
-            set
-            {
-                if (UsesMP)
-                    nudBaseMPRegeneration.Value = value;
-            }
-        }
+                foreach (var stat in StatInfos)
+                {
+                    var characterStat = value.Find(v => v.StatId.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (characterStat != null)
+                    {
+                        CharacterStats.Add(new()
+                        {
+                            Used = true,
+                            StatId = characterStat.StatId,
+                            Base = characterStat.Base,
+                            IncreasePerLevel = characterStat.IncreasePerLevel
+                        });
+                    }
+                    else
+                    {
+                        CharacterStats.Add(new()
+                        {
+                            Used = false,
+                            StatId = stat.Id,
+                            Base = 0,
+                            IncreasePerLevel = 0
+                        });
+                    }
+                }
 
-        public int BaseAttack
-        {
-            get
-            {
-                return (int)nudBaseAttack.Value;
-            }
-            set
-            {
-                nudBaseAttack.Value = value;
-            }
-        }
-        public int BaseDefense
-        {
-            get
-            {
-                return (int)nudBaseDefense.Value;
-            }
-            set
-            {
-                nudBaseDefense.Value = value;
-            }
-        }
-
-        public int BaseAccuracy
-        {
-            get
-            {
-                return (int)nudBaseAccuracy.Value;
-            }
-            set
-            {
-                nudBaseAccuracy.Value = value;
-            }
-        }
-
-        public int BaseEvasion
-        {
-            get
-            {
-                return (int)nudBaseEvasion.Value;
-            }
-            set
-            {
-                nudBaseEvasion.Value = value;
-            }
-        }
-
-        public int BaseMovement
-        {
-            get
-            {
-                return (int)nudBaseMovement.Value;
-            }
-            set
-            {
-                nudBaseMovement.Value = value;
+                hsbStats.Value = 0;
+                hsbStats.Maximum = CharacterStats.Count - 1;
+                UpdateStatControls();
             }
         }
 
@@ -187,44 +126,6 @@ namespace RogueCustomsDungeonEditor.Controls
                 }
             }
         }
-        public bool UsesHunger
-        {
-            get
-            {
-                return chkUsesHunger.Checked;
-            }
-            set
-            {
-                chkUsesHunger.Checked = value;
-                ToggleHungerControls();
-            }
-        }
-
-        public int BaseHunger
-        {
-            get
-            {
-                return UsesHunger ? (int)nudBaseMaxHunger.Value : 0;
-            }
-            set
-            {
-                if (UsesHunger)
-                    nudBaseMaxHunger.Value = value;
-            }
-        }
-
-        public decimal HungerHPDegeneration
-        {
-            get
-            {
-                return UsesHunger ? nudHungerHPDegeneration.Value : 0;
-            }
-            set
-            {
-                if (UsesHunger)
-                    nudHungerHPDegeneration.Value = value;
-            }
-        }
 
         public bool CanGainExperience
         {
@@ -264,120 +165,14 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
-        public decimal HPPerLevelUp
-        {
-            get
-            {
-                return nudHPPerLevelUp.Value;
-            }
-            set
-            {
-                nudHPPerLevelUp.Value = value;
-            }
-        }
-
-        public decimal HPRegenerationPerLevelUp
-        {
-            get
-            {
-                return nudHPRegenerationPerLevelUp.Value;
-            }
-            set
-            {
-                nudHPRegenerationPerLevelUp.Value = value;
-            }
-        }
-
-        public decimal MPPerLevelUp
-        {
-            get
-            {
-                return UsesMP ? nudMPPerLevelUp.Value : 0;
-            }
-            set
-            {
-                if (UsesMP)
-                    nudMPPerLevelUp.Value = value;
-            }
-        }
-
-        public decimal MPRegenerationPerLevelUp
-        {
-            get
-            {
-                return UsesMP ? nudMPRegenerationPerLevelUp.Value : 0;
-            }
-            set
-            {
-                if (UsesMP)
-                    nudMPRegenerationPerLevelUp.Value = value;
-            }
-        }
-
-        public decimal AttackPerLevelUp
-        {
-            get
-            {
-                return nudAttackPerLevelUp.Value;
-            }
-            set
-            {
-                nudAttackPerLevelUp.Value = value;
-            }
-        }
-
-        public decimal DefensePerLevelUp
-        {
-            get
-            {
-                return nudDefensePerLevelUp.Value;
-            }
-            set
-            {
-                nudDefensePerLevelUp.Value = value;
-            }
-        }
-
-        public decimal MovementPerLevelUp
-        {
-            get
-            {
-                return nudMovementPerLevelUp.Value;
-            }
-            set
-            {
-                nudMovementPerLevelUp.Value = value;
-            }
-        }
-
         public event EventHandler StatsChanged = delegate { };
 
         public StatsSheet()
         {
             InitializeComponent();
-            nudBaseHP.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseMP.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            chkUsesMP.CheckedChanged += (_, _) => ToggleMPControls();
-            nudBaseAttack.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseDefense.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseMovement.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseAccuracy.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseEvasion.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseHPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudBaseMPRegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             nudFlatSightRange.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            chkUsesHunger.CheckedChanged += (_, _) => ToggleHungerControls();
-            nudBaseMaxHunger.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudHungerHPDegeneration.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
             chkCanGainExperience.CheckedChanged += (_, _) => ToggleLevelUpControls();
             nudMaxLevel.ValueChanged += (_, _) => ToggleLevelUpControls();
-            nudHPPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudMPPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudAttackPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudDefensePerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudMovementPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudHPRegenerationPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
-            nudMPRegenerationPerLevelUp.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void cmbSightRange_SelectedIndexChanged(object sender, EventArgs e)
@@ -397,44 +192,48 @@ namespace RogueCustomsDungeonEditor.Controls
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
+        private void UpdateStatControls()
+        {
+            var statToUse = CharacterStats[hsbStats.Value];
+            var correspondingStatInfo = StatInfos[hsbStats.Value];
+            var regenerationTargetStat = CharacterStats.Find(cs => cs.StatId.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
+
+            lblStatId.Text = statToUse.StatId;
+            nudBase.Minimum = correspondingStatInfo.MinCap;
+            nudBase.Maximum = correspondingStatInfo.MaxCap;
+            nudIncreasePerLevel.Minimum = 0;
+            nudIncreasePerLevel.Maximum = correspondingStatInfo.MaxCap;
+
+            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
+            {
+                nudBase.DecimalPlaces = 3;
+                nudIncreasePerLevel.DecimalPlaces = 3;
+            }
+            else
+            {
+                nudBase.DecimalPlaces = 0;
+                nudIncreasePerLevel.DecimalPlaces = 0;
+            }
+
+            nudBase.Value = statToUse.Base;
+            nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
+            lblPercentage.Visible = correspondingStatInfo.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase);
+
+            if (statToUse == null || !statToUse.Used || (regenerationTargetStat != null && !regenerationTargetStat.Used))
+            {
+                chkIsUsed.Checked = false;
+            }
+            else
+            {
+                chkIsUsed.Checked = true;
+            }
+
+            ToggleByCheckedStatus();
+        }
+
         private void ToggleLevelUpControls()
         {
             txtLevelUpFormula.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudHPPerLevelUp.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudMPPerLevelUp.Enabled = (chkCanGainExperience.Checked || nudMaxLevel.Value > 1) && chkUsesMP.Checked;
-            nudAttackPerLevelUp.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudDefensePerLevelUp.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudMovementPerLevelUp.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudHPRegenerationPerLevelUp.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            nudMPRegenerationPerLevelUp.Enabled = (chkCanGainExperience.Checked || nudMaxLevel.Value > 1) && chkUsesMP.Checked;
-            StatsChanged.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ToggleMPControls()
-        {
-            nudBaseMP.Enabled = chkUsesMP.Checked;
-            if (!chkUsesMP.Checked)
-                nudBaseMP.Value = 0;
-            nudBaseMPRegeneration.Enabled = chkUsesMP.Checked;
-            if (!chkUsesMP.Checked)
-                nudBaseMPRegeneration.Value = 0;
-            nudMPPerLevelUp.Enabled = (chkCanGainExperience.Checked || nudMaxLevel.Value > 1) && chkUsesMP.Checked;
-            if (!chkUsesMP.Checked)
-                nudMPPerLevelUp.Value = 0;
-            nudMPRegenerationPerLevelUp.Enabled = (chkCanGainExperience.Checked || nudMaxLevel.Value > 1) && chkUsesMP.Checked;
-            if (!chkUsesMP.Checked)
-                nudMPRegenerationPerLevelUp.Value = 0;
-            StatsChanged.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ToggleHungerControls()
-        {
-            nudBaseMaxHunger.Enabled = chkUsesHunger.Checked;
-            if (!chkUsesHunger.Checked)
-                nudBaseMaxHunger.Value = 0;
-            nudHungerHPDegeneration.Enabled = chkUsesHunger.Checked;
-            if (!chkUsesHunger.Checked)
-                nudHungerHPDegeneration.Value = 0;
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
@@ -467,5 +266,76 @@ namespace RogueCustomsDungeonEditor.Controls
 
             PreviousTextBoxValue = string.Empty;
         }
+
+        private void hsbStats_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateStatControls();
+        }
+
+        private void chkIsUsed_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleByCheckedStatus();
+            StatsChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ToggleByCheckedStatus()
+        {
+            var statToUse = CharacterStats[hsbStats.Value];
+            statToUse.Used = chkIsUsed.Checked;
+            var correspondingStatInfo = StatInfos[hsbStats.Value];
+            if (!chkIsUsed.Checked)
+            {
+                nudBase.Enabled = false;
+                nudBase.Minimum = 0;
+                nudBase.Maximum = 0;
+                nudBase.Value = 0;
+                nudIncreasePerLevel.Enabled = false;
+                nudIncreasePerLevel.Minimum = 0;
+                nudIncreasePerLevel.Maximum = 0;
+                nudIncreasePerLevel.Value = 0;
+            }
+            else
+            {
+                nudBase.Enabled = true;
+                nudBase.Minimum = correspondingStatInfo.MinCap;
+                nudBase.Maximum = correspondingStatInfo.MaxCap;
+                nudBase.Value = statToUse.Base;
+                nudIncreasePerLevel.Enabled = true;
+                nudIncreasePerLevel.Minimum = 0;
+                nudIncreasePerLevel.Maximum = correspondingStatInfo.MaxCap;
+                nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
+            }
+        }
+
+        private void nudBase_ValueChanged(object sender, EventArgs e)
+        {
+            var statToUse = CharacterStats[hsbStats.Value];
+            var correspondingStatInfo = StatInfos[hsbStats.Value];
+            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
+                statToUse.Base = nudBase.Value;
+            else
+                statToUse.Base = (int) nudBase.Value;
+            StatsChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        private void nudIncreasePerLevel_ValueChanged(object sender, EventArgs e)
+        {
+            var statToUse = CharacterStats[hsbStats.Value];
+            var correspondingStatInfo = StatInfos[hsbStats.Value];
+            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
+                statToUse.IncreasePerLevel = nudIncreasePerLevel.Value;
+            else
+                statToUse.IncreasePerLevel = (int)nudIncreasePerLevel.Value;
+            StatsChanged.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public class CharacterStatInfoControlParams
+    {
+        public bool Used { get; set; }
+        public string StatId { get; set; }
+        public decimal Base { get; set; }
+        public decimal IncreasePerLevel { get; set; }
     }
 }
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

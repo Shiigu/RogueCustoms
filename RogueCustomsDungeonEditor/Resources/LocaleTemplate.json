@@ -210,16 +210,8 @@
       "Value": "HP"
     },
     {
-      "Key": "CharacterMaxHPStat",
-      "Value": "Max HP"
-    },
-    {
       "Key": "CharacterMPStat",
       "Value": "MP"
-    },
-    {
-      "Key": "CharacterMaxMPStat",
-      "Value": "Max MP"
     },
     {
       "Key": "CharacterAttackStat",

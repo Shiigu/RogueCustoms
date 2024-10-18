@@ -21,7 +21,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public void AddDungeonToList(string internalName, DungeonInfo info, string locale)
         {
-            Dungeons.Add(new DungeonPickDto(internalName, info.GetLocalizedName(locale), info.Author, info.Version, !string.IsNullOrWhiteSpace(info.Version) && info.Version.Equals(Constants.CurrentDungeonJsonVersion)));
+            Dungeons.Add(new DungeonPickDto(internalName, info.GetLocalizedName(locale), info.Author, info.Version, !string.IsNullOrWhiteSpace(info.Version) && info.Version.Equals(EngineConstants.CurrentDungeonJsonVersion)));
         }
     }
 

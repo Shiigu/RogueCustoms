@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Utils
 {
-    public static class Constants
+    public static class EngineConstants
     {
         public readonly static string CurrentDungeonJsonVersion = Assembly.GetExecutingAssembly()
                                         .GetCustomAttribute<AssemblyFileVersionAttribute>()

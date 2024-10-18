@@ -63,7 +63,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ItemId = pickableAsEntity.Id;
             StatModifications = new();
             pickableAsItem?.StatModifiers.ForEach(m => {
-                var correspondingStat = player.Stats.FirstOrDefault(s => s.Id.Equals(m.Id));
+                var correspondingStat = player.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
                 if(correspondingStat != null)
                     StatModifications.Add(new StatModificationDto(m, correspondingStat, map));
             });

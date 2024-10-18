@@ -35,10 +35,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
 
         public List<CharacterClassStatDto> InitialStats { get; set; } = new List<CharacterClassStatDto>();
-        public string AccuracyName { get; set; }
-        public string AccuracyStat { get; set; }
-        public string EvasionName { get; set; }
-        public string EvasionStat { get; set; }
         public string SightRangeName { get; set; }
         public string SightRangeStat { get; set; }
         public string InventorySizeName { get; set; }
@@ -55,95 +51,30 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             RequiresNamePrompt = characterClass.RequiresNamePrompt;
             Description = dungeon.LocaleToUse[characterClass.Description];
             ConsoleRepresentation = characterClass.ConsoleRepresentation;
+            InitialStats = new();
 
-            InitialStats = new List<CharacterClassStatDto>
-            {
-                new CharacterClassStatDto
+            foreach (var stat in characterClass.Stats)
+            {                
+                InitialStats.Add(new()
                 {
-                    Name = dungeon.LocaleToUse["CharacterMaxHPStat"],
-                    Base = characterClass.BaseHP,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.MaxHPIncreasePerLevel,
-                    IsDecimalStat = false,
-                    Visible = true
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterMaxMPStat"],
-                    Base = characterClass.BaseMP,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.MaxMPIncreasePerLevel,
-                    IsDecimalStat = false,
-                    Visible = characterClass.UsesMP
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterAttackStat"],
-                    Base = characterClass.BaseAttack,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.AttackIncreasePerLevel,
-                    IsDecimalStat = false,
-                    Visible = true
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterDefenseStat"],
-                    Base = characterClass.BaseDefense,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.DefenseIncreasePerLevel,
-                    IsDecimalStat = false,
-                    Visible = true
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterMovementStat"],
-                    Base = characterClass.BaseMovement,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.MovementIncreasePerLevel,
-                    IsDecimalStat = false,
-                    Visible = true
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterHPRegenerationStat"],
-                    Base = characterClass.BaseHPRegeneration,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.HPRegenerationIncreasePerLevel,
-                    IsDecimalStat = true,
-                    Visible = true
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterMPRegenerationStat"],
-                    Base = characterClass.BaseMPRegeneration,
-                    HasIncreasePerLevel = true,
-                    IncreasePerLevel = characterClass.MPRegenerationIncreasePerLevel,
-                    IsDecimalStat = true,
-                    Visible = characterClass.UsesMP
-                },
-                new CharacterClassStatDto
-                {
-                    Name = dungeon.LocaleToUse["CharacterHungerStat"],
-                    Base = characterClass.BaseHunger,
-                    HasIncreasePerLevel = false,
-                    IsDecimalStat = true,
-                    Visible = characterClass.UsesHunger
-                }
-            };
+                    Name = stat.Name,
+                    Base = stat.Base,
+                    HasIncreasePerLevel = stat.IncreasePerLevel > 0,
+                    IncreasePerLevel = stat.IncreasePerLevel,
+                    IsDecimalStat = stat.StatType == StatType.Decimal || stat.StatType == StatType.Regeneration,
+                    IsPercentileStat = stat.StatType == StatType.Percentage
+                });
+            }
 
             SightRangeName = dungeon.LocaleToUse["CharacterSightRangeStat"];
 
-            if (characterClass.BaseSightRange == Constants.FullMapSightRange)
+            if (characterClass.BaseSightRange == EngineConstants.FullMapSightRange)
                 SightRangeStat = dungeon.LocaleToUse["SightRangeStatFullMap"];
-            else if (characterClass.BaseSightRange == Constants.FullRoomSightRange)
+            else if (characterClass.BaseSightRange == EngineConstants.FullRoomSightRange)
                 SightRangeStat = dungeon.LocaleToUse["SightRangeStatFullRoom"];
             else
                 SightRangeStat = dungeon.LocaleToUse["SightRangeStatFlatNumber"].Format(new { SightRange = characterClass.BaseSightRange.ToString() });
                         
-            AccuracyName = dungeon.LocaleToUse["CharacterAccuracyStat"];
-            AccuracyStat = $"{characterClass.BaseAccuracy}%";
-            EvasionName = dungeon.LocaleToUse["CharacterEvasionStat"];
-            EvasionStat = $"{characterClass.BaseEvasion}%";
             InventorySizeName = dungeon.LocaleToUse["CharacterInventorySizeStat"];
             InventorySizeStat = dungeon.LocaleToUse["InventorySizeStatFlatNumber"].Format(new { InventorySize = characterClass.InventorySize.ToString() });
 
@@ -173,7 +104,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsDecimalStat { get; set; }
         public bool IsPercentileStat { get; set; }
         public bool HasIncreasePerLevel { get; set; }
-        public bool Visible { get; set; }
     }
     #pragma warning restore CS8604 // Posible argumento de referencia nulo
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

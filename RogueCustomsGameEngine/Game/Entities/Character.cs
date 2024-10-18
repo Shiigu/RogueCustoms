@@ -17,6 +17,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 {
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     [Serializable]
     public abstract class Character : Entity, IHasActions, IKillable
     {
@@ -49,19 +50,19 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int MaxLevel { get; set; }
         public bool CanGainExperience { get; set; }
         public bool CanTakeAction { get; set; }
-        public bool UsesMP { get; set; }
-        public bool UsesHunger { get; set; }
-        public Stat HP { get; set; }
+        private List<Stat> Stats = new();
+        public List<Stat> UsedStats => Stats.Where(s => s != null).ToList();
+        public Stat HP => Stats.Find(s => s.Id.Equals("HP", StringComparison.InvariantCultureIgnoreCase));
         public decimal MaxHP => HP.BaseAfterModifications;
-        public Stat HPRegeneration { get; set; }
-        public Stat MP { get; set; }
+        public Stat HPRegeneration => Stats.Find(s => s.Id.Equals("HPRegeneration", StringComparison.InvariantCultureIgnoreCase));
+        public Stat MP => Stats.Find(s => s.Id.Equals("MP", StringComparison.InvariantCultureIgnoreCase));
         public decimal MaxMP => MP != null ? MP.BaseAfterModifications : 0;
-        public Stat MPRegeneration { get; set; }
-        public Stat Hunger { get; set; }
+        public Stat MPRegeneration => Stats.Find(s => s.Id.Equals("MPRegeneration", StringComparison.InvariantCultureIgnoreCase));
+        public Stat Hunger => Stats.Find(s => s.Id.Equals("Hunger", StringComparison.InvariantCultureIgnoreCase));
         public decimal MaxHunger => Hunger != null ? Hunger.BaseAfterModifications : 0;
         public Stat HungerDegeneration { get; set; }
-        public bool IsStarving => Hunger.Current <= 0;
-        public Stat Attack { get; set; }
+        public bool IsStarving => Hunger != null && Hunger.Current <= 0;
+        public Stat Attack => Stats.Find(s => s.Id.Equals("Attack", StringComparison.InvariantCultureIgnoreCase));
         public string Damage
         {
             get
@@ -72,7 +73,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public Stat Defense { get; set; }
+        public Stat Defense => Stats.Find(s => s.Id.Equals("Defense", StringComparison.InvariantCultureIgnoreCase));
         public string Mitigation
         {
             get
@@ -83,14 +84,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public Stat Movement { get; set; }
+        public Stat Movement => Stats.Find(s => s.Id.Equals("Movement", StringComparison.InvariantCultureIgnoreCase));
         public int RemainingMovement { get; set; }
-        public Stat Accuracy { get; set; }
-        public Stat Evasion { get; set; }
-
-        private List<Stat> BasicStats => new() { HP, HPRegeneration, MP, MPRegeneration, Hunger, HungerDegeneration, Attack, Defense, Movement, Accuracy, Evasion };
-
-        public List<Stat> Stats => BasicStats.Where(s => s != null).ToList();
+        public Stat Accuracy => Stats.Find(s => s.Id.Equals("Accuracy", StringComparison.InvariantCultureIgnoreCase));
+        public Stat Evasion => Stats.Find(s => s.Id.Equals("Evasion", StringComparison.InvariantCultureIgnoreCase));
 
         public readonly int BaseSightRange;
         public int TotalSightRangeIncrements { get; set; } = 0;
@@ -209,18 +206,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var modifications = new List<(string StatName, List<StatModification> Modifications)>();
 
-                modifications.Add((HP.Name, HP.ActiveModifications));
-                modifications.Add((HPRegeneration.Name, HPRegeneration.ActiveModifications));
-                if (UsesMP)
+                foreach (var stat in UsedStats)
                 {
-                    modifications.Add((MP.Name, MP.ActiveModifications));
-                    modifications.Add((MPRegeneration.Name, MPRegeneration.ActiveModifications));
+                    modifications.Add((stat.Name, stat.ActiveModifications));
                 }
-                modifications.Add((Attack.Name, Attack.ActiveModifications));
-                modifications.Add((Defense.Name, Defense.ActiveModifications));
-                modifications.Add((Movement.Name, Movement.ActiveModifications));
-                modifications.Add((Accuracy.Name, Accuracy.ActiveModifications));
-                modifications.Add((Evasion.Name, Evasion.ActiveModifications));
 
                 return modifications;
             }
@@ -231,171 +220,35 @@ namespace RogueCustomsGameEngine.Game.Entities
             Faction = entityClass.Faction;
             StartingWeaponId = entityClass.StartingWeaponId;
             StartingArmorId = entityClass.StartingArmorId;
-            UsesMP = entityClass.UsesMP;
-            UsesHunger = entityClass.UsesHunger;
-            HP = new()
+            Stats = new();
+            foreach (var stat in entityClass.Stats)
             {
-                Id = "HP",
-                StatType = StatType.HP,
-                Name = Map.Locale["CharacterHPStat"],
-                Base = entityClass.BaseHP,
-                Current = entityClass.BaseHP,
-                HasMax = true,
-                IsDecimal = false,
-                IncreasePerLevel = entityClass.MaxHPIncreasePerLevel,
-                MinCap = 0,
-                MaxCap = Constants.RESOURCE_STAT_CAP,
-                Character = this
-            };
-            HPRegeneration = new()
-            {
-                Id = "HPRegeneration",
-                StatType = StatType.Regeneration,
-                Name = Map.Locale["CharacterHPRegenerationStat"],
-                Base = entityClass.BaseHPRegeneration,
-                Current = entityClass.BaseHPRegeneration,
-                HasMax = false,
-                IsDecimal = true,
-                IncreasePerLevel = entityClass.HPRegenerationIncreasePerLevel,
-                MinCap = 0,
-                MaxCap = Constants.REGEN_STAT_CAP,
-                Character = this,
-                RegenerationTarget = HP
-            };
-            if(UsesMP)
-            {
-                MP = new()
-                {
-                    Id = "MP",
-                    StatType = StatType.MP,
-                    Name = Map.Locale["CharacterMPStat"],
-                    Base = entityClass.BaseMP,
-                    Current = entityClass.BaseMP,
-                    HasMax = true,
-                    IsDecimal = false,
-                    IncreasePerLevel = entityClass.MaxMPIncreasePerLevel,
-                    MinCap = 0,
-                    MaxCap = Constants.RESOURCE_STAT_CAP,
-                    Character = this
-                };
-                MPRegeneration = new()
-                {
-                    Id = "MPRegeneration",
-                    StatType = StatType.Regeneration,
-                    Name = Map.Locale["CharacterMPRegenerationStat"],
-                    Base = entityClass.BaseMPRegeneration,
-                    Current = entityClass.BaseMPRegeneration,
-                    HasMax = false,
-                    IsDecimal = true,
-                    IncreasePerLevel = entityClass.MPRegenerationIncreasePerLevel,
-                    MinCap = 0,
-                    MaxCap = Constants.REGEN_STAT_CAP,
-                    Character = this,
-                    RegenerationTarget = MP
-                };
+                var clonedStat = stat.Clone();
+                clonedStat.Character = this;
+                Stats.Add(clonedStat);
             }
-            if (UsesHunger)
+            foreach (var stat in Stats)
             {
-                Hunger = new()
-                {
-                    Id = "Hunger",
-                    StatType = StatType.Hunger,
-                    Name = Map.Locale["CharacterHungerStat"],
-                    Base = entityClass.BaseHunger,
-                    Current = entityClass.BaseHunger,
-                    HasMax = true,
-                    IsDecimal = false,
-                    IncreasePerLevel = 0,
-                    MinCap = 0,
-                    MaxCap = Constants.RESOURCE_STAT_CAP,
-                    Character = this
-                };
+                var correspondingRegenerationTarget = Stats.Find(s => s.Id.Equals(stat.RegenerationTargetId, StringComparison.InvariantCultureIgnoreCase));
+                stat.RegenerationTarget = correspondingRegenerationTarget;
+            }
+            if (Hunger != null)
+            {
                 HungerDegeneration = new()
                 {
                     Id = "HungerDegeneration",
                     StatType = StatType.Regeneration,
-                    Name = Map.Locale["CharacterHungerRegenerationStat"],
+                    Name = string.Empty,
                     Base = 0,
                     Current = 0,
                     HasMax = false,
-                    IsDecimal = true,
                     IncreasePerLevel = 0,
-                    MinCap = -Constants.REGEN_STAT_CAP,
-                    MaxCap = Constants.REGEN_STAT_CAP,
+                    MinCap = -EngineConstants.REGEN_STAT_CAP,
+                    MaxCap = EngineConstants.REGEN_STAT_CAP,
                     Character = this,
                     RegenerationTarget = Hunger
                 };
             }
-            Attack = new()
-            {
-                Id = "Attack",
-                StatType = StatType.Attack,
-                Name = Map.Locale["CharacterAttackStat"],
-                Base = entityClass.BaseAttack,
-                Current = entityClass.BaseAttack,
-                HasMax = false,
-                IsDecimal = false,
-                IncreasePerLevel = entityClass.AttackIncreasePerLevel,
-                MinCap = 0,
-                MaxCap = Constants.NORMAL_STAT_CAP,
-                Character = this
-            };
-            Defense = new()
-            {
-                Id = "Defense",
-                StatType = StatType.Defense,
-                Name = Map.Locale["CharacterDefenseStat"],
-                Base = entityClass.BaseDefense,
-                Current = entityClass.BaseDefense,
-                HasMax = false,
-                IsDecimal = false,
-                IncreasePerLevel = entityClass.DefenseIncreasePerLevel,
-                MinCap = 0,
-                MaxCap = Constants.NORMAL_STAT_CAP,
-                Character = this
-            };
-            Movement = new()
-            {
-                Id = "Movement",
-                StatType = StatType.Movement,
-                Name = Map.Locale["CharacterMovementStat"],
-                Base = entityClass.BaseMovement,
-                Current = entityClass.BaseMovement,
-                HasMax = false,
-                IsDecimal = false,
-                IncreasePerLevel = entityClass.MovementIncreasePerLevel,
-                MinCap = 0,
-                MaxCap = Constants.MOVEMENT_STAT_CAP,
-                Character = this
-            };
-            Accuracy = new()
-            {
-                Id = "Accuracy",
-                StatType = StatType.Accuracy,
-                Name = Map.Locale["CharacterAccuracyStat"],
-                Base = entityClass.BaseAccuracy,
-                Current = entityClass.BaseAccuracy,
-                HasMax = false,
-                IsDecimal = false,
-                IncreasePerLevel = 0,
-                MinCap = Constants.MIN_ACCURACY_CAP,
-                MaxCap = Constants.MAX_ACCURACY_CAP,
-                Character = this
-            };
-            Evasion = new()
-            {
-                Id = "Evasion",
-                StatType = StatType.Evasion,
-                Name = Map.Locale["CharacterEvasionStat"],
-                Base = entityClass.BaseEvasion,
-                Current = entityClass.BaseEvasion,
-                HasMax = false,
-                IsDecimal = false,
-                IncreasePerLevel = 0,
-                MinCap = Constants.MIN_EVASION_CAP,
-                MaxCap = Constants.MAX_EVASION_CAP,
-                Character = this
-            };
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
             CanGainExperience = entityClass.CanGainExperience;
@@ -430,16 +283,16 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public List<Tile> ComputeFOVTiles()
         {
-            if (SightRange == Constants.FullMapSightRange)
+            if (SightRange == EngineConstants.FullMapSightRange)
             {
                 return Map.Tiles.ToList();
             }
             else
             {
-                if (SightRange == Constants.FullRoomSightRange)
+                if (SightRange == EngineConstants.FullRoomSightRange)
                 {
                     if (ContainingTile.Type == TileType.Hallway)
-                        return Map.GetFOVTilesWithinDistance(Position, Constants.FullRoomSightRangeForHallways);
+                        return Map.GetFOVTilesWithinDistance(Position, EngineConstants.FullRoomSightRangeForHallways);
                     return Map.GetTilesInRoom(ContainingRoom);
                 }
                 else
@@ -660,10 +513,10 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             AlteredStatuses.Where(als => als.RemainingTurns > 0).ForEach(als => als.BeforeAttack?.Do(this, target, true));
-            if (UsesMP)
+            if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
             var successfulEffects = action?.Do(this, target, true);
-            if(successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+            if(successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
             if(action?.FinishesTurnWhenUsed == true)
                 TookAction = true;
@@ -673,7 +526,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void InteractWithCharacter(Character target, ActionWithEffects action)
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (UsesMP)
+            if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
             action?.Do(this, target, true);
             if (action?.FinishesTurnWhenUsed == true)
@@ -684,7 +537,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void InteractWithTile(Tile target, ActionWithEffects action)
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (UsesMP)
+            if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
             action?.Do(this, target, true);
             if (action?.FinishesTurnWhenUsed == true)
@@ -727,3 +580,4 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
     }
 }
+#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo

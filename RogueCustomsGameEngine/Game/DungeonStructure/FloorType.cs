@@ -12,7 +12,8 @@ using System.Linq;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     [Serializable]
     public class FloorType
     {
@@ -127,7 +128,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CanLockItems = keyType.CanLockItems,
                         CanLockStairs = keyType.CanLockStairs,
                         DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key)
+                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null)
                     });
                 }
             }
@@ -264,4 +265,5 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public ConsoleRepresentation DoorConsoleRepresentation { get; set; }
     }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

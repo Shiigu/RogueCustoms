@@ -101,7 +101,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
-            if (!c.UsesMP || c.MP == null)
+            if (c.MP == null)
                 return false;
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
@@ -144,7 +144,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
-            if (!c.UsesMP || c.Hunger == null)
+            if (c.Hunger == null)
                 return false;
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);

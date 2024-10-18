@@ -13,7 +13,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
     {
         public static bool IsDiceNotation(this string s)
         {
-            return Regex.Match(s, Constants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
+            return Regex.Match(s, EngineConstants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
         }
 
         public static bool IsMathExpression(this string input)
@@ -63,6 +63,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 input = input.Replace("{" + prop.Name + "}", (prop.GetValue(p) ?? "(null)").ToString());
 
             return input;
+        }
+        public static string TrimStart(this string value, string removeString)
+        {
+            int index = value.IndexOf(removeString, StringComparison.Ordinal);
+            return index < 0 ? value : value.Remove(index, removeString.Length);
         }
     }
 }

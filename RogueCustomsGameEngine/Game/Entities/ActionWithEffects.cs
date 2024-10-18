@@ -162,7 +162,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (MPCost > 0)
             {
-                if (!source.UsesMP || source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
+                if (source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
                     return false;
             }
 
@@ -188,7 +188,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (MPCost > 0)
             {
-                if (!source.UsesMP || source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
+                if (source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
                     return false;
             }
 
@@ -341,7 +341,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
                 if(MPCost > 0)
                 {
-                    if (sourceAsCharacter.MP == null || sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0) || (!sourceAsCharacter.UsesMP && MPCost > 0))
+                    if (sourceAsCharacter.MP == null || sourceAsCharacter.MP.Current < MPCost || (sourceAsCharacter.MaxMP == 0 && MPCost > 0))
                     {
                         if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                             descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");

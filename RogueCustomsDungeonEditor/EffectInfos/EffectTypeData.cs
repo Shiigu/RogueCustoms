@@ -24,7 +24,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         public bool CanHaveOnSuccessOnFailureChild { get; set; }
         public List<EffectParameter> Parameters { get; set; }
 
-        public string GetParsedTreeViewDisplayName(Parameter[] effectParameters)
+        public string GetParsedTreeViewDisplayName(Parameter[] effectParameters, List<string> statIds)
         {
             string pattern = @"\{([^{}]+)\}";
             Regex regex = new Regex(pattern);
@@ -43,14 +43,14 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                 }
                 else
                 {
-                    return HandleSpecialCase(placeholder, effectParameters);
+                    return HandleSpecialCase(placeholder, effectParameters, statIds);
                 }
             });
 
             return parsedText;
         }
 
-        private string HandleSpecialCase(string placeholder, Parameter[] effectParameters)
+        private string HandleSpecialCase(string placeholder, Parameter[] effectParameters, List<string> statIds)
         {
             // Add logic to handle special cases (e.g., using a switch statement)
             switch (placeholder.ToLowerInvariant())
@@ -78,12 +78,11 @@ namespace RogueCustomsDungeonEditor.EffectInfos
 
                     return output;
                 case "stat":
-                    var statParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("CanStealEquippables", StringComparison.InvariantCultureIgnoreCase));
+                    var statParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("Stat", StringComparison.InvariantCultureIgnoreCase));
                     if (statParam == null) return "[UNDEFINED]";
                     var statValue = statParam.Value;
-                    var statValidValues = Parameters.Find(p => p.InternalName.Equals("Stat", StringComparison.InvariantCultureIgnoreCase)).ValidValues;
-                    var statValidValueForParam = statValidValues.Find(vv => vv.Key.Equals(statValue, StringComparison.InvariantCultureIgnoreCase));
-                    return statValidValueForParam != null ? statValidValueForParam.Value : "[UNDEFINED]";
+                    var statValidValueForParam = statIds.Find(vv => vv.Equals(statValue, StringComparison.InvariantCultureIgnoreCase));
+                    return statValidValueForParam ?? "[UNDEFINED]";
                 case "wherefrom":
                     var fromInventoryParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("FromInventory", StringComparison.InvariantCultureIgnoreCase));
                     if (fromInventoryParam == null) return "[UNDEFINED]";
@@ -133,7 +132,8 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         AlteredStatus,
         Number,
         BooleanExpression,
-        Key
+        Key,
+        Stat
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

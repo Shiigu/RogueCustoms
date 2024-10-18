@@ -477,7 +477,7 @@ namespace RogueCustomsDungeonEditor
                 }
             }
             ActiveDungeon = DungeonInfoHelpers.CreateEmptyDungeonTemplate(LocaleTemplate, BaseLocaleLanguages);
-            ActiveDungeon.Version = Constants.CurrentDungeonJsonVersion;
+            ActiveDungeon.Version = EngineConstants.CurrentDungeonJsonVersion;
             RefreshTreeNodes();
             tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
             tvDungeonInfo.Focus();
@@ -682,10 +682,10 @@ namespace RogueCustomsDungeonEditor
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFactionTemplate();
                     break;
                 case RogueTabTypes.PlayerClass:
-                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate();
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate(ActiveDungeon.CharacterStats);
                     break;
                 case RogueTabTypes.NPC:
-                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCTemplate();
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCTemplate(ActiveDungeon.CharacterStats);
                     break;
                 case RogueTabTypes.Item:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateItemTemplate();

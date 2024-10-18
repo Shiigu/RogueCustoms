@@ -572,6 +572,36 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ((TextBox)control).Text = originalValue ?? parameter.Default;
                         control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
                         break;
+                    case ParameterType.Stat:
+                        var statComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var trap in ActiveDungeon.CharacterStats.Select(s => s.Id))
+                        {
+                            statComboBox.Items.Add(trap);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ActiveDungeon.CharacterStats.Find(cs => cs.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                if(valueOfKey != null)
+                                    statComboBox.Text = valueOfKey.Id;
+                                else
+                                    statComboBox.Text = parameter.Default;
+                            }
+                            else
+                            {
+                                statComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            statComboBox.Text = parameter.Default;
+                        }
+                        control = statComboBox;
+                        break;
                 }
 
                 var toolTip = new ToolTip();
@@ -658,6 +688,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Item:
                     case ParameterType.Trap:
                     case ParameterType.AlteredStatus:
+                    case ParameterType.Stat:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");

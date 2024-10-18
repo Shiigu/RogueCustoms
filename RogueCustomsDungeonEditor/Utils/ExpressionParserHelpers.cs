@@ -116,29 +116,47 @@ namespace RogueCustomsDungeonEditor.Utils
             return parsedArg;
         }
 
-
         private static string ParseObjectProperties(string arg, string numericPlaceholder, string stringPlaceholder, string eName)
         {
             var parsedArg = arg;
             var entityTypes = new List<Type> { typeof(PlayerCharacter), typeof(NonPlayableCharacter), typeof(Item), typeof(Trap), typeof(AlteredStatus), typeof(Tile) };
 
-            foreach (var entityType in entityTypes)
-            {
-                foreach (var property in entityType.GetProperties())
-                {
-                    string propertyName = property.Name;
-                    string fieldToken = $"{{{eName}.{propertyName}}}";
+            // Regex to match both property and Stat: expressions like {eName.Stat:StatId}
+            var regex = new Regex(@$"\{{{eName}\.(Stat:([A-Za-z0-9_]+)|([A-Za-z0-9_.]+))\}}", RegexOptions.IgnoreCase);
+            var matches = regex.Matches(parsedArg);
 
-                    if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
+            foreach (Match match in matches)
+            {
+                var fullPropertyPath = match.Groups[1].Value; // Full match (Stat:StatId or regular property path)
+                var statId = match.Groups[2].Value;           // Group 2 will have the StatId if it's a stat expression
+                var propertyPath = match.Groups[3].Value;     // Group 3 will have the regular property path
+
+                // If it's a stat expression (Stat:StatId), replace with numericPlaceholder
+                if (!string.IsNullOrEmpty(statId))
+                {
+                    parsedArg = parsedArg.Replace(match.Value, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                }
+                else if (!string.IsNullOrEmpty(propertyPath)) // Handle regular properties
+                {
+                    foreach (var entityType in entityTypes)
                     {
-                        if (propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
-                            || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
+                        foreach (var property in entityType.GetProperties())
                         {
-                            parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                        }
-                        else
-                        {
-                            parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                            string propertyName = property.Name;
+                            string fieldToken = $"{{{eName}.{propertyName}}}";
+
+                            if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                if (propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
+                                    || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                                }
+                                else
+                                {
+                                    parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                                }
+                            }
                         }
                     }
                 }
@@ -165,7 +183,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
         private static bool IsDiceNotation(this string s)
         {
-            return Regex.Match(s, RogueCustomsGameEngine.Utils.Constants.DiceNotationRegexPattern).Success;
+            return Regex.Match(s, RogueCustomsGameEngine.Utils.EngineConstants.DiceNotationRegexPattern).Success;
         }
 
         public static bool HaveAllParametersBeenParsed(this Effect effect, Entity This, Entity Source, Entity Target, Map map, out bool flagsAreInvolved)

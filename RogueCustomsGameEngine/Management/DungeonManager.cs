@@ -30,7 +30,7 @@ namespace RogueCustomsGameEngine.Management
             CurrentDungeonId = 1;
             Dungeons = new List<Dungeon>();
             AvailableDungeonInfos = new Dictionary<string, DungeonInfo>();
-            DungeonListForDisplay = new DungeonListDto(Constants.CurrentDungeonJsonVersion);
+            DungeonListForDisplay = new DungeonListDto(EngineConstants.CurrentDungeonJsonVersion);
         }
 
         private void GetDungeonList(string locale)
@@ -111,7 +111,7 @@ namespace RogueCustomsGameEngine.Management
             var dungeon = GetDungeonById(dungeonId);
             if (dungeon != null)
                 dungeon.LastAccessTime = DateTime.UtcNow;
-            var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * Constants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
+            var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * EngineConstants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
             Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
         }
 
@@ -138,8 +138,8 @@ namespace RogueCustomsGameEngine.Management
                 Binder = new CustomSerializationBinder()
             };
             var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
-            if (!restoredDungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
-                throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {Constants.CurrentDungeonJsonVersion}.");
+            if (!restoredDungeon.Version.Equals(EngineConstants.CurrentDungeonJsonVersion))
+                throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {EngineConstants.CurrentDungeonJsonVersion}.");
             restoredDungeon.Id = CurrentDungeonId;
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
             restoredDungeon.CurrentFloor.LoadRngState(rngSeed);

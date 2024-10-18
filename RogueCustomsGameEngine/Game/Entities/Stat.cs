@@ -22,12 +22,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string Name { get; set; }
         public StatType StatType { get; set; }
         public Character Character { get; set; }
-        public decimal Base { get; set; }
+        public decimal Base { get; set; } // If HasMax, this will contain the Max value. If !HasMax, this will contain the value without modifications
         public decimal BaseAfterLevelUp {
             get
             {
                 var increaseAfterLevel = IncreasePerLevel * (Character.Level - 1);
-                if (!IsDecimal)
+                if (StatType != StatType.Decimal && StatType != StatType.Regeneration)
                     increaseAfterLevel = (int)increaseAfterLevel;
                 return Base + increaseAfterLevel;
             }
@@ -37,15 +37,19 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             get
             {
-                return (HasMax) ? _current : _current + TotalModificationAmount;
+                if(HasMax)
+                {
+                    if (_current > BaseAfterModifications)
+                        _current = BaseAfterModifications;
+                    return _current;
+                }
+                return BaseAfterModifications;
             }
             set
             {
                 _current = value;
             }
         }
-
-        public bool IsDecimal { get; set; }
         public bool HasMax { get; set; }
         public decimal IncreasePerLevel { get; set; }
         public List<StatModification> ActiveModifications { get; set; } = new();
@@ -89,17 +93,38 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             get
             {
-                var increaseAfterLevel = IncreasePerLevel * (Character.Level - 1);
-                if (!IsDecimal)
-                    increaseAfterLevel = (int)increaseAfterLevel;
-                return ((Base + increaseAfterLevel) + TotalModificationAmount).Clamp(MinCap, MaxCap);
+                try
+                {
+                    return (BaseAfterLevelUp + TotalModificationAmount).Clamp(MinCap, MaxCap);
+                }
+                catch // In case this is retrieved before the full Character data is ready.
+                {
+                    return BaseAfterLevelUp.Clamp(MinCap, MaxCap);
+                }
             }
         }
         public decimal MinCap { get; set; }
         public decimal MaxCap { get; set; }
 
+        public string RegenerationTargetId { get; set; }
         public Stat? RegenerationTarget { get; set; }
         public decimal CarriedRegeneration { get; set; } = 0;
+
+        public override string ToString() 
+        { 
+            if(HasMax)
+            {
+                return (RegenerationTarget != null)
+                    ? $"{Name} - Base: {BaseAfterLevelUp}, Current: {Current}/{BaseAfterModifications}, Regenerates {RegenerationTarget.Name}"
+                    : $"{Name} - Base: {BaseAfterLevelUp}, Current: {Current}/{BaseAfterModifications}";
+            }
+            else
+            {
+                return (RegenerationTarget != null)
+                    ? $"{Name} - Base: {BaseAfterLevelUp}, Current: {BaseAfterModifications}, Regenerates {RegenerationTarget.Name}"
+                    : $"{Name} - Base: {BaseAfterLevelUp}, Current: {BaseAfterModifications}";
+            }
+        }
 
         public void TryToRegenerate()
         {
@@ -140,6 +165,23 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
         }
+
+        public Stat Clone()
+        {
+            return new Stat
+            {
+                Id = Id,
+                Name = Name,
+                StatType = StatType,
+                Base = Base,
+                _current = _current,
+                HasMax = HasMax,
+                IncreasePerLevel = IncreasePerLevel,
+                MinCap = MinCap,
+                MaxCap = MaxCap,
+                RegenerationTargetId = RegenerationTargetId
+            };
+        }
     }
 
     public enum StatType
@@ -148,13 +190,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         MP,
         Hunger,
         Regeneration,
-        Attack,
-        Defense,
-        Movement,
-        Accuracy,
-        Evasion,
-        CustomNumber,
-        CustomPercentage
+        Integer,
+        Decimal,
+        Percentage
     }
 }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

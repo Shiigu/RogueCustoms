@@ -66,28 +66,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
 
             ssNPC.StatsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            ssNPC.StatInfos = ActiveDungeon.CharacterStats;
+            ssNPC.Stats = npc.Stats;
             ssNPC.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
-            ssNPC.BaseHP = npc.BaseHP;
-            ssNPC.HPPerLevelUp = npc.MaxHPIncreasePerLevel;
-            ssNPC.BaseHPRegeneration = npc.BaseHPRegeneration;
-            ssNPC.HPRegenerationPerLevelUp = npc.HPRegenerationIncreasePerLevel;
-            ssNPC.UsesMP = npc.UsesMP;
-            ssNPC.BaseMP = npc.BaseMP;
-            ssNPC.MPPerLevelUp = npc.MaxMPIncreasePerLevel;
-            ssNPC.BaseMPRegeneration = npc.BaseMPRegeneration;
-            ssNPC.MPRegenerationPerLevelUp = npc.MPRegenerationIncreasePerLevel;
-            ssNPC.BaseAttack = npc.BaseAttack;
-            ssNPC.AttackPerLevelUp = npc.AttackIncreasePerLevel;
-            ssNPC.BaseDefense = npc.BaseDefense;
-            ssNPC.DefensePerLevelUp = npc.DefenseIncreasePerLevel;
-            ssNPC.BaseMovement = npc.BaseMovement;
-            ssNPC.MovementPerLevelUp = npc.MovementIncreasePerLevel;
-            ssNPC.BaseAccuracy = npc.BaseAccuracy;
-            ssNPC.BaseEvasion = npc.BaseEvasion;
             ssNPC.BaseSightRange = npc.BaseSightRange;
-            ssNPC.UsesHunger = npc.UsesHunger;
-            ssNPC.BaseHunger = npc.BaseHunger;
-            ssNPC.HungerHPDegeneration = npc.HungerHPDegeneration;
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
             ssNPC.MaxLevel = npc.MaxLevel;
@@ -158,8 +140,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This NPC can gain experience, but cannot level up.");
             if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 validationErrors.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
-            if (ssNPC.UsesHunger && ssNPC.BaseHunger <= 0)
-                validationErrors.Add("This NPC uses a Hunger System but has no Hunger.");
+
             if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
                 validationErrors.Add("This NPC does not have a set AI strategy.");
 
@@ -174,31 +155,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.StartsVisible = chkNPCStartsVisible.Checked;
                 LoadedNPC.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
                 LoadedNPC.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
-                LoadedNPC.BaseHP = ssNPC.BaseHP;
-                LoadedNPC.UsesMP = ssNPC.UsesMP;
-                LoadedNPC.BaseMP = ssNPC.BaseMP;
-                LoadedNPC.BaseAttack = ssNPC.BaseAttack;
-                LoadedNPC.BaseDefense = ssNPC.BaseDefense;
-                LoadedNPC.BaseMovement = ssNPC.BaseMovement;
-                LoadedNPC.BaseAccuracy = ssNPC.BaseAccuracy;
-                LoadedNPC.BaseEvasion = ssNPC.BaseEvasion;
-                LoadedNPC.BaseHPRegeneration = ssNPC.BaseHPRegeneration;
-                LoadedNPC.BaseMPRegeneration = ssNPC.BaseMPRegeneration;
+                LoadedNPC.Stats = ssNPC.Stats;
                 LoadedNPC.BaseSightRange = ssNPC.BaseSightRange;
                 LoadedNPC.CanGainExperience = ssNPC.CanGainExperience;
                 LoadedNPC.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
                 LoadedNPC.MaxLevel = ssNPC.MaxLevel;
-                LoadedNPC.MaxHPIncreasePerLevel = ssNPC.HPPerLevelUp;
-                LoadedNPC.MaxMPIncreasePerLevel = ssNPC.MPPerLevelUp;
-                LoadedNPC.AttackIncreasePerLevel = ssNPC.AttackPerLevelUp;
-                LoadedNPC.DefenseIncreasePerLevel = ssNPC.DefensePerLevelUp;
-                LoadedNPC.MovementIncreasePerLevel = ssNPC.MovementPerLevelUp;
-                LoadedNPC.HPRegenerationIncreasePerLevel = ssNPC.HPRegenerationPerLevelUp;
-                LoadedNPC.MPRegenerationIncreasePerLevel = ssNPC.MPRegenerationPerLevelUp;
-
-                LoadedNPC.UsesHunger = ssNPC.UsesHunger;
-                LoadedNPC.BaseHunger = ssNPC.BaseHunger;
-                LoadedNPC.HungerHPDegeneration = ssNPC.HungerHPDegeneration;
 
                 LoadedNPC.StartingWeapon = cmbNPCStartingWeapon.Text;
                 LoadedNPC.StartingArmor = cmbNPCStartingArmor.Text;

@@ -56,6 +56,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             PreviousItemType = "";
             var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
 
+            ItemStatsSheet.StatData = ActiveDungeon.CharacterStats;
             ItemStatsSheet.Stats = item.StatModifiers;
             if (itemType != null)
             {

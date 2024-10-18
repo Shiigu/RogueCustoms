@@ -18,8 +18,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         public static DungeonValidationMessages Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             Character characterAsInstance = isPlayerCharacter
-                                        ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player), 1, sampleDungeon.CurrentFloor)
-                                        : new NonPlayableCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC), 1, sampleDungeon.CurrentFloor);
+                                        ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor)
+                                        : new NonPlayableCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
 
             var messages = new DungeonValidationMessages();
 
@@ -42,55 +42,33 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddRange(ActionValidator.Validate(characterAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
             }
 
-            if (characterJson.BaseHP <= 0)
-                messages.AddError("Base HP must be higher than 0.");
-            if (characterJson.MaxHPIncreasePerLevel < 0)
-                messages.AddError("HP Gained per level must be 0 or higher.");
-            else if (characterJson.MaxHPIncreasePerLevel == 0)
-                messages.AddWarning("HP Gained per level is 0. It won't gain any HP on level up.");
-            if(characterJson.UsesMP)
+            var missingMandatoryStats = FormConstants.MandatoryStats.Except(FormConstants.MandatoryStats.Intersect(characterJson.Stats.Select(s => s.StatId)));
+
+            if (missingMandatoryStats.Any())
             {
-                if (characterJson.BaseMP <= 0)
-                    messages.AddError("Character is set to use MP, but Base MP is 0 or lower.");
-                if (characterJson.MaxMPIncreasePerLevel < 0)
-                    messages.AddWarning("Character is set to use MP, but MP Gained per level is lower than 0. Character may run out of MP by not doing anything.");
-                else if (characterJson.MaxMPIncreasePerLevel == 0)
-                    messages.AddWarning("Character is set to use MP, but MP Gained per level is 0. It won't gain any MP on level up.");
+                messages.AddError($"The following mandatory stats are missing: {missingMandatoryStats.JoinAnd()}");
             }
-            if (characterJson.BaseAttack < 0)
-                messages.AddError("Base Attack must be 0 or higher.");
-            else if (characterJson.BaseAttack == 0)
-                messages.AddWarning("Base Attack is 0. It might fail to deal any damage depending on its assigned actions.");
-            if (characterJson.AttackIncreasePerLevel < 0)
-                messages.AddError("Attack Gained per level must be 0 or higher.");
-            else if (characterJson.AttackIncreasePerLevel == 0)
-                messages.AddWarning("Attack Gained per level is 0. It won't gain any Attack on level up.");
-            if (characterJson.BaseDefense < 0)
-                messages.AddError("Base Defense must be 0 or higher.");
-            if (characterJson.DefenseIncreasePerLevel < 0)
-                messages.AddError("Defense Gained per level must be 0 or higher.");
-            else if (characterJson.DefenseIncreasePerLevel == 0)
-                messages.AddWarning("Defense Gained per level is 0. It won't gain any Defense on level up.");
-            if (characterJson.BaseMovement < 0)
-                messages.AddError("Base Movement must be 0 or higher.");
-            else if (characterJson.BaseMovement == 0)
-                messages.AddWarning("Base Movement is 0. Under normal circumnstances, it won't be able to move at all.");
-            if (characterJson.BaseAccuracy < 0 || characterJson.BaseAccuracy > 200)
-                messages.AddError("Base Accuracy must be between 0 and 200.");
-            else if (characterJson.BaseAccuracy == 0)
-                messages.AddWarning("Base Movement is 0. Under normal circumnstances, it won't be able to land any attacks at all.");
-            if (characterJson.BaseEvasion < -100 || characterJson.BaseEvasion > 100)
-                messages.AddError("Base Evasion must be between -100 and 100.");
-            else if (characterJson.BaseEvasion == -100)
-                messages.AddWarning("Base Evasion is -100. Under normal circumnstances, it won't be able to avoid any attacks at all.");
-            if (characterJson.MovementIncreasePerLevel < 0)
-                messages.AddError("Movement Gained per level must be 0 or higher.");
-            else if (characterJson.MovementIncreasePerLevel == 0)
-                messages.AddWarning("Movement Gained per level is 0. It won't gain any Movement on level up.");
-            if (characterJson.BaseHPRegeneration < 0)
-                messages.AddWarning("Base HP Regeneration is lower than 0. The Character might spontaneously die under normal circumnstances.");
-            else if (characterJson.BaseHPRegeneration == 0)
-                messages.AddWarning("Base HP Regeneration is 0. Under normal circumnstances, it won't be able to regenerate HP at all.");
+
+            foreach (var stat in characterJson.Stats)
+            {
+                if(string.IsNullOrWhiteSpace(stat.StatId))
+                    messages.AddError("At least one Stat is missing an Id.");
+                var correspondingStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(stat.StatId, StringComparison.InvariantCultureIgnoreCase));
+                var correspondingRegenerationTargetStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
+                if(correspondingStatInfo == null)
+                    messages.AddError($"A Stat uses the Id {stat.StatId}, which is missing in the Stats table.");
+                if(correspondingRegenerationTargetStatInfo != null && !characterJson.Stats.Any(s => s.StatId.Equals(correspondingRegenerationTargetStatInfo.Id, StringComparison.InvariantCultureIgnoreCase)))
+                    messages.AddError($"The Character has access to {stat.StatId} but not of {correspondingRegenerationTargetStatInfo.Id}, which it regenerates/degenerates.");
+                if (stat.Base < correspondingStatInfo.MinCap)
+                    messages.AddError($"The Base value for {stat.StatId} is lower than its accepted Minimum.");
+                if(stat.Base > correspondingStatInfo.MaxCap)
+                    messages.AddError($"The Base value for {stat.StatId} is higher than its accepted Maximum.");
+                if(stat.IncreasePerLevel < 0)
+                    messages.AddError($"{stat.StatId} is set to decrease by level-up. This is not allowed.");
+                else if(stat.IncreasePerLevel == 0)
+                    messages.AddWarning($"{stat.StatId} is set to not change by level-up. Check if this is expected.");
+            }
+
             if(int.TryParse(characterJson.BaseSightRange, out int sightRange))
             {
                 if (sightRange < 0)
@@ -117,17 +95,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            if (characterJson.UsesHunger)
-            {
-                if (characterJson.BaseHunger <= 0)
-                    messages.AddError("Character is set to use Hunger, but Base Max Hunger is 0 or lower.");
-                if (characterJson.HungerHPDegeneration < 0)
-                    messages.AddWarning("Character is set to use Hunger, but Hunger lost per turn when starving is lower than 0. Character will not get penalized from a lack of Hunger.");
-            }
-            if (characterJson.HPRegenerationIncreasePerLevel < 0)
-                messages.AddError("HP Regeneration Gained per level must be 0 or higher.");
-            else if (characterJson.HPRegenerationIncreasePerLevel == 0)
-                messages.AddWarning("HP Regeneration Gained per level is 0. It won't gain any HP Regeneration on level up.");
             if (characterJson.InventorySize < 0)
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)

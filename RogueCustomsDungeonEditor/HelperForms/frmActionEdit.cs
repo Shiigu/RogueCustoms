@@ -58,9 +58,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
             else
             {
                 ActionToSave = new ActionWithEffectsInfo();
-                ActionToSave.FinishesTurnWhenUsed = turnEndCriteria != HelperForms.TurnEndCriteria.CannotEndTurn;
+                ActionToSave.FinishesTurnWhenUsed = turnEndCriteria != TurnEndCriteria.CannotEndTurn;
             }
             ActiveDungeon = activeDungeon;
+            EffectInfoDto.StatIds = ActiveDungeon.CharacterStats.Select(s => s.Id).ToList();
             ClassId = classId;
             if (actionToSave.IsNullOrEmpty())
             {
@@ -873,6 +874,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public List<(string DisplayName, string Value)> Parameters { get; set; } = new List<(string DisplayName, string Value)>();
+        public static List<string> StatIds = new();
 
         public EffectInfoDto(EffectInfo info, EffectInfo parentEffect, List<EffectTypeData> selectableEffects)
         {
@@ -894,7 +896,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 if (effectData != null)
                 {
-                    DisplayName = effectData.GetParsedTreeViewDisplayName(info.Params);
+                    DisplayName = effectData.GetParsedTreeViewDisplayName(info.Params, StatIds);
                     Description = effectData.Description;
                     foreach (var parameter in info.Params)
                     {
