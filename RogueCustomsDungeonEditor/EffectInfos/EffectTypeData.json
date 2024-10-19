@@ -106,6 +106,36 @@
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Element",
+        "DisplayName": "Element",
+        "Description": "Indicates the Element used by the Action to deal damage.",
+        "ParameterType": "Element",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesResistances",
+        "DisplayName": "Bypasses Resistances?",
+        "Description": "If true, the Target's Element's Resistance stat (if it has one) will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesElementEffect",
+        "DisplayName": "Bypasses Element Effect?",
+        "Description": "If true, the Action Element's OnAfterAttack Action will not be executed.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
       }
     ]
   },

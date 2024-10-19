@@ -81,6 +81,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.FloorInfo] = tpFloorInfos;
             TabsForNodeTypes[RogueTabTypes.FactionInfo] = tpFactionInfos;
             TabsForNodeTypes[RogueTabTypes.StatInfo] = tbStatInfos;
+            TabsForNodeTypes[RogueTabTypes.ElementInfo] = tbElementInfos;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -128,6 +129,7 @@ namespace RogueCustomsDungeonEditor
             FloorGroupTab.TabInfoChanged += FloorGroupTab_TabInfoChanged;
             FactionTab.TabInfoChanged += FactionTab_TabInfoChanged;
             StatTab.TabInfoChanged += StatTab_TabInfoChanged;
+            ElementTab.TabInfoChanged += ElementTab_TabInfoChanged;
             PlayerClassTab.TabInfoChanged += PlayerClassTab_TabInfoChanged;
             NPCTab.TabInfoChanged += NPCTab_TabInfoChanged;
             ItemTab.TabInfoChanged += ItemTab_TabInfoChanged;
@@ -276,6 +278,11 @@ namespace RogueCustomsDungeonEditor
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
                         break;
+                    case "Attack Elements":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.ElementInfo;
+                        break;
                     case "Player Classes":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
@@ -393,6 +400,18 @@ namespace RogueCustomsDungeonEditor
                 statInfosRootNode.Nodes.Add(statInfoNode);
             }
             tvDungeonInfo.Nodes.Add(statInfosRootNode);
+
+            var elementInfosRootNode = new TreeNode("Attack Elements");
+            foreach (var elementInfo in ActiveDungeon.ElementInfos)
+            {
+                var elementInfoNode = new TreeNode(elementInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.ElementInfo, DungeonElement = elementInfo },
+                    Name = elementInfo.Id
+                };
+                elementInfosRootNode.Nodes.Add(elementInfoNode);
+            }
+            tvDungeonInfo.Nodes.Add(elementInfosRootNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -666,6 +685,9 @@ namespace RogueCustomsDungeonEditor
                     case "Custom Stats":
                         tabToOpen = RogueTabTypes.StatInfo;
                         break;
+                    case "Attack Elements":
+                        tabToOpen = RogueTabTypes.ElementInfo;
+                        break;
                     case "Player Classes":
                         tabToOpen = RogueTabTypes.PlayerClass;
                         break;
@@ -705,6 +727,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.StatInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateStatTemplate();
+                    break;
+                case RogueTabTypes.ElementInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateElementTemplate();
                     break;
                 case RogueTabTypes.PlayerClass:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate(ActiveDungeon.CharacterStats);
@@ -758,6 +783,8 @@ namespace RogueCustomsDungeonEditor
                         return SaveFaction();
                     case RogueTabTypes.StatInfo:
                         return SaveStat();
+                    case RogueTabTypes.ElementInfo:
+                        return SaveAttackElement();
                     case RogueTabTypes.PlayerClass:
                         return SavePlayerClass();
                     case RogueTabTypes.NPC:
@@ -802,6 +829,8 @@ namespace RogueCustomsDungeonEditor
                     return SaveFactionAs();
                 case RogueTabTypes.StatInfo:
                     return SaveStatAs();
+                case RogueTabTypes.ElementInfo:
+                    return SaveAttackElementAs();
                 case RogueTabTypes.PlayerClass:
                     return SavePlayerClassAs();
                 case RogueTabTypes.NPC:
@@ -838,6 +867,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.StatInfo:
                     DeleteStat();
+                    break;
+                case RogueTabTypes.ElementInfo:
+                    DeleteAttackElement();
                     break;
                 case RogueTabTypes.PlayerClass:
                     DeletePlayerClass();
@@ -940,6 +972,14 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Stat - {tagStat.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Stat";
+                    break;
+                case RogueTabTypes.ElementInfo:
+                    var tagElement = (ElementInfo)tag.DungeonElement;
+                    LoadAttackElementInfoFor(tagElement);
+                    if (!IsNewElement)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element - {tagElement.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element";
                     break;
                 case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
@@ -1913,8 +1953,8 @@ namespace RogueCustomsDungeonEditor
             if (validationErrors.Any())
             {
                 MessageBox.Show(
-                    $"Cannot save Faction. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
-                    "Save Faction",
+                    $"Cannot save Stat. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Stat",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
@@ -1950,11 +1990,11 @@ namespace RogueCustomsDungeonEditor
         public void DeleteStat()
         {
             var activeStat = StatTab.LoadedStat;
-            var deleteFactionPrompt = IsNewElement
+            var deleteStatPrompt = IsNewElement
                 ? "Do you want to remove this unsaved Stat?"
                 : $"Do you want to PERMANENTLY delete Stat {activeStat.Id}?";
             var messageBoxResult = MessageBox.Show(
-                deleteFactionPrompt,
+                deleteStatPrompt,
                 "Stat",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
@@ -1992,6 +2032,130 @@ namespace RogueCustomsDungeonEditor
             }
         }
         private void StatTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
+        #region Stat
+
+        public void LoadAttackElementInfoFor(ElementInfo element)
+        {
+            ElementTab.LoadData(element, ActiveDungeon, EffectParamData);
+        }
+
+        private bool SaveAttackElement()
+        {
+            if (string.IsNullOrWhiteSpace(ElementTab.LoadedElement.Id))
+                return SaveAttackElementAs();
+            return SaveAttackElementToDungeon(ElementTab.LoadedElement.Id);
+        }
+
+        private bool SaveAttackElementAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Attack Element Identifier", "Save Attack Element As");
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.ElementInfos.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"An Attack Element with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Attack Element As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveAttackElementToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveAttackElementToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveAttackElementToDungeon(string id)
+        {
+            var validationErrors = ElementTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Attack Element. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Attack Element",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var elementToSave = ElementTab.LoadedElement;
+            var preExistingElement = ActiveDungeon.ElementInfos.FirstOrDefault(s => s.Id.Equals(id));
+            var isNewElement = preExistingElement == null;
+            if (isNewElement)
+            {
+                ActiveDungeon.ElementInfos.Add(elementToSave);
+            }
+            else
+            {
+                ActiveDungeon.ElementInfos[ActiveDungeon.ElementInfos.IndexOf(preExistingElement)] = elementToSave;
+            }
+            var verb = isNewElement ? "Save" : "Update";
+            MessageBox.Show(
+                $"Attack Element {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Attack Element",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(elementToSave.Id, "Attack Elements");
+            return true;
+        }
+
+        public void DeleteAttackElement()
+        {
+            var activeAttackElement = ElementTab.LoadedElement;
+            var deleteAttackElementPrompt = IsNewElement
+                ? "Do you want to remove this unsaved Attack Element?"
+                : $"Do you want to PERMANENTLY delete Attack Element {activeAttackElement.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteAttackElementPrompt,
+                "Attack Element",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewElement)
+                {
+                    var removedId = new string(activeAttackElement.Id);
+                    ActiveDungeon.ElementInfos.RemoveAll(s => s.Id.Equals(activeAttackElement.Id));
+                    MessageBox.Show(
+                        $"Attack Element {removedId} has been successfully deleted.",
+                        "Delete Attack Element",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewElement = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void ElementTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
         }
@@ -2653,6 +2817,7 @@ namespace RogueCustomsDungeonEditor
         FloorInfo,
         FactionInfo,
         StatInfo,
+        ElementInfo,
         PlayerClass,
         NPC,
         Item,

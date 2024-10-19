@@ -45,6 +45,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Locale LocaleToUse { get; set; }
         public List<TileSet> TileSets { get; set; }
         public List<FloorType> FloorTypes { get; set; }
+        public List<Element> Elements { get; set; }
         public List<EntityClass> Classes { get; set; }
 
         public List<Faction> Factions { get; private set; }
@@ -57,6 +58,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Version = dungeonInfo.Version;
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
+            Elements = new List<Element>();
             Classes = new List<EntityClass>();
             TileTypes = new List<TileType>();
             TileSets = new List<TileSet>();
@@ -69,6 +71,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
+            dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse)));
             dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats)));
             dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats)));
             dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null)));

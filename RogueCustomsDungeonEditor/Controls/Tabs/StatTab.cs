@@ -18,7 +18,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     public partial class StatTab : UserControl
     {
         private DungeonInfo ActiveDungeon;
-        private List<EffectTypeData> EffectParamData;
         public StatInfo LoadedStat { get; private set; }
         public event EventHandler TabInfoChanged;
 
@@ -79,7 +78,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             return validationErrors;
         }
 
-        private void txtTileTypeName_TextChanged(object sender, EventArgs e)
+        private void txtStatName_TextChanged(object sender, EventArgs e)
         {
             txtStatName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblStatNameLocale);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);

@@ -100,6 +100,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool StairsAreSet { get; set; } = false;
         public List<SpecialEffect> SpecialEffectsThatHappened { get; set; }
         public List<NonPlayableCharacter> AICharacters { get; set; }
+        public List<Element> Elements => Dungeon.Elements;
         public List<Item> Items { get; set; }
         public List<Key> Keys { get; set; }
         public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
@@ -1404,7 +1405,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else
                 targetName = Locale[tile.Type.Name];
             var actionList = new ActionListDto(targetName);
-
+                        
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, tile, this, true));
 
             if(characterInTile is NonPlayableCharacter npc)

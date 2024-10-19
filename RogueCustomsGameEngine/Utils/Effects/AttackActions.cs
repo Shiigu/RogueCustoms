@@ -8,6 +8,7 @@ using System.Linq;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Expressions;
+using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -32,6 +33,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (c.ExistenceStatus != EntityExistenceStatus.Alive)
                 return false;
 
+            var attackElement = Map.Elements.Find(e => e.Id.Equals(paramsObject.Element, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"DealDamage tries to use Element {paramsObject.Element}, which does not exist.");
+
+            var resistanceStat = c.UsedStats.Find(s => s.Id.Equals(attackElement.ResistanceStatId, StringComparison.InvariantCultureIgnoreCase));
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() > accuracyCheck)
@@ -44,7 +49,35 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
                 return false;
             }
-            var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
+            int damageResistance = 0;
+            if(resistanceStat != null && !paramsObject.BypassesResistances)
+            {
+                damageResistance = paramsObject.Damage * resistanceStat.BaseAfterModifications / 100;
+            }
+            if(damageResistance > paramsObject.Damage && attackElement.ExcessResistanceCausesHealDamage)
+            {
+                var targetParam = args.FirstOrDefault(a => a.ParamName.Equals("Target", StringComparison.InvariantCultureIgnoreCase));
+                var healDamageParams = new List<(string ParamName, string Value)>
+                {
+                    ("Source", "source"),
+                    ("Target", targetParam.Value),
+                    ("Power", (damageResistance - paramsObject.Damage).ToString())
+                };
+                var healResult = GenericActions.HealDamage(This, paramsObject.Source, c, healDamageParams.ToArray());
+
+                if (Map.Flags.Exists(f => f.Key.Equals($"ElementCausedHealDamage")))
+                    Map.SetFlagValue($"ElementCausedHealDamage", 1);
+                else
+                    Map.CreateFlag($"ElementCausedHealDamage", 1, true); 
+                
+                if (healResult && !paramsObject.BypassesElementEffect)
+                    attackElement.OnAfterAttack?.Do(Source, c, false);
+
+                Map.SetFlagValue($"ElementCausedHealDamage", 0);
+
+                return true;
+            }
+            var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation - damageResistance);
             if (damageDealt > 0 && damageDealt < 1)
                 damageDealt = 1;
             damageDealt = (int) damageDealt;
@@ -62,25 +95,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
                 return false;
             }
-            Faction targetFaction = c.Faction;
-            Color forecolorToUse;
-            if (c.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
-                forecolorToUse = Color.Red;
-            else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
-                forecolorToUse = Color.Lime;
-            else
-                forecolorToUse = Color.DeepSkyBlue;
             if (Rng.RollProbability() <= paramsObject.CriticalHitChance)
             {
                 if (c.EntityType == EntityType.Player
                     || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
-                    Map.AppendMessage(Map.Locale["AttackCriticalHitText"], forecolorToUse);
+                    Map.AppendMessage(Map.Locale["AttackCriticalHitText"], attackElement.Color);
                 damageDealt = (int) ExpressionParser.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
             if (c.EntityType == EntityType.Player
                 || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
             {
-                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"] }), forecolorToUse);
+                Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"], ElementName = attackElement.Name }), attackElement.Color);
 
                 if (Source == Map.Player && c.EntityType == EntityType.NPC)
                     Map.AddSpecialEffectIfPossible(SpecialEffect.NPCDamaged);
@@ -88,6 +113,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
             }
             c.HP.Current = Math.Max(0, c.HP.Current - damageDealt);
+            if (!paramsObject.BypassesElementEffect)
+                attackElement.OnAfterAttack?.Do(Source, c, false);
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);
             return true;
