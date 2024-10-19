@@ -200,7 +200,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var successfulEffects = OnStood?.Do(null, stomper, true);
             if (successfulEffects != null)
                 stomper.Visible = true;
-            if (successfulEffects != null && Constants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+            if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 stomper.AttackedBy(null);
         }
 

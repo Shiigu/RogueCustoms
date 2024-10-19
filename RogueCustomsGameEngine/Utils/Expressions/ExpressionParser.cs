@@ -137,36 +137,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 case "stat":
                     paramsObject.StatName = char.ToUpper(value[0]) + value.ToLowerInvariant()[1..];
                     var c = Target as Character;
-                    switch (value.ToLowerInvariant())
-                    {
-                        case "maxhp":
-                            paramsObject.StatAlterationList = c.HP.ActiveModifications;
-                            break;
-                        case "maxmp":
-                            paramsObject.StatAlterationList = c.MP.ActiveModifications;
-                            break;
-                        case "attack":
-                            paramsObject.StatAlterationList = c.Attack.ActiveModifications;
-                            break;
-                        case "defense":
-                            paramsObject.StatAlterationList = c.Defense.ActiveModifications;
-                            break;
-                        case "movement":
-                            paramsObject.StatAlterationList = c.Movement.ActiveModifications;
-                            break;
-                        case "hpregeneration":
-                            paramsObject.StatAlterationList = c.HPRegeneration.ActiveModifications;
-                            break;
-                        case "mpregeneration":
-                            paramsObject.StatAlterationList = c.MPRegeneration.ActiveModifications;
-                            break;
-                        case "accuracy":
-                            paramsObject.StatAlterationList = c.Accuracy.ActiveModifications;
-                            break;
-                        case "evasion":
-                            paramsObject.StatAlterationList = c.Evasion.ActiveModifications;
-                            break;
-                    }
+                    var statNameToLookUp = value.ToLowerInvariant();
+                    if (statNameToLookUp.StartsWith("max") && !statNameToLookUp.Equals("max"))
+                        statNameToLookUp = statNameToLookUp.TrimStart("max");
+                    var correspondingStat = c.UsedStats.Find(s => s.Id.Equals(statNameToLookUp, StringComparison.InvariantCultureIgnoreCase));
+                    paramsObject.StatAlterationList = correspondingStat != null ? correspondingStat.ActiveModifications : null;
                     return true;
                 case "attack":
                     paramsObject.Damage = CalculateDiceNotationIfNeeded(value);
@@ -251,7 +226,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         public static string ReplaceDiceNotationWithValues(string expression)
         {
-            return Regex.Replace(expression, Constants.DiceNotationRegexPattern, match =>
+            return Regex.Replace(expression, EngineConstants.DiceNotationRegexPattern, match =>
             {
                 var diceNotation = match.Value;
                 decimal rollResult = new Dice().Roll(diceNotation, new LCGDieRoller(Rng)).Value;
@@ -349,14 +324,27 @@ namespace RogueCustomsGameEngine.Utils.Expressions
         {
             var parsedArg = arg;
 
-            // Match all tokens like {eName.PropertyName} or nested ones like {this.HP.Current}
-            var regex = new Regex(@$"\{{{eName}\.([A-Za-z0-9_.]+)\}}", RegexOptions.IgnoreCase);
+            // Match tokens like {eName.Stat:StatId}, also allowing nested properties {eName.SomeOtherProperty}
+            var regex = new Regex(@$"\{{{eName}\.(Stat:([A-Za-z0-9_]+)|([A-Za-z0-9_.]+))\}}", RegexOptions.IgnoreCase);
             var matches = regex.Matches(parsedArg);
 
             foreach (Match match in matches)
             {
-                var propertyPath = match.Groups[1].Value; // The full property path, e.g., "HP.Current"
-                var propertyValue = GetNestedPropertyValue(o, propertyPath);
+                var fullPropertyPath = match.Groups[1].Value; // Full match (Stat:StatId or regular property path)
+                var statId = match.Groups[2].Value;           // Group 2 will have the StatId if it's a stat expression
+                var propertyPath = match.Groups[3].Value;     // Group 3 will have the regular property path
+
+                object propertyValue = null;
+
+                // If it's a stat expression (Stat:StatId)
+                if (!string.IsNullOrEmpty(statId))
+                {
+                    propertyValue = GetStatValue(o, statId);
+                }
+                else if (!string.IsNullOrEmpty(propertyPath)) // Otherwise, treat it as a nested property
+                {
+                    propertyValue = GetNestedPropertyValue(o, propertyPath);
+                }
 
                 // Replace the token with the formatted value
                 if (propertyValue != null)
@@ -394,8 +382,10 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
                 currentObject = propertyInfo.GetValue(currentObject);
 
-                if (currentObject is Stat stat)
+                if (currentObject is Stat stat) 
                 {
+                    // This is only for backwards compatibility for {eName.StatName}
+                    // (Where StatName is HP, HPRegeneration, MP, MPRegeneration, Attack, Defense, Movement, Accuracy or Evasion)
                     currentObject = stat.Current;
                 }
                 else if (propertyInfo.Name.Equals("AlteredStatuses", StringComparison.InvariantCultureIgnoreCase) && currentObject is List<AlteredStatus> alteredStatuses)
@@ -413,6 +403,23 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             }
 
             return currentObject;
+        }
+        private static decimal? GetStatValue(object obj, string statId)
+        {
+            if (obj == null || string.IsNullOrEmpty(statId)) return null;
+
+            if(obj is not Character c)
+                throw new ArgumentException($"Tried to retrieve a stat from an element that is not a Character.");
+
+            var parsedStatId = statId.ToLowerInvariant();
+            var lookForMax = parsedStatId.StartsWith("max") && !parsedStatId.Equals("max", StringComparison.InvariantCultureIgnoreCase);
+
+            var stat = c.UsedStats.FirstOrDefault(s => s.Id.Equals(parsedStatId, StringComparison.InvariantCultureIgnoreCase));
+
+            if(stat != null)
+                return lookForMax && stat.HasMax ? stat.BaseAfterModifications : stat.Current;
+            
+            return 0; // Defaulting to 0 if the stat does not exist should make literally no difference whatsoever
         }
 
         private static string ParseNamedFlags(string arg)

@@ -207,7 +207,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
                 npc.HP.Current = npc.HP.Base;
-                if (npc.UsesMP)
+                if (npc.MP != null)
                     npc.MP.Current = npc.MP.Base;
                 npc.ExistenceStatus = EntityExistenceStatus.Alive;
                 npc.ConsoleRepresentation.Character = npc.BaseConsoleRepresentation.Character;

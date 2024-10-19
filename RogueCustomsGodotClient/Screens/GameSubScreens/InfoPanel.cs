@@ -264,7 +264,6 @@ public partial class InfoPanel : GamePanel
 
     private static void AddPlayerStatsInfo(StringBuilder innerText, StatDto stat)
     {
-        if (!stat.Visible) return;
         innerText.Append("[p] [p]");
 
         if (stat.IsPercentileStat)

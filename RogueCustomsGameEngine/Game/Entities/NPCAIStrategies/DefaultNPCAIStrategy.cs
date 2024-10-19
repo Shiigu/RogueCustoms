@@ -21,7 +21,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                 return int.MinValue;
 
             var randomFactor = map.Rng.NextInclusive(50, 150) / 100f;
-            var mpUseFactor = Source.UsesMP ? (double) (action.MPCost / Source.MaxMP) : 0;
+            var mpUseFactor = Source.MP != null ? (double) (action.MPCost / Source.MaxMP) : 0;
             return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (randomFactor - mpUseFactor));
         }
 
@@ -57,7 +57,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "BurnMP":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.MP == null)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -69,7 +69,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "RemoveHunger":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.Hunger == null)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -110,7 +110,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "ReplenishMP":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesMP || targetAsCharacter.MP.Current >= targetAsCharacter.MaxMP)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.MP == null || targetAsCharacter.MP.Current >= targetAsCharacter.MaxMP)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -122,7 +122,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "ReplenishHunger":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || !targetAsCharacter.UsesHunger || targetAsCharacter.Hunger.Current >= targetAsCharacter.MaxHunger)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || targetAsCharacter.Hunger == null || targetAsCharacter.Hunger.Current >= targetAsCharacter.MaxHunger)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -162,17 +162,20 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         break;
                     }
 
-                    var isHPOrMP = string.Equals(paramsObject.StatName, "hp", StringComparison.InvariantCultureIgnoreCase)
-                                    || string.Equals(paramsObject.StatName, "maxhp", StringComparison.InvariantCultureIgnoreCase)
-                                    || string.Equals(paramsObject.StatName, "mp", StringComparison.InvariantCultureIgnoreCase)
-                                    || string.Equals(paramsObject.StatName, "maxmp", StringComparison.InvariantCultureIgnoreCase);
-                    var isHPOrMPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase)
-                                    || string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
+                    var targetStat = targetAsCharacter.UsedStats.Find(s => s.Id.Equals(paramsObject.StatName, StringComparison.InvariantCultureIgnoreCase));
+                    if (targetStat == null)
+                    {
+                        weight = (weight == 0) ? -500 : weight - 100;
+                        break;
+                    }
+
+                    var isStatWithMax = targetStat.HasMax;
+                    var isRegeneration = targetStat.StatType == StatType.Regeneration;
 
                     var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
-                    var alterationAmount = isHPOrMPRegeneration ? paramsObject.Amount : (int)paramsObject.Amount;
+                    var alterationAmount = isRegeneration ? paramsObject.Amount : (int)paramsObject.Amount;
 
-                    if (!isHPOrMPRegeneration)
+                    if (!isRegeneration)
                     {
                         if (paramsObject.Amount > 0 && paramsObject.Amount < 1)
                             alterationAmount = 1;
@@ -187,9 +190,9 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
 
                     turnLengthWeight = paramsObject.TurnLength > 0 ? (int)paramsObject.TurnLength : 50;
                     var alterationWeight = Math.Abs(alterationAmount);
-                    if (isHPOrMP)
+                    if (isStatWithMax)
                         alterationWeight /= 10;
-                    else if (isHPOrMPRegeneration)
+                    else if (isRegeneration)
                         alterationWeight *= 10;
                     weight = (int)(250 + ((int)alterationWeight * 5 + turnLengthWeight) * accuracyFactor);
                     break;

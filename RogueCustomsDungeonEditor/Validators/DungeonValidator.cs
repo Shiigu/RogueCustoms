@@ -30,6 +30,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> TileSetValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)> FloorGroupValidationMessages { get; private set; } = new List<(int FloorMinimumLevel, int FloorMaximumLevel, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> FactionValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> StatValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -138,6 +139,13 @@ namespace RogueCustomsDungeonEditor.Validators
                 UpdateProgressLabel($"Running Faction {factionInfo.Id} Validation...", false);
                 FactionValidationMessages.Add((factionInfo.Id, DungeonFactionValidator.Validate(factionInfo, DungeonJson)));
                 UpdateProgressLabel($"Faction {factionInfo.Id} Validation complete!", true);
+            }
+
+            foreach (var statInfo in DungeonJson.CharacterStats)
+            {
+                UpdateProgressLabel($"Running Stat {statInfo.Id} Validation...", false);
+                StatValidationMessages.Add((statInfo.Id, DungeonStatValidator.Validate(statInfo, DungeonJson)));
+                UpdateProgressLabel($"Stat {statInfo.Id} Validation complete!", true);
             }
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)

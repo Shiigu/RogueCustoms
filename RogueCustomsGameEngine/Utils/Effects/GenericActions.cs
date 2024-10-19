@@ -142,67 +142,28 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statAlterationTarget = paramsObject.Target as Character;
 
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
-            var statCap = 0m;
-            var statValue = 0m;
-            switch (paramsObject.StatName.ToLowerInvariant())
-            {
-                case "hp":
-                case "maxhp":
-                    statValue = statAlterationTarget.HP.Current;
-                    statCap = Constants.RESOURCE_STAT_CAP;
-                    break;
-                case "mp":
-                case "maxmp":
-                    if (!statAlterationTarget.UsesMP) return false;
-                    statValue = statAlterationTarget.MP.Current;
-                    statCap = Constants.RESOURCE_STAT_CAP;
-                    break;
-                case "attack":
-                    statValue = statAlterationTarget.Attack.Current;
-                    statCap = Constants.NORMAL_STAT_CAP;
-                    break;
-                case "defense":
-                    statValue = statAlterationTarget.Defense.Current;
-                    statCap = Constants.NORMAL_STAT_CAP;
-                    break;
-                case "movement":
-                    statValue = statAlterationTarget.Movement.Current;
-                    statCap = Constants.MOVEMENT_STAT_CAP;
-                    break;
-                case "hpregeneration":
-                    statValue = statAlterationTarget.HPRegeneration.Current;
-                    statCap = Constants.REGEN_STAT_CAP;
-                    break;
-                case "mpregeneration":
-                    if (!statAlterationTarget.UsesMP) return false;
-                    statValue = statAlterationTarget.MPRegeneration.Current;
-                    statCap = Constants.REGEN_STAT_CAP;
-                    break;
-                case "accuracy":
-                    statValue = statAlterationTarget.Accuracy.Current;
-                    statCap = Constants.MAX_ACCURACY_CAP;
-                    break;
-                case "evasion":
-                    statValue = statAlterationTarget.Evasion.Current;
-                    statCap = Constants.MAX_EVASION_CAP;
-                    break;
-                default:
-                    throw new ArgumentException($"Unrecognized stat: {paramsObject.StatName}.");
-            }
-            var isEvasion = string.Equals(paramsObject.StatName, "evasion", StringComparison.InvariantCultureIgnoreCase);
-            if (statValue >= statCap || (isEvasion && (Math.Abs(statValue) >= statCap)))
+            if(statAlterations == null)
+                // Attempted to alter one of Target's stats when it doesn't have it.
+                return false;
+            var statName = paramsObject.StatName.ToLowerInvariant();
+            if (!statName.Equals("max") && statName.StartsWith("max"))
+                statName = statName.TrimStart("max");
+            var targetStat = statAlterationTarget.UsedStats.Find(s => s.Id.Equals(statName, StringComparison.InvariantCultureIgnoreCase));
+            if(targetStat == null)
+                // Attempted to alter one of Target's stats when it doesn't have it.
+                return false;
+            var statValue = targetStat.Current;
+            if (statValue > targetStat.MaxCap || statValue < targetStat.MinCap)
                 return false;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
 
             if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.RollProbability() <= accuracyCheck)
             {
-                var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
-                var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
-                var isAccuracyOrEvasion = string.Equals(paramsObject.StatName, "accuracy", StringComparison.InvariantCultureIgnoreCase)
-                                       || isEvasion;
-                var alterationAmount = isHPRegeneration || isMPRegeneration ? paramsObject.Amount : (int)paramsObject.Amount;
+                var isDecimal = targetStat.StatType == StatType.Decimal || targetStat.StatType == StatType.Regeneration;
+                var isPercentage = targetStat.StatType == StatType.Percentage;
+                var alterationAmount = isDecimal ? paramsObject.Amount : (int)paramsObject.Amount;
 
-                if(!isHPRegeneration && !isMPRegeneration)
+                if(!isDecimal)
                 {
                     if (paramsObject.Amount > 0 && paramsObject.Amount < 1)
                         alterationAmount = 1;
@@ -210,8 +171,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         alterationAmount = -1;
                 }
 
-                if (alterationAmount > statCap)
-                    alterationAmount = statCap;
+                if (alterationAmount > targetStat.MaxCap)
+                    alterationAmount = 0;
+                if (alterationAmount < targetStat.MinCap)
+                    alterationAmount = 0;
+
+                if (alterationAmount == 0)
+                    // Attempted to alter one of Target's stats when it's in its cap.
+                    return false;
 
                 statAlterations.Add(new StatModification
                 {
@@ -219,22 +186,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Amount = alterationAmount,
                     RemainingTurns = (int)paramsObject.TurnLength
                 });
-                var statName = paramsObject.StatName;
-                if (isHPRegeneration)
-                    statName = "HPRegeneration";
-                else if (isMPRegeneration)
-                    statName = "MPRegeneration";
                 if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
                     || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
                 {
-                    var amountString = isAccuracyOrEvasion ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
+                    var amountString = targetStat.StatType == StatType.Percentage ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
                     var messageKey = alterationAmount > 0 ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
                     var specialEffect = alterationAmount > 0 ? SpecialEffect.StatBuff : SpecialEffect.StatNerf;
 
                     var message = Map.Locale[messageKey].Format(new
                     {
                         CharacterName = statAlterationTarget.Name,
-                        StatName = Map.Locale[$"Character{statName}Stat"],
+                        StatName = Map.Locale[targetStat.Name],
                         Amount = amountString
                     });
 
@@ -288,6 +250,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Attempted to remove of Target's Altered Statuses when it's not a Character.
                 return false;
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
+            if (statAlterations == null)
+                // Attempted to alter one of Target's stats when it doesn't have it.
+                return false;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, t, paramsObject);
 
             if (statAlterations?.Any() == true && Rng.RollProbability() <= accuracyCheck)
@@ -298,14 +263,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (t.EntityType == EntityType.Player
                     || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
                 {
-                    var isHPRegeneration = string.Equals(paramsObject.StatName, "hpregeneration", StringComparison.InvariantCultureIgnoreCase);
-                    var isMPRegeneration = string.Equals(paramsObject.StatName, "mpregeneration", StringComparison.InvariantCultureIgnoreCase);
                     var statName = paramsObject.StatName;
-                    if (isHPRegeneration)
-                        statName = "HPRegeneration";
-                    else if (isMPRegeneration)
-                        statName = "MPRegeneration";
-                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[$"Character{statName}Stat"] }), Color.DeepSkyBlue);
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[statName] }), Color.DeepSkyBlue);
                     if(t == Map.Player)
                     {
                         if (amount < 0)
@@ -450,7 +409,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character)
                 // Attempted to recover Target's MP when it's not a Character.
                 return false;
-            if (!paramsObject.Target.UsesMP || paramsObject.Target.MP == null) return false;
+            if (paramsObject.Target.MP == null) return false;
             if (paramsObject.Target.MP.Current >= paramsObject.Target.MP.BaseAfterModifications)
                 return false;
             var replenishAmount = Math.Min(paramsObject.Target.MP.BaseAfterModifications - paramsObject.Target.MP.Current, paramsObject.Power);
@@ -478,14 +437,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 // Attempted to recover Target's Hunger when it's not a Character.
                 return false;
-            if (!t.UsesHunger || t.Hunger == null) return false;
+            if (t.Hunger == null) return false;
             if (t.Hunger.Current >= t.Hunger.Base)
                 return false;
             var replenishAmount = Math.Min(t.Hunger.Base - t.Hunger.Current, paramsObject.Power);
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
                 replenishAmount = 1;
             replenishAmount = (int)replenishAmount;
-            t.Hunger = Math.Min(t.Hunger.Base, t.Hunger + replenishAmount);
+            t.Hunger.Current = Math.Min(t.Hunger.Base, t.Hunger.Current + replenishAmount);
 
             if (t.EntityType == EntityType.Player
                 || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))

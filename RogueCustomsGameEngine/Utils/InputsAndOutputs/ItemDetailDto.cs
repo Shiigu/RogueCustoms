@@ -36,7 +36,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Power = i.Power ?? string.Empty;
             StatModifications = new();
             i.StatModifiers.ForEach(m => {
-                var correspondingStat = i.Owner.Stats.FirstOrDefault(s => s.Id.Equals(m.Id));
+                var correspondingStat = i.Owner.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
                 if (correspondingStat != null)
                     StatModifications.Add(new StatModificationDto(m, correspondingStat, i.Map));
             });

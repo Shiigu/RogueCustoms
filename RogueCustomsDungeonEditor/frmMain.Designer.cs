@@ -74,6 +74,8 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
+            tbStatInfos = new TabPage();
+            StatTab = new Controls.Tabs.StatTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -89,6 +91,7 @@ namespace RogueCustomsDungeonEditor
             tpTrap.SuspendLayout();
             tpAlteredStatus.SuspendLayout();
             tpValidation.SuspendLayout();
+            tbStatInfos.SuspendLayout();
             SuspendLayout();
             // 
             // msMenu
@@ -259,6 +262,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpTileSetInfos);
             tbTabs.Controls.Add(tpFloorInfos);
             tbTabs.Controls.Add(tpFactionInfos);
+            tbTabs.Controls.Add(tbStatInfos);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
             tbTabs.Controls.Add(tpItem);
@@ -407,7 +411,7 @@ namespace RogueCustomsDungeonEditor
             PlayerClassTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             PlayerClassTab.Location = new System.Drawing.Point(5, 0);
             PlayerClassTab.Name = "PlayerClassTab";
-            PlayerClassTab.Size = new System.Drawing.Size(714, 866);
+            PlayerClassTab.Size = new System.Drawing.Size(714, 718);
             PlayerClassTab.TabIndex = 0;
             // 
             // tpNPC
@@ -516,6 +520,26 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
+            // tbStatInfos
+            // 
+            tbStatInfos.Controls.Add(StatTab);
+            tbStatInfos.Location = new System.Drawing.Point(4, 24);
+            tbStatInfos.Name = "tbStatInfos";
+            tbStatInfos.Padding = new Padding(3);
+            tbStatInfos.Size = new System.Drawing.Size(740, 356);
+            tbStatInfos.TabIndex = 12;
+            tbStatInfos.Text = "Stats";
+            tbStatInfos.UseVisualStyleBackColor = true;
+            // 
+            // StatTab
+            // 
+            StatTab.AutoSize = true;
+            StatTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            StatTab.Location = new System.Drawing.Point(0, 0);
+            StatTab.Name = "StatTab";
+            StatTab.Size = new System.Drawing.Size(657, 166);
+            StatTab.TabIndex = 0;
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -560,6 +584,8 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.ResumeLayout(false);
             tpAlteredStatus.PerformLayout();
             tpValidation.ResumeLayout(false);
+            tbStatInfos.ResumeLayout(false);
+            tbStatInfos.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -609,5 +635,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ValidatorTab ValidatorTab;
         private TabPage tpTileTypeInfo;
         private Controls.Tabs.TileTypeTab TileTypeTab;
+        private TabPage tbStatInfos;
+        private Controls.Tabs.StatTab StatTab;
     }
 }

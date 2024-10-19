@@ -1,6 +1,7 @@
 ﻿using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V11;
+using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V12;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V13;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V14;
 
@@ -31,13 +32,21 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
         public static DungeonInfo ConvertDungeonInfoIfNeeded(this DungeonInfo dungeon, string dungeonJson, LocaleInfo localeTemplate, List<string> mandatoryLocaleKeys)
         {
             var convertedLocales = false;
-            while (!dungeon.Version.Equals(Constants.CurrentDungeonJsonVersion))
+            while (!dungeon.Version.Equals(EngineConstants.CurrentDungeonJsonVersion))
             {
                 var V10to11Dungeon = dungeon.Version.Equals("1.0") ? JsonSerializer.Deserialize<DungeonInfoV11>(dungeonJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 }) : null;
-                var V13to14Dungeon = dungeon.Version.Equals("1.3") ? JsonSerializer.Deserialize<DungeonInfoV13>(dungeonJson, new JsonSerializerOptions
+                var V11to12Dungeon = dungeon.Version.Equals("1.1") ? JsonSerializer.Deserialize<DungeonInfoV12>(dungeonJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) : null;
+                var V12to13Dungeon = dungeon.Version.Equals("1.2") ? JsonSerializer.Deserialize<DungeonInfoV13>(dungeonJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) : null;
+                var V13to14Dungeon = dungeon.Version.Equals("1.3") ? JsonSerializer.Deserialize<DungeonInfoV14>(dungeonJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 }) : null;
@@ -51,13 +60,13 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                         dungeon = V14to15Dungeon.ConvertDungeonInfoToV15();
                         break;
                     case "1.3":
-                        dungeon = V13to14Dungeon.ConvertDungeonInfoToV14();
+                        V13to14Dungeon = V12to13Dungeon.ConvertDungeonInfoToV14();
                         break;
                     case "1.2":
-                        dungeon = dungeon.ConvertDungeonInfoToV13();
+                        V12to13Dungeon = V11to12Dungeon.ConvertDungeonInfoToV13();
                         break;
                     case "1.1":
-                        dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
+                        V11to12Dungeon = V10to11Dungeon.ConvertDungeonInfoToV12();
                         break;
                     case "1.0":
                         V10to11Dungeon = V10to11Dungeon.ConvertDungeonInfoToV11();
@@ -470,14 +479,14 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         #region 1.1 to 1.2
 
-        private static DungeonInfo ConvertDungeonInfoToV12(this DungeonInfoV11 V11Dungeon)
+        private static DungeonInfoV12 ConvertDungeonInfoToV12(this DungeonInfoV11 V11Dungeon)
         {
             var V11DungeonAsJSON = JsonSerializer.Serialize(V11Dungeon, new JsonSerializerOptions
             {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
-            var V12Dungeon = JsonSerializer.Deserialize<DungeonInfo>(V11DungeonAsJSON, new JsonSerializerOptions
+            var V12Dungeon = JsonSerializer.Deserialize<DungeonInfoV12>(V11DungeonAsJSON, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -487,98 +496,94 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             {
                 var v11FloorInfo = V11Dungeon.FloorInfos.Find(fi => fi.MinFloorLevel == floorInfo.MinFloorLevel && fi.MaxFloorLevel == floorInfo.MaxFloorLevel);
                 if (v11FloorInfo == null) continue;
-                floorInfo.OnFloorStart = v11FloorInfo.OnFloorStartActions.ElementAtOrDefault(0).CloneToV12();
-                floorInfo.OnFloorStart.UpdateActionParametersToV12(false);
+                floorInfo.OnFloorStartActions = new() { v11FloorInfo.OnFloorStartActions.ElementAtOrDefault(0).CloneToV12() };
+                floorInfo.OnFloorStartActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             foreach (var v12PlayerClass in V12Dungeon.PlayerClasses)
             {
                 var v11PlayerClass = V11Dungeon.PlayerClasses.Find(pc => pc.Id.Equals(v12PlayerClass.Id));
                 if (v11PlayerClass == null) continue;
-                v12PlayerClass.OnTurnStart = v11PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnTurnStart.UpdateActionParametersToV12(false);
-                v12PlayerClass.OnAttack = new();
+                v12PlayerClass.OnTurnStartActions = new() { v11PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12() };
+                v12PlayerClass.OnTurnStartActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12PlayerClass.OnAttackActions = new();
                 foreach (var onAttackAction in v11PlayerClass.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
                     convertedAction.UpdateActionParametersToV12(true);
-                    v12PlayerClass.OnAttack.Add(convertedAction);
+                    v12PlayerClass.OnAttackActions.Add(convertedAction);
                 }
-                v12PlayerClass.OnAttacked = v11PlayerClass.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnAttacked.UpdateActionParametersToV12(false);
-                v12PlayerClass.OnDeath = v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
-                v12PlayerClass.OnDeath.UpdateActionParametersToV12(false);
-                v12PlayerClass.BaseAccuracy = 100;
-                v12PlayerClass.BaseEvasion = 0;
+                v12PlayerClass.OnAttackedActions = new() { v11PlayerClass.OnAttackedActions.ElementAtOrDefault(0).CloneToV12() };
+                v12PlayerClass.OnAttackedActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12PlayerClass.OnDeathActions = new() { v11PlayerClass.OnDeathActions.ElementAtOrDefault(0).CloneToV12() };
+                v12PlayerClass.OnDeathActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             foreach (var v12NPC in V12Dungeon.NPCs)
             {
                 var v11NPC = V11Dungeon.NPCs.Find(npc => npc.Id.Equals(v12NPC.Id));
                 if (v11NPC == null) continue;
-                v12NPC.OnTurnStart = v11NPC.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnTurnStart.UpdateActionParametersToV12(false);
-                v12NPC.OnAttack = new();
+                v12NPC.OnTurnStartActions = new() { v11NPC.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12() };
+                v12NPC.OnTurnStartActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12NPC.OnAttackActions = new();
                 foreach (var onAttackAction in v11NPC.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
                     convertedAction.UpdateActionParametersToV12(true);
-                    v12NPC.OnAttack.Add(convertedAction);
+                    v12NPC.OnAttackActions.Add(convertedAction);
                 }
-                v12NPC.OnAttacked = v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnAttacked.UpdateActionParametersToV12(false);
-                v12NPC.OnDeath = v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12();
-                v12NPC.OnDeath.UpdateActionParametersToV12(false);
-                v12NPC.BaseAccuracy = 100;
-                v12NPC.BaseEvasion = 0;
+                v12NPC.OnAttackedActions = new() { v11NPC.OnAttackedActions.ElementAtOrDefault(0).CloneToV12() };
+                v12NPC.OnAttackedActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12NPC.OnDeathActions = new() { v11NPC.OnDeathActions.ElementAtOrDefault(0).CloneToV12() };
+                v12NPC.OnDeathActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             foreach (var v12Item in V12Dungeon.Items)
             {
                 var v11Item = V11Dungeon.Items.Find(i => i.Id.Equals(v12Item.Id));
                 if (v11Item == null) continue;
-                v12Item.OnTurnStart = v11Item.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnTurnStart.UpdateActionParametersToV12(false);
-                v12Item.OnAttack = new();
+                v12Item.OnTurnStartActions = new() { v11Item.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12() };
+                v12Item.OnTurnStartActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12Item.OnAttackActions = new();
                 foreach (var onAttackAction in v11Item.OnAttackActions)
                 {
                     var convertedAction = onAttackAction.CloneToV12();
                     convertedAction.UpdateActionParametersToV12(true);
-                    v12Item.OnAttack.Add(convertedAction);
+                    v12Item.OnAttackActions.Add(convertedAction);
                 }
-                v12Item.OnAttacked = v11Item.OnAttackedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnAttacked.UpdateActionParametersToV12(false);
-                v12Item.OnUse = v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12();
-                v12Item.OnUse.UpdateActionParametersToV12(false);
+                v12Item.OnAttackedActions = new() { v11Item.OnAttackedActions.ElementAtOrDefault(0).CloneToV12() };
+                v12Item.OnAttackedActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12Item.OnItemUseActions = new() { v11Item.OnItemUseActions.ElementAtOrDefault(0).CloneToV12() };
+                v12Item.OnItemUseActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             foreach (var v12Trap in V12Dungeon.Traps)
             {
                 var v11Trap = V11Dungeon.Traps.Find(t => t.Id.Equals(v12Trap.Id));
                 if (v11Trap == null) continue;
-                v12Trap.OnStepped = v11Trap.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12();
-                v12Trap.OnStepped.UpdateActionParametersToV12(false);
+                v12Trap.OnItemSteppedActions = new() { v11Trap.OnItemSteppedActions.ElementAtOrDefault(0).CloneToV12() };
+                v12Trap.OnItemSteppedActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             foreach (var v12AlteredStatus in V12Dungeon.AlteredStatuses)
             {
                 var v11AlteredStatus = V11Dungeon.AlteredStatuses.Find(als => als.Id.Equals(v12AlteredStatus.Id));
                 if (v11AlteredStatus == null) continue;
-                v12AlteredStatus.OnApply = v11AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).CloneToV12();
-                v12AlteredStatus.OnApply.UpdateActionParametersToV12(false);
-                v12AlteredStatus.OnTurnStart = v11AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12();
-                v12AlteredStatus.OnTurnStart.UpdateActionParametersToV12(false);
+                v12AlteredStatus.OnStatusApplyActions = new() { v11AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).CloneToV12() };
+                v12AlteredStatus.OnStatusApplyActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
+                v12AlteredStatus.OnTurnStartActions = new() { v11AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).CloneToV12() };
+                v12AlteredStatus.OnTurnStartActions.ElementAtOrDefault(0).UpdateActionParametersToV12(false);
             }
 
             V12Dungeon.Version = "1.2";
             return V12Dungeon;
         }
 
-        private static ActionWithEffectsInfo CloneToV12(this ActionWithEffectsInfoV11 info)
+        private static ActionWithEffectsInfoV12 CloneToV12(this ActionWithEffectsInfoV11 info)
         {
             if (info == null) return null;
 
-            var clonedAction = new ActionWithEffectsInfo
+            var clonedAction = new ActionWithEffectsInfoV12
             {
                 Name = info.Name,
                 Description = info.Description,
@@ -590,26 +595,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 MPCost = info.MPCost,
                 UseCondition = info.UseCondition,
                 TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
-                Effect = info.Effect.CloneToV12(),
-                FinishesTurnWhenUsed = true
+                Effect = info.Effect.CloneToV12()
             };
 
             return clonedAction;
         }
 
-        public static EffectInfo CloneToV12(this EffectInfoV11 info)
+        public static EffectInfoV12 CloneToV12(this EffectInfoV11 info)
         {
             if (info == null) return null;
 
-            var clonedEffect = new EffectInfo
+            var clonedEffect = new EffectInfoV12
             {
                 EffectName = info.EffectName,
-                Params = new Parameter[info.Params.Length]
+                Params = new ParameterV12[info.Params.Length]
             };
 
             for (int i = 0; i < clonedEffect.Params.Length; i++)
             {
-                clonedEffect.Params[i] = new Parameter
+                clonedEffect.Params[i] = new ParameterV12
                 {
                     ParamName = info.Params[i].ParamName,
                     Value = info.Params[i].Value
@@ -626,19 +630,19 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             return clonedEffect;
         }
 
-        private static void UpdateActionParametersToV12(this ActionWithEffectsInfo? actionWithEffects, bool bypassValueToSetIfDealDamageOrBurnMP)
+        private static void UpdateActionParametersToV12(this ActionWithEffectsInfoV12? actionWithEffects, bool bypassValueToSetIfDealDamageOrBurnMP)
         {
             if (actionWithEffects == null) return;
             actionWithEffects.UpdatePrintTextStepsToV12();
             actionWithEffects.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
         }
 
-        private static void UpdateChanceAndAccuracyParametersToV12(this ActionWithEffectsInfo? actionWithEffects, bool bypassValueToSetIfDealDamageOrBurnMP)
+        private static void UpdateChanceAndAccuracyParametersToV12(this ActionWithEffectsInfoV12? actionWithEffects, bool bypassValueToSetIfDealDamageOrBurnMP)
         {
             actionWithEffects.Effect.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
         }
 
-        private static void UpdateChanceAndAccuracyParametersToV12(this EffectInfo? effect, bool bypassValueToSetIfDealDamageOrBurnMP)
+        private static void UpdateChanceAndAccuracyParametersToV12(this EffectInfoV12? effect, bool bypassValueToSetIfDealDamageOrBurnMP)
         {
             if (effect == null) return;
             var hasAccuracyParameter = false;
@@ -651,7 +655,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                                          && !effect.Params.Any(param => param.ParamName.Equals("BypassesAccuracyCheck", StringComparison.InvariantCultureIgnoreCase))))
             {
                 var paramsAsList = effect.Params.ToList();
-                paramsAsList.Add(new Parameter
+                paramsAsList.Add(new ParameterV12
                 {
                     ParamName = "BypassesAccuracyCheck",
                     Value = (!effect.EffectName.Equals("DealDamage") && !effect.EffectName.Equals("BurnMP")) ? bypassValueToSetIfDealDamageOrBurnMP.ToString() : false.ToString()
@@ -663,18 +667,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             effect.OnFailure.UpdateChanceAndAccuracyParametersToV12(bypassValueToSetIfDealDamageOrBurnMP);
         }
 
-        private static void UpdatePrintTextStepsToV12(this ActionWithEffectsInfo? actionWithEffects)
+        private static void UpdatePrintTextStepsToV12(this ActionWithEffectsInfoV12? actionWithEffects)
         {
             actionWithEffects.Effect.UpdatePrintTextStepsToV12();
         }
 
-        private static void UpdatePrintTextStepsToV12(this EffectInfo? effect)
+        private static void UpdatePrintTextStepsToV12(this EffectInfoV12? effect)
         {
             if (effect == null) return;
             if (effect.EffectName.Equals("PrintText") && !effect.Params.Any(param => param.ParamName.Equals("BypassesVisibilityCheck", StringComparison.InvariantCultureIgnoreCase)))
             {
                 var paramsAsList = effect.Params.ToList();
-                paramsAsList.Add(new Parameter
+                paramsAsList.Add(new ParameterV12
                 {
                     ParamName = "BypassesVisibilityCheck",
                     Value = false.ToString()
@@ -690,57 +694,50 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 
         #region 1.2 to 1.3
 
-        private static DungeonInfo ConvertDungeonInfoToV13(this DungeonInfo dungeon)
+        private static DungeonInfoV13 ConvertDungeonInfoToV13(this DungeonInfoV12 V12Dungeon)
         {
-            foreach (var floorInfo in dungeon.FloorInfos)
+            var V12DungeonAsJSON = JsonSerializer.Serialize(V12Dungeon, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            var V13Dungeon = JsonSerializer.Deserialize<DungeonInfoV13>(V12DungeonAsJSON, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+            foreach (var floorInfo in V12Dungeon.FloorInfos)
             {
                 floorInfo.HungerDegeneration = 0;
             }
 
-            foreach (var playerClass in dungeon.PlayerClasses)
-            {
-                playerClass.UsesHunger = false;
-                playerClass.BaseHunger = 0;
-                playerClass.HungerHPDegeneration = 0;
-            }
-
-            foreach (var playerClass in dungeon.PlayerClasses)
-            {
-                playerClass.UsesHunger = false;
-                playerClass.BaseHunger = 0;
-                playerClass.HungerHPDegeneration = 0;
-            }
-
-            foreach (var npc in dungeon.NPCs)
+            foreach (var npc in V13Dungeon.NPCs)
             {
                 npc.AIType = "Default";
-                npc.UsesHunger = false;
-                npc.BaseHunger = 0;
-                npc.HungerHPDegeneration = 0;
             }
 
-            foreach (var item in dungeon.Items)
+            foreach (var item in V13Dungeon.Items)
             {
                 if (item.EntityType.Equals("Weapon") || item.EntityType.Equals("Armor"))
                     item.OnUse = null;
             }
 
-            dungeon.Version = "1.3";
-            return dungeon;
+            V13Dungeon.Version = "1.3";
+            return V13Dungeon;
         }
 
         #endregion
 
         #region 1.3 to 1.4
 
-        private static DungeonInfo ConvertDungeonInfoToV14(this DungeonInfoV13 V13Dungeon)
+        private static DungeonInfoV14 ConvertDungeonInfoToV14(this DungeonInfoV13 V13Dungeon)
         {
             var V13DungeonAsJSON = JsonSerializer.Serialize(V13Dungeon, new JsonSerializerOptions
             {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
-            var V14Dungeon = JsonSerializer.Deserialize<DungeonInfo>(V13DungeonAsJSON, new JsonSerializerOptions
+            var V14Dungeon = JsonSerializer.Deserialize<DungeonInfoV14>(V13DungeonAsJSON, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -1118,8 +1115,237 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 V15Dungeon.TileSetInfos.Add(v15TileSet);
             }
 
+            V15Dungeon.CharacterStats = DungeonInfoHelpers.CreateStatsTemplate();
+            
+            V15Dungeon.PlayerClasses = new();
+            foreach (var v14PlayerClass in V14Dungeon.PlayerClasses)
+            {
+                V15Dungeon.PlayerClasses.Add(v14PlayerClass.CloneToV15());
+            }
+
+            V15Dungeon.NPCs = new();
+            foreach (var v14NPC in V14Dungeon.NPCs)
+            {
+                V15Dungeon.NPCs.Add(v14NPC.CloneToV15());
+            }
+
             V15Dungeon.Version = "1.5";
             return V15Dungeon;
+        }
+
+        private static PlayerClassInfo CloneToV15(this PlayerClassInfoV14 v14PlayerClass)
+        {
+            var v15PlayerClass = new PlayerClassInfo
+            {
+                Id = v14PlayerClass.Id,
+                Name = v14PlayerClass.Name,
+                Description = v14PlayerClass.Description,
+                ConsoleRepresentation = v14PlayerClass.ConsoleRepresentation.Clone(),
+                RequiresNamePrompt = v14PlayerClass.RequiresNamePrompt,
+                Faction = v14PlayerClass.Faction,
+                StartsVisible = v14PlayerClass.StartsVisible,
+                Stats = new(),
+                BaseSightRange = v14PlayerClass.BaseSightRange,
+                InventorySize = v14PlayerClass.InventorySize,
+                StartingWeapon = v14PlayerClass.StartingWeapon,
+                StartingArmor = v14PlayerClass.StartingArmor,
+                StartingInventory = new(v14PlayerClass.StartingInventory),
+                MaxLevel = v14PlayerClass.MaxLevel,
+                CanGainExperience = v14PlayerClass.CanGainExperience,
+                ExperiencePayoutFormula = v14PlayerClass.ExperiencePayoutFormula,
+                ExperienceToLevelUpFormula = v14PlayerClass.ExperienceToLevelUpFormula,
+                OnTurnStart = v14PlayerClass.OnTurnStart,
+                OnAttack = new(v14PlayerClass.OnAttack),
+                OnAttacked = v14PlayerClass.OnAttacked,
+                OnDeath = v14PlayerClass.OnDeath
+            };
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "HP",
+                Base = v14PlayerClass.BaseHP,
+                IncreasePerLevel = v14PlayerClass.MaxHPIncreasePerLevel
+            });
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "HPRegeneration",
+                Base = v14PlayerClass.BaseHPRegeneration,
+                IncreasePerLevel = v14PlayerClass.HPRegenerationIncreasePerLevel
+            });
+
+            if (v14PlayerClass.UsesMP)
+            {
+                v15PlayerClass.Stats.Add(new()
+                {
+                    StatId = "MP",
+                    Base = v14PlayerClass.BaseMP,
+                    IncreasePerLevel = v14PlayerClass.MaxMPIncreasePerLevel
+                });
+
+                v15PlayerClass.Stats.Add(new()
+                {
+                    StatId = "MPRegeneration",
+                    Base = v14PlayerClass.BaseMPRegeneration,
+                    IncreasePerLevel = v14PlayerClass.MPRegenerationIncreasePerLevel
+                });
+            }
+
+            if (v14PlayerClass.UsesHunger)
+            {
+                v15PlayerClass.Stats.Add(new()
+                {
+                    StatId = "Hunger",
+                    Base = v14PlayerClass.BaseHunger,
+                    IncreasePerLevel = 0
+                });
+            }
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "Attack",
+                Base = v14PlayerClass.BaseAttack,
+                IncreasePerLevel = v14PlayerClass.AttackIncreasePerLevel
+            });
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "Defense",
+                Base = v14PlayerClass.BaseDefense,
+                IncreasePerLevel = v14PlayerClass.DefenseIncreasePerLevel
+            });
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "Movement",
+                Base = v14PlayerClass.BaseMovement,
+                IncreasePerLevel = v14PlayerClass.MovementIncreasePerLevel
+            });
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "Accuracy",
+                Base = v14PlayerClass.BaseAccuracy,
+                IncreasePerLevel = 0
+            });
+
+            v15PlayerClass.Stats.Add(new()
+            {
+                StatId = "Evasion",
+                Base = v14PlayerClass.BaseEvasion,
+                IncreasePerLevel = 0
+            });
+
+            return v15PlayerClass;
+        }
+        private static NPCInfo CloneToV15(this NPCInfoV14 v14NPC)
+        {
+            var v15NPC = new NPCInfo
+            {
+                Id = v14NPC.Id,
+                Name = v14NPC.Name,
+                Description = v14NPC.Description,
+                ConsoleRepresentation = v14NPC.ConsoleRepresentation.Clone(),
+                Faction = v14NPC.Faction,
+                StartsVisible = v14NPC.StartsVisible,
+                Stats = new(),
+                BaseSightRange = v14NPC.BaseSightRange,
+                InventorySize = v14NPC.InventorySize,
+                StartingWeapon = v14NPC.StartingWeapon,
+                StartingArmor = v14NPC.StartingArmor,
+                StartingInventory = new(v14NPC.StartingInventory),
+                MaxLevel = v14NPC.MaxLevel,
+                CanGainExperience = v14NPC.CanGainExperience,
+                ExperiencePayoutFormula = v14NPC.ExperiencePayoutFormula,
+                ExperienceToLevelUpFormula = v14NPC.ExperienceToLevelUpFormula,
+                OnTurnStart = v14NPC.OnTurnStart,
+                OnAttack = new(v14NPC.OnAttack),
+                OnAttacked = v14NPC.OnAttacked,
+                OnDeath = v14NPC.OnDeath,
+                OnInteracted = new(v14NPC.OnInteracted),
+                OnSpawn = v14NPC.OnSpawn,
+                AIOddsToUseActionsOnSelf = v14NPC.AIOddsToUseActionsOnSelf,
+                AIType = v14NPC.AIType,
+                KnowsAllCharacterPositions = v14NPC.KnowsAllCharacterPositions,                
+            };
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "HP",
+                Base = v14NPC.BaseHP,
+                IncreasePerLevel = v14NPC.MaxHPIncreasePerLevel
+            });
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "HPRegeneration",
+                Base = v14NPC.BaseHPRegeneration,
+                IncreasePerLevel = v14NPC.HPRegenerationIncreasePerLevel
+            });
+
+            if (v14NPC.UsesMP)
+            {
+                v15NPC.Stats.Add(new()
+                {
+                    StatId = "MP",
+                    Base = v14NPC.BaseMP,
+                    IncreasePerLevel = v14NPC.MaxMPIncreasePerLevel
+                });
+
+                v15NPC.Stats.Add(new()
+                {
+                    StatId = "MPRegeneration",
+                    Base = v14NPC.BaseMPRegeneration,
+                    IncreasePerLevel = v14NPC.MPRegenerationIncreasePerLevel
+                });
+            }
+
+            if (v14NPC.UsesHunger)
+            {
+                v15NPC.Stats.Add(new()
+                {
+                    StatId = "Hunger",
+                    Base = v14NPC.BaseHunger,
+                    IncreasePerLevel = 0
+                });
+            }
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "Attack",
+                Base = v14NPC.BaseAttack,
+                IncreasePerLevel = v14NPC.AttackIncreasePerLevel
+            });
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "Defense",
+                Base = v14NPC.BaseDefense,
+                IncreasePerLevel = v14NPC.DefenseIncreasePerLevel
+            });
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "Movement",
+                Base = v14NPC.BaseMovement,
+                IncreasePerLevel = v14NPC.MovementIncreasePerLevel
+            });
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "Accuracy",
+                Base = v14NPC.BaseAccuracy,
+                IncreasePerLevel = 0
+            });
+
+            v15NPC.Stats.Add(new()
+            {
+                StatId = "Evasion",
+                Base = v14NPC.BaseEvasion,
+                IncreasePerLevel = 0
+            });
+
+            return v15NPC;
         }
         #endregion
     }

@@ -17,19 +17,21 @@ namespace RogueCustomsDungeonEditor.Controls
     public partial class ItemStatsSheet : UserControl
     {
         private string PreviousCellValue;
-        private List<(string Id, string Name, bool IsDecimal, bool IsPercentage)> StatTableData = new()
+        private List<(string Id, bool IsDecimal, bool IsPercentage)> StatTableData = new();
+
+        public List<StatInfo> StatData
         {
-            ("HP", "Max HP", false, false),
-            ("MP", "Max MP", false, false),
-            ("Attack", "Attack", false, false),
-            ("Defense", "Defense", false, false),
-            ("Movement", "Movement", false, false),
-            ("Accuracy", "Accuracy", false, true),
-            ("Evasion", "Evasion", false, true),
-            ("HPRegeneration", "HP Regeneration", true, false),
-            ("MPRegeneration", "MP Regeneration", true, false),
-            ("Hunger", "Max Hunger", false, false),
-        };
+            set
+            {
+                StatTableData.Clear();
+                foreach (var stat in value)
+                {
+                    var isDecimal = stat.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || stat.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase);
+                    var isPercentage = stat.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase);
+                    StatTableData.Add((stat.Id, isDecimal, isPercentage));
+                }
+            }
+        }
 
         public List<PassiveStatModifierInfo> Stats
         {
@@ -39,7 +41,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
                 for (int i = 0; i < dgvStatsModifiers.Rows.Count; i++)
                 {
-                    var statData = StatTableData.FirstOrDefault(s => s.Name.Equals(dgvStatsModifiers.Rows[i].Cells[0].Value?.ToString() ?? string.Empty));
+                    var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(dgvStatsModifiers.Rows[i].Cells[0].Value?.ToString() ?? string.Empty));
                     if (statData == default) continue;
                     var valueCell = dgvStatsModifiers.Rows[i].Cells[1].Value.ToString();
                     var parsedValueCell = !string.IsNullOrWhiteSpace(valueCell) ? decimal.Parse(valueCell.Replace("+", "").Replace("%", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0;
@@ -58,7 +60,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 for (int i = 0; i < StatTableData.Count; i++)
                 {
                     var firstColumnValue = dgvStatsModifiers[0, i].Value?.ToString() ?? string.Empty;
-                    var statData = StatTableData.FirstOrDefault(s => s.Name.Equals(firstColumnValue));
+                    var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(firstColumnValue));
                     if (statData != default)
                     {
                         var correspondingModifier = value.FirstOrDefault(v => v.Id.Equals(statData.Id));
@@ -94,11 +96,11 @@ namespace RogueCustomsDungeonEditor.Controls
             foreach (var stat in StatTableData)
             {
                 if (stat.IsPercentage)
-                    dgvStatsModifiers.Rows.Add(stat.Name, "+0%");
+                    dgvStatsModifiers.Rows.Add(stat.Id, "+0%");
                 else if (stat.IsDecimal)
-                    dgvStatsModifiers.Rows.Add(stat.Name, "+0.00");
+                    dgvStatsModifiers.Rows.Add(stat.Id, "+0.00");
                 else
-                    dgvStatsModifiers.Rows.Add(stat.Name, "+0");
+                    dgvStatsModifiers.Rows.Add(stat.Id, "+0");
             }
         }
 
@@ -120,7 +122,7 @@ namespace RogueCustomsDungeonEditor.Controls
             if (decimal.TryParse(cellValue, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal result))
             {
                 var firstColumnValue = dgvStatsModifiers[0, e.RowIndex].Value?.ToString() ?? string.Empty;
-                var statData = StatTableData.FirstOrDefault(s => s.Name.Equals(firstColumnValue));
+                var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(firstColumnValue));
                 if(statData != default)
                 {
                     if(!statData.IsPercentage)

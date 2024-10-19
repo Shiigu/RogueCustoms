@@ -90,8 +90,6 @@ public partial class SelectClass : Control
         {
             PrintPlayerStatsInfo(stat);
         }
-        _classDescriptionLabel.AppendText($"[p] [p]{currentClass.AccuracyName}: {currentClass.AccuracyStat}");
-        _classDescriptionLabel.AppendText($"[p] [p]{currentClass.EvasionName}: {currentClass.EvasionStat}");
         _classDescriptionLabel.AppendText($"[p] [p]{currentClass.SightRangeName}: {currentClass.SightRangeStat}[p] ");
         PrintPlayerStartingItemInfo(TranslationServer.Translate("PlayerClassStartingWeaponHeader"), currentClass.StartingWeapon);
         _classDescriptionLabel.AppendText("[p] ");
@@ -117,9 +115,10 @@ public partial class SelectClass : Control
 
     private void PrintPlayerStatsInfo(CharacterClassStatDto stat)
     {
-        if (!stat.Visible) return;
         if (stat.IsDecimalStat)
             _classDescriptionLabel.AppendText($"[p] [p]{stat.Name}: {stat.Base:0.#####}");
+        else if (stat.IsPercentileStat)
+            _classDescriptionLabel.AppendText($"[p] [p]{stat.Name}: {stat.Base}%");
         else
             _classDescriptionLabel.AppendText($"[p] [p]{stat.Name}: {(int)stat.Base}");
         if (stat.HasIncreasePerLevel)

@@ -59,36 +59,16 @@
             // 
             // ssPlayer
             // 
-            ssPlayer.AttackPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssPlayer.AutoSize = true;
             ssPlayer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ssPlayer.BaseAccuracy = 100;
-            ssPlayer.BaseAttack = 0;
-            ssPlayer.BaseDefense = 0;
-            ssPlayer.BaseEvasion = 0;
-            ssPlayer.BaseHP = 1;
-            ssPlayer.BaseHPRegeneration = new decimal(new int[] { 1, 0, 0, 0 });
-            ssPlayer.BaseHunger = 0;
-            ssPlayer.BaseMovement = 1;
-            ssPlayer.BaseMP = 0;
-            ssPlayer.BaseMPRegeneration = new decimal(new int[] { 0, 0, 0, 0 });
             ssPlayer.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssPlayer.BaseSightRangeDisplayNames");
             ssPlayer.CanGainExperience = false;
-            ssPlayer.DefensePerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssPlayer.ExperienceToLevelUpFormula = "";
-            ssPlayer.HPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssPlayer.HPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssPlayer.HungerHPDegeneration = new decimal(new int[] { 0, 0, 0, 0 });
             ssPlayer.Location = new System.Drawing.Point(380, 91);
             ssPlayer.MaxLevel = 1;
-            ssPlayer.MovementPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssPlayer.MPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssPlayer.MPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssPlayer.Name = "ssPlayer";
             ssPlayer.Size = new System.Drawing.Size(331, 772);
             ssPlayer.TabIndex = 154;
-            ssPlayer.UsesHunger = false;
-            ssPlayer.UsesMP = false;
             // 
             // sisPlayerStartingInventory
             // 

@@ -50,9 +50,7 @@ TileTypeEmpty
 CharacterLevelsUpMessage
 CharacterLevelsUpHeader
 CharacterHPStat
-CharacterMaxHPStat
 CharacterMPStat
-CharacterMaxMPStat
 CharacterAttackStat
 CharacterDefenseStat
 CharacterMovementStat

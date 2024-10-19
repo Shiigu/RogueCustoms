@@ -154,36 +154,16 @@
             // 
             // ssNPC
             // 
-            ssNPC.AttackPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssNPC.AutoSize = true;
             ssNPC.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ssNPC.BaseAccuracy = 100;
-            ssNPC.BaseAttack = 0;
-            ssNPC.BaseDefense = 0;
-            ssNPC.BaseEvasion = 0;
-            ssNPC.BaseHP = 1;
-            ssNPC.BaseHPRegeneration = new decimal(new int[] { 1, 0, 0, 0 });
-            ssNPC.BaseHunger = 0;
-            ssNPC.BaseMovement = 1;
-            ssNPC.BaseMP = 0;
-            ssNPC.BaseMPRegeneration = new decimal(new int[] { 0, 0, 0, 0 });
             ssNPC.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssNPC.BaseSightRangeDisplayNames");
             ssNPC.CanGainExperience = false;
-            ssNPC.DefensePerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssNPC.ExperienceToLevelUpFormula = "";
-            ssNPC.HPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssNPC.HPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssNPC.HungerHPDegeneration = new decimal(new int[] { 0, 0, 0, 0 });
             ssNPC.Location = new System.Drawing.Point(380, 92);
             ssNPC.MaxLevel = 1;
-            ssNPC.MovementPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssNPC.MPPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
-            ssNPC.MPRegenerationPerLevelUp = new decimal(new int[] { 0, 0, 0, 0 });
             ssNPC.Name = "ssNPC";
             ssNPC.Size = new System.Drawing.Size(331, 772);
             ssNPC.TabIndex = 247;
-            ssNPC.UsesHunger = false;
-            ssNPC.UsesMP = false;
             // 
             // sisNPCStartingInventory
             // 

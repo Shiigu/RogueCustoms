@@ -237,7 +237,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                 }
             }
-            while (!success && _generationTries < Constants.MaxGenerationTries);
+            while (!success && _generationTries < EngineConstants.MaxGenerationTries);
             if (!success)
             {
                 success = false;
@@ -299,7 +299,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
-                while (!success && _generationTries < Constants.MaxGenerationTries);
+                while (!success && _generationTries < EngineConstants.MaxGenerationTries);
                 if (!success)
                 {
                     foreach (var key in Keys)
@@ -362,7 +362,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                 }
             }
-            while (!success && _generationTries < Constants.MaxGenerationTries);
+            while (!success && _generationTries < EngineConstants.MaxGenerationTries);
             if (!success)
             {
                 success = false;
@@ -420,7 +420,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
-                while (!success && _generationTries < Constants.MaxGenerationTries);
+                while (!success && _generationTries < EngineConstants.MaxGenerationTries);
                 keyGenerationSuccess = success;
                 if (!success)
                 {
@@ -448,10 +448,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             var totalRandomRooms = rolledRoomDistribution.Where(rd => rd == RoomDispositionType.RandomRoom).Count;
             var randomRoomsRemoved = 0;
-            var maximumRandomRoomsToRemove = Math.Max(1, totalRandomRooms / (3 + (_generationTries * 2) / Constants.MaxGenerationTries));
+            var maximumRandomRoomsToRemove = Math.Max(1, totalRandomRooms / (3 + (_generationTries * 2) / EngineConstants.MaxGenerationTries));
             var totalRandomConnections = rolledRoomDistribution.Where(rd => rd == RoomDispositionType.RandomConnection).Count;
             var randomConnectionsRemoved = 0;
-            var maximumRandomConnectionsToRemove = Math.Max(1, totalRandomConnections / (3 + (_generationTries * 2) / Constants.MaxGenerationTries));
+            var maximumRandomConnectionsToRemove = Math.Max(1, totalRandomConnections / (3 + (_generationTries * 2) / EngineConstants.MaxGenerationTries));
 
             for (var row = 0; row < rolledRoomDistribution.GetLength(0); row++)
             {
@@ -964,8 +964,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             Player.Position = PickEmptyPosition(false);
             Player.UpdateVisibility();
-            if(Player.UsesHunger)
-                Player.Stats.Where(s => s.RegenerationTarget != null && s.RegenerationTarget.StatType == StatType.Hunger).ForEach(s => s.Base = HungerDegeneration * -1);
+            if(Player.Hunger != null)
+                Player.UsedStats.Where(s => s.RegenerationTarget == Player.Hunger).ForEach(s => s.Base = HungerDegeneration * -1);
         }
 
         private void NewTurn()
@@ -1515,13 +1515,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MaxRoomHeight = Math.Max(GeneratorToUse.MaxRoomSize.Height, Height / RoomCountRows);
 
             // Ensure the room size is at least 5x5 and the min width/height is not less than that
-            if (MaxRoomWidth < Constants.MinRoomWidthOrHeight || MaxRoomHeight < Constants.MinRoomWidthOrHeight)
+            if (MaxRoomWidth < EngineConstants.MinRoomWidthOrHeight || MaxRoomHeight < EngineConstants.MinRoomWidthOrHeight)
                 throw new InvalidDataException("Grid size or floor dimensions are too small to support minimum room size of 5x5");
 
-            MinRoomWidth = Math.Max(MaxRoomWidth / 4, Constants.MinRoomWidthOrHeight);
+            MinRoomWidth = Math.Max(MaxRoomWidth / 4, EngineConstants.MinRoomWidthOrHeight);
             MinRoomWidth = Math.Max(MinRoomWidth, GeneratorToUse.MinRoomSize.Width);
 
-            MinRoomHeight = Math.Max(MaxRoomHeight / 4, Constants.MinRoomWidthOrHeight);
+            MinRoomHeight = Math.Max(MaxRoomHeight / 4, EngineConstants.MinRoomWidthOrHeight);
             MinRoomHeight = Math.Max(MinRoomHeight, GeneratorToUse.MinRoomSize.Height);
 
             // Centering the grid in the floor
@@ -1865,7 +1865,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 isValidHallway = IsHallwayTileGroupValid(tilesToConvert, connectorA, connectorB);
             }
-            while (!isValidHallway && hallwayGenerationTries < Constants.MaxGenerationTriesForHallway);
+            while (!isValidHallway && hallwayGenerationTries < EngineConstants.MaxGenerationTriesForHallway);
 
             if (isValidHallway)
             {
@@ -1960,7 +1960,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 tilesToConvert = tilesToConvert.Distinct().OrderBy(t => t.Position.Y).ThenBy(t => t.Position.X).ToList();
                 isValidHallway = IsHallwayTileGroupValid(tilesToConvert, topConnector, downConnector);
             }
-            while (!isValidHallway && hallwayGenerationTries < Constants.MaxGenerationTriesForHallway);
+            while (!isValidHallway && hallwayGenerationTries < EngineConstants.MaxGenerationTriesForHallway);
 
             if (isValidHallway)
             {
@@ -2147,7 +2147,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 tilesToConvert = tilesToConvert.Distinct().OrderBy(t => t.Position.Y).ThenBy(t => t.Position.X).ToList();
                 isValidRiver = IsSpecialTileGroupValid(tilesToConvert);
             }
-            while (!isValidRiver && riverGenerationTries < Constants.MaxGenerationTriesForRiver);
+            while (!isValidRiver && riverGenerationTries < EngineConstants.MaxGenerationTriesForRiver);
 
             if (isValidRiver)
             {
@@ -2183,7 +2183,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 isValidLake = IsSpecialTileGroupValid(tilesToConvert);
             }
-            while (!isValidLake && lakeGenerationTries < Constants.MaxGenerationTriesForRiver);
+            while (!isValidLake && lakeGenerationTries < EngineConstants.MaxGenerationTriesForRiver);
 
             if (isValidLake)
             {

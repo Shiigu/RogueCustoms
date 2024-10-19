@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System;
+using System.Collections.Generic;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -22,31 +23,36 @@ namespace RogueCustomsGameEngine.Game.Entities
         public new void GainExperience(int GamePointsToAdd)
         {
             var oldLevel = Level;
-            var oldMaxHP = HP.BaseAfterLevelUp;
-            var oldAttack = Attack.BaseAfterLevelUp;
-            var oldDefense = Defense.BaseAfterLevelUp;
-            var oldMovement = Movement.BaseAfterLevelUp;
-            var oldHPRegeneration = HPRegeneration.BaseAfterLevelUp;
-            var oldMPRegeneration = MPRegeneration != null ? MPRegeneration.BaseAfterLevelUp : 0;
+            var statsPreExpGain = new List<(string Name, decimal Amount)>();
+            var statsAfterExpGain = new List<(string Name, decimal Amount)>();
+            foreach (var stat in UsedStats)
+                statsPreExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
             base.GainExperience(GamePointsToAdd);
             if (Level > oldLevel)
             {
+                foreach (var stat in UsedStats)
+                    statsAfterExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
                 Map.AddSpecialEffectIfPossible(SpecialEffect.LevelUp);
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
                 levelUpMessage.AppendLine();
                 levelUpMessage.AppendLine();
-                if (HP.BaseAfterLevelUp != oldMaxHP)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMaxHPStat"], Amount = (HP.BaseAfterLevelUp - oldMaxHP).ToString() }));
-                if (Attack.BaseAfterLevelUp != oldAttack)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterAttackStat"], Amount = (Attack.BaseAfterLevelUp - oldAttack).ToString() }));
-                if (Defense.BaseAfterLevelUp != oldDefense)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterDefenseStat"], Amount = (Defense.BaseAfterLevelUp - oldDefense).ToString() }));
-                if (Movement.BaseAfterLevelUp != oldMovement)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMovementStat"], Amount = (Movement.BaseAfterLevelUp - oldMovement).ToString() }));
-                if (HPRegeneration.BaseAfterLevelUp != oldHPRegeneration)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterHPRegenerationStat"], Amount = (HPRegeneration.BaseAfterLevelUp - oldHPRegeneration).ToString("0.#####") }));
-                if(UsesMP && MPRegeneration.BaseAfterLevelUp != oldMPRegeneration)
-                    levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterMPRegenerationStat"], Amount = (MPRegeneration.BaseAfterLevelUp - oldMPRegeneration).ToString("0.#####") }));
+
+                foreach (var statAfterExpGain in statsAfterExpGain)
+                {
+                    var correspondingStatPreExpGain = statsPreExpGain.Find(s => s.Name.Equals(statAfterExpGain.Name));
+                    if (correspondingStatPreExpGain == default) // This shouldn't happen, but just in case...
+                        continue;
+                    var correspondingStat = UsedStats.Find(s => s.Name.Equals(statAfterExpGain.Name));
+                    if (correspondingStat == null) // This shouldn't happen, but just in case...
+                        continue;
+                    if (statAfterExpGain.Amount > correspondingStatPreExpGain.Amount)
+                    {
+                        if(correspondingStat.StatType == StatType.Decimal || correspondingStat.StatType == StatType.Regeneration)
+                            levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = statAfterExpGain.Name, Amount = (statAfterExpGain.Amount - correspondingStatPreExpGain.Amount).ToString("0.#####") }));
+                        else
+                            levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = statAfterExpGain.Name, Amount = (statAfterExpGain.Amount - correspondingStatPreExpGain.Amount).ToString() }));
+                    }
+                }
                 Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Lime));
             }
         }

@@ -41,7 +41,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 ExperienceToNextLevel = character.ExperienceToLevelUpDifference;
             }
             Stats = new();
-            foreach (var stat in character.Stats)
+            foreach (var stat in character.UsedStats)
             {
                 if (stat.Id == "HungerDegeneration") continue;
                 var maxStatName = stat.StatType switch
@@ -50,11 +50,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     StatType.MP => map.Locale["CharacterMaxMPStat"],
                     _ => string.Empty
                 };
-                var statIsVisible = true;
-                if (stat.StatType == StatType.MP && !character.UsesMP)
-                    statIsVisible = false;
-                if (stat.StatType == StatType.Hunger && !character.UsesHunger)
-                    statIsVisible = false;
                 var statInfo = new StatDto
                 {
                     Name = stat.Name,
@@ -62,10 +57,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     Current = stat.Current,
                     Max = stat.BaseAfterModifications,
                     Base = stat.Base + (int)(stat.IncreasePerLevel * (character.Level - 1)),
-                    IsDecimalStat = stat.IsDecimal,
-                    IsPercentileStat = stat.StatType == StatType.Accuracy || stat.StatType == StatType.Evasion || stat.StatType == StatType.CustomPercentage,
+                    IsDecimalStat = stat.StatType == StatType.Regeneration || stat.StatType == StatType.Decimal,
+                    IsPercentileStat = stat.StatType == StatType.Percentage,
                     HasMaxStat = stat.HasMax,
-                    Visible = statIsVisible,
                     Modifications = new List<StatModificationDto>()
                 };
                 stat.ActiveModifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
@@ -93,7 +87,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsDecimalStat { get; set; }
         public bool IsPercentileStat { get; set; }
         public bool HasMaxStat { get; set; }
-        public bool Visible { get; set; }
         public List<StatModificationDto> Modifications { get; set; }
     }
 

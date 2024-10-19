@@ -41,11 +41,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public StatModificationDto(PassiveStatModifier source, Stat stat, Map map)
         {
             Name = stat.Name;
-            if (stat.IsDecimal)
+            if (stat.StatType == StatType.Regeneration || stat.StatType == StatType.Decimal)
                 Amount = source.Amount;
             else
                 Amount = (int)source.Amount;
-            IsPercentage = stat.StatType == StatType.Accuracy || stat.StatType == StatType.Evasion || stat.StatType == StatType.CustomPercentage;
+            IsPercentage = stat.StatType == StatType.Percentage;
         }
     }
 }

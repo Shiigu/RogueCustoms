@@ -28,20 +28,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         #region Character-only data
 
-        public readonly bool UsesMP;
-        public readonly bool UsesHunger;
-        public readonly int BaseHP;
-        public readonly int BaseMP;
-        public readonly int BaseAttack;
-        public readonly int BaseDefense;
-        public readonly int BaseMovement;
-        public readonly decimal BaseHPRegeneration;
-        public readonly decimal BaseMPRegeneration;
+        public readonly List<Stat> Stats;
         public readonly int BaseSightRange;
-        public readonly int BaseHunger;
-        public readonly decimal HungerHPDegeneration;
-        public readonly int BaseAccuracy;
-        public readonly int BaseEvasion;
         public readonly int InventorySize;
         public readonly string StartingWeaponId;
         public readonly string StartingArmorId;
@@ -50,13 +38,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool CanGainExperience;
         public readonly string ExperiencePayoutFormula;
         public readonly string ExperienceToLevelUpFormula;
-        public readonly decimal MaxHPIncreasePerLevel;
-        public readonly decimal MaxMPIncreasePerLevel;
-        public readonly decimal AttackIncreasePerLevel;
-        public readonly decimal DefenseIncreasePerLevel;
-        public readonly decimal MovementIncreasePerLevel;
-        public readonly decimal HPRegenerationIncreasePerLevel;
-        public readonly decimal MPRegenerationIncreasePerLevel;
 
         #endregion
 
@@ -99,7 +80,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnRemove { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType)
+        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos)
         {
             Id = classInfo.Id;
             Name = Locale[classInfo.Name];
@@ -133,33 +114,38 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
-                UsesMP = playerClassInfo.UsesMP;
                 FactionId = playerClassInfo.Faction;
-                BaseHP = playerClassInfo.BaseHP;
-                BaseMP = playerClassInfo.BaseMP;
-                BaseAttack = playerClassInfo.BaseAttack;
-                BaseDefense = playerClassInfo.BaseDefense;
-                BaseMovement = playerClassInfo.BaseMovement;
-                BaseHPRegeneration = playerClassInfo.BaseHPRegeneration;
-                BaseMPRegeneration = playerClassInfo.BaseMPRegeneration;
-                UsesHunger = playerClassInfo.UsesHunger;
-                HungerHPDegeneration = playerClassInfo.HungerHPDegeneration;
                 StartingWeaponId = playerClassInfo.StartingWeapon;
                 StartingArmorId = playerClassInfo.StartingArmor;
                 CanGainExperience = playerClassInfo.CanGainExperience;
                 MaxLevel = playerClassInfo.MaxLevel;
                 ExperiencePayoutFormula = playerClassInfo.ExperiencePayoutFormula;
                 ExperienceToLevelUpFormula = playerClassInfo.ExperienceToLevelUpFormula;
-                MaxHPIncreasePerLevel = playerClassInfo.MaxHPIncreasePerLevel;
-                MaxMPIncreasePerLevel = playerClassInfo.MaxMPIncreasePerLevel;
-                AttackIncreasePerLevel = playerClassInfo.AttackIncreasePerLevel;
-                DefenseIncreasePerLevel = playerClassInfo.DefenseIncreasePerLevel;
-                MovementIncreasePerLevel = playerClassInfo.MovementIncreasePerLevel;
-                HPRegenerationIncreasePerLevel = playerClassInfo.HPRegenerationIncreasePerLevel;
-                MPRegenerationIncreasePerLevel = playerClassInfo.MPRegenerationIncreasePerLevel;
+                Stats = new();
+                foreach (var stat in playerClassInfo.Stats)
+                {
+                    Stats.Add(new()
+                    {
+                        Id = stat.StatId,
+                        Base = stat.Base,
+                        Current = stat.Base,
+                        IncreasePerLevel = stat.IncreasePerLevel,
+                        ActiveModifications = new(),
+                        CarriedRegeneration = 0
+                    });
+                }
+                foreach (var stat in Stats)
+                {
+                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase))
+                        ?? throw new InvalidDataException($"EntityClass {playerClassInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
+                    stat.Name = Locale[correspondingStat.Name];
+                    stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
+                    stat.HasMax = correspondingStat.HasMax;
+                    stat.MinCap = correspondingStat.MinCap;
+                    stat.MaxCap = correspondingStat.MaxCap;
+                    stat.RegenerationTargetId = correspondingStat.RegeneratesStatId;
+                }
                 BaseSightRange = 0;
-                BaseAccuracy = playerClassInfo.BaseAccuracy;
-                BaseEvasion = playerClassInfo.BaseEvasion;
                 if (!string.IsNullOrWhiteSpace(playerClassInfo.BaseSightRange))
                 {
                     switch (playerClassInfo.BaseSightRange.ToLower())
@@ -168,13 +154,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                         case "fullmap":
                         case "whole map":
                         case "wholemap":
-                            BaseSightRange = Constants.FullMapSightRange;
+                            BaseSightRange = EngineConstants.FullMapSightRange;
                             break;
                         case "full room":
                         case "fullroom":
                         case "whole room":
                         case "wholeroom":
-                            BaseSightRange = Constants.FullRoomSightRange;
+                            BaseSightRange = EngineConstants.FullRoomSightRange;
                             break;
                         default:
                             if (!int.TryParse(playerClassInfo.BaseSightRange, out int sightRange) || sightRange < 0)
@@ -184,8 +170,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = playerClassInfo.InventorySize;
-                BaseHunger = playerClassInfo.BaseHunger;
-                HungerHPDegeneration = playerClassInfo.HungerHPDegeneration;
                 OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart);
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, playerClassInfo.OnAttack);
@@ -199,33 +183,38 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else if (classInfo is NPCInfo npcInfo)
             {
-                UsesMP = npcInfo.UsesMP;
                 FactionId = npcInfo.Faction;
-                BaseHP = npcInfo.BaseHP;
-                BaseMP = npcInfo.BaseMP;
-                BaseAttack = npcInfo.BaseAttack;
-                BaseDefense = npcInfo.BaseDefense;
-                BaseMovement = npcInfo.BaseMovement;
-                BaseHPRegeneration = npcInfo.BaseHPRegeneration;
-                BaseMPRegeneration = npcInfo.BaseMPRegeneration;
-                UsesHunger = npcInfo.UsesHunger;
-                HungerHPDegeneration = npcInfo.HungerHPDegeneration;
+                Stats = new();
+                foreach (var stat in npcInfo.Stats)
+                {
+                    Stats.Add(new()
+                    {
+                        Id = stat.StatId,
+                        Base = stat.Base,
+                        Current = stat.Base,
+                        IncreasePerLevel = stat.IncreasePerLevel,
+                        ActiveModifications = new(),
+                        CarriedRegeneration = 0
+                    });
+                }
+                foreach (var stat in Stats)
+                {
+                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase))
+                        ?? throw new InvalidDataException($"EntityClass {npcInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
+                    stat.Name = Locale[correspondingStat.Name];
+                    stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
+                    stat.HasMax = correspondingStat.HasMax;
+                    stat.MinCap = correspondingStat.MinCap;
+                    stat.MaxCap = correspondingStat.MaxCap;
+                    stat.RegenerationTargetId = correspondingStat.RegeneratesStatId;
+                }
                 StartingWeaponId = npcInfo.StartingWeapon;
                 StartingArmorId = npcInfo.StartingArmor;
                 CanGainExperience = npcInfo.CanGainExperience;
                 MaxLevel = npcInfo.MaxLevel;
                 ExperiencePayoutFormula = npcInfo.ExperiencePayoutFormula;
                 ExperienceToLevelUpFormula = npcInfo.ExperienceToLevelUpFormula;
-                MaxHPIncreasePerLevel = npcInfo.MaxHPIncreasePerLevel;
-                MaxMPIncreasePerLevel = npcInfo.MaxMPIncreasePerLevel;
-                AttackIncreasePerLevel = npcInfo.AttackIncreasePerLevel;
-                DefenseIncreasePerLevel = npcInfo.DefenseIncreasePerLevel;
-                MovementIncreasePerLevel = npcInfo.MovementIncreasePerLevel;
-                HPRegenerationIncreasePerLevel = npcInfo.HPRegenerationIncreasePerLevel;
-                MPRegenerationIncreasePerLevel = npcInfo.MPRegenerationIncreasePerLevel;
                 BaseSightRange = 0;
-                BaseAccuracy = npcInfo.BaseAccuracy;
-                BaseEvasion = npcInfo.BaseEvasion;
                 if (!string.IsNullOrWhiteSpace(npcInfo.BaseSightRange))
                 {
                     switch (npcInfo.BaseSightRange.ToLower())
@@ -234,13 +223,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                         case "fullmap":
                         case "whole map":
                         case "wholemap":
-                            BaseSightRange = Constants.FullMapSightRange;
+                            BaseSightRange = EngineConstants.FullMapSightRange;
                             break;
                         case "full room":
                         case "fullroom":
                         case "whole room":
                         case "wholeroom":
-                            BaseSightRange = Constants.FullRoomSightRange;
+                            BaseSightRange = EngineConstants.FullRoomSightRange;
                             break;
                         default:
                             if (!int.TryParse(npcInfo.BaseSightRange, out int sightRange) || sightRange < 0)
@@ -250,8 +239,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = npcInfo.InventorySize;
-                BaseHunger = npcInfo.BaseHunger;
-                HungerHPDegeneration = npcInfo.HungerHPDegeneration;
                 OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart);
                 OnAttack = new List<ActionWithEffects>();
                 MapActions(OnAttack, npcInfo.OnAttack);

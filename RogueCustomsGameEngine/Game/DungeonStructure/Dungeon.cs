@@ -15,8 +15,9 @@ using System.Collections;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     [Serializable]
     public class Dungeon
     {
@@ -68,11 +69,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
-            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player)));
-            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null)));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap)));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus)));
+            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats)));
+            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null)));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null)));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null)));
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes)));
             FloorTypes.ForEach(ft => {
@@ -258,6 +259,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloor.PlayerUseStairs();
         }
     }
-    #pragma warning restore CS8604 // Posible argumento de referencia nulo
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 }

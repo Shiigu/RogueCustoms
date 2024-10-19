@@ -80,6 +80,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.TileSetInfo] = tpTileSetInfos;
             TabsForNodeTypes[RogueTabTypes.FloorInfo] = tpFloorInfos;
             TabsForNodeTypes[RogueTabTypes.FactionInfo] = tpFactionInfos;
+            TabsForNodeTypes[RogueTabTypes.StatInfo] = tbStatInfos;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -126,6 +127,7 @@ namespace RogueCustomsDungeonEditor
             TilesetTab.TabInfoChanged += TilesetTab_TabInfoChanged;
             FloorGroupTab.TabInfoChanged += FloorGroupTab_TabInfoChanged;
             FactionTab.TabInfoChanged += FactionTab_TabInfoChanged;
+            StatTab.TabInfoChanged += StatTab_TabInfoChanged;
             PlayerClassTab.TabInfoChanged += PlayerClassTab_TabInfoChanged;
             NPCTab.TabInfoChanged += NPCTab_TabInfoChanged;
             ItemTab.TabInfoChanged += ItemTab_TabInfoChanged;
@@ -269,6 +271,11 @@ namespace RogueCustomsDungeonEditor
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.FactionInfo;
                         break;
+                    case "Custom Stats":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
+                        break;
                     case "Player Classes":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
@@ -375,6 +382,18 @@ namespace RogueCustomsDungeonEditor
             }
             tvDungeonInfo.Nodes.Add(factionInfosRootNode);
 
+            var statInfosRootNode = new TreeNode("Custom Stats");
+            foreach (var statInfo in ActiveDungeon.CharacterStats.Where(cs => !FormConstants.DefaultStats.Any(ms => ms.Equals(cs.Id, StringComparison.InvariantCultureIgnoreCase))))
+            {
+                var statInfoNode = new TreeNode(statInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.StatInfo, DungeonElement = statInfo },
+                    Name = statInfo.Id
+                };
+                statInfosRootNode.Nodes.Add(statInfoNode);
+            }
+            tvDungeonInfo.Nodes.Add(statInfosRootNode);
+
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
             {
@@ -477,7 +496,7 @@ namespace RogueCustomsDungeonEditor
                 }
             }
             ActiveDungeon = DungeonInfoHelpers.CreateEmptyDungeonTemplate(LocaleTemplate, BaseLocaleLanguages);
-            ActiveDungeon.Version = Constants.CurrentDungeonJsonVersion;
+            ActiveDungeon.Version = EngineConstants.CurrentDungeonJsonVersion;
             RefreshTreeNodes();
             tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
             tvDungeonInfo.Focus();
@@ -644,6 +663,9 @@ namespace RogueCustomsDungeonEditor
                     case "Factions":
                         tabToOpen = RogueTabTypes.FactionInfo;
                         break;
+                    case "Custom Stats":
+                        tabToOpen = RogueTabTypes.StatInfo;
+                        break;
                     case "Player Classes":
                         tabToOpen = RogueTabTypes.PlayerClass;
                         break;
@@ -681,11 +703,14 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.FactionInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFactionTemplate();
                     break;
+                case RogueTabTypes.StatInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateStatTemplate();
+                    break;
                 case RogueTabTypes.PlayerClass:
-                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate();
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate(ActiveDungeon.CharacterStats);
                     break;
                 case RogueTabTypes.NPC:
-                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCTemplate();
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCTemplate(ActiveDungeon.CharacterStats);
                     break;
                 case RogueTabTypes.Item:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateItemTemplate();
@@ -731,6 +756,8 @@ namespace RogueCustomsDungeonEditor
                         return SaveFloorGroup(false);
                     case RogueTabTypes.FactionInfo:
                         return SaveFaction();
+                    case RogueTabTypes.StatInfo:
+                        return SaveStat();
                     case RogueTabTypes.PlayerClass:
                         return SavePlayerClass();
                     case RogueTabTypes.NPC:
@@ -773,6 +800,8 @@ namespace RogueCustomsDungeonEditor
                     return SaveFloorGroup(true);
                 case RogueTabTypes.FactionInfo:
                     return SaveFactionAs();
+                case RogueTabTypes.StatInfo:
+                    return SaveStatAs();
                 case RogueTabTypes.PlayerClass:
                     return SavePlayerClassAs();
                 case RogueTabTypes.NPC:
@@ -806,6 +835,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.FactionInfo:
                     DeleteFaction();
+                    break;
+                case RogueTabTypes.StatInfo:
+                    DeleteStat();
                     break;
                 case RogueTabTypes.PlayerClass:
                     DeletePlayerClass();
@@ -900,6 +932,14 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction - {tagFaction.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction";
+                    break;
+                case RogueTabTypes.StatInfo:
+                    var tagStat = (StatInfo)tag.DungeonElement;
+                    LoadStatInfoFor(tagStat);
+                    if (!IsNewElement)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Stat - {tagStat.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Stat";
                     break;
                 case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
@@ -1817,6 +1857,147 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
+        #region Stat
+
+        public void LoadStatInfoFor(StatInfo stat)
+        {
+            StatTab.LoadData(stat, ActiveDungeon);
+        }
+
+        private bool SaveStat()
+        {
+            if (string.IsNullOrWhiteSpace(StatTab.LoadedStat.Id))
+                return SaveStatAs();
+            return SaveStatToDungeon(StatTab.LoadedStat.Id);
+        }
+
+        private bool SaveStatAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As");
+            if (inputBoxResult != null)
+            {
+                if(FormConstants.DefaultStats.Exists(s => s.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    MessageBox.Show(
+                        $"{inputBoxResult} is a default Stat.\n\nPlease pick another.",
+                        "Save Stat As",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return false;
+                }
+                else if (ActiveDungeon.CharacterStats.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Stat with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Stat As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveStatToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveStatToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveStatToDungeon(string id)
+        {
+            var validationErrors = StatTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Faction. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Faction",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var statToSave = StatTab.LoadedStat;
+            var preExistingStat = ActiveDungeon.CharacterStats.FirstOrDefault(s => s.Id.Equals(id));
+            var isNewStat = preExistingStat == null;
+            if (isNewStat)
+            {
+                ActiveDungeon.CharacterStats.Add(statToSave);
+            }
+            else
+            {
+                ActiveDungeon.CharacterStats[ActiveDungeon.CharacterStats.IndexOf(preExistingStat)] = statToSave;
+            }
+            var verb = isNewStat ? "Save" : "Update";
+            MessageBox.Show(
+                $"Stat {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Stat",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewElement = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(statToSave.Id, "Custom Stats");
+            return true;
+        }
+
+        public void DeleteStat()
+        {
+            var activeStat = StatTab.LoadedStat;
+            var deleteFactionPrompt = IsNewElement
+                ? "Do you want to remove this unsaved Stat?"
+                : $"Do you want to PERMANENTLY delete Stat {activeStat.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteFactionPrompt,
+                "Stat",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewElement)
+                {
+                    var removedId = new string(activeStat.Id);
+                    ActiveDungeon.CharacterStats.RemoveAll(s => s.Id.Equals(activeStat.Id));
+                    foreach (var stat in ActiveDungeon.CharacterStats)
+                    {
+                        if(stat.RegeneratesStatId != null && stat.RegeneratesStatId.Equals(removedId))
+                        {
+                            stat.StatType = "Decimal";
+                            stat.RegeneratesStatId = string.Empty;
+                        }
+                    }
+                    MessageBox.Show(
+                        $"Stat {removedId} has been successfully deleted.",
+                        "Delete Stat",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewElement = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+        private void StatTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
         #region Player Class
 
         private void LoadPlayerClassInfoFor(PlayerClassInfo playerClass)
@@ -2471,6 +2652,7 @@ namespace RogueCustomsDungeonEditor
         TileSetInfo,
         FloorInfo,
         FactionInfo,
+        StatInfo,
         PlayerClass,
         NPC,
         Item,

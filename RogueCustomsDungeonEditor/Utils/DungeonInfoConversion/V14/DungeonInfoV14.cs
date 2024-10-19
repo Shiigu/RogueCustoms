@@ -22,8 +22,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V14
         public List<TileSetInfoV14> TileSetInfos { get; set; }
         public List<FloorInfo> FloorInfos { get; set; }
         public List<FactionInfo> FactionInfos { get; set; }
-        public List<PlayerClassInfo> PlayerClasses { get; set; }
-        public List<NPCInfo> NPCs { get; set; }
+        public List<PlayerClassInfoV14> PlayerClasses { get; set; }
+        public List<NPCInfoV14> NPCs { get; set; }
         public List<ItemInfo> Items { get; set; }
         public List<TrapInfo> Traps { get; set; }
         public List<AlteredStatusInfo> AlteredStatuses { get; set; }

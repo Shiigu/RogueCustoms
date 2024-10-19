@@ -1,4 +1,5 @@
-﻿using RogueCustomsGameEngine.Utils.JsonImports;
+﻿using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
@@ -53,9 +54,11 @@ namespace RogueCustomsDungeonEditor.Utils
 
             templateDungeon.FactionInfos.Add(CreateFactionTemplate());
 
-            templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate());
+            templateDungeon.CharacterStats = CreateStatsTemplate();
 
-            templateDungeon.NPCs.Add(CreateNPCTemplate());
+            templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate(templateDungeon.CharacterStats));
+
+            templateDungeon.NPCs.Add(CreateNPCTemplate(templateDungeon.CharacterStats));
 
             templateDungeon.Items.Add(CreateItemTemplate());
 
@@ -146,7 +149,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanBeTransformed = false,
                 CanVisiblyConnectWithOtherTiles = false,
                 CanHaveMultilineConnections = false,
-                AcceptsItems = false
+                AcceptsItems = false,
+                OnStood = null
             };
         }
 
@@ -329,6 +333,12 @@ namespace RogueCustomsDungeonEditor.Utils
                     new TileTypeSetInfo
                     {
                         TileTypeId = "Wall",
+                        Central = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new GameColor(Color.Black),
+                            ForegroundColor = new GameColor(Color.FromArgb(255, 168, 84, 0)),
+                            Character = '╬'
+                        },
                         Connector = new ConsoleRepresentation
                         {
                             BackgroundColor = new GameColor(Color.Black),
@@ -584,9 +594,127 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
-        public static PlayerClassInfo CreatePlayerClassTemplate()
+        public static StatInfo CreateStatTemplate()
         {
-            return new PlayerClassInfo
+            return new StatInfo()
+            {
+                StatType = "Integer",
+                Name = "CharacterCustomStat",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.NORMAL_STAT_CAP,
+                RegeneratesStatId = ""
+            };
+        }
+
+        public static List<StatInfo> CreateStatsTemplate()
+        {
+            var hp = new StatInfo()
+            {
+                Id = "HP",
+                StatType = "HP",
+                Name = "CharacterHPStat",
+                HasMax = true,
+                MinCap = 0,
+                MaxCap = EngineConstants.RESOURCE_STAT_CAP
+            };
+            var hpRegeneration = new StatInfo()
+            {
+                Id = "HPRegeneration",
+                StatType = "Regeneration",
+                Name = "CharacterHPRegenerationStat",
+                RegeneratesStatId = "HP",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.REGEN_STAT_CAP
+            };
+
+            var mp = new StatInfo()
+            {
+                Id = "MP",
+                StatType = "MP",
+                Name = "CharacterMPStat",
+                HasMax = true,
+                MinCap = 0,
+                MaxCap = EngineConstants.RESOURCE_STAT_CAP
+            };
+            var mpRegeneration = new StatInfo()
+            {
+                Id = "MPRegeneration",
+                StatType = "Regeneration",
+                Name = "CharacterMPRegenerationStat",
+                RegeneratesStatId = "MP",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.REGEN_STAT_CAP
+            };
+
+            var hunger = new StatInfo()
+            {
+                Id = "Hunger",
+                StatType = "Hunger",
+                Name = "CharacterHungerStat",
+                HasMax = true,
+                MinCap = 0,
+                MaxCap = EngineConstants.RESOURCE_STAT_CAP
+            };
+
+            var attack = new StatInfo()
+            {
+                Id = "Attack",
+                StatType = "Integer",
+                Name = "CharacterAttackStat",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.NORMAL_STAT_CAP
+            };
+
+            var defense = new StatInfo()
+            {
+                Id = "Defense",
+                StatType = "Integer",
+                Name = "CharacterDefenseStat",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.NORMAL_STAT_CAP
+            };
+
+            var movement = new StatInfo()
+            {
+                Id = "Movement",
+                StatType = "Integer",
+                Name = "CharacterMovementStat",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.MOVEMENT_STAT_CAP
+            };
+
+            var accuracy = new StatInfo()
+            {
+                Id = "Accuracy",
+                StatType = "Percentage",
+                Name = "CharacterAccuracyStat",
+                HasMax = false,
+                MinCap = EngineConstants.MIN_ACCURACY_CAP,
+                MaxCap = EngineConstants.MAX_ACCURACY_CAP
+            };
+
+            var evasion = new StatInfo()
+            {
+                Id = "Evasion",
+                StatType = "Percentage",
+                Name = "CharacterEvasionStat",
+                HasMax = false,
+                MinCap = EngineConstants.MIN_EVASION_CAP,
+                MaxCap = EngineConstants.MAX_EVASION_CAP
+            };
+
+            return new() { hp, hpRegeneration, mp, mpRegeneration, hunger, attack, defense, movement, accuracy, evasion };
+        }
+
+        public static PlayerClassInfo CreatePlayerClassTemplate(List<StatInfo> stats)
+        {
+            var playerClassTemplate = new PlayerClassInfo
             {
                 Id = "DummyPlayer",
                 Name = "Player",
@@ -600,25 +728,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 RequiresNamePrompt = false,
                 Faction = "",
                 StartsVisible = true,
-                UsesMP = false,
-                BaseHP = 1,
-                MaxHPIncreasePerLevel = 0,
-                BaseMP = 0,
-                MaxMPIncreasePerLevel = 0,
-                BaseAttack = 0,
-                AttackIncreasePerLevel = 0,
-                BaseDefense = 0,
-                DefenseIncreasePerLevel = 0,
-                BaseMovement = 1,
-                MovementIncreasePerLevel = 0,
-                BaseHPRegeneration = 0,
-                HPRegenerationIncreasePerLevel = 0,
-                BaseMPRegeneration = 0,
-                MPRegenerationIncreasePerLevel = 0,
+                Stats = new(),
                 BaseSightRange = "FullRoom",
-                UsesHunger = true,
-                BaseHunger = 100,
-                HungerHPDegeneration = 3,
                 StartingWeapon = "",
                 StartingArmor = "",
                 InventorySize = 0,
@@ -631,10 +742,22 @@ namespace RogueCustomsDungeonEditor.Utils
                 OnAttacked = new(),
                 OnDeath = new()
             };
+
+            foreach (var stat in stats)
+            {
+                playerClassTemplate.Stats.Add(new CharacterStatInfo()
+                {
+                    StatId = stat.Id,
+                    Base = stat.MinCap,
+                    IncreasePerLevel = 0
+                });
+            }
+
+            return playerClassTemplate;
         }
-        public static NPCInfo CreateNPCTemplate()
+        public static NPCInfo CreateNPCTemplate(List<StatInfo> stats)
         {
-            return new NPCInfo
+            var npcTemplate = new NPCInfo
             {
                 Id = "DummyNPC",
                 Name = "NPC",
@@ -649,25 +772,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 StartsVisible = true,
                 KnowsAllCharacterPositions = true,
                 ExperiencePayoutFormula = "level",
-                UsesMP = false,
-                BaseHP = 1,
-                MaxHPIncreasePerLevel = 0,
-                BaseMP = 0,
-                MaxMPIncreasePerLevel = 0,
-                BaseAttack = 0,
-                AttackIncreasePerLevel = 0,
-                BaseDefense = 0,
-                DefenseIncreasePerLevel = 0,
-                BaseMovement = 1,
-                MovementIncreasePerLevel = 0,
-                BaseHPRegeneration = 0,
-                HPRegenerationIncreasePerLevel = 0,
-                BaseMPRegeneration = 0,
-                MPRegenerationIncreasePerLevel = 0,
+                Stats = new(),
                 BaseSightRange = "FullRoom",
-                UsesHunger = false,
-                BaseHunger = 0,
-                HungerHPDegeneration = 0,
                 StartingWeapon = "",
                 StartingArmor = "",
                 InventorySize = 0,
@@ -682,6 +788,18 @@ namespace RogueCustomsDungeonEditor.Utils
                 AIType = "Default",
                 AIOddsToUseActionsOnSelf = 0
             };
+
+            foreach (var stat in stats)
+            {
+                npcTemplate.Stats.Add(new CharacterStatInfo()
+                {
+                    StatId = stat.Id,
+                    Base = stat.MinCap,
+                    IncreasePerLevel = 0
+                });
+            }
+
+            return npcTemplate;
         }
         public static ItemInfo CreateItemTemplate()
         {

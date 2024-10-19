@@ -77,7 +77,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
             playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
-            LogMessages = dungeon.Messages.TakeLast(Constants.LogMessagesToSend).ToList();
+            LogMessages = dungeon.Messages.TakeLast(EngineConstants.LogMessagesToSend).ToList();
             MessageBoxes = new List<MessageBoxDto>(dungeon.MessageBoxes);
         }
     }
@@ -204,7 +204,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 HPStatName = map.Locale["CharacterHPStat"];
                 HP = (int) pc.HP.Current;
                 MaxHP = (int)pc.MaxHP;
-                UsesMP = pc.UsesMP;
+                UsesMP = pc.MP != null;
                 if (UsesMP)
                 {
                     MPStatName = map.Locale["CharacterMPStat"];
@@ -232,7 +232,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Evasion = (int)pc.Evasion.Current;
                 CanMove = pc.Movement.Current > 0;
                 CanTakeAction = pc.CanTakeAction;
-                UsesHunger = pc.UsesHunger;
+                UsesHunger = pc.Hunger != null;
                 if (UsesHunger)
                 {
                     HungerStatName = map.Locale["CharacterHungerStat"];

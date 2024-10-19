@@ -869,46 +869,9 @@
         "InternalName": "Stat",
         "DisplayName": "Stat",
         "Description": "Indicates the Stat that will be Altered.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
-        "ParameterType": "ComboBox",
+        "ParameterType": "StatList",
         "Default": "",
-        "ValidValues": [
-          {
-            "Key": "maxHP",
-            "Value": "Max HP"
-          },
-          {
-            "Key": "maxMP",
-            "Value": "Max MP"
-          },
-          {
-            "Key": "attack",
-            "Value": "Attack"
-          },
-          {
-            "Key": "defense",
-            "Value": "Defense"
-          },
-          {
-            "Key": "movement",
-            "Value": "Movement"
-          },
-          {
-            "Key": "hpRegeneration",
-            "Value": "HP Regeneration"
-          },
-          {
-            "Key": "mpRegeneration",
-            "Value": "MP Regeneration"
-          },
-          {
-            "Key": "accuracy",
-            "Value": "Accuracy"
-          },
-          {
-            "Key": "evasion",
-            "Value": "Evasion"
-          }
-        ],
+        "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
       },
