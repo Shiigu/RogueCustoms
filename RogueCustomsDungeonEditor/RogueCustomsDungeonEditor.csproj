@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\Tabs\StatTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="HelperForms\ComboInputBox.cs">
       <SubType>Form</SubType>
     </Compile>

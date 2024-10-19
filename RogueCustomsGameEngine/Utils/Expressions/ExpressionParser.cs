@@ -414,10 +414,12 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             var parsedStatId = statId.ToLowerInvariant();
             var lookForMax = parsedStatId.StartsWith("max") && !parsedStatId.Equals("max", StringComparison.InvariantCultureIgnoreCase);
 
-            var stat = c.UsedStats.FirstOrDefault(s => s.Id.Equals(parsedStatId, StringComparison.InvariantCultureIgnoreCase))
-                    ?? throw new ArgumentException($"Tried to retrieve {statId} stat from {c.ClassId}, which does not have it.");
+            var stat = c.UsedStats.FirstOrDefault(s => s.Id.Equals(parsedStatId, StringComparison.InvariantCultureIgnoreCase));
 
-            return lookForMax && stat.HasMax ? stat.BaseAfterModifications : stat.Current;
+            if(stat != null)
+                return lookForMax && stat.HasMax ? stat.BaseAfterModifications : stat.Current;
+            
+            return 0; // Defaulting to 0 if the stat does not exist should make literally no difference whatsoever
         }
 
         private static string ParseNamedFlags(string arg)

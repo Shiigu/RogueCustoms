@@ -19,6 +19,7 @@ namespace RogueCustomsDungeonEditor.Controls
     public partial class StatsSheet : UserControl
     {
         private string PreviousTextBoxValue = string.Empty;
+        private bool SwitchingStats;
 
         public List<StatInfo> StatInfos { get; set; }
         private List<CharacterStatInfoControlParams> CharacterStats;
@@ -170,7 +171,11 @@ namespace RogueCustomsDungeonEditor.Controls
         public StatsSheet()
         {
             InitializeComponent();
-            nudFlatSightRange.ValueChanged += (_, _) => StatsChanged.Invoke(this, EventArgs.Empty);
+            nudFlatSightRange.ValueChanged += (_, _) =>
+            {
+                if (!SwitchingStats)
+                    StatsChanged.Invoke(this, EventArgs.Empty);
+            };
             chkCanGainExperience.CheckedChanged += (_, _) => ToggleLevelUpControls();
             nudMaxLevel.ValueChanged += (_, _) => ToggleLevelUpControls();
         }
@@ -189,11 +194,13 @@ namespace RogueCustomsDungeonEditor.Controls
                 nudFlatSightRange.Visible = false;
                 nudFlatSightRange.Enabled = false;
             }
-            StatsChanged.Invoke(this, EventArgs.Empty);
+            if (!SwitchingStats)
+                StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateStatControls()
         {
+            SwitchingStats = true;
             var statToUse = CharacterStats[hsbStats.Value];
             var correspondingStatInfo = StatInfos[hsbStats.Value];
             var regenerationTargetStat = CharacterStats.Find(cs => cs.StatId.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
@@ -205,15 +212,9 @@ namespace RogueCustomsDungeonEditor.Controls
             nudIncreasePerLevel.Maximum = correspondingStatInfo.MaxCap;
 
             if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
-            {
-                nudBase.DecimalPlaces = 3;
-                nudIncreasePerLevel.DecimalPlaces = 3;
-            }
+                nudBase.DecimalPlaces = 5;
             else
-            {
                 nudBase.DecimalPlaces = 0;
-                nudIncreasePerLevel.DecimalPlaces = 0;
-            }
 
             nudBase.Value = statToUse.Base;
             nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
@@ -229,12 +230,14 @@ namespace RogueCustomsDungeonEditor.Controls
             }
 
             ToggleByCheckedStatus();
+            SwitchingStats = false;
         }
 
         private void ToggleLevelUpControls()
         {
             txtLevelUpFormula.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            StatsChanged.Invoke(this, EventArgs.Empty);
+            if (!SwitchingStats)
+                StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void txtLevelUpFormula_Enter(object sender, EventArgs e)
@@ -244,6 +247,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void txtLevelUpFormula_Leave(object sender, EventArgs e)
         {
+            if (SwitchingStats) return;
             if (!PreviousTextBoxValue.Equals(txtLevelUpFormula.Text))
             {
                 var parsedLevelUpFormula = Regex.Replace(txtLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
@@ -275,13 +279,14 @@ namespace RogueCustomsDungeonEditor.Controls
         private void chkIsUsed_CheckedChanged(object sender, EventArgs e)
         {
             ToggleByCheckedStatus();
-            StatsChanged.Invoke(this, EventArgs.Empty);
+            if (!SwitchingStats)
+                StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void ToggleByCheckedStatus()
         {
             var statToUse = CharacterStats[hsbStats.Value];
-            statToUse.Used = chkIsUsed.Checked;
+            CharacterStats[hsbStats.Value].Used = chkIsUsed.Checked;
             var correspondingStatInfo = StatInfos[hsbStats.Value];
             if (!chkIsUsed.Checked)
             {
@@ -307,26 +312,28 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
-        private void nudBase_ValueChanged(object sender, EventArgs e)
+        private void nudBase_Leave(object sender, EventArgs e)
         {
-            var statToUse = CharacterStats[hsbStats.Value];
+            if (SwitchingStats) return;
             var correspondingStatInfo = StatInfos[hsbStats.Value];
             if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
-                statToUse.Base = nudBase.Value;
+                CharacterStats[hsbStats.Value].Base = nudBase.Value;
             else
-                statToUse.Base = (int) nudBase.Value;
+                CharacterStats[hsbStats.Value].Base = (int)nudBase.Value;
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private void nudIncreasePerLevel_ValueChanged(object sender, EventArgs e)
+        private void nudIncreasePerLevel_Leave(object sender, EventArgs e)
         {
-            var statToUse = CharacterStats[hsbStats.Value];
+            if (SwitchingStats) return;
             var correspondingStatInfo = StatInfos[hsbStats.Value];
-            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
-                statToUse.IncreasePerLevel = nudIncreasePerLevel.Value;
-            else
-                statToUse.IncreasePerLevel = (int)nudIncreasePerLevel.Value;
+            CharacterStats[hsbStats.Value].IncreasePerLevel = nudIncreasePerLevel.Value;
             StatsChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        private void hsbStats_MouseEnter(object sender, EventArgs e)
+        {
+            hsbStats.Focus();
         }
     }
 

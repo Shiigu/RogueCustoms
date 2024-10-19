@@ -177,6 +177,7 @@
             hsbStats.Size = new System.Drawing.Size(290, 17);
             hsbStats.TabIndex = 246;
             hsbStats.ValueChanged += hsbStats_ValueChanged;
+            hsbStats.MouseEnter += hsbStats_MouseEnter;
             // 
             // chkIsUsed
             // 
@@ -202,14 +203,14 @@
             // 
             nudBase.Location = new System.Drawing.Point(159, 118);
             nudBase.Name = "nudBase";
-            nudBase.Size = new System.Drawing.Size(59, 23);
+            nudBase.Size = new System.Drawing.Size(80, 23);
             nudBase.TabIndex = 249;
-            nudBase.ValueChanged += nudBase_ValueChanged;
+            nudBase.Leave += nudBase_Leave;
             // 
             // lblPercentage
             // 
             lblPercentage.AutoSize = true;
-            lblPercentage.Location = new System.Drawing.Point(223, 121);
+            lblPercentage.Location = new System.Drawing.Point(245, 120);
             lblPercentage.Name = "lblPercentage";
             lblPercentage.Size = new System.Drawing.Size(17, 45);
             lblPercentage.TabIndex = 250;
@@ -217,11 +218,12 @@
             // 
             // nudIncreasePerLevel
             // 
+            nudIncreasePerLevel.DecimalPlaces = 5;
             nudIncreasePerLevel.Location = new System.Drawing.Point(159, 148);
             nudIncreasePerLevel.Name = "nudIncreasePerLevel";
-            nudIncreasePerLevel.Size = new System.Drawing.Size(59, 23);
+            nudIncreasePerLevel.Size = new System.Drawing.Size(80, 23);
             nudIncreasePerLevel.TabIndex = 252;
-            nudIncreasePerLevel.ValueChanged += nudIncreasePerLevel_ValueChanged;
+            nudIncreasePerLevel.Leave += nudIncreasePerLevel_Leave;
             // 
             // label3
             // 

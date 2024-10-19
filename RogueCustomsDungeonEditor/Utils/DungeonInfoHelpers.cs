@@ -149,7 +149,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanBeTransformed = false,
                 CanVisiblyConnectWithOtherTiles = false,
                 CanHaveMultilineConnections = false,
-                AcceptsItems = false
+                AcceptsItems = false,
+                OnStood = null
             };
         }
 
@@ -590,6 +591,19 @@ namespace RogueCustomsDungeonEditor.Utils
                 AlliedWith = new(),
                 NeutralWith = new(),
                 EnemiesWith = new()
+            };
+        }
+
+        public static StatInfo CreateStatTemplate()
+        {
+            return new StatInfo()
+            {
+                StatType = "Integer",
+                Name = "CharacterCustomStat",
+                HasMax = false,
+                MinCap = 0,
+                MaxCap = EngineConstants.NORMAL_STAT_CAP,
+                RegeneratesStatId = ""
             };
         }
 
