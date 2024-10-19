@@ -577,9 +577,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             DropDownStyle = ComboBoxStyle.DropDownList
                         };
-                        foreach (var trap in ActiveDungeon.CharacterStats.Select(s => s.Id))
+                        foreach (var stat in ActiveDungeon.CharacterStats.Select(s => s.Id))
                         {
-                            statComboBox.Items.Add(trap);
+                            statComboBox.Items.Add(stat);
                         }
                         try
                         {
@@ -601,6 +601,36 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             statComboBox.Text = parameter.Default;
                         }
                         control = statComboBox;
+                        break;
+                    case ParameterType.Element:
+                        var elementComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var element in ActiveDungeon.ElementInfos.Select(e => e.Id))
+                        {
+                            elementComboBox.Items.Add(element);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ActiveDungeon.ElementInfos.Find(e => e.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                if (valueOfKey != null)
+                                    elementComboBox.Text = valueOfKey.Id;
+                                else
+                                    elementComboBox.Text = parameter.Default;
+                            }
+                            else
+                            {
+                                elementComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            elementComboBox.Text = parameter.Default;
+                        }
+                        control = elementComboBox;
                         break;
                 }
 
@@ -689,6 +719,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Trap:
                     case ParameterType.AlteredStatus:
                     case ParameterType.Stat:
+                    case ParameterType.Element:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");

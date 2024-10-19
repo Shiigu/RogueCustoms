@@ -328,7 +328,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
 
                 if(!string.IsNullOrWhiteSpace(UseCondition))
-                {                    
+                {
                     var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, sourceAsCharacter, target);
 
                     if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))

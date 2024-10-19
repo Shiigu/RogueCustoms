@@ -60,6 +60,9 @@ namespace RogueCustomsDungeonEditor
             FloorGroupTab = new Controls.Tabs.FloorGroupTab();
             tpFactionInfos = new TabPage();
             FactionTab = new Controls.Tabs.FactionTab();
+            tbStatInfos = new TabPage();
+            StatTab = new Controls.Tabs.StatTab();
+            tbElementInfos = new TabPage();
             tpPlayerClass = new TabPage();
             PlayerClassTab = new Controls.Tabs.PlayerClassTab();
             tpNPC = new TabPage();
@@ -74,8 +77,7 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            tbStatInfos = new TabPage();
-            StatTab = new Controls.Tabs.StatTab();
+            ElementTab = new Controls.Tabs.ElementTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -85,13 +87,14 @@ namespace RogueCustomsDungeonEditor
             tpTileSetInfos.SuspendLayout();
             tpFloorInfos.SuspendLayout();
             tpFactionInfos.SuspendLayout();
+            tbStatInfos.SuspendLayout();
+            tbElementInfos.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
             tpItem.SuspendLayout();
             tpTrap.SuspendLayout();
             tpAlteredStatus.SuspendLayout();
             tpValidation.SuspendLayout();
-            tbStatInfos.SuspendLayout();
             SuspendLayout();
             // 
             // msMenu
@@ -263,6 +266,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpFloorInfos);
             tbTabs.Controls.Add(tpFactionInfos);
             tbTabs.Controls.Add(tbStatInfos);
+            tbTabs.Controls.Add(tbElementInfos);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
             tbTabs.Controls.Add(tpItem);
@@ -394,6 +398,36 @@ namespace RogueCustomsDungeonEditor
             FactionTab.Size = new System.Drawing.Size(732, 328);
             FactionTab.TabIndex = 0;
             // 
+            // tbStatInfos
+            // 
+            tbStatInfos.Controls.Add(StatTab);
+            tbStatInfos.Location = new System.Drawing.Point(4, 24);
+            tbStatInfos.Name = "tbStatInfos";
+            tbStatInfos.Padding = new Padding(3);
+            tbStatInfos.Size = new System.Drawing.Size(740, 356);
+            tbStatInfos.TabIndex = 12;
+            tbStatInfos.Text = "Stat";
+            tbStatInfos.UseVisualStyleBackColor = true;
+            // 
+            // StatTab
+            // 
+            StatTab.AutoSize = true;
+            StatTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            StatTab.Location = new System.Drawing.Point(0, 0);
+            StatTab.Name = "StatTab";
+            StatTab.Size = new System.Drawing.Size(657, 166);
+            StatTab.TabIndex = 0;
+            // 
+            // tbElementInfos
+            // 
+            tbElementInfos.Controls.Add(ElementTab);
+            tbElementInfos.Location = new System.Drawing.Point(4, 24);
+            tbElementInfos.Name = "tbElementInfos";
+            tbElementInfos.Size = new System.Drawing.Size(740, 356);
+            tbElementInfos.TabIndex = 13;
+            tbElementInfos.Text = "Attack Element";
+            tbElementInfos.UseVisualStyleBackColor = true;
+            // 
             // tpPlayerClass
             // 
             tpPlayerClass.AutoScroll = true;
@@ -520,25 +554,14 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
-            // tbStatInfos
+            // ElementTab
             // 
-            tbStatInfos.Controls.Add(StatTab);
-            tbStatInfos.Location = new System.Drawing.Point(4, 24);
-            tbStatInfos.Name = "tbStatInfos";
-            tbStatInfos.Padding = new Padding(3);
-            tbStatInfos.Size = new System.Drawing.Size(740, 356);
-            tbStatInfos.TabIndex = 12;
-            tbStatInfos.Text = "Stats";
-            tbStatInfos.UseVisualStyleBackColor = true;
-            // 
-            // StatTab
-            // 
-            StatTab.AutoSize = true;
-            StatTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            StatTab.Location = new System.Drawing.Point(0, 0);
-            StatTab.Name = "StatTab";
-            StatTab.Size = new System.Drawing.Size(657, 166);
-            StatTab.TabIndex = 0;
+            ElementTab.AutoSize = true;
+            ElementTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ElementTab.Location = new System.Drawing.Point(0, 0);
+            ElementTab.Name = "ElementTab";
+            ElementTab.Size = new System.Drawing.Size(657, 198);
+            ElementTab.TabIndex = 0;
             // 
             // frmMain
             // 
@@ -573,6 +596,10 @@ namespace RogueCustomsDungeonEditor
             tpFloorInfos.PerformLayout();
             tpFactionInfos.ResumeLayout(false);
             tpFactionInfos.PerformLayout();
+            tbStatInfos.ResumeLayout(false);
+            tbStatInfos.PerformLayout();
+            tbElementInfos.ResumeLayout(false);
+            tbElementInfos.PerformLayout();
             tpPlayerClass.ResumeLayout(false);
             tpPlayerClass.PerformLayout();
             tpNPC.ResumeLayout(false);
@@ -584,8 +611,6 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.ResumeLayout(false);
             tpAlteredStatus.PerformLayout();
             tpValidation.ResumeLayout(false);
-            tbStatInfos.ResumeLayout(false);
-            tbStatInfos.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -637,5 +662,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.TileTypeTab TileTypeTab;
         private TabPage tbStatInfos;
         private Controls.Tabs.StatTab StatTab;
+        private TabPage tbElementInfos;
+        private Controls.Tabs.ElementTab ElementTab;
     }
 }

@@ -1115,18 +1115,84 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 V15Dungeon.TileSetInfos.Add(v15TileSet);
             }
 
+            V15Dungeon.ElementInfos = new()
+            {
+                new ElementInfo()
+                {
+                    Id = "Normal",
+                    Name = "ElementNameNormal",
+                    Color = new GameColor(Color.White),
+                    ResistanceStatId = "",
+                    ExcessResistanceCausesHealDamage = false,
+                    OnAfterAttack = null
+                }
+            };
+
             V15Dungeon.CharacterStats = DungeonInfoHelpers.CreateStatsTemplate();
             
             V15Dungeon.PlayerClasses = new();
+
             foreach (var v14PlayerClass in V14Dungeon.PlayerClasses)
             {
                 V15Dungeon.PlayerClasses.Add(v14PlayerClass.CloneToV15());
             }
 
+            foreach (var playerClass in V15Dungeon.PlayerClasses)
+            {
+                foreach (var action in playerClass.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV15();
+                }
+                playerClass.OnAttacked?.UpdateDealDamageStepsToV15();
+                playerClass.OnDeath?.UpdateDealDamageStepsToV15();
+                playerClass.OnTurnStart?.UpdateDealDamageStepsToV15();
+            }
+
             V15Dungeon.NPCs = new();
+
             foreach (var v14NPC in V14Dungeon.NPCs)
             {
                 V15Dungeon.NPCs.Add(v14NPC.CloneToV15());
+            }
+
+            foreach (var npc in V15Dungeon.NPCs)
+            {
+                foreach (var action in npc.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV15();
+                }
+                foreach (var action in npc.OnInteracted)
+                {
+                    action.UpdateDealDamageStepsToV15();
+                }
+                npc.OnAttacked?.UpdateDealDamageStepsToV15();
+                npc.OnDeath?.UpdateDealDamageStepsToV15();
+                npc.OnTurnStart?.UpdateDealDamageStepsToV15();
+                npc.OnSpawn?.UpdateDealDamageStepsToV15();
+            }
+
+            foreach (var item in V15Dungeon.Items)
+            {
+                foreach (var action in item.OnAttack)
+                {
+                    action.UpdateDealDamageStepsToV15();
+                }
+                item.OnAttacked?.UpdateDealDamageStepsToV15();
+                item.OnDeath?.UpdateDealDamageStepsToV15();
+                item.OnTurnStart?.UpdateDealDamageStepsToV15();
+                item.OnUse?.UpdateDealDamageStepsToV15();
+            }
+            foreach (var trap in V15Dungeon.Traps)
+            {
+                trap.OnStepped?.UpdateDealDamageStepsToV15();
+            }
+            foreach (var alteredStatus in V15Dungeon.AlteredStatuses)
+            {
+                alteredStatus.BeforeAttack?.UpdateDealDamageStepsToV15();
+                alteredStatus.OnAttacked?.UpdateDealDamageStepsToV15();
+                alteredStatus.OnApply?.UpdateDealDamageStepsToV15();
+                alteredStatus.OnTurnStart?.UpdateDealDamageStepsToV15();
+                alteredStatus.OnRemove?.UpdateDealDamageStepsToV15();
             }
 
             V15Dungeon.Version = "1.5";
@@ -1346,6 +1412,43 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             });
 
             return v15NPC;
+        }
+
+        private static void UpdateDealDamageStepsToV15(this ActionWithEffectsInfo? actionWithEffects)
+        {
+            if (actionWithEffects == null) return;
+            actionWithEffects.Effect.UpdateDealDamageParametersToV15();
+        }
+
+        private static void UpdateDealDamageParametersToV15(this EffectInfo? effect)
+        {
+            if (effect == null) return;
+            if (effect.EffectName.Equals("DealDamage"))
+            {
+                var effectParams = effect.Params.ToList();
+                if (!effectParams.Any(param => param.ParamName.Equals("Element", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "Element",
+                        Value = "Normal"
+                    });
+                if (!effectParams.Any(param => param.ParamName.Equals("BypassesResistances", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "BypassesResistances",
+                        Value = "true"
+                    });
+                if (!effectParams.Any(param => param.ParamName.Equals("BypassesElementEffect", StringComparison.InvariantCultureIgnoreCase)))
+                    effectParams.Add(new()
+                    {
+                        ParamName = "BypassesElementEffect",
+                        Value = "true"
+                    });
+                effect.Params = effectParams.ToArray();
+            }
+            effect.Then?.UpdateDealDamageParametersToV15();
+            effect.OnSuccess?.UpdateDealDamageParametersToV15();
+            effect.OnFailure?.UpdateDealDamageParametersToV15();
         }
         #endregion
     }

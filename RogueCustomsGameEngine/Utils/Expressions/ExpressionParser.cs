@@ -188,6 +188,12 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 case "frominventory":
                     paramsObject.FromInventory = new Expression(value).Eval<bool>();
                     return true;
+                case "bypassesresistances":
+                    paramsObject.BypassesResistances = new Expression(value).Eval<bool>();
+                    return true;
+                case "bypasseselementeffect":
+                    paramsObject.BypassesElementEffect = new Expression(value).Eval<bool>();
+                    return true;
                 case "tiletype":
                     paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase));
                     return true;
@@ -387,6 +393,10 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     // This is only for backwards compatibility for {eName.StatName}
                     // (Where StatName is HP, HPRegeneration, MP, MPRegeneration, Attack, Defense, Movement, Accuracy or Evasion)
                     currentObject = stat.Current;
+                }
+                else if (currentObject is TileType tileType)
+                {
+                    currentObject = tileType.Id;
                 }
                 else if (propertyInfo.Name.Equals("AlteredStatuses", StringComparison.InvariantCultureIgnoreCase) && currentObject is List<AlteredStatus> alteredStatuses)
                 {

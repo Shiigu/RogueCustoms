@@ -71,7 +71,7 @@
             txtStatName.Name = "txtStatName";
             txtStatName.Size = new System.Drawing.Size(350, 23);
             txtStatName.TabIndex = 225;
-            txtStatName.TextChanged += txtTileTypeName_TextChanged;
+            txtStatName.TextChanged += txtStatName_TextChanged;
             // 
             // label101
             // 

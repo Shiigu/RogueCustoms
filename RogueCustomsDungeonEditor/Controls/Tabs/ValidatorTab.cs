@@ -79,6 +79,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     AddValidationResultNode($"Stat {Id}", ValidationMessages);
                 }
 
+                foreach (var (Id, ValidationMessages) in dungeonValidator.ElementValidationMessages)
+                {
+                    AddValidationResultNode($"Element {Id}", ValidationMessages);
+                }
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)
                 {
                     AddValidationResultNode($"Player Class {Id}", ValidationMessages);

@@ -21,8 +21,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public static TileType Stairs;
         public static readonly TileType Door = new ()
         {
+            Id = "Door",
             Name = "Door",
-            IsVisible = false,
+            IsVisible = true,
             IsWalkable = false,
             IsSolid = true,
             CanBeTransformed = false,

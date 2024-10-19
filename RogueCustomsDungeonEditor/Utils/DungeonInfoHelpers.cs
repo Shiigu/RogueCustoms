@@ -56,6 +56,8 @@ namespace RogueCustomsDungeonEditor.Utils
 
             templateDungeon.CharacterStats = CreateStatsTemplate();
 
+            templateDungeon.ElementInfos = new() { CreateElementTemplate() };
+
             templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate(templateDungeon.CharacterStats));
 
             templateDungeon.NPCs.Add(CreateNPCTemplate(templateDungeon.CharacterStats));
@@ -710,6 +712,19 @@ namespace RogueCustomsDungeonEditor.Utils
             };
 
             return new() { hp, hpRegeneration, mp, mpRegeneration, hunger, attack, defense, movement, accuracy, evasion };
+        }
+
+        public static ElementInfo CreateElementTemplate()
+        {
+            return new ElementInfo()
+            {
+                Id = "Element",
+                Name = "ElementName",
+                Color = new GameColor(Color.White),
+                ResistanceStatId = "",
+                ExcessResistanceCausesHealDamage = false,
+                OnAfterAttack = null
+            };
         }
 
         public static PlayerClassInfo CreatePlayerClassTemplate(List<StatInfo> stats)
