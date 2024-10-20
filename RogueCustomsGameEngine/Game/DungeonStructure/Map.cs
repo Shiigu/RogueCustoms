@@ -90,7 +90,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private int TotalMonstersInFloor => AICharacters.Count(e => e.ExistenceStatus == EntityExistenceStatus.Alive);
+        private int TotalMonstersInFloor => AICharacters.Count(e => !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
         private int TotalItemsInFloor => Items.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int TotalTrapsInFloor => Traps.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int MinRoomWidth { get; set; }
@@ -232,6 +232,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             {
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
+                                Player.ContainingRoom.WasVisited = true;
                                 AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
@@ -268,6 +269,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             {
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
+                                Player.ContainingRoom.WasVisited = true;
                                 AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
@@ -848,7 +850,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new PlayerCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, false)
                     };
                     if (Dungeon.PlayerClass.RequiresNamePrompt && !string.IsNullOrWhiteSpace(Dungeon.PlayerName))
                         entity.Name = Dungeon.PlayerName;
@@ -857,7 +859,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new NonPlayableCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, false)
                     };
                     break;
                 case EntityType.Weapon:
@@ -866,21 +868,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new Item(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
                     };
                     break;
                 case EntityType.Trap:
                     entity = new Trap(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
                     };
                     break;
                 case EntityType.Key:
                     entity = new Key(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0)
+                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
                     };
                     break;
                 default:
@@ -963,7 +965,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     AddItemToInventory(i);
                 });
             }
-            Player.Position = PickEmptyPosition(false);
+            Player.Position = PickEmptyPosition(false, false);
             Player.UpdateVisibility();
             if(Player.Hunger != null)
                 Player.UsedStats.Where(s => s.RegenerationTarget == Player.Hunger).ForEach(s => s.Base = HungerDegeneration * -1);
@@ -996,7 +998,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     generationsToTry = Rng.NextInclusive(FloorConfigurationToUse.SimultaneousMinMonstersAtStart, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor);
                     while (TotalMonstersInFloor < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor && totalMonsterGeneratorChance > 0 && generationAttempts < generationsToTry)
                     {
-                        AddEnemy(usableMonsterGenerators, totalMonsterGeneratorChance);
+                        AddNPC(usableMonsterGenerators, totalMonsterGeneratorChance);
                         usableMonsterGenerators.RemoveAll(mg => (mg.SimultaneousMaxForKindInFloor > 0 && AICharacters.Count(e => e.ClassId.Equals(mg.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive) >= mg.SimultaneousMaxForKindInFloor) || (mg.OverallMaxForKindInFloor > 0 && mg.TotalGeneratedInFloor >= mg.OverallMaxForKindInFloor));
                         totalMonsterGeneratorChance = usableMonsterGenerators.Sum(mg => mg.ChanceToPick);
                         generationAttempts++;
@@ -1057,6 +1059,53 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 #endregion
 
+                #region Flag Monster House
+
+                if(Rooms.Count(r => !r.IsDummy) > 1 && Rng.RollProbability() <= FloorConfigurationToUse.MonsterHouseOdds)
+                {
+                    var roomPickList = new List<Room>();
+                    var smallestWidth = Rooms.Where(r => !r.IsDummy).Min(r => r.Width);
+                    var smallestHeight = Rooms.Where(r => !r.IsDummy).Min(r => r.Height);
+                    foreach (var room in Rooms.Where(r => !r.IsDummy && r != Player.ContainingRoom))
+                    {
+                        // The idea is to prioritize bigger rooms when picking a Monster House candidate
+                        var widthDifference = room.Width - smallestWidth;
+                        var heightDifference = room.Height - smallestHeight;
+                        for (int i = 0; i < 1 + widthDifference + heightDifference; i++)
+                        {
+                            roomPickList.Add(room);
+                        }
+                    }
+                    var selectedRoom = roomPickList.TakeRandomElement(Rng);
+                    selectedRoom.MustSpawnMonsterHouse = true;
+                    var acceptableTiles = selectedRoom.GetTiles().Where(t => CanBeConsideredEmpty(t) && t.Type.AcceptsItems);
+                    acceptableTiles = acceptableTiles.TakeNDifferentRandomElements(acceptableTiles.Count() / 2, Rng);
+                    var tilesForItems = acceptableTiles.Take(acceptableTiles.Count() / 2).Take(FloorConfigurationToUse.MaxItemsInFloor);
+                    var tilesForTraps = acceptableTiles.Except(tilesForItems).Take(FloorConfigurationToUse.MaxTrapsInFloor);
+
+                    if (FloorConfigurationToUse.PossibleItems.Any())
+                    {
+                        foreach (var tile in tilesForItems)
+                        {
+                            if (Rng.RollProbability() > 80) continue;
+                            var pickedItemId = FloorConfigurationToUse.PossibleItems.TakeRandomElement(Rng).Class.Id;
+                            AddEntity(pickedItemId, 1, tile.Position);
+                        }
+                    }
+
+                    if (FloorConfigurationToUse.PossibleTraps.Any())
+                    {
+                        foreach (var tile in tilesForTraps)
+                        {
+                            if (Rng.RollProbability() > 80) continue;
+                            var pickedTrapId = FloorConfigurationToUse.PossibleTraps.TakeRandomElement(Rng).Class.Id;
+                            AddEntity(pickedTrapId, 1, tile.Position);
+                        }
+                    }
+                }
+
+                #endregion
+
                 #region Perform On Floor Start Actions
 
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
@@ -1071,7 +1120,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 var currentMonsters = AICharacters.Where(e => e.EntityType == EntityType.NPC && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonsters.Count() < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor)
                 {
-                    AddEnemy();
+                    AddNPC();
                 }
 
                 #endregion
@@ -1091,7 +1140,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
         }
 
-        private void AddEnemy()
+        private void AddNPC()
         {
             if (!FloorConfigurationToUse.PossibleMonsters.Any() || TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
             List<ClassInFloor> usableMonsterGenerators = new();
@@ -1102,17 +1151,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                 usableMonsterGenerators.Add(pm);
             });
-            AddEnemy(usableMonsterGenerators, 100);
+            AddNPC(usableMonsterGenerators, 100);
         }
 
-        private void AddEnemy(List<ClassInFloor> usableMonsterGenerators, int odds)
+        private void AddNPC(List<ClassInFloor> usableMonsterGenerators, int odds)
         {
             if (TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
             var pickedGenerator = usableMonsterGenerators.GetWithProbability(mg => mg.ChanceToPick, Rng, odds);
             if (pickedGenerator != null)
             {
                 var level = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
-                AddEntity(pickedGenerator.Class.Id, level);
+                var npc = AddEntity(pickedGenerator.Class.Id, level) as NonPlayableCharacter;
+                npc.SpawnedViaMonsterHouse = false;
                 pickedGenerator.TotalGeneratedInFloor++;
                 LastMonsterGenerationTurn = TurnCount;
             }
@@ -1219,7 +1269,35 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             character.RemainingMovement--;
 
+            if (character == Player && targetTile.Room != null && !targetTile.Room.IsDummy && !targetTile.IsConnectorTile && !targetTile.Room.WasVisited)
+            {
+                targetTile.Room.WasVisited = true;
+                if (targetTile.Room.MustSpawnMonsterHouse)
+                    InitiateMonsterHouse();
+            }
+
             return true;
+        }
+
+        private void InitiateMonsterHouse()
+        {
+            var monsterHouseRoom = Rooms.Find(r => r.MustSpawnMonsterHouse);
+            if (monsterHouseRoom == null) return;
+            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
+            AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red);
+            AddSpecialEffectIfPossible(SpecialEffect.MonsterHouseAlarm);
+            var acceptableTiles = monsterHouseRoom.GetTiles().Where(t => CanBeConsideredEmpty(t)).TakeNDifferentRandomElements(FloorConfigurationToUse.SimultaneousMaxMonstersInFloor, Rng);
+
+            if (FloorConfigurationToUse.PossibleMonsters.Any())
+            {
+                foreach (var tile in acceptableTiles)
+                {
+                    var pickedMonster = FloorConfigurationToUse.PossibleMonsters.Where(pm => pm.Class.Faction.EnemiesWith.Contains(Player.Faction) && pm.Class.StartsVisible).TakeRandomElement(Rng);
+                    if (pickedMonster == null) return;
+                    var monsterHouseEnemy = AddEntity(pickedMonster.Class.Id, Rng.NextInclusive(pickedMonster.MinLevel, pickedMonster.MaxLevel), tile.Position) as NonPlayableCharacter;
+                    monsterHouseEnemy.SpawnedViaMonsterHouse = true;
+                }
+            }
         }
 
         public void PlayerUseStairs()
@@ -1444,10 +1522,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if(StairsTile != null)
                 StairsTile.Type = TileType.Floor;
-            SetStairs(PickEmptyPosition(true));
+            SetStairs(PickEmptyPosition(true, false));
         }
 
-        public GamePoint PickEmptyPosition(bool allowPlayerRoom)
+        public GamePoint PickEmptyPosition(bool allowPlayerRoom, bool isItem)
         {
             int rngX = -1, rngY = -1;
             var nonDummyRooms = Rooms.Where(r => r.Width > 1 && r.Height > 1).Distinct().ToList();
@@ -1459,7 +1537,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 roomIsValid = false;
                 var possibleNonDummyRoom = nonDummyRooms.TakeRandomElement(Rng);
-                var validEmptyTiles = possibleNonDummyRoom.GetTiles().Where(t => CanBeConsideredEmpty(t));
+                var validEmptyTiles = possibleNonDummyRoom.GetTiles().Where(t => (!isItem || t.Type.AcceptsItems) && CanBeConsideredEmpty(t));
                 if (!validEmptyTiles.Any())
                 {
                     nonDummyRooms.Remove(possibleNonDummyRoom);

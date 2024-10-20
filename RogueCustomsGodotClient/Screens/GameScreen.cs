@@ -80,6 +80,7 @@ public partial class GameScreen : Control
             (SpecialEffect.KeyGet, "res://Sounds/keyget.wav"),
             (SpecialEffect.DoorClosed, "res://Sounds/doorclosed.wav"),
             (SpecialEffect.DoorOpen, "res://Sounds/dooropen.wav"),
+            (SpecialEffect.MonsterHouseAlarm, "res://Sounds/monsterhousealarm.wav"),
         };
 
 

@@ -151,6 +151,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     MaxConnectionsBetweenRooms = (int)nudMaxRoomConnections.Value,
                     OddsForExtraConnections = (int)nudExtraRoomConnectionOdds.Value,
                     RoomFusionOdds = (int)nudRoomFusionOdds.Value,
+                    MonsterHouseOdds = (int)nudFloorGroupMonsterHouseOdds.Value,
                     OnFloorStart = (!saeOnFloorStart.Action.IsNullOrEmpty()) ? saeOnFloorStart.Action : null,
                     HungerDegeneration = nudHungerLostPerTurn.Value,
                     PossibleSpecialTiles = specialGenerationInfo,
@@ -216,9 +217,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 nudMaxRoomConnections.Minimum = 0;
                 nudMaxRoomConnections.Value = 0;
             }
-            nudExtraRoomConnectionOdds.Enabled = layoutList.Count > 1 && nudMaxRoomConnections.Value > 1;
+            nudExtraRoomConnectionOdds.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1) && nudMaxRoomConnections.Value > 1;
             nudExtraRoomConnectionOdds.Value = !nudMaxRoomConnections.Enabled ? 0 : nudExtraRoomConnectionOdds.Value;
-            nudRoomFusionOdds.Enabled = layoutList.Count > 1;
+            nudRoomFusionOdds.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
+            nudFloorGroupMonsterHouseOdds.Enabled = layoutList.Exists(pga => pga.Columns > 1 || pga.Rows > 1);
             nudRoomFusionOdds.Value = !nudRoomFusionOdds.Enabled ? 0 : nudRoomFusionOdds.Value;
             btnAddAlgorithm.Enabled = true;
             btnEditAlgorithm.Enabled = false;
@@ -567,6 +569,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
         {
             btnPasteAlgorithm.Enabled = ClipboardManager.ContainsData(FormConstants.LayoutClipboardKey);
+        }
+
+        private void nudFloorGroupMonsterHouseOdds_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

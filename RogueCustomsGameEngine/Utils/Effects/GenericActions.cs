@@ -368,7 +368,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
                 if (c == Map.Player)
                     Map.AddSpecialEffectIfPossible(SpecialEffect.Teleport);
-                c.Position = Map.PickEmptyPosition(true);
+                c.Position = Map.PickEmptyPosition(true, false);
                 return true;
             }
             return false;

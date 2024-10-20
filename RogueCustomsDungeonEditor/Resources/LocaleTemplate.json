@@ -127,7 +127,7 @@
     },
     {
       "Key": "TargetDoesNotFulfillConditions",
-      "Value": "TARGET DOES NOT FULFILL CONDITIONS"
+      "Value": "CONDITIONS NOT FULFILLED"
     },
     {
       "Key": "NotEnoughMP",
@@ -396,6 +396,18 @@
     {
       "Key": "ItemSteppedText",
       "Value": "{CharacterName} stepped over {ItemName}."
+    },
+    {
+      "Key": "MonsterHouseWarningLogMessage",
+      "Value": "{CharacterName} has stumbled with a Monster House!"
+    },
+    {
+      "Key": "MonsterHouseWarningMessage",
+      "Value": "It's a Monster House!"
+    },
+    {
+      "Key": "MonsterHouseWarningHeader",
+      "Value": "OH NO!"
     }
   ]
 }

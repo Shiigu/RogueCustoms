@@ -38,7 +38,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var resistanceStat = c.UsedStats.Find(s => s.Id.Equals(attackElement.ResistanceStatId, StringComparison.InvariantCultureIgnoreCase));
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
-
+            var canCallElementEffect = !paramsObject.BypassesElementEffect;
             if (Rng.RollProbability() > accuracyCheck)
             {
                 if (c.EntityType == EntityType.Player
@@ -48,6 +48,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
                 }
                 return false;
+            }
+            if (canCallElementEffect && attackElement.OnAfterAttack != null && !string.IsNullOrWhiteSpace(attackElement.OnAfterAttack.UseCondition))
+            {
+                var parsedCondition = ExpressionParser.ParseArgForExpression(attackElement.OnAfterAttack.UseCondition, This, Source, c);
+
+                if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))
+                    canCallElementEffect = false;
             }
             int damageResistance = 0;
             if(resistanceStat != null && !paramsObject.BypassesResistances)
@@ -70,7 +77,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else
                     Map.CreateFlag($"ElementCausedHealDamage", 1, true); 
                 
-                if (healResult && !paramsObject.BypassesElementEffect)
+                if (healResult && canCallElementEffect)
                     attackElement.OnAfterAttack?.Do(Source, c, false);
 
                 Map.SetFlagValue($"ElementCausedHealDamage", 0);
@@ -113,7 +120,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
             }
             c.HP.Current = Math.Max(0, c.HP.Current - damageDealt);
-            if (!paramsObject.BypassesElementEffect)
+            if (canCallElementEffect)
                 attackElement.OnAfterAttack?.Do(Source, c, false);
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);

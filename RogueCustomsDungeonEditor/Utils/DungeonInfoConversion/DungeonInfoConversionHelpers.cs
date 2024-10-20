@@ -1115,6 +1115,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 V15Dungeon.TileSetInfos.Add(v15TileSet);
             }
 
+            foreach (var floorGroup in V15Dungeon.FloorInfos)
+            {
+                floorGroup.MonsterHouseOdds = 0;
+            }
+
             V15Dungeon.ElementInfos = new()
             {
                 new ElementInfo()

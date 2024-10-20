@@ -35,6 +35,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int MaxConnectionsBetweenRooms { get; set; }
         public int OddsForExtraConnections { get; set; }
         public int RoomFusionOdds { get; set; }
+        public int MonsterHouseOdds { get; set; }
 
         public decimal HungerDegeneration { get; set; }
         public List<FloorLayoutGenerationInfo> PossibleLayouts { get; set; }

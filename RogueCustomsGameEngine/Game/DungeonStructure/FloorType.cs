@@ -44,6 +44,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int MaxConnectionsBetweenRooms;
         public readonly int OddsForExtraConnections;
         public readonly int RoomFusionOdds;
+        public readonly int MonsterHouseOdds;
 
         public readonly decimal HungerDegeneration;
 
@@ -74,6 +75,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             MaxConnectionsBetweenRooms = floorInfo.MaxConnectionsBetweenRooms;
             OddsForExtraConnections = floorInfo.OddsForExtraConnections;
             RoomFusionOdds = floorInfo.RoomFusionOdds;
+            MonsterHouseOdds = floorInfo.MonsterHouseOdds;
             HungerDegeneration = floorInfo.HungerDegeneration;
             PossibleLayouts = new List<FloorLayoutGenerator>();
             foreach (var layout in floorInfo.PossibleLayouts)

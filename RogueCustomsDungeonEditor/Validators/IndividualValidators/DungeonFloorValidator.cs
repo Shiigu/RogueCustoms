@@ -204,6 +204,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (!floorJson.RoomFusionOdds.Between(0, 100))
                 messages.AddError("RoomFusionOdds must be an integer number between 0 and 100.");
+            if (!floorJson.MonsterHouseOdds.Between(0, 100))
+                messages.AddError("MonsterHouseOdds must be an integer number between 0 and 100.");
 
             if (floorJson.PossibleKeys == null || floorJson.PossibleKeys.KeyTypes == null)
                 messages.AddError("Floor Key Generation info is null.");

@@ -530,6 +530,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 MaxConnectionsBetweenRooms = 1,
                 OddsForExtraConnections = 0,
                 RoomFusionOdds = 0,
+                MonsterHouseOdds = 0,
                 TurnsPerMonsterGeneration = 35,
                 MinItemsInFloor = 0,
                 MaxItemsInFloor = 0,

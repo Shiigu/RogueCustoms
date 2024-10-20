@@ -68,6 +68,8 @@
             label1 = new System.Windows.Forms.Label();
             btnSpecialTileGenerator = new System.Windows.Forms.Button();
             label2 = new System.Windows.Forms.Label();
+            nudFloorGroupMonsterHouseOdds = new System.Windows.Forms.NumericUpDown();
+            label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).BeginInit();
@@ -76,6 +78,7 @@
             ((System.ComponentModel.ISupportInitialize)nudWidth).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxFloorLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinFloorLevel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudFloorGroupMonsterHouseOdds).BeginInit();
             SuspendLayout();
             // 
             // btnPasteAlgorithm
@@ -131,7 +134,7 @@
             saeOnFloorStart.ClassId = null;
             saeOnFloorStart.Dungeon = null;
             saeOnFloorStart.EffectParamData = null;
-            saeOnFloorStart.Location = new System.Drawing.Point(356, 311);
+            saeOnFloorStart.Location = new System.Drawing.Point(355, 343);
             saeOnFloorStart.Name = "saeOnFloorStart";
             saeOnFloorStart.PlaceholderActionName = "FloorStart";
             saeOnFloorStart.RequiresActionName = false;
@@ -484,11 +487,30 @@
             label2.TabIndex = 82;
             label2.Text = "Special Tile Data";
             // 
+            // nudFloorGroupMonsterHouseOdds
+            // 
+            nudFloorGroupMonsterHouseOdds.Location = new System.Drawing.Point(407, 303);
+            nudFloorGroupMonsterHouseOdds.Name = "nudFloorGroupMonsterHouseOdds";
+            nudFloorGroupMonsterHouseOdds.Size = new System.Drawing.Size(40, 23);
+            nudFloorGroupMonsterHouseOdds.TabIndex = 85;
+            nudFloorGroupMonsterHouseOdds.ValueChanged += nudFloorGroupMonsterHouseOdds_ValueChanged;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(355, 305);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(340, 15);
+            label3.TabIndex = 84;
+            label3.Text = "There's a               % chance of a Room to host a Monster House";
+            // 
             // FloorGroupTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(nudFloorGroupMonsterHouseOdds);
+            Controls.Add(label3);
             Controls.Add(btnSpecialTileGenerator);
             Controls.Add(label2);
             Controls.Add(btnFloorKeys);
@@ -538,6 +560,7 @@
             ((System.ComponentModel.ISupportInitialize)nudWidth).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMaxFloorLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudMinFloorLevel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudFloorGroupMonsterHouseOdds).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -583,5 +606,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSpecialTileGenerator;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown nudFloorGroupMonsterHouseOdds;
+        private System.Windows.Forms.Label label3;
     }
 }
