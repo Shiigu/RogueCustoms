@@ -16,6 +16,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int Width;
         public readonly int Height;
 
+        public bool WasVisited { get; set; }
+        public bool MustSpawnMonsterHouse { get; set; }
+
         public GamePoint TopLeft => new(Position.X, Position.Y);
         public GamePoint TopRight => new(Position.X + Width - 1, Position.Y);
         public GamePoint BottomLeft => new(Position.X, Position.Y + Height - 1);

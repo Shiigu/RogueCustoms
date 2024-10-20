@@ -39,6 +39,7 @@ namespace RogueCustomsGameEngine.Utils.Enums
         TrapSet,
         DoorClosed,
         DoorOpen,
-        KeyGet
+        KeyGet,
+        MonsterHouseAlarm
     }
 }

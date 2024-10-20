@@ -98,3 +98,6 @@ AttackMissedText
 AttackDealtNoDamageText
 ItemSteppedText
 TileIsOccupied
+MonsterHouseWarningLogMessage
+MonsterHouseWarningMessage
+MonsterHouseWarningHeader

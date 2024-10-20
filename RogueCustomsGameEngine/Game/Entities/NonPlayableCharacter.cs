@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         private (GamePoint Destination, List<Tile> Route) PathToUse;
         public ActionWithEffects OnSpawn { get; set; }
         public List<ActionWithEffects> OnInteracted { get; set; }
+        public bool SpawnedViaMonsterHouse { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
