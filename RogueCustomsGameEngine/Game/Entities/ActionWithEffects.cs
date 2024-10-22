@@ -15,6 +15,7 @@ using System.Drawing;
 using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
 using System.Globalization;
 using RogueCustomsGameEngine.Utils.Expressions;
+using System.Diagnostics.Contracts;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -47,6 +48,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<TargetType> TargetTypes { get; set; }
         public int MPCost { get; set; }
         public string UseCondition { get; set; }
+        public string AIUseCondition { get; set; }
         public bool FinishesTurnWhenUsed { get; set; }
 
         public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
@@ -72,6 +74,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MaximumUses = info.MaximumUses;
             CurrentUses = 0;
             UseCondition = info.UseCondition;
+            AIUseCondition = info.AIUseCondition;
             FinishesTurnWhenUsed = info.FinishesTurnWhenUsed;
             TargetTypes = new List<TargetType>();
             MPCost = info.MPCost;
@@ -366,6 +369,26 @@ namespace RogueCustomsGameEngine.Game.Entities
             return descriptionWithUsageNotes.ToString();
         }
 
+        public bool HasFunction(Effect effect, string fName)
+        {
+            if (effect == null) return false;
+            var accuracyParam = string.Empty;
+
+            if (effect.EffectMethodName.Equals(fName, StringComparison.InvariantCultureIgnoreCase))
+                return true;
+
+            if (effect.Then != null)
+                return HasFunction(effect.Then, fName);
+            if (effect.OnSuccess != null || effect.OnFailure != null)
+            {
+                var onSuccessHasFunction = (effect.OnSuccess != null) ? HasFunction(effect.OnSuccess, fName) : false;
+                var onFailureHasFunction = (effect.OnFailure != null) ? HasFunction(effect.OnSuccess, fName) : false;
+                return onSuccessHasFunction || onFailureHasFunction;
+            }
+
+            return false;
+        }
+
         private string FindFirstImperfectAccuracyParameter(Effect effect)
         {
             if (effect == null) return string.Empty;
@@ -393,12 +416,29 @@ namespace RogueCustomsGameEngine.Game.Entities
             return accuracyParam;
         }
 
-        public bool ChecksCondition(Character character, Character target)
+        public bool HasFunction(string fName)
+        {
+            return Effect != null ? Effect.HasFunction(fName) : false;
+        }
+
+        public bool ChecksCondition(Character character, ITargetable target)
         {
             if (!MayBeUsed) return false;
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
                 var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, character, target);
+
+                if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
+            }
+            return true;
+        }
+
+        public bool ChecksAICondition(Character character, ITargetable target)
+        {
+            if (!MayBeUsed) return false;
+            if (!string.IsNullOrWhiteSpace(AIUseCondition))
+            {
+                var parsedCondition = ExpressionParser.ParseArgForExpression(AIUseCondition, User, character, target);
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
@@ -506,6 +546,26 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             while (currentEffect != null);
             return successfulEffects.Distinct().ToList();
+        }
+
+        public bool HasFunction(string fName)
+        {
+            if (string.IsNullOrWhiteSpace(EffectMethodName))
+                return false;
+
+            if (EffectMethodName.Equals(fName, StringComparison.InvariantCultureIgnoreCase))
+                return true;
+
+            if (Then != null)
+                return Then.HasFunction(fName);
+            if (OnSuccess != null || OnFailure != null)
+            {
+                var onSuccessHasFunction = (OnSuccess != null) ? OnSuccess.HasFunction(fName) : false;
+                var onFailureHasFunction = (OnFailure != null) ? OnFailure.HasFunction(fName) : false;
+                return onSuccessHasFunction || onFailureHasFunction;
+            }
+
+            return false;
         }
 
         public Effect Clone()

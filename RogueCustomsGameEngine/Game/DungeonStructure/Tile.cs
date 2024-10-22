@@ -15,12 +15,13 @@ using RogueCustomsGameEngine.Utils;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
-    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
-    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     [Serializable]
     public sealed class Tile : ITargetable, IEquatable<Tile?>
     {
+        private static List<string> FunctionsThatCanMakeATileHarmful = new() { "DealDamage", "ApplyAlteredStatus", "ApplyStatAlteration", "Teleport" };
         public GamePoint Position { get; set; }
         private TileType _type { get; set; } = TileType.Empty;
         public TileType Type
@@ -59,7 +60,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public bool IsWalkable => Type.IsWalkable;
         public bool IsSolid => Type.IsSolid;
-        public bool IsOccupied => LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
+        public bool IsOccupied {
+            get
+            {
+                try
+                {
+                    return LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive;
+                }
+                catch
+                {
+                    // Somehow, this can throw a NullReferenceException
+                    return false;
+                }
+            }
+        }
         public ActionWithEffects OnStood => Type.OnStood;
 
         private ConsoleRepresentation _consoleRepresentation;
@@ -176,8 +190,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
-        public Character LivingCharacter => Map.GetCharacters().Find(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Alive);
-        public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e?.Position?.Equals(Position) == true && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
+        public Character LivingCharacter => Map.GetCharacters().Find(e => e != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Key Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Entity> GetPickableObjects() {
@@ -202,6 +216,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 stomper.Visible = true;
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 stomper.AttackedBy(null);
+        }
+
+        public bool IsHarmfulFor(Character character)
+        {
+            return (Trap != null && Trap.ExistenceStatus == EntityExistenceStatus.Alive && Trap.CanBeSeenBy(character) && Trap.OnStepped != null && FunctionsThatCanMakeATileHarmful.Any(f => Trap.OnStepped.HasFunction(f))) || (OnStood != null && FunctionsThatCanMakeATileHarmful.Any(f => OnStood.HasFunction(f)));
         }
 
         public override bool Equals(object? obj)

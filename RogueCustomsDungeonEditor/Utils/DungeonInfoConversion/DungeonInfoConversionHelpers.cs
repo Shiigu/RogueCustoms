@@ -1335,9 +1335,10 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 OnDeath = v14NPC.OnDeath,
                 OnInteracted = new(v14NPC.OnInteracted),
                 OnSpawn = v14NPC.OnSpawn,
-                AIOddsToUseActionsOnSelf = v14NPC.AIOddsToUseActionsOnSelf,
                 AIType = v14NPC.AIType,
-                KnowsAllCharacterPositions = v14NPC.KnowsAllCharacterPositions,                
+                KnowsAllCharacterPositions = v14NPC.KnowsAllCharacterPositions,
+                PursuesOutOfSightCharacters = v14NPC.KnowsAllCharacterPositions,
+                WandersIfWithoutTarget = v14NPC.StartsVisible
             };
 
             v15NPC.Stats.Add(new()

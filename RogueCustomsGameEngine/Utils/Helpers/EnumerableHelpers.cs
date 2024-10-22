@@ -104,26 +104,29 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return shuffledList.Take(amount).ToList();
         }
 
-        public static T? GetWithProbability<T>(this IEnumerable<T> elementList, Func<T, int> probability, RngHandler rng, int odds = 100)
+        public static T? TakeRandomElementWithWeights<T>(this IEnumerable<T> elementList, Func<T, int> weight, RngHandler rng)
         {
-            int totalProbability = 0, currentProbability = 0;
-            foreach (var element in elementList)
+            var elements = elementList.ToArray();
+            int totalWeight = elements.Sum(weight);
+
+            if (totalWeight <= 0)
+                return default;
+
+            int randomValue = rng.NextInclusive(1, totalWeight);
+
+            int cumulativeWeight = 0;
+
+            foreach (var element in elements)
             {
-                totalProbability += probability(element);
-            }
+                cumulativeWeight += weight(element);
 
-            int random = rng.NextInclusive(1, odds);
-
-            foreach (var element in elementList)
-            {
-                var maxProbability = currentProbability + probability(element);
-
-                if (random.Between(currentProbability + 1, maxProbability))
+                if (randomValue <= cumulativeWeight)
+                {
                     return element;
-
-                currentProbability = maxProbability;
+                }
             }
 
+            // Return null as a fallback (though this should not happen if weights are valid)
             return default;
         }
 
@@ -163,6 +166,20 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             }
 
             return shuffledList;
+        }
+
+        public static IEnumerable<T> AddButKeepingCapacity<T>(this IEnumerable<T> source, T newItem, int maxSize)
+        {
+            var list = source.ToList();
+
+            if (list.Count >= maxSize)
+            {
+                list.RemoveAt(0);
+            }
+
+            list.Add(newItem);
+
+            return list;
         }
     }
 }

@@ -80,6 +80,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             chkFinishesTurn = new CheckBox();
             btnCopyStep = new Button();
             btnPasteStep = new Button();
+            fklblAIConditionWarning = new Button();
+            txtActionAICondition = new TextBox();
+            label13 = new Label();
             gbSelectionCriteria.SuspendLayout();
             pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
@@ -118,7 +121,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(528, 512);
+            btnCancel.Location = new Point(522, 591);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -345,7 +348,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(368, 512);
+            btnSave.Location = new Point(362, 591);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -399,7 +402,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(447, 512);
+            btnSaveAs.Location = new Point(441, 591);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -448,7 +451,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning.FlatStyle = FlatStyle.Flat;
             fklblConditionWarning.Image = (Image)resources.GetObject("fklblConditionWarning.Image");
             fklblConditionWarning.ImageAlign = ContentAlignment.TopLeft;
-            fklblConditionWarning.Location = new Point(476, 431);
+            fklblConditionWarning.Location = new Point(476, 428);
             fklblConditionWarning.Name = "fklblConditionWarning";
             fklblConditionWarning.Size = new Size(464, 42);
             fklblConditionWarning.TabIndex = 24;
@@ -460,7 +463,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionCondition
             // 
-            txtActionCondition.Location = new Point(476, 402);
+            txtActionCondition.Location = new Point(476, 399);
             txtActionCondition.Name = "txtActionCondition";
             txtActionCondition.Size = new Size(464, 23);
             txtActionCondition.TabIndex = 23;
@@ -470,7 +473,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(476, 384);
+            label7.Location = new Point(476, 381);
             label7.Name = "label7";
             label7.Size = new Size(238, 15);
             label7.TabIndex = 22;
@@ -490,13 +493,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             panel1.Controls.Add(pictureBox1);
             panel1.Location = new Point(4, 351);
             panel1.Name = "panel1";
-            panel1.Size = new Size(466, 146);
+            panel1.Size = new Size(466, 122);
             panel1.TabIndex = 25;
             // 
             // lblTarget
             // 
             lblTarget.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            lblTarget.Location = new Point(65, 114);
+            lblTarget.Location = new Point(65, 90);
             lblTarget.Name = "lblTarget";
             lblTarget.Size = new Size(384, 19);
             lblTarget.TabIndex = 7;
@@ -505,7 +508,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // lblSource
             // 
             lblSource.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSource.Location = new Point(65, 78);
+            lblSource.Location = new Point(65, 64);
             lblSource.Name = "lblSource";
             lblSource.Size = new Size(384, 19);
             lblSource.TabIndex = 6;
@@ -523,7 +526,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label12
             // 
             label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label12.Location = new Point(3, 115);
+            label12.Location = new Point(3, 91);
             label12.Name = "label12";
             label12.Size = new Size(68, 19);
             label12.TabIndex = 4;
@@ -533,7 +536,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label11
             // 
             label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.Location = new Point(3, 79);
+            label11.Location = new Point(3, 65);
             label11.Name = "label11";
             label11.Size = new Size(68, 19);
             label11.TabIndex = 3;
@@ -572,7 +575,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // chkFinishesTurn
             // 
             chkFinishesTurn.AutoSize = true;
-            chkFinishesTurn.Location = new Point(476, 478);
+            chkFinishesTurn.Location = new Point(355, 566);
             chkFinishesTurn.Name = "chkFinishesTurn";
             chkFinishesTurn.Size = new Size(265, 19);
             chkFinishesTurn.TabIndex = 26;
@@ -601,11 +604,49 @@ namespace RogueCustomsDungeonEditor.HelperForms
             btnPasteStep.UseVisualStyleBackColor = true;
             btnPasteStep.Click += btnPasteStep_Click;
             // 
+            // fklblAIConditionWarning
+            // 
+            fklblAIConditionWarning.Enabled = false;
+            fklblAIConditionWarning.FlatAppearance.BorderSize = 0;
+            fklblAIConditionWarning.FlatStyle = FlatStyle.Flat;
+            fklblAIConditionWarning.Image = (Image)resources.GetObject("fklblAIConditionWarning.Image");
+            fklblAIConditionWarning.ImageAlign = ContentAlignment.TopLeft;
+            fklblAIConditionWarning.Location = new Point(476, 520);
+            fklblAIConditionWarning.Name = "fklblAIConditionWarning";
+            fklblAIConditionWarning.Size = new Size(464, 42);
+            fklblAIConditionWarning.TabIndex = 31;
+            fklblAIConditionWarning.Text = "This is a valid condition, but the Editor currently can't support validating whether it will truly work as intended or not. Remember to test it in-game.";
+            fklblAIConditionWarning.TextAlign = ContentAlignment.MiddleLeft;
+            fklblAIConditionWarning.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblAIConditionWarning.UseVisualStyleBackColor = true;
+            fklblAIConditionWarning.Visible = false;
+            // 
+            // txtActionAICondition
+            // 
+            txtActionAICondition.Location = new Point(476, 491);
+            txtActionAICondition.Name = "txtActionAICondition";
+            txtActionAICondition.Size = new Size(464, 23);
+            txtActionAICondition.TabIndex = 30;
+            txtActionAICondition.Enter += txtActionAICondition_Enter;
+            txtActionAICondition.Leave += txtActionAICondition_Leave;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(476, 473);
+            label13.Name = "label13";
+            label13.Size = new Size(288, 15);
+            label13.TabIndex = 29;
+            label13.Text = "To be used by the AI, it must fulfill this condition first:";
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(950, 544);
+            ClientSize = new Size(950, 620);
+            Controls.Add(fklblAIConditionWarning);
+            Controls.Add(txtActionAICondition);
+            Controls.Add(label13);
             Controls.Add(btnPasteStep);
             Controls.Add(btnCopyStep);
             Controls.Add(chkFinishesTurn);
@@ -698,5 +739,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private CheckBox chkAllies;
         private Button btnCopyStep;
         private Button btnPasteStep;
+        private Button fklblAIConditionWarning;
+        private TextBox txtActionAICondition;
+        private Label label13;
     }
 }

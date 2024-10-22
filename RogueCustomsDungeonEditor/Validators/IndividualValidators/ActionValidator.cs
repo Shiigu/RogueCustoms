@@ -36,6 +36,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 else
                     messages.AddError($"Action {name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
             }
+            if (!string.IsNullOrWhiteSpace(action.AIUseCondition))
+            {
+                if (action.AIUseCondition.IsBooleanExpression() && action.AIUseCondition.TestBooleanExpression(out _))
+                    messages.AddWarning($"Action {name ?? "NULL"} has an AI Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
+                else
+                    messages.AddError($"Action {name ?? "NULL"} has an AI Use Condition that does not seem to be a valid boolean expression.");
+            }
 
             var isSelectable = (owner is PlayerCharacter opc && opc.OnAttack.Contains(action))
                                 || (owner is Item oi && oi.OwnOnAttack.Contains(action))

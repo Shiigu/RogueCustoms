@@ -63,6 +63,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             chkNPCStartsVisible.Checked = npc.StartsVisible;
             chkNPCKnowsAllCharacterPositions.Checked = npc.KnowsAllCharacterPositions;
+            chkNPCPursuesOutOfSightCharacters.Checked = npc.PursuesOutOfSightCharacters;
+            chkNPCWandersIfWithoutTarget.Checked = npc.WandersIfWithoutTarget;
+
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
 
             ssNPC.StatsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
@@ -102,15 +105,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
             cmbNPCAIType.Items.Clear();
             cmbNPCAIType.Text = "";
-            nudNPCOddsToTargetSelf.Value = npc.AIOddsToUseActionsOnSelf;
             foreach (var aiType in NPCAITypeDisplayNames)
             {
                 cmbNPCAIType.Items.Add(aiType.Value);
                 if (aiType.Key.Equals(npc.AIType))
-                {
                     cmbNPCAIType.Text = aiType.Value;
-                    cmbNPCAIType_SelectedIndexChanged(null, EventArgs.Empty);
-                }
             }
         }
 
@@ -154,6 +153,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.Faction = cmbNPCFaction.Text;
                 LoadedNPC.StartsVisible = chkNPCStartsVisible.Checked;
                 LoadedNPC.KnowsAllCharacterPositions = chkNPCKnowsAllCharacterPositions.Checked;
+                LoadedNPC.PursuesOutOfSightCharacters = chkNPCPursuesOutOfSightCharacters.Checked;
+                LoadedNPC.WandersIfWithoutTarget = chkNPCWandersIfWithoutTarget.Checked;
                 LoadedNPC.ExperiencePayoutFormula = txtNPCExperiencePayout.Text;
                 LoadedNPC.Stats = ssNPC.Stats;
                 LoadedNPC.BaseSightRange = ssNPC.BaseSightRange;
@@ -180,7 +181,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                         LoadedNPC.AIType = aiType.Key;
                     }
                 }
-                LoadedNPC.AIOddsToUseActionsOnSelf = (int)nudNPCOddsToTargetSelf.Value;
             }
 
             return validationErrors;
@@ -286,21 +286,13 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
-        private void cmbNPCAIType_SelectedIndexChanged(object sender, EventArgs e)
+        private void chkNPCPursuesOutOfSightCharacters_CheckedChanged(object sender, EventArgs e)
         {
-            if (cmbNPCAIType.Text == NPCAITypeDisplayNames["Random"])
-            {
-                lblNPCAIOddsToTargetSelfA.Visible = true;
-                lblNPCAIOddsToTargetSelfB.Visible = true;
-                nudNPCOddsToTargetSelf.Visible = true;
-            }
-            else
-            {
-                lblNPCAIOddsToTargetSelfA.Visible = false;
-                lblNPCAIOddsToTargetSelfB.Visible = false;
-                nudNPCOddsToTargetSelf.Visible = false;
-                nudNPCOddsToTargetSelf.Value = 0;
-            }
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void chkNPCWandersIfWithoutTarget_CheckedChanged(object sender, EventArgs e)
+        {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }

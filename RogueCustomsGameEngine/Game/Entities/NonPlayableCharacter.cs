@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using System.IO;
 using static System.Collections.Specialized.BitVector32;
+using System.Security.Principal;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -23,17 +24,17 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class NonPlayableCharacter : Character, IAIControlled
     {
         private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
-        private List<(Character Character, TargetType TargetType)> PursuableCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
-
-
-        // This is used to prevent continuous shuffling between tiles if it does not find an open path
-        public GamePoint LastPosition { get; set; }
         public AIType AIType { get; set; }
 
         private ITargetable CurrentTarget;
-        private ActionWithEffects CurrentAction;
+        private GamePoint LatestTargetPosition;
+
         private readonly bool KnowsAllCharacterPositions;
-        public readonly int AIOddsToUseActionsOnSelf;
+        private readonly bool PursuesOutOfSightCharacters;
+        private readonly bool WandersIfWithoutTarget;
+
+        private List<Room> VisitedRooms = new();
+
         private (GamePoint Destination, List<Tile> Route) PathToUse;
         public ActionWithEffects OnSpawn { get; set; }
         public List<ActionWithEffects> OnInteracted { get; set; }
@@ -45,8 +46,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             PathToUse = (null, null);
             CurrentTarget = null;
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
+            PursuesOutOfSightCharacters = entityClass.PursuesOutOfSightCharacters;
+            WandersIfWithoutTarget = entityClass.WandersIfWithoutTarget;
             AIType = entityClass.AIType;
-            AIOddsToUseActionsOnSelf = entityClass.AIOddsToUseActionsOnSelf;
 
             OnSpawn = MapClassAction(entityClass.OnSpawn);
             OnInteracted = new List<ActionWithEffects>();
@@ -58,287 +60,327 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void PickTargetAndPath()
+        public void ProcessAI()
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;                                       // Dead entities don't move
-            if (!OnAttack.Any()) return;
-            UpdateKnownCharacterList();
-            CurrentAction = null;
-            CurrentTarget = null;
-            var attackActionsWithValidTargets = LookForAttackActionsWithValidTargets().Where(a => a.PossibleTargets.Any());
-            if (attackActionsWithValidTargets.Any())
+            if (ExistenceStatus != EntityExistenceStatus.Alive)
             {
-                PickADirectTargetIfPossible(attackActionsWithValidTargets);
-            }
-            if (CurrentTarget == null)
-            {
-                PickADistantTargetIfPossible();
-            }
-            // If the picked next tile is inaccessible, invisible, or contains a visible trap, and it does not contain the target, find another tile.
-            if(PathToUse.Route?.Count > 1 && (!TileCanBeApproached(PathToUse.Route?[1]) || PathToUse.Route?[1].Trap?.CanBeSeenBy(this) == true))
-            {
-                var adjacentTiles = Map.GetAdjacentWalkableTiles(Position, true);
-                var visibleAdjacentTiles = FOVTiles.Intersect(adjacentTiles);
-                var visibleAdjacentTilesWithoutKnownTraps = visibleAdjacentTiles.Where(t => t.Trap?.CanBeSeenBy(this) != true);
-                var visibleAdjacentTilesWithKnownTraps = visibleAdjacentTiles.Except(visibleAdjacentTilesWithoutKnownTraps);
-
-                if (GetAnApproachablePath(visibleAdjacentTilesWithoutKnownTraps, out List<Tile> pickedPath))
-                    PathToUse.Route = pickedPath;
-                else if (GetAnApproachablePath(visibleAdjacentTilesWithKnownTraps, out pickedPath))
-                    PathToUse.Route = pickedPath;
-            }
-
-            // But if they still can't find anywhere to move, skip the turn.
-            // Notice the lack of the "There's a known trap" condition, as it's meant to discourage walking into traps, but allow doing so if there's no option left.
-            if (PathToUse.Route?.Count > 1 && !TileCanBeApproached(PathToUse.Route?[1]))
                 RemainingMovement = 0;
+                TookAction = true;
+                return;     // Dead entities don't move. Set all the possible flags to ensure they aren't seen as movable.
+            }
+            UpdateKnownCharacterList();
+            ConsiderSwappingTargets();
+            if (!ConsiderWalking())
+            {
+                if (ConsiderUsingActionOnSelf())
+                    return;
+                if (ConsiderUsingActionOnTarget())
+                    return;
+                if (ConsiderUsingActionOnTile())
+                    return;
+            }
+            TryToMoveToTarget();
         }
 
-        private IEnumerable<(ActionWithEffects Action, List<(ITargetable Target, int Distance)> PossibleTargets)> LookForAttackActionsWithValidTargets()
+        public void ConsiderSwappingTargets()
         {
-            foreach (var action in OnAttack.Where(oa => oa.User.EntityType != EntityType.Key))
+            if (ContainingRoom != null && !VisitedRooms.Contains(ContainingRoom))
+                VisitedRooms.Add(ContainingRoom);
+
+            var formerTarget = CurrentTarget;
+            var distanceToCurrentTarget = (CurrentTarget is Character c) ? GamePoint.Distance(c.Position, Position) : int.MaxValue;
+            var targetsWithinSight = KnownCharacters.Where(kc => kc.Character.ExistenceStatus == EntityExistenceStatus.Alive && CanSee(kc.Character));
+
+            // If I don't have a target or someone's closer than my current target, swap to them
+            var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget);
+
+            if(closerCharacters.Any(cc => OnAttack.Any(oa => oa.TargetTypes.Contains(cc.TargetType))))
             {
-                if (action.MayBeUsed)
+                var targetingPreferences = new List<(Character Character, int Weight)>();
+                foreach (var character in closerCharacters)
                 {
-                    if (!action.TargetTypes.Contains(TargetType.Tile))
+                    // I prefer targeting enemies
+                    switch(character.TargetType)
                     {
-                        var possibleTargets = KnownCharacters.Where(kc => action.TargetTypes.Contains(kc.TargetType))
-                                        .Select(kc => ((ITargetable)kc.Character, Distance: (int)GamePoint.Distance(kc.Character.Position, Position)));
-                        if (possibleTargets.Any())
-                            yield return (action, possibleTargets.Where(kc => kc.Distance.Between(action.MinimumRange, action.MaximumRange)).ToList());
+                        case TargetType.Enemy:
+                            targetingPreferences.Add((character.Character, 4));
+                            break;
+                        case TargetType.Ally:
+                            targetingPreferences.Add((character.Character, 2));
+                            break;
+                        case TargetType.Neutral:
+                            targetingPreferences.Add((character.Character, 1));
+                            break;
                     }
-                    else
+                }
+                CurrentTarget = targetingPreferences.TakeRandomElementWithWeights(c => c.Weight, Rng).Character;
+            }
+
+            // If I reached the target but never swapped it, forget about it and start to wander around
+            if (PathToUse.Route != null && !PathToUse.Route.Any() && CurrentTarget != null && PathToUse.Destination == CurrentTarget.Position)
+                CurrentTarget = null;
+
+            // If I somehow got thrown away from the path towards the target (e.g. Teleport), recalculate it
+            if (PathToUse.Route != null && !PathToUse.Route.Any() && CurrentTarget != null && !Map.GetAdjacentTiles(Position, true).Contains(PathToUse.Route[0]))
+                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+
+            // If I somehow lost path towards the target but never swapped it, recalculate it
+            if (PathToUse.Route != null && !PathToUse.Route.Any() && CurrentTarget != null && PathToUse.Destination != CurrentTarget.Position)
+                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+
+            // Recalculate path if the target changed, or if they changed positions
+            if (CurrentTarget != null && (CurrentTarget != formerTarget || (CurrentTarget is Character ct && ct.ExistenceStatus != EntityExistenceStatus.Alive) || CurrentTarget.Position != LatestTargetPosition))
+                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+
+            LatestTargetPosition = CurrentTarget?.Position;
+        }
+
+        public bool ConsiderWalking()
+        {
+            if (CurrentTarget != null && CurrentTarget is Character tc)
+            {
+                // If I can pursue even if out of sight, I keep going as usual
+                if (PursuesOutOfSightCharacters)
+                    return false;
+
+                // If I can see the target, I keep going as usual
+                if (CanSee(tc))
+                    return false;
+
+                // If I can't see the target, I check if I can see their last four positions
+                for (int i = tc.LatestPositions.Count - 1; i >= 0; i--)
+                {
+                    var positionTile = Map.GetTileFromCoordinates(tc.LatestPositions[i]);
+                    // If I can see one of these last positions, I go there as they may still be in sight
+                    if (FOVTiles.Contains(positionTile))
                     {
-                        var possibleTiles = Map.GetFOVTilesWithinDistance(Position, action.MaximumRange)
-                                        .Select(t => ((ITargetable)t, Distance: (int)GamePoint.Distance(t.Position, Position))).ToList();
-                        if (!possibleTiles.Exists(t => t.Item1 == ContainingTile))
-                            possibleTiles.Add((ContainingTile, 0));
-                        if (possibleTiles.Any())
-                            yield return (action, possibleTiles.Where(t => t.Distance.Between(action.MinimumRange, action.MaximumRange)).ToList());
+                        CurrentTarget = positionTile;
+                        return true;
                     }
                 }
             }
-            foreach (var itemOnUse in Inventory.Select(i => i.OnUse))
+            else if (CurrentTarget is Tile tt)
             {
-                if (itemOnUse == null) continue;
-                yield return (itemOnUse, new List<(ITargetable Target, int Distance)> { (this, 0) });
-            }
-        }
-
-        private void PickADirectTargetIfPossible(IEnumerable<(ActionWithEffects Action, List<(ITargetable Target, int Distance)> PossibleTargets)> attackActionsWithValidTargets)
-        {
-            List<(ActionWithEffects Action, ITargetable Target, int Weight)> weightedActions = new();
-            foreach (var action in attackActionsWithValidTargets)
-            {
-                foreach (var target in action.PossibleTargets.Select(t => t.Target))
-                {
-                    if(action.Action.CanBeUsedOn(target, this))
-                        weightedActions.Add((action.Action, target, action.Action.GetActionWeightFor(target, this)));
-                }
-            }
-
-            if (!weightedActions.Any()) return;
-
-            var maxWeight = weightedActions.Max(a => a.Weight);
-            var actionsWithMaxWeight = weightedActions.Where(a => a.Weight == maxWeight);
-            var actionToUse = actionsWithMaxWeight.TakeRandomElement(Rng);
-
-            CurrentAction = actionToUse.Action;
-            CurrentTarget = actionToUse.Target;
-
-            if (CurrentTarget != this && CurrentTarget != ContainingTile)
-                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position));
-            else
-                PathToUse = (null, null);
-        }
-
-        private void PickADistantTargetIfPossible()
-        {
-            var minimumMaximumRange = OnAttack.Where(oaa => oaa.MayBeUsed).Min(oaa => oaa.MaximumRange);
-            var attackActionsWithMinimumMaximumRange = OnAttack.Where(oaa => oaa.MayBeUsed && oaa.MaximumRange == minimumMaximumRange);
-            var closestTargets = GetClosestTargets(attackActionsWithMinimumMaximumRange.TakeRandomElement(Rng));
-
-            if (!closestTargets.Any()) return;
-
-            var pickedTarget = closestTargets.TakeRandomElement(Rng);
-            var destination = pickedTarget.Position;
-            var distance = (int)GamePoint.Distance(pickedTarget.Position, Position);
-            var minimumMinimumRange = attackActionsWithMinimumMaximumRange.Min(aawmmr => aawmmr.MinimumRange);
-
-            if (distance < minimumMinimumRange)
-            {
-                if (PathToUse.Destination != null && GamePoint.Distance(PathToUse.Destination, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange))
-                {
-                    destination = PathToUse.Destination;
-                }
-                else
-                {
-                    var possibleDestinations = Map.Tiles.GetElementsWithinDistance(Position.Y, Position.X, minimumMaximumRange, true)
-                                    .Where(t => t.IsWalkable && !t.IsOccupied && GamePoint.Distance(t.Position, pickedTarget.Position).Between(minimumMinimumRange, minimumMaximumRange));
-                    var paths = possibleDestinations.Select(pd => Map.GetPathBetweenTiles(Position, pd.Position)).Where(p => p.Any()).ToList();
-                    var minLength = paths.Min(p => p.Count);
-                    var pathWithMinLength = paths.First(p => p.Count == minLength);
-                    destination = pathWithMinLength[pathWithMinLength.Count - 1].Position;
-                }
-            }
-
-            CurrentTarget = pickedTarget;
-            PathToUse = (Destination: destination, Route: Map.GetPathBetweenTiles(Position, destination));
-        }
-
-        public bool TileCanBeApproached(Tile t)
-        {
-            return t != null && t.IsWalkable && t != ContainingTile && (!t.IsOccupied || (CurrentTarget != null && t.LivingCharacter == CurrentTarget)) && FOVTiles.Contains(t);
-        }
-
-        private bool GetAnApproachablePath(IEnumerable<Tile> adjacentTiles, out List<Tile> pickedPath)
-        {
-            foreach (var adjacentTile in adjacentTiles)
-            {
-                // Exclude the previous tile from the path to avoid walking in circles
-                if (!TileCanBeApproached(adjacentTile) || adjacentTile.Position.Equals(LastPosition)) continue;
-                var pathToDestination = Map.GetPathBetweenTiles(adjacentTile.Position, PathToUse.Destination);
-                if (pathToDestination == null) continue;
-
-                // Exclude the current tile from the path to avoid walking in circles
-                if (pathToDestination.Any() && !pathToDestination.Contains(ContainingTile))
-                {
-                    pathToDestination.Insert(0, ContainingTile);
-                    pickedPath = pathToDestination;
+                // If I haven't reached the target Tile, I keep going as usual
+                if (tt != ContainingTile)
                     return true;
-                }
             }
-            pickedPath = null;
-            return false;
+
+            if (!WandersIfWithoutTarget)
+                return false;
+
+            // IF EITHER
+            //    a)  I can't see my target nor their last four positions (they got out of sight)
+            //    b)  I've reached my target Tile and I haven't seen any target
+            // THEN
+            //      I change my target to a random Tile in a random Room that isn't mine (preferably one I haven't seen yet)
+            //      And I take a step there
+
+            var pickableRooms = new List<Room>();
+
+            if (Map.Rooms.All(VisitedRooms.Contains))
+                pickableRooms = Map.Rooms;
+            else
+                pickableRooms = Map.Rooms.Except(VisitedRooms).ToList();
+
+            var anotherRoom = pickableRooms.Where(r => r != ContainingRoom).TakeRandomElement(Rng);
+            var aTileInAnotherRoom = anotherRoom.GetTiles().Where(t => t.IsWalkable && !t.IsHarmfulFor(this)).TakeRandomElement(Rng);
+
+            CurrentTarget = aTileInAnotherRoom;
+            PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+
+            return true;
         }
 
-        public void AttackOrMove()
+        public bool ConsiderUsingActionOnSelf()
         {
-            if(ExistenceStatus != EntityExistenceStatus.Alive
-                || CurrentTarget == null)
+            // Get all the OnAttack that target Self, and all the OnItemUse in the Inventory
+            var onAttackOnSelf = OnAttack.Where(oa => oa.TargetTypes.Contains(TargetType.Self)).ToList();
+            var onItemUses = Inventory.Select(i => i.OnUse).Where(a => a != null).ToList();
+            var possibleActionsOnSelf = onAttackOnSelf.Union(onItemUses);
+            var actionsAndWeights = new List<(ActionWithEffects Action, int Weight)>();
+            foreach (var action in possibleActionsOnSelf)
             {
+                var weight = action.GetActionWeightFor(CurrentTarget, this);
+                if(weight > 0)
+                    actionsAndWeights.Add((action, weight));
+            }
+
+            // There's some chance I won't use an item at all
+            actionsAndWeights.Add((null, 55));
+            var pickedAction = actionsAndWeights.TakeRandomElementWithWeights(aaw => aaw.Weight, Rng);
+
+            if (pickedAction.Action == null)
+                return false;
+
+            if (!pickedAction.Action.ChecksCondition(this, this) || !pickedAction.Action.ChecksAICondition(this, this))
+                return false;
+
+            pickedAction.Action.Do(this, this, true);
+            if (pickedAction.Action.FinishesTurnWhenUsed)
+                TookAction = true;
+
+            return true;
+        }
+
+        public bool ConsiderUsingActionOnTile()
+        {
+            if (CurrentTarget is not Character c || !CanSee(c)) 
+                return false;   // I won't do anything to a Tile if I don't have my Target on sight
+            
+            var possibleActionsOnTiles = OnAttack.Where(oa => oa.TargetTypes.Contains(TargetType.Tile));
+
+            if (!possibleActionsOnTiles.Any())
+                return false;
+
+            var validDistances = new List<int>();
+            foreach (var action in possibleActionsOnTiles)
+            {
+                for (int i = action.MinimumRange; i <= action.MaximumRange; i++)
+                {
+                    validDistances.Add(i);
+                }
+            }
+            validDistances = validDistances.Distinct().ToList();
+
+            // Get all the Tiles where I can use an Action on
+            var tilesWithinMaxDistance = Map.GetFOVTilesWithinDistance(Position, validDistances.Max());
+
+            var actionsAndWeights = new List<(ActionWithEffects Action, Tile Tile, int Weight)>();
+
+            foreach (var tile in tilesWithinMaxDistance)
+            {
+                var hasActionsForTile = false;
+                foreach (var action in possibleActionsOnTiles)
+                {
+                    if (!action.CanBeUsedOnTile(tile, this)) continue;
+                    var weight = action.GetActionWeightFor(tile, this);
+                    if (weight > 0)
+                    {
+                        actionsAndWeights.Add((action, tile, weight));
+                        hasActionsForTile = true;
+                    }
+                }
+                // Add a chance where I won't do anything on a Tile
+                if(hasActionsForTile)
+                    actionsAndWeights.Add((null, null, 25));
+            }
+            var pickedAction = actionsAndWeights.TakeRandomElementWithWeights(aaw => aaw.Weight, Rng);
+
+            if (pickedAction.Action == null)
+                return false;
+
+            if (!pickedAction.Action.ChecksCondition(this, CurrentTarget) || !pickedAction.Action.ChecksAICondition(this, CurrentTarget))
+                return false;
+
+            pickedAction.Action.Do(this, pickedAction.Tile, true);
+            if (pickedAction.Action.FinishesTurnWhenUsed)
+                TookAction = true;
+
+            return true;
+        }
+
+        public bool ConsiderUsingActionOnTarget()
+        {
+            var currentTargetInfo = KnownCharacters.Find(kc => kc.Character == CurrentTarget);
+            if (currentTargetInfo == default)
+                return false; // This ideally shouldn't happen, but in case it does...
+            var distanceToTarget = GamePoint.Distance(Position, CurrentTarget.Position);
+            var possibleActionsOnTarget = OnAttack.Where(oa => oa.TargetTypes.Contains(currentTargetInfo.TargetType)).ToList();
+            var actionsAndWeights = new List<(ActionWithEffects Action, int Weight)>();
+            foreach (var action in possibleActionsOnTarget)
+            {
+                if (!action.ChecksCondition(this, CurrentTarget) || !action.ChecksAICondition(this, CurrentTarget)) continue;
+                var weight = action.GetActionWeightFor(CurrentTarget, this);
+                if (weight > 0)
+                    actionsAndWeights.Add((action, weight));
+            }
+
+            if (!actionsAndWeights.Any())
+                return false;
+
+            var pickedAction = actionsAndWeights.TakeRandomElementWithWeights(aaw => aaw.Weight, Rng);
+
+            if (pickedAction.Action == null)
+                return false;
+
+            if (distanceToTarget > pickedAction.Action.MaximumRange)
+                return false;   // I must get closer
+            else if (distanceToTarget < pickedAction.Action.MinimumRange)
+            {
+                // I must move further
+                var tilesAtMinimumRangeFromTarget = Map.GetTilesWithinDistance(CurrentTarget.Position, pickedAction.Action.MinimumRange).Where(t => t.IsWalkable && !t.IsOccupied);
+                var visibleTilesAtMinimumRangeFromTarget = FOVTiles.Intersect(tilesAtMinimumRangeFromTarget);
+                if (!visibleTilesAtMinimumRangeFromTarget.Any())
+                    return false; // No valid tile, don't do anything
+                var tilesAndWeights = new List<(Tile Tile, int Weight)>();
+                foreach (var tile in visibleTilesAtMinimumRangeFromTarget)
+                {
+                    tilesAndWeights.Add((tile, (int) (1 / (GamePoint.Distance(Position, tile.Position) / 10)) * 100));
+                }
+                var pickedTile = tilesAndWeights.TakeRandomElementWithWeights(taw => taw.Weight, Rng);
+                CurrentTarget = pickedTile.Tile;
+                return false;
+            }
+
+            pickedAction.Action.Do(this, CurrentTarget, true);
+            if (pickedAction.Action.FinishesTurnWhenUsed)
+                TookAction = true;
+
+            return true;
+        }
+
+        public void TryToMoveToTarget()
+        {
+            // Check if I the path I was going to use could be used
+            RecalculatePathIfNeeded();
+            if (PathToUse.Route == null || !PathToUse.Route.Any())
+            {
+                // Finish turn if I'm not going to move
                 RemainingMovement = 0;
                 TookAction = true;
                 return;
             }
-
-            if(CurrentTarget != this)
+            var nextTile = PathToUse.Route[0];
+            if (!nextTile.IsWalkable || nextTile.IsOccupied)
             {
-                if (CurrentAction != null && CurrentAction.CanBeUsedOn(CurrentTarget))
-                {
-                    if(!CurrentAction.TargetTypes.Contains(TargetType.Tile))
-                        AttackCharacter(CurrentTarget as Character, CurrentAction);
-                    else
-                        InteractWithTile(CurrentTarget as Tile, CurrentAction);
-                }
-                else
-                {
-                    var validActions = OnAttack.Where(oaa => oaa.CanBeUsedOn(CurrentTarget));
-                    if (validActions.Any())
-                    {
-                        List<(ActionWithEffects Action, ITargetable Target, int Weight)> weightedActions = new();
-                        foreach (var action in validActions)
-                        {
-                            weightedActions.Add((action, CurrentTarget, action.GetActionWeightFor(CurrentTarget, this)));
-                        }
-                        var maxWeight = weightedActions.Max(a => a.Weight);
-                        var actionsWithMaxWeight = weightedActions.Where(a => a.Weight == maxWeight);
-                        if (actionsWithMaxWeight.Any())
-                        {
-                            var pickedAction = actionsWithMaxWeight.TakeRandomElement(Rng).Action;
-                            if(!pickedAction.TargetTypes.Contains(TargetType.Tile))
-                                AttackCharacter(CurrentTarget as Character, pickedAction);
-                            else
-                                InteractWithTile(CurrentTarget as Tile, pickedAction);
-                        }
-                        else
-                            MoveTo(PathToUse.Destination);
-                    }
-                    else
-                        MoveTo(PathToUse.Destination);
-                }
-            }
-            else
-            {
-                if (CurrentAction != null && CurrentAction.CanBeUsedOn(this))
-                    AttackCharacter(this, CurrentAction);
-                else
-                {
-                    var possibleActionsOnSelf = new List<(ActionWithEffects action, Item item)>();
-                    foreach (var onAttackAction in OnAttack.Where(oaa => oaa.CanBeUsedOn(this)))
-                    {
-                        possibleActionsOnSelf.Add((onAttackAction, null));
-                    }
-                    foreach (var item in Inventory.Where(i => i.EntityType == EntityType.Consumable))
-                    {
-                        if (item.OnUse.MayBeUsed)
-                            possibleActionsOnSelf.Add((item.OnUse, item));
-                    }
-                    if (possibleActionsOnSelf.Any())
-                    {
-                        List<(ActionWithEffects Action, ITargetable Target, int Weight)> weightedActions = new();
-                        foreach (var action in possibleActionsOnSelf)
-                        {
-                            weightedActions.Add((action.action, this, action.action.GetActionWeightFor(this, this)));
-                        }
-                        var maxWeight = weightedActions.Max(a => a.Weight);
-                        var actionsWithMaxWeight = weightedActions.Where(a => a.Weight == maxWeight);
-                        if (actionsWithMaxWeight.Any())
-                        {
-                            var pickedAction = actionsWithMaxWeight.TakeRandomElement(Rng).Action;
-                            var (action, item) = possibleActionsOnSelf.Find(paos => paos.action == pickedAction);
-                            if (item == null)
-                            {
-                                if (!pickedAction.TargetTypes.Contains(TargetType.Tile))
-                                    AttackCharacter(this, pickedAction);
-                                else
-                                    InteractWithTile(ContainingTile, pickedAction);
-                            }
-                            else
-                                action?.Do(item, this, true);
-                        }
-                    }
-                }
-            }
-        }
-
-        public void MoveTo(GamePoint p)
-        {
-            if (p == null)
-            {
+                // If I can't move to the next Tile, even after recalculating, don't move
                 RemainingMovement = 0;
-            }
-
-            if (RemainingMovement == 0)
-            {
-                if(Movement.Current == 0)
-                    TookAction = true;
                 return;
             }
-
-            // We store the latest used path to avoid unnecessary recalculations.
-            var path = p.Equals(PathToUse.Destination) ? PathToUse : (Destination: p, Route: Map.GetPathBetweenTiles(Position, p));
-
-            if (path.Route?.Any() == true)
+            if (Map.TryMoveCharacter(this, nextTile))
             {
-                if (path.Route[0].Position.Equals(Position))
-                    path.Route = path.Route.Skip(1).ToList();
-
-                if (path.Route.Any() && path.Route[0] != ContainingTile && Map.TryMoveCharacter(this, path.Route[0]))
-                    PathToUse = path;
-                else
+                PathToUse.Route = PathToUse.Route.Skip(1).ToList();
+                if (RemainingMovement == 0)
+                    TookAction = true;
+            }
+        }
+        
+        private void RecalculatePathIfNeeded()
+        {
+            if (PathToUse.Route != null && PathToUse.Route.Any())
+            {
+                var nextTile = PathToUse.Route[0];
+                // If my next Tile is impossible to step on, find another viable path from adjacent Tiles
+                if (!nextTile.IsWalkable || nextTile.IsOccupied)
                 {
-                    PathToUse.Destination = null;
-                    RemainingMovement = 0;
-                    if (Movement.Current == 0)
-                        TookAction = true;
+                    var adjacentTiles = Map.GetAdjacentWalkableTiles(Position, true);
+                    var pathsFromAdjacentTiles = new List<List<Tile>>();
+                    foreach (var tile in adjacentTiles)
+                    {
+                        if (tile.IsOccupied) continue;
+                        pathsFromAdjacentTiles.Add(Map.GetPathBetweenTiles(tile.Position, CurrentTarget.Position));
+                    }
+                    if (pathsFromAdjacentTiles.Any())
+                        PathToUse.Route = pathsFromAdjacentTiles.TakeRandomElement(Rng);
+                    else
+                        PathToUse = default; // Forget about this route if it's impossible to reach
                 }
             }
         }
 
         public void UpdateKnownCharacterList()
         {
-            PursuableCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
             KnownCharacters.RemoveAll(kc => kc.Character.ExistenceStatus != EntityExistenceStatus.Alive);     // Don't target the dead (yet?)
             if(KnowsAllCharacterPositions)
             {
@@ -360,25 +402,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 });
             }
-            FOVTiles.ForEach(t =>
-            {
-                if (Map.GetEntitiesFromCoordinates(t.Position).Find(e => !e.Passable && e.ExistenceStatus == EntityExistenceStatus.Alive) is Character characterInTile
-                    && CanSee(characterInTile)
-                    && !PursuableCharacters.Select(kc => kc.Character).Contains(characterInTile))
-                {
-                    PursuableCharacters.Add((characterInTile, CalculateTargetTypeFor(characterInTile)));
-                }
-            });
-        }
-
-        public List<Character> GetClosestTargets(ActionWithEffects action)
-        {
-            List<(Character target, int distance)> targetsAndDistances = new();
-            PursuableCharacters.Where(pc => action.TargetTypes.Contains(pc.TargetType))
-                .ForEach(t => targetsAndDistances.Add((t.Character, (int)Math.Ceiling(GamePoint.Distance(Position, t.Character.Position)))));
-            if (!targetsAndDistances.Any()) return new List<Character>();
-            var minimumDistance = targetsAndDistances.Min(tad => tad.distance);
-            return targetsAndDistances.Where(tad => tad.distance == minimumDistance).Select(tad => tad.target).ToList();
         }
 
         public void ClearKnownCharacters()

@@ -102,12 +102,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 txtActionCondition.Enabled = true;
                 txtActionCondition.Text = ActionToSave?.UseCondition;
                 fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
+                txtActionAICondition.Enabled = true;
+                txtActionAICondition.Text = ActionToSave?.AIUseCondition;
+                fklblAIConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionAICondition.Text);
             }
             else
             {
                 txtActionCondition.Enabled = false;
                 txtActionCondition.Text = "";
                 fklblConditionWarning.Visible = false;
+                txtActionAICondition.Enabled = false;
+                txtActionAICondition.Text = "";
+                fklblAIConditionWarning.Visible = false;
             }
 
             if (TurnEndCriteria == TurnEndCriteria.CannotEndTurn)
@@ -715,6 +721,26 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionCondition.Text);
         }
 
+        private void txtActionAICondition_Enter(object sender, EventArgs e)
+        {
+            PreviousTextBoxValue = txtActionAICondition.Text;
+        }
+
+        private void txtActionAICondition_Leave(object sender, EventArgs e)
+        {
+            if (!txtActionAICondition.Text.TestBooleanExpression(out string errorMessage))
+            {
+                MessageBox.Show(
+                    $"You have entered an invalid value: {errorMessage}.",
+                    "Invalid condition",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                txtActionAICondition.Text = PreviousTextBoxValue;
+            }
+            fklblAIConditionWarning.Visible = !string.IsNullOrWhiteSpace(txtActionAICondition.Text);
+        }
+
         private void rbEntity_CheckedChanged(object sender, EventArgs e)
         {
             if (!rbTile.Checked)
@@ -829,7 +855,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             e.Node.BackColor = Color.LightSkyBlue;
 
             int x = e.Bounds.Left;
-            var spaceWidth = (int) e.Graphics.MeasureString(" ", tvEffectSequence.Font).Width;
+            var spaceWidth = (int)e.Graphics.MeasureString(" ", tvEffectSequence.Font).Width;
 
             var nodeAsItIsDrawn = string.Empty;
 
