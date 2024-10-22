@@ -4,9 +4,8 @@ namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface IAIControlled
     {
-        void PickTargetAndPath();
-        void AttackOrMove();
-        void MoveTo(GamePoint p);
+        void ProcessAI();
+        void TryToMoveToTarget();
         void UpdateKnownCharacterList();
     }
 }

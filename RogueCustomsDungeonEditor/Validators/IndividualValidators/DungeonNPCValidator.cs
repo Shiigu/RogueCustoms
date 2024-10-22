@@ -49,12 +49,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("AIType must not be empty.");
             else if (!Enum.TryParse<AIType>(npcJson.AIType, true, out _))
                 messages.AddError("AIType does not contain a valid value.");
-            if (npcJson.AIOddsToUseActionsOnSelf < 0)
-                messages.AddError("AIOddsToUseActionsOnSelf must be 0 or higher.");
-            else if (npcJson.AIOddsToUseActionsOnSelf == 0 && npcJson.InventorySize > 0)
-                messages.AddWarning("AIOddsToUseActionsOnSelf is 0 but Inventory Size is above 0. It won't be able to use any items it carries.");
-            else if (npcJson.AIOddsToUseActionsOnSelf > 0 && npcJson.InventorySize == 0)
-                messages.AddWarning("AIOddsToUseActionsOnSelf is above 0 but Inventory Size is 0. Unable to carry any items, AIOddsToUseActionsOnSelf won't have any effect.");
 
             try
             {

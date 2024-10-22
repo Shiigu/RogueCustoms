@@ -787,6 +787,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 Faction = "",
                 StartsVisible = true,
                 KnowsAllCharacterPositions = true,
+                PursuesOutOfSightCharacters = true,
+                WandersIfWithoutTarget = true,
                 ExperiencePayoutFormula = "level",
                 Stats = new(),
                 BaseSightRange = "FullRoom",
@@ -801,8 +803,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 OnAttack = new(),
                 OnAttacked = new(),
                 OnDeath = new(),
-                AIType = "Default",
-                AIOddsToUseActionsOnSelf = 0
+                AIType = "Default"
             };
 
             foreach (var stat in stats)

@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(NPCTab));
-            lblNPCAIOddsToTargetSelfB = new System.Windows.Forms.Label();
-            nudNPCOddsToTargetSelf = new System.Windows.Forms.NumericUpDown();
             cmbNPCAIType = new System.Windows.Forms.ComboBox();
             label20 = new System.Windows.Forms.Label();
             maeNPCOnInteracted = new MultiActionEditor();
@@ -41,7 +39,6 @@
             saeNPCOnAttacked = new SingleActionEditor();
             saeNPCOnTurnStart = new SingleActionEditor();
             maeNPCOnAttack = new MultiActionEditor();
-            lblNPCAIOddsToTargetSelfA = new System.Windows.Forms.Label();
             txtNPCExperiencePayout = new System.Windows.Forms.TextBox();
             label103 = new System.Windows.Forms.Label();
             chkNPCKnowsAllCharacterPositions = new System.Windows.Forms.CheckBox();
@@ -64,43 +61,26 @@
             txtNPCName = new System.Windows.Forms.TextBox();
             label101 = new System.Windows.Forms.Label();
             crsNPC = new ConsoleRepresentationSelector();
-            ((System.ComponentModel.ISupportInitialize)nudNPCOddsToTargetSelf).BeginInit();
+            label1 = new System.Windows.Forms.Label();
+            chkNPCPursuesOutOfSightCharacters = new System.Windows.Forms.CheckBox();
+            chkNPCWandersIfWithoutTarget = new System.Windows.Forms.CheckBox();
+            label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
             SuspendLayout();
-            // 
-            // lblNPCAIOddsToTargetSelfB
-            // 
-            lblNPCAIOddsToTargetSelfB.AutoSize = true;
-            lblNPCAIOddsToTargetSelfB.Location = new System.Drawing.Point(325, 936);
-            lblNPCAIOddsToTargetSelfB.Name = "lblNPCAIOddsToTargetSelfB";
-            lblNPCAIOddsToTargetSelfB.Size = new System.Drawing.Size(17, 15);
-            lblNPCAIOddsToTargetSelfB.TabIndex = 252;
-            lblNPCAIOddsToTargetSelfB.Text = "%";
-            lblNPCAIOddsToTargetSelfB.Visible = false;
-            // 
-            // nudNPCOddsToTargetSelf
-            // 
-            nudNPCOddsToTargetSelf.Location = new System.Drawing.Point(282, 934);
-            nudNPCOddsToTargetSelf.Name = "nudNPCOddsToTargetSelf";
-            nudNPCOddsToTargetSelf.Size = new System.Drawing.Size(41, 23);
-            nudNPCOddsToTargetSelf.TabIndex = 241;
-            nudNPCOddsToTargetSelf.Visible = false;
-            nudNPCOddsToTargetSelf.ValueChanged += nudNPCOddsToTargetSelf_ValueChanged;
             // 
             // cmbNPCAIType
             // 
             cmbNPCAIType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCAIType.FormattingEnabled = true;
-            cmbNPCAIType.Location = new System.Drawing.Point(196, 902);
+            cmbNPCAIType.Location = new System.Drawing.Point(193, 328);
             cmbNPCAIType.Name = "cmbNPCAIType";
             cmbNPCAIType.Size = new System.Drawing.Size(146, 23);
             cmbNPCAIType.TabIndex = 251;
-            cmbNPCAIType.SelectedIndexChanged += cmbNPCAIType_SelectedIndexChanged;
             // 
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new System.Drawing.Point(8, 905);
+            label20.Location = new System.Drawing.Point(5, 331);
             label20.Name = "label20";
             label20.Size = new System.Drawing.Size(174, 15);
             label20.TabIndex = 250;
@@ -114,7 +94,7 @@
             maeNPCOnInteracted.ClassId = null;
             maeNPCOnInteracted.Dungeon = null;
             maeNPCOnInteracted.EffectParamData = null;
-            maeNPCOnInteracted.Location = new System.Drawing.Point(8, 724);
+            maeNPCOnInteracted.Location = new System.Drawing.Point(6, 644);
             maeNPCOnInteracted.Name = "maeNPCOnInteracted";
             maeNPCOnInteracted.PlaceholderActionName = null;
             maeNPCOnInteracted.RequiresActionName = true;
@@ -138,7 +118,7 @@
             saeNPCOnSpawn.ClassId = null;
             saeNPCOnSpawn.Dungeon = null;
             saeNPCOnSpawn.EffectParamData = null;
-            saeNPCOnSpawn.Location = new System.Drawing.Point(8, 548);
+            saeNPCOnSpawn.Location = new System.Drawing.Point(6, 468);
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
             saeNPCOnSpawn.PlaceholderActionName = "TurnStart";
             saeNPCOnSpawn.RequiresActionName = false;
@@ -162,14 +142,15 @@
             ssNPC.Location = new System.Drawing.Point(380, 92);
             ssNPC.MaxLevel = 1;
             ssNPC.Name = "ssNPC";
-            ssNPC.Size = new System.Drawing.Size(331, 772);
+            ssNPC.Size = new System.Drawing.Size(303, 408);
+            ssNPC.StatInfos = null;
             ssNPC.TabIndex = 247;
             // 
             // sisNPCStartingInventory
             // 
             sisNPCStartingInventory.Inventory = (System.Collections.Generic.List<string>)resources.GetObject("sisNPCStartingInventory.Inventory");
             sisNPCStartingInventory.InventorySize = 0;
-            sisNPCStartingInventory.Location = new System.Drawing.Point(8, 430);
+            sisNPCStartingInventory.Location = new System.Drawing.Point(387, 587);
             sisNPCStartingInventory.Name = "sisNPCStartingInventory";
             sisNPCStartingInventory.SelectableItems = null;
             sisNPCStartingInventory.Size = new System.Drawing.Size(293, 79);
@@ -185,7 +166,7 @@
             saeNPCOnDeath.ClassId = null;
             saeNPCOnDeath.Dungeon = null;
             saeNPCOnDeath.EffectParamData = null;
-            saeNPCOnDeath.Location = new System.Drawing.Point(8, 864);
+            saeNPCOnDeath.Location = new System.Drawing.Point(6, 784);
             saeNPCOnDeath.Name = "saeNPCOnDeath";
             saeNPCOnDeath.PlaceholderActionName = "Death";
             saeNPCOnDeath.RequiresActionName = false;
@@ -209,7 +190,7 @@
             saeNPCOnAttacked.ClassId = null;
             saeNPCOnAttacked.Dungeon = null;
             saeNPCOnAttacked.EffectParamData = null;
-            saeNPCOnAttacked.Location = new System.Drawing.Point(8, 824);
+            saeNPCOnAttacked.Location = new System.Drawing.Point(6, 744);
             saeNPCOnAttacked.Name = "saeNPCOnAttacked";
             saeNPCOnAttacked.PlaceholderActionName = "Interacted";
             saeNPCOnAttacked.RequiresActionName = false;
@@ -233,7 +214,7 @@
             saeNPCOnTurnStart.ClassId = null;
             saeNPCOnTurnStart.Dungeon = null;
             saeNPCOnTurnStart.EffectParamData = null;
-            saeNPCOnTurnStart.Location = new System.Drawing.Point(8, 586);
+            saeNPCOnTurnStart.Location = new System.Drawing.Point(6, 506);
             saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
             saeNPCOnTurnStart.PlaceholderActionName = "TurnStart";
             saeNPCOnTurnStart.RequiresActionName = false;
@@ -255,7 +236,7 @@
             maeNPCOnAttack.ClassId = null;
             maeNPCOnAttack.Dungeon = null;
             maeNPCOnAttack.EffectParamData = null;
-            maeNPCOnAttack.Location = new System.Drawing.Point(8, 624);
+            maeNPCOnAttack.Location = new System.Drawing.Point(6, 544);
             maeNPCOnAttack.Name = "maeNPCOnAttack";
             maeNPCOnAttack.PlaceholderActionName = null;
             maeNPCOnAttack.RequiresActionName = true;
@@ -269,19 +250,9 @@
             maeNPCOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
             maeNPCOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
-            // lblNPCAIOddsToTargetSelfA
-            // 
-            lblNPCAIOddsToTargetSelfA.AutoSize = true;
-            lblNPCAIOddsToTargetSelfA.Location = new System.Drawing.Point(8, 936);
-            lblNPCAIOddsToTargetSelfA.Name = "lblNPCAIOddsToTargetSelfA";
-            lblNPCAIOddsToTargetSelfA.Size = new System.Drawing.Size(276, 15);
-            lblNPCAIOddsToTargetSelfA.TabIndex = 240;
-            lblNPCAIOddsToTargetSelfA.Text = "Odds for NPC to target themselves with an Action: ";
-            lblNPCAIOddsToTargetSelfA.Visible = false;
-            // 
             // txtNPCExperiencePayout
             // 
-            txtNPCExperiencePayout.Location = new System.Drawing.Point(116, 295);
+            txtNPCExperiencePayout.Location = new System.Drawing.Point(114, 267);
             txtNPCExperiencePayout.Name = "txtNPCExperiencePayout";
             txtNPCExperiencePayout.Size = new System.Drawing.Size(242, 23);
             txtNPCExperiencePayout.TabIndex = 239;
@@ -291,7 +262,7 @@
             // label103
             // 
             label103.AutoSize = true;
-            label103.Location = new System.Drawing.Point(8, 298);
+            label103.Location = new System.Drawing.Point(6, 270);
             label103.Name = "label103";
             label103.Size = new System.Drawing.Size(104, 15);
             label103.TabIndex = 238;
@@ -300,7 +271,7 @@
             // chkNPCKnowsAllCharacterPositions
             // 
             chkNPCKnowsAllCharacterPositions.AutoSize = true;
-            chkNPCKnowsAllCharacterPositions.Location = new System.Drawing.Point(8, 266);
+            chkNPCKnowsAllCharacterPositions.Location = new System.Drawing.Point(6, 362);
             chkNPCKnowsAllCharacterPositions.Name = "chkNPCKnowsAllCharacterPositions";
             chkNPCKnowsAllCharacterPositions.Size = new System.Drawing.Size(361, 19);
             chkNPCKnowsAllCharacterPositions.TabIndex = 237;
@@ -312,7 +283,7 @@
             // 
             label67.AutoSize = true;
             label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label67.Location = new System.Drawing.Point(136, 512);
+            label67.Location = new System.Drawing.Point(129, 444);
             label67.Name = "label67";
             label67.Size = new System.Drawing.Size(67, 21);
             label67.TabIndex = 236;
@@ -322,7 +293,7 @@
             // 
             cmbNPCStartingArmor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCStartingArmor.FormattingEnabled = true;
-            cmbNPCStartingArmor.Location = new System.Drawing.Point(141, 360);
+            cmbNPCStartingArmor.Location = new System.Drawing.Point(520, 708);
             cmbNPCStartingArmor.Name = "cmbNPCStartingArmor";
             cmbNPCStartingArmor.Size = new System.Drawing.Size(158, 23);
             cmbNPCStartingArmor.TabIndex = 235;
@@ -331,7 +302,7 @@
             // label70
             // 
             label70.AutoSize = true;
-            label70.Location = new System.Drawing.Point(8, 363);
+            label70.Location = new System.Drawing.Point(387, 711);
             label70.Name = "label70";
             label70.Size = new System.Drawing.Size(131, 15);
             label70.TabIndex = 234;
@@ -341,7 +312,7 @@
             // 
             cmbNPCStartingWeapon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCStartingWeapon.FormattingEnabled = true;
-            cmbNPCStartingWeapon.Location = new System.Drawing.Point(134, 329);
+            cmbNPCStartingWeapon.Location = new System.Drawing.Point(513, 677);
             cmbNPCStartingWeapon.Name = "cmbNPCStartingWeapon";
             cmbNPCStartingWeapon.Size = new System.Drawing.Size(165, 23);
             cmbNPCStartingWeapon.TabIndex = 233;
@@ -350,7 +321,7 @@
             // label71
             // 
             label71.AutoSize = true;
-            label71.Location = new System.Drawing.Point(8, 332);
+            label71.Location = new System.Drawing.Point(387, 680);
             label71.Name = "label71";
             label71.Size = new System.Drawing.Size(123, 15);
             label71.TabIndex = 232;
@@ -359,7 +330,7 @@
             // label73
             // 
             label73.AutoSize = true;
-            label73.Location = new System.Drawing.Point(167, 393);
+            label73.Location = new System.Drawing.Point(546, 550);
             label73.Name = "label73";
             label73.Size = new System.Drawing.Size(36, 15);
             label73.TabIndex = 231;
@@ -367,7 +338,7 @@
             // 
             // nudNPCInventorySize
             // 
-            nudNPCInventorySize.Location = new System.Drawing.Point(116, 388);
+            nudNPCInventorySize.Location = new System.Drawing.Point(495, 545);
             nudNPCInventorySize.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudNPCInventorySize.Name = "nudNPCInventorySize";
             nudNPCInventorySize.Size = new System.Drawing.Size(45, 23);
@@ -377,7 +348,7 @@
             // label74
             // 
             label74.AutoSize = true;
-            label74.Location = new System.Drawing.Point(8, 391);
+            label74.Location = new System.Drawing.Point(387, 548);
             label74.Name = "label74";
             label74.Size = new System.Drawing.Size(109, 15);
             label74.TabIndex = 229;
@@ -502,13 +473,57 @@
             crsNPC.TabIndex = 242;
             crsNPC.PropertyChanged += crsNPC_PropertyChanged;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Location = new System.Drawing.Point(485, 510);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(85, 21);
+            label1.TabIndex = 252;
+            label1.Text = "Inventory";
+            // 
+            // chkNPCPursuesOutOfSightCharacters
+            // 
+            chkNPCPursuesOutOfSightCharacters.AutoSize = true;
+            chkNPCPursuesOutOfSightCharacters.Location = new System.Drawing.Point(6, 387);
+            chkNPCPursuesOutOfSightCharacters.Name = "chkNPCPursuesOutOfSightCharacters";
+            chkNPCPursuesOutOfSightCharacters.Size = new System.Drawing.Size(292, 19);
+            chkNPCPursuesOutOfSightCharacters.TabIndex = 253;
+            chkNPCPursuesOutOfSightCharacters.Text = "Will pursue a target Character (even if out of sight)";
+            chkNPCPursuesOutOfSightCharacters.UseVisualStyleBackColor = true;
+            chkNPCPursuesOutOfSightCharacters.CheckedChanged += chkNPCPursuesOutOfSightCharacters_CheckedChanged;
+            // 
+            // chkWandersIfWithoutTarget
+            // 
+            chkNPCWandersIfWithoutTarget.AutoSize = true;
+            chkNPCWandersIfWithoutTarget.Location = new System.Drawing.Point(6, 412);
+            chkNPCWandersIfWithoutTarget.Name = "chkWandersIfWithoutTarget";
+            chkNPCWandersIfWithoutTarget.Size = new System.Drawing.Size(282, 19);
+            chkNPCWandersIfWithoutTarget.TabIndex = 254;
+            chkNPCWandersIfWithoutTarget.Text = "Will wander around if there's no target Character";
+            chkNPCWandersIfWithoutTarget.UseVisualStyleBackColor = true;
+            chkNPCWandersIfWithoutTarget.CheckedChanged += chkNPCWandersIfWithoutTarget_CheckedChanged;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label2.Location = new System.Drawing.Point(170, 304);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(26, 21);
+            label2.TabIndex = 255;
+            label2.Text = "AI";
+            // 
             // NPCTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            Controls.Add(lblNPCAIOddsToTargetSelfB);
-            Controls.Add(nudNPCOddsToTargetSelf);
+            Controls.Add(label2);
+            Controls.Add(chkNPCWandersIfWithoutTarget);
+            Controls.Add(chkNPCPursuesOutOfSightCharacters);
+            Controls.Add(label1);
             Controls.Add(cmbNPCAIType);
             Controls.Add(label20);
             Controls.Add(maeNPCOnInteracted);
@@ -519,7 +534,6 @@
             Controls.Add(saeNPCOnAttacked);
             Controls.Add(saeNPCOnTurnStart);
             Controls.Add(maeNPCOnAttack);
-            Controls.Add(lblNPCAIOddsToTargetSelfA);
             Controls.Add(txtNPCExperiencePayout);
             Controls.Add(label103);
             Controls.Add(chkNPCKnowsAllCharacterPositions);
@@ -543,17 +557,13 @@
             Controls.Add(label101);
             Controls.Add(crsNPC);
             Name = "NPCTab";
-            Size = new System.Drawing.Size(714, 960);
-            ((System.ComponentModel.ISupportInitialize)nudNPCOddsToTargetSelf).EndInit();
+            Size = new System.Drawing.Size(714, 821);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblNPCAIOddsToTargetSelfB;
-        private System.Windows.Forms.NumericUpDown nudNPCOddsToTargetSelf;
         private System.Windows.Forms.ComboBox cmbNPCAIType;
         private System.Windows.Forms.Label label20;
         private MultiActionEditor maeNPCOnInteracted;
@@ -564,7 +574,6 @@
         private SingleActionEditor saeNPCOnAttacked;
         private SingleActionEditor saeNPCOnTurnStart;
         private MultiActionEditor maeNPCOnAttack;
-        private System.Windows.Forms.Label lblNPCAIOddsToTargetSelfA;
         private System.Windows.Forms.TextBox txtNPCExperiencePayout;
         private System.Windows.Forms.Label label103;
         private System.Windows.Forms.CheckBox chkNPCKnowsAllCharacterPositions;
@@ -587,5 +596,9 @@
         private System.Windows.Forms.TextBox txtNPCName;
         private System.Windows.Forms.Label label101;
         private ConsoleRepresentationSelector crsNPC;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkNPCPursuesOutOfSightCharacters;
+        private System.Windows.Forms.CheckBox chkNPCWandersIfWithoutTarget;
+        private System.Windows.Forms.Label label2;
     }
 }

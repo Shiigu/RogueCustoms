@@ -47,8 +47,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnInteracted { get; set; }
 
         public readonly bool KnowsAllCharacterPositions;
+        public readonly bool PursuesOutOfSightCharacters;
+        public readonly bool WandersIfWithoutTarget;
         public readonly AIType AIType;
-        public readonly int AIOddsToUseActionsOnSelf;
 
         #endregion
         public readonly string Power;
@@ -249,9 +250,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartsVisible = npcInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
-                AIOddsToUseActionsOnSelf = npcInfo.AIOddsToUseActionsOnSelf;
                 AIType = Enum.Parse<AIType>(npcInfo.AIType);
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
+                PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
+                WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;
                 OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn);
                 OnInteracted = new List<ActionWithEffects>();
                 MapActions(OnInteracted, npcInfo.OnInteracted);

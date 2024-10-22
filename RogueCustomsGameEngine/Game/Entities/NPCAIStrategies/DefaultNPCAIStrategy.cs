@@ -16,13 +16,10 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
     {
         public int GetActionWeight(ActionWithEffects action, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target)
         {
-            // Very heavily discourage NPCs from using actions that cannot be applied on the target in the current turn.
-            if (!action.CanBeUsedOn(Target, Source))
-                return int.MinValue;
+            var distanceFactor = action.MaximumRange > 1 ? (int)GamePoint.Distance(Source.Position, Target.Position) : 0;
 
-            var randomFactor = map.Rng.NextInclusive(50, 150) / 100f;
             var mpUseFactor = Source.MP != null ? (double) (action.MPCost / Source.MaxMP) : 0;
-            return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (randomFactor - mpUseFactor));
+            return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (1 - mpUseFactor) - 5 * distanceFactor);
         }
 
         public int GetEffectWeight(Effect effect, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target)
@@ -49,9 +46,9 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         damageDealt = 1;
                     damageDealt = (int)damageDealt;
                     if (damageDealt > targetAsCharacter.HP.Current)
-                        weight = 5000000;
+                        weight = 1000;
                     else
-                        weight = 250 + damageDealt * 50;
+                        weight = 5 + damageDealt * 5;
 
                     weight = (int)(weight * accuracyFactor);
                     break;
@@ -65,7 +62,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     var burnAmount = paramsObject.Power;
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         burnAmount = 1;
-                    weight = (int)((250 + burnAmount * 50) * accuracyFactor);
+                    weight = (int)((2 + burnAmount * 5) * accuracyFactor);
                     break;
 
                 case "RemoveHunger":
@@ -77,7 +74,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     var hungerRemoveAmount = paramsObject.Power;
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         hungerRemoveAmount = 1;
-                    weight = (int)((100 + hungerRemoveAmount * 50) * accuracyFactor);
+                    weight = (int)((1 + hungerRemoveAmount * 5) * accuracyFactor);
                     break;
 
                 case "StealItem":
@@ -93,7 +90,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         stealableItems.AddRange(targetAsCharacter.Inventory.Where(i => i.EntityType == EntityType.Consumable));
                     if (stealableItems.Any())
                     {
-                        weight = (int)(500 * accuracyFactor);
+                        weight = (int)(1 * accuracyFactor);
                     }
                     break;
 
@@ -106,7 +103,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     var healAmount = Math.Min(targetAsCharacter.MaxHP - targetAsCharacter.HP.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         healAmount = 1;
-                    weight = (int)((250 + healAmount * 50) * accuracyFactor);
+                    weight = (int)((3 + healAmount * 5) * accuracyFactor);
                     break;
 
                 case "ReplenishMP":
@@ -118,7 +115,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     var replenishAmount = Math.Min(targetAsCharacter.MaxMP - targetAsCharacter.MP.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         replenishAmount = 1;
-                    weight = (int)((250 + replenishAmount * 50) * accuracyFactor);
+                    weight = (int)((2 + replenishAmount * 5) * accuracyFactor);
                     break;
 
                 case "ReplenishHunger":
@@ -130,7 +127,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     replenishAmount = Math.Min(targetAsCharacter.MaxHunger - targetAsCharacter.Hunger.Current, paramsObject.Power);
                     if (paramsObject.Power > 0 && paramsObject.Power < 1)
                         replenishAmount = 1;
-                    weight = (int)((50 + replenishAmount * 50) * accuracyFactor);
+                    weight = (int)((1 + replenishAmount * 5) * accuracyFactor);
                     break;
 
                 case "ApplyAlteredStatus":
@@ -152,7 +149,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     }
                     var turnLengthWeight = paramsObject.TurnLength > 0 ? (int)Math.Min(1, Math.Max(10, paramsObject.TurnLength / 5)) : 10;
                     var powerWeight = paramsObject.Power > 0 ? (int)paramsObject.Power : 1;
-                    weight = (int)(250 + (powerWeight * 5 + turnLengthWeight) * accuracyFactor);
+                    weight = (int)(4 + (powerWeight * 5 + turnLengthWeight) * accuracyFactor);
                     break;
 
                 case "ApplyStatAlteration":
@@ -194,7 +191,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         alterationWeight /= 10;
                     else if (isRegeneration)
                         alterationWeight *= 10;
-                    weight = (int)(250 + ((int)alterationWeight * 5 + turnLengthWeight) * accuracyFactor);
+                    weight = (int)(4 + ((int)alterationWeight * 5 + turnLengthWeight) * accuracyFactor);
                     break;
                 case "CleanseAlteredStatus":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
@@ -207,7 +204,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(50 * accuracyFactor);
+                    weight = (int)(2 * accuracyFactor);
                     break;
                 case "CleanseStatAlteration":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
@@ -221,7 +218,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(50 * accuracyFactor);
+                    weight = (int)(2 * accuracyFactor);
                     break;
 
                 case "CleanseAllAlteredStatuses":
@@ -230,7 +227,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(50 * targetAsCharacter.AlteredStatuses.Count * accuracyFactor);
+                    weight = (int)(3 * targetAsCharacter.AlteredStatuses.Count * accuracyFactor);
                     break;
 
                 case "CleanseStatAlterations":
@@ -240,7 +237,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         break;
                     }
                     statAlterations = paramsObject.StatAlterationList as List<StatModification>;
-                    weight = (int)(50 * statAlterations.Count * accuracyFactor);
+                    weight = (int)(3 * statAlterations.Count * accuracyFactor);
                     break;
 
                 case "ForceSkipTurn":
@@ -249,7 +246,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(500 * accuracyFactor);
+                    weight = (int)(3 * accuracyFactor);
                     break;
 
                 case "Teleport":
@@ -259,7 +256,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(50 * accuracyFactor);
+                    weight = (int)(2 * accuracyFactor);
                     break;
 
                 case "GiveItem":
@@ -268,7 +265,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    weight = (int)(100 * accuracyFactor);
+                    weight = (int)(2 * accuracyFactor);
                     break;
 
                 case "PlaceTrap":
@@ -278,18 +275,26 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         break;
                     }
                     var distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
-                    weight = (int)(150 * accuracyFactor / distanceToUse);
+                    weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
 
                 case "SpawnNPC":
-                case "ReviveNPC":
                     if (targetAsTile == null || targetAsTile.LivingCharacter != null)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
                     distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
-                    weight = (int)(150 * accuracyFactor / distanceToUse);
+                    weight = (int)(2 * accuracyFactor / distanceToUse);
+                    break;
+                case "ReviveNPC":
+                    if (targetAsTile == null || targetAsTile.GetDeadCharacters().Any(c => c.Faction == Source.Faction || c.Faction.AlliedWith.Contains(Source.Faction)) != null)
+                    {
+                        weight = (weight == 0) ? -500 : weight - 100;
+                        break;
+                    }
+                    distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
+                    weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
 
                 case "Remove":

@@ -215,6 +215,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
+        public List<GamePoint> LatestPositions { get; private set; } = new List<GamePoint>(4);
+
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
             Faction = entityClass.Faction;
@@ -381,7 +383,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Die();
             ContainingTile?.StoodOn(this);
         }
-
 
         public bool CanSee(Entity entity)
         {

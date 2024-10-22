@@ -1157,7 +1157,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void AddNPC(List<ClassInFloor> usableMonsterGenerators, int odds)
         {
             if (TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
-            var pickedGenerator = usableMonsterGenerators.GetWithProbability(mg => mg.ChanceToPick, Rng, odds);
+            if (Rng.RollProbability() > odds) return;
+            var pickedGenerator = usableMonsterGenerators.TakeRandomElementWithWeights(mg => mg.ChanceToPick, Rng);
             if (pickedGenerator != null)
             {
                 var level = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
@@ -1170,7 +1171,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void AddItem(List<ClassInFloor> usableItemGenerators, int odds)
         {
-            var pickedGenerator = usableItemGenerators.GetWithProbability(ig => ig.ChanceToPick, Rng, odds);
+            var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(ig => ig.ChanceToPick, Rng);
+            if (Rng.RollProbability() > odds) return;
             if (pickedGenerator != null)
             {
                 AddEntity(pickedGenerator.Class.Id);
@@ -1183,14 +1185,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (LatestPlayerRemainingMovement == Player.RemainingMovement && Player.CanTakeAction && !Player.TookAction) return;
             Player.UpdateVisibility();
             var minRequiredMovementToAct = (Player.RemainingMovement == 0 || !Player.CanTakeAction || Player.TookAction) ? 0 : LatestPlayerRemainingMovement;
-            var aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => (c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct).OrderByDescending(c => c.RemainingMovement).ToList();
+            var aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
             while (aiCharactersThatCanActAlongsidePlayer.Any())
             {
-                Parallel.ForEach(aiCharactersThatCanActAlongsidePlayer, aictca => aictca.PickTargetAndPath());
-                aiCharactersThatCanActAlongsidePlayer.ForEach(aictca => aictca.AttackOrMove());
-                aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => (c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct).OrderByDescending(c => c.RemainingMovement).ToList();
+                Parallel.ForEach(aiCharactersThatCanActAlongsidePlayer, aictca => aictca.ProcessAI());
+                aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
             }
-            if(GetCharacters().TrueForAll(c => (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
+            if (GetCharacters().TrueForAll(c => c.ExistenceStatus != EntityExistenceStatus.Alive || (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
                 NewTurn();
         }
 
@@ -1250,15 +1251,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (!character.Visible && characterInTargetTile.Visible) return false;
                 if (characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) return false;
                 // Swap positions with allies, neutrals or invisibles
+                characterInTargetTile.LatestPositions.AddButKeepingCapacity(characterInTargetTile.Position, 4);
                 characterInTargetTile.Position = character.Position;
                 if (characterInTargetTile.RemainingMovement > 0)
                     characterInTargetTile.RemainingMovement--;
                 if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
                     AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
             }
-            if (character is NonPlayableCharacter npc)
-                npc.LastPosition = character.Position;
 
+            character.LatestPositions.AddButKeepingCapacity(character.Position, 4);
             character.Position = targetTile.Position;
 
             if (targetTile.Key != null)
@@ -1775,13 +1776,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var distance = ArrayHelpers.GetSquaredEuclideanDistanceBetweenCells(x1, y1, x2, y2);
             if (distance == 0) return 0;
+            var tile1 = GetTileFromCoordinates(x1, y1);
             // Discourage but not prohibit walking on occupied tiles
-            var tile = GetTileFromCoordinates(x2, y2);
-            if (tile.IsOccupied)
-                return distance + 24;
-            // Discourage but not prohibit walking on visible traps
-            if (tile.Trap?.Visible == true && tile.Trap?.ExistenceStatus == EntityExistenceStatus.Alive)
+            var tile2 = GetTileFromCoordinates(x2, y2);
+            if (tile2.IsOccupied)
                 return distance + 8;
+            // Discourage but not prohibit walking on visible traps or bad tile types
+            var characterInTile1 = tile1.LivingCharacter;
+            if (characterInTile1 != null && tile2.IsHarmfulFor(characterInTile1))
+                return distance + 1;
             return distance;
         }
 
@@ -1792,6 +1795,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Tile> GetAdjacentWalkableTiles(GamePoint position, bool considerDiagonals)
         {
             return Tiles.GetAdjacentElementsWhere(GetTileFromCoordinates(position), considerDiagonals, t => t.IsWalkable);
+        }
+        public List<Tile> GetTilesWithinDistance(GamePoint source, int distance)
+        {
+            return Tiles.Where(t => t.Type.IsVisible && Math.Round(GamePoint.Distance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance).ToList();
         }
         public List<Tile> GetFOVTilesWithinDistance(GamePoint source, int distance)
         {
