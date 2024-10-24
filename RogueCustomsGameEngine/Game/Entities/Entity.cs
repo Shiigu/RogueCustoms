@@ -14,7 +14,19 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public abstract class Entity : ITargetable
     {
-        public int Id { get; set; }
+        private int _id;
+        public int Id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                SetActionIds();
+            }
+        }
         public string Name { get; set; }
         public string ClassId { get; set; }
         public string Description { get; set; }
@@ -92,6 +104,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return JsonSerializer.Deserialize<Entity>(JsonSerializer.Serialize(this));
         }
+
+        public abstract void SetActionIds();
     }
 
     public enum EntityType

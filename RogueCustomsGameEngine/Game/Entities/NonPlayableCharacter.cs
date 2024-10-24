@@ -53,11 +53,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnSpawn = MapClassAction(entityClass.OnSpawn);
             OnInteracted = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnInteracted, OnInteracted);
-
-            for (int i = 0; i < OnInteracted.Count; i++)
-            {
-                OnInteracted[i].ActionId = i;
-            }
         }
 
         public void ProcessAI()
@@ -92,9 +87,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             var targetsWithinSight = KnownCharacters.Where(kc => kc.Character.ExistenceStatus == EntityExistenceStatus.Alive && CanSee(kc.Character));
 
             // If I don't have a target or someone's closer than my current target, swap to them
-            var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget);
+            var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget && OnAttack.Any(oa => oa.TargetTypes.Contains(t.TargetType)));
 
-            if(closerCharacters.Any(cc => OnAttack.Any(oa => oa.TargetTypes.Contains(cc.TargetType))))
+            if(closerCharacters.Any())
             {
                 var targetingPreferences = new List<(Character Character, int Weight)>();
                 foreach (var character in closerCharacters)
@@ -494,6 +489,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override void PickKey(Key key, bool informToPlayer)
         {
             // Nothing. NPCs are not meant to pick up Keys.
+        }
+
+        public override void SetActionIds()
+        {
+            base.SetActionIds();
+            for (int i = 0; i < OnInteracted.Count; i++)
+                OnInteracted[i].ActionId = $"{Id}_CI{i}";
         }
     }
     #pragma warning restore S2259 // Null Pointers should not be dereferenced

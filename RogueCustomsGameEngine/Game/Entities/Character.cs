@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO;
 using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -137,11 +138,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (k?.OwnOnAttack != null)
                         actionList.AddRange(k.OwnOnAttack);
                 });
-
-                for (int i = 0; i < actionList.Count; i++)
-                {
-                    actionList[i].ActionId = i;
-                }
 
                 return actionList;
             }
@@ -578,6 +574,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StatModifications.ForEach(m => m.Modifications.Clear());
                 AlteredStatuses.Clear();
             }
+        }
+
+        public override void SetActionIds()
+        {
+            for(int i = 0; i < OwnOnAttack.Count; i++)
+                OwnOnAttack[i].ActionId = $"{Id}_CA{i}";
         }
     }
 }
