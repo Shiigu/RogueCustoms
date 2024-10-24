@@ -12,10 +12,10 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
-    #pragma warning disable S101 // Types should be named in PascalCase
-    #pragma warning disable CS8601 // Posible asignación de referencia nula
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable S101 // Types should be named in PascalCase
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmNPCGeneration : Form
     {
         private FloorInfo ActiveFloorGroup;
@@ -41,6 +41,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ClassId = npc.ClassId,
                     MinLevel = npc.MinLevel,
                     MaxLevel = npc.MaxLevel,
+                    MinimumInFirstTurn = npc.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = npc.SimultaneousMaxForKindInFloor,
                     OverallMaxForKindInFloor = npc.OverallMaxForKindInFloor,
                     ChanceToPick = npc.ChanceToPick,
@@ -70,7 +71,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 lblFloorGroupTitle.Text = $"For Floor Level {minFloorLevel}:";
         }
 
-        private bool ValidateAndPrepareListForSave(out List<ClassInFloorInfo> npcList, out List<string> errorMessages)
+        private bool ValidateAndPrepareList(out List<ClassInFloorInfo> npcList, out List<string> errorMessages)
         {
             npcList = new List<ClassInFloorInfo>();
             errorMessages = new List<string>();
@@ -85,6 +86,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ClassId = row.Cells["ClassId"].Value?.ToString(),
                             MinLevel = int.Parse(row.Cells["MinLevel"].Value?.ToString()),
                             MaxLevel = int.Parse(row.Cells["MaxLevel"].Value?.ToString()),
+                            MinimumInFirstTurn = int.Parse(row.Cells["MinimumInFirstTurn"].Value?.ToString()),
                             SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString()),
                             OverallMaxForKindInFloor = int.Parse(row.Cells["OverallMaxForKindInFloor"].Value?.ToString()),
                             ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString()),
@@ -123,12 +125,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         else
                         {
-                            if (!npc.ChanceToPick.Between(1, 100))
-                                errorMessages.Add($"{npc.ClassId}'s ChanceToPick must be an integer number between 1 and 100.");
+                            if (npc.ChanceToPick <= 0)
+                                errorMessages.Add($"{npc.ClassId}'s Chance to Pick must be an integer number higher than 0.");
                             if (npc.MinLevel <= 0)
                                 errorMessages.Add($"{npc.ClassId}'s Minimum Level must be an integer number higher than 0.");
                             if (npc.MaxLevel <= 0)
                                 errorMessages.Add($"{npc.ClassId}'s Maximum Level must be an integer number higher than 0.");
+                            if (npc.MinimumInFirstTurn < 0)
+                                errorMessages.Add($"{npc.ClassId}'s Minimum Spawns in the first turn must be a non-negative integer number.");
+                            if (!npc.CanSpawnOnFirstTurn && npc.MinimumInFirstTurn > 0)
+                                errorMessages.Add($"{npc.ClassId}'s Minimum Spawns in the first turn are higher than 0, but it's set to not spawn on the first turn.");
+                            if (npc.MinimumInFirstTurn > npc.SimultaneousMaxForKindInFloor)
+                                errorMessages.Add($"{npc.ClassId}'s Minimum Spawns in the first turn are higher than the maximum amount allowed.");
                             if (npc.MaxLevel < npc.MinLevel)
                                 errorMessages.Add($"{npc.ClassId}'s Maximum Level cannot be lower than its Minimum Level.");
                             if (npc.OverallMaxForKindInFloor <= 0)
@@ -142,11 +150,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                     }
 
-                    var totalChanceToPick = npcList.Sum(npc => npc.ChanceToPick);
-                    if (totalChanceToPick != 100)
-                    {
-                        errorMessages.Add("Total Chances to Pick don't add up to 100");
-                    }
+                    var totalMinimumGuaranteedSpawns = npcList.Sum(npc => npc.MinimumInFirstTurn);
+
+                    if(totalMinimumGuaranteedSpawns > (int)nudSimultaneousMaxNPCs.Value)
+                        errorMessages.Add("There are more NPCs guaranteed to spawn in the first turn than the maximum simultaneous amount allowed.");
                 }
 
                 return !errorMessages.Any();
@@ -160,7 +167,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (!ValidateAndPrepareListForSave(out List<ClassInFloorInfo> npcList, out List<string> errorMessages))
+            if (!ValidateAndPrepareList(out List<ClassInFloorInfo> npcList, out List<string> errorMessages))
             {
                 MessageBox.Show(
                     $"The current NPC Generation data could not be saved due to the following errors:\n- {string.Join("\n- ", errorMessages)}",
@@ -171,7 +178,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else
             {
-                if(NPCGenerationParams.NPCList != null)
+                if (NPCGenerationParams.NPCList != null)
                     NPCGenerationParams.NPCList.Clear();
                 else
                     NPCGenerationParams.NPCList = new List<ClassInFloorInfo>();
@@ -197,6 +204,67 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private void dgvNPCTable_Leave(object sender, EventArgs e)
         {
             dgvNPCTable.EndEdit();
+        }
+
+        private void btnCheckGenerationOdds_Click(object sender, EventArgs e)
+        {
+            if (!ValidateAndPrepareList(out List<ClassInFloorInfo> npcList, out List<string> errorMessages))
+            {
+                MessageBox.Show(
+                    $"It's not possible to give NPC generation odds due to the following errors:\n- {string.Join("\n- ", errorMessages)}",
+                    "Invalid NPC generation data",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+            else
+            {
+                var oddsMessage = new StringBuilder();
+
+                var npcsThatSpawnOnTheFirstTurn = npcList.Where(npc => npc.CanSpawnOnFirstTurn);
+                var totalWeightFirstTurn = (double) npcsThatSpawnOnTheFirstTurn.Sum(npc => npc.ChanceToPick);
+
+                var npcsThatSpawnAfterTheFirstTurn = npcList.Where(npc => npc.CanSpawnAfterFirstTurn);
+                var totalWeightAfterFirstTurn = (double) npcsThatSpawnAfterTheFirstTurn.Sum(npc => npc.ChanceToPick);
+
+                if (npcsThatSpawnOnTheFirstTurn.Any())
+                {
+                    oddsMessage.AppendLine("On the first turn, the odds for NPC spawns are the following*:");
+
+                    foreach (var possibleNPC in npcsThatSpawnOnTheFirstTurn)
+                    {
+                        var odds = possibleNPC.ChanceToPick / totalWeightFirstTurn * 100;
+                        if (possibleNPC.MinimumInFirstTurn == 0)
+                            oddsMessage.AppendLine($"     - {possibleNPC.ClassId}: {odds:0.####}%");
+                        else
+                            oddsMessage.AppendLine($"     - {possibleNPC.ClassId}: {odds:0.####}% (Guaranteed {possibleNPC.MinimumInFirstTurn})");
+                    }
+                }
+                else
+                {
+                    oddsMessage.AppendLine("No NPCs are set to spawn on the first turn.");
+                }                
+
+                if (npcsThatSpawnAfterTheFirstTurn.Any())
+                {
+                    oddsMessage.AppendLine("\nAfter the first turn, the odds for NPC spawns are the following*:");
+
+                    foreach (var possibleNPC in npcsThatSpawnAfterTheFirstTurn)
+                    {
+                        var odds = possibleNPC.ChanceToPick / totalWeightAfterFirstTurn * 100;
+                        oddsMessage.AppendLine($"     - {possibleNPC.ClassId}: {odds:0.####}%");
+                    }
+                }
+                else
+                {
+                    oddsMessage.AppendLine("\nNo NPCs are set to spawn after the first turn.");
+                }
+
+                if (npcsThatSpawnOnTheFirstTurn.Any() || npcsThatSpawnAfterTheFirstTurn.Any())
+                    oddsMessage.AppendLine("\n(Assuming the simultaneous or maximum allowed for any NPC hasn't been reached)");
+
+                MessageBox.Show(oddsMessage.ToString(), "NPC Generation for Floor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 

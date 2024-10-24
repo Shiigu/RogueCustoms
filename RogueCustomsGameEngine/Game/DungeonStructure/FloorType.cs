@@ -170,6 +170,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     MinLevel = pmi.MinLevel,
                     MaxLevel = pmi.MaxLevel,
                     OverallMaxForKindInFloor = pmi.OverallMaxForKindInFloor,
+                    MinimumInFirstTurn = pmi.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pmi.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pmi.ChanceToPick,
                     CanSpawnOnFirstTurn = pmi.CanSpawnOnFirstTurn,
@@ -183,6 +184,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PossibleItems.Add(new ClassInFloor
                 {
                     Class = classForItem,
+                    MinimumInFirstTurn = pii.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pii.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pii.ChanceToPick
                 });
@@ -194,6 +196,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PossibleTraps.Add(new ClassInFloor
                 {
                     Class = classForTrap,
+                    MinimumInFirstTurn = pti.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pti.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pti.ChanceToPick
                 });
@@ -219,6 +222,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool CanSpawnAfterFirstTurn { get; set; }
         #endregion
         public int TotalGeneratedInFloor { get; set; }
+        public int MinimumInFirstTurn { get; set; }
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
     }

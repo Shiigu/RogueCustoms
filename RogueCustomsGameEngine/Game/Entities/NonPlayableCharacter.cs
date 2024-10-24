@@ -121,7 +121,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = null;
 
             // If I somehow got thrown away from the path towards the target (e.g. Teleport), recalculate it
-            if (PathToUse.Route != null && !PathToUse.Route.Any() && CurrentTarget != null && !Map.GetAdjacentTiles(Position, true).Contains(PathToUse.Route[0]))
+            if (PathToUse.Route != null && PathToUse.Route.Any() && CurrentTarget != null && !Map.GetAdjacentTiles(Position, true).Contains(PathToUse.Route[0]))
                 PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
 
             // If I somehow lost path towards the target but never swapped it, recalculate it

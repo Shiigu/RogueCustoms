@@ -37,10 +37,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             nudMinInFloor = new NumericUpDown();
             label14 = new Label();
             dgvObjectTable = new DataGridView();
+            lblFloorGroupTitle = new Label();
+            btnCheckGenerationOdds = new Button();
             ClassId = new DataGridViewComboBoxColumn();
+            MinimumInFirstTurn = new DataGridViewTextBoxColumn();
             SimultaneousMaxForKindInFloor = new DataGridViewTextBoxColumn();
             ChanceToPick = new DataGridViewTextBoxColumn();
-            lblFloorGroupTitle = new Label();
             ((System.ComponentModel.ISupportInitialize)nudMaxInFloor).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinInFloor).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvObjectTable).BeginInit();
@@ -56,9 +58,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(236, 285);
+            btnCancel.Location = new Point(191, 289);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(174, 23);
+            btnCancel.Size = new Size(111, 23);
             btnCancel.TabIndex = 40;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
@@ -66,7 +68,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(56, 285);
+            btnSave.Location = new Point(11, 289);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(174, 23);
             btnSave.TabIndex = 39;
@@ -94,33 +96,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // dgvObjectTable
             // 
             dgvObjectTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvObjectTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, SimultaneousMaxForKindInFloor, ChanceToPick });
+            dgvObjectTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, ChanceToPick });
             dgvObjectTable.Location = new Point(12, 45);
             dgvObjectTable.Name = "dgvObjectTable";
             dgvObjectTable.RowTemplate.Height = 25;
-            dgvObjectTable.Size = new Size(435, 209);
+            dgvObjectTable.Size = new Size(477, 209);
             dgvObjectTable.TabIndex = 36;
             dgvObjectTable.Leave += dgvObjectTable_Leave;
-            // 
-            // ClassId
-            // 
-            ClassId.DataPropertyName = "ClassId";
-            ClassId.HeaderText = "X Class";
-            ClassId.Name = "ClassId";
-            // 
-            // SimultaneousMaxForKindInFloor
-            // 
-            SimultaneousMaxForKindInFloor.DataPropertyName = "SimultaneousMaxForKindInFloor";
-            SimultaneousMaxForKindInFloor.HeaderText = "Maximum";
-            SimultaneousMaxForKindInFloor.Name = "SimultaneousMaxForKindInFloor";
-            SimultaneousMaxForKindInFloor.ToolTipText = "Will not try to spawn more than this amount of this kind";
-            // 
-            // ChanceToPick
-            // 
-            ChanceToPick.DataPropertyName = "ChanceToPick";
-            ChanceToPick.HeaderText = "Chance to Pick";
-            ChanceToPick.Name = "ChanceToPick";
-            ChanceToPick.ToolTipText = "Must be a number between 1 and 100";
             // 
             // lblFloorGroupTitle
             // 
@@ -132,11 +114,52 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblFloorGroupTitle.TabIndex = 35;
             lblFloorGroupTitle.Text = "For Floor Level(s) X (to Y):";
             // 
+            // btnCheckGenerationOdds
+            // 
+            btnCheckGenerationOdds.Location = new Point(315, 289);
+            btnCheckGenerationOdds.Name = "btnCheckGenerationOdds";
+            btnCheckGenerationOdds.Size = new Size(174, 23);
+            btnCheckGenerationOdds.TabIndex = 42;
+            btnCheckGenerationOdds.Text = "Check generation odds";
+            btnCheckGenerationOdds.UseVisualStyleBackColor = true;
+            btnCheckGenerationOdds.Click += btnCheckGenerationOdds_Click;
+            // 
+            // ClassId
+            // 
+            ClassId.DataPropertyName = "ClassId";
+            ClassId.Frozen = true;
+            ClassId.HeaderText = "X Class";
+            ClassId.Name = "ClassId";
+            // 
+            // MinimumInFirstTurn
+            // 
+            MinimumInFirstTurn.DataPropertyName = "MinimumInFirstTurn";
+            MinimumInFirstTurn.Frozen = true;
+            MinimumInFirstTurn.HeaderText = "Minimum";
+            MinimumInFirstTurn.Name = "MinimumInFirstTurn";
+            MinimumInFirstTurn.ToolTipText = "Spawn at least this amount";
+            // 
+            // SimultaneousMaxForKindInFloor
+            // 
+            SimultaneousMaxForKindInFloor.DataPropertyName = "SimultaneousMaxForKindInFloor";
+            SimultaneousMaxForKindInFloor.Frozen = true;
+            SimultaneousMaxForKindInFloor.HeaderText = "Maximum";
+            SimultaneousMaxForKindInFloor.Name = "SimultaneousMaxForKindInFloor";
+            SimultaneousMaxForKindInFloor.ToolTipText = "Will not try to spawn more than this amount of this kind";
+            // 
+            // ChanceToPick
+            // 
+            ChanceToPick.DataPropertyName = "ChanceToPick";
+            ChanceToPick.HeaderText = "Chance to Pick";
+            ChanceToPick.Name = "ChanceToPick";
+            ChanceToPick.ToolTipText = "Must be a number between 1 and 100";
+            // 
             // frmObjectGeneration
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(458, 318);
+            ClientSize = new Size(501, 318);
+            Controls.Add(btnCheckGenerationOdds);
             Controls.Add(lblFloorGroupTitle);
             Controls.Add(nudMaxInFloor);
             Controls.Add(btnCancel);
@@ -163,7 +186,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Label label14;
         private DataGridView dgvObjectTable;
         private Label lblFloorGroupTitle;
+        private Button btnCheckGenerationOdds;
         private DataGridViewComboBoxColumn ClassId;
+        private DataGridViewTextBoxColumn MinimumInFirstTurn;
         private DataGridViewTextBoxColumn SimultaneousMaxForKindInFloor;
         private DataGridViewTextBoxColumn ChanceToPick;
     }
