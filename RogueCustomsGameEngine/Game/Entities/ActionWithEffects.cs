@@ -28,7 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public sealed class ActionWithEffects
     {
-        public int ActionId { get; set; }                       // Dynamic, only to be used for action selections
+        public string ActionId { get; set; }                       // Only to be used for action selections
         public string NameLocaleKey { get; set; }
         public string Name { get; set; }
         public string DescriptionLocaleKey { get; set; }

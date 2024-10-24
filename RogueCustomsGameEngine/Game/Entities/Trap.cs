@@ -61,6 +61,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             return false;
         }
 
+        public override void SetActionIds()
+        {
+            // No need to set Ids
+        }
+
     }
 }
 #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

@@ -1422,43 +1422,39 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            var characterInTile = GetTileFromCoordinates(x, y).LivingCharacter;
+            var tile = GetTileFromCoordinates(x, y);
+            var characterInTile = tile.LivingCharacter;
 
             var selectionIdParts = selectionId.Split('_');
 
             if (selectionIdParts.Length == 2)
             {
-                var entity = selectionIdParts[0]; // "Player", "Target" or "Tile"
-                var actionIdAsString = selectionIdParts[1]; // ActionId
+                if(!int.TryParse(selectionIdParts[0], out int entityId))
+                    throw new ArgumentException("Invalid Action Selection Id.");
+                var correspondingEntity = GetEntities().Find(e => e.Id.Equals(entityId))
+                        ?? throw new ArgumentException("Player attempted an Action belonging to a non-existent Entity.");
+                var selectedAttackAction = Player.OnAttack.Find(oaa => oaa.ActionId.Equals(selectionId));
+                var selectedInteractedAction = correspondingEntity is NonPlayableCharacter npc ? npc.OnInteracted.Find(oaa => oaa.ActionId.Equals(selectionId)) : null;
 
-                if(!int.TryParse(actionIdAsString, out int actionId))
-                    throw new ArgumentException("Action SelectionId is not a valid number.");
+                if (selectedAttackAction == null && selectedInteractedAction == null)
+                    throw new ArgumentException("Player attempted a non-existent Action.");
 
-                if (entity.Equals("Player"))
+                if(selectedAttackAction != null)
                 {
-                    var selectedAction = Player.OnAttack.Find(oaa => oaa.ActionId == actionId)
-                        ?? throw new ArgumentException("Player attempted use a non-existent Attack action.");
-                    if (selectedAction.TargetTypes.Contains(TargetType.Tile) || selectedAction.TargetTypes.Contains(TargetType.Room))
-                        Player.InteractWithTile(GetTileFromCoordinates(x, y), selectedAction);
+                    if (selectedAttackAction.TargetTypes.Contains(TargetType.Tile) || selectedAttackAction.TargetTypes.Contains(TargetType.Room))
+                        Player.InteractWithTile(tile, selectedAttackAction);
                     else if (characterInTile != null)
-                        Player.AttackCharacter(characterInTile, selectedAction);
+                        Player.AttackCharacter(characterInTile, selectedAttackAction);
                     else
                         throw new ArgumentException("Player attempted use an action without a valid target.");
                 }
-                else if (entity.Equals("Target"))
+                else if (selectedInteractedAction != null)
                 {
-                    if(characterInTile is not NonPlayableCharacter npc)
-                        throw new ArgumentException("Player attempted use an action without a valid target.");
-                    var selectedAction = npc.OnInteracted.Find(oia => oia.ActionId == actionId)
-                        ?? throw new ArgumentException("Player attempted use a non-existent Interact action from the Target.");
-                    if (characterInTile != null)
-                        Player.InteractWithCharacter(characterInTile, selectedAction);
-                    else
-                        throw new ArgumentException("Player attempted use an action without a valid target.");
+                    Player.InteractWithCharacter(characterInTile, selectedInteractedAction);
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid entity in SelectionId.");
+                    throw new ArgumentException("Player attempted a non-existent Action.");
                 }
             }
             else
@@ -1654,7 +1650,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<Entity> GetEntities()
         {
-            return GetCharacters().Cast<Entity>().Union(Items.Cast<Entity>()).Union(Traps.Cast<Entity>()).Where(e => e != null).ToList();
+            var entitiesList = new List<Entity>();
+
+            foreach (var character in GetCharacters().Where(c => c != null))
+            {
+                entitiesList.Add(character);
+                if (character.StartingWeapon != null)
+                    entitiesList.Add(character.StartingWeapon);
+                if (character.StartingArmor != null)
+                    entitiesList.Add(character.StartingArmor);
+            }
+
+            entitiesList.AddRange(Items.Where(i => i != null));
+            entitiesList.AddRange(Traps.Where(t => t != null));
+
+            return entitiesList;
         }
         public List<Character> GetCharacters()
         {

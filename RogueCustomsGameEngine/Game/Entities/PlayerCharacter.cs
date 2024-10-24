@@ -128,6 +128,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
             }
         }
+
+        public override void SetActionIds()
+        {
+            base.SetActionIds();
+        }
     }
     #pragma warning restore CS8604 // Posible argumento de referencia nulo
     #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

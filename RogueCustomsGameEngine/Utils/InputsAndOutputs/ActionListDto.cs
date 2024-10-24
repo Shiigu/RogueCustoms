@@ -24,11 +24,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public void AddAction(ActionWithEffects action, Character source, Character targetCharacter, Tile tile, Map map, bool isPlayerAction)
         {
-            var entityDescriptor = isPlayerAction ? "Player" : "Target";
-
             Actions.Add(new ActionItemDto(action, source, action.TargetTypes.Contains(TargetType.Tile) ? tile : targetCharacter, map)
             {
-                SelectionId = $"{entityDescriptor}_{action.ActionId}"
+                SelectionId = action.ActionId
             });
         }
     }
