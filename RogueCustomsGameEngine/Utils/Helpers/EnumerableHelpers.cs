@@ -168,18 +168,14 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             return shuffledList;
         }
 
-        public static IEnumerable<T> AddButKeepingCapacity<T>(this IEnumerable<T> source, T newItem, int maxSize)
+        public static void AddButKeepingCapacity<T>(this List<T> list, T newItem, int maxSize)
         {
-            var list = source.ToList();
-
             if (list.Count >= maxSize)
             {
-                list.RemoveAt(0);
+                list.RemoveAt(0); // Remove the oldest (first) element
             }
 
-            list.Add(newItem);
-
-            return list;
+            list.Add(newItem); // Add the new element
         }
     }
 }

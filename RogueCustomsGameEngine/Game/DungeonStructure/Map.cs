@@ -979,31 +979,26 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     CreateFlag("TurnCount", TurnCount, false);
                 else
                     SetFlagValue("TurnCount", TurnCount);
-                int generationAttempts, generationsToTry;
                 #region Generate Monsters
                 if(FloorConfigurationToUse.PossibleMonsters.Any())
                 {
-                    var totalMonsterGeneratorChance = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.ChanceToPick);
-                    if (!totalMonsterGeneratorChance.Between(1, 100)) throw new InvalidDataException("Monster generation odds are not 1-100%");
-                    List<ClassInFloor> usableMonsterGenerators = new();
-                    FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
+                    var totalGuaranteedNPCs = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.MinimumInFirstTurn);
+                    foreach (var possibleNPC in FloorConfigurationToUse.PossibleMonsters)
                     {
-                        if (!pm.CanSpawnOnFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
-                        var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive);
-                        if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
-                        usableMonsterGenerators.Add(pm);
-                    });
-                    totalMonsterGeneratorChance = usableMonsterGenerators.Sum(mg => mg.ChanceToPick);
-                    generationAttempts = 0;
-                    generationsToTry = Rng.NextInclusive(FloorConfigurationToUse.SimultaneousMinMonstersAtStart, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor);
-                    while (TotalMonstersInFloor < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor && totalMonsterGeneratorChance > 0 && generationAttempts < generationsToTry)
-                    {
-                        AddNPC(usableMonsterGenerators, totalMonsterGeneratorChance);
-                        usableMonsterGenerators.RemoveAll(mg => (mg.SimultaneousMaxForKindInFloor > 0 && AICharacters.Count(e => e.ClassId.Equals(mg.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive) >= mg.SimultaneousMaxForKindInFloor) || (mg.OverallMaxForKindInFloor > 0 && mg.TotalGeneratedInFloor >= mg.OverallMaxForKindInFloor));
-                        totalMonsterGeneratorChance = usableMonsterGenerators.Sum(mg => mg.ChanceToPick);
-                        generationAttempts++;
+                        if (possibleNPC.MinimumInFirstTurn <= 0) continue;
+                        var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
+                        var npc = AddEntity(possibleNPC.Class.Id, level) as NonPlayableCharacter;
+                        npc.SpawnedViaMonsterHouse = false;
+                        possibleNPC.TotalGeneratedInFloor++;
+                        LastMonsterGenerationTurn = TurnCount;
                     }
-                    LastMonsterGenerationTurn = 0;
+                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMinMonstersAtStart - totalGuaranteedNPCs);
+                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor - totalGuaranteedNPCs);
+                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+                    for (int i = 0; i < generationsToDo; i++)
+                    {
+                        AddNPC();
+                    }
                 }
 
                 #endregion
@@ -1011,23 +1006,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 #region Generate Items
                 if (FloorConfigurationToUse.PossibleItems.Any())
                 {
-                    var totalItemGeneratorChance = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.ChanceToPick);
-                    if (!totalItemGeneratorChance.Between(1, 100)) throw new InvalidDataException("Item generation odds are not 1-100%");
-                    List<ClassInFloor> usableItemGenerators = new();
-                    FloorConfigurationToUse.PossibleItems.ForEach(pi =>
+                    var totalGuaranteedItems = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.MinimumInFirstTurn);
+                    foreach (var possibleItem in FloorConfigurationToUse.PossibleItems)
                     {
-                        if (pi.SimultaneousMaxForKindInFloor > 0 && pi.TotalGeneratedInFloor >= pi.SimultaneousMaxForKindInFloor) return;
-                        usableItemGenerators.Add(pi);
-                    });
-                    totalItemGeneratorChance = usableItemGenerators.Sum(ig => ig.ChanceToPick);
-                    generationAttempts = 0;
-                    generationsToTry = Rng.NextInclusive(FloorConfigurationToUse.MinItemsInFloor, FloorConfigurationToUse.MaxItemsInFloor);
-                    while (TotalItemsInFloor < FloorConfigurationToUse.MaxItemsInFloor && totalItemGeneratorChance > 0 && generationAttempts < generationsToTry)
+                        if (possibleItem.MinimumInFirstTurn <= 0) continue;
+                        AddEntity(possibleItem.Class.Id);
+                        possibleItem.TotalGeneratedInFloor++;
+                    }
+                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinItemsInFloor - totalGuaranteedItems);
+                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxItemsInFloor - totalGuaranteedItems);
+                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+                    for (int i = 0; i < generationsToDo; i++)
                     {
-                        AddItem(usableItemGenerators, totalItemGeneratorChance);
-                        usableItemGenerators.RemoveAll(ig => ig.SimultaneousMaxForKindInFloor > 0 && ig.TotalGeneratedInFloor >= ig.SimultaneousMaxForKindInFloor);
-                        totalItemGeneratorChance = usableItemGenerators.Sum(ig => ig.ChanceToPick);
-                        generationAttempts++;
+                        AddItem();
                     }
                 }
 
@@ -1037,23 +1028,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 if(FloorConfigurationToUse.PossibleTraps.Any())
                 {
-                    var totalTrapGeneratorChance = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.ChanceToPick);
-                    if (!totalTrapGeneratorChance.Between(1, 100)) throw new InvalidDataException("Trap generation odds are not 1-100%");
-                    List<ClassInFloor> usableTrapGenerators = new();
-                    FloorConfigurationToUse.PossibleTraps.ForEach(pt =>
+                    var totalGuaranteedTraps = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.MinimumInFirstTurn);
+                    foreach (var possibleTrap in FloorConfigurationToUse.PossibleTraps)
                     {
-                        if (pt.SimultaneousMaxForKindInFloor > 0 && pt.TotalGeneratedInFloor >= pt.SimultaneousMaxForKindInFloor) return;
-                        usableTrapGenerators.Add(pt);
-                    });
-                    totalTrapGeneratorChance = usableTrapGenerators.Sum(tg => tg.ChanceToPick);
-                    generationAttempts = 0;
-                    generationsToTry = Rng.NextInclusive(FloorConfigurationToUse.MinTrapsInFloor, FloorConfigurationToUse.MaxTrapsInFloor);
-                    while (TotalTrapsInFloor < FloorConfigurationToUse.MaxTrapsInFloor && totalTrapGeneratorChance > 0 && generationAttempts < generationsToTry)
+                        if (possibleTrap.MinimumInFirstTurn <= 0) continue;
+                        AddEntity(possibleTrap.Class.Id);
+                        possibleTrap.TotalGeneratedInFloor++;
+                    }
+                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinTrapsInFloor - totalGuaranteedTraps);
+                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxTrapsInFloor - totalGuaranteedTraps);
+                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+                    for (int i = 0; i < generationsToDo; i++)
                     {
-                        AddItem(usableTrapGenerators, totalTrapGeneratorChance);
-                        usableTrapGenerators.RemoveAll(tg => tg.SimultaneousMaxForKindInFloor > 0 && tg.TotalGeneratedInFloor >= tg.SimultaneousMaxForKindInFloor);
-                        totalTrapGeneratorChance = usableTrapGenerators.Sum(tg => tg.ChanceToPick);
-                        generationAttempts++;
+                        AddTrap();
                     }
                 }
 
@@ -1117,7 +1104,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 #region Generate A monster
 
-                var currentMonsters = AICharacters.Where(e => e.EntityType == EntityType.NPC && e.ExistenceStatus == EntityExistenceStatus.Alive);
+                var currentMonsters = AICharacters.Where(e => e.EntityType == EntityType.NPC && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonsters.Count() < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor)
                 {
                     AddNPC();
@@ -1143,41 +1130,51 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void AddNPC()
         {
             if (!FloorConfigurationToUse.PossibleMonsters.Any() || TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
-            List<ClassInFloor> usableMonsterGenerators = new();
+            List<ClassInFloor> usableNPCGenerators = new();
             FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
             {
                 if (!pm.CanSpawnAfterFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
-                var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && e.ExistenceStatus == EntityExistenceStatus.Alive);
+                var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
-                usableMonsterGenerators.Add(pm);
+                usableNPCGenerators.Add(pm);
             });
-            AddNPC(usableMonsterGenerators, 100);
+            var pickedGenerator = usableNPCGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
+            if (pickedGenerator == null) return;
+            var level = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
+            var npc = AddEntity(pickedGenerator.Class.Id, level) as NonPlayableCharacter;
+            npc.SpawnedViaMonsterHouse = false;
+            pickedGenerator.TotalGeneratedInFloor++;
+            LastMonsterGenerationTurn = TurnCount;
+        }
+        
+        private void AddItem()
+        {
+            if (!FloorConfigurationToUse.PossibleItems.Any() || TotalItemsInFloor >= FloorConfigurationToUse.MaxItemsInFloor) return;
+            List<ClassInFloor> usableItemGenerators = new();
+            FloorConfigurationToUse.PossibleItems.ForEach(pi =>
+            {
+                if (pi.OverallMaxForKindInFloor > 0 && pi.TotalGeneratedInFloor >= pi.OverallMaxForKindInFloor) return;
+                usableItemGenerators.Add(pi);
+            });
+            var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
+            if (pickedGenerator == null) return;
+            AddEntity(pickedGenerator.Class.Id);
+            pickedGenerator.TotalGeneratedInFloor++;
         }
 
-        private void AddNPC(List<ClassInFloor> usableMonsterGenerators, int odds)
+        private void AddTrap()
         {
-            if (TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
-            if (Rng.RollProbability() > odds) return;
-            var pickedGenerator = usableMonsterGenerators.TakeRandomElementWithWeights(mg => mg.ChanceToPick, Rng);
-            if (pickedGenerator != null)
+            if (!FloorConfigurationToUse.PossibleTraps.Any() || TotalTrapsInFloor >= FloorConfigurationToUse.MaxTrapsInFloor) return;
+            List<ClassInFloor> usableTrapGenerators = new();
+            FloorConfigurationToUse.PossibleTraps.ForEach(pt =>
             {
-                var level = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
-                var npc = AddEntity(pickedGenerator.Class.Id, level) as NonPlayableCharacter;
-                npc.SpawnedViaMonsterHouse = false;
-                pickedGenerator.TotalGeneratedInFloor++;
-                LastMonsterGenerationTurn = TurnCount;
-            }
-        }
-
-        private void AddItem(List<ClassInFloor> usableItemGenerators, int odds)
-        {
-            var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(ig => ig.ChanceToPick, Rng);
-            if (Rng.RollProbability() > odds) return;
-            if (pickedGenerator != null)
-            {
-                AddEntity(pickedGenerator.Class.Id);
-                pickedGenerator.TotalGeneratedInFloor++;
-            }
+                if (pt.OverallMaxForKindInFloor > 0 && pt.TotalGeneratedInFloor >= pt.OverallMaxForKindInFloor) return;
+                usableTrapGenerators.Add(pt);
+            });
+            var pickedGenerator = usableTrapGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
+            if (pickedGenerator == null) return;
+            AddEntity(pickedGenerator.Class.Id);
+            pickedGenerator.TotalGeneratedInFloor++;
         }
 
         private void ProcessTurn()
@@ -1188,7 +1185,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
             while (aiCharactersThatCanActAlongsidePlayer.Any())
             {
-                Parallel.ForEach(aiCharactersThatCanActAlongsidePlayer, aictca => aictca.ProcessAI());
+                aiCharactersThatCanActAlongsidePlayer.ForEach(aictca => aictca.ProcessAI());
                 aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
             }
             if (GetCharacters().TrueForAll(c => c.ExistenceStatus != EntityExistenceStatus.Alive || (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
@@ -2293,6 +2290,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             foreach (var tile in tilesToConvert)
             {
+                if (tile.Type == TileType.Hallway) continue;
                 tile.Type = tileType;
             }
         }

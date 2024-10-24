@@ -1118,6 +1118,18 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             foreach (var floorGroup in V15Dungeon.FloorInfos)
             {
                 floorGroup.MonsterHouseOdds = 0;
+                foreach (var npc in floorGroup.PossibleMonsters)
+                {
+                    npc.MinimumInFirstTurn = 0;
+                }
+                foreach (var item in floorGroup.PossibleItems)
+                {
+                    item.MinimumInFirstTurn = 0;
+                }
+                foreach (var trap in floorGroup.PossibleTraps)
+                {
+                    trap.MinimumInFirstTurn = 0;
+                }
             }
 
             V15Dungeon.ElementInfos = new()

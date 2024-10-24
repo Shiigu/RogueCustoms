@@ -31,17 +31,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmNPCGeneration));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmNPCGeneration));
             lblFloorGroupTitle = new Label();
             dgvNPCTable = new DataGridView();
-            ClassId = new DataGridViewComboBoxColumn();
-            MinLevel = new DataGridViewTextBoxColumn();
-            MaxLevel = new DataGridViewTextBoxColumn();
-            SimultaneousMaxForKindInFloor = new DataGridViewTextBoxColumn();
-            OverallMaxForKindInFloor = new DataGridViewTextBoxColumn();
-            ChanceToPick = new DataGridViewTextBoxColumn();
-            CanSpawnOnFirstTurn = new DataGridViewCheckBoxColumn();
-            CanSpawnAfterFirstTurn = new DataGridViewCheckBoxColumn();
             nudTurnsPerNPCGeneration = new NumericUpDown();
             label16 = new Label();
             nudSimultaneousMaxNPCs = new NumericUpDown();
@@ -51,6 +43,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             btnSave = new Button();
             btnCancel = new Button();
             fklblNoNPCSpawnsWarning = new Button();
+            btnCheckGenerationOdds = new Button();
+            ClassId = new DataGridViewComboBoxColumn();
+            MinLevel = new DataGridViewTextBoxColumn();
+            MaxLevel = new DataGridViewTextBoxColumn();
+            MinimumInFirstTurn = new DataGridViewTextBoxColumn();
+            SimultaneousMaxForKindInFloor = new DataGridViewTextBoxColumn();
+            OverallMaxForKindInFloor = new DataGridViewTextBoxColumn();
+            ChanceToPick = new DataGridViewTextBoxColumn();
+            CanSpawnOnFirstTurn = new DataGridViewCheckBoxColumn();
+            CanSpawnAfterFirstTurn = new DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvNPCTable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTurnsPerNPCGeneration).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudSimultaneousMaxNPCs).BeginInit();
@@ -70,64 +72,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // dgvNPCTable
             // 
             dgvNPCTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNPCTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinLevel, MaxLevel, SimultaneousMaxForKindInFloor, OverallMaxForKindInFloor, ChanceToPick, CanSpawnOnFirstTurn, CanSpawnAfterFirstTurn });
+            dgvNPCTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinLevel, MaxLevel, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, OverallMaxForKindInFloor, ChanceToPick, CanSpawnOnFirstTurn, CanSpawnAfterFirstTurn });
             dgvNPCTable.Location = new Point(3, 46);
             dgvNPCTable.Name = "dgvNPCTable";
             dgvNPCTable.RowTemplate.Height = 25;
             dgvNPCTable.Size = new Size(664, 209);
             dgvNPCTable.TabIndex = 1;
             dgvNPCTable.Leave += dgvNPCTable_Leave;
-            // 
-            // ClassId
-            // 
-            ClassId.DataPropertyName = "ClassId";
-            ClassId.HeaderText = "NPC Class";
-            ClassId.Name = "ClassId";
-            // 
-            // MinLevel
-            // 
-            MinLevel.DataPropertyName = "MinLevel";
-            MinLevel.HeaderText = "Minimum Level";
-            MinLevel.Name = "MinLevel";
-            // 
-            // MaxLevel
-            // 
-            MaxLevel.DataPropertyName = "MaxLevel";
-            MaxLevel.HeaderText = "Maximum Level";
-            MaxLevel.Name = "MaxLevel";
-            // 
-            // SimultaneousMaxForKindInFloor
-            // 
-            SimultaneousMaxForKindInFloor.DataPropertyName = "SimultaneousMaxForKindInFloor";
-            SimultaneousMaxForKindInFloor.HeaderText = "Simultaneous Limit";
-            SimultaneousMaxForKindInFloor.Name = "SimultaneousMaxForKindInFloor";
-            SimultaneousMaxForKindInFloor.ToolTipText = "Won't spawn this NPC if there are at least this amount alive";
-            // 
-            // OverallMaxForKindInFloor
-            // 
-            OverallMaxForKindInFloor.DataPropertyName = "OverallMaxForKindInFloor";
-            OverallMaxForKindInFloor.HeaderText = "Overall Limit";
-            OverallMaxForKindInFloor.Name = "OverallMaxForKindInFloor";
-            OverallMaxForKindInFloor.ToolTipText = "Won't spawn this NPC if at least this amount had been spawned already";
-            // 
-            // ChanceToPick
-            // 
-            ChanceToPick.DataPropertyName = "ChanceToPick";
-            ChanceToPick.HeaderText = "Chance to Pick";
-            ChanceToPick.Name = "ChanceToPick";
-            ChanceToPick.ToolTipText = "Must be a number between 1 and 100";
-            // 
-            // CanSpawnOnFirstTurn
-            // 
-            CanSpawnOnFirstTurn.DataPropertyName = "CanSpawnOnFirstTurn";
-            CanSpawnOnFirstTurn.HeaderText = "Spawns on First Turn?";
-            CanSpawnOnFirstTurn.Name = "CanSpawnOnFirstTurn";
-            // 
-            // CanSpawnAfterFirstTurn
-            // 
-            CanSpawnAfterFirstTurn.DataPropertyName = "CanSpawnAfterFirstTurn";
-            CanSpawnAfterFirstTurn.HeaderText = "Spawns after First Turn?";
-            CanSpawnAfterFirstTurn.Name = "CanSpawnAfterFirstTurn";
             // 
             // nudTurnsPerNPCGeneration
             // 
@@ -185,7 +136,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(194, 351);
+            btnSave.Location = new Point(136, 351);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(161, 23);
             btnSave.TabIndex = 32;
@@ -195,7 +146,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(361, 351);
+            btnCancel.Location = new Point(303, 351);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 23);
             btnCancel.TabIndex = 33;
@@ -220,11 +171,79 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblNoNPCSpawnsWarning.UseVisualStyleBackColor = true;
             fklblNoNPCSpawnsWarning.Visible = false;
             // 
+            // btnCheckGenerationOdds
+            // 
+            btnCheckGenerationOdds.Location = new Point(384, 351);
+            btnCheckGenerationOdds.Name = "btnCheckGenerationOdds";
+            btnCheckGenerationOdds.Size = new Size(161, 23);
+            btnCheckGenerationOdds.TabIndex = 35;
+            btnCheckGenerationOdds.Text = "Check generation odds";
+            btnCheckGenerationOdds.UseVisualStyleBackColor = true;
+            btnCheckGenerationOdds.Click += btnCheckGenerationOdds_Click;
+            // 
+            // ClassId
+            // 
+            ClassId.DataPropertyName = "ClassId";
+            ClassId.HeaderText = "NPC Class";
+            ClassId.Name = "ClassId";
+            // 
+            // MinLevel
+            // 
+            MinLevel.DataPropertyName = "MinLevel";
+            MinLevel.HeaderText = "Minimum Level";
+            MinLevel.Name = "MinLevel";
+            // 
+            // MaxLevel
+            // 
+            MaxLevel.DataPropertyName = "MaxLevel";
+            MaxLevel.HeaderText = "Maximum Level";
+            MaxLevel.Name = "MaxLevel";
+            // 
+            // MinimumInFirstTurn
+            // 
+            MinimumInFirstTurn.DataPropertyName = "MinimumInFirstTurn";
+            MinimumInFirstTurn.HeaderText = "Minimum in First Turn";
+            MinimumInFirstTurn.Name = "MinimumInFirstTurn";
+            // 
+            // SimultaneousMaxForKindInFloor
+            // 
+            SimultaneousMaxForKindInFloor.DataPropertyName = "SimultaneousMaxForKindInFloor";
+            SimultaneousMaxForKindInFloor.HeaderText = "Simultaneous Limit";
+            SimultaneousMaxForKindInFloor.Name = "SimultaneousMaxForKindInFloor";
+            SimultaneousMaxForKindInFloor.ToolTipText = "Won't spawn this NPC if there are at least this amount alive";
+            // 
+            // OverallMaxForKindInFloor
+            // 
+            OverallMaxForKindInFloor.DataPropertyName = "OverallMaxForKindInFloor";
+            OverallMaxForKindInFloor.HeaderText = "Overall Limit";
+            OverallMaxForKindInFloor.Name = "OverallMaxForKindInFloor";
+            OverallMaxForKindInFloor.ToolTipText = "Won't spawn this NPC if at least this amount had been spawned already";
+            // 
+            // ChanceToPick
+            // 
+            ChanceToPick.DataPropertyName = "ChanceToPick";
+            ChanceToPick.HeaderText = "Chance to Pick";
+            ChanceToPick.Name = "ChanceToPick";
+            ChanceToPick.ToolTipText = "Must be a number between 1 and 100";
+            // 
+            // CanSpawnOnFirstTurn
+            // 
+            CanSpawnOnFirstTurn.DataPropertyName = "CanSpawnOnFirstTurn";
+            CanSpawnOnFirstTurn.HeaderText = "Spawns on First Turn?";
+            CanSpawnOnFirstTurn.Name = "CanSpawnOnFirstTurn";
+            // 
+            // CanSpawnAfterFirstTurn
+            // 
+            CanSpawnAfterFirstTurn.DataPropertyName = "CanSpawnAfterFirstTurn";
+            CanSpawnAfterFirstTurn.HeaderText = "Spawns after First Turn?";
+            CanSpawnAfterFirstTurn.Name = "CanSpawnAfterFirstTurn";
+            // 
             // frmNPCGeneration
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(670, 386);
+            Controls.Add(btnCheckGenerationOdds);
             Controls.Add(fklblNoNPCSpawnsWarning);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
@@ -261,14 +280,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Label label14;
         private Button btnSave;
         private Button btnCancel;
+        private Button fklblNoNPCSpawnsWarning;
+        private Button btnCheckGenerationOdds;
         private DataGridViewComboBoxColumn ClassId;
         private DataGridViewTextBoxColumn MinLevel;
         private DataGridViewTextBoxColumn MaxLevel;
+        private DataGridViewTextBoxColumn MinimumInFirstTurn;
         private DataGridViewTextBoxColumn SimultaneousMaxForKindInFloor;
         private DataGridViewTextBoxColumn OverallMaxForKindInFloor;
         private DataGridViewTextBoxColumn ChanceToPick;
         private DataGridViewCheckBoxColumn CanSpawnOnFirstTurn;
         private DataGridViewCheckBoxColumn CanSpawnAfterFirstTurn;
-        private Button fklblNoNPCSpawnsWarning;
     }
 }

@@ -991,6 +991,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 OverallMaxForKindInFloor = info.OverallMaxForKindInFloor,
                 CanSpawnOnFirstTurn = info.CanSpawnOnFirstTurn,
                 CanSpawnAfterFirstTurn = info.CanSpawnAfterFirstTurn,
+                MinimumInFirstTurn = info.MinimumInFirstTurn,
                 SimultaneousMaxForKindInFloor = info.SimultaneousMaxForKindInFloor,
                 ChanceToPick = info.ChanceToPick
             };

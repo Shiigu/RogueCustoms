@@ -62,7 +62,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (floorJson.PossibleMonsters.Any())
             {
-                var totalChanceForPossibleMonsters = 0;
                 foreach (var possibleMonster in floorJson.PossibleMonsters)
                 {
                     if(!dungeonJson.NPCs.Exists(c => c.Id.Equals(possibleMonster.ClassId)))
@@ -74,16 +73,20 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate PossibleMonster in the current Floor Type.");
                     }
 
-                    if (!possibleMonster.ChanceToPick.Between(1, 100))
-                        messages.AddError($"{possibleMonster.ClassId}'s ChanceToPick must be an integer number between 1 and 100.");
-                    else
-                        totalChanceForPossibleMonsters += possibleMonster.ChanceToPick;
+                    if (possibleMonster.ChanceToPick <= 0)
+                        messages.AddError($"{possibleMonster.ClassId}'s ChanceToPick must be an integer number higher than 0.");
                     if (possibleMonster.MinLevel <= 0)
                         messages.AddError($"{possibleMonster.ClassId}'s MinLevel must be an integer number higher than 0.");
                     if (possibleMonster.MaxLevel <= 0)
                         messages.AddError($"{possibleMonster.ClassId}'s MaxLevel must be an integer number higher than 0.");
                     if (possibleMonster.MaxLevel < possibleMonster.MinLevel)
                         messages.AddError($"{possibleMonster.ClassId}'s MaxLevel cannot be lower than its MinLevel.");
+                    if (possibleMonster.MinimumInFirstTurn < 0)
+                        messages.AddError($"{possibleMonster.ClassId}'s Minimum Spawns in the first turn must be a non-negative integer number.");
+                    if (!possibleMonster.CanSpawnOnFirstTurn && possibleMonster.MinimumInFirstTurn > 0)
+                        messages.AddError($"{possibleMonster.ClassId}'s Minimum Spawns in the first turn are higher than 0, but it's set to not spawn on the first turn.");
+                    if (possibleMonster.MinimumInFirstTurn > possibleMonster.SimultaneousMaxForKindInFloor)
+                        messages.AddError($"{possibleMonster.ClassId}'s Minimum Spawns in the first turn are higher than the maximum amount allowed.");
                     if (possibleMonster.OverallMaxForKindInFloor <= 0)
                         messages.AddError($"{possibleMonster.ClassId}'s OverallMaxForKindInFloor must be an integer number higher than 0.");
                     if (possibleMonster.SimultaneousMaxForKindInFloor <= 0)
@@ -93,8 +96,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (!possibleMonster.CanSpawnOnFirstTurn && !possibleMonster.CanSpawnAfterFirstTurn)
                         messages.AddError($"{possibleMonster.ClassId}'s CanSpawnOnFirstTurn and CanSpawnAfterFirstTurn are both disabled.");
                 }
-                if (totalChanceForPossibleMonsters != 100)
-                    messages.AddError("Total chance for PossibleMonsters does not equal 100.");
+                var totalGuaranteedNPCFirstTurnSpawns = floorJson.PossibleMonsters.Sum(npc => npc.MinimumInFirstTurn);
+                if (totalGuaranteedNPCFirstTurnSpawns > floorJson.SimultaneousMaxMonstersInFloor)
+                    messages.AddError("There are more NPCs guaranteed to spawn in the first turn than the maximum simultaneous amount allowed.");
 
                 if (floorJson.SimultaneousMinMonstersAtStart < 0)
                     messages.AddError("SimultaneousMinMonstersAtStart must be an integer number equal to or higher than 0.");
@@ -112,22 +116,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (floorJson.PossibleItems.Any())
             {
-                var totalChanceForPossibleItems = 0;
                 foreach (var possibleItem in floorJson.PossibleItems)
                 {
                     if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
                         messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
                     if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId)) > 1)
                         messages.AddError($"{possibleItem.ClassId} shows up as a duplicate PossibleItem in the current Floor Type.");
-                    if (!possibleItem.ChanceToPick.Between(1, 100))
-                        messages.AddError($"{possibleItem.ClassId}'s ChanceToPick must be an integer number between 1 and 100.");
-                    else
-                        totalChanceForPossibleItems += possibleItem.ChanceToPick;
+                    if (possibleItem.ChanceToPick <= 0)
+                        messages.AddError($"{possibleItem.ClassId}'s ChanceToPick must be an integer number higher than 0.");
+                    if (possibleItem.MinimumInFirstTurn < 0)
+                        messages.AddError($"{possibleItem.ClassId}'s Minimum Spawns must be a non-negative integer number.");
                     if (possibleItem.SimultaneousMaxForKindInFloor <= 0)
                         messages.AddError($"{possibleItem.ClassId}'s SimultaneousMaxForKindInFloor must be an integer number higher than 0.");
+                    if (possibleItem.MinimumInFirstTurn > possibleItem.SimultaneousMaxForKindInFloor)
+                        messages.AddError($"{possibleItem.ClassId}'s Minimum Spawns are higher than its maximum spawns.");
                 }
-                if (totalChanceForPossibleItems != 100)
-                    messages.AddError("Total chance for PossibleItems does not equal 100.");
+                var totalGuaranteedItemFirstTurnSpawns = floorJson.PossibleItems.Sum(i => i.MinimumInFirstTurn);
+                if (totalGuaranteedItemFirstTurnSpawns > floorJson.MaxItemsInFloor)
+                    messages.AddError("There are more Items guaranteed to spawn in the first turn than the maximum amount allowed.");
                 if (floorJson.MinItemsInFloor < 0)
                     messages.AddError("MinItemsInFloor must be an integer number equal to or higher than 0.");
                 if (floorJson.MaxItemsInFloor < 0)
@@ -143,22 +149,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (floorJson.PossibleTraps.Any())
             {
-                var totalChanceForPossibleTraps = 0;
                 foreach (var possibleTrap in floorJson.PossibleTraps)
                 {
                     if (!dungeonJson.Traps.Exists(c => c.Id.Equals(possibleTrap.ClassId)))
                         messages.AddError($"{possibleTrap.ClassId} is in the PossibleTraps list but it's not a Trap.");
                     if (floorJson.PossibleTraps.Count(pm => pm.ClassId.Equals(possibleTrap.ClassId)) > 1)
                         messages.AddError($"{possibleTrap.ClassId} shows up as a duplicate PossibleTrap in the current Floor Type.");
-                    if (!possibleTrap.ChanceToPick.Between(1, 100))
-                        messages.AddError($"{possibleTrap.ClassId}'s ChanceToPick must be an integer number between 1 and 100.");
-                    else
-                        totalChanceForPossibleTraps += possibleTrap.ChanceToPick;
+                    if (possibleTrap.ChanceToPick <= 0)
+                        messages.AddError($"{possibleTrap.ClassId}'s ChanceToPick must be an integer number higher than 0.");
+                    if (possibleTrap.MinimumInFirstTurn < 0)
+                        messages.AddError($"{possibleTrap.ClassId}'s Minimum Spawns must be a non-negative integer number.");
                     if (possibleTrap.SimultaneousMaxForKindInFloor <= 0)
                         messages.AddError($"{possibleTrap.ClassId}'s SimultaneousMaxForKindInFloor must be an integer number higher than 0.");
+                    if (possibleTrap.MinimumInFirstTurn > possibleTrap.SimultaneousMaxForKindInFloor)
+                        messages.AddError($"{possibleTrap.ClassId}'s Minimum Spawns are higher than its maximum spawns.");
                 }
-                if (totalChanceForPossibleTraps != 100)
-                    messages.AddError("Total chance for PossibleTraps does not equal 100.");
+                var totalGuaranteedItemTrapTurnSpawns = floorJson.PossibleItems.Sum(t => t.MinimumInFirstTurn);
+                if (totalGuaranteedItemTrapTurnSpawns > floorJson.MaxItemsInFloor)
+                    messages.AddError("There are more Traps guaranteed to spawn in the first turn than the maximum amount allowed.");
                 if (floorJson.MinTrapsInFloor < 0)
                     messages.AddError("MinTrapsInFloor must be an integer number equal to or higher than 0.");
                 if (floorJson.MaxTrapsInFloor < 0)

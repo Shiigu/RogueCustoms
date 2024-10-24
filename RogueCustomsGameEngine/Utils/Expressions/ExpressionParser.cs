@@ -195,7 +195,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.BypassesElementEffect = new Expression(value).Eval<bool>();
                     return true;
                 case "tiletype":
-                    paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase));
+                    paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Id.Equals(value, StringComparison.InvariantCultureIgnoreCase));
                     return true;
                 case "value":
                     paramsObject.Value = (int)CalculateDiceNotationIfNeeded(value);

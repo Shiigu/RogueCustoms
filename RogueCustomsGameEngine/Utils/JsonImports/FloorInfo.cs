@@ -57,6 +57,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanSpawnAfterFirstTurn { get; set; }
         #endregion
 
+        public int MinimumInFirstTurn { get; set; }
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
     }
