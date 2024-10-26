@@ -99,7 +99,7 @@ public partial class InfoPanel : GamePanel
 
     private void DetailsButton_Pressed()
     {
-        var playerInfo = _globalState.DungeonManager.GetPlayerDetailInfo(_globalState.DungeonId);
+        var playerInfo = _globalState.DungeonManager.GetPlayerDetailInfo();
         if (playerInfo == null) return;
         var titleText = TranslationServer.Translate("PlayerCharacterDetailWindowTitleText").ToString().Format(new { PlayerName = playerInfo.Name});
         var innerText = new StringBuilder();

@@ -50,12 +50,12 @@ public partial class MessageScreen : Control
             case MessageScreenType.Briefing:
                 _titleLabel.Text = briefingMessageHeaderText;
                 _titleLabel.Modulate = briefingColor;
-                messageText = _globalState.DungeonManager.GetDungeonWelcomeMessage(_globalState.DungeonId);
+                messageText = _globalState.DungeonManager.GetDungeonWelcomeMessage();
                 break;
             case MessageScreenType.Ending:
                 _titleLabel.Text = theEndMessageHeaderText;
                 _titleLabel.Modulate = theEndColor;
-                messageText = _globalState.DungeonManager.GetDungeonEndingMessage(_globalState.DungeonId);
+                messageText = _globalState.DungeonManager.GetDungeonEndingMessage();
                 break;
             case MessageScreenType.Error:
                 _titleLabel.Text = errorMessageHeaderText;
@@ -88,7 +88,7 @@ public partial class MessageScreen : Control
 
     private void AskForPlayerClass()
     {
-        var availablePlayerClasses = _globalState.DungeonManager.GetPlayerClassSelection(_globalState.DungeonId).CharacterClasses;
+        var availablePlayerClasses = _globalState.DungeonManager.GetPlayerClassSelection().CharacterClasses;
         if (availablePlayerClasses != null && availablePlayerClasses.Count > 1)
         {
             var overlay = new ColorRect
@@ -141,7 +141,7 @@ public partial class MessageScreen : Control
 
     private void SendClassSelection(string classId, string name)
     {
-        _globalState.DungeonManager.SetPlayerClassSelection(_globalState.DungeonId, new PlayerClassSelectionInput
+        _globalState.DungeonManager.SetPlayerClassSelection(new PlayerClassSelectionInput
         {
             ClassId = classId,
             Name = name,

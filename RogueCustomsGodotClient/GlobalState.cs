@@ -17,7 +17,6 @@ public partial class GlobalState : Node
 	public DungeonManager DungeonManager { get; set; } = new();
 	public MessageScreenType MessageScreenType { get; set; }
 	public ControlMode PlayerControlMode { get; set; }
-    public int DungeonId { get; set; }
     public static string GameLocale => TranslationServer.Translate("LanguageLocale");
 	public bool MustUpdateGameScreen { get; set; }
     public bool HasSaveGame => Godot.FileAccess.FileExists(SaveGamePath);

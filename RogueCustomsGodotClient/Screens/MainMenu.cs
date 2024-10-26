@@ -162,7 +162,7 @@ public partial class MainMenu : Control
             {
                 dungeonData[i] = file.Get8();
             }
-            _globalState.DungeonId = _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
+            _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
             {
                 DungeonData = dungeonData
             });

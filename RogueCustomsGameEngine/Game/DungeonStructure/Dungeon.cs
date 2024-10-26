@@ -21,7 +21,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class Dungeon
     {
-        public int Id { get; set; }
         public DateTime LastAccessTime { get; set; }
         public PlayerCharacter? PlayerCharacter { get; set; }
         public EntityClass? PlayerClass { get; set; }
@@ -52,9 +51,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<TileType> TileTypes { get; private set; }
         #endregion
 
-        public Dungeon(int id, DungeonInfo dungeonInfo, string localeLanguage)
+        public Dungeon(DungeonInfo dungeonInfo, string localeLanguage)
         {
-            Id = id;
             Version = dungeonInfo.Version;
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;

@@ -19,7 +19,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     {
         public string DungeonName { get; private set; }
         public string FloorName { get; private set; }
-        public int DungeonId { get; private set; }
         public DungeonStatus DungeonStatus { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -40,7 +39,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public DungeonDto(Dungeon dungeon, Map map)
         {
-            DungeonId = dungeon.Id;
             DungeonName = dungeon.Name;
             FloorName = map.FloorName;
             DungeonStatus = dungeon.DungeonStatus;
