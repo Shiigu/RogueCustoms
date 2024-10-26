@@ -85,7 +85,7 @@ public partial class PlayerSelectItem : Control
 
         _equipButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerUseItemFromInventory(_globalState.DungeonId, _itemListInfo.InventoryItems[_selectedIndex].ItemId);
+            _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             _globalState.MustUpdateGameScreen = true;
             onCloseCallback?.Invoke();
             QueueFree();
@@ -95,7 +95,7 @@ public partial class PlayerSelectItem : Control
 
         _swapButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_globalState.DungeonId, _itemListInfo.InventoryItems[_selectedIndex].ItemId);
+            _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             _globalState.MustUpdateGameScreen = true;
             onCloseCallback?.Invoke();
             QueueFree();
@@ -105,7 +105,7 @@ public partial class PlayerSelectItem : Control
 
         _dropButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerDropItemFromInventory(_globalState.DungeonId, _itemListInfo.InventoryItems[_selectedIndex].ItemId);
+            _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             _globalState.MustUpdateGameScreen = true;
             onCloseCallback?.Invoke();
             QueueFree();
@@ -115,7 +115,7 @@ public partial class PlayerSelectItem : Control
 
         _useButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerUseItemFromInventory(_globalState.DungeonId, _itemListInfo.InventoryItems[_selectedIndex].ItemId);
+            _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             _globalState.MustUpdateGameScreen = true;
             onCloseCallback?.Invoke();
             QueueFree();
@@ -133,7 +133,7 @@ public partial class PlayerSelectItem : Control
                 X = targetCoords.Value.X,
                 Y = targetCoords.Value.Y,
             };
-            _globalState.DungeonManager.PlayerAttackTargetWith(_globalState.DungeonId, attackInput);
+            _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
             _globalState.MustUpdateGameScreen = true;
             onCloseCallback?.Invoke();
             QueueFree();

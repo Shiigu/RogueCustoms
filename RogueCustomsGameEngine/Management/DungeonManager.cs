@@ -20,15 +20,12 @@ namespace RogueCustomsGameEngine.Management
     [Serializable]
     public class DungeonManager
     {
-        private int CurrentDungeonId;
-        private readonly List<Dungeon> Dungeons;
-        private readonly Dictionary<string, DungeonInfo> AvailableDungeonInfos;
+        private Dungeon ActiveDungeon;
+        public readonly Dictionary<string, DungeonInfo> AvailableDungeonInfos;
         private readonly DungeonListDto DungeonListForDisplay;
 
         public DungeonManager()
         {
-            CurrentDungeonId = 1;
-            Dungeons = new List<Dungeon>();
             AvailableDungeonInfos = new Dictionary<string, DungeonInfo>();
             DungeonListForDisplay = new DungeonListDto(EngineConstants.CurrentDungeonJsonVersion);
         }
@@ -87,49 +84,29 @@ namespace RogueCustomsGameEngine.Management
             return DungeonListForDisplay;
         }
 
-        public int CreateDungeon(string dungeonName, string locale)
+        public void CreateDungeon(string dungeonName, string locale)
         {
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
-            var dungeon = new Dungeon(CurrentDungeonId, dungeonInfo, locale)
+            ActiveDungeon = new Dungeon(dungeonInfo, locale)
             {
                 LastAccessTime = DateTime.UtcNow
             };
-            Dungeons.Add(dungeon);
-            CurrentDungeonId++;
-            return dungeon.Id;
         }
 
-        private Dungeon GetDungeonById(int id)
+        public DungeonSaveGameDto SaveDungeon()
         {
-            var dungeon = Dungeons.Find(d => d.Id == id);
-            return dungeon ?? throw new ArgumentException("Dungeon does not exist");
-        }
-
-        public void UpdateAccessTimeAndCleanupUnusedDungeons(int dungeonId)
-        {
-            var dungeon = GetDungeonById(dungeonId);
-            if (dungeon != null)
-                dungeon.LastAccessTime = DateTime.UtcNow;
-            var twoHoursAgo = DateTime.UtcNow.AddHours(-1 * EngineConstants.HOURS_BEFORE_DUNGEON_CACHE_DELETION);
-            Dungeons.RemoveAll(dungeon => dungeon.Id != dungeonId && dungeon.LastAccessTime < twoHoursAgo);
-        }
-
-        public DungeonSaveGameDto SaveDungeon(int dungeonId)
-        {
-            var dungeon = GetDungeonById(dungeonId);
-
             using var memoryStream = new MemoryStream();
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
             var formatter = new BinaryFormatter();
-            formatter.Serialize(gzipStream, dungeon);
+            formatter.Serialize(gzipStream, ActiveDungeon);
             return new DungeonSaveGameDto
             {
                 DungeonData = memoryStream.ToArray()
             };
         }
 
-        public int LoadSavedDungeon(DungeonSaveGameDto dungeonSaveGame)
+        public void LoadSavedDungeon(DungeonSaveGameDto dungeonSaveGame)
         {
             using var memoryStream = new MemoryStream(dungeonSaveGame.DungeonData);
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
@@ -140,125 +117,103 @@ namespace RogueCustomsGameEngine.Management
             var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
             if (!restoredDungeon.Version.Equals(EngineConstants.CurrentDungeonJsonVersion))
                 throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {EngineConstants.CurrentDungeonJsonVersion}.");
-            restoredDungeon.Id = CurrentDungeonId;
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
             restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
             restoredDungeon.CurrentFloor.SetActionParams();
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
-            Dungeons.Add(restoredDungeon);
-            CurrentDungeonId++;
-            return restoredDungeon.Id;
+            ActiveDungeon = restoredDungeon;
         }
 
-        public PlayerClassSelectionOutput GetPlayerClassSelection(int dungeonId)
+        public PlayerClassSelectionOutput GetPlayerClassSelection()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return new PlayerClassSelectionOutput(dungeon);
+            return new PlayerClassSelectionOutput(ActiveDungeon);
         }
 
-        public void SetPlayerClassSelection(int dungeonId, PlayerClassSelectionInput input)
+        public void SetPlayerClassSelection(PlayerClassSelectionInput input)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.SetPlayerClass(input.ClassId);
-            dungeon.SetPlayerName(input.Name);
+            ActiveDungeon.SetPlayerClass(input.ClassId);
+            ActiveDungeon.SetPlayerName(input.Name);
         }
 
-        public string GetDungeonWelcomeMessage(int dungeonId)
+        public string GetDungeonWelcomeMessage()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return dungeon.WelcomeMessage;
+            return ActiveDungeon.WelcomeMessage;
         }
 
-        public string GetDungeonEndingMessage(int dungeonId)
+        public string GetDungeonEndingMessage()
         {
-            var dungeon = GetDungeonById(dungeonId);
             // Remove a completed dungeon from memory to clear space
-            if (dungeon.DungeonStatus == DungeonStatus.Completed)
-                Dungeons.Remove(dungeon);
-            return dungeon.EndingMessage;
+            if (ActiveDungeon.DungeonStatus == DungeonStatus.Completed)
+                ActiveDungeon = null;
+            return ActiveDungeon.EndingMessage;
         }
 
-        public DungeonDto GetDungeonStatus(int dungeonId)
+        public DungeonDto GetDungeonStatus()
         {
-            var dungeon = GetDungeonById(dungeonId);
-
-            var dungeonStatus = dungeon.GetStatus();
+            var dungeonStatus = ActiveDungeon.GetStatus();
 
             // A Dungeon's Message Boxes don't have to be sent more than once
-            dungeon.MessageBoxes.Clear();
+            ActiveDungeon.MessageBoxes.Clear();
 
             return dungeonStatus;
         }
 
-        public void MovePlayer(int dungeonId, CoordinateInput input)
+        public void MovePlayer(CoordinateInput input)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.MovePlayer(input.X, input.Y);
+            ActiveDungeon.MovePlayer(input.X, input.Y);
         }
 
-        public void PlayerSkipTurn(int dungeonId)
+        public void PlayerSkipTurn()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.MovePlayer(0, 0);
+            ActiveDungeon.MovePlayer(0, 0);
         }
 
-        public void PlayerUseItemInFloor(int dungeonId)
+        public void PlayerUseItemInFloor()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerUseItemInFloor();
+            ActiveDungeon.PlayerUseItemInFloor();
         }
-        public void PlayerPickUpItemInFloor(int dungeonId)
+        public void PlayerPickUpItemInFloor()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerPickUpItemInFloor();
+            ActiveDungeon.PlayerPickUpItemInFloor();
         }
-        public void PlayerUseItemFromInventory(int dungeonId, int itemId)
+        public void PlayerUseItemFromInventory(int itemId)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerUseItemFromInventory(itemId);
+            ActiveDungeon.PlayerUseItemFromInventory(itemId);
         }
-        public void PlayerDropItemFromInventory(int dungeonId, int itemId)
+        public void PlayerDropItemFromInventory(int itemId)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerDropItemFromInventory(itemId);
+            ActiveDungeon.PlayerDropItemFromInventory(itemId);
         }
-        public void PlayerSwapFloorItemWithInventoryItem(int dungeonId, int itemId)
+        public void PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerSwapFloorItemWithInventoryItem(itemId);
+            ActiveDungeon.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
 
-        public PlayerInfoDto GetPlayerDetailInfo(int dungeonId)
+        public PlayerInfoDto GetPlayerDetailInfo()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return dungeon.GetPlayerDetailInfo();
+            return ActiveDungeon.GetPlayerDetailInfo();
         }
 
-        public InventoryDto GetPlayerInventory(int dungeonId)
+        public InventoryDto GetPlayerInventory()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return dungeon.GetPlayerInventory();
+            return ActiveDungeon.GetPlayerInventory();
         }
 
-        public ActionListDto GetPlayerAttackActions(int dungeonId, int x, int y)
+        public ActionListDto GetPlayerAttackActions(int x, int y)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return dungeon.GetPlayerAttackActions(x, y);
+            return ActiveDungeon.GetPlayerAttackActions(x, y);
         }
-        public EntityDetailDto GetDetailsOfEntity(int dungeonId, int x, int y)
+        public EntityDetailDto GetDetailsOfEntity(int x, int y)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            return dungeon.GetDetailsOfEntity(x, y);
+            return ActiveDungeon.GetDetailsOfEntity(x, y);
         }
-        public void PlayerAttackTargetWith(int dungeonId, AttackInput input)
+        public void PlayerAttackTargetWith(AttackInput input)
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y);
+            ActiveDungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y);
         }
-        public void PlayerTakeStairs(int dungeonId)
+        public void PlayerTakeStairs()
         {
-            var dungeon = GetDungeonById(dungeonId);
-            dungeon.PlayerTakeStairs();
+            ActiveDungeon.PlayerTakeStairs();
         }
     }
 

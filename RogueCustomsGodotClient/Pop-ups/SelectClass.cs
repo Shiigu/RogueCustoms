@@ -43,7 +43,7 @@ public partial class SelectClass : Control
         _selectButton = GetNode<Button>("VBoxContainer2/ButtonContainer/SelectButton");
         _cancelButton = GetNode<Button>("VBoxContainer2/ButtonContainer/CancelButton");
         _border = GetNode<Panel>("Border");
-        _possibleClasses = _globalState.DungeonManager.GetPlayerClassSelection(_globalState.DungeonId).CharacterClasses;
+        _possibleClasses = _globalState.DungeonManager.GetPlayerClassSelection().CharacterClasses;
     }
 
     public void Show(Action<string> selectCallBack, Action cancelCallback)

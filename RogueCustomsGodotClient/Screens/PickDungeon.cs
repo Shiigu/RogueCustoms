@@ -176,7 +176,7 @@ public partial class PickDungeon : Control
         if (SelectedItem.IsAtCurrentVersion)
         {
             _globalState.MessageScreenType = MessageScreenType.Briefing;
-            _globalState.DungeonId = _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale);
+            _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale);
             GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
         }
         else
