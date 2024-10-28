@@ -99,8 +99,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target must be a Tile
                 return false;
 
-            if (t.Type.AcceptsItems)
-                // Target Tile must be a Floor or Hallway
+            if (!t.Type.AcceptsItems)
+                // Target Tile must accept items
                 return false;
 
             if (t.Trap != null)
