@@ -12,6 +12,7 @@ using RogueCustomsGameEngine.Utils.JsonImports;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
+    [Serializable]
     public class TileType
     {
         public static TileType Empty;

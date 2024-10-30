@@ -12,6 +12,7 @@ using System.Collections.Immutable;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections;
+using RogueCustomsGameEngine.Utils.Helpers;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -29,13 +30,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 
+
+        public int CurrentEntityId { get; set; }
         private int CurrentFloorLevel;
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
-
-        public List<MessageDto> Messages { get; set; }
-
-        public List<MessageBoxDto> MessageBoxes { get; set; }
 
         #region From JSON
         public string Name { get; set; }
@@ -53,6 +52,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Dungeon(DungeonInfo dungeonInfo, string localeLanguage)
         {
+            CurrentEntityId = 1;
             Version = dungeonInfo.Version;
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
@@ -85,8 +85,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Factions = new List<Faction>();
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             MapFactions();
-            Messages = new List<MessageDto>();
-            MessageBoxes = new List<MessageBoxDto>();
             CurrentFloorLevel = 1;
             PlayerCharacter = null;
             DungeonStatus = DungeonStatus.Running;
@@ -127,8 +125,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var flagList = new List<Flag>();
             if (CurrentFloorLevel > 1)
             {
-                Messages.Clear();
-                
                 var statusNamesToRemove = new List<string>();
                 foreach (var statusToRemove in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
                 {
@@ -146,8 +142,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
             CurrentFloor.Generate();
-            if (CurrentFloorLevel > 1)
-                CurrentFloor.AddSpecialEffectIfPossible(SpecialEffect.TakeStairs, 0);
         }
 
         public void SetPlayerName(string name)
@@ -167,29 +161,25 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (CurrentFloor == null)
                 NewMap();
-            var dungeonStatus = new DungeonDto(this, CurrentFloor);
-            CurrentFloor.SpecialEffectsThatHappened = new();
-            return dungeonStatus;
-        }
-
-        public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)
-        {
-            MessageBoxes.Add(new MessageBoxDto
-            {
-                Title = title,
-                Message = message,
-                ButtonCaption = buttonCaption,
-                WindowColor = windowColor
-            });
+            CurrentFloor.Snapshot.DisplayEvents = CurrentFloor.DisplayEvents;
+            CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Any()).Select(t => t.Position).ToList();
+            return CurrentFloor.Snapshot;
         }
 
         public void TakeStairs()
         {
-            MessageBoxes.Clear();
             CurrentFloorLevel++;
             if (CurrentFloorLevel > AmountOfFloors)
             {
                 CurrentFloor.TurnCount++;
+                CurrentFloor.DisplayEvents.Add(("Finished", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.SetDungeonStatus,
+                        Params = new() { DungeonStatus.Completed }
+                    }
+                }
+                ));
                 DungeonStatus = DungeonStatus.Completed;
                 return;
             }
@@ -198,33 +188,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void MovePlayer(int x, int y)
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerMove(x, y);
         }
 
         public void PlayerUseItemInFloor()
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerUseItemInFloor();
         }
         public void PlayerPickUpItemInFloor()
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerPickUpItemInFloor();
         }
         public void PlayerUseItemFromInventory(int itemId)
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerUseItemFromInventory(itemId);
         }
         public void PlayerDropItemFromInventory(int itemId)
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerDropItemFromInventory(itemId);
         }
         public void PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
 
@@ -250,13 +234,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void PlayerAttackTargetWith(string selectionId, int x, int y)
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerAttackTargetWith(selectionId, x, y);
         }
 
         public void PlayerTakeStairs()
         {
-            MessageBoxes.Clear();
             CurrentFloor.PlayerUseStairs();
         }
     }

@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text;
 using System;
 using System.Collections.Generic;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -20,19 +21,43 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
         }
 
+        public int CalculateExperienceBarPercentage()
+        {
+            var experienceInCurrentLevel = Experience - LastLevelUpExperience;
+            var experienceBetweenLevels = ExperienceToLevelUp - LastLevelUpExperience;
+            return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
+        }
+
         public new void GainExperience(int GamePointsToAdd)
         {
+            var events = new List<DisplayEventDto>();
             var oldLevel = Level;
             var statsPreExpGain = new List<(string Name, decimal Amount)>();
             var statsAfterExpGain = new List<(string Name, decimal Amount)>();
             foreach (var stat in UsedStats)
                 statsPreExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
             base.GainExperience(GamePointsToAdd);
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdateExperienceBar,
+                Params = new() { Experience, ExperienceToLevelUp, CalculateExperienceBarPercentage() }
+            });
             if (Level > oldLevel)
             {
                 foreach (var stat in UsedStats)
                     statsAfterExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
-                Map.AddSpecialEffectIfPossible(SpecialEffect.LevelUp);
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, "Level", Level }
+                });
+                events.Add(
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.LevelUp }
+                    }
+                );
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
                 levelUpMessage.AppendLine();
                 levelUpMessage.AppendLine();
@@ -53,8 +78,23 @@ namespace RogueCustomsGameEngine.Game.Entities
                             levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = statAfterExpGain.Name, Amount = (statAfterExpGain.Amount - correspondingStatPreExpGain.Amount).ToString() }));
                     }
                 }
-                Map.AddMessageBox(Map.Locale["CharacterLevelsUpHeader"], levelUpMessage.ToString(), "OK", new GameColor(Color.Lime));
+                events.Add(
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.AddMessageBox,
+                        Params = new() {
+                            new MessageBoxDto
+                            {
+                                Title = Map.Locale["CharacterLevelsUpHeader"],
+                                Message = levelUpMessage.ToString(),
+                                ButtonCaption = "OK",
+                                WindowColor = new GameColor(Color.Lime)
+                            }
+                        }
+                    }
+                );
             }
+            Map.DisplayEvents.Add(($"Player {Name} gained experience", events));
         }
 
         public void UpdateVisibility()
@@ -71,11 +111,32 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void Die(Entity? attacker = null)
         {
+            Map.DisplayEvents.Add(($"Player {Name} dies", new()
+            {
+                new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.GameOver }
+                }
+            }));
             base.Die(attacker);
             if (ExistenceStatus == EntityExistenceStatus.Dead)
             {
-                Map.DungeonStatus = DungeonStatus.GameOver;
-                Map.AddSpecialEffectIfPossible(SpecialEffect.GameOver);
+                var events = new List<DisplayEventDto>();
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
+                    });
+                }
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.SetDungeonStatus,
+                    Params = new() { DungeonStatus.GameOver }
+                });
+                Map.DisplayEvents.Add(($"Player {Name} is really dead", events));
             }
         }
 
@@ -99,8 +160,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.Position = Position;
             item.Owner = null!;
             item.ExistenceStatus = EntityExistenceStatus.Alive;
-            Map.AddSpecialEffectIfPossible(SpecialEffect.ItemDrop);
             Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            Map.DisplayEvents.Add(($"Player {Name} put item on floor", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.ItemDrop }
+                    }
+                }
+            ));
         }
 
         public override void PickItem(Item item, bool informToPlayer)
@@ -111,8 +179,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AddSpecialEffectIfPossible(SpecialEffect.ItemGet);
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                Map.DisplayEvents.Add(($"Player {Name} picked item on floor", new()
+                {
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                    },
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.ItemGet }
+                    }
+                }
+                ));
             }
         }
 
@@ -124,8 +204,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             key.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AddSpecialEffectIfPossible(SpecialEffect.KeyGet);
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
+                Map.DisplayEvents.Add(($"Player {Name} picked key", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.KeyGet }
+                    }
+                }
+                ));
             }
         }
 

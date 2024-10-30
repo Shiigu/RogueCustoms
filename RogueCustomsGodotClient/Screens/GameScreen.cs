@@ -2,6 +2,7 @@ using Godot;
 
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
@@ -11,12 +12,16 @@ using RogueCustomsGodotClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 public partial class GameScreen : Control
 {
     private GlobalState _globalState;
-    private GamePanel _experienceBarPanel, _controlsPanel;
+    private ExperienceBarPanel _experienceBarPanel;
+    private GamePanel _controlsPanel;
     private MapPanel _mapPanel;
     private InfoPanel _infoPanel;
     private MessageLogPanel _messageLogPanel;
@@ -30,9 +35,11 @@ public partial class GameScreen : Control
     private CoordinateInput _coords;
     private AudioStreamPlayer _audioStreamPlayer;
 
+    private bool _soundIsPlaying, _popUpIsOpen;
+    private TaskCompletionSource<bool> _soundFinished;
+
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
     private List<(SpecialEffect SpecialEffect, string Path)> SpecialEffectsWithSound;
-    private Queue<string> _soundQueue = new Queue<string>();
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -91,7 +98,7 @@ public partial class GameScreen : Control
         _mapPanel = GetNode<MapPanel>("MapPanel");
         _infoPanel = GetNode<InfoPanel>("InfoPanel");
         _messageLogPanel = GetNode<MessageLogPanel>("MessageLogPanel");
-        _experienceBarPanel = GetNode<GamePanel>("ExperienceBarPanel");
+        _experienceBarPanel = GetNode<ExperienceBarPanel>("ExperienceBarPanel");
         _controlsPanel = GetNode<GamePanel>("ControlsPanel");
         _children = new List<GamePanel> { _mapPanel, _infoPanel, _messageLogPanel, _experienceBarPanel, _controlsPanel };
         _screenFlash = GetNode<ScreenFlash>("ScreenFlash");
@@ -107,7 +114,7 @@ public partial class GameScreen : Control
         _lastTurn = -1;
         _saveGameButton.Pressed += SaveGameButton_Pressed;
         _exitButton.Pressed += ExitButton_Pressed;
-        _audioStreamPlayer.Finished += PlayNextSound;
+        _audioStreamPlayer.Finished += OnSoundFinished;
 
         _coords = new CoordinateInput
         {
@@ -120,7 +127,7 @@ public partial class GameScreen : Control
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
-	{
+    {
         if (_globalState.MustUpdateGameScreen)
         {
             _globalState.DungeonInfo = _globalState.DungeonManager.GetDungeonStatus();
@@ -140,24 +147,9 @@ public partial class GameScreen : Control
             if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
             {
                 _saveGameButton.Disabled = false;
-                var playerEntity = dungeonStatus.PlayerEntity;
-                if (!playerEntity.CanTakeAction)
-                    _globalState.PlayerControlMode = ControlMode.MustSkipTurn;
-                else if (playerEntity.Movement == 0)
-                {
-                    _globalState.PlayerControlMode = ControlMode.Immobilized;
-                    if (dungeonStatus.IsPlayerOnStairs())
-                        _globalState.PlayerControlMode = ControlMode.ImmobilizedOnStairs;
-                }
-                else
-                {
-                    _globalState.PlayerControlMode = ControlMode.NormalMove;
-                    if (dungeonStatus.IsPlayerOnStairs())
-                        _globalState.PlayerControlMode = ControlMode.NormalOnStairs;
-                }
             }
 
-            if(_globalState.PlayerControlMode == ControlMode.None)
+            if (_globalState.PlayerControlMode == ControlMode.None)
             {
                 _mapPanel.StopTargeting();
                 _saveGameButton.Disabled = true;
@@ -168,23 +160,21 @@ public partial class GameScreen : Control
                 child.Update();
             }
 
-            foreach (var specialEffect in SpecialEffectsWithFlash)
-            {
-                if (dungeonStatus.SpecialEffectsThatHappened.Contains(specialEffect.SpecialEffect))
-                {
-                    _screenFlash.Flash(specialEffect.Color);
-                    break;
-                }
-            }
+            _ = UpdateUIViaEvents();
 
-            PlaySounds();
-
-            if (dungeonStatus.TurnCount != _lastTurn)
-                ShowMessagesIfNeeded(0);
             _globalState.MustUpdateGameScreen = false;
             _lastTurn = dungeonStatus.TurnCount;
         }
 
+        if (_globalState.PlayerControlMode == ControlMode.Waiting)
+        {
+            _coords = new CoordinateInput
+            {
+                X = 0,
+                Y = 0
+            };
+            return;
+        }
         if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
         {
             _globalState.DungeonManager.MovePlayer(_coords);
@@ -207,23 +197,136 @@ public partial class GameScreen : Control
             };
         }
     }
-    private void ShowMessagesIfNeeded(int index = 0)
+    private async Task UpdateUIViaEvents()
     {
-        if (_globalState.PlayerControlMode == ControlMode.Targeting)
-        {
-            _mapPanel.StopTargeting();
-            _globalState.PlayerControlMode = _previousControlMode;
-        }
+        var controlModeToPick = ControlMode.NormalMove;
+        _globalState.PlayerControlMode = ControlMode.Waiting;
+        _saveGameButton.Disabled = true;
+        _exitButton.Disabled = true;
+        _infoPanel.DetailsButton.Disabled = true;
+        _messageLogPanel.MessageWindowButton.Disabled = true;
         _controlsPanel.Update();
-        var messageBox = _globalState.DungeonInfo.MessageBoxes.ElementAtOrDefault(index);
-        if (messageBox != null)
-        {
-            this.CreateStandardPopup(messageBox.Title, messageBox.Message,
-                new PopUpButton[]
+        var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
+        _mapPanel.StopTargeting();
+        foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
+        {            
+            foreach (var displayEvent in displayEventList.Events)
+            {
+                switch (displayEvent.DisplayEventType)
                 {
-                    new() { Text = messageBox.ButtonCaption, ActionPress = "ui_accept", Callback = () => ShowMessagesIfNeeded(index + 1) }
-                }, new Color { R8 = messageBox.WindowColor.R, G8 = messageBox.WindowColor.G, B8 = messageBox.WindowColor.B, A8 = messageBox.WindowColor.A });
+                    case DisplayEventType.PlaySpecialEffect:
+                        var specialEffect = (SpecialEffect)displayEvent.Params[0];
+                        var correspondingFlash = SpecialEffectsWithFlash.Find(se => se.SpecialEffect == specialEffect);
+                        var correspondingSound = SpecialEffectsWithSound.Find(se => se.SpecialEffect == specialEffect);
+                        if (_soundIsPlaying)
+                            await _soundFinished.Task;
+                        if (correspondingFlash != default)
+                            _screenFlash.Flash(correspondingFlash.Color);
+                        if (correspondingSound != default)
+                        {
+                            _soundIsPlaying = true;
+                            _soundFinished = new TaskCompletionSource<bool>();
+
+                            _audioStreamPlayer.Stream = (AudioStream)GD.Load(correspondingSound.Path);
+                            _audioStreamPlayer.Play();
+                        }
+                        break;
+                    case DisplayEventType.AddLogMessage:
+                        var message = displayEvent.Params[0] as MessageDto;
+                        _messageLogPanel.Append(message);
+                        break;
+                    case DisplayEventType.ClearLogMessages:
+                        _messageLogPanel.Clear();
+                        break;
+                    case DisplayEventType.AddMessageBox:
+                        var messageBox = displayEvent.Params[0] as MessageBoxDto;
+                        await ShowMessageBox(messageBox);
+                        break;
+                    case DisplayEventType.UpdateTileRepresentation:
+                        var position = displayEvent.Params[0] as GamePoint;
+                        var consoleRepresentation = displayEvent.Params[1] as ConsoleRepresentation;
+                        _mapPanel.UpdateTileRepresentation(new Vector2I { X = position.X, Y = position.Y }, consoleRepresentation);
+                        break;
+                    case DisplayEventType.SetDungeonStatus:
+                        var dungeonStatus = (DungeonStatus)displayEvent.Params[0];
+                        if (dungeonStatus == DungeonStatus.Completed)
+                        {
+                            _globalState.MessageScreenType = MessageScreenType.Ending;
+                            GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                            return;
+                        }
+                        if (dungeonStatus == DungeonStatus.GameOver)
+                            controlModeToPick = ControlMode.None;
+                        break;
+                    case DisplayEventType.SetOnStairs:
+                        var onStairs = (bool)displayEvent.Params[0];
+                        if (onStairs)
+                        {
+                            if (controlModeToPick == ControlMode.NormalMove)
+                                controlModeToPick = ControlMode.NormalOnStairs;
+                            if (controlModeToPick == ControlMode.Immobilized)
+                                controlModeToPick = ControlMode.ImmobilizedOnStairs;
+                        }
+                        else
+                        {
+                            if (controlModeToPick == ControlMode.NormalOnStairs)
+                                controlModeToPick = ControlMode.NormalMove;
+                            if (controlModeToPick == ControlMode.ImmobilizedOnStairs)
+                                controlModeToPick = ControlMode.Immobilized;
+                        }
+                        break;
+                    case DisplayEventType.SetCanMove:
+                        var canMove = (bool)displayEvent.Params[0];
+                        if (canMove)
+                        {
+                            if (controlModeToPick == ControlMode.ImmobilizedOnStairs)
+                                controlModeToPick = ControlMode.NormalOnStairs;
+                            if (controlModeToPick == ControlMode.Immobilized)
+                                controlModeToPick = ControlMode.NormalMove;
+                        }
+                        else
+                        {
+                            if (controlModeToPick == ControlMode.NormalOnStairs)
+                                controlModeToPick = ControlMode.ImmobilizedOnStairs;
+                            if (controlModeToPick == ControlMode.NormalMove)
+                                controlModeToPick = ControlMode.Immobilized;
+                        }
+                        break;
+                    case DisplayEventType.SetCanAct:
+                        var canAct = (bool)displayEvent.Params[0];
+                        if (!canAct)
+                            controlModeToPick = ControlMode.MustSkipTurn;
+                        break;
+                    case DisplayEventType.UpdatePlayerData:
+                        _infoPanel.UpdatePlayerData(displayEvent.Params);
+                        break;
+                    case DisplayEventType.UpdatePlayerPosition:
+                        position = displayEvent.Params[0] as GamePoint;
+                        _globalState.DungeonInfo.PlayerEntity.X = position.X;
+                        _globalState.DungeonInfo.PlayerEntity.Y = position.Y;
+                        break;
+                    case DisplayEventType.UpdateExperienceBar:
+                        var experience = (int) displayEvent.Params[0];
+                        var experienceToLevelUp = (int) displayEvent.Params[1];
+                        var currentExperiencePercentage = (int) displayEvent.Params[2];
+                        _experienceBarPanel.UpdateExperienceBar(experience, experienceToLevelUp, currentExperiencePercentage);
+                        break;
+                }
+            }
         }
+        if (_soundIsPlaying)
+            await Task.Delay(50);
+        _soundIsPlaying = false;
+        _globalState.PlayerControlMode = controlModeToPick;
+        _controlsPanel.Update();
+
+        _infoPanel.DetailsButton.Disabled = false;
+        _exitButton.Disabled = false;
+        _messageLogPanel.MessageWindowButton.Disabled = false;
+        if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+            _saveGameButton.Disabled = false;
+        if (_globalState.PlayerControlMode == ControlMode.None)
+            _saveGameButton.Disabled = true;
     }
 
     private void SaveGameButton_Pressed()
@@ -245,7 +348,7 @@ public partial class GameScreen : Control
                     file.Store8(@byte);
                 }
 
-                this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
+                _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                             TranslationServer.Translate("SuccessfulSavePromptText"),
                                             new PopUpButton[]
                                             {
@@ -256,7 +359,7 @@ public partial class GameScreen : Control
         }
         catch
         {
-            this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
+            _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                         TranslationServer.Translate("FailedSaveText"),
                                         new PopUpButton[]
                                         {
@@ -270,7 +373,7 @@ public partial class GameScreen : Control
         _mapPanel.StopTargeting();
         _globalState.PlayerControlMode = _previousControlMode;
         _controlsPanel.Update();
-        this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
+        _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                     TranslationServer.Translate("ExitPromptText"),
                                     new PopUpButton[]
                                     {
@@ -281,6 +384,7 @@ public partial class GameScreen : Control
 
     public override void _Input(InputEvent @event)
     {
+        if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
         if (GetChildren().Any(c => c.IsPopUp())) return;
         _infoPanel.DetailsButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
         _messageLogPanel.MessageWindowButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
@@ -322,10 +426,10 @@ public partial class GameScreen : Control
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
             _globalState.DungeonManager.MovePlayer(new CoordinateInput
-                                                                        {
-                                                                            X = 0,
-                                                                            Y = 0
-                                                                        });
+            {
+                X = 0,
+                Y = 0
+            });
             AcceptEvent();
             _globalState.MustUpdateGameScreen = true;
             return;
@@ -381,10 +485,10 @@ public partial class GameScreen : Control
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
             _globalState.DungeonManager.MovePlayer(new CoordinateInput
-                                                                                {
-                                                                                    X = 0,
-                                                                                    Y = 0
-                                                                                });
+            {
+                X = 0,
+                Y = 0
+            });
             AcceptEvent();
             _globalState.MustUpdateGameScreen = true;
             return;
@@ -457,7 +561,7 @@ public partial class GameScreen : Control
                     entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
                     entityWindowText.Append($"{entityDetails.EntityDescription}");
                 }
-                if(entityDetails.ShowTileDescription)
+                if (entityDetails.ShowTileDescription)
                 {
                     if (entityDetails.ShowEntityDescription)
                         entityWindowText.Append($"\n\n");
@@ -465,7 +569,7 @@ public partial class GameScreen : Control
                     entityWindowText.Append($"[center]{entityDetails.TileConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
                     entityWindowText.Append($"{entityDetails.TileDescription}");
                 }
-                this.CreateStandardPopup(TranslationServer.Translate("EntityDetailTitleText"),
+                _ = this.CreateStandardPopup(TranslationServer.Translate("EntityDetailTitleText"),
                                             entityWindowText.ToString(),
                                             new PopUpButton[]
                                             {
@@ -561,7 +665,7 @@ public partial class GameScreen : Control
 
     private void TakeStairsPrompt()
     {
-        this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
+        _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                     TranslationServer.Translate("StairsPromptText"),
                                     new PopUpButton[]
                                     {
@@ -574,32 +678,24 @@ public partial class GameScreen : Control
                                     }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
     }
 
-    private void PlaySounds()
+    private async Task ShowMessageBox(MessageBoxDto messageBox)
     {
-        var dungeonStatus = _globalState.DungeonInfo;
+        while (_popUpIsOpen)
+            await Task.Delay(10);
 
-        foreach (var specialEffect in dungeonStatus.SpecialEffectsThatHappened)
-        {
-            var specialEffectWithSound = SpecialEffectsWithSound.FirstOrDefault(s => s.SpecialEffect == specialEffect);
-            if (specialEffectWithSound != default)
+        _popUpIsOpen = true;
+        await this.CreateStandardPopup(messageBox.Title, messageBox.Message,
+            new PopUpButton[]
             {
-                _soundQueue.Enqueue(specialEffectWithSound.Path);
-            }
-        }
+                new() { Text = messageBox.ButtonCaption, ActionPress = "ui_accept" }
+            },
+            new Color { R8 = messageBox.WindowColor.R, G8 = messageBox.WindowColor.G, B8 = messageBox.WindowColor.B, A8 = messageBox.WindowColor.A });
 
-        if (_soundQueue.Count > 0)
-        {
-            PlayNextSound();
-        }
+        _popUpIsOpen = false;
     }
-
-    private void PlayNextSound()
+    private void OnSoundFinished()
     {
-        if (_soundQueue.Count > 0)
-        {
-            var soundPath = _soundQueue.Dequeue();
-            _audioStreamPlayer.Stream = (AudioStream)GD.Load(soundPath);
-            _audioStreamPlayer.Play();
-        }
+        _soundIsPlaying = false;
+        _soundFinished.SetResult(true);
     }
 }

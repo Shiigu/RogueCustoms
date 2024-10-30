@@ -13,17 +13,7 @@ namespace RogueCustomsGodotClient.Helpers
     {
         public static bool PlayerHasPickableItemUnderneath(this DungeonDto dungeon)
         {
-            (int X, int Y) playerPosition = (dungeon.PlayerEntity.X, dungeon.PlayerEntity.Y);
-
-            foreach (var e in dungeon.Entities.Where(e => e.Type == EntityDtoType.PickableObject))
-            {
-                (int X, int Y) itemPosition = (e.X, e.Y);
-
-                if (itemPosition.Equals(playerPosition))
-                    return true;
-            }
-
-            return false;
+            return dungeon.PickableItemPositions.Any(p => p.X == dungeon.PlayerEntity.X && p.Y == dungeon.PlayerEntity.Y);
         }
 
         public static bool IsPlayerOnStairs(this DungeonDto dungeon)

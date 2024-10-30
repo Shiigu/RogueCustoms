@@ -1,4 +1,6 @@
-using Godot;
+﻿using Godot;
+
+using org.matheval.Node;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Enums;
@@ -64,6 +66,9 @@ public partial class MapPanel : GamePanel
     public override void Update()
     {
         var dungeonStatus = _globalState.DungeonInfo;
+        var n = _tileMap.GetParsedText().Count("☺");
+        var m = dungeonStatus.Tiles.FindAll(t => t.ConsoleRepresentation.Character == '☺');
+        var m2 = m.Count;
         _floorTitleLabel.Text = dungeonStatus.FloorName;
         _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = dungeonStatus.TurnCount.ToString() });
 
@@ -156,6 +161,14 @@ public partial class MapPanel : GamePanel
         if (_globalState.DungeonInfo == null) return default;
         var displayedCoords = new Vector2(coords.X - TopLeftCornerCoords.X + TopLeftCornerPosition.X, coords.Y - TopLeftCornerCoords.Y + TopLeftCornerPosition.Y);
         return new(displayedCoords.X, displayedCoords.Y);
+    }
+
+    public void UpdateTileRepresentation(Vector2I position, ConsoleRepresentation consoleRepresentation)
+    {
+        var tile = _globalState.DungeonInfo.GetTileFromCoordinates(position.X, position.Y);
+        if (tile.ConsoleRepresentation.Equals(consoleRepresentation)) return;
+        tile.ConsoleRepresentation = consoleRepresentation;
+        Update();
     }
 
     public void StartTargeting()

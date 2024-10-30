@@ -7,6 +7,8 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
 
 using System;
 using System.Collections.Generic;
@@ -34,6 +36,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool TransformTile(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
@@ -78,17 +81,29 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 t.Type = oldType;
             }
-            else if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            else if (c == Map.Player || Map.Player.CanSee(c))
             {
                 Map.AppendMessage(Map.Locale["CharacterConvertedTile"].Format(new { CharacterName = c.Name, TileType = Map.Locale[$"TileType{t.Type}"] }), Color.DeepSkyBlue);
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { Target.Position, Map.GetConsoleRepresentationForCoordinates(Target.Position.X, Target.Position.Y) }
+                    }
+                    );
+                }
             }
+
+            Map.DisplayEvents.Add(($"A {Map.Locale[$"TileType{t.Type}"]} got created", events));
 
             return success;
         }
 
         public static bool PlaceTrap(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
+
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
@@ -126,18 +141,33 @@ namespace RogueCustomsGameEngine.Utils.Effects
             trap.Visible = trapClass.StartsVisible;
             trap.Faction = c.Faction;
 
-            if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Map.AddSpecialEffectIfPossible(SpecialEffect.TrapSet);
                 Map.AppendMessage(Map.Locale["CharacterCreatedATrap"].Format(new { CharacterName = c.Name, TrapName = trap.Name }), Color.DeepSkyBlue);
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { Target.Position, Map.GetConsoleRepresentationForCoordinates(Target.Position.X, Target.Position.Y) }
+                    }
+                    );
+                }
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.TrapSet }
+                }
+                );
             }
 
+            Map.DisplayEvents.Add(($"{c.Name} set up a trap", events));
             return true;
         }
 
         public static bool SpawnNPC(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
@@ -171,12 +201,26 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     // Failed to spawn NPC
                     return false;
                 npc.Faction = c.Faction;
-                if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.Summon);
                     Map.AppendMessage(Map.Locale["CharacterCreatedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
+                    if (!Map.IsDebugMode)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { t.Position, Map.GetConsoleRepresentationForCoordinates(t.Position.X, t.Position.Y) }
+                        }
+                        );
+                    }
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.Summon }
+                    }
+                    );
                 }
+                Map.DisplayEvents.Add(($"{c.Name} spawned {npc.Name}", events));
                 return true;
             }
             return false;
@@ -184,6 +228,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool ReviveNPC(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
@@ -214,18 +259,33 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 npc.ConsoleRepresentation.BackgroundColor = npc.BaseConsoleRepresentation.BackgroundColor;
                 npc.ConsoleRepresentation.ForegroundColor = npc.BaseConsoleRepresentation.ForegroundColor;
                 npc.ClearKnownCharacters();
-                if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    Map.AddSpecialEffectIfPossible(Enums.SpecialEffect.NPCRevive);
                     Map.AppendMessage(Map.Locale["CharacterRevivedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
-                }                
+                    if (!Map.IsDebugMode)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { t.Position, Map.GetConsoleRepresentationForCoordinates(t.Position.X, t.Position.Y) }
+                        }
+                    );
+                    }
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.NPCRevive }
+                    }
+                    );
+                }
+                Map.DisplayEvents.Add(($"{c.Name} revive {npc.Name}", events));
                 return true;
             }
             return false;
         }
         public static bool UnlockDoor(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
 
             if (Source is not Character c)
@@ -259,16 +319,31 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             catch (FlagNotFoundException)
             {
+                // If, for some reason, the Door Type flag disappeared, create it at 0 to destroy the Key afterwards
                 Map.CreateFlag($"Doors_{paramsObject.DoorId}", 0, true);
             }
 
-            if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Map.AddSpecialEffectIfPossible(SpecialEffect.DoorOpen);
                 Map.AppendMessage(Map.Locale["CharacterUnlockedDoor"].Format(new { CharacterName = c.Name, DoorName = Map.Locale[$"DoorType{paramsObject.DoorId}"] }), Color.DeepSkyBlue);
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { t.Position, Map.GetConsoleRepresentationForCoordinates(t.Position.X, t.Position.Y) }
+                    }
+                    );
+                }
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.DoorOpen }
+                }
+                );
             }
 
+            Map.DisplayEvents.Add(($"{c.Name} unlocks door", events));
             return true;
         }
     }

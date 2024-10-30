@@ -29,16 +29,22 @@ public partial class ExperienceBarPanel : GamePanel
         var dungeonStatus = _globalState.DungeonInfo;
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity == null) return;
+
+        UpdateExperienceBar(playerEntity.Experience, playerEntity.ExperienceToLevelUp, playerEntity.CurrentExperiencePercentage);
+    }
+
+    public void UpdateExperienceBar(int experience, int experienceToLevelUp, int currentExperiencePercentage)
+    {
         var displayText = TranslationServer.Translate("ExperienceBarDisplayText").ToString().Format(new
         {
-            CurrentExperience = playerEntity.Experience.ToString(),
-            ExperienceToLevelUp = playerEntity.ExperienceToLevelUp.ToString(),
-            Percentage = playerEntity.CurrentExperiencePercentage.ToString()
+            CurrentExperience = experience.ToString(),
+            ExperienceToLevelUp = experienceToLevelUp.ToString(),
+            Percentage = currentExperiencePercentage.ToString()
         });
 
         _experienceAmountLabel.Text = displayText;
 
-        _experienceBar.MaxValue = playerEntity.ExperienceToLevelUp;
-        _experienceBar.Value = playerEntity.Experience;
+        _experienceBar.MaxValue = experienceToLevelUp;
+        _experienceBar.Value = experience;
     }
 }

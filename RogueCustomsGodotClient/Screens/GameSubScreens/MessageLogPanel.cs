@@ -1,5 +1,6 @@
 using Godot;
 
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -43,19 +44,25 @@ public partial class MessageLogPanel : GamePanel
     {
     }
 
-    public override void Update()
+    public void Clear()
     {
-        var dungeonStatus = _globalState.DungeonInfo;
-        _logContents = new StringBuilder();
-        foreach (var message in dungeonStatus.LogMessages)
-        {
-            _logContents.Append($"{MessageToBbCodeString(message)}[p]");
-        }
+        _messageLogLabel.Text = "";
+    }
+
+    public void Append(MessageDto message)
+    {
+        _logContents = new StringBuilder(_messageLogLabel.Text);
+        _logContents.Append($"{MessageToBbCodeString(message)}[p]");
         _messageLogLabel.Text = _logContents.ToString();
     }
 
     private static string MessageToBbCodeString(MessageDto message)
     {
         return $"[bgcolor=#{message.BackgroundColor.R:X2}{message.BackgroundColor.G:X2}{message.BackgroundColor.B:X2}{message.BackgroundColor.A:X2}][color=#{message.ForegroundColor.R:X2}{message.ForegroundColor.G:X2}{message.ForegroundColor.B:X2}{message.ForegroundColor.A:X2}]{message.Message}[/color][/bgcolor]";
+    }
+
+    public override void Update()
+    {
+        // Do nothing
     }
 }

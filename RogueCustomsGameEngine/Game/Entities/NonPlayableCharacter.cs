@@ -9,6 +9,9 @@ using System;
 using System.IO;
 using static System.Collections.Specialized.BitVector32;
 using System.Security.Principal;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Drawing;
+using System.Numerics;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -431,14 +434,30 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void Die(Entity? attacker = null)
         {
+            var events = new List<DisplayEventDto>();
             base.Die(attacker);
             if (ExistenceStatus == EntityExistenceStatus.Dead)
             {
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
             }
+            if(!Map.IsDebugMode)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                    Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
+                });
+            }
             if (attacker == Map.Player)
-                Map.AddSpecialEffectIfPossible(SpecialEffect.NPCDeath);
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.NPCDeath }
+                });
+            }
+            Map.DisplayEvents.Add(($"NPC {Name} dies", events));
         }
 
         public override void PickItem(Item item, bool informToPlayer)
@@ -449,13 +468,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AddSpecialEffectIfPossible(SpecialEffect.NPCItemGet);
                 Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                Map.DisplayEvents.Add(($"NPC {Name} picks item", new()
+                    {
+                        new() {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.NPCItemGet }
+                        }
+                    }
+                ));
             }
         }
 
         public override void DropItem(Item item)
         {
+            var events = new List<DisplayEventDto>();
             Tile pickedEmptyTile = null;
             if (!ContainingTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
                 pickedEmptyTile = ContainingTile;
@@ -483,7 +510,17 @@ namespace RogueCustomsGameEngine.Game.Entities
                 item.Owner = null!;
                 item.ExistenceStatus = EntityExistenceStatus.Alive;
                 Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { item.Position, Map.GetConsoleRepresentationForCoordinates(item.Position.X, item.Position.Y) }
+                    }
+                    );
+                }
             }
+            Map.DisplayEvents.Add(($"NPC {Name} drops item", events));
         }
 
         public override void PickKey(Key key, bool informToPlayer)

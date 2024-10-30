@@ -9,6 +9,8 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Expressions;
 using System.Collections.Generic;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Xml.Linq;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -26,6 +28,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool DealDamage(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to damage Target when it's not a Character.
@@ -41,12 +44,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var canCallElementEffect = !paramsObject.BypassesElementEffect;
             if (Rng.RollProbability() > accuracyCheck)
             {
-                if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
                     Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White);
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.Miss }
+                    }
+                    );
                 }
+                Map.DisplayEvents.Add(($"{c.Name}'s attack missed", events));
                 return false;
             }
             if (canCallElementEffect && attackElement.OnAfterAttack != null && !string.IsNullOrWhiteSpace(attackElement.OnAfterAttack.UseCondition))
@@ -94,32 +102,59 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.CreateFlag($"DamageTaken_{c.Id}", damageDealt, true);
             if (damageDealt <= 0)
             {
-                if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.Miss);
                     Map.AppendMessage(Map.Locale["AttackDealtNoDamageText"], Color.White);
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.Miss }
+                    }
+                    );
                 }
+                Map.DisplayEvents.Add(($"{c.Name}'s attack failed to deal damage", events));
                 return false;
             }
             if (Rng.RollProbability() <= paramsObject.CriticalHitChance)
             {
-                if (c.EntityType == EntityType.Player
-                    || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+                if (c == Map.Player || Map.Player.CanSee(c))
+                {
                     Map.AppendMessage(Map.Locale["AttackCriticalHitText"], attackElement.Color);
+                }
                 damageDealt = (int) ExpressionParser.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
-            if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
                 Map.AppendMessage(Map.Locale["CharacterTakesDamage"].Format(new { CharacterName = c.Name, DamageDealt = damageDealt, CharacterHPStat = Map.Locale["CharacterHPStat"], ElementName = attackElement.Name }), attackElement.Color);
-
-                if (Source == Map.Player && c.EntityType == EntityType.NPC)
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.NPCDamaged);
-                else if (c == Map.Player)
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
             }
             c.HP.Current = Math.Max(0, c.HP.Current - damageDealt);
+            if (c == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, "HP", c.HP.Current }
+                });
+            }
+            if (Source == Map.Player && c.EntityType == EntityType.NPC)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.NPCDamaged }
+                }
+                );
+            }
+            else if (c == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.PlayerDamaged }
+                }
+                );
+            }
+            Map.DisplayEvents.Add(($"{c.Name} took damage", events));
             if (canCallElementEffect)
                 attackElement.OnAfterAttack?.Do(Source, c, false);
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
@@ -129,6 +164,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool BurnMP(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to burn Target's MP when it's not a Character.
@@ -152,26 +188,31 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.CreateFlag($"MPBurned_{c.Id}", burnAmount, true);
             if (burnAmount <= 0)
                 return false;
-            if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Faction targetFaction = c.Faction;
-                Color forecolorToUse;
-                if (c.EntityType == EntityType.Player || targetFaction.AlliedWith.Contains(Map.Player.Faction))
-                    forecolorToUse = Color.Red;
-                else if (targetFaction.EnemiesWith.Contains(Map.Player.Faction))
-                    forecolorToUse = Color.Lime;
-                else
-                    forecolorToUse = Color.DeepSkyBlue;
-                Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), forecolorToUse);
-                if (c == Map.Player)
-                    Map.AddSpecialEffectIfPossible(SpecialEffect.MPDown);
+                Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
             }
             c.MP.Current = Math.Max(0, c.MP.Current - burnAmount);
+            if (c == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, "MP", c.MP.Current }
+                });
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.MPDown }
+                }
+                );
+            }
+            Map.DisplayEvents.Add(($"{c.Name} lost MP", events));
             return true;
         }
         public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (paramsObject.Target is not Character c)
                 // Attempted to remove Target's Hunger when it's not a Character.
@@ -185,18 +226,32 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (Rng.RollProbability() > accuracyCheck)
                 return false;
-            var hungerAmount = paramsObject.Power;
+            var lossAmount = paramsObject.Power;
             if (paramsObject.Power > 0 && paramsObject.Power < 1)
-                hungerAmount = 1;
-            hungerAmount = (int)hungerAmount;
-            if (hungerAmount <= 0)
+                lossAmount = 1;
+            lossAmount = (int)lossAmount;
+            if (lossAmount <= 0)
                 return false;
-            if (c.EntityType == EntityType.Player
-                || (c.EntityType == EntityType.NPC && Map.Player.CanSee(c)))
+            if (c == Map.Player || Map.Player.CanSee(c))
+            {
                 Map.AppendMessage(Map.Locale["CharacterLosesHunger"].Format(new { CharacterName = c.Name, LostHunger = paramsObject.Power, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
+            }
+            c.Hunger.Current = Math.Max(0, c.Hunger.Current - lossAmount);
             if (c == Map.Player)
-                Map.AddSpecialEffectIfPossible(SpecialEffect.HungerDown);
-            c.Hunger.Current = Math.Max(0, c.Hunger.Current - hungerAmount);
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, "Hunger", c.Hunger.Current }
+                });
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.HungerDown }
+                }
+                );
+            }
+            Map.DisplayEvents.Add(($"{c.Name} lost hunger", events));
             return true;
         }
     }

@@ -16,6 +16,7 @@ using RogueCustomsGameEngine.Game.Entities.NPCAIStrategies;
 using System.Globalization;
 using RogueCustomsGameEngine.Utils.Expressions;
 using System.Diagnostics.Contracts;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -94,8 +95,22 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
             if (MaximumUses > 0) CurrentUses++;
 
-            if(source != null && turnSourceVisibleWhenDone)
+            if (source != null && source.Position != null && turnSourceVisibleWhenDone)
+            {
+                var wasAlreadyVisible = source.Visible;
                 source.Visible = true;
+                if (!wasAlreadyVisible && !source.Map.IsDebugMode)
+                {
+                    source.Map.DisplayEvents.Add(($"{source.Name} got revealed after action", new()
+                    {
+                        new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { source.Position, Map.GetConsoleRepresentationForCoordinates(source.Position.X, source.Position.Y) }
+                        }
+                    }));
+                }
+            }
 
             return successfulEffects;
         }
