@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using System.IO.Compression;
 using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Game.Entities;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Management
 {
@@ -120,6 +121,43 @@ namespace RogueCustomsGameEngine.Management
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
             restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
             restoredDungeon.CurrentFloor.SetActionParams();
+            foreach (var tileType in restoredDungeon.TileTypes)
+            {
+                if (tileType.Id.Equals("Empty"))
+                    TileType.Empty = tileType;
+                else if (tileType.Id.Equals("Floor"))
+                    TileType.Floor = tileType;
+                else if (tileType.Id.Equals("Wall"))
+                    TileType.Wall = tileType;
+                else if (tileType.Id.Equals("Hallway"))
+                    TileType.Hallway = tileType;
+                else if (tileType.Id.Equals("Stairs"))
+                    TileType.Stairs = tileType;
+            }
+            restoredDungeon.CurrentFloor.TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
+            restoredDungeon.CurrentFloor.DisplayEvents = new();
+            restoredDungeon.CurrentFloor.DisplayEvents.Add(("ClearMessageLog", new()
+                                {
+                                    new() {
+                                        DisplayEventType = DisplayEventType.ClearLogMessages,
+                                        Params = new() { }
+                                    }
+                                }
+            ));
+            if (restoredDungeon.CurrentFloor.Messages != null)
+            {
+                foreach (var message in restoredDungeon.CurrentFloor.Messages)
+                {
+                    restoredDungeon.CurrentFloor.DisplayEvents.Add(("AppendMessage", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.AddLogMessage,
+                        Params = new() { message }
+                    }
+                }
+                    ));
+                }
+            }
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
             ActiveDungeon = restoredDungeon;
         }
@@ -142,18 +180,12 @@ namespace RogueCustomsGameEngine.Management
 
         public string GetDungeonEndingMessage()
         {
-            // Remove a completed dungeon from memory to clear space
-            if (ActiveDungeon.DungeonStatus == DungeonStatus.Completed)
-                ActiveDungeon = null;
             return ActiveDungeon.EndingMessage;
         }
 
         public DungeonDto GetDungeonStatus()
         {
             var dungeonStatus = ActiveDungeon.GetStatus();
-
-            // A Dungeon's Message Boxes don't have to be sent more than once
-            ActiveDungeon.MessageBoxes.Clear();
 
             return dungeonStatus;
         }

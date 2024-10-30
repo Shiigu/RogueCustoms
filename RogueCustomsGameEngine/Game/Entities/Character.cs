@@ -13,6 +13,8 @@ using System.IO;
 using GamePoint = RogueCustomsGameEngine.Utils.Representation.GamePoint;
 using System.Numerics;
 using System.Security.Cryptography;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -351,24 +353,57 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
+                    var events = new List<DisplayEventDto>();
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
-                    if (EntityType == EntityType.Player)
+
+                    if (this == Map.Player)
                     {
+                        var stat = UsedStats.Find(s => s.Name.Equals(statName));
                         var totalNeutralization = modificationList?.Where(mhm => mhm.RemainingTurns == 0).Sum(mhm => mhm.Amount);
-                        if(totalNeutralization < 0)
-                            Map.AddSpecialEffectIfPossible(SpecialEffect.StatBuff);
+                        if (statName.ToLowerInvariant().Equals("movement"))
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.SetCanMove,
+                                Params = new() { stat.BaseAfterModifications > 0 }
+                            });
+                        }
+                        if (totalNeutralization < 0)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.StatBuff }
+                            });
+                        }
                         else if (totalNeutralization > 0)
-                            Map.AddSpecialEffectIfPossible(SpecialEffect.StatNerf);
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.StatNerf }
+                            });
+                        }
                     }
+                    Map.DisplayEvents.Add(($"{Name} lost all the {statName} modifications", events));
                 }
             }
             foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
+                    var events = new List<DisplayEventDto>();
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
+
                     if (EntityType == EntityType.Player)
-                        Map.AddSpecialEffectIfPossible(SpecialEffect.StatusLeaves);
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.StatusLeaves }
+                        });
+                    }
+                    Map.DisplayEvents.Add(($"{Name} lost the {statusName} status", events));
                 }
             }
             foreach (var regeneration in Stats.Where(s => s.RegenerationTarget != null))
@@ -411,7 +446,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     forecolorToUse = Color.Red;
                 else
                     forecolorToUse = Color.DeepSkyBlue;
-                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level}), forecolorToUse);
+                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }), forecolorToUse);
                 HP.Current = MaxHP;
                 if(MP != null)
                     MP.Current = MaxMP;
@@ -447,19 +482,50 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
             SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
-            if (this == Map.Player)
-                Map.AddSpecialEffectIfPossible(SpecialEffect.ItemEquip);
         }
 
         private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
         {
+            var events = new List<DisplayEventDto>();
+            if (this == Map.Player)
+            {
+                Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow);
+            }
             if (itemToEquip.EntityType == EntityType.Weapon)
+            {
+                if (this == Map.Player)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyEquippedItem, "Weapon", new SimpleEntityDto(itemToEquip), itemToEquip.Power }
+                    });
+                }
                 EquippedWeapon = itemToEquip;
+            }
             else if (itemToEquip.EntityType == EntityType.Armor)
+            {
+                if (this == Map.Player)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyEquippedItem, "Armor", new SimpleEntityDto(itemToEquip), itemToEquip.Power }
+                    });
+                }
                 EquippedArmor = itemToEquip;
+            }
             var itemToEquipWasInTheBag = itemToEquip.Position == null;
             if (itemToEquipWasInTheBag)
                 Inventory.Remove(itemToEquip);
+            if (this == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.ItemEquip }
+                });
+            }
             if (equippedItem != null)
             {
                 if (!itemToEquipWasInTheBag)
@@ -468,11 +534,30 @@ namespace RogueCustomsGameEngine.Game.Entities
                     equippedItem.Owner = null!;
                     equippedItem.ExistenceStatus = EntityExistenceStatus.Alive;
                     Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
+
+                    if (!Map.IsDebugMode)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { ContainingTile.Position, Map.GetConsoleRepresentationForCoordinates(ContainingTile.Position.X, ContainingTile.Position.Y) }
+                        }
+                        );
+                    }
                 }
                 else
                 {
-                    Inventory.Add(equippedItem);
                     Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
+
+                    if (this == Map.Player)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                        });
+                    }
+                    Inventory.Add(equippedItem);
                 }
             }
             if (!itemToEquipWasInTheBag)
@@ -481,6 +566,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
                 itemToEquip.Owner = this;
             }
+            Map.DisplayEvents.Add(($"{Name} equips {itemToEquip.Name}", events));
         }
 
         public void TryToPickItem(IPickable p)

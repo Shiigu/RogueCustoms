@@ -21,6 +21,7 @@ namespace RogueCustomsGodotClient.Utils
         ImmobilizedOnStairs,
         MustSkipTurn,
         Targeting,
+        Waiting,
         None
     }
 }

@@ -19,7 +19,7 @@ namespace RogueCustomsGodotClient.Helpers
             return n is InputBox || n is PopUp || n is ScrollablePopUp || n is PlayerSelectItem || n is SelectClass;
         }
 
-        public static void CreateStandardPopup(this Control control, string titleText, string innerText, PopUpButton[] buttons, Color borderColor)
+        public static async Task CreateStandardPopup(this Control control, string titleText, string innerText, PopUpButton[] buttons, Color borderColor)
         {
             var overlay = new ColorRect
             {
@@ -30,7 +30,11 @@ namespace RogueCustomsGodotClient.Helpers
 
             var popup = (PopUp)GD.Load<PackedScene>("res://Pop-ups/PopUp.tscn").Instantiate();
             control.AddChild(popup);
+
+            var popupClosedSignal = popup.ToSignal(popup, "PopupClosed");
             popup.Show(titleText, innerText, buttons, borderColor, () => overlay.QueueFree());
+            
+            await popupClosedSignal;
         }
 
         public static void CreateScrollablePopup(this Control control, string titleText, string innerText, Color borderColor, bool scrollToEnd)

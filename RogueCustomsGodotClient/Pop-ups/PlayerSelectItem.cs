@@ -63,7 +63,7 @@ public partial class PlayerSelectItem : Control
     public void Show(InventoryDto itemInfo, ActionListDto actionInfo, Vector2I? targetCoords = null, Action onCloseCallback = null)
     {
         if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null) return;
-        _isReadOnly = !_globalState.DungeonInfo.PlayerEntity.CanTakeAction;
+        _isReadOnly = _globalState.PlayerControlMode == ControlMode.MustSkipTurn || _globalState.PlayerControlMode == ControlMode.None;
         if (actionInfo != null && actionInfo.Actions.Any())
         {
             _actionListInfo = actionInfo;

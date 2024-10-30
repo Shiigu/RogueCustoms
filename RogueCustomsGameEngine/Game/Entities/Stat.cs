@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ using Newtonsoft.Json.Linq;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 
 namespace RogueCustomsGameEngine.Game.Entities
@@ -17,6 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class Stat
     {
         private static readonly List<StatType> StatTypesThatCanRegenerate = new() { StatType.HP, StatType.MP, StatType.Hunger };
+        public static readonly List<string> StatsInUI = new() { "hp", "mp", "hunger", "attack", "defense", "movement", "accuracy", "evasion" };
 
         public string Id { get; set; }
         public string Name { get; set; }
@@ -160,8 +164,15 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CarriedRegeneration = fractionalPart;
                 if (oldCurrent > RegenerationTarget.Current && StatType == StatType.HP && Character.IsStarving)
                 {
-                    Character.Map.AddSpecialEffectIfPossible(SpecialEffect.PlayerDamaged);
                     Character.Map.AppendMessage(Character.Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldCurrent - RegenerationTarget.Current, CharacterHPStat = RegenerationTarget.Name, CharacterHungerStat = Name }));
+                    Character.Map.DisplayEvents.Add(($"{Character.Name} is starving", new List<DisplayEventDto>
+                    {
+                        new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.PlayerDamaged }
+                        }
+                    }));
                 }
             }
         }

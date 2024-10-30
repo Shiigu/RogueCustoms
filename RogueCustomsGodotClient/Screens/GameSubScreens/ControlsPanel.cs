@@ -61,6 +61,11 @@ public partial class ControlsPanel : GamePanel
                 _controlsLabel2.Text = "";
                 _controlsLabel3.Text = "";
                 break;
+            case ControlMode.Waiting:
+                _controlsLabel1.Text = "";
+                _controlsLabel2.Text = "";
+                _controlsLabel3.Text = "";
+                break;
             case ControlMode.None:
                 _controlsLabel1.Text = TranslationServer.Translate("MoveModeNoneControlsText");
                 _controlsLabel2.Text = "";

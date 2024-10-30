@@ -1,6 +1,7 @@
 using Godot;
 
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
@@ -124,18 +125,11 @@ public partial class InfoPanel : GamePanel
         _playerNameLabel.Text = playerEntity.Name;
         _playerRepresentationLabel.Text = $"[center]{playerEntity.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]";
         _levelLabel.Text = TranslationServer.Translate("PlayerLevelText").ToString().Format(new { CurrentLevel = playerEntity.Level.ToString() });
-        _hpNameLabel.Text = playerEntity.HPStatName;
-        _hpBar.MaxValue = playerEntity.MaxHP;
-        _hpBar.Value = playerEntity.HP;
-        _hpAmountLabel.Text = $"{playerEntity.HP}/{playerEntity.MaxHP}";
-        if(playerEntity.UsesMP)
+        
+        SetBar(null, _hpNameLabel, playerEntity.HPStatName, _hpBar, _hpAmountLabel, playerEntity.HP, playerEntity.MaxHP);
+        if (playerEntity.UsesMP)
         {
-            _mpBarContainer.Visible = true;
-            _mpNameLabel.Visible = true;
-            _mpNameLabel.Text = playerEntity.MPStatName;
-            _mpBar.MaxValue = playerEntity.MaxMP;
-            _mpBar.Value = playerEntity.MP;
-            _mpAmountLabel.Text = $"{playerEntity.MP}/{playerEntity.MaxMP}";
+            SetBar(_mpBarContainer, _mpNameLabel, playerEntity.MPStatName, _mpBar, _mpAmountLabel, playerEntity.MP, playerEntity.MaxMP);
         }
         else
         {
@@ -144,11 +138,7 @@ public partial class InfoPanel : GamePanel
         }
         if (playerEntity.UsesHunger)
         {
-            _hungerContainer.Visible = true;
-            _hungerNameLabel.Text = playerEntity.HungerStatName;
-            _hungerBar.MaxValue = playerEntity.MaxHunger;
-            _hungerBar.Value = playerEntity.Hunger;
-            _hungerAmountLabel.Text = $"{playerEntity.Hunger}/{playerEntity.MaxHunger}";
+            SetBar(_hungerContainer, _hungerNameLabel, playerEntity.HungerStatName, _hungerBar, _hungerAmountLabel, playerEntity.Hunger, playerEntity.MaxHunger);
         }
         else
         {
@@ -157,78 +147,36 @@ public partial class InfoPanel : GamePanel
 
         _weaponHeaderLabel.Text = TranslationServer.Translate("PlayerInfoWeaponHeader");
         _weaponNameLabel.Text = $"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name}[/center]";
-        _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(playerEntity.WeaponDamage, playerEntity.Attack)}[/center]";
+        SetCombatStatText(_damageNumberLabel, playerEntity.DamageStatName, playerEntity.WeaponDamage, playerEntity.Attack);
 
         _armorHeaderLabel.Text = TranslationServer.Translate("PlayerInfoArmorHeader");
         _armorNameLabel.Text = $"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name}[/center]";
-        _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(playerEntity.ArmorMitigation, playerEntity.Defense)}[/center]";
-
-        if(playerEntity.Movement > playerEntity.BaseMovement)
-            _movementLabel.Text = $"[center]{playerEntity.MovementStatName}: [color=#00FF00FF]{playerEntity.Movement}[/color][/center]";
-        else if (playerEntity.Movement < playerEntity.BaseMovement)
-            _movementLabel.Text = $"[center]{playerEntity.MovementStatName}: [color=#FF0000FF]{playerEntity.Movement}[/color][/center]";
-        else
-            _movementLabel.Text = $"[center]{playerEntity.MovementStatName}: [color=#FFFFFFFF]{playerEntity.Movement}[/color][/center]";
-
-        if (playerEntity.Accuracy > playerEntity.BaseAccuracy)
-            _accuracyLabel.Text = $"[center]{playerEntity.AccuracyStatName}: [color=#00FF00FF]{playerEntity.Accuracy:F0}%[/color][/center]";
-        else if (playerEntity.Accuracy < playerEntity.BaseAccuracy)
-            _accuracyLabel.Text = $"[center]{playerEntity.AccuracyStatName}: [color=#FF0000FF]{playerEntity.Accuracy:F0}%[/color][/center]";
-        else
-            _accuracyLabel.Text = $"[center]{playerEntity.AccuracyStatName}: [color=#FFFFFFFF]{playerEntity.Accuracy:F0}%[/color][/center]";
-
-        if (playerEntity.Evasion > playerEntity.BaseEvasion)
-            _evasionLabel.Text = $"[center]{playerEntity.EvasionStatName}: [color=#00FF00FF]{playerEntity.Evasion:F0}%[/color][/center]";
-        else if (playerEntity.Evasion < playerEntity.BaseEvasion)
-            _evasionLabel.Text = $"[center]{playerEntity.EvasionStatName}: [color=#FF0000FF]{playerEntity.Evasion:F0}%[/color][/center]";
-        else
-            _evasionLabel.Text = $"[center]{playerEntity.EvasionStatName}: [color=#FFFFFFFF]{playerEntity.Evasion:F0}%[/color][/center]";
+        SetCombatStatText(_mitigationNumberLabel, playerEntity.MitigationStatName, playerEntity.ArmorMitigation, playerEntity.Defense);
+                
+        SetNumericStat(_movementLabel, playerEntity.MovementStatName, playerEntity.Movement, playerEntity.BaseMovement);
+        SetPercentageStat(_accuracyLabel, playerEntity.AccuracyStatName, playerEntity.Accuracy, playerEntity.BaseAccuracy);
+        SetPercentageStat(_evasionLabel, playerEntity.EvasionStatName, playerEntity.Evasion, playerEntity.BaseEvasion);
 
         _alteredStatusesHeaderLabel.Text = TranslationServer.Translate("PlayerInfoStatusesHeader");
-        _alteredStatusesIconsLabel.Text = "";
-        _alteredStatusesIconsLabel.PushParagraph(HorizontalAlignment.Center);
-        if (playerEntity.AlteredStatuses.Any())
-        {
-            if(playerEntity.AlteredStatuses.Count < MaxIconsPerRow)
-            {
-                foreach (var alteredStatus in playerEntity.AlteredStatuses)
-                {
-                    _alteredStatusesIconsLabel.AppendText(alteredStatus.ConsoleRepresentation.ToBbCodeRepresentation());
-                }
-            }
-            else
-            {
-                _alteredStatusesIconsLabel.AppendText(TranslationServer.Translate("PlayerInfoTooManyText"));
-            }
-        }
-        else
-        {
-            _alteredStatusesIconsLabel.AppendText(TranslationServer.Translate("PlayerHasNothingText"));
-        }
-        _alteredStatusesIconsLabel.PopAll();
+        FillIconList(_alteredStatusesIconsLabel, playerEntity.AlteredStatuses);
 
         _inventoryHeaderLabel.Text = TranslationServer.Translate("PlayerInfoInventoryHeader");
-        _inventoryIconsLabel.Text = "";
-        _inventoryIconsLabel.PushParagraph(HorizontalAlignment.Center);
-        if (playerEntity.Inventory.Any())
-        {
-            if (playerEntity.Inventory.Count < MaxIconsPerRow)
-            {
-                foreach (var item in playerEntity.Inventory)
-                {
-                    _inventoryIconsLabel.AppendText(item.ConsoleRepresentation.ToBbCodeRepresentation());
-                }
-            }
-            else
-            {
-                _inventoryIconsLabel.AppendText(TranslationServer.Translate("PlayerInfoTooManyText"));
-            }
-        }
-        else
-        {
-            _inventoryIconsLabel.AppendText(TranslationServer.Translate("PlayerHasNothingText"));
-        }
-        _inventoryIconsLabel.PopAll();
+        FillIconList(_inventoryIconsLabel, playerEntity.Inventory);
+    }
+
+    private static void SetBar(Container? barContainer, Label statLabel, string statName, TextureProgressBar statBar, Label amountLabel, double current, double maximum)
+    {
+        if(barContainer != null) barContainer.Visible = true;
+        statLabel.Visible = true;
+        statLabel.Text = statName;
+        statBar.MaxValue = maximum;
+        statBar.Value = current;
+        amountLabel.Text = $"{current}/{maximum}";
+    }
+
+    private static void SetCombatStatText(RichTextLabel statLabel, string statName, string itemStat, int playerStat)
+    {
+        statLabel.Text = $"[center]{statName}: {GetColorizedItemInfluencedStat(itemStat, playerStat)}[/center]";
     }
 
     private static string GetColorizedItemInfluencedStat(string itemStat, int playerStat)
@@ -238,6 +186,161 @@ public partial class InfoPanel : GamePanel
         else if (playerStat == 0)
             return $"[color=#FF00FFFF]{itemStat}[/color][color=#FFFFFFFF]+{playerStat}[/color]";
         return $"[color=#FF00FFFF]{itemStat}[/color][color=#FF0000FF]-{Math.Abs(playerStat)}[/color]";
+    }
+
+    private static void SetNumericStat(RichTextLabel statLabel, string statName, int current, int @base)
+    {
+        if (current > @base)
+            statLabel.Text = $"[center]{statName}: [color=#00FF00FF]{current}[/color][/center]";
+        else if (current < @base)
+            statLabel.Text = $"[center]{statName}: [color=#FF0000FF]{current}[/color][/center]";
+        else
+            statLabel.Text = $"[center]{statName}: [color=#FFFFFFFF]{current}[/color][/center]";
+    }
+
+    private static void SetPercentageStat(RichTextLabel statLabel, string statName, decimal current, decimal @base)
+    {
+        if (current > @base)
+            statLabel.Text = $"[center]{statName}: [color=#00FF00FF]{current:F0}%[/color][/center]";
+        else if (current < @base)
+            statLabel.Text = $"[center]{statName}: [color=#FF0000FF]{current:F0}%[/color][/center]";
+        else
+            statLabel.Text = $"[center]{statName}: [color=#FFFFFFFF]{current:F0}%[/color][/center]";
+    }
+
+    private static void FillIconList(RichTextLabel iconsLabel, List<SimpleEntityDto> elementList)
+    {
+        iconsLabel.Text = "";
+        iconsLabel.PushParagraph(HorizontalAlignment.Center);
+        if (elementList.Any())
+        {
+            if (elementList.Count < MaxIconsPerRow)
+            {
+                foreach (var element in elementList)
+                {
+                    iconsLabel.AppendText(element.ConsoleRepresentation.ToBbCodeRepresentation());
+                }
+            }
+            else
+            {
+                iconsLabel.AppendText(TranslationServer.Translate("PlayerInfoTooManyText"));
+            }
+        }
+        else
+        {
+            iconsLabel.AppendText(TranslationServer.Translate("PlayerHasNothingText"));
+        }
+        iconsLabel.PopAll();
+    }
+
+    public void UpdatePlayerData(List<object> data)
+    {
+        var dungeonStatus = _globalState.DungeonInfo;
+        var playerEntity = dungeonStatus.PlayerEntity;
+        if (playerEntity == null) return;
+        var updateType = (UpdatePlayerDataType) data[0];
+        switch (updateType)
+        {
+            case UpdatePlayerDataType.ModifyStat:
+                var statName = data[1].ToString().ToLowerInvariant();
+                var value = Convert.ToDecimal(data[2]);
+
+                switch(statName)
+                {
+                    case "level":
+                        playerEntity.Level = (int) value;
+                        _levelLabel.Text = TranslationServer.Translate("PlayerLevelText").ToString().Format(new { CurrentLevel = value });
+                        break;
+                    case "hp":
+                        playerEntity.HP = (int) value;
+                        SetBar(null, _hpNameLabel, playerEntity.HPStatName, _hpBar, _hpAmountLabel, playerEntity.HP, playerEntity.MaxHP);
+                        break;
+                    case "mp":
+                        if (!playerEntity.UsesMP) break;
+                        playerEntity.MP = (int)value;
+                        SetBar(_mpBarContainer, _mpNameLabel, playerEntity.MPStatName, _mpBar, _mpAmountLabel, playerEntity.MP, playerEntity.MaxMP);
+                        break;
+                    case "hunger":
+                        if (!playerEntity.UsesHunger) break;
+                        playerEntity.Hunger = (int)value;
+                        SetBar(_hungerContainer, _hungerNameLabel, playerEntity.HungerStatName, _hungerBar, _hungerAmountLabel, playerEntity.Hunger, playerEntity.MaxHunger);
+                        break;
+                    case "attack":
+                        playerEntity.Attack = (int)value;
+                        _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(playerEntity.WeaponDamage, playerEntity.Attack)}[/center]";
+                        break;
+                    case "defense":
+                        playerEntity.Defense = (int)value;
+                        _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(playerEntity.ArmorMitigation, playerEntity.Defense)}[/center]";
+                        break;
+                    case "movement":
+                        playerEntity.Movement = (int)value;
+                        SetNumericStat(_movementLabel, playerEntity.MovementStatName, playerEntity.Movement, playerEntity.BaseMovement);
+                        break;
+                    case "accuracy":
+                        playerEntity.Accuracy = value;
+                        SetPercentageStat(_accuracyLabel, playerEntity.AccuracyStatName, playerEntity.Accuracy, playerEntity.BaseAccuracy);
+                        break;
+                    case "evasion":
+                        playerEntity.Evasion = value;
+                        SetPercentageStat(_evasionLabel, playerEntity.EvasionStatName, playerEntity.Evasion, playerEntity.BaseEvasion);
+                        break;
+                }
+                break;
+            case UpdatePlayerDataType.ModifyMaxStat:
+                statName = data[1].ToString().ToLowerInvariant();
+                value = Convert.ToDecimal(data[2]);
+                switch (statName)
+                {
+                    case "hp":
+                        playerEntity.MaxHP = (int)value;
+                        SetBar(null, _hpNameLabel, playerEntity.HPStatName, _hpBar, _hpAmountLabel, playerEntity.HP, playerEntity.MaxHP);
+                        break;
+                    case "mp":
+                        if (!playerEntity.UsesMP) break;
+                        playerEntity.MaxMP = (int)value;
+                        SetBar(_mpBarContainer, _mpNameLabel, playerEntity.MPStatName, _mpBar, _mpAmountLabel, playerEntity.MP, playerEntity.MaxMP);
+                        break;
+                    case "hunger":
+                        if (!playerEntity.UsesHunger) break;
+                        playerEntity.MaxHunger = (int)value;
+                        SetBar(_hungerContainer, _hungerNameLabel, playerEntity.HungerStatName, _hungerBar, _hungerAmountLabel, playerEntity.Hunger, playerEntity.MaxHunger);
+                        break;
+                }
+                break;
+            case UpdatePlayerDataType.ModifyEquippedItem:
+                var itemType = data[1].ToString();
+                var entity = data[2] as SimpleEntityDto;
+                var power = data[3].ToString();
+
+                if (itemType.Equals("Weapon"))
+                {
+                    _weaponNameLabel.Text = $"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]";
+                    _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Attack)}[/center]";
+                }
+                else if (itemType.Equals("Armor"))
+                {
+                    _armorNameLabel.Text = $"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]";
+                    _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Defense)}[/center]";
+                }
+
+                break;
+            case UpdatePlayerDataType.UpdateAlteredStatuses:
+                var alteredStatuses = data[1] as List<SimpleEntityDto>;
+                playerEntity.AlteredStatuses = alteredStatuses;
+                FillIconList(_alteredStatusesIconsLabel, playerEntity.AlteredStatuses);
+                break;
+            case UpdatePlayerDataType.UpdateInventory:
+                var inventory = data[1] as List<SimpleEntityDto>;
+                playerEntity.Inventory = inventory;
+                FillIconList(_inventoryIconsLabel, playerEntity.Inventory);
+                break;
+            case UpdatePlayerDataType.UpdateConsoleRepresentation:
+                var consoleRepresentation = data[1] as ConsoleRepresentation;
+                playerEntity.ConsoleRepresentation = consoleRepresentation;
+                _playerRepresentationLabel.Text = $"[center]{playerEntity.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]";
+                break;
+        }
     }
 
     #region Construct Details pop-up

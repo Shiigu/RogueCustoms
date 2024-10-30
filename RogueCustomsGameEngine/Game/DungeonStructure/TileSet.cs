@@ -29,6 +29,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<TileTypeSet> TileTypeSets { get; set; }
     }
 
+    [Serializable]
     public class TileTypeSet
     {
         public TileType TileType { get; set; }

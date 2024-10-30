@@ -9,6 +9,8 @@ using RogueCustomsGameEngine.Utils;
 using MathNet.Numerics.Statistics.Mcmc;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Representation;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -38,10 +40,25 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void Used(Entity user)
         {
             OnUse?.Do(this, user, true);
+
             if (user == Map.Player)
-                Map.AddSpecialEffectIfPossible(SpecialEffect.ItemUse);
+                Map.DisplayEvents.Add(($"{user.Name} used item", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.ItemUse }
+                    }
+                }
+                ));
             else if (user.EntityType == EntityType.NPC)
-                Map.AddSpecialEffectIfPossible(SpecialEffect.NPCItemUse);
+                Map.DisplayEvents.Add(($"{user.Name} used item", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.NPCItemUse }
+                    }
+                }
+                ));
         }
 
         public void RefreshCooldownsAndUpdateTurnLength()

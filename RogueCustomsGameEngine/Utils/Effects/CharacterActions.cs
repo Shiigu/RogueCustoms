@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Expressions;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.Representation;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -26,6 +29,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static bool ReplaceConsoleRepresentation(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (ExpandoObjectHelper.HasProperty(paramsObject, "Character"))
                 Source.ConsoleRepresentation.Character = paramsObject.Character;
@@ -33,21 +37,59 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Source.ConsoleRepresentation.ForegroundColor = paramsObject.ForeColor;
             if (ExpandoObjectHelper.HasProperty(paramsObject, "BackColor"))
                 Source.ConsoleRepresentation.BackgroundColor = paramsObject.BackColor;
+            if (!Map.IsDebugMode)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                    Params = new() { Source.Position, Map.GetConsoleRepresentationForCoordinates(Source.Position.X, Source.Position.Y) }
+                }
+                );
+            }
+            if (Source == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.UpdateConsoleRepresentation, Source.ConsoleRepresentation }
+                });
+            }
+            Map.DisplayEvents.Add(("ChangeConsoleRepresentation", events));
             return true;
         }
 
         public static bool ResetConsoleRepresentation(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             var baseConsoleRepresentation = Source.BaseConsoleRepresentation.Clone();
             Source.ConsoleRepresentation.Character = baseConsoleRepresentation.Character;
             Source.ConsoleRepresentation.ForegroundColor = baseConsoleRepresentation.ForegroundColor;
             Source.ConsoleRepresentation.BackgroundColor = baseConsoleRepresentation.BackgroundColor;
+            if (!Map.IsDebugMode)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                    Params = new() { Source.Position, Map.GetConsoleRepresentationForCoordinates(Source.Position.X, Source.Position.Y) }
+                }
+                );
+            }
+            if (Source == Map.Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.UpdateConsoleRepresentation, Source.ConsoleRepresentation }
+                });
+            }
+            Map.DisplayEvents.Add(("ResetConsoleRepresentation", events));
             return true;
         }
 
         public static bool StealItem(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
             if (Source is not Character s) throw new ArgumentException($"Attempted to have {Source.Name} steal an item when it's not a Character.");
             if (paramsObject.Target is not Character t)
@@ -70,13 +112,38 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     t.Inventory.Remove(itemToSteal);
                     s.Inventory.Add(itemToSteal);
                     itemToSteal.Owner = s;
-                    if (s.EntityType == EntityType.Player
-                        || (s.EntityType == EntityType.NPC && Map.Player.CanSee(s))
-                        || t.EntityType == EntityType.Player
-                        || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
+                    if ((s == Map.Player || Map.Player.CanSee(s))
+                        || (t == Map.Player || Map.Player.CanSee(t)))
                     {
                         Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = itemToSteal.Name }), Color.DeepSkyBlue);
+                        if (s == Map.Player)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.ItemGet }
+                            });
+                        }
+                        else if (t == Map.Player)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.NPCItemGet }
+                            });
+                        }
                     }
+                    Map.DisplayEvents.Add(($"{t.Name} got an item stolen", events));
                     return true;
                 }
             }

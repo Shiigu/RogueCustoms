@@ -26,14 +26,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int TurnCount { get; private set; }
 
         public List<TileDto> Tiles { get; private set; }
-        public List<EntityDto> Entities { get; private set; }
-        public List<MessageDto> LogMessages { get; private set; }
-        public List<MessageBoxDto> MessageBoxes { get; private set; }
         public ConsoleRepresentation EmptyTile { get; private set; }
 
-        public EntityDto PlayerEntity => Entities.Find(e => e.Type == EntityDtoType.Player);
-        public bool IsAlive => PlayerEntity.HP > 0;
-        public List<SpecialEffect> SpecialEffectsThatHappened { get; private set; }
+        public EntityDto PlayerEntity { get; private set; }
+        public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; }
+        public List<GamePoint> PickableItemPositions { get; set; }
 
         public DungeonDto() { }
 
@@ -46,13 +43,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Height = map.Height;
             TurnCount = map.TurnCount;
             EmptyTile = map.TileSet.Empty;
-            Entities = new List<EntityDto>();
+            PlayerEntity = new EntityDto(map.Player, map);
             var _tiles = new ConcurrentBag<TileDto>();
-            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.MonsterHouseAlarm);
-            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.LevelUp);
-            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.StairsReveal);
-            map.MoveSpecialEffectToTheEndIfPossible(SpecialEffect.GameOver);
-            SpecialEffectsThatHappened = new(map.SpecialEffectsThatHappened);
             if (DungeonStatus != DungeonStatus.Completed)
             {
                 Parallel.For(0, map.Tiles.GetLength(0), y =>
@@ -70,14 +62,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Tiles = new List<TileDto>();
             }
             var playerEntity = map.Player;
-            map.GetEntities()
-                .Where(e => e.ExistenceStatus != EntityExistenceStatus.Gone && playerEntity?.CanSee(e) == true)
-                .ForEach(e => Entities.Add(new EntityDto(e, map)));
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
             playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
-            LogMessages = dungeon.Messages.TakeLast(EngineConstants.LogMessagesToSend).ToList();
-            MessageBoxes = new List<MessageBoxDto>(dungeon.MessageBoxes);
         }
     }
 
@@ -90,7 +77,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool Visible { get; private set; }
         public bool Targetable { get; private set; }
         public bool IsStairs { get; private set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; set; }
 
         public TileDto() { }
 
@@ -109,63 +96,54 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     [Serializable]
     public class EntityDto
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X { get; set; }
+        public int Y { get; set; }
         public string Name { get; private set; }
         public bool OnTop { get; private set; }
-        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; set; }
 
         public EntityDtoType Type { get; private set; }
 
         public bool IsPlayer => Type == EntityDtoType.Player;
 
         #region Player-only fields
-        public int Level { get; private set; }
-        public int Experience { get; private set; }
-        public int ExperienceToLevelUp { get; private set; }
-        public int CurrentExperiencePercentage { get; private set; }
-
-        private static int CalculateExperienceBarPercentage(Character entity)
-        {
-            var experienceInCurrentLevel = entity.Experience - entity.LastLevelUpExperience;
-            var experienceBetweenLevels = entity.ExperienceToLevelUp - entity.LastLevelUpExperience;
-            return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
-        }
+        public int Level { get; set; }
+        public int Experience { get; set; }
+        public int ExperienceToLevelUp { get; set; }
+        public int CurrentExperiencePercentage { get; set; }
         public string HPStatName { get; private set; }
-        public int HP { get; private set; }
-        public int MaxHP { get; private set; }
+        public int HP { get; set; }
+        public int MaxHP { get; set; }
 
         public bool UsesMP { get; private set; }
         public string MPStatName { get; private set; }
-        public int MP { get; private set; }
-        public int MaxMP { get; private set; }
+        public int MP { get; set; }
+        public int MaxMP { get; set; }
         public SimpleEntityDto Weapon { get; private set; }
         public string DamageStatName { get; private set; }
         public string Damage { get; private set; }
         public string WeaponDamage { get; private set; }
-        public int Attack { get; private set; }
+        public int Attack { get; set; }
         public SimpleEntityDto Armor { get; private set; }
         public string MitigationStatName { get; private set; }
         public string Mitigation { get; private set; }
         public string ArmorMitigation { get; private set; }
-        public int Defense { get; private set; }
+        public int Defense { get; set; }
         public string MovementStatName { get; private set; }
-        public int Movement { get; private set; }
+        public int Movement { get; set; }
         public int BaseMovement { get; private set; }
         public string AccuracyStatName { get; private set; }
         public decimal BaseAccuracy { get; private set; }
-        public decimal Accuracy { get; private set; }
+        public decimal Accuracy { get; set; }
         public string EvasionStatName { get; private set; }
         public decimal BaseEvasion { get; private set; }
-        public decimal Evasion { get; private set; }
+        public decimal Evasion { get; set; }
         public bool UsesHunger { get; private set; }
         public string HungerStatName { get; private set; }
-        public int Hunger { get; private set; }
-        public int MaxHunger { get; private set; }
-        public bool CanMove { get; private set; }
-        public bool CanTakeAction { get; private set; }
-        public List<SimpleEntityDto> AlteredStatuses { get; private set; }
-        public List<SimpleEntityDto> Inventory { get; private set; }
+        public int Hunger { get; set; }
+        public int MaxHunger { get; set; }
+        public List<SimpleEntityDto> AlteredStatuses { get; set; }
+        public List<SimpleEntityDto> Inventory { get; set; }
         #endregion
 
         public EntityDto() { }
@@ -199,7 +177,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Level = pc.Level;
                 Experience = pc.Experience;
                 ExperienceToLevelUp = pc.ExperienceToLevelUp;
-                CurrentExperiencePercentage = CalculateExperienceBarPercentage(pc);
+                CurrentExperiencePercentage = pc.CalculateExperienceBarPercentage();
                 HPStatName = map.Locale["CharacterHPStat"];
                 HP = (int) pc.HP.Current;
                 MaxHP = (int)pc.MaxHP;
@@ -229,8 +207,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 EvasionStatName = map.Locale["CharacterEvasionStat"];
                 BaseEvasion = (int)pc.Evasion.Base;
                 Evasion = (int)pc.Evasion.Current;
-                CanMove = pc.Movement.Current > 0;
-                CanTakeAction = pc.CanTakeAction;
                 UsesHunger = pc.Hunger != null;
                 if (UsesHunger)
                 {

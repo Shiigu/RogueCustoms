@@ -23,6 +23,7 @@ using RogueCustomsGameEngine.Utils.Exceptions;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using RogueCustomsGameEngine.Utils.Expressions;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -38,7 +39,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private int _generationTries;
 
-        private int CurrentEntityId;
+        private int CurrentEntityId
+        {
+            get
+            {
+                return Dungeon.CurrentEntityId;
+            }
+            set
+            {
+                Dungeon.CurrentEntityId = value;
+            }
+        }
 
         private bool _displayedTurnMessage;
 
@@ -47,8 +58,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int TurnCount { get; set; }
         private int LastMonsterGenerationTurn;
         private int LatestPlayerRemainingMovement;
-
-        public int Id { get; }
 
         private readonly Dungeon Dungeon;
         public Locale Locale => Dungeon.LocaleToUse;
@@ -98,7 +107,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int MinRoomHeight { get; set; }
         private int MaxRoomHeight { get; set; }
         public bool StairsAreSet { get; set; } = false;
-        public List<SpecialEffect> SpecialEffectsThatHappened { get; set; }
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Element> Elements => Dungeon.Elements;
         public List<Item> Items { get; set; }
@@ -128,6 +136,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<TileType> DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
 
+        public List<MessageDto> Messages { get; private set; }
+        [JsonIgnore]
+        public bool IsDebugMode { get; set; }
+
+        [JsonIgnore]
+        public DungeonDto Snapshot { get; set; }
+
+        [JsonIgnore]
+        // It's a list of lists because elements belonging to the same sub-list should be shown almost immediately (they are the result of the same act)
+        // The Name is exclusively for debug purposes
+        public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; } 
         #endregion
 
         public Map(Dungeon dungeon, int floorLevel, List<Flag> flags)
@@ -154,7 +173,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             GeneratorToUse = FloorConfigurationToUse.PossibleLayouts.TakeRandomElement(Rng);
             DefaultGeneratorToUse.MaxRoomSize = new() { Width = Width, Height = Height };
             DefaultGeneratorToUse.RoomDisposition[0, 0] = RoomDispositionType.GuaranteedRoom;
-            SpecialEffectsThatHappened = new();
+            Messages = new();
+            DisplayEvents = new();
             PossibleStatuses = new List<AlteredStatus>();
             Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
             SetActionParams();
@@ -176,6 +196,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public void GenerateDebugMap()
         {
+            IsDebugMode = true;
             _generationTries = 0;
             Width = 32;
             Height = 16;
@@ -186,11 +207,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             AddEntity(Dungeon.PlayerClass.Id);
             Player.Position = new GamePoint(5, 3);
             SetStairs(new GamePoint(19, 7));
-            AppendMessage("This is a dummy map");
+            DisplayEvents = new() { };
         }
 
         public void Generate()
         {
+            IsDebugMode = false;
             _generationTries = 0;
             bool success;
             do
@@ -233,6 +255,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
                                 Player.ContainingRoom.WasVisited = true;
+                                DisplayEvents = new();
+                                DisplayEvents.Add(("ClearMessageLog", new()
+                                {
+                                    new() {
+                                        DisplayEventType = DisplayEventType.ClearLogMessages,
+                                        Params = new() { }
+                                    }
+                                }
+                                ));
                                 AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
@@ -270,6 +301,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
                                 Player.ContainingRoom.WasVisited = true;
+                                DisplayEvents = new();
+                                DisplayEvents.Add(("ClearMessageLog", new()
+                                {
+                                    new() {
+                                        DisplayEventType = DisplayEventType.ClearLogMessages,
+                                        Params = new() { }
+                                    }
+                                }
+                                ));
                                 AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
@@ -778,23 +818,72 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (string.IsNullOrWhiteSpace(message)) return;
             if (!_displayedTurnMessage && TurnCount > 0)
             {
-                Dungeon.Messages.Add(new MessageDto
-                {
-                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
-                    ForegroundColor = new GameColor(Color.Yellow)
-                });
+                Messages.Add(new MessageDto
+                                {
+                                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
+                                    BackgroundColor = new GameColor(Color.Black),
+                                    ForegroundColor = new GameColor(Color.Yellow)
+                                });
+                DisplayEvents.Add(($"Turn {TurnCount}", new()
+                    {
+                        new() { 
+                            DisplayEventType = DisplayEventType.AddLogMessage, 
+                            Params = new()
+                            {
+                                new MessageDto
+                                {
+                                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
+                                    BackgroundColor = new GameColor(Color.Black),
+                                    ForegroundColor = new GameColor(Color.Yellow)
+                                }
+                            } 
+                        }
+                    }
+                ));
                 _displayedTurnMessage = true;
             }
-            Dungeon.Messages.Add(new MessageDto
+            Messages.Add(new MessageDto
             {
                 Message = message,
                 ForegroundColor = foregroundColor,
                 BackgroundColor = backgroundColor
             });
+            DisplayEvents.Add(("AppendMessage", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.AddLogMessage,
+                        Params = new()
+                        {
+                            new MessageDto
+                            {
+                                Message = message,
+                                ForegroundColor = foregroundColor,
+                                BackgroundColor = backgroundColor
+                            }
+                        }
+                    }
+                }
+            ));
         }
         public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)
         {
-            Dungeon.AddMessageBox(title, message, buttonCaption, windowColor);
+            DisplayEvents.Add(("AddMessageBox", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.AddMessageBox,
+                        Params = new()
+                        {
+                            new MessageBoxDto
+                            {
+                                Title = title,
+                                Message = message,
+                                ButtonCaption = buttonCaption,
+                                WindowColor = windowColor
+                            }
+                        }
+                    }
+                }
+            ));
         }
 
         #region Floor room setup
@@ -973,6 +1062,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private void NewTurn()
         {
+            _displayedTurnMessage = false;
             if (TurnCount == 0)
             {
                 if (!HasFlag("TurnCount"))
@@ -1095,6 +1185,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 #region Perform On Floor Start Actions
 
+                if (FloorLevel > 1)
+                {
+                    DisplayEvents.Add(("Stair steps", new()
+                    {
+                        new() {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.TakeStairs }
+                        }
+                    }
+                    ));
+                }
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
                 FloorConfigurationToUse.OnFloorStart?.Do(null, Player, false);
 
@@ -1112,9 +1213,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 #endregion
             }
+            Snapshot = new(Dungeon, this);
             TurnCount++;
             SetFlagValue("TurnCount", TurnCount);
-            _displayedTurnMessage = false;
             Player.TookAction = false;
             Player.PerformOnTurnStart();
             Player.RemainingMovement = (int) Player.Movement.Current;
@@ -1180,7 +1281,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void ProcessTurn()
         {
             if (LatestPlayerRemainingMovement == Player.RemainingMovement && Player.CanTakeAction && !Player.TookAction) return;
-            Player.UpdateVisibility();
             var minRequiredMovementToAct = (Player.RemainingMovement == 0 || !Player.CanTakeAction || Player.TookAction) ? 0 : LatestPlayerRemainingMovement;
             var aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
             while (aiCharactersThatCanActAlongsidePlayer.Any())
@@ -1201,6 +1301,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (DungeonStatus != DungeonStatus.Running) return;
             if (Player.ExistenceStatus != EntityExistenceStatus.Alive) return;
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             if (x == 0 && y == 0) // This is only possible if the player chooses to Skip Turn.
             {
                 Player.RemainingMovement = 0;
@@ -1224,11 +1326,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         if (targetTile.Type == TileType.Door)
                         {
-                            SpecialEffectsThatHappened.Add(SpecialEffect.DoorClosed);
                             AppendMessage(Locale["CharacterBumpedDoor"].Format(new { CharacterName = Player.Name, DoorName = Locale[$"DoorType{targetTile.DoorId}"] }), Color.White);
+                            DisplayEvents.Add(("Bump door", new()
+                                {
+                                    new() {
+                                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                        Params = new() { SpecialEffect.DoorClosed }
+                                    }
+                                }
+                            ));
                         }
                         else
-                            SpecialEffectsThatHappened.Add(SpecialEffect.Bumped);
+                        {
+                            DisplayEvents.Add(("Normal bump", new()
+                                {
+                                    new() {
+                                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                        Params = new() { SpecialEffect.Bumped }
+                                    }
+                                }
+                            ));
+                        }
                         return;
                     }
                     TryMoveCharacter(Player, targetTile);
@@ -1239,6 +1357,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool TryMoveCharacter(Character character, Tile targetTile)
         {
+            var events = new List<DisplayEventDto>();
+            var initialTile = character.ContainingTile;
             var characterInTargetTile = GetCharacters().Find(c => c.ContainingTile == targetTile && c != character && c.ExistenceStatus == EntityExistenceStatus.Alive);
             if (characterInTargetTile != null)
             {
@@ -1246,14 +1366,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (characterInTargetTile.Movement.Current <= 0) return false;
                 if (!characterInTargetTile.CanTakeAction) return false;
                 if (!character.Visible && characterInTargetTile.Visible) return false;
-                if (characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) return false;
+                if (characterInTargetTile.Visible && characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) return false;
                 // Swap positions with allies, neutrals or invisibles
                 characterInTargetTile.LatestPositions.AddButKeepingCapacity(characterInTargetTile.Position, 4);
                 characterInTargetTile.Position = character.Position;
                 if (characterInTargetTile.RemainingMovement > 0)
                     characterInTargetTile.RemainingMovement--;
                 if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
-                    AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }));
+                {
+                    AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }), Color.DeepSkyBlue);
+                }
             }
 
             character.LatestPositions.AddButKeepingCapacity(character.Position, 4);
@@ -1267,12 +1389,60 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             character.RemainingMovement--;
 
-            if (character == Player && targetTile.Room != null && !targetTile.Room.IsDummy && !targetTile.IsConnectorTile && !targetTile.Room.WasVisited)
+            var initialRepresentation = GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y);
+            var targetRepresentation = GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y);
+
+            if(!IsDebugMode)
             {
-                targetTile.Room.WasVisited = true;
-                if (targetTile.Room.MustSpawnMonsterHouse)
-                    InitiateMonsterHouse();
+                if (character == Player)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerPosition,
+                        Params = new() { targetTile.Position }
+                    }
+                    );
+                }
+
+                if (character == Player || Player.FOVTiles.Contains(initialTile))
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { initialTile.Position, GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y) }
+                    }
+                    );
+                }
+
+                if (character == Player || Player.FOVTiles.Contains(targetTile))
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { targetTile.Position, GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y) }
+                    }
+                    );
+                }
             }
+
+            if (character == Player)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.SetOnStairs,
+                    Params = new() { targetTile.Type == TileType.Stairs }
+                }
+                );
+                Player.UpdateVisibility();
+                if (targetTile.Room != null && !targetTile.Room.IsDummy && !targetTile.IsConnectorTile && !targetTile.Room.WasVisited)
+                {
+                    targetTile.Room.WasVisited = true;
+                    if (targetTile.Room.MustSpawnMonsterHouse)
+                        InitiateMonsterHouse();
+                }
+            }
+
+            DisplayEvents.Add(($"{character.Name} ({character.Id}) moves to ({targetTile.Position.X}, {targetTile.Position.Y})", events));
 
             return true;
         }
@@ -1281,9 +1451,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var monsterHouseRoom = Rooms.Find(r => r.MustSpawnMonsterHouse);
             if (monsterHouseRoom == null) return;
-            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
             AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red);
-            AddSpecialEffectIfPossible(SpecialEffect.MonsterHouseAlarm);
+            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
+            DisplayEvents.Add(("MONSTER HOUSE!", new()
+                {
+                    new() {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.MonsterHouseAlarm }
+                    }
+                }
+            ));
             var acceptableTiles = monsterHouseRoom.GetTiles().Where(t => CanBeConsideredEmpty(t)).TakeNDifferentRandomElements(FloorConfigurationToUse.SimultaneousMaxMonstersInFloor, Rng);
 
             if (FloorConfigurationToUse.PossibleMonsters.Any())
@@ -1302,12 +1479,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (Player.ContainingTile != StairsTile)
                 throw new ArgumentException($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
-            AppendMessage(Locale["FloorLeave"].Format(new { TurnCount = TurnCount.ToString() }), Color.Yellow);
             Dungeon.TakeStairs();
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
+        }
+        public void PlayerUseItemFromInventory(int itemId)
+        {
+            var item = Items.Find(i => i.Id == itemId)
+                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
+            PlayerUseItem(item);
         }
 
         private void PlayerUseItem(Item item)
         {
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             if (!item.IsEquippable)
             {
                 item.Used(Player);
@@ -1316,7 +1502,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else
             {
-                AppendMessage(Locale["PlayerEquippedItem"].Format(new { CharacterName = Player.Name, ItemName = item.Name }), Color.Yellow);
                 Player.EquipItem(item);
                 Player.TookAction = true;
             }
@@ -1333,6 +1518,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 return;
             }
 
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             PlayerUseItem(usableItem);
         }
         public void PlayerPickUpItemInFloor()
@@ -1342,6 +1529,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 .Find(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive);
             if (itemThatCanBePickedUp == null)
                 return;
+
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             if (Player.ItemCount == Player.InventorySize)
             {
                 AppendMessage(Locale["InventoryIsFull"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBePickedUp.Name }));
@@ -1354,20 +1544,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 ProcessTurn();
             }
         }
-        public void PlayerUseItemFromInventory(int itemId)
-        {
-            var item = Items.Find(i => i.Id == itemId)
-                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
-            PlayerUseItem(item);
-        }
 
         public void PlayerDropItemFromInventory(int itemId)
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             if (Player.ContainingTile.GetItems().Any())
             {
-                AppendMessage(Locale["TileIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }));
+                AppendMessage(Locale["TileIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }), Color.Yellow);
             }
             else
             {
@@ -1381,7 +1567,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
             var itemInInventory = Items.Find(i => i.Id == itemId)
-                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
+                ?? throw new ArgumentException("Player attempted to swap with an item that does not exist!");
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             var itemInTile = Items.Find(i => i.Position?.Equals(Player.Position) == true && i.ExistenceStatus != EntityExistenceStatus.Gone);
             if (itemInTile != null)
             {
@@ -1427,6 +1615,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             var selectionIdParts = selectionId.Split('_');
 
+            DisplayEvents = new();
+            Snapshot = new(Dungeon, this);
             if (selectionIdParts.Length == 2)
             {
                 if(!int.TryParse(selectionIdParts[0], out int entityId))
@@ -1662,6 +1852,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
 
             entitiesList.AddRange(Items.Where(i => i != null));
+            entitiesList.AddRange(Keys.Where(k => k != null));
             entitiesList.AddRange(Traps.Where(t => t != null));
 
             return entitiesList;
@@ -2347,20 +2538,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return JsonSerializer.Deserialize<Map>(JsonSerializer.Serialize(this));
         }
 
-        public void AddSpecialEffectIfPossible(SpecialEffect specialEffect)
-        {
-            SpecialEffectsThatHappened.Add(specialEffect);
-        }
-        public void AddSpecialEffectIfPossible(SpecialEffect specialEffect, int position)
-        {
-            SpecialEffectsThatHappened.Insert(position, specialEffect);
-        }
-        public void MoveSpecialEffectToTheEndIfPossible(SpecialEffect specialEffect)
-        {
-            if (!SpecialEffectsThatHappened.Contains(specialEffect)) return;
-            SpecialEffectsThatHappened.Remove(specialEffect);
-            SpecialEffectsThatHappened.Insert(SpecialEffectsThatHappened.Count, specialEffect);
-        }
         #endregion
     }
     #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL

@@ -136,11 +136,16 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         public static string FLOOR(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Floor.");
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for Floor.");
             
             var numberToFloor = parameters[0].IsMathExpression() ? new Expression(parameters[0]).Eval<decimal>() : decimal.Parse(parameters[0]);
+            var decimals = parameters[1].IsMathExpression() ? new Expression(parameters[1]).Eval<int>() : int.Parse(parameters[1]);
 
-            return ((int) Math.Floor(numberToFloor)).ToString();
+            var factor = (decimal)Math.Pow(10, decimals);
+            var result = Math.Floor(numberToFloor * factor) / factor;
+            var formatString = decimals == 0 ? "0" : "0." + new string('#', decimals);
+
+            return result.ToString(formatString, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public static string CEILING(Entity This, Entity Source, Entity Target, string[] parameters)
@@ -150,7 +155,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             var numberToRound = parameters[0].IsMathExpression() ? new Expression(parameters[0]).Eval<decimal>() : decimal.Parse(parameters[0]);
             var decimals = parameters[1].IsMathExpression() ? new Expression(parameters[1]).Eval<int>() : int.Parse(parameters[1]);
 
-            return ((int) Math.Round(numberToRound, decimals)).ToString();
+            var factor = (decimal)Math.Pow(10, decimals);
+            var result = Math.Ceiling(numberToRound * factor) / factor;
+            var formatString = decimals == 0 ? "0" : "0." + new string('#', decimals);
+
+            return result.ToString(formatString, System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }

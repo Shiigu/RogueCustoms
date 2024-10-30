@@ -21,6 +21,8 @@ public partial class PopUp : Control
     private readonly List<PopUpButton> _buttons = new();
     private Vector2 _originalLabelSize;
 
+    [Signal]
+    public delegate void PopupClosedEventHandler();
     public override void _Ready()
     {
         _globalState = GetNode<GlobalState>("/root/GlobalState");
@@ -76,6 +78,7 @@ public partial class PopUp : Control
             {
                 popUpButton.Callback?.Invoke();
                 modalCloseCallback?.Invoke();
+                EmitSignal(nameof(PopupClosed));
                 QueueFree();
             };
             button.AddThemeStyleboxOverride("normal", normalButtonStyleBox);
