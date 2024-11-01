@@ -22,6 +22,7 @@ using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Expressions;
 using System.Reflection;
 using RogueCustomsDungeonEditor.Utils.ExpressionFunctions;
+using RogueCustomsGameEngine.Utils;
 #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 
 namespace RogueCustomsDungeonEditor.Utils
@@ -34,7 +35,11 @@ namespace RogueCustomsDungeonEditor.Utils
             {
                 var parsedExpression = ConvertArgsToPlaceholders(expression, "1", "\"name\"", "true");
                 if (checkDiceNotationAsWell && parsedExpression.IsDiceNotation())
-                    _ = new Dice().Roll(parsedExpression, new RandomDieRoller()).Value;
+                    _ = ExpressionParser.RollDiceNotations(parsedExpression);
+                else if (parsedExpression.IsIntervalNotation())
+                {
+                    _ = ExpressionParser.RollRangeNotations(parsedExpression);
+                }
                 else
                     _ = new Expression(parsedExpression).Eval<decimal>();
                 errorMessage = string.Empty;
@@ -73,12 +78,14 @@ namespace RogueCustomsDungeonEditor.Utils
             {
                 var token = tokens[i];
                 token = token.Replace("{CalculatedDamage}", "1");
+                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "player");
                 token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
                 token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
                 token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
                 token = ParseNamedFlags(token, numericPlaceholder);
                 tokens[i] = token;
             }
+
             // Second pass: handle function parsing and execution
             // Since logical operators might be in place, split the expression based on those, and handle function parsing for each part.
             tokens = ExpressionParser.SplitExpression(string.Join("", tokens));
@@ -181,18 +188,13 @@ namespace RogueCustomsDungeonEditor.Utils
             return parsedArg;
         }
 
-        private static bool IsDiceNotation(this string s)
-        {
-            return Regex.Match(s, RogueCustomsGameEngine.Utils.EngineConstants.DiceNotationRegexPattern).Success;
-        }
-
         public static bool HaveAllParametersBeenParsed(this Effect effect, Entity This, Entity Source, Entity Target, Map map, out bool flagsAreInvolved)
         {
             flagsAreInvolved = false;
 
             // Hardcode Flags due to unpredictability
             var regexFlagExists = @"FlagExists\(([^)]+)\)";
-            var regexFlagValue = @"\[(.*?)\]";
+            var regexFlagValue = EngineConstants.FlagRegexPattern;
 
             var paramValuesToReplace = new List<(string ParamName, string Value)>();
 

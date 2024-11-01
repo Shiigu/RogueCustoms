@@ -13,7 +13,11 @@ namespace RogueCustomsGameEngine.Utils.Helpers
     {
         public static bool IsDiceNotation(this string s)
         {
-            return Regex.Match(s, EngineConstants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
+            return Regex.Match(s, EngineConstants.DiceNotationRegexPattern).Success;
+        }
+        public static bool IsIntervalNotation(this string s)
+        {
+            return Regex.Match(s, EngineConstants.IntervalRegexPattern, RegexOptions.IgnoreCase).Success;
         }
 
         public static bool IsMathExpression(this string input)
@@ -31,7 +35,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static bool IsBooleanExpression(this string input)
         {
-            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false|HasStatus|DoesNotHaveStatus)\b";
+            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false)\b";
 
             return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
@@ -68,6 +72,21 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         {
             int index = value.IndexOf(removeString, StringComparison.Ordinal);
             return index < 0 ? value : value.Remove(index, removeString.Length);
+        }
+
+        public static string TrimSurrounding(this string input, char surroundingChar)
+        {
+            if (input.Length >= 2 &&
+                (input.StartsWith(surroundingChar) && input.EndsWith(surroundingChar)))
+            {
+                return input.Substring(1, input.Length - 2);
+            }
+            return input;
+        }
+
+        public static string TrimSurroundingQuotes(this string input)
+        {
+            return input.TrimSurrounding('\"').TrimSurrounding('\'');
         }
     }
 }

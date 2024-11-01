@@ -6,6 +6,8 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.DiceNotation;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.Representation;
+
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -28,8 +30,6 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class ExpressionParser
     {
-        public static readonly Regex ExpressionSplitterRegex = new(@"(==|!=|<=|>=|&&|\|\||<|>)", RegexOptions.Compiled);
-
         private readonly static List<string> PropertiesToParse = new()
         {
             "Id",
@@ -144,28 +144,28 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.StatAlterationList = correspondingStat != null ? correspondingStat.ActiveModifications : null;
                     return true;
                 case "attack":
-                    paramsObject.Damage = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Damage = CalculateNumericExpression(value);
                     return true;
                 case "defense":
-                    paramsObject.Mitigation = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Mitigation = CalculateNumericExpression(value);
                     return true;
                 case "accuracy":
-                    paramsObject.Accuracy = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Accuracy = CalculateNumericExpression(value);
                     return true;
                 case "chance":
-                    paramsObject.Chance = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Chance = CalculateNumericExpression(value);
                     return true;
                 case "power":
-                    paramsObject.Power = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Power = CalculateNumericExpression(value);
                     return true;
                 case "amount":
-                    paramsObject.Amount = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Amount = CalculateNumericExpression(value);
                     return true;
                 case "turnlength":
-                    paramsObject.TurnLength = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.TurnLength = CalculateNumericExpression(value);
                     return true;
                 case "level":
-                    paramsObject.Level = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.Level = CalculateNumericExpression(value);
                     return true;
                 case "bypassesaccuracycheck":
                     paramsObject.BypassesAccuracyCheck = new Expression(value).Eval<bool>();
@@ -198,8 +198,17 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Id.Equals(value, StringComparison.InvariantCultureIgnoreCase));
                     return true;
                 case "value":
-                    paramsObject.Value = (int)CalculateDiceNotationIfNeeded(value);
-                    return true;
+                    if (bool.TryParse(value, out bool boolValue))
+                    {
+                        paramsObject.Value = boolValue;
+                        return true;
+                    }
+                    if (value.IsMathExpression())
+                    { 
+                        paramsObject.Value = (int)CalculateNumericExpression(value);
+                        return true;
+                    }
+                    return false;
                 case "removeonfloorchange":
                     paramsObject.RemoveOnFloorChange = new Expression(value).Eval<bool>();
                     return true;
@@ -216,21 +225,22 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.BackColor = value.ToGameColor();
                     return true;
                 case "criticalhitchance":
-                    paramsObject.CriticalHitChance = CalculateDiceNotationIfNeeded(value);
+                    paramsObject.CriticalHitChance = CalculateNumericExpression(value);
                     return true;
             }
             return false; // Not a custom case, allow dynamic handling
         }
 
-        public static decimal CalculateDiceNotationIfNeeded(string value)
+        public static decimal CalculateNumericExpression(string value)
         {
             if (value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is a boolean expression, but is being evaluated as a number.");
-            var valueWithCalculatedDiceExpressions = ReplaceDiceNotationWithValues(value);
-            return new Expression(valueWithCalculatedDiceExpressions).Eval<decimal>();
+            var parsedValue = RollDiceNotations(value);
+            parsedValue = RollRangeNotations(parsedValue);
+            return new Expression(parsedValue).Eval<decimal>();
         }
 
-        public static string ReplaceDiceNotationWithValues(string expression)
+        public static string RollDiceNotations(string expression)
         {
             return Regex.Replace(expression, EngineConstants.DiceNotationRegexPattern, match =>
             {
@@ -238,6 +248,17 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 decimal rollResult = new Dice().Roll(diceNotation, new LCGDieRoller(Rng)).Value;
                 return rollResult.ToString();
             }, RegexOptions.IgnoreCase);
+        }
+
+        public static string RollRangeNotations(string expression)
+        {
+            return Regex.Replace(expression, EngineConstants.IntervalRegexPattern, match =>
+            {
+                int min = int.Parse(match.Groups[1].Value);
+                int max = int.Parse(match.Groups[2].Value);
+                int randomValue = Rng.NextInclusive(min, max + 1);
+                return randomValue.ToString();
+            });
         }
 
         public static bool CalculateBooleanExpression(string value)
@@ -250,7 +271,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         public static List<string> SplitExpression(string expression)
         {
-            var tokens = ExpressionSplitterRegex
+            var tokens = new Regex(EngineConstants.ExpressionSplitterRegexPattern)
                 .Split(expression)
                 .Where(token => !string.IsNullOrWhiteSpace(token))
                 .Select(token => token.Trim())
@@ -267,6 +288,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             {
                 var token = tokens[i];
 
+                token = ParseArgForEntity(token, Map.Player, "player");
                 token = ParseArgForEntity(token, This, "this");
                 token = ParseArgForEntity(token, Source, "source");
                 if (Target is Entity targetAsEntity)
@@ -356,7 +378,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if (propertyValue != null)
                 {
                     var formattedValue = FormatParameterValue(propertyValue);
-                    if (propertyValue is string stringValue && !stringValue.IsDiceNotation() && !stringValue.IsMathExpression())
+                    if (propertyValue is string stringValue && !stringValue.IsDiceNotation() && !stringValue.IsIntervalNotation() && !stringValue.IsMathExpression())
                         formattedValue = $"\"{formattedValue}\"";
                     parsedArg = parsedArg.Replace(match.Value, FormatParameterValue(formattedValue), StringComparison.InvariantCultureIgnoreCase);
                 }
@@ -373,46 +395,52 @@ namespace RogueCustomsGameEngine.Utils.Expressions
         {
             if (obj == null || string.IsNullOrEmpty(propertyPath)) return null;
 
-            var properties = propertyPath.Split('.');
-            object currentObject = obj;
+            var properties = propertyPath.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var property in properties)
+            return GetNestedValueRecursive(obj, properties, 0);
+        }
+
+        private static object GetNestedValueRecursive(object currentObject, string[] properties, int level)
+        {
+            if (currentObject == null || level >= properties.Length) return currentObject;
+
+            var propertyName = properties[level];
+
+            // Special case: Check for the "Stat:StatName" pattern
+            if (propertyName.StartsWith("Stat:", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (currentObject == null) return null;
-
-                var propertyInfo = currentObject.GetType()
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
-                    .FirstOrDefault(p => p.Name.Equals(property, StringComparison.InvariantCultureIgnoreCase));
-
-                if (propertyInfo == null) return null;
-
-                currentObject = propertyInfo.GetValue(currentObject);
-
-                if (currentObject is Stat stat) 
-                {
-                    // This is only for backwards compatibility for {eName.StatName}
-                    // (Where StatName is HP, HPRegeneration, MP, MPRegeneration, Attack, Defense, Movement, Accuracy or Evasion)
-                    currentObject = stat.Current;
-                }
-                else if (currentObject is TileType tileType)
-                {
-                    currentObject = tileType.Id;
-                }
-                else if (propertyInfo.Name.Equals("AlteredStatuses", StringComparison.InvariantCultureIgnoreCase) && currentObject is List<AlteredStatus> alteredStatuses)
-                {
-                    currentObject = string.Join("/", alteredStatuses.Select(status => status.Id));
-                }
-                else if (propertyInfo.Name.Equals("MaxHunger", StringComparison.InvariantCultureIgnoreCase) && currentObject is Stat hungerStat)
-                {
-                    currentObject = hungerStat.Base;
-                }
-                else if (propertyInfo.PropertyType.IsEnum)
-                {
-                    currentObject = currentObject.ToString();
-                }
+                var statId = propertyName.Split(':')[1];  // Get the StatName part
+                return GetStatValue(currentObject, statId); // Directly get stat value
             }
 
-            return currentObject;
+            // Normal property retrieval
+            var propertyInfo = currentObject.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+                .FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (propertyInfo == null) return null;
+
+            // Move down one level in the object hierarchy
+            var nextValue = propertyInfo.GetValue(currentObject);
+
+            // Check for custom handling based on the type
+            if (nextValue is Stat stat)
+                return level == properties.Length - 1 ? stat.Current : null;
+            else if (nextValue is TileType tileType)
+                return level == properties.Length - 1 ? tileType.Id : null;
+            else if (nextValue is GameColor color)
+                return color;
+            else if (nextValue is char singleChar)
+                return singleChar.ToString();
+            else if (propertyInfo.Name.Equals("AlteredStatuses", StringComparison.InvariantCultureIgnoreCase) && nextValue is List<AlteredStatus> alteredStatuses)
+                return level == properties.Length - 1 ? string.Join("/", alteredStatuses.Select(status => status.Id)) : null;
+            else if (propertyInfo.Name.Equals("MaxHunger", StringComparison.InvariantCultureIgnoreCase) && nextValue is Stat hungerStat)
+                return hungerStat.Base;
+            else if (propertyInfo.PropertyType.IsEnum)
+                return nextValue.ToString();
+
+            // Recursively go to the next property in the chain
+            return GetNestedValueRecursive(nextValue, properties, level + 1);
         }
         private static decimal? GetStatValue(object obj, string statId)
         {
@@ -436,7 +464,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
         {
             var parsedArg = arg;
 
-            var matches = Regex.Matches(parsedArg, @"\[(.*?)\]");
+            var matches = Regex.Matches(parsedArg, EngineConstants.FlagRegexPattern);
 
             foreach (Match match in matches)
             {

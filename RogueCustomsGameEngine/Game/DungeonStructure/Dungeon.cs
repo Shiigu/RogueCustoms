@@ -35,6 +35,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int CurrentFloorLevel;
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
+        public bool IsDebugMode { get; set; }
 
         #region From JSON
         public string Name { get; set; }

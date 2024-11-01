@@ -138,7 +138,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<MessageDto> Messages { get; private set; }
         [JsonIgnore]
-        public bool IsDebugMode { get; set; }
+        public bool IsDebugMode => Dungeon.IsDebugMode;
 
         [JsonIgnore]
         public DungeonDto Snapshot { get; set; }
@@ -196,7 +196,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public void GenerateDebugMap()
         {
-            IsDebugMode = true;
             _generationTries = 0;
             Width = 32;
             Height = 16;
@@ -212,7 +211,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void Generate()
         {
-            IsDebugMode = false;
             _generationTries = 0;
             bool success;
             do
@@ -332,7 +330,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         {
                             try
                             {
-                                var existingValue = GetFlagValue($"Doors_{door.DoorId}");
+                                var existingValue = (int) GetFlagValue($"Doors_{door.DoorId}");
                                 SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
                             }
                             catch (FlagNotFoundException)
@@ -453,7 +451,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         {
                             try
                             {
-                                var existingValue = GetFlagValue($"Doors_{door.DoorId}");
+                                var existingValue = (int) GetFlagValue($"Doors_{door.DoorId}");
                                 SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
                             }
                             catch (FlagNotFoundException)
@@ -1880,7 +1878,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public ConsoleRepresentation GetConsoleRepresentationForCoordinates(int x, int y)
         {
-            var tile = GetTileFromCoordinates(x, y) ?? throw new ArgumentException("Tile does not exist");
+            var tile = GetTileFromCoordinates(x, y);
+            if(tile == null)
+                throw new ArgumentException("Tile does not exist");
             if (!tile.Discovered)
                 return ConsoleRepresentation.EmptyTile;
             var tileBaseConsoleRepresentation = new ConsoleRepresentation
@@ -2505,19 +2505,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return Flags.Exists(f => f.Key.Equals(key));
         }
 
-        public int GetFlagValue(string key)
+        public object GetFlagValue(string key)
         {
             var flag = Flags.Find(f => f.Key.Equals(key)) 
                 ?? throw new FlagNotFoundException($"There's no flag with key {key} in {FloorName}", key);
             return flag.Value;
         }
 
-        public void CreateFlag(string key, int value, bool removeOnFloorChange)
+        public void CreateFlag(string key, object value, bool removeOnFloorChange)
         {
             Flags.Add(new Flag(key, value, removeOnFloorChange));
         }
 
-        public void SetFlagValue(string key, int value)
+        public void SetFlagValue(string key, object value)
         {
             var flag = Flags.Find(f => f.Key.Equals(key)) ?? throw new ArgumentException($"There's no flag with key {key} in {FloorName}");
             flag.Value = value;
