@@ -121,7 +121,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.AppendMessage(Map.Locale["AttackCriticalHitText"], attackElement.Color);
                 }
-                damageDealt = (int) ExpressionParser.CalculateDiceNotationIfNeeded(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
+                damageDealt = (int) ExpressionParser.CalculateNumericExpression(paramsObject.CriticalHitFormula.Replace("{CalculatedDamage}", damageDealt.ToString()));
             }
             if (c == Map.Player || Map.Player.CanSee(c))
             {

@@ -314,7 +314,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             try
             {
-                var existingValue = Map.GetFlagValue($"Doors_{paramsObject.DoorId}");
+                var existingValue = (int) Map.GetFlagValue($"Doors_{paramsObject.DoorId}");
                 Map.SetFlagValue($"Doors_{paramsObject.DoorId}", existingValue - 1);
             }
             catch (FlagNotFoundException)

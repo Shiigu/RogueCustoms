@@ -21,9 +21,13 @@ namespace RogueCustomsGameEngine.Utils
         public const int FullRoomSightRangeForHallways = 1;
         public const int FullMapSightRange = -2;
 
-        public static readonly string ExpressionSplitterRegexPattern = @"(\{[^\}]+\}|\|\||&&|<=|>=|!=|==|[<>+\-*/\(\)])";
+        public static readonly string ExpressionSplitterRegexPattern = @"(==|!=|<=|>=|&&|\|\||<|>)";
 
         public static readonly string DiceNotationRegexPattern = @"(\d+)?d(\d+)([kK]\d+)?([+-]\d+)?([+-]\d+d\d+)?([*/]\d+)??";
+
+        public static readonly string IntervalRegexPattern = @"\[(\d+);(\d+)\]";
+
+        public static readonly string FlagRegexPattern = @"\[(?!\d+;\d+\])([^\[\];]+)\]";
 
         public static readonly string[] EffectsThatTriggerOnAttacked = new[]
         {

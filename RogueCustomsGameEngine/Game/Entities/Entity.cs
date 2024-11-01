@@ -35,7 +35,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Room ContainingRoom => Position != null ? Map.GetRoomInCoordinates(Position.X, Position.Y) : null;
 
         public readonly ConsoleRepresentation BaseConsoleRepresentation;
-        public readonly ConsoleRepresentation ConsoleRepresentation;
+        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
         public bool Visible { get; set; }
         public EntityExistenceStatus ExistenceStatus { get; set; }
         public bool Passable { get; set; }

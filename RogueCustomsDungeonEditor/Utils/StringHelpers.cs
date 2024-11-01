@@ -5,6 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using org.matheval;
+
+using RogueCustomsGameEngine.Utils;
+
 namespace RogueCustomsDungeonEditor.Utils
 {
     public static class StringHelpers
@@ -91,10 +95,31 @@ namespace RogueCustomsDungeonEditor.Utils
 
             return result.ToArray();
         }
+        public static bool IsDiceNotation(this string s)
+        {
+            return Regex.Match(s, EngineConstants.DiceNotationRegexPattern, RegexOptions.IgnoreCase).Success;
+        }
+        public static bool IsIntervalNotation(this string s)
+        {
+            return Regex.Match(s, EngineConstants.IntervalRegexPattern, RegexOptions.IgnoreCase).Success;
+        }
+
+        public static bool IsMathExpression(this string input)
+        {
+            try
+            {
+                new Expression(input).Eval<decimal>();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public static bool IsBooleanExpression(this string input)
         {
-            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false|HasStatus|DoesNotHaveStatus)\b";
+            var pattern = @"[<>!=]=?|&&|\|\||\b(true|false)\b|[A-Za-z_][A-Za-z0-9_]*\(([^()]*|(?<open>\()|(?<-open>\)))+(?(open)(?!))\)";
 
             return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }

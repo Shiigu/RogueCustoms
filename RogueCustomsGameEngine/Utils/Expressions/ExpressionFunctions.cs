@@ -53,6 +53,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 "this" => This,
                 "source" => Source,
                 "target" => Target,
+                "player" => This.Map.Player,
                 _ => throw new ArgumentException("Invalid entity name in HasStatus.")
             };
 
@@ -78,6 +79,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 "this" => This,
                 "source" => Source,
                 "target" => Target,
+                "player" => This.Map.Player,
                 _ => throw new ArgumentException("Invalid entity name in DoesNotHaveStatus.")
             };
 
@@ -93,7 +95,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             foreach (var param in parameters)
             {
-                concatResult.Append(param.Trim('"'));
+                concatResult.Append(param.TrimSurroundingQuotes());
             }
 
             return concatResult.ToString();
@@ -103,35 +105,35 @@ namespace RogueCustomsGameEngine.Utils.Expressions
         {
             if (parameters.Length != 3) throw new ArgumentException("Invalid parameters for Replace.");
 
-            return parameters[0].Trim('"').Replace(parameters[1].Trim('"'), parameters[2].Trim('"')).ToString();
+            return parameters[0].TrimSurroundingQuotes().Replace(parameters[1].TrimSurroundingQuotes(), parameters[2].TrimSurroundingQuotes()).ToString();
         }
 
         public static string REVERSE(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Reverse.");
 
-            return parameters[0].Trim('"').Reverse().ToString() ?? string.Empty;
+            return parameters[0].TrimSurroundingQuotes().Reverse().ToString() ?? string.Empty;
         }
 
         public static string LOWER(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Lower.");
 
-            return parameters[0].Trim('"').ToLowerInvariant();
+            return parameters[0].TrimSurroundingQuotes().ToLowerInvariant();
         }
 
         public static string UPPER(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Upper.");
 
-            return parameters[0].Trim('"').ToUpperInvariant();
+            return parameters[0].TrimSurroundingQuotes().ToUpperInvariant();
         }
 
         public static string TRIM(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Trim.");
 
-            return parameters[0].Trim('"').Trim();
+            return parameters[0].TrimSurroundingQuotes().Trim();
         }
 
         public static string FLOOR(Entity This, Entity Source, Entity Target, string[] parameters)
@@ -160,6 +162,32 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             var formatString = decimals == 0 ? "0" : "0." + new string('#', decimals);
 
             return result.ToString(formatString, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        public static string USESSTAT(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for UsesStat.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = entityName.ToLowerInvariant() switch
+            {
+                "this" => This,
+                "source" => Source,
+                "target" => Target,
+                "player" => This.Map.Player,
+                _ => throw new ArgumentException("Invalid entity name in UsesStat.")
+            };
+
+            var statId = parameters[1];
+
+            if (entityToCheck is Character character)
+            {
+                var statusExists = character.UsedStats.Exists(als => als.Id.Equals(statId, StringComparison.InvariantCultureIgnoreCase));
+                return statusExists.ToString();
+            }
+
+            return false.ToString();
         }
     }
 }

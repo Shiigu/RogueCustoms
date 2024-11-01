@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.EffectInfos;
+using RogueCustomsDungeonEditor.Utils;
 
-using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -112,10 +112,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             if (!PreviousTextBoxValue.Equals(txtTrapPower.Text))
             {
-                if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !int.TryParse(txtTrapPower.Text, out _))
+                if (!string.IsNullOrWhiteSpace(txtTrapPower.Text) && !txtTrapPower.Text.IsDiceNotation() && !txtTrapPower.Text.IsIntervalNotation() && !int.TryParse(txtTrapPower.Text, out _))
                 {
                     MessageBox.Show(
-                        $"Trap Power must be either a flat integer or a Dice Notation expression",
+                        $"Trap Power must be either a flat integer, an [X;Y] interval or a Dice Notation expression",
                         "Invalid Formula",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
