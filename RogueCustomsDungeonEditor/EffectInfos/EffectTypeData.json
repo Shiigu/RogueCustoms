@@ -1702,8 +1702,8 @@
       {
         "InternalName": "Value",
         "DisplayName": "Value",
-        "Description": "The value to set on the Flag.",
-        "ParameterType": "Formula",
+        "Description": "The value to set on the Flag. Can be a value, a formula, or a string.",
+        "ParameterType": "Text",
         "Default": "",
         "ValidValues": [],
         "Required": true,
