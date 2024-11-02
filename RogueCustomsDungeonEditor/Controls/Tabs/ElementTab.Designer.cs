@@ -116,10 +116,8 @@
             saeElementOnAfterAttack.EffectParamData = null;
             saeElementOnAfterAttack.Location = new System.Drawing.Point(369, 131);
             saeElementOnAfterAttack.Name = "saeElementOnAfterAttack";
-            saeElementOnAfterAttack.PlaceholderActionName = "ElementAfterAttack";
-            saeElementOnAfterAttack.RequiresActionName = false;
+            saeElementOnAfterAttack.PlaceholderActionId = "ElementAfterAttack";
             saeElementOnAfterAttack.RequiresCondition = true;
-            saeElementOnAfterAttack.RequiresDescription = false;
             saeElementOnAfterAttack.Size = new System.Drawing.Size(285, 32);
             saeElementOnAfterAttack.SourceDescription = "The attacker";
             saeElementOnAfterAttack.TabIndex = 233;

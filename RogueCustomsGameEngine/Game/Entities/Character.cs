@@ -665,7 +665,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override void SetActionIds()
         {
             for(int i = 0; i < OwnOnAttack.Count; i++)
-                OwnOnAttack[i].ActionId = $"{Id}_CA{i}";
+                OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
         }
     }
 }

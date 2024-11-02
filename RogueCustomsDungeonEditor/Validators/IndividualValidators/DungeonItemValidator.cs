@@ -70,8 +70,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Consumable")
                     {
+                        if (itemAsInstance.OwnOnAttack.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
+                        {
+                            messages.AddError("Item has at least two Attack actions with the same Id.");
+                        }
                         foreach (var onAttackAction in itemAsInstance.OwnOnAttack)
                         {
+                            foreach (var playerClass in dungeonJson.PlayerClasses)
+                            {
+                                if (playerClass.OnAttack.Any(oa => oa.Id.Equals(onAttackAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                    messages.AddError($"Item's Attack action, {onAttackAction.Id}, has the same Id as one of Player Class {playerClass.Id}'s Attack actions.");
+                            }
+                            foreach (var npc in dungeonJson.NPCs)
+                            {
+                                if (npc.OnAttack.Any(oa => oa.Id.Equals(onAttackAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                    messages.AddError($"Item's Attack action, {onAttackAction.Id}, has the NPC Id as one of Item {npc.Id}'s Attack actions.");
+                                if (npc.OnInteracted.Any(oa => oa.Id.Equals(onAttackAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                    messages.AddError($"Item's Attack action, {onAttackAction.Id}, has the NPC Id as one of Item {npc.Id}'s Interacted actions.");
+                            }
                             messages.AddRange(ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
                         }
                     }

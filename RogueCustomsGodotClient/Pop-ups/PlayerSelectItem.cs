@@ -132,6 +132,7 @@ public partial class PlayerSelectItem : Control
                 SelectionId = selectedAction.SelectionId,
                 X = targetCoords.Value.X,
                 Y = targetCoords.Value.Y,
+                SourceType = selectedAction.SourceType
             };
             _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
             _globalState.MustUpdateGameScreen = true;

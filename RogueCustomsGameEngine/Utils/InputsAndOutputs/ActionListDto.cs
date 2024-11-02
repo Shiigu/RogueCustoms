@@ -26,7 +26,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         {
             Actions.Add(new ActionItemDto(action, source, action.TargetTypes.Contains(TargetType.Tile) ? tile : targetCharacter, map)
             {
-                SelectionId = action.ActionId
+                SelectionId = action.SelectionId,
+                SourceType = isPlayerAction ? ActionSourceType.Player : ActionSourceType.NPC
             });
         }
     }
@@ -38,7 +39,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Description { get; set; }
         public bool CanBeUsed { get; set; }
         public string SelectionId { get; set; }
-
+        public ActionSourceType SourceType { get; set; }
         public ActionItemDto() { }
 
         public ActionItemDto(ActionWithEffects action, Character source, ITargetable target, Map map)

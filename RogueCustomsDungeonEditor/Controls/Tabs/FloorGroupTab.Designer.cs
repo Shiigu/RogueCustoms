@@ -136,10 +136,8 @@
             saeOnFloorStart.EffectParamData = null;
             saeOnFloorStart.Location = new System.Drawing.Point(355, 343);
             saeOnFloorStart.Name = "saeOnFloorStart";
-            saeOnFloorStart.PlaceholderActionName = "FloorStart";
-            saeOnFloorStart.RequiresActionName = false;
+            saeOnFloorStart.PlaceholderActionId = "FloorStart";
             saeOnFloorStart.RequiresCondition = false;
-            saeOnFloorStart.RequiresDescription = false;
             saeOnFloorStart.Size = new System.Drawing.Size(260, 32);
             saeOnFloorStart.SourceDescription = "None (Don't use)";
             saeOnFloorStart.TabIndex = 75;

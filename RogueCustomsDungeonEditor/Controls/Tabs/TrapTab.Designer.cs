@@ -55,10 +55,8 @@
             saeTrapOnStepped.EffectParamData = null;
             saeTrapOnStepped.Location = new System.Drawing.Point(8, 269);
             saeTrapOnStepped.Name = "saeTrapOnStepped";
-            saeTrapOnStepped.PlaceholderActionName = "Stepped";
-            saeTrapOnStepped.RequiresActionName = false;
+            saeTrapOnStepped.PlaceholderActionId = "Stepped";
             saeTrapOnStepped.RequiresCondition = false;
-            saeTrapOnStepped.RequiresDescription = false;
             saeTrapOnStepped.Size = new System.Drawing.Size(290, 32);
             saeTrapOnStepped.SourceDescription = "The trap";
             saeTrapOnStepped.TabIndex = 252;

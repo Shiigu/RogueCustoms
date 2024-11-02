@@ -42,15 +42,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private TreeNode SelectedNode;
         private bool HasThenChildNode;
         private bool HasOnSuccessFailureChildNodes;
+        private readonly bool RequiresActionId;
         private readonly bool RequiresDescription;
         private readonly bool RequiresActionName;
         private readonly bool CanHaveCondition;
         private readonly TurnEndCriteria TurnEndCriteria;
         private readonly UsageCriteria UsageCriteria;
         private readonly string ClassId;
-        private readonly string PlaceholderActionName;
+        private readonly string PlaceholderActionId;
         private string PreviousTextBoxValue;
-        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool canHaveCondition, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionNameIfNeeded, UsageCriteria usageCriteria, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
+        public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool canHaveCondition, bool requiresActionId, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionIdIfNeeded, UsageCriteria usageCriteria, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
         {
             InitializeComponent();
             if (!actionToSave.IsNullOrEmpty())
@@ -71,7 +72,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 lblTitle.Text = $"Edit {actionTypeText} for {ClassId}";
             else
                 lblTitle.Text = $"Edit {actionTypeText} for Floor Group";
-            btnSaveAs.Enabled = requiresActionName;
+            btnSaveAs.Enabled = requiresActionId;
+            RequiresActionId = requiresActionId;
             RequiresDescription = requiresDescription;
             RequiresActionName = requiresActionName;
             CanHaveCondition = canHaveCondition;
@@ -81,10 +83,21 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblSource.Text = sourceDescription;
             lblTarget.Text = targetDescription;
 
-            if (!RequiresActionName)
-                PlaceholderActionName = placeholderActionNameIfNeeded;
+            if (!RequiresActionId)
+                PlaceholderActionId = placeholderActionIdIfNeeded;
 
             UsageCriteria = usageCriteria;
+
+            if (RequiresActionName)
+            {
+                txtActionName.Enabled = true;
+                txtActionName.Text = ActionToSave?.Name;
+            }
+            else
+            {
+                txtActionName.Enabled = false;
+                txtActionName.Text = "";
+            }
 
             if (RequiresDescription)
             {
@@ -585,8 +598,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
-                        if (!RequiresActionName)
-                            ActionToSave.Name = PlaceholderActionName;
+                        ActionToSave.Name = txtActionName.Text;
+                        if (!RequiresActionId)
+                            ActionToSave.Id = PlaceholderActionId;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         this.Saved = true;
                         this.Close();
@@ -619,17 +633,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     if (messageBoxResult == DialogResult.Yes)
                     {
                         ActionToSave = null;
-                        this.IsNewAction = RequiresActionName;
+                        this.IsNewAction = RequiresActionId;
                         this.Saved = true;
                         this.Close();
                     }
                 }
                 else
                 {
-                    var nameToUse = (!RequiresActionName)
-                           ? PlaceholderActionName
-                           : InputBox.Show("Please write a name for the Action. If this is an Action for the Player Character or a usable Item, this will be its visible name.\nTo cancel Saving, leave the field empty.", "Give the Action a name", "");
-                    if (!string.IsNullOrWhiteSpace(nameToUse))
+                    var idToUse = (!RequiresActionId)
+                           ? PlaceholderActionId
+                           : InputBox.Show("Please enter an Id for the Action.\nTo cancel Saving, leave the field empty.", "Give the Action an Id", "");
+                    if (!string.IsNullOrWhiteSpace(idToUse))
                     {
                         if (gbSelectionCriteria.Enabled)
                         {
@@ -659,10 +673,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
+                        ActionToSave.Name = txtActionName.Text;
                         ActionToSave.Description = txtActionDescription.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
-                        ActionToSave.Name = nameToUse;
-                        this.IsNewAction = RequiresActionName;
+                        ActionToSave.Id = idToUse;
+                        this.IsNewAction = RequiresActionId;
                         this.Saved = true;
                         this.Close();
                     }
@@ -694,6 +709,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (RequiresDescription && string.IsNullOrWhiteSpace(txtActionDescription.Text))
                 errorMessages.Add("Action does not have a Description.");
             return !errorMessages.Any();
+        }
+
+        private void txtActionName_TextChanged(object sender, EventArgs e)
+        {
+            txtActionName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblActionNameLocale);
         }
 
         private void txtActionDescription_TextChanged(object sender, EventArgs e)
@@ -796,9 +816,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (tvEffectSequence.SelectedNode?.Tag is not EffectInfo itemTag) return;
             if (itemTag.IsNullOrEmpty()) return;
             var clonedEffect = itemTag.Clone();
-            clonedEffect.Then = null;
-            clonedEffect.OnSuccess = null;
-            clonedEffect.OnFailure = null;
             ClipboardManager.Copy(FormConstants.StepClipboardKey, clonedEffect);
         }
 

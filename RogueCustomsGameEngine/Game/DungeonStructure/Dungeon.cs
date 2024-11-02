@@ -233,9 +233,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return CurrentFloor.GetPlayerInventory();
         }
 
-        public void PlayerAttackTargetWith(string selectionId, int x, int y)
+        public void PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)
         {
-            CurrentFloor.PlayerAttackTargetWith(selectionId, x, y);
+            CurrentFloor.PlayerAttackTargetWith(selectionId, x, y, sourceType);
         }
 
         public void PlayerTakeStairs()

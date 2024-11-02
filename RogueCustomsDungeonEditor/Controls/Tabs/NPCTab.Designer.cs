@@ -97,6 +97,7 @@
             maeNPCOnInteracted.Location = new System.Drawing.Point(6, 644);
             maeNPCOnInteracted.Name = "maeNPCOnInteracted";
             maeNPCOnInteracted.PlaceholderActionName = null;
+            maeNPCOnInteracted.RequiresActionId = true;
             maeNPCOnInteracted.RequiresActionName = true;
             maeNPCOnInteracted.RequiresCondition = true;
             maeNPCOnInteracted.RequiresDescription = true;
@@ -120,10 +121,8 @@
             saeNPCOnSpawn.EffectParamData = null;
             saeNPCOnSpawn.Location = new System.Drawing.Point(6, 468);
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
-            saeNPCOnSpawn.PlaceholderActionName = "TurnStart";
-            saeNPCOnSpawn.RequiresActionName = false;
+            saeNPCOnSpawn.PlaceholderActionId = "TurnStart";
             saeNPCOnSpawn.RequiresCondition = true;
-            saeNPCOnSpawn.RequiresDescription = false;
             saeNPCOnSpawn.Size = new System.Drawing.Size(283, 32);
             saeNPCOnSpawn.SourceDescription = "The NPC (won't become visible)";
             saeNPCOnSpawn.TabIndex = 248;
@@ -168,10 +167,8 @@
             saeNPCOnDeath.EffectParamData = null;
             saeNPCOnDeath.Location = new System.Drawing.Point(6, 784);
             saeNPCOnDeath.Name = "saeNPCOnDeath";
-            saeNPCOnDeath.PlaceholderActionName = "Death";
-            saeNPCOnDeath.RequiresActionName = false;
+            saeNPCOnDeath.PlaceholderActionId = "Death";
             saeNPCOnDeath.RequiresCondition = false;
-            saeNPCOnDeath.RequiresDescription = false;
             saeNPCOnDeath.Size = new System.Drawing.Size(283, 32);
             saeNPCOnDeath.SourceDescription = "The NPC";
             saeNPCOnDeath.TabIndex = 246;
@@ -192,10 +189,8 @@
             saeNPCOnAttacked.EffectParamData = null;
             saeNPCOnAttacked.Location = new System.Drawing.Point(6, 744);
             saeNPCOnAttacked.Name = "saeNPCOnAttacked";
-            saeNPCOnAttacked.PlaceholderActionName = "Interacted";
-            saeNPCOnAttacked.RequiresActionName = false;
+            saeNPCOnAttacked.PlaceholderActionId = "Interacted";
             saeNPCOnAttacked.RequiresCondition = false;
-            saeNPCOnAttacked.RequiresDescription = false;
             saeNPCOnAttacked.Size = new System.Drawing.Size(281, 32);
             saeNPCOnAttacked.SourceDescription = "The NPC";
             saeNPCOnAttacked.TabIndex = 245;
@@ -216,10 +211,8 @@
             saeNPCOnTurnStart.EffectParamData = null;
             saeNPCOnTurnStart.Location = new System.Drawing.Point(6, 506);
             saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
-            saeNPCOnTurnStart.PlaceholderActionName = "TurnStart";
-            saeNPCOnTurnStart.RequiresActionName = false;
+            saeNPCOnTurnStart.PlaceholderActionId = "TurnStart";
             saeNPCOnTurnStart.RequiresCondition = false;
-            saeNPCOnTurnStart.RequiresDescription = false;
             saeNPCOnTurnStart.Size = new System.Drawing.Size(283, 32);
             saeNPCOnTurnStart.SourceDescription = "The NPC";
             saeNPCOnTurnStart.TabIndex = 244;
@@ -239,6 +232,7 @@
             maeNPCOnAttack.Location = new System.Drawing.Point(6, 544);
             maeNPCOnAttack.Name = "maeNPCOnAttack";
             maeNPCOnAttack.PlaceholderActionName = null;
+            maeNPCOnAttack.RequiresActionId = true;
             maeNPCOnAttack.RequiresActionName = true;
             maeNPCOnAttack.RequiresCondition = true;
             maeNPCOnAttack.RequiresDescription = false;

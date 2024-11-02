@@ -52,10 +52,8 @@ namespace RogueCustomsDungeonEditor.Controls
         public string ActionTypeText { get; set; }
         public string ClassId { get; set; }
         public bool RequiresCondition { get; set; }
-        public bool RequiresDescription { get; set; }
-        public bool RequiresActionName { get; set; }
         public TurnEndCriteria TurnEndCriteria { get; set; }
-        public string PlaceholderActionName { get; set; }
+        public string PlaceholderActionId { get; set; }
         public UsageCriteria UsageCriteria { get; set; }
         public List<EffectTypeData> EffectParamData { get; set; }
 
@@ -85,11 +83,12 @@ namespace RogueCustomsDungeonEditor.Controls
                 Dungeon,
                 ClassId,
                 ActionTypeText,
+                false,
                 RequiresCondition,
-                RequiresDescription,
-                RequiresActionName,
+                false,
+                false,
                 TurnEndCriteria,
-                PlaceholderActionName,
+                PlaceholderActionId,
                 UsageCriteria,
                 EffectParamData,
                 ThisDescription,

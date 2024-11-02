@@ -1606,7 +1606,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return inventory;
         }
 
-        public void PlayerAttackTargetWith(string selectionId, int x, int y)
+        public void PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)
         {
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
@@ -1615,39 +1615,38 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             DisplayEvents = new();
             Snapshot = new(Dungeon, this);
-            if (selectionIdParts.Length == 2)
+
+            var correspondingEntity = sourceType == ActionSourceType.Player ? Player : characterInTile ?? throw new ArgumentException("Player attempted an Action belonging to a non-existent Entity.");
+
+            ActionWithEffects selectedAction = null;
+
+            if (correspondingEntity == Player)
             {
-                if(!int.TryParse(selectionIdParts[0], out int entityId))
-                    throw new ArgumentException("Invalid Action Selection Id.");
-                var correspondingEntity = GetEntities().Find(e => e.Id.Equals(entityId))
-                        ?? throw new ArgumentException("Player attempted an Action belonging to a non-existent Entity.");
-                var selectedAttackAction = Player.OnAttack.Find(oaa => oaa.ActionId.Equals(selectionId));
-                var selectedInteractedAction = correspondingEntity is NonPlayableCharacter npc ? npc.OnInteracted.Find(oaa => oaa.ActionId.Equals(selectionId)) : null;
+                selectedAction = Player.OnAttack.Find(oaa => oaa.SelectionId.Equals(selectionId))
+                    ?? throw new ArgumentException("Player attempted a non-existent Action.");
+            }
+            else if (correspondingEntity == characterInTile && characterInTile is NonPlayableCharacter npc)
+            {
+                selectedAction = npc.OnInteracted.Find(oaa => oaa.SelectionId.Equals(selectionId))
+                    ?? throw new ArgumentException("Player attempted a non-existent Action.");
+            }
 
-                if (selectedAttackAction == null && selectedInteractedAction == null)
-                    throw new ArgumentException("Player attempted a non-existent Action.");
-
-                if(selectedAttackAction != null)
-                {
-                    if (selectedAttackAction.TargetTypes.Contains(TargetType.Tile) || selectedAttackAction.TargetTypes.Contains(TargetType.Room))
-                        Player.InteractWithTile(tile, selectedAttackAction);
-                    else if (characterInTile != null)
-                        Player.AttackCharacter(characterInTile, selectedAttackAction);
-                    else
-                        throw new ArgumentException("Player attempted use an action without a valid target.");
-                }
-                else if (selectedInteractedAction != null)
-                {
-                    Player.InteractWithCharacter(characterInTile, selectedInteractedAction);
-                }
+            if (sourceType == ActionSourceType.Player)
+            {
+                if (selectedAction.TargetTypes.Contains(TargetType.Tile) || selectedAction.TargetTypes.Contains(TargetType.Room))
+                    Player.InteractWithTile(tile, selectedAction);
+                else if (characterInTile != null)
+                    Player.AttackCharacter(characterInTile, selectedAction);
                 else
-                {
-                    throw new ArgumentException("Player attempted a non-existent Action.");
-                }
+                    throw new ArgumentException("Player attempted use an action without a valid target.");
+            }
+            else if (sourceType == ActionSourceType.NPC)
+            {
+                Player.InteractWithCharacter(characterInTile, selectedAction);
             }
             else
             {
-                throw new ArgumentException("Invalid SelectionId format.");
+                throw new ArgumentException("Player attempted a non-existent Action.");
             }
 
             ProcessTurn();
