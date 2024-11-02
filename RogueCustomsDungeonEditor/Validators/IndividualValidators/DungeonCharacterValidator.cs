@@ -138,6 +138,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterAsInstance.OwnOnAttack.Any())
             {
+                if(characterAsInstance.OwnOnAttack.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
+                {
+                    messages.AddError("Character has at least two Attack actions with the same Id.");
+                }
                 foreach (var onAttackAction in characterAsInstance.OwnOnAttack)
                 {
                     messages.AddRange(ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));

@@ -31,14 +31,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (npcAsInstance.OnInteracted.Any())
             {
+                if (npcAsInstance.OnInteracted.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
+                {
+                    messages.AddError("NPC has at least two Interacted actions with the same Id.");
+                }
                 foreach (var onInteractedAction in npcAsInstance.OnInteracted)
                 {
+                    foreach (var playerClass in dungeonJson.PlayerClasses)
+                    {
+                        if(playerClass.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                            messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Player Class {playerClass.Id}'s Attack actions.");
+                    }
+                    foreach (var item in dungeonJson.Items)
+                    {
+                        if (item.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                            messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Item {item.Id}'s Attack actions.");
+                    }
                     messages.AddRange(ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
                 }
-            }
-            else
-            {
-                messages.AddWarning("Character does not have OnAttackActions. Make sure they have items, otherwise they cannot attack.");
             }
 
             if (npcJson.KnowsAllCharacterPositions)

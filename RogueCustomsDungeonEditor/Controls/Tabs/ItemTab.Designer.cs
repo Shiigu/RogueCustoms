@@ -63,10 +63,8 @@
             saeItemOnDeath.EffectParamData = null;
             saeItemOnDeath.Location = new System.Drawing.Point(342, 280);
             saeItemOnDeath.Name = "saeItemOnDeath";
-            saeItemOnDeath.PlaceholderActionName = "Death";
-            saeItemOnDeath.RequiresActionName = false;
+            saeItemOnDeath.PlaceholderActionId = "Death";
             saeItemOnDeath.RequiresCondition = false;
-            saeItemOnDeath.RequiresDescription = false;
             saeItemOnDeath.Size = new System.Drawing.Size(361, 32);
             saeItemOnDeath.SourceDescription = "The item";
             saeItemOnDeath.TabIndex = 246;
@@ -87,10 +85,8 @@
             saeItemOnTurnStart.EffectParamData = null;
             saeItemOnTurnStart.Location = new System.Drawing.Point(341, 241);
             saeItemOnTurnStart.Name = "saeItemOnTurnStart";
-            saeItemOnTurnStart.PlaceholderActionName = "Death";
-            saeItemOnTurnStart.RequiresActionName = false;
+            saeItemOnTurnStart.PlaceholderActionId = "Death";
             saeItemOnTurnStart.RequiresCondition = false;
-            saeItemOnTurnStart.RequiresDescription = false;
             saeItemOnTurnStart.Size = new System.Drawing.Size(362, 32);
             saeItemOnTurnStart.SourceDescription = "Whoever is equipping This";
             saeItemOnTurnStart.TabIndex = 245;
@@ -111,10 +107,8 @@
             saeItemOnAttacked.EffectParamData = null;
             saeItemOnAttacked.Location = new System.Drawing.Point(341, 203);
             saeItemOnAttacked.Name = "saeItemOnAttacked";
-            saeItemOnAttacked.PlaceholderActionName = "Interacted";
-            saeItemOnAttacked.RequiresActionName = false;
+            saeItemOnAttacked.PlaceholderActionId = "Interacted";
             saeItemOnAttacked.RequiresCondition = false;
-            saeItemOnAttacked.RequiresDescription = false;
             saeItemOnAttacked.Size = new System.Drawing.Size(362, 32);
             saeItemOnAttacked.SourceDescription = "Whoever is equipping it";
             saeItemOnAttacked.TabIndex = 244;
@@ -134,6 +128,7 @@
             maeItemOnAttack.Location = new System.Drawing.Point(341, 103);
             maeItemOnAttack.Name = "maeItemOnAttack";
             maeItemOnAttack.PlaceholderActionName = null;
+            maeItemOnAttack.RequiresActionId = true;
             maeItemOnAttack.RequiresActionName = true;
             maeItemOnAttack.RequiresCondition = true;
             maeItemOnAttack.RequiresDescription = true;
@@ -157,10 +152,8 @@
             saeItemOnUse.EffectParamData = null;
             saeItemOnUse.Location = new System.Drawing.Point(341, 241);
             saeItemOnUse.Name = "saeItemOnUse";
-            saeItemOnUse.PlaceholderActionName = "ItemUse";
-            saeItemOnUse.RequiresActionName = false;
+            saeItemOnUse.PlaceholderActionId = "ItemUse";
             saeItemOnUse.RequiresCondition = true;
-            saeItemOnUse.RequiresDescription = false;
             saeItemOnUse.Size = new System.Drawing.Size(363, 32);
             saeItemOnUse.SourceDescription = "The item";
             saeItemOnUse.TabIndex = 242;

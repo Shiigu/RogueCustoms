@@ -52,7 +52,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 {
                     var actionItem = new ListBoxItem
                     {
-                        Text = action.Name,
+                        Text = action.Id,
                         Tag = action
                     };
                     lbActions.Items.Add(actionItem);
@@ -65,6 +65,7 @@ namespace RogueCustomsDungeonEditor.Controls
         public string ClassId { get; set; }
         public bool RequiresCondition { get; set; }
         public bool RequiresDescription { get; set; }
+        public bool RequiresActionId { get; set; }
         public bool RequiresActionName { get; set; }
         public TurnEndCriteria TurnEndCriteria { get; set; }
         public string PlaceholderActionName { get; set; }
@@ -107,6 +108,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 Dungeon,
                 ClassId,
                 ActionTypeText,
+                RequiresActionId,
                 RequiresCondition,
                 RequiresDescription,
                 RequiresActionName,
@@ -124,7 +126,7 @@ namespace RogueCustomsDungeonEditor.Controls
                 {
                     lbActions.Items.Add(new ListBoxItem
                     {
-                        Text = frmActionEdit.ActionToSave.Name,
+                        Text = frmActionEdit.ActionToSave.Id,
                         Tag = frmActionEdit.ActionToSave
                     });
                 }

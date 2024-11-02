@@ -83,6 +83,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblAIConditionWarning = new Button();
             txtActionAICondition = new TextBox();
             label13 = new Label();
+            fklblActionNameLocale = new Button();
+            txtActionName = new TextBox();
+            label14 = new Label();
             gbSelectionCriteria.SuspendLayout();
             pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
@@ -417,7 +420,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblActionDescriptionLocale.FlatStyle = FlatStyle.Flat;
             fklblActionDescriptionLocale.Image = (Image)resources.GetObject("fklblActionDescriptionLocale.Image");
             fklblActionDescriptionLocale.ImageAlign = ContentAlignment.TopLeft;
-            fklblActionDescriptionLocale.Location = new Point(476, 334);
+            fklblActionDescriptionLocale.Location = new Point(476, 420);
             fklblActionDescriptionLocale.Name = "fklblActionDescriptionLocale";
             fklblActionDescriptionLocale.Size = new Size(467, 42);
             fklblActionDescriptionLocale.TabIndex = 15;
@@ -429,7 +432,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionDescription
             // 
-            txtActionDescription.Location = new Point(476, 305);
+            txtActionDescription.Location = new Point(476, 391);
             txtActionDescription.Name = "txtActionDescription";
             txtActionDescription.Size = new Size(467, 23);
             txtActionDescription.TabIndex = 14;
@@ -438,7 +441,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(476, 287);
+            label6.Location = new Point(476, 373);
             label6.Name = "label6";
             label6.Size = new Size(67, 15);
             label6.TabIndex = 13;
@@ -451,7 +454,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblConditionWarning.FlatStyle = FlatStyle.Flat;
             fklblConditionWarning.Image = (Image)resources.GetObject("fklblConditionWarning.Image");
             fklblConditionWarning.ImageAlign = ContentAlignment.TopLeft;
-            fklblConditionWarning.Location = new Point(476, 428);
+            fklblConditionWarning.Location = new Point(3, 523);
             fklblConditionWarning.Name = "fklblConditionWarning";
             fklblConditionWarning.Size = new Size(464, 42);
             fklblConditionWarning.TabIndex = 24;
@@ -463,7 +466,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // txtActionCondition
             // 
-            txtActionCondition.Location = new Point(476, 399);
+            txtActionCondition.Location = new Point(3, 494);
             txtActionCondition.Name = "txtActionCondition";
             txtActionCondition.Size = new Size(464, 23);
             txtActionCondition.TabIndex = 23;
@@ -473,7 +476,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(476, 381);
+            label7.Location = new Point(3, 476);
             label7.Name = "label7";
             label7.Size = new Size(238, 15);
             label7.TabIndex = 22;
@@ -635,15 +638,52 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label13.AutoSize = true;
             label13.Location = new Point(476, 473);
             label13.Name = "label13";
-            label13.Size = new Size(288, 15);
+            label13.Size = new Size(297, 15);
             label13.TabIndex = 29;
-            label13.Text = "To be used by the AI, it must fulfill this condition first:";
+            label13.Text = "To be used by an NPC, it must fulfill this condition first:";
+            // 
+            // fklblActionNameLocale
+            // 
+            fklblActionNameLocale.Enabled = false;
+            fklblActionNameLocale.FlatAppearance.BorderSize = 0;
+            fklblActionNameLocale.FlatStyle = FlatStyle.Flat;
+            fklblActionNameLocale.Image = (Image)resources.GetObject("fklblActionNameLocale.Image");
+            fklblActionNameLocale.ImageAlign = ContentAlignment.TopLeft;
+            fklblActionNameLocale.Location = new Point(476, 328);
+            fklblActionNameLocale.Name = "fklblActionNameLocale";
+            fklblActionNameLocale.Size = new Size(467, 42);
+            fklblActionNameLocale.TabIndex = 34;
+            fklblActionNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
+            fklblActionNameLocale.TextAlign = ContentAlignment.MiddleLeft;
+            fklblActionNameLocale.TextImageRelation = TextImageRelation.ImageBeforeText;
+            fklblActionNameLocale.UseVisualStyleBackColor = true;
+            fklblActionNameLocale.Visible = false;
+            // 
+            // txtActionName
+            // 
+            txtActionName.Location = new Point(476, 299);
+            txtActionName.Name = "txtActionName";
+            txtActionName.Size = new Size(467, 23);
+            txtActionName.TabIndex = 33;
+            txtActionName.TextChanged += txtActionName_TextChanged;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(476, 281);
+            label14.Name = "label14";
+            label14.Size = new Size(39, 15);
+            label14.TabIndex = 32;
+            label14.Text = "Name";
             // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(950, 620);
+            Controls.Add(fklblActionNameLocale);
+            Controls.Add(txtActionName);
+            Controls.Add(label14);
             Controls.Add(fklblAIConditionWarning);
             Controls.Add(txtActionAICondition);
             Controls.Add(label13);
@@ -742,5 +782,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Button fklblAIConditionWarning;
         private TextBox txtActionAICondition;
         private Label label13;
+        private Button fklblActionNameLocale;
+        private TextBox txtActionName;
+        private Label label14;
     }
 }

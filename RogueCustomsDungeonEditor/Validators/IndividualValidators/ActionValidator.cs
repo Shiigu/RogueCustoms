@@ -29,7 +29,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var name = action.Name;
             var ownerName = owner != null ? owner.ClassId : "The Floor Type";
 
-            if(!string.IsNullOrWhiteSpace(action.UseCondition))
+            if (string.IsNullOrWhiteSpace(action.Id))
+            {
+                messages.AddError($"Action {name ?? "NULL"} does not have an Id.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(action.UseCondition))
             {
                 if(action.UseCondition.IsBooleanExpression() && action.UseCondition.TestBooleanExpression(out _))
                     messages.AddWarning($"Action {name ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");

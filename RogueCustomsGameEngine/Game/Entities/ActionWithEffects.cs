@@ -29,7 +29,8 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public sealed class ActionWithEffects
     {
-        public string ActionId { get; set; }                       // Only to be used for action selections
+        public string Id { get; set; }
+        public string SelectionId { get; set; }
         public string NameLocaleKey { get; set; }
         public string Name { get; set; }
         public string DescriptionLocaleKey { get; set; }
@@ -63,6 +64,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private ActionWithEffects(ActionWithEffectsInfo info)
         {
+            Id = info.Id;
             Name = info.Name;
             NameLocaleKey = info.Name;
             Description = info.Description;
@@ -464,6 +466,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return new ActionWithEffects
             {
+                Id = Id,
                 Name = Name,
                 NameLocaleKey = NameLocaleKey,
                 Description = Description,

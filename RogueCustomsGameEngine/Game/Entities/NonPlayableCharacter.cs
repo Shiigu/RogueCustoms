@@ -532,7 +532,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             base.SetActionIds();
             for (int i = 0; i < OnInteracted.Count; i++)
-                OnInteracted[i].ActionId = $"{Id}_CI{i}";
+                OnInteracted[i].SelectionId = $"{Id}_{ClassId}_CI{i}_{OwnOnAttack[i].Id}";
         }
     }
     #pragma warning restore S2259 // Null Pointers should not be dereferenced

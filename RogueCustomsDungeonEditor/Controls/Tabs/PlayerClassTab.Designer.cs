@@ -95,10 +95,8 @@
             saePlayerOnDeath.EffectParamData = null;
             saePlayerOnDeath.Location = new System.Drawing.Point(2, 499);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
-            saePlayerOnDeath.PlaceholderActionName = "Death";
-            saePlayerOnDeath.RequiresActionName = false;
+            saePlayerOnDeath.PlaceholderActionId = "Death";
             saePlayerOnDeath.RequiresCondition = false;
-            saePlayerOnDeath.RequiresDescription = false;
             saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
             saePlayerOnDeath.SourceDescription = "The player";
             saePlayerOnDeath.TabIndex = 152;
@@ -119,10 +117,8 @@
             saePlayerOnAttacked.EffectParamData = null;
             saePlayerOnAttacked.Location = new System.Drawing.Point(2, 461);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
-            saePlayerOnAttacked.PlaceholderActionName = "Interacted";
-            saePlayerOnAttacked.RequiresActionName = false;
+            saePlayerOnAttacked.PlaceholderActionId = "Interacted";
             saePlayerOnAttacked.RequiresCondition = false;
-            saePlayerOnAttacked.RequiresDescription = false;
             saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
             saePlayerOnAttacked.SourceDescription = "The player";
             saePlayerOnAttacked.TabIndex = 151;
@@ -143,10 +139,8 @@
             saePlayerOnTurnStart.EffectParamData = null;
             saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 323);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
-            saePlayerOnTurnStart.PlaceholderActionName = "TurnStart";
-            saePlayerOnTurnStart.RequiresActionName = false;
+            saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
             saePlayerOnTurnStart.RequiresCondition = false;
-            saePlayerOnTurnStart.RequiresDescription = false;
             saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
             saePlayerOnTurnStart.SourceDescription = "The player";
             saePlayerOnTurnStart.TabIndex = 150;
@@ -166,6 +160,7 @@
             maePlayerOnAttack.Location = new System.Drawing.Point(2, 361);
             maePlayerOnAttack.Name = "maePlayerOnAttack";
             maePlayerOnAttack.PlaceholderActionName = null;
+            maePlayerOnAttack.RequiresActionId = true;
             maePlayerOnAttack.RequiresActionName = true;
             maePlayerOnAttack.RequiresCondition = true;
             maePlayerOnAttack.RequiresDescription = true;

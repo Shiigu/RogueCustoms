@@ -224,10 +224,8 @@
             saeOnStood.EffectParamData = null;
             saeOnStood.Location = new System.Drawing.Point(372, 121);
             saeOnStood.Name = "saeOnStood";
-            saeOnStood.PlaceholderActionName = "OnTileStand";
-            saeOnStood.RequiresActionName = false;
+            saeOnStood.PlaceholderActionId = "OnTileStand";
             saeOnStood.RequiresCondition = true;
-            saeOnStood.RequiresDescription = false;
             saeOnStood.Size = new System.Drawing.Size(337, 32);
             saeOnStood.SourceDescription = "None (Don't use)";
             saeOnStood.TabIndex = 240;

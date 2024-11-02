@@ -6,6 +6,7 @@ using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V13;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.V14;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
@@ -1130,6 +1131,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 {
                     trap.MinimumInFirstTurn = 0;
                 }
+                if (floorGroup.OnFloorStart != null)
+                    floorGroup.OnFloorStart.Id = floorGroup.OnFloorStart.Name;
             }
 
             V15Dungeon.ElementInfos = new()
@@ -1159,10 +1162,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 foreach (var action in playerClass.OnAttack)
                 {
                     action.UpdateDealDamageStepsToV15();
+                    action.Id = action.Name;
                 }
                 playerClass.OnAttacked?.UpdateDealDamageStepsToV15();
+                if (playerClass.OnAttacked != null)
+                    playerClass.OnAttacked.Id = playerClass.OnAttacked.Name;
                 playerClass.OnDeath?.UpdateDealDamageStepsToV15();
+                if (playerClass.OnDeath != null)
+                    playerClass.OnDeath.Id = playerClass.OnDeath.Name;
                 playerClass.OnTurnStart?.UpdateDealDamageStepsToV15();
+                if (playerClass.OnTurnStart != null)
+                    playerClass.OnTurnStart.Id = playerClass.OnTurnStart.Name;
             }
 
             V15Dungeon.NPCs = new();
@@ -1177,15 +1187,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 foreach (var action in npc.OnAttack)
                 {
                     action.UpdateDealDamageStepsToV15();
+                    action.Id = action.Name;
                 }
                 foreach (var action in npc.OnInteracted)
                 {
                     action.UpdateDealDamageStepsToV15();
+                    action.Id = action.Name;
                 }
                 npc.OnAttacked?.UpdateDealDamageStepsToV15();
+                if (npc.OnAttacked != null)
+                    npc.OnAttacked.Id = npc.OnAttacked.Name;
                 npc.OnDeath?.UpdateDealDamageStepsToV15();
+                if (npc.OnDeath != null)
+                    npc.OnDeath.Id = npc.OnDeath.Name;
                 npc.OnTurnStart?.UpdateDealDamageStepsToV15();
+                if (npc.OnTurnStart != null)
+                    npc.OnTurnStart.Id = npc.OnTurnStart.Name;
                 npc.OnSpawn?.UpdateDealDamageStepsToV15();
+                if (npc.OnSpawn != null)
+                    npc.OnSpawn.Id = npc.OnSpawn.Name;
             }
 
             foreach (var item in V15Dungeon.Items)
@@ -1193,23 +1213,44 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 foreach (var action in item.OnAttack)
                 {
                     action.UpdateDealDamageStepsToV15();
+                    action.Id = action.Name;
                 }
                 item.OnAttacked?.UpdateDealDamageStepsToV15();
+                if (item.OnAttacked != null)
+                    item.OnAttacked.Id = item.OnAttacked.Name;
                 item.OnDeath?.UpdateDealDamageStepsToV15();
+                if (item.OnDeath != null)
+                    item.OnDeath.Id = item.OnDeath.Name;
                 item.OnTurnStart?.UpdateDealDamageStepsToV15();
+                if (item.OnTurnStart != null)
+                    item.OnTurnStart.Id = item.OnTurnStart.Name;
                 item.OnUse?.UpdateDealDamageStepsToV15();
+                if (item.OnUse != null)
+                    item.OnUse.Id = item.OnUse.Name;
             }
             foreach (var trap in V15Dungeon.Traps)
             {
                 trap.OnStepped?.UpdateDealDamageStepsToV15();
+                if (trap.OnStepped != null)
+                    trap.OnStepped.Id = trap.OnStepped.Name;
             }
             foreach (var alteredStatus in V15Dungeon.AlteredStatuses)
             {
                 alteredStatus.BeforeAttack?.UpdateDealDamageStepsToV15();
+                if (alteredStatus.BeforeAttack != null)
+                    alteredStatus.BeforeAttack.Id = alteredStatus.BeforeAttack.Name;
                 alteredStatus.OnAttacked?.UpdateDealDamageStepsToV15();
+                if (alteredStatus.OnAttacked != null)
+                    alteredStatus.OnAttacked.Id = alteredStatus.OnAttacked.Name;
                 alteredStatus.OnApply?.UpdateDealDamageStepsToV15();
+                if (alteredStatus.OnApply != null)
+                    alteredStatus.OnApply.Id = alteredStatus.OnApply.Name;
                 alteredStatus.OnTurnStart?.UpdateDealDamageStepsToV15();
+                if (alteredStatus.OnTurnStart != null)
+                    alteredStatus.OnTurnStart.Id = alteredStatus.OnTurnStart.Name;
                 alteredStatus.OnRemove?.UpdateDealDamageStepsToV15();
+                if (alteredStatus.OnRemove != null)
+                    alteredStatus.OnRemove.Id = alteredStatus.OnRemove.Name;
             }
 
             V15Dungeon.Version = "1.5";

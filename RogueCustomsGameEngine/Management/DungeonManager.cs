@@ -241,7 +241,7 @@ namespace RogueCustomsGameEngine.Management
         }
         public void PlayerAttackTargetWith(AttackInput input)
         {
-            ActiveDungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y);
+            ActiveDungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y, input.SourceType);
         }
         public void PlayerTakeStairs()
         {
