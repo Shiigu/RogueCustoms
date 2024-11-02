@@ -91,7 +91,7 @@
         "InternalName": "CriticalHitChance",
         "DisplayName": "Crit Chance",
         "Description": "Indicates the odds for the Attack to score a Critical Hit, if it lands.",
-        "ParameterType": "Odds",
+        "ParameterType": "Formula",
         "Default": "10",
         "ValidValues": [],
         "Required": true,
