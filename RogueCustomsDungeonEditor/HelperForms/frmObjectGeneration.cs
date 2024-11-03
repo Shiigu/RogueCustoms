@@ -44,6 +44,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     MinimumInFirstTurn = @object.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = @object.SimultaneousMaxForKindInFloor,
                     ChanceToPick = @object.ChanceToPick,
+                    SpawnCondition = @object.SpawnCondition,
                 });
             }
             TypeToUse = typeToUse;
@@ -114,7 +115,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ClassId = row.Cells["ClassId"].Value?.ToString(),
                             MinimumInFirstTurn = int.Parse(row.Cells["MinimumInFirstTurn"].Value?.ToString()),
                             SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString()),
-                            ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString())
+                            ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString()),
+                            SpawnCondition = row.Cells["SpawnCondition"].Value?.ToString()
                         };
                         objectList.Add(objectRow);
                     }
@@ -125,8 +127,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     var nameToDisplay = (TypeToUse == EntityTypeForForm.Item) ? "Item" : "Trap";
                     foreach (var @object in objectList)
                     {
-                        if (objectList.Count(o => o.ClassId.Equals(@object.ClassId)) > 1)
-                            errorMessages.Add($"There is more than one entry for {@object.ClassId}. Remove one of them.");
+                        if (objectList.Count(o => o.ClassId.Equals(@object.ClassId) && ((o.SpawnCondition == null && string.IsNullOrWhiteSpace(@object.SpawnCondition)) || !string.IsNullOrWhiteSpace(o.SpawnCondition) && o.SpawnCondition.Equals(@object.SpawnCondition))) > 1)
+                            errorMessages.Add($"There is more than one entry (with the same Spawn Condition) for {@object.ClassId}. Remove one of them.");
 
                         if (string.IsNullOrWhiteSpace(@object.ClassId))
                         {
@@ -146,6 +148,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 errorMessages.Add($"{@object.ClassId}'s Maximum must be an integer number higher than 0.");
                             if (@object.MinimumInFirstTurn > @object.SimultaneousMaxForKindInFloor)
                                 errorMessages.Add($"{@object.ClassId}'s Minimum Spawns are higher than its maximum spawns.");
+                            if (!string.IsNullOrWhiteSpace(@object.SpawnCondition) && !@object.SpawnCondition.IsBooleanExpression())
+                                errorMessages.Add($"{@object.ClassId}'s Spawn Condition is not a valid boolean expression.");
                         }
                     }
                     var totalMinimumGuaranteedSpawns = objectList.Sum(o => o.MinimumInFirstTurn);
@@ -228,7 +232,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             oddsMessage.AppendLine($"     - {possibleObject.ClassId}: {odds:0.####}% (Guaranteed {possibleObject.MinimumInFirstTurn})");
                     }
 
-                    oddsMessage.AppendLine($"\n(Assuming the maximum allowed for any {ObjectText} hasn't been reached)");
+                    oddsMessage.AppendLine($"\n(Assuming the maximum allowed for any {ObjectText} hasn't been reached, and that the Spawn Condition is empty or fulfilled)");
                 }
                 else
                 {

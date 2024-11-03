@@ -43,6 +43,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             MinimumInFirstTurn = new DataGridViewTextBoxColumn();
             SimultaneousMaxForKindInFloor = new DataGridViewTextBoxColumn();
             ChanceToPick = new DataGridViewTextBoxColumn();
+            SpawnCondition = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)nudMaxInFloor).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudMinInFloor).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvObjectTable).BeginInit();
@@ -50,7 +51,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // nudMaxInFloor
             // 
-            nudMaxInFloor.Location = new Point(350, 260);
+            nudMaxInFloor.Location = new Point(439, 262);
             nudMaxInFloor.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudMaxInFloor.Name = "nudMaxInFloor";
             nudMaxInFloor.Size = new Size(60, 23);
@@ -58,7 +59,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(191, 289);
+            btnCancel.Location = new Point(239, 289);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(111, 23);
             btnCancel.TabIndex = 40;
@@ -68,7 +69,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(11, 289);
+            btnSave.Location = new Point(59, 289);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(174, 23);
             btnSave.TabIndex = 39;
@@ -78,7 +79,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // nudMinInFloor
             // 
-            nudMinInFloor.Location = new Point(257, 260);
+            nudMinInFloor.Location = new Point(346, 262);
             nudMinInFloor.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudMinInFloor.Name = "nudMinInFloor";
             nudMinInFloor.Size = new Size(60, 23);
@@ -87,7 +88,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(12, 263);
+            label14.Location = new Point(101, 265);
             label14.Name = "label14";
             label14.Size = new Size(335, 15);
             label14.TabIndex = 37;
@@ -96,11 +97,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // dgvObjectTable
             // 
             dgvObjectTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvObjectTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, ChanceToPick });
+            dgvObjectTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, ChanceToPick, SpawnCondition });
             dgvObjectTable.Location = new Point(12, 45);
             dgvObjectTable.Name = "dgvObjectTable";
             dgvObjectTable.RowTemplate.Height = 25;
-            dgvObjectTable.Size = new Size(477, 209);
+            dgvObjectTable.Size = new Size(546, 209);
             dgvObjectTable.TabIndex = 36;
             dgvObjectTable.Leave += dgvObjectTable_Leave;
             // 
@@ -116,7 +117,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCheckGenerationOdds
             // 
-            btnCheckGenerationOdds.Location = new Point(315, 289);
+            btnCheckGenerationOdds.Location = new Point(363, 289);
             btnCheckGenerationOdds.Name = "btnCheckGenerationOdds";
             btnCheckGenerationOdds.Size = new Size(174, 23);
             btnCheckGenerationOdds.TabIndex = 42;
@@ -154,11 +155,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ChanceToPick.Name = "ChanceToPick";
             ChanceToPick.ToolTipText = "Must be a number between 1 and 100";
             // 
+            // SpawnCondition
+            // 
+            SpawnCondition.DataPropertyName = "SpawnCondition";
+            SpawnCondition.HeaderText = "Spawns only if...";
+            SpawnCondition.Name = "SpawnCondition";
+            // 
             // frmObjectGeneration
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(501, 318);
+            ClientSize = new Size(564, 318);
             Controls.Add(btnCheckGenerationOdds);
             Controls.Add(lblFloorGroupTitle);
             Controls.Add(nudMaxInFloor);
@@ -191,5 +198,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private DataGridViewTextBoxColumn MinimumInFirstTurn;
         private DataGridViewTextBoxColumn SimultaneousMaxForKindInFloor;
         private DataGridViewTextBoxColumn ChanceToPick;
+        private DataGridViewTextBoxColumn SpawnCondition;
     }
 }

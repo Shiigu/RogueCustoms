@@ -68,9 +68,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"{possibleMonster.ClassId} is in the PossibleMonsters list but it's not an NPC.");
                     if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel
                                                         && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn
-                                                        && pm.CanSpawnAfterFirstTurn == possibleMonster.CanSpawnAfterFirstTurn) > 1)
+                                                        && pm.CanSpawnAfterFirstTurn == possibleMonster.CanSpawnAfterFirstTurn
+                                                        && pm.SpawnCondition.Equals(possibleMonster.SpawnCondition, StringComparison.InvariantCultureIgnoreCase)) > 1)
                     {
-                        messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate PossibleMonster in the current Floor Type.");
+                        messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate Possible NPC in the current Floor Type.");
                     }
 
                     if (possibleMonster.ChanceToPick <= 0)
@@ -95,6 +96,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"{possibleMonster.ClassId}'s OverallMaxForKindIsFloor cannot be lower than its SimultaneousMaxForKindInFloor.");
                     if (!possibleMonster.CanSpawnOnFirstTurn && !possibleMonster.CanSpawnAfterFirstTurn)
                         messages.AddError($"{possibleMonster.ClassId}'s CanSpawnOnFirstTurn and CanSpawnAfterFirstTurn are both disabled.");
+                    if (!string.IsNullOrWhiteSpace(possibleMonster.SpawnCondition) && !possibleMonster.SpawnCondition.IsBooleanExpression())
+                        messages.AddError($"{possibleMonster.ClassId}'s Spawn Condition is not a valid boolean expression.");
                 }
                 var totalGuaranteedNPCFirstTurnSpawns = floorJson.PossibleMonsters.Sum(npc => npc.MinimumInFirstTurn);
                 if (totalGuaranteedNPCFirstTurnSpawns > floorJson.SimultaneousMaxMonstersInFloor)
@@ -120,7 +123,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
                         messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
-                    if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId)) > 1)
+                    if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId) && pm.SpawnCondition.Equals(possibleItem.SpawnCondition, StringComparison.InvariantCultureIgnoreCase)) > 1)
                         messages.AddError($"{possibleItem.ClassId} shows up as a duplicate PossibleItem in the current Floor Type.");
                     if (possibleItem.ChanceToPick <= 0)
                         messages.AddError($"{possibleItem.ClassId}'s ChanceToPick must be an integer number higher than 0.");
@@ -130,6 +133,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"{possibleItem.ClassId}'s SimultaneousMaxForKindInFloor must be an integer number higher than 0.");
                     if (possibleItem.MinimumInFirstTurn > possibleItem.SimultaneousMaxForKindInFloor)
                         messages.AddError($"{possibleItem.ClassId}'s Minimum Spawns are higher than its maximum spawns.");
+                    if (!string.IsNullOrWhiteSpace(possibleItem.SpawnCondition) && !possibleItem.SpawnCondition.IsBooleanExpression())
+                        messages.AddError($"{possibleItem.ClassId}'s Spawn Condition is not a valid boolean expression.");
                 }
                 var totalGuaranteedItemFirstTurnSpawns = floorJson.PossibleItems.Sum(i => i.MinimumInFirstTurn);
                 if (totalGuaranteedItemFirstTurnSpawns > floorJson.MaxItemsInFloor)

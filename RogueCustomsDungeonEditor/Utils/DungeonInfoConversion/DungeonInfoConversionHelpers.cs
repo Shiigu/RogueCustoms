@@ -1122,14 +1122,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 foreach (var npc in floorGroup.PossibleMonsters)
                 {
                     npc.MinimumInFirstTurn = 0;
+                    npc.SpawnCondition = "";
                 }
                 foreach (var item in floorGroup.PossibleItems)
                 {
                     item.MinimumInFirstTurn = 0;
+                    item.SpawnCondition = "";
                 }
                 foreach (var trap in floorGroup.PossibleTraps)
                 {
                     trap.MinimumInFirstTurn = 0;
+                    trap.SpawnCondition = "";
                 }
                 if (floorGroup.OnFloorStart != null)
                     floorGroup.OnFloorStart.Id = floorGroup.OnFloorStart.Name;

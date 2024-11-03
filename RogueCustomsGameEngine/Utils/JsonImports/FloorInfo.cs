@@ -41,7 +41,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<FloorLayoutGenerationInfo> PossibleLayouts { get; set; }
         public List<SpecialTileInFloorInfo> PossibleSpecialTiles { get; set; }
         public KeyGenerationInfo PossibleKeys { get; set; }
-        public ActionWithEffectsInfo OnFloorStart { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnFloorStart { get; set; }
     }
 
     [Serializable]
@@ -60,6 +60,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int MinimumInFirstTurn { get; set; }
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
+        public string SpawnCondition { get; set; }
     }
 
     [Serializable]

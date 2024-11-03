@@ -47,6 +47,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ChanceToPick = npc.ChanceToPick,
                     CanSpawnOnFirstTurn = npc.CanSpawnOnFirstTurn,
                     CanSpawnAfterFirstTurn = npc.CanSpawnAfterFirstTurn,
+                    SpawnCondition = npc.SpawnCondition,
                 });
             }
             ValidNPCClasses = activeDungeon.NPCs.ConvertAll(npc => npc.Id);
@@ -91,7 +92,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             OverallMaxForKindInFloor = int.Parse(row.Cells["OverallMaxForKindInFloor"].Value?.ToString()),
                             ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString()),
                             CanSpawnOnFirstTurn = bool.Parse(row.Cells["CanSpawnOnFirstTurn"].Value?.ToString()),
-                            CanSpawnAfterFirstTurn = bool.Parse(row.Cells["CanSpawnAfterFirstTurn"].Value?.ToString())
+                            CanSpawnAfterFirstTurn = bool.Parse(row.Cells["CanSpawnAfterFirstTurn"].Value?.ToString()),
+                            SpawnCondition = row.Cells["SpawnCondition"].Value?.ToString()
                         };
                         npcList.Add(npcRow);
                     }
@@ -105,7 +107,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         npc.MinLevel,
                         npc.MaxLevel,
                         npc.CanSpawnOnFirstTurn,
-                        npc.CanSpawnAfterFirstTurn
+                        npc.CanSpawnAfterFirstTurn,
+                        npc.SpawnCondition
                     }
                     );
                     foreach (var group in groupedConditionNpcs)
@@ -147,6 +150,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 errorMessages.Add($"{npc.ClassId}'s Overall Limit cannot be lower than its Simultaneous Limit.");
                             if (!npc.CanSpawnOnFirstTurn && !npc.CanSpawnAfterFirstTurn)
                                 errorMessages.Add($"{npc.ClassId}'s Can Spawn On First Turn and Can Spawn After First Turn are both disabled.");
+                            if (!string.IsNullOrWhiteSpace(npc.SpawnCondition) && !npc.SpawnCondition.IsBooleanExpression())
+                                errorMessages.Add($"{npc.ClassId}'s Spawn Condition is not a valid boolean expression.");
                         }
                     }
 
@@ -261,7 +266,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
 
                 if (npcsThatSpawnOnTheFirstTurn.Any() || npcsThatSpawnAfterTheFirstTurn.Any())
-                    oddsMessage.AppendLine("\n(Assuming the simultaneous or maximum allowed for any NPC hasn't been reached)");
+                    oddsMessage.AppendLine("\n(Assuming the simultaneous or maximum allowed for any NPC hasn't been reached, and that the Spawn Condition is empty or fulfilled)");
 
                 MessageBox.Show(oddsMessage.ToString(), "NPC Generation for Floor", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

@@ -174,7 +174,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     SimultaneousMaxForKindInFloor = pmi.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pmi.ChanceToPick,
                     CanSpawnOnFirstTurn = pmi.CanSpawnOnFirstTurn,
-                    CanSpawnAfterFirstTurn = pmi.CanSpawnAfterFirstTurn
+                    CanSpawnAfterFirstTurn = pmi.CanSpawnAfterFirstTurn,
+                    SpawnCondition = pmi.SpawnCondition
                 });
             });
             PossibleItems = new List<ClassInFloor>();
@@ -186,7 +187,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     Class = classForItem,
                     MinimumInFirstTurn = pii.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pii.SimultaneousMaxForKindInFloor,
-                    ChanceToPick = pii.ChanceToPick
+                    ChanceToPick = pii.ChanceToPick,
+                    SpawnCondition = pii.SpawnCondition
                 });
             });
             PossibleTraps = new List<ClassInFloor>();
@@ -198,7 +200,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     Class = classForTrap,
                     MinimumInFirstTurn = pti.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pti.SimultaneousMaxForKindInFloor,
-                    ChanceToPick = pti.ChanceToPick
+                    ChanceToPick = pti.ChanceToPick,
+                    SpawnCondition = pti.SpawnCondition
                 });
             });
         }
@@ -225,6 +228,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int MinimumInFirstTurn { get; set; }
         public int SimultaneousMaxForKindInFloor { get; set; }
         public int ChanceToPick { get; set; }
+        public string SpawnCondition { get; set; }
     }
 
     [Serializable]

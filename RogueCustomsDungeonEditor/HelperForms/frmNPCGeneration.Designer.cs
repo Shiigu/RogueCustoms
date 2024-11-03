@@ -53,6 +53,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ChanceToPick = new DataGridViewTextBoxColumn();
             CanSpawnOnFirstTurn = new DataGridViewCheckBoxColumn();
             CanSpawnAfterFirstTurn = new DataGridViewCheckBoxColumn();
+            SpawnCondition = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvNPCTable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTurnsPerNPCGeneration).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudSimultaneousMaxNPCs).BeginInit();
@@ -72,7 +73,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // dgvNPCTable
             // 
             dgvNPCTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNPCTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinLevel, MaxLevel, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, OverallMaxForKindInFloor, ChanceToPick, CanSpawnOnFirstTurn, CanSpawnAfterFirstTurn });
+            dgvNPCTable.Columns.AddRange(new DataGridViewColumn[] { ClassId, MinLevel, MaxLevel, MinimumInFirstTurn, SimultaneousMaxForKindInFloor, OverallMaxForKindInFloor, ChanceToPick, CanSpawnOnFirstTurn, CanSpawnAfterFirstTurn, SpawnCondition });
             dgvNPCTable.Location = new Point(3, 46);
             dgvNPCTable.Name = "dgvNPCTable";
             dgvNPCTable.RowTemplate.Height = 25;
@@ -238,6 +239,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             CanSpawnAfterFirstTurn.HeaderText = "Spawns after First Turn?";
             CanSpawnAfterFirstTurn.Name = "CanSpawnAfterFirstTurn";
             // 
+            // SpawnCondition
+            // 
+            SpawnCondition.DataPropertyName = "SpawnCondition";
+            SpawnCondition.HeaderText = "Spawns only if...";
+            SpawnCondition.Name = "SpawnCondition";
+            // 
             // frmNPCGeneration
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -291,5 +298,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private DataGridViewTextBoxColumn ChanceToPick;
         private DataGridViewCheckBoxColumn CanSpawnOnFirstTurn;
         private DataGridViewCheckBoxColumn CanSpawnAfterFirstTurn;
+        private DataGridViewTextBoxColumn SpawnCondition;
     }
 }
