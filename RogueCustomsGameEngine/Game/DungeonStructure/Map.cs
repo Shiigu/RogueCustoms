@@ -1237,6 +1237,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (!pm.CanSpawnAfterFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
                 var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
+                if (!string.IsNullOrWhiteSpace(pm.SpawnCondition))
+                {
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pm.SpawnCondition, Player, Player, Player);
+                    if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
+                }
                 usableNPCGenerators.Add(pm);
             });
             var pickedGenerator = usableNPCGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
@@ -1254,7 +1259,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             List<ClassInFloor> usableItemGenerators = new();
             FloorConfigurationToUse.PossibleItems.ForEach(pi =>
             {
-                if (pi.OverallMaxForKindInFloor > 0 && pi.TotalGeneratedInFloor >= pi.OverallMaxForKindInFloor) return;
+                if (pi.SimultaneousMaxForKindInFloor > 0 && pi.TotalGeneratedInFloor >= pi.SimultaneousMaxForKindInFloor) return;
+                if (!string.IsNullOrWhiteSpace(pi.SpawnCondition))
+                {
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pi.SpawnCondition, Player, Player, Player);
+                    if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
+                }
                 usableItemGenerators.Add(pi);
             });
             var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
@@ -1269,7 +1279,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             List<ClassInFloor> usableTrapGenerators = new();
             FloorConfigurationToUse.PossibleTraps.ForEach(pt =>
             {
-                if (pt.OverallMaxForKindInFloor > 0 && pt.TotalGeneratedInFloor >= pt.OverallMaxForKindInFloor) return;
+                if (pt.SimultaneousMaxForKindInFloor > 0 && pt.TotalGeneratedInFloor >= pt.SimultaneousMaxForKindInFloor) return;
+                if (!string.IsNullOrWhiteSpace(pt.SpawnCondition))
+                {
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pt.SpawnCondition, Player, Player, Player);
+                    if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
+                }
                 usableTrapGenerators.Add(pt);
             });
             var pickedGenerator = usableTrapGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);

@@ -20,11 +20,11 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanGainExperience { get; set; }
         public string ExperiencePayoutFormula { get; set; }
         public string ExperienceToLevelUpFormula { get; set; }
-        public ActionWithEffectsInfo OnTurnStart { get; set; } = new ActionWithEffectsInfo();
-        public List<ActionWithEffectsInfo> OnAttack { get; set; } = new List<ActionWithEffectsInfo>();
-        public ActionWithEffectsInfo OnAttacked { get; set; } = new ActionWithEffectsInfo();
-        public ActionWithEffectsInfo OnDeath { get; set; } = new ActionWithEffectsInfo();
-        public ActionWithEffectsInfo OnLevelUp { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnTurnStart { get; set; }
+        public List<ActionWithEffectsInfo> OnAttack { get; set; }
+        public ActionWithEffectsInfo OnAttacked { get; set; }
+        public ActionWithEffectsInfo OnDeath { get; set; }
+        public ActionWithEffectsInfo OnLevelUp { get; set; }
     }
 
     [Serializable]

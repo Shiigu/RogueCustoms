@@ -1091,9 +1091,19 @@ namespace RogueCustomsDungeonEditor.Utils
 
         public static void PruneNullActions(this DungeonInfo dungeonInfo)
         {
+            foreach (var tileType in dungeonInfo.TileTypeInfos.Where(tti => tti.OnStood.IsNullOrEmpty()))
+            {
+                tileType.OnStood = null;
+            }
+
             foreach (var floorInfo in dungeonInfo.FloorInfos.Where(floorInfo => floorInfo.OnFloorStart.IsNullOrEmpty()))
             {
                 floorInfo.OnFloorStart = null;
+            }
+
+            foreach (var element in dungeonInfo.ElementInfos.Where(e => e.OnAfterAttack.IsNullOrEmpty()))
+            {
+                element.OnAfterAttack = null;
             }
 
             foreach (var playerClass in dungeonInfo.PlayerClasses)
@@ -1106,6 +1116,8 @@ namespace RogueCustomsDungeonEditor.Utils
                     playerClass.OnAttacked = null;
                 if (playerClass.OnDeath.IsNullOrEmpty())
                     playerClass.OnDeath = null;
+                if (playerClass.OnLevelUp.IsNullOrEmpty())
+                    playerClass.OnLevelUp = null;
             }
 
             foreach (var npc in dungeonInfo.NPCs)
@@ -1121,6 +1133,8 @@ namespace RogueCustomsDungeonEditor.Utils
                     npc.OnAttacked = null;
                 if (npc.OnDeath.IsNullOrEmpty())
                     npc.OnDeath = null;
+                if (npc.OnLevelUp.IsNullOrEmpty())
+                    npc.OnLevelUp = null;
             }
 
             foreach (var item in dungeonInfo.Items)
