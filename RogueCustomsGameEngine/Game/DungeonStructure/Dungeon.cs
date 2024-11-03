@@ -36,6 +36,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
         public bool IsDebugMode { get; set; }
+        public List<ActionWithEffects> Scripts { get; private set; }
 
         #region From JSON
         public string Name { get; set; }
@@ -85,6 +86,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
             Factions = new List<Faction>();
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
+            Scripts = new();
+            dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s)));
             MapFactions();
             CurrentFloorLevel = 1;
             PlayerCharacter = null;

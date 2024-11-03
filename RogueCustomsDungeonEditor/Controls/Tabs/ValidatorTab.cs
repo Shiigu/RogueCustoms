@@ -109,6 +109,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     AddValidationResultNode($"Altered Status {Id}", ValidationMessages);
                 }
 
+                foreach (var (Id, ValidationMessages) in dungeonValidator.ScriptValidationMessages)
+                {
+                    AddValidationResultNode($"Script {Id}", ValidationMessages);
+                }
+
                 if (PassedValidation)
                     MessageBox.Show($"This Dungeon has passed Validation. You can save and play with it, assured no known game-breaking bugs will happen.\nCheck Validation Results for more info.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else

@@ -830,6 +830,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
+
+        public static bool CallScript(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+
+            var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Attempted to call {paramsObject.ScriptId} when it's not a Script.");
+                        
+            var clonedScript = script.Clone();
+            clonedScript.User = This;
+            clonedScript.Do(Source, Target, false);
+
+            return true;
+        }
     }
     #pragma warning restore S2259 // Null Pointers should not be dereferenced
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

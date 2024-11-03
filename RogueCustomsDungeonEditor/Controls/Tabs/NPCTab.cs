@@ -169,11 +169,27 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.StartingInventory = sisNPCStartingInventory.Inventory;
 
                 LoadedNPC.OnSpawn = saeNPCOnSpawn.Action;
+                if (LoadedNPC.OnSpawn != null)
+                    LoadedNPC.OnSpawn.IsScript = false;
                 LoadedNPC.OnTurnStart = saeNPCOnTurnStart.Action;
+                if (LoadedNPC.OnTurnStart != null)
+                    LoadedNPC.OnTurnStart.IsScript = false;
                 LoadedNPC.OnAttack = maeNPCOnAttack.Actions;
+                foreach (var action in LoadedNPC.OnAttack)
+                {
+                    action.IsScript = false;
+                }
                 LoadedNPC.OnAttacked = saeNPCOnAttacked.Action;
+                if (LoadedNPC.OnAttacked != null)
+                    LoadedNPC.OnAttacked.IsScript = false;
                 LoadedNPC.OnInteracted = maeNPCOnInteracted.Actions;
+                foreach (var action in LoadedNPC.OnInteracted)
+                {
+                    action.IsScript = false;
+                }
                 LoadedNPC.OnDeath = saeNPCOnDeath.Action;
+                if (LoadedNPC.OnDeath != null)
+                    LoadedNPC.OnDeath.IsScript = false;
                 foreach (var aiType in NPCAITypeDisplayNames)
                 {
                     if (aiType.Value.Equals(cmbNPCAIType.Text))

@@ -87,6 +87,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
             TabsForNodeTypes[RogueTabTypes.Trap] = tpTrap;
             TabsForNodeTypes[RogueTabTypes.AlteredStatus] = tpAlteredStatus;
+            TabsForNodeTypes[RogueTabTypes.Scripts] = tpScripts;
             TabsForNodeTypes[RogueTabTypes.Validator] = tpValidation;
             tbTabs.TabPages.Clear();
 
@@ -135,6 +136,7 @@ namespace RogueCustomsDungeonEditor
             ItemTab.TabInfoChanged += ItemTab_TabInfoChanged;
             TrapTab.TabInfoChanged += TrapTab_TabInfoChanged;
             AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
+            ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -234,7 +236,7 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewElement = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
             }
             else
@@ -307,6 +309,13 @@ namespace RogueCustomsDungeonEditor
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.AlteredStatus;
+                        break;
+                    case "Scripts":
+                        tssDungeonElement.Visible = false;
+                        tsbAddElement.Visible = false;
+                        tsbSaveElement.Visible = true;
+                        tsbSaveElementAs.Visible = false;
+                        tsbDeleteElement.Visible = false;
                         break;
                 }
             }
@@ -472,6 +481,13 @@ namespace RogueCustomsDungeonEditor
                 alteredStatusRootNode.Nodes.Add(alteredStatusNode);
             }
             tvDungeonInfo.Nodes.Add(alteredStatusRootNode);
+
+            var scriptsInfoNode = new TreeNode("Scripts")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.Scripts, DungeonElement = null },
+                Name = "Scripts"
+            };
+            tvDungeonInfo.Nodes.Add(scriptsInfoNode);
 
             tvDungeonInfo.Focus();
         }
@@ -795,6 +811,8 @@ namespace RogueCustomsDungeonEditor
                         return SaveTrap();
                     case RogueTabTypes.AlteredStatus:
                         return SaveAlteredStatus();
+                    case RogueTabTypes.Scripts:
+                        return SaveScripts();
                     default:
                         return true;
                 }
@@ -1021,6 +1039,9 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Altered Status";
                     break;
+                case RogueTabTypes.Scripts:
+                    LoadScripts();
+                    break;
                 default:
                     break;
             }
@@ -1054,6 +1075,16 @@ namespace RogueCustomsDungeonEditor
                 tssDungeonElement.Visible = false;
                 tsbAddElement.Visible = false;
                 tsbSaveElement.Visible = false;
+                tsbSaveElementAs.Visible = false;
+                tsbDeleteElement.Visible = false;
+                tssElementValidate.Visible = true;
+                tsbValidateDungeon.Visible = true;
+            }
+            else if (tbTabs.SelectedTab.Text.Equals("Scripts"))
+            {
+                tssDungeonElement.Visible = true;
+                tsbAddElement.Visible = false;
+                tsbSaveElement.Visible = true;
                 tsbSaveElementAs.Visible = false;
                 tsbDeleteElement.Visible = false;
                 tssElementValidate.Visible = true;
@@ -2038,7 +2069,7 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
-        #region Stat
+        #region Element
 
         public void LoadAttackElementInfoFor(ElementInfo element)
         {
@@ -2785,6 +2816,50 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
+        #region Scripts
+
+        private void LoadScripts()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            ScriptsTab.LoadData(ActiveDungeon, ActiveDungeon.Scripts, EffectParamData);
+        }
+
+        private bool SaveScripts()
+        {
+            var validationErrors = ScriptsTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Scripts cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Scripts Information",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            ActiveDungeon.Scripts = ScriptsTab.LoadedScripts;
+            MessageBox.Show(
+                "Dungeon's Scripts has been successfully saved!",
+                "Save Scripts",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void ScriptsTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
         #region Validator
 
         private void ValidatorTab_OnValidationComplete(object? sender, EventArgs e)
@@ -2823,6 +2898,7 @@ namespace RogueCustomsDungeonEditor
         Item,
         Trap,
         AlteredStatus,
+        Scripts,
         Validator
     }
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

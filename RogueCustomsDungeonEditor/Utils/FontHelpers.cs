@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace RogueCustomsDungeonEditor.Utils
 {
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
-    public static class FontHelper
+    public static class FontHelpers
     {
         private static PrivateFontCollection PrivateFontCollection = new();
 

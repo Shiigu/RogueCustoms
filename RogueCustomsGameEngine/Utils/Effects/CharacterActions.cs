@@ -149,6 +149,71 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
+
+        public static bool LearnScript(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            if (paramsObject.Target is not Character c)
+                throw new ArgumentException($"Attempted to have {Source.Name} learn a Script when it's not a Character.");
+
+            var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Attempted to learn {paramsObject.ScriptId} when it's not a Script.");
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+
+            if (!c.OwnOnAttack.Any(oaa => oaa.IsScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
+            {
+                var clonedScript = script.Clone();
+                clonedScript.User = c;
+                clonedScript.Map = Map;
+                c.OwnOnAttack.Add(clonedScript);
+                c.SetActionIds();
+                if (c == Map.Player && paramsObject.InformThePlayer)
+                {
+                    Map.AppendMessage(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.StatBuff }
+                    });
+                }
+                Map.DisplayEvents.Add(($"{c.Name} learned a Script", events));
+                return true;
+            }
+            return false;
+        }
+
+        public static bool ForgetScript(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            if (paramsObject.Target is not Character c)
+                throw new ArgumentException($"Attempted to have {Source.Name} forget a Script when it's not a Character.");
+
+            var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Attempted to forget {paramsObject.ScriptId} when it's not a Script.");
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+
+            if (c.OwnOnAttack.Any(oaa => oaa.IsScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
+            {
+                c.OwnOnAttack.RemoveAll(oaa => oaa.IsScript && oaa.Id.Equals(script.Id));
+                c.SetActionIds();
+                if (c == Map.Player && paramsObject.InformThePlayer)
+                {
+                    Map.AppendMessage(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.StatNerf }
+                    });
+                }
+                Map.DisplayEvents.Add(($"{c.Name} forgot a Script", events));
+                return true;
+            }
+            return false;
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

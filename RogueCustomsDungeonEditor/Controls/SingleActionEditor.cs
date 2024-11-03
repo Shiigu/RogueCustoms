@@ -51,6 +51,9 @@ namespace RogueCustomsDungeonEditor.Controls
         public DungeonInfo Dungeon { get; set; }
         public string ActionTypeText { get; set; }
         public string ClassId { get; set; }
+        public bool RequiresActionId { get; set; }
+        public bool RequiresName { get; set; }
+        public bool RequiresDescription { get; set; }
         public bool RequiresCondition { get; set; }
         public TurnEndCriteria TurnEndCriteria { get; set; }
         public string PlaceholderActionId { get; set; }
@@ -62,7 +65,6 @@ namespace RogueCustomsDungeonEditor.Controls
         public string TargetDescription { get; set; }
 
         public event EventHandler ActionContentsChanged;
-
 
         public SingleActionEditor()
         {
@@ -83,10 +85,10 @@ namespace RogueCustomsDungeonEditor.Controls
                 Dungeon,
                 ClassId,
                 ActionTypeText,
-                false,
                 RequiresCondition,
-                false,
-                false,
+                RequiresActionId,
+                RequiresDescription,
+                RequiresName,
                 TurnEndCriteria,
                 PlaceholderActionId,
                 UsageCriteria,

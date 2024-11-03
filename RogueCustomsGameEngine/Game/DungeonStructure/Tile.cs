@@ -209,7 +209,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void StoodOn(Character stomper)
         {
             if (OnStood == null || !OnStood.ChecksCondition(stomper, stomper)) return;
-            var successfulEffects = OnStood?.Do(null, stomper, true);
+            var successfulEffects = OnStood?.Do(stomper, stomper, true);
             if (successfulEffects != null)
             {
                 stomper.Visible = true;

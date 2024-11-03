@@ -83,10 +83,20 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedAlteredStatus.CleansedByCleanseActions = chkAlteredStatusCleansedOnCleanseActions.Checked;
 
                 LoadedAlteredStatus.OnApply = saeAlteredStatusOnApply.Action;
+                if (LoadedAlteredStatus.OnApply != null)
+                    LoadedAlteredStatus.OnApply.IsScript = false;
                 LoadedAlteredStatus.OnTurnStart = saeAlteredStatusOnTurnStart.Action;
+                if (LoadedAlteredStatus.OnTurnStart != null)
+                    LoadedAlteredStatus.OnTurnStart.IsScript = false;
                 LoadedAlteredStatus.BeforeAttack = saeAlteredStatusBeforeAttack.Action;
+                if (LoadedAlteredStatus.BeforeAttack != null)
+                    LoadedAlteredStatus.BeforeAttack.IsScript = false;
                 LoadedAlteredStatus.OnAttacked = saeAlteredStatusOnAttacked.Action;
+                if (LoadedAlteredStatus.OnAttacked != null)
+                    LoadedAlteredStatus.OnAttacked.IsScript = false;
                 LoadedAlteredStatus.OnRemove = saeAlteredStatusOnRemove.Action;
+                if (LoadedAlteredStatus.OnRemove != null)
+                    LoadedAlteredStatus.OnRemove.IsScript = false;
             }
 
             return validationErrors;

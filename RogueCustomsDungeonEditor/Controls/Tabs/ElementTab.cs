@@ -76,6 +76,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     ExcessResistanceCausesHealDamage = chkExcessResistanceCausesHealDamage.Checked,
                     OnAfterAttack = saeElementOnAfterAttack.Action
                 };
+                if (LoadedElement.OnAfterAttack != null)
+                    LoadedElement.OnAfterAttack.IsScript = false;
             }
 
             return validationErrors;

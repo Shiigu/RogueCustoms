@@ -225,9 +225,12 @@
             saeOnStood.Location = new System.Drawing.Point(372, 121);
             saeOnStood.Name = "saeOnStood";
             saeOnStood.PlaceholderActionId = "OnTileStand";
+            saeOnStood.RequiresActionId = false;
             saeOnStood.RequiresCondition = true;
+            saeOnStood.RequiresDescription = false;
+            saeOnStood.RequiresName = false;
             saeOnStood.Size = new System.Drawing.Size(337, 32);
-            saeOnStood.SourceDescription = "None (Don't use)";
+            saeOnStood.SourceDescription = "The player (Don't use)";
             saeOnStood.TabIndex = 240;
             saeOnStood.TargetDescription = "The player";
             saeOnStood.ThisDescription = "None (Don't use)";

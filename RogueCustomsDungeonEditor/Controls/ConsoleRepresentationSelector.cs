@@ -91,9 +91,9 @@ namespace RogueCustomsDungeonEditor.Controls
             {
                 var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
                 var fontName = "PxPlus Tandy1K-II 200L";
-                if (FontHelper.LoadFont(fontPath))
+                if (FontHelpers.LoadFont(fontPath))
                 {
-                    var loadedFont = FontHelper.GetFontByName(fontName);
+                    var loadedFont = FontHelpers.GetFontByName(fontName);
                     if (loadedFont != null)
                     {
                         lblConsoleRepresentation.Font = new Font(loadedFont, 24f, FontStyle.Regular);
