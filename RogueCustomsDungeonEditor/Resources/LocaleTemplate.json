@@ -362,6 +362,14 @@
       "Value": "{CharacterName} has unlocked the {DoorName}!"
     },
     {
+      "Key": "CharacterLearnedScript",
+      "Value": "{CharacterName} has learned {ScriptName}!"
+    },
+    {
+      "Key": "CharacterForgotScript",
+      "Value": "{CharacterName} has forgotten {ScriptName}."
+    },
+    {
       "Key": "AttackCriticalHitText",
       "Value": "CRITICAL HIT!"
     },

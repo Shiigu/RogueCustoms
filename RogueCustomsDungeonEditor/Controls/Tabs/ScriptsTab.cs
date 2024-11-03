@@ -237,6 +237,13 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             tlpScripts.RemoveRow(selectedRowIndex);
             SelectRow(selectedRowIndex);
             selectedRowIndex = -1;
+            if (tlpScripts.RowCount == 0)
+            {
+                lblNoScripts.Visible = true;
+                tlpHeader.Visible = false;
+                tlpScripts.Visible = false;
+                tlpScriptsTab.Visible = false;
+            }
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 

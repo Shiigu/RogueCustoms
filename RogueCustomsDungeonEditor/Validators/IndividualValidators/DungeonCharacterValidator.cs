@@ -166,6 +166,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning("Character does not have OnDeath!");
             }
 
+            if (characterJson.OnLevelUp != null)
+            {
+                messages.AddRange(ActionValidator.Validate(characterAsInstance.OnLevelUp, dungeonJson, sampleDungeon));
+            }
+
             return messages;
         }
     }

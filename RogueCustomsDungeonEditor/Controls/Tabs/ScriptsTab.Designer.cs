@@ -45,7 +45,7 @@
             // lblNoScripts
             // 
             lblNoScripts.AutoSize = true;
-            lblNoScripts.Location = new System.Drawing.Point(287, 222);
+            lblNoScripts.Location = new System.Drawing.Point(287, 174);
             lblNoScripts.Name = "lblNoScripts";
             lblNoScripts.Size = new System.Drawing.Size(108, 15);
             lblNoScripts.TabIndex = 0;

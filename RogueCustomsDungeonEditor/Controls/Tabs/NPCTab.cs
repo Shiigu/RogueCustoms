@@ -103,6 +103,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
             SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
+            SetSingleActionEditorParams(saeNPCOnLevelUp, npc.Id, npc.OnLevelUp);
             cmbNPCAIType.Items.Clear();
             cmbNPCAIType.Text = "";
             foreach (var aiType in NPCAITypeDisplayNames)
@@ -190,6 +191,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.OnDeath = saeNPCOnDeath.Action;
                 if (LoadedNPC.OnDeath != null)
                     LoadedNPC.OnDeath.IsScript = false;
+                LoadedNPC.OnLevelUp = saeNPCOnLevelUp.Action;
+                if (LoadedNPC.OnLevelUp != null)
+                    LoadedNPC.OnLevelUp.IsScript = false;
                 foreach (var aiType in NPCAITypeDisplayNames)
                 {
                     if (aiType.Value.Equals(cmbNPCAIType.Text))

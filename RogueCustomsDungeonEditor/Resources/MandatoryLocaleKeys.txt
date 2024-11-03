@@ -88,6 +88,8 @@ CharacterCreatedAnNPC
 CharacterRevivedAnNPC
 CharacterBumpedDoor
 CharacterUnlockedDoor
+CharacterLearnedScript
+CharacterForgotScript
 StairsGotRevealed
 KeyDescription
 DoorDescription
