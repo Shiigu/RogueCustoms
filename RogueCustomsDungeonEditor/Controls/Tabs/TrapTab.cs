@@ -79,6 +79,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedTrap.Power = txtTrapPower.Text;
 
                 LoadedTrap.OnStepped = saeTrapOnStepped.Action;
+                if (LoadedTrap.OnStepped != null)
+                    LoadedTrap.OnStepped.IsScript = false;
             }
 
             return validationErrors;

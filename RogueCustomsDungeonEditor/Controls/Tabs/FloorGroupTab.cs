@@ -157,6 +157,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     PossibleSpecialTiles = specialGenerationInfo,
                     PossibleKeys = keyTypes
                 };
+                if (LoadedFloorGroup.OnFloorStart != null)
+                    LoadedFloorGroup.OnFloorStart.IsScript = false;
             }
 
             return validationErrors;

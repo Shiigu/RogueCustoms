@@ -31,6 +31,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public string Id { get; set; }
         public string SelectionId { get; set; }
+        public bool IsScript { get; set; }
         public string NameLocaleKey { get; set; }
         public string Name { get; set; }
         public string DescriptionLocaleKey { get; set; }
@@ -69,6 +70,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             NameLocaleKey = info.Name;
             Description = info.Description;
             DescriptionLocaleKey = info.Description;
+            IsScript = info.IsScript;
             MinimumRange = info.MinimumRange;
             MaximumRange = info.MaximumRange;
             CooldownBetweenUses = info.CooldownBetweenUses;
@@ -87,7 +89,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public static ActionWithEffects Create(ActionWithEffectsInfo info)
         {
-            return info != null && !string.IsNullOrWhiteSpace(info.Name) ? new ActionWithEffects(info) : null;
+            return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info) : null;
         }
 
         public List<string> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
@@ -471,6 +473,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 NameLocaleKey = NameLocaleKey,
                 Description = Description,
                 DescriptionLocaleKey = DescriptionLocaleKey,
+                IsScript = IsScript,
                 MinimumRange = MinimumRange,
                 MaximumRange = MaximumRange,
                 CooldownBetweenUses = CooldownBetweenUses,

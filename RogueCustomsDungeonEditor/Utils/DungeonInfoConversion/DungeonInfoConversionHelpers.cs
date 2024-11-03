@@ -1253,6 +1253,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                     alteredStatus.OnRemove.Id = alteredStatus.OnRemove.Name;
             }
 
+            V15Dungeon.Scripts = new();
+
             V15Dungeon.Version = "1.5";
             return V15Dungeon;
         }

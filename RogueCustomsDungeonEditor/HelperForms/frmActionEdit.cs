@@ -66,12 +66,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ClassId = classId;
             if (actionToSave.IsNullOrEmpty())
                 this.Text = "Action Editor - [New Action]";
-            else
+            else if (!string.IsNullOrWhiteSpace(actionToSave.Name))
                 this.Text = $"Action Editor - [{actionToSave.Name}]";
+            else if (!string.IsNullOrWhiteSpace(actionToSave.Id))
+                this.Text = $"Action Editor - [{actionToSave.Id}]";
             if (!string.IsNullOrWhiteSpace(ClassId))
                 lblTitle.Text = $"Edit {actionTypeText} for {ClassId}";
             else
                 lblTitle.Text = $"Edit {actionTypeText} for Floor Group";
+
             btnSaveAs.Enabled = requiresActionId;
             RequiresActionId = requiresActionId;
             RequiresDescription = requiresDescription;
@@ -535,7 +538,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(ActionToSave.Name))
+            if (string.IsNullOrWhiteSpace(ActionToSave.Id))
             {
                 btnSaveAs_Click(sender, e);
             }

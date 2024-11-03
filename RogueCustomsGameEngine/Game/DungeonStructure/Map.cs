@@ -60,6 +60,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int LatestPlayerRemainingMovement;
 
         private readonly Dungeon Dungeon;
+
+        public List<ActionWithEffects> Scripts => Dungeon.Scripts;
         public Locale Locale => Dungeon.LocaleToUse;
         public DungeonStatus DungeonStatus
         {
@@ -1195,7 +1197,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     ));
                 }
                 AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
-                FloorConfigurationToUse.OnFloorStart?.Do(null, Player, false);
+                FloorConfigurationToUse.OnFloorStart?.Do(Player, Player, false);
 
                 #endregion
             }

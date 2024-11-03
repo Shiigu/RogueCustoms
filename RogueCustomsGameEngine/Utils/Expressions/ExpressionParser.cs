@@ -227,6 +227,9 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 case "criticalhitchance":
                     paramsObject.CriticalHitChance = CalculateNumericExpression(value);
                     return true;
+                case "informtheplayer":
+                    paramsObject.InformThePlayer = new Expression(value).Eval<bool>();
+                    return true;
             }
             return false; // Not a custom case, allow dynamic handling
         }

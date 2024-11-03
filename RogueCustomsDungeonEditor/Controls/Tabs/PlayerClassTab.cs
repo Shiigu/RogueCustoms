@@ -139,9 +139,19 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.StartingInventory = sisPlayerStartingInventory.Inventory;
 
                 LoadedPlayerClass.OnTurnStart = saePlayerOnTurnStart.Action;
+                if (LoadedPlayerClass.OnTurnStart != null)
+                    LoadedPlayerClass.OnTurnStart.IsScript = false;
                 LoadedPlayerClass.OnAttack = maePlayerOnAttack.Actions;
+                foreach (var action in LoadedPlayerClass.OnAttack)
+                {
+                    action.IsScript = false;
+                }
                 LoadedPlayerClass.OnAttacked = saePlayerOnAttacked.Action;
+                if (LoadedPlayerClass.OnAttacked != null)
+                    LoadedPlayerClass.OnAttacked.IsScript = false;
                 LoadedPlayerClass.OnDeath = saePlayerOnDeath.Action;
+                if (LoadedPlayerClass.OnDeath != null)
+                    LoadedPlayerClass.OnDeath.IsScript = false;
             }
 
             return validationErrors;

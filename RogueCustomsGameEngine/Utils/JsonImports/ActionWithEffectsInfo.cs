@@ -10,6 +10,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool IsScript { get; set; }
 
         #region Exclusive to Attacks or Item Uses
         public int MinimumRange { get; set; }

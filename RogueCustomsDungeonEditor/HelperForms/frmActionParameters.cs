@@ -632,6 +632,36 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         control = elementComboBox;
                         break;
+                    case ParameterType.Script:
+                        var scriptComboBox = new ComboBox
+                        {
+                            DropDownStyle = ComboBoxStyle.DropDownList
+                        };
+                        foreach (var script in ActiveDungeon.Scripts.Select(e => e.Id))
+                        {
+                            scriptComboBox.Items.Add(script);
+                        }
+                        try
+                        {
+                            if (originalValue != null)
+                            {
+                                var valueOfKey = ActiveDungeon.Scripts.Find(s => s.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                                if (valueOfKey != null)
+                                    scriptComboBox.Text = valueOfKey.Id;
+                                else
+                                    scriptComboBox.Text = parameter.Default;
+                            }
+                            else
+                            {
+                                scriptComboBox.Text = parameter.Default;
+                            }
+                        }
+                        catch
+                        {
+                            scriptComboBox.Text = parameter.Default;
+                        }
+                        control = scriptComboBox;
+                        break;
                 }
 
                 var toolTip = new ToolTip();
@@ -720,6 +750,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.AlteredStatus:
                     case ParameterType.Stat:
                     case ParameterType.Element:
+                    case ParameterType.Script:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");

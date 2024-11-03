@@ -1720,5 +1720,169 @@
         "OptionalIfFieldsHaveValue": []
       }
     ]
+  },
+  {
+    "InternalName": "CallScript",
+    "TreeViewDisplayText": "Call Script ({ScriptId})",
+    "ComboBoxDisplayName": "Call a Script",
+    "Description": "The Dungeon will call the Script of choice.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "Parameters": [
+      {
+        "InternalName": "ScriptId",
+        "DisplayName": "Script Id",
+        "Description": "The Id of the Script to be run.",
+        "ParameterType": "Script",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "LearnScript",
+    "TreeViewDisplayText": "Have ({Target}) learn Script ({ScriptId})",
+    "ComboBoxDisplayName": "Learn a Script",
+    "Description": "Target will include the Script of choice to their list of On Attack actions. Fails if the target already knows the Script.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will learn the Script. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "ScriptId",
+        "DisplayName": "Script Id",
+        "Description": "The Id of the Script to be learned.",
+        "ParameterType": "Script",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Target to learn the Script. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of this Script being learnt.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ForgetScript",
+    "TreeViewDisplayText": "Have ({Target}) forget Script ({ScriptId})",
+    "ComboBoxDisplayName": "Forget a Script",
+    "Description": "Target will remove the Script of choice to their list of On Attack actions. Fails if the target doesn't already know the Script.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will forget the Script. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "ScriptId",
+        "DisplayName": "Script Id",
+        "Description": "The Id of the Script to be forgotten.",
+        "ParameterType": "Script",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Target to forget the Script. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of this Script being learnt.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
   }
 ]

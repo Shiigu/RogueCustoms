@@ -137,9 +137,12 @@
             saeOnFloorStart.Location = new System.Drawing.Point(355, 343);
             saeOnFloorStart.Name = "saeOnFloorStart";
             saeOnFloorStart.PlaceholderActionId = "FloorStart";
+            saeOnFloorStart.RequiresActionId = false;
             saeOnFloorStart.RequiresCondition = false;
+            saeOnFloorStart.RequiresDescription = false;
+            saeOnFloorStart.RequiresName = false;
             saeOnFloorStart.Size = new System.Drawing.Size(260, 32);
-            saeOnFloorStart.SourceDescription = "None (Don't use)";
+            saeOnFloorStart.SourceDescription = "The player (Don't use)";
             saeOnFloorStart.TabIndex = 75;
             saeOnFloorStart.TargetDescription = "The player";
             saeOnFloorStart.ThisDescription = "None (Don't use)";

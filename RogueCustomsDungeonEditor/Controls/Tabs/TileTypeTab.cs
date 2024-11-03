@@ -71,6 +71,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     CanHaveMultilineConnections = chkTileTypeCanHaveMultilineConnections.Checked,
                     OnStood = saeOnStood.Action
                 };
+                if (LoadedTileType.OnStood != null)
+                    LoadedTileType.OnStood.IsScript = false;
             }
 
             return validationErrors;

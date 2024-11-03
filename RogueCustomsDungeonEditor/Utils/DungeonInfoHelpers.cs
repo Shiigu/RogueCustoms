@@ -23,8 +23,11 @@ namespace RogueCustomsDungeonEditor.Utils
             {
                 Locales = new(),
                 TileSetInfos = new(),
+                TileTypeInfos = new(),
                 FloorInfos = new(),
                 FactionInfos = new(),
+                CharacterStats = new(),
+                ElementInfos = new(),
                 PlayerClasses = new(),
                 NPCs = new(),
                 Items = new(),
@@ -67,6 +70,8 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.Traps.Add(CreateTrapTemplate());
 
             templateDungeon.AlteredStatuses.Add(CreateAlteredStatusTemplate());
+
+            templateDungeon.Scripts = new();
 
             templateDungeon.DefaultLocale = baseLocaleLanguages[0];
 
@@ -1037,6 +1042,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
             var clonedAction = new ActionWithEffectsInfo
             {
+                Id = info.Id,
                 Name = info.Name,
                 Description = info.Description,
                 CooldownBetweenUses = info.CooldownBetweenUses,

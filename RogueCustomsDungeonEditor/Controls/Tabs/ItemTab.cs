@@ -105,15 +105,27 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 if (LoadedItem.EntityType == "Weapon" || LoadedItem.EntityType == "Armor")
                 {
                     LoadedItem.OnTurnStart = saeItemOnTurnStart.Action;
+                    if (LoadedItem.OnTurnStart != null)
+                        LoadedItem.OnTurnStart.IsScript = false;
                     LoadedItem.OnAttacked = saeItemOnAttacked.Action;
+                    if (LoadedItem.OnAttacked != null)
+                        LoadedItem.OnAttacked.IsScript = false;
                 }
                 else if (LoadedItem.EntityType == "Consumable")
                 {
                     LoadedItem.OnUse = saeItemOnUse.Action;
+                    if (LoadedItem.OnUse != null)
+                        LoadedItem.OnUse.IsScript = false;
                 }
 
                 LoadedItem.OnAttack = maeItemOnAttack.Actions;
+                foreach (var action in LoadedItem.OnAttack)
+                {
+                    action.IsScript = false;
+                }
                 LoadedItem.OnDeath = saeItemOnDeath.Action;
+                if (LoadedItem.OnDeath != null)
+                    LoadedItem.OnDeath.IsScript = false;
             }
 
             return validationErrors;

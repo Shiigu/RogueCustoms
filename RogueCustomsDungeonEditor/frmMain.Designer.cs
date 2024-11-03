@@ -63,6 +63,7 @@ namespace RogueCustomsDungeonEditor
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tbElementInfos = new TabPage();
+            ElementTab = new Controls.Tabs.ElementTab();
             tpPlayerClass = new TabPage();
             PlayerClassTab = new Controls.Tabs.PlayerClassTab();
             tpNPC = new TabPage();
@@ -73,11 +74,12 @@ namespace RogueCustomsDungeonEditor
             TrapTab = new Controls.Tabs.TrapTab();
             tpAlteredStatus = new TabPage();
             AlteredStatusTab = new Controls.Tabs.AlteredStatusTab();
+            tpScripts = new TabPage();
+            ScriptsTab = new Controls.Tabs.ScriptsTab();
             tpValidation = new TabPage();
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            ElementTab = new Controls.Tabs.ElementTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -94,6 +96,7 @@ namespace RogueCustomsDungeonEditor
             tpItem.SuspendLayout();
             tpTrap.SuspendLayout();
             tpAlteredStatus.SuspendLayout();
+            tpScripts.SuspendLayout();
             tpValidation.SuspendLayout();
             SuspendLayout();
             // 
@@ -272,6 +275,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpItem);
             tbTabs.Controls.Add(tpTrap);
             tbTabs.Controls.Add(tpAlteredStatus);
+            tbTabs.Controls.Add(tpScripts);
             tbTabs.Controls.Add(tpValidation);
             tbTabs.Location = new System.Drawing.Point(219, 65);
             tbTabs.Name = "tbTabs";
@@ -428,6 +432,15 @@ namespace RogueCustomsDungeonEditor
             tbElementInfos.Text = "Attack Element";
             tbElementInfos.UseVisualStyleBackColor = true;
             // 
+            // ElementTab
+            // 
+            ElementTab.AutoSize = true;
+            ElementTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ElementTab.Location = new System.Drawing.Point(0, 0);
+            ElementTab.Name = "ElementTab";
+            ElementTab.Size = new System.Drawing.Size(657, 198);
+            ElementTab.TabIndex = 0;
+            // 
             // tpPlayerClass
             // 
             tpPlayerClass.AutoScroll = true;
@@ -445,7 +458,7 @@ namespace RogueCustomsDungeonEditor
             PlayerClassTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             PlayerClassTab.Location = new System.Drawing.Point(5, 0);
             PlayerClassTab.Name = "PlayerClassTab";
-            PlayerClassTab.Size = new System.Drawing.Size(714, 718);
+            PlayerClassTab.Size = new System.Drawing.Size(714, 732);
             PlayerClassTab.TabIndex = 0;
             // 
             // tpNPC
@@ -465,7 +478,7 @@ namespace RogueCustomsDungeonEditor
             NPCTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             NPCTab.Location = new System.Drawing.Point(4, 3);
             NPCTab.Name = "NPCTab";
-            NPCTab.Size = new System.Drawing.Size(714, 928);
+            NPCTab.Size = new System.Drawing.Size(714, 819);
             NPCTab.TabIndex = 0;
             // 
             // tpItem
@@ -526,6 +539,24 @@ namespace RogueCustomsDungeonEditor
             AlteredStatusTab.Size = new System.Drawing.Size(733, 310);
             AlteredStatusTab.TabIndex = 0;
             // 
+            // tpScripts
+            // 
+            tpScripts.AutoScroll = true;
+            tpScripts.Controls.Add(ScriptsTab);
+            tpScripts.Location = new System.Drawing.Point(4, 24);
+            tpScripts.Name = "tpScripts";
+            tpScripts.Size = new System.Drawing.Size(740, 356);
+            tpScripts.TabIndex = 14;
+            tpScripts.Text = "Scripts";
+            tpScripts.UseVisualStyleBackColor = true;
+            // 
+            // ScriptsTab
+            // 
+            ScriptsTab.Location = new System.Drawing.Point(13, 4);
+            ScriptsTab.Name = "ScriptsTab";
+            ScriptsTab.Size = new System.Drawing.Size(714, 347);
+            ScriptsTab.TabIndex = 0;
+            // 
             // tpValidation
             // 
             tpValidation.Controls.Add(ValidatorTab);
@@ -553,15 +584,6 @@ namespace RogueCustomsDungeonEditor
             // 
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
-            // 
-            // ElementTab
-            // 
-            ElementTab.AutoSize = true;
-            ElementTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ElementTab.Location = new System.Drawing.Point(0, 0);
-            ElementTab.Name = "ElementTab";
-            ElementTab.Size = new System.Drawing.Size(657, 198);
-            ElementTab.TabIndex = 0;
             // 
             // frmMain
             // 
@@ -610,6 +632,7 @@ namespace RogueCustomsDungeonEditor
             tpTrap.PerformLayout();
             tpAlteredStatus.ResumeLayout(false);
             tpAlteredStatus.PerformLayout();
+            tpScripts.ResumeLayout(false);
             tpValidation.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -664,5 +687,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.StatTab StatTab;
         private TabPage tbElementInfos;
         private Controls.Tabs.ElementTab ElementTab;
+        private TabPage tpScripts;
+        private Controls.Tabs.ScriptsTab ScriptsTab;
     }
 }
