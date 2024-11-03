@@ -1283,7 +1283,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 OnTurnStart = v14PlayerClass.OnTurnStart,
                 OnAttack = new(v14PlayerClass.OnAttack),
                 OnAttacked = v14PlayerClass.OnAttacked,
-                OnDeath = v14PlayerClass.OnDeath
+                OnDeath = v14PlayerClass.OnDeath,
+                OnLevelUp = null
             };
 
             v15PlayerClass.Stats.Add(new()
@@ -1390,6 +1391,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
                 OnDeath = v14NPC.OnDeath,
                 OnInteracted = new(v14NPC.OnInteracted),
                 OnSpawn = v14NPC.OnSpawn,
+                OnLevelUp = null,
                 AIType = v14NPC.AIType,
                 KnowsAllCharacterPositions = v14NPC.KnowsAllCharacterPositions,
                 PursuesOutOfSightCharacters = v14NPC.KnowsAllCharacterPositions,

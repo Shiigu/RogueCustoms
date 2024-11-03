@@ -91,6 +91,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
             SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
             SetSingleActionEditorParams(saePlayerOnDeath, playerClass.Id, playerClass.OnDeath);
+            SetSingleActionEditorParams(saePlayerOnLevelUp, playerClass.Id, playerClass.OnLevelUp);
         }
 
         public List<string> SaveData(string id)
@@ -152,6 +153,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.OnDeath = saePlayerOnDeath.Action;
                 if (LoadedPlayerClass.OnDeath != null)
                     LoadedPlayerClass.OnDeath.IsScript = false;
+                LoadedPlayerClass.OnLevelUp = saePlayerOnLevelUp.Action;
+                if (LoadedPlayerClass.OnLevelUp != null)
+                    LoadedPlayerClass.OnLevelUp.IsScript = false;
             }
 
             return validationErrors;

@@ -68,6 +68,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnAttack { get; set; }
         public ActionWithEffects OnAttacked { get; set; }
         public ActionWithEffects OnDeath { get; set; }
+        public ActionWithEffects OnLevelUp { get; set; }
 
         #region Status-only data
         public readonly bool CanStack;
@@ -176,6 +177,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 MapActions(OnAttack, playerClassInfo.OnAttack);
                 OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked);
                 OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath);
+                OnLevelUp = ActionWithEffects.Create(playerClassInfo.OnLevelUp);
                 EntityType = EntityType.Player;
                 StartsVisible = playerClassInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
@@ -245,6 +247,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 MapActions(OnAttack, npcInfo.OnAttack);
                 OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked);
                 OnDeath = ActionWithEffects.Create(npcInfo.OnDeath);
+                OnLevelUp = ActionWithEffects.Create(npcInfo.OnLevelUp);
 
                 EntityType = EntityType.NPC;
                 StartsVisible = npcInfo.StartsVisible;

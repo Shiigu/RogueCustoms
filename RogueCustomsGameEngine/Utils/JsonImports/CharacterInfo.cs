@@ -24,6 +24,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<ActionWithEffectsInfo> OnAttack { get; set; } = new List<ActionWithEffectsInfo>();
         public ActionWithEffectsInfo OnAttacked { get; set; } = new ActionWithEffectsInfo();
         public ActionWithEffectsInfo OnDeath { get; set; } = new ActionWithEffectsInfo();
+        public ActionWithEffectsInfo OnLevelUp { get; set; } = new ActionWithEffectsInfo();
     }
 
     [Serializable]

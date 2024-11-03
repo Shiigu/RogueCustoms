@@ -56,6 +56,7 @@
             crsPlayer = new ConsoleRepresentationSelector();
             label67 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
+            saePlayerOnLevelUp = new SingleActionEditor();
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
             SuspendLayout();
             // 
@@ -96,7 +97,10 @@
             saePlayerOnDeath.Location = new System.Drawing.Point(2, 499);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
             saePlayerOnDeath.PlaceholderActionId = "Death";
+            saePlayerOnDeath.RequiresActionId = false;
             saePlayerOnDeath.RequiresCondition = false;
+            saePlayerOnDeath.RequiresDescription = false;
+            saePlayerOnDeath.RequiresName = false;
             saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
             saePlayerOnDeath.SourceDescription = "The player";
             saePlayerOnDeath.TabIndex = 152;
@@ -118,7 +122,10 @@
             saePlayerOnAttacked.Location = new System.Drawing.Point(2, 461);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
             saePlayerOnAttacked.PlaceholderActionId = "Interacted";
+            saePlayerOnAttacked.RequiresActionId = false;
             saePlayerOnAttacked.RequiresCondition = false;
+            saePlayerOnAttacked.RequiresDescription = false;
+            saePlayerOnAttacked.RequiresName = false;
             saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
             saePlayerOnAttacked.SourceDescription = "The player";
             saePlayerOnAttacked.TabIndex = 151;
@@ -140,7 +147,10 @@
             saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 323);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
             saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
+            saePlayerOnTurnStart.RequiresActionId = false;
             saePlayerOnTurnStart.RequiresCondition = false;
+            saePlayerOnTurnStart.RequiresDescription = false;
+            saePlayerOnTurnStart.RequiresName = false;
             saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
             saePlayerOnTurnStart.SourceDescription = "The player";
             saePlayerOnTurnStart.TabIndex = 150;
@@ -387,11 +397,37 @@
             label1.TabIndex = 238;
             label1.Text = "Inventory";
             // 
+            // saePlayerOnLevelUp
+            // 
+            saePlayerOnLevelUp.Action = null;
+            saePlayerOnLevelUp.ActionDescription = "When they level up...           ";
+            saePlayerOnLevelUp.ActionTypeText = "On Level Up";
+            saePlayerOnLevelUp.AutoSize = true;
+            saePlayerOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saePlayerOnLevelUp.ClassId = null;
+            saePlayerOnLevelUp.Dungeon = null;
+            saePlayerOnLevelUp.EffectParamData = null;
+            saePlayerOnLevelUp.Location = new System.Drawing.Point(2, 537);
+            saePlayerOnLevelUp.Name = "saePlayerOnLevelUp";
+            saePlayerOnLevelUp.PlaceholderActionId = "LevelUp";
+            saePlayerOnLevelUp.RequiresActionId = false;
+            saePlayerOnLevelUp.RequiresCondition = false;
+            saePlayerOnLevelUp.RequiresDescription = false;
+            saePlayerOnLevelUp.RequiresName = false;
+            saePlayerOnLevelUp.Size = new System.Drawing.Size(284, 32);
+            saePlayerOnLevelUp.SourceDescription = "The player";
+            saePlayerOnLevelUp.TabIndex = 239;
+            saePlayerOnLevelUp.TargetDescription = "The player";
+            saePlayerOnLevelUp.ThisDescription = "The player";
+            saePlayerOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
+            // 
             // PlayerClassTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(saePlayerOnLevelUp);
             Controls.Add(label1);
             Controls.Add(label67);
             Controls.Add(crsPlayer);
@@ -455,5 +491,6 @@
         private ConsoleRepresentationSelector crsPlayer;
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.Label label1;
+        private SingleActionEditor saePlayerOnLevelUp;
     }
 }

@@ -65,6 +65,7 @@
             chkNPCPursuesOutOfSightCharacters = new System.Windows.Forms.CheckBox();
             chkNPCWandersIfWithoutTarget = new System.Windows.Forms.CheckBox();
             label2 = new System.Windows.Forms.Label();
+            saeNPCOnLevelUp = new SingleActionEditor();
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
             SuspendLayout();
             // 
@@ -122,7 +123,10 @@
             saeNPCOnSpawn.Location = new System.Drawing.Point(6, 468);
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
             saeNPCOnSpawn.PlaceholderActionId = "TurnStart";
+            saeNPCOnSpawn.RequiresActionId = false;
             saeNPCOnSpawn.RequiresCondition = true;
+            saeNPCOnSpawn.RequiresDescription = false;
+            saeNPCOnSpawn.RequiresName = false;
             saeNPCOnSpawn.Size = new System.Drawing.Size(283, 32);
             saeNPCOnSpawn.SourceDescription = "The NPC (won't become visible)";
             saeNPCOnSpawn.TabIndex = 248;
@@ -168,7 +172,10 @@
             saeNPCOnDeath.Location = new System.Drawing.Point(6, 784);
             saeNPCOnDeath.Name = "saeNPCOnDeath";
             saeNPCOnDeath.PlaceholderActionId = "Death";
+            saeNPCOnDeath.RequiresActionId = false;
             saeNPCOnDeath.RequiresCondition = false;
+            saeNPCOnDeath.RequiresDescription = false;
+            saeNPCOnDeath.RequiresName = false;
             saeNPCOnDeath.Size = new System.Drawing.Size(283, 32);
             saeNPCOnDeath.SourceDescription = "The NPC";
             saeNPCOnDeath.TabIndex = 246;
@@ -190,7 +197,10 @@
             saeNPCOnAttacked.Location = new System.Drawing.Point(6, 744);
             saeNPCOnAttacked.Name = "saeNPCOnAttacked";
             saeNPCOnAttacked.PlaceholderActionId = "Interacted";
+            saeNPCOnAttacked.RequiresActionId = false;
             saeNPCOnAttacked.RequiresCondition = false;
+            saeNPCOnAttacked.RequiresDescription = false;
+            saeNPCOnAttacked.RequiresName = false;
             saeNPCOnAttacked.Size = new System.Drawing.Size(281, 32);
             saeNPCOnAttacked.SourceDescription = "The NPC";
             saeNPCOnAttacked.TabIndex = 245;
@@ -212,7 +222,10 @@
             saeNPCOnTurnStart.Location = new System.Drawing.Point(6, 506);
             saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
             saeNPCOnTurnStart.PlaceholderActionId = "TurnStart";
+            saeNPCOnTurnStart.RequiresActionId = false;
             saeNPCOnTurnStart.RequiresCondition = false;
+            saeNPCOnTurnStart.RequiresDescription = false;
+            saeNPCOnTurnStart.RequiresName = false;
             saeNPCOnTurnStart.Size = new System.Drawing.Size(283, 32);
             saeNPCOnTurnStart.SourceDescription = "The NPC";
             saeNPCOnTurnStart.TabIndex = 244;
@@ -488,11 +501,11 @@
             chkNPCPursuesOutOfSightCharacters.UseVisualStyleBackColor = true;
             chkNPCPursuesOutOfSightCharacters.CheckedChanged += chkNPCPursuesOutOfSightCharacters_CheckedChanged;
             // 
-            // chkWandersIfWithoutTarget
+            // chkNPCWandersIfWithoutTarget
             // 
             chkNPCWandersIfWithoutTarget.AutoSize = true;
             chkNPCWandersIfWithoutTarget.Location = new System.Drawing.Point(6, 412);
-            chkNPCWandersIfWithoutTarget.Name = "chkWandersIfWithoutTarget";
+            chkNPCWandersIfWithoutTarget.Name = "chkNPCWandersIfWithoutTarget";
             chkNPCWandersIfWithoutTarget.Size = new System.Drawing.Size(282, 19);
             chkNPCWandersIfWithoutTarget.TabIndex = 254;
             chkNPCWandersIfWithoutTarget.Text = "Will wander around if there's no target Character";
@@ -509,11 +522,37 @@
             label2.TabIndex = 255;
             label2.Text = "AI";
             // 
+            // saeNPCOnLevelUp
+            // 
+            saeNPCOnLevelUp.Action = null;
+            saeNPCOnLevelUp.ActionDescription = "When they level up...           ";
+            saeNPCOnLevelUp.ActionTypeText = "On Level Up";
+            saeNPCOnLevelUp.AutoSize = true;
+            saeNPCOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saeNPCOnLevelUp.ClassId = null;
+            saeNPCOnLevelUp.Dungeon = null;
+            saeNPCOnLevelUp.EffectParamData = null;
+            saeNPCOnLevelUp.Location = new System.Drawing.Point(4, 818);
+            saeNPCOnLevelUp.Name = "saeNPCOnLevelUp";
+            saeNPCOnLevelUp.PlaceholderActionId = "LevelUp";
+            saeNPCOnLevelUp.RequiresActionId = false;
+            saeNPCOnLevelUp.RequiresCondition = false;
+            saeNPCOnLevelUp.RequiresDescription = false;
+            saeNPCOnLevelUp.RequiresName = false;
+            saeNPCOnLevelUp.Size = new System.Drawing.Size(284, 32);
+            saeNPCOnLevelUp.SourceDescription = "The NPC";
+            saeNPCOnLevelUp.TabIndex = 256;
+            saeNPCOnLevelUp.TargetDescription = "The NPC";
+            saeNPCOnLevelUp.ThisDescription = "The NPC";
+            saeNPCOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saeNPCOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
+            // 
             // NPCTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(saeNPCOnLevelUp);
             Controls.Add(label2);
             Controls.Add(chkNPCWandersIfWithoutTarget);
             Controls.Add(chkNPCPursuesOutOfSightCharacters);
@@ -551,7 +590,7 @@
             Controls.Add(label101);
             Controls.Add(crsNPC);
             Name = "NPCTab";
-            Size = new System.Drawing.Size(714, 821);
+            Size = new System.Drawing.Size(714, 853);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -594,5 +633,6 @@
         private System.Windows.Forms.CheckBox chkNPCPursuesOutOfSightCharacters;
         private System.Windows.Forms.CheckBox chkNPCWandersIfWithoutTarget;
         private System.Windows.Forms.Label label2;
+        private SingleActionEditor saeNPCOnLevelUp;
     }
 }

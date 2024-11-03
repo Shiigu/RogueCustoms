@@ -188,6 +188,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
+        public ActionWithEffects OnLevelUp { get; private set; }
+
         private List<Tile> _fovTiles;
         public List<Tile> FOVTiles
         {
@@ -279,6 +281,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MapClassActions(entityClass.OnAttack, OwnOnAttack);
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             OwnOnDeath = MapClassAction(entityClass.OnDeath);
+            OnLevelUp = MapClassAction(entityClass.OnLevelUp);
         }
 
         public List<Tile> ComputeFOVTiles()
@@ -450,6 +453,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 HP.Current = MaxHP;
                 if(MP != null)
                     MP.Current = MaxMP;
+                OnLevelUp?.Do(this, this, false);
             }
         }
 
