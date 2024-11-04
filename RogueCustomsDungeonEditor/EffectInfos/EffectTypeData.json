@@ -899,7 +899,7 @@
         "InternalName": "Stat",
         "DisplayName": "Stat",
         "Description": "Indicates the Stat that will be Altered.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
-        "ParameterType": "StatList",
+        "ParameterType": "Stat",
         "Default": "",
         "ValidValues": [],
         "Required": true,
