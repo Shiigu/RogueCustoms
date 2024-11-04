@@ -160,509 +160,35 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     TextAlign = ContentAlignment.MiddleLeft,
                     AutoSize = false,
-                    Height = 30
+                    Height = 30,
+                    Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && !parameter.OptionalIfFieldsHaveValue.Any()
+                       ? $"{parameter.DisplayName}*"
+                       : $"{parameter.DisplayName}"
                 };
 
-                if (parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && !parameter.OptionalIfFieldsHaveValue.Any())
+                string originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
+
+                Control control = parameter.Type switch
                 {
-                    nameLabel.Text = $"{parameter.DisplayName}*";
-                }
-                else
-                {
-                    nameLabel.Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Any()
-                        ? $"{parameter.DisplayName}^"
-                        : parameter.DisplayName;
-                }
-
-                Control control = null;
-                var originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
-
-                switch (parameter.Type)
-                {
-                    case ParameterType.ComboBox:
-                        var comboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        comboBox.Items.AddRange(parameter.ValidValues.Select(v => v.Value).ToArray());
-
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase)).Value;
-                                comboBox.Text = valueOfKey;
-                            }
-                            else
-                            {
-                                comboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            comboBox.Text = parameter.Default;
-                        }
-                        control = comboBox;
-                        break;
-                    case ParameterType.Formula:
-                        control = new TextBox();
-                        ((TextBox)control).Text = originalValue ?? parameter.Default;
-                        control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
-                        control.Leave += (sender, e) =>
-                        {
-                            if (sender is not TextBox textBox) return;
-                            var valueToValidate = textBox.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
-                            {
-                                MessageBox.Show(
-                                    $"You have entered an invalid formula: {errorMessage}.",
-                                    "Invalid parameter data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error
-                                );
-                                textBox.Text = PreviousTextBoxValue;
-                            }
-                        };
-                        break;
-                    case ParameterType.Odds:
-                        control = new NumericUpDown
-                        {
-                            Minimum = 0,
-                            Maximum = 100
-                        };
-                        if (originalValue != null && int.TryParse(originalValue, out int parsedIntValue))
-                            ((NumericUpDown)control).Value = parsedIntValue;
-                        else if (originalValue == null)
-                            ((NumericUpDown)control).Value = int.Parse(parameter.Default);
-                        break;
-                    case ParameterType.Boolean:
-                        control = new CheckBox();
-                        if (originalValue != null && bool.TryParse(originalValue, out bool parsedBoolValue))
-                            ((CheckBox)control).Checked = parsedBoolValue;
-                        else if (originalValue == null)
-                            ((CheckBox)control).Checked = bool.Parse(parameter.Default);
-                        break;
-                    case ParameterType.Character:
-                        control = new Label
-                        {
-                            Dock = DockStyle.Fill,
-                            TextAlign = ContentAlignment.MiddleCenter,
-                            AutoSize = false
-                        };
-                        ((Label)control).Text = originalValue ?? parameter.Default;
-                        var characterMapButton = new Button
-                        {
-                            Text = "Edit",
-                            Dock = DockStyle.Fill,
-                        };
-                        characterMapButton.Click += (sender, e) =>
-                        {
-                            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), originalValue?[0]);
-                            characterMapForm.ShowDialog();
-                            if (characterMapForm.Saved)
-                            {
-                                ((Label)characterMapButton.Tag).Text = characterMapForm.CharacterToSave.ToString();
-                            }
-                        };
-                        characterMapButton.Tag = control;
-                        var characterMapTooltip = new ToolTip();
-                        characterMapTooltip.SetToolTip(characterMapButton, "Change Character Representation");
-                        var characterPanel = new TableLayoutPanel
-                        {
-                            ColumnCount = 2,
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                        };
-
-                        characterPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-                        characterPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-
-                        control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-                        characterMapButton.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-
-                        characterPanel.Controls.Add(control, 0, 0);
-                        characterPanel.Controls.Add(characterMapButton, 1, 0);
-                        control = characterPanel;
-                        break;
-                    case ParameterType.Color:
-                        control = new TextBox
-                        {
-                            MaxLength = 15,
-                            Dock = DockStyle.Fill,
-                        };
-                        var colorButton = new Button
-                        {
-                            Dock = DockStyle.Fill,
-                        };
-                        if (!string.IsNullOrWhiteSpace(originalValue))
-                        {
-                            ((TextBox)control).Text = originalValue;
-                            colorButton.BackColor = originalValue.ToColor();
-                        }
-                        else
-                        {
-                            try
-                            {
-                                colorButton.BackColor = parameter.Default.ToColor();
-                                ((TextBox)control).Text = parameter.Default;
-                            }
-                            catch
-                            {
-                                // Ignore invalid colors.
-                            }
-                        }
-                        colorButton.Tag = control;
-                        colorButton.Click += (sender, e) =>
-                        {
-                            var textColor = (colorButton.Tag as TextBox)?.Text;
-                            var colorDialog = new ColorDialog();
-                            try
-                            {
-                                if (!string.IsNullOrWhiteSpace(textColor))
-                                {
-                                    colorDialog.Color = textColor.ToColor();
-                                    colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-                                }
-                            }
-                            catch
-                            {
-                                // Ignore invalid colors.
-                            }
-                            if (colorDialog.ShowDialog() == DialogResult.OK)
-                            {
-                                ((TextBox)colorButton.Tag).Text = new GameColor(colorDialog.Color).ToString();
-                                colorButton.BackColor = colorDialog.Color;
-                            }
-                        };
-                        control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
-                        control.Leave += (sender, e) =>
-                        {
-                            var textBox = sender as TextBox;
-                            var valueToValidate = textBox.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate))
-                            {
-                                try
-                                {
-                                    colorButton.BackColor = valueToValidate.ToColor();
-                                }
-                                catch
-                                {
-                                    MessageBox.Show(
-                                        "You have entered an invalid color.",
-                                        "Invalid parameter data",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error
-                                    );
-                                    textBox.Text = PreviousTextBoxValue;
-                                }
-                            }
-                            colorButton.BackColor = SystemColors.ButtonFace;
-                        };
-                        var colorTooltip = new ToolTip();
-                        colorTooltip.SetToolTip(colorButton, "Change Color");
-                        var colorPanel = new TableLayoutPanel
-                        {
-                            ColumnCount = 2,
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                        };
-
-                        colorPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
-                        colorPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
-
-                        control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-                        colorButton.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-
-                        colorPanel.Controls.Add(control, 0, 0);
-                        colorPanel.Controls.Add(colorButton, 1, 0);
-                        control = colorPanel;
-                        break;
-                    case ParameterType.Text:
-                        control = new TextBox()
-                        {
-                            Dock = DockStyle.Fill
-                        };
-                        ((TextBox)control).Text = originalValue ?? parameter.Default;
-                        var warningBox = new PictureBox()
-                        {
-                            ImageLocation = "./Icons/outline_info_black_24dp.png",
-                            SizeMode = PictureBoxSizeMode.StretchImage,
-                            Visible = false,
-                            Height = control.Height
-                        };
-                        var warningBoxTooltip = new ToolTip();
-                        warningBoxTooltip.SetToolTip(warningBox, "This value has been found as a Locale Entry key.\n\nIn-game, it will be replaced by the Locale Entry's value.");
-                        control.Tag = warningBox;
-                        ((TextBox)control).ToggleEntryInLocaleWarning(ActiveDungeon, warningBox);
-                        control.TextChanged += (sender, e) =>
-                        {
-                            var textBox = sender as TextBox;
-                            textBox.ToggleEntryInLocaleWarning(ActiveDungeon, textBox.Tag as Control);
-                        };
-
-                        var textBoxPanel = new TableLayoutPanel
-                        {
-                            ColumnCount = 2,
-                            Dock = DockStyle.Fill,
-                            AutoSize = true,
-                        };
-                        textBoxPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
-                        textBoxPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
-
-                        control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-                        textBoxPanel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-
-                        textBoxPanel.Controls.Add(control, 0, 0);
-                        textBoxPanel.Controls.Add(warningBox, 1, 0);
-                        control = textBoxPanel;
-                        break;
-                    case ParameterType.NPC:
-                        var npcComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var npc in ValidNPCs)
-                        {
-                            npcComboBox.Items.Add(npc);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ValidNPCs.Find(vnpc => vnpc.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                npcComboBox.Text = valueOfKey;
-                            }
-                            else
-                            {
-                                npcComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            npcComboBox.Text = parameter.Default;
-                        }
-                        control = npcComboBox;
-                        break;
-                    case ParameterType.Item:
-                        var itemComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var item in ValidItems)
-                        {
-                            itemComboBox.Items.Add(item);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ValidItems.Find(vi => vi.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                itemComboBox.Text = valueOfKey;
-                            }
-                            else
-                            {
-                                itemComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            itemComboBox.Text = parameter.Default;
-                        }
-                        control = itemComboBox;
-                        break;
-                    case ParameterType.Trap:
-                        var trapComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var trap in ValidTraps)
-                        {
-                            trapComboBox.Items.Add(trap);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ValidTraps.Find(vt => vt.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                trapComboBox.Text = valueOfKey;
-                            }
-                            else
-                            {
-                                trapComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            trapComboBox.Text = parameter.Default;
-                        }
-                        control = trapComboBox;
-                        break;
-                    case ParameterType.AlteredStatus:
-                        var alteredStatusComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var alteredStatus in ValidAlteredStatuses)
-                        {
-                            alteredStatusComboBox.Items.Add(alteredStatus);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ValidAlteredStatuses.Find(vals => vals.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                alteredStatusComboBox.Text = valueOfKey;
-                            }
-                            else
-                            {
-                                alteredStatusComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            alteredStatusComboBox.Text = parameter.Default;
-                        }
-                        control = alteredStatusComboBox;
-                        break;
-                    case ParameterType.Number:
-                        control = new TextBox();
-                        ((TextBox)control).Text = originalValue ?? parameter.Default;
-                        control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
-                        control.Leave += (sender, e) =>
-                        {
-                            if (sender is not TextBox textBox) return;
-                            var valueToValidate = textBox.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out string errorMessage))
-                            {
-                                MessageBox.Show(
-                                    $"You have entered an invalid value: {errorMessage}.",
-                                    "Invalid parameter data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error
-                                );
-                                textBox.Text = PreviousTextBoxValue;
-                            }
-                        };
-                        break;
-                    case ParameterType.BooleanExpression:
-                        control = new TextBox();
-                        ((TextBox)control).Text = originalValue ?? parameter.Default;
-                        control.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
-                        control.Leave += (sender, e) =>
-                        {
-                            if (sender is not TextBox textBox) return;
-                            var valueToValidate = textBox.Text;
-                            if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out string errorMessage))
-                            {
-                                MessageBox.Show(
-                                    $"You have entered an invalid expression: {errorMessage}.",
-                                    "Invalid parameter data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error
-                                );
-                                textBox.Text = PreviousTextBoxValue;
-                            }
-                        };
-                        break;
-                    case ParameterType.Key:
-                        control = new TextBox()
-                        {
-                            Dock = DockStyle.Fill
-                        };
-                        ((TextBox)control).Text = originalValue ?? parameter.Default;
-                        control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-                        break;
-                    case ParameterType.Stat:
-                        var statComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var stat in ActiveDungeon.CharacterStats.Select(s => s.Id))
-                        {
-                            statComboBox.Items.Add(stat);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ActiveDungeon.CharacterStats.Find(cs => cs.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                if(valueOfKey != null)
-                                    statComboBox.Text = valueOfKey.Id;
-                                else
-                                    statComboBox.Text = parameter.Default;
-                            }
-                            else
-                            {
-                                statComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            statComboBox.Text = parameter.Default;
-                        }
-                        control = statComboBox;
-                        break;
-                    case ParameterType.Element:
-                        var elementComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var element in ActiveDungeon.ElementInfos.Select(e => e.Id))
-                        {
-                            elementComboBox.Items.Add(element);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ActiveDungeon.ElementInfos.Find(e => e.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                if (valueOfKey != null)
-                                    elementComboBox.Text = valueOfKey.Id;
-                                else
-                                    elementComboBox.Text = parameter.Default;
-                            }
-                            else
-                            {
-                                elementComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            elementComboBox.Text = parameter.Default;
-                        }
-                        control = elementComboBox;
-                        break;
-                    case ParameterType.Script:
-                        var scriptComboBox = new ComboBox
-                        {
-                            DropDownStyle = ComboBoxStyle.DropDownList
-                        };
-                        foreach (var script in ActiveDungeon.Scripts.Select(e => e.Id))
-                        {
-                            scriptComboBox.Items.Add(script);
-                        }
-                        try
-                        {
-                            if (originalValue != null)
-                            {
-                                var valueOfKey = ActiveDungeon.Scripts.Find(s => s.Id.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                                if (valueOfKey != null)
-                                    scriptComboBox.Text = valueOfKey.Id;
-                                else
-                                    scriptComboBox.Text = parameter.Default;
-                            }
-                            else
-                            {
-                                scriptComboBox.Text = parameter.Default;
-                            }
-                        }
-                        catch
-                        {
-                            scriptComboBox.Text = parameter.Default;
-                        }
-                        control = scriptComboBox;
-                        break;
-                }
+                    ParameterType.ComboBox => CreateComboBox(parameter, originalValue),
+                    ParameterType.Formula => CreateFormulaTextBox(originalValue, parameter),
+                    ParameterType.Odds => CreateNumericUpDown(originalValue, parameter),
+                    ParameterType.Boolean => CreateCheckBox(originalValue, parameter),
+                    ParameterType.Character => CreateCharacterControl(originalValue, parameter),
+                    ParameterType.Color => CreateColorControl(originalValue, parameter),
+                    ParameterType.Text => new TextBox { Text = originalValue ?? parameter.Default },
+                    ParameterType.Number => new NumericUpDown { Value = decimal.TryParse(originalValue, out var result) ? result : decimal.Parse(parameter.Default) }, // Numeric input
+                    ParameterType.NPC => CreateComboBox(parameter, originalValue),
+                    ParameterType.Item => CreateComboBox(parameter, originalValue),
+                    ParameterType.Trap => CreateComboBox(parameter, originalValue),
+                    ParameterType.AlteredStatus => CreateComboBox(parameter, originalValue),
+                    ParameterType.BooleanExpression => CreateFormulaTextBox(originalValue, parameter),
+                    ParameterType.Key => new TextBox { Text = originalValue ?? parameter.Default },
+                    ParameterType.Stat => CreateComboBox(parameter, originalValue),
+                    ParameterType.Element => CreateComboBox(parameter, originalValue),
+                    ParameterType.Script => CreateComboBox(parameter, originalValue),
+                    _ => new TextBox { Text = originalValue ?? parameter.Default }
+                };
 
                 var toolTip = new ToolTip();
                 if (nameLabel.PreferredSize.Width > nameLabel.Width)
@@ -685,6 +211,188 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             tlpParameters.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             tlpParameters.Height = 30 * rowNumber;
+        }
+
+        private IEnumerable<string> GetComboBoxItems(EffectParameter parameter)
+        {
+            return parameter.Type switch
+            {
+                ParameterType.ComboBox => parameter.ValidValues.Select(v => v.Value),
+                ParameterType.NPC => ValidNPCs,
+                ParameterType.Item => ValidItems,
+                ParameterType.Trap => ValidTraps,
+                ParameterType.AlteredStatus => ValidAlteredStatuses,
+                ParameterType.Stat => ActiveDungeon.CharacterStats.Select(s => s.Id),
+                ParameterType.Element => ActiveDungeon.ElementInfos.Select(e => e.Id),
+                ParameterType.Script => ActiveDungeon.Scripts.Select(s => s.Id),
+                _ => throw new ArgumentException($"{parameter.Type} is not valid for ComboBox parameter")
+            };
+        }
+
+        private ComboBox CreateComboBox(EffectParameter parameter, string originalValue)
+        {
+            var comboBox = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            comboBox.Items.AddRange(GetComboBoxItems(parameter).ToArray());
+
+            try
+            {
+                if (originalValue != null)
+                {
+                    var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase))?.Value;
+                    comboBox.Text = valueOfKey;
+                }
+                else
+                {
+                    comboBox.Text = parameter.Default;
+                }
+            }
+            catch
+            {
+                comboBox.Text = parameter.Default;
+            }
+
+            return comboBox;
+        }
+
+        private TextBox CreateFormulaTextBox(string originalValue, EffectParameter parameter)
+        {
+            var textBox = new TextBox
+            {
+                Text = originalValue ?? parameter.Default
+            };
+
+            textBox.Enter += (sender, e) => PreviousTextBoxValue = textBox.Text;
+            textBox.Leave += (sender, e) =>
+            {
+                if (!string.IsNullOrWhiteSpace(textBox.Text) && !textBox.Text.TestNumericExpression(true, out string errorMessage))
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid formula: {errorMessage}.",
+                        "Invalid parameter data",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    textBox.Text = PreviousTextBoxValue;
+                }
+            };
+
+            return textBox;
+        }
+
+        private NumericUpDown CreateNumericUpDown(string originalValue, EffectParameter parameter)
+        {
+            var numericUpDown = new NumericUpDown
+            {
+                Minimum = 0,
+                Maximum = 100,
+                Value = originalValue != null && int.TryParse(originalValue, out int parsedIntValue) ? parsedIntValue : int.Parse(parameter.Default)
+            };
+
+            return numericUpDown;
+        }
+
+        private CheckBox CreateCheckBox(string originalValue, EffectParameter parameter)
+        {
+            var checkBox = new CheckBox
+            {
+                Checked = originalValue != null && bool.TryParse(originalValue, out bool parsedBoolValue) ? parsedBoolValue : bool.Parse(parameter.Default)
+            };
+
+            return checkBox;
+        }
+
+        private TableLayoutPanel CreateCharacterControl(string originalValue, EffectParameter parameter)
+        {
+            var characterLabel = new Label
+            {
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                AutoSize = false,
+                Text = originalValue ?? parameter.Default
+            };
+
+            var characterMapButton = new Button
+            {
+                Text = "Edit",
+                Dock = DockStyle.Fill
+            };
+            characterMapButton.Click += (sender, e) =>
+            {
+                var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), originalValue?[0]);
+                characterMapForm.ShowDialog();
+                if (characterMapForm.Saved)
+                {
+                    characterLabel.Text = characterMapForm.CharacterToSave.ToString();
+                }
+            };
+
+            var characterPanel = new TableLayoutPanel
+            {
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+            };
+            characterPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            characterPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+
+            characterPanel.Controls.Add(characterLabel, 0, 0);
+            characterPanel.Controls.Add(characterMapButton, 1, 0);
+
+            return characterPanel;
+        }
+
+        private TableLayoutPanel CreateColorControl(string originalValue, EffectParameter parameter)
+        {
+            var colorTextBox = new TextBox
+            {
+                MaxLength = 15,
+                Dock = DockStyle.Fill,
+                Text = originalValue ?? parameter.Default
+            };
+
+            var colorButton = new Button
+            {
+                Dock = DockStyle.Fill,
+                BackColor = !string.IsNullOrWhiteSpace(originalValue) ? originalValue.ToColor() : parameter.Default.ToColor()
+            };
+
+            colorButton.Click += (sender, e) =>
+            {
+                var colorDialog = new ColorDialog();
+                try
+                {
+                    colorDialog.Color = colorTextBox.Text.ToColor();
+                    colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
+                }
+                catch
+                {
+                    // Ignore invalid colors
+                }
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    colorTextBox.Text = new GameColor(colorDialog.Color).ToString();
+                    colorButton.BackColor = colorDialog.Color;
+                }
+            };
+
+            var colorPanel = new TableLayoutPanel
+            {
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true
+            };
+
+            colorPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
+            colorPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
+
+            colorPanel.Controls.Add(colorTextBox, 0, 0);
+            colorPanel.Controls.Add(colorButton, 1, 0);
+
+            return colorPanel;
         }
 
         private void tlpParameters_SizeChanged(object sender, EventArgs e)
