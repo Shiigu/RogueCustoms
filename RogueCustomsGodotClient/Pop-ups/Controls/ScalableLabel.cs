@@ -19,7 +19,7 @@ public partial class ScalableLabel : Label
 
     private void UpdateFontSize()
     {
-        AddThemeFontSizeOverride("font_size", DefaultFontSize);
+        AddThemeFontSizeOverride("normal_font_size", DefaultFontSize);
 
         var currentFontSize = 16;
         var maxWidth = Size.X - 16;
@@ -33,6 +33,6 @@ public partial class ScalableLabel : Label
         }
 
         Size = new(Math.Min(maxWidth, textWidth), 16);
-        AddThemeFontSizeOverride("font_size", currentFontSize);
+        AddThemeFontSizeOverride("normal_font_size", currentFontSize);
     }
 }

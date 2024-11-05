@@ -174,18 +174,26 @@ namespace RogueCustomsGameEngine.Game.Entities
             //      I change my target to a random Tile in a random Room that isn't mine (preferably one I haven't seen yet)
             //      And I take a step there
 
-            var pickableRooms = new List<Room>();
+            if(Movement.Current > 0)
+            {
+                var pickableRooms = new List<Room>();
 
-            if (Map.Rooms.All(VisitedRooms.Contains))
-                pickableRooms = Map.Rooms;
+                if (Map.Rooms.All(VisitedRooms.Contains))
+                    pickableRooms = Map.Rooms.Where(r => r != ContainingRoom).ToList();
+                else
+                    pickableRooms = Map.Rooms.Except(VisitedRooms).Where(r => r != ContainingRoom).ToList();
+
+                var anotherRoom = (pickableRooms.Count > 0) ? pickableRooms.TakeRandomElement(Rng) : ContainingRoom;
+                var aTileInThatRoom = anotherRoom.GetTiles().Where(t => t.IsWalkable && !t.IsHarmfulFor(this)).TakeRandomElement(Rng);
+
+                CurrentTarget = aTileInThatRoom;
+                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+            }
             else
-                pickableRooms = Map.Rooms.Except(VisitedRooms).ToList();
-
-            var anotherRoom = pickableRooms.Where(r => r != ContainingRoom).TakeRandomElement(Rng);
-            var aTileInAnotherRoom = anotherRoom.GetTiles().Where(t => t.IsWalkable && !t.IsHarmfulFor(this)).TakeRandomElement(Rng);
-
-            CurrentTarget = aTileInAnotherRoom;
-            PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+            {
+                CurrentTarget = ContainingTile;
+                PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).ToList());
+            }
 
             return true;
         }
@@ -346,10 +354,16 @@ namespace RogueCustomsGameEngine.Game.Entities
                 RemainingMovement = 0;
                 return;
             }
+            if(ContainingTile == nextTile || RemainingMovement <= 0)
+            {
+                // If I'm on my target or cannot walk to it, end turn
+                TookAction = true;
+                return;
+            }
             if (Map.TryMoveCharacter(this, nextTile))
             {
                 PathToUse.Route = PathToUse.Route.Skip(1).ToList();
-                if (RemainingMovement == 0)
+                if (RemainingMovement <= 0)
                     TookAction = true;
             }
         }

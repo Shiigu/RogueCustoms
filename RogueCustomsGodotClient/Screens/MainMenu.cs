@@ -1,6 +1,7 @@
 using Godot;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Utils;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 using FileAccess = Godot.FileAccess;
 
@@ -51,11 +53,22 @@ public partial class MainMenu : Control
         LoadSavedLocalization();
 
         SetupLocalizationOptions();
+
+        GetSaveGames();
         _globalState.PlayerControlMode = ControlMode.NormalMove;
     }
 
     private void SelectButton(int index)
     {
+        if (_buttons[index].Disabled)
+        {
+            if (index == _buttons.Count - 1)
+                index = 0;
+            if (index < _selectedIndex)
+                index--;
+            else
+                index++;
+        }
         foreach (var button in _buttons)
         {
             button.AddThemeStyleboxOverride("normal", normalButtonStyle);
@@ -90,6 +103,36 @@ public partial class MainMenu : Control
         TranslationServer.SetLocale(initialLocale);
         if (defaultLocaleIndex > -1)
             _languageDropdown.Select(defaultLocaleIndex);
+    }
+
+    private void GetSaveGames()
+    {
+        _globalState.SavedGames = new();
+        _loadSavedDungeonButton.Disabled = true;
+        
+        using var dir = DirAccess.Open(_globalState.SaveGameFolder);
+        if (dir == null) return;
+
+        dir.ListDirBegin();
+
+        string fileName;
+        while ((fileName = dir.GetNext()) != "")
+        {
+            if (fileName.EndsWith(_globalState.SaveGameExtension))
+            {
+                string filePath = $"{_globalState.SaveGameFolder}/{fileName}";
+
+                var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
+                var fileContent = file.GetAsText();
+                var saveGame = JsonSerializer.Deserialize<SaveGame>(fileContent);
+
+                if (saveGame.DungeonVersion.Equals(GlobalConstants.CurrentDungeonJsonVersion))
+                    _globalState.SavedGames.Add(saveGame);
+            }
+        }
+
+        dir.ListDirEnd();
+        _loadSavedDungeonButton.Disabled = _globalState.SavedGames.Count == 0;
     }
 
     private void OnLanguageSelected(long index)
@@ -154,29 +197,7 @@ public partial class MainMenu : Control
 
     private void OnLoadSavedDungeonPressed()
     {
-        try
-        {
-            using var file = FileAccess.Open(_globalState.SaveGamePath, FileAccess.ModeFlags.Read);
-            var dungeonData = new byte[file.GetLength()];
-            for (int i = 0; i < dungeonData.Length; i++)
-            {
-                dungeonData[i] = file.Get8();
-            }
-            _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
-            {
-                DungeonData = dungeonData
-            });
-            GetTree().ChangeSceneToFile("res://Screens/GameScreen.tscn");
-        }
-        catch
-        {
-            this.CreateStandardPopup(TranslationServer.Translate("FailedDungeonHeader"),
-                                        TranslationServer.Translate("FailedDungeonLoadText"),
-                                        new PopUpButton[]
-                                        {
-                                            new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" }
-                                        }, new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
-        }
+        this.CreateLoadSaveGamePopup();
     }
 
     private void OnExitPressed()

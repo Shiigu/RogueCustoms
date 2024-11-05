@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
+using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
@@ -14,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -333,20 +336,34 @@ public partial class GameScreen : Control
     {
         try
         {
+            if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
             if (_globalState.PlayerControlMode == ControlMode.Targeting)
             {
                 _mapPanel.StopTargeting();
                 _globalState.PlayerControlMode = _previousControlMode;
             }
             _controlsPanel.Update();
+            var dungeonStatus = _globalState.DungeonInfo;
             var output = _globalState.DungeonManager.SaveDungeon();
             if (output != null)
             {
-                using var file = FileAccess.Open(_globalState.SaveGamePath, FileAccess.ModeFlags.Write);
-                foreach (var @byte in output.DungeonData)
+                var saveData = new SaveGame()
                 {
-                    file.Store8(@byte);
-                }
+                    DungeonName = dungeonStatus.DungeonName,
+                    FloorName = dungeonStatus.FloorName,
+                    DungeonData = Convert.ToBase64String(output.DungeonData),
+                    DungeonVersion = output.DungeonVersion,
+                    PlayerName = dungeonStatus.PlayerEntity.Name,
+                    PlayerLevel = dungeonStatus.PlayerEntity.Level,
+                    PlayerRepresentation = dungeonStatus.PlayerEntity.ConsoleRepresentation,
+                    IsPlayerDead = dungeonStatus.PlayerEntity.HP <= 0,
+                    SaveDate = DateTime.Now
+                };
+
+                var saveDataAsJSON = JsonSerializer.Serialize(saveData);
+
+                using var file = FileAccess.Open($"{_globalState.SaveGameFolder}/{output.FileName}.rcs", FileAccess.ModeFlags.Write);
+                file.StoreString(saveDataAsJSON);
 
                 _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                             TranslationServer.Translate("SuccessfulSavePromptText"),

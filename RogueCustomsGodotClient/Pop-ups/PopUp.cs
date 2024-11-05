@@ -37,11 +37,11 @@ public partial class PopUp : Control
     public void UpdateSize()
     {
         var labelSize = _innerTextWithoutBbCode.GetSizeToFitForDimensionsWithoutBbCode(_innerTextLabel.GetThemeDefaultFont(), 900, 900);
-        _innerTextLabel.CustomMinimumSize = new Vector2(labelSize.X, labelSize.Y + 12);
+        _innerTextLabel.CustomMinimumSize = new Vector2(labelSize.X, labelSize.Y);
 
         _marginContainer.Size = new Vector2(Mathf.Min(_innerTextLabel.Size.X, 900), Mathf.Min(_titleLabel.Size.Y + _innerTextLabel.Size.Y + _buttonContainer.Size.Y - 12, 900));
         _border.Position = new Vector2(0, 25);
-        _border.Size = new Vector2(_marginContainer.Size.X, _marginContainer.Size.Y - 50);
+        _border.Size = new Vector2(_marginContainer.Size.X, _marginContainer.Size.Y - 56);
 
         _titleLabel.Size = new Vector2(Mathf.Min(_titleLabel.Size.X + 600, 900), _titleLabel.Size.Y);
 

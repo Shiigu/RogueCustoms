@@ -17,6 +17,7 @@ AuthorHeaderText,Autor,Author
 BriefingMessageHeader,RESUMEN,BRIEFING
 CancelButtonText,CANCELAR,CANCEL
 CloseButtonText,CERRAR,CLOSE
+DeadPlayerText,MUERTO,DEAD
 DetailsButtonText,DETALLES,DETAILS
 DetailsSubconsoleTitleText,DETALLES,DETAILS
 DoButtonText,REALIZAR,DO
@@ -55,7 +56,9 @@ LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English
 LeftButtonText,<-,<-
-LoadDungeonText,CARGAR MAZMORRA GUARDADA,LOAD SAVED DUNGEON
+LoadDungeonText,CARGAR UNA MAZMORRA GUARDADA,LOAD A SAVED DUNGEON
+LoadSaveGameHeaderText,Mazmorras Guardadas,Saved Dungeons
+LoadButtonText,CARGAR,LOAD
 LocalRadioButtonText,LOCAL,LOCAL
 MenuControlsSubText,<F5> Guardar <ESC> Salir,<F5> Save Game <ESC> Exit
 MessageHeaderText,MENSAJES,MESSAGES

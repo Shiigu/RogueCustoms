@@ -16,7 +16,7 @@ namespace RogueCustomsGodotClient.Helpers
     {
         public static bool IsPopUp(this Node n)
         {
-            return n is InputBox || n is PopUp || n is ScrollablePopUp || n is PlayerSelectItem || n is SelectClass;
+            return n is InputBox || n is PopUp || n is ScrollablePopUp || n is PlayerSelectItem || n is SelectClass || n is SelectSaveGame;
         }
 
         public static async Task CreateStandardPopup(this Control control, string titleText, string innerText, PopUpButton[] buttons, Color borderColor)
@@ -98,6 +98,20 @@ namespace RogueCustomsGodotClient.Helpers
             var selectClassWindow = (SelectClass)GD.Load<PackedScene>("res://Pop-ups/SelectClass.tscn").Instantiate();
             control.AddChild(selectClassWindow);
             selectClassWindow.Show((classId) => { selectCallback?.Invoke(classId); }, () => cancelCallback?.Invoke());
+        }
+
+        public static void CreateLoadSaveGamePopup(this Control control)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var selectSaveGamePopup = (SelectSaveGame)GD.Load<PackedScene>("res://Pop-ups/SelectSaveGame.tscn").Instantiate();
+            control.AddChild(selectSaveGamePopup);
+            selectSaveGamePopup.Show(() => { overlay.QueueFree(); });
         }
     }
 }

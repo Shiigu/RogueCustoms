@@ -14,6 +14,9 @@ namespace RogueCustomsGodotClient.Utils
         public static readonly string GameVersion = Assembly.GetExecutingAssembly()
                                         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                                         .InformationalVersion;
+        public static readonly string CurrentDungeonJsonVersion = Assembly.GetExecutingAssembly()
+                                        .GetCustomAttribute<AssemblyFileVersionAttribute>()
+                                        .Version;
 
         public static readonly StyleBoxFlat PopUpBorderStyle = GD.Load<StyleBoxFlat>("res://Styles/PopUpBorder.tres");
         public static readonly StyleBoxFlat PopUpTitleStyle = GD.Load<StyleBoxFlat>("res://Styles/PopUpTitle.tres");
@@ -107,6 +110,32 @@ namespace RogueCustomsGodotClient.Utils
             ContentMarginTop = 0,
             ContentMarginLeft = 0,
             ContentMarginRight = 0
+        };
+        public static readonly StyleBoxFlat NormalSaveGameCellStyleBox = new()
+        {
+            BgColor = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 },
+            BorderColor = new Color() { R8 = 32, G8 = 32, B8 = 32, A = 1 },
+            BorderWidthBottom = 1,
+            BorderWidthLeft = 1,
+            BorderWidthRight = 1,
+            BorderWidthTop = 1,
+            ContentMarginBottom = 8,
+            ContentMarginTop = 8,
+            ContentMarginLeft = 12,
+            ContentMarginRight = 12
+        };
+        public static readonly StyleBoxFlat SelectedSaveGameCellStyleBox = new()
+        {
+            BgColor = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 },
+            BorderColor = new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 },
+            BorderWidthBottom = 4,
+            BorderWidthLeft = 4,
+            BorderWidthRight = 4,
+            BorderWidthTop = 4,
+            ContentMarginBottom = 8,
+            ContentMarginTop = 8,
+            ContentMarginLeft = 12,
+            ContentMarginRight = 12
         };
     }
 }

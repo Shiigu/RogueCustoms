@@ -5,6 +5,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
 using RogueCustomsGodotClient;
+using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Utils;
 
 using System;
@@ -21,6 +22,12 @@ public partial class GlobalState : Node
 	public bool MustUpdateGameScreen { get; set; }
     public bool HasSaveGame => Godot.FileAccess.FileExists(SaveGamePath);
     public readonly string SettingsPath = "./Settings.cfg";
+
+    public readonly string SaveGameFolder = "./Saves";
+    public readonly string SaveGameExtension = ".rcs";
+
+    public List<SaveGame> SavedGames { get; set; } = new();
+
     public readonly string SaveGamePath = "./savedDungeon.rcs";
     private readonly string LogFolder = "./Logs";
     public readonly string DungeonsFolder = "./JSON";
@@ -57,6 +64,19 @@ public partial class GlobalState : Node
             {
                 GD.PrintErr("Failed to create JSON directory");
                 CanWriteLogs = false;
+                return;
+            }
+        }
+        if (!dir.DirExists("Saves"))
+        {
+            Error err = dir.MakeDir("Saves");
+            if (err == Error.Ok)
+            {
+                GD.Print("Saves folder created");
+            }
+            else
+            {
+                GD.PrintErr("Failed to create Saves directory");
                 return;
             }
         }

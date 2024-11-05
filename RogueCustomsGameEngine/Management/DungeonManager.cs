@@ -91,6 +91,7 @@ namespace RogueCustomsGameEngine.Management
 
             ActiveDungeon = new Dungeon(dungeonInfo, locale)
             {
+                FileName = dungeonName,
                 LastAccessTime = DateTime.UtcNow
             };
         }
@@ -103,7 +104,9 @@ namespace RogueCustomsGameEngine.Management
             formatter.Serialize(gzipStream, ActiveDungeon);
             return new DungeonSaveGameDto
             {
-                DungeonData = memoryStream.ToArray()
+                FileName = ActiveDungeon.FileName,
+                DungeonData = memoryStream.ToArray(),
+                DungeonVersion = ActiveDungeon.Version
             };
         }
 

@@ -204,6 +204,7 @@ namespace RogueCustomsDungeonEditor.Controls
             var statToUse = CharacterStats[hsbStats.Value];
             var correspondingStatInfo = StatInfos[hsbStats.Value];
             var regenerationTargetStat = CharacterStats.Find(cs => cs.StatId.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
+            var isMandatoryStat = FormConstants.MandatoryStats.Contains(statToUse.StatId);
 
             lblStatId.Text = statToUse.StatId;
             nudBase.Minimum = correspondingStatInfo.MinCap;
@@ -219,6 +220,8 @@ namespace RogueCustomsDungeonEditor.Controls
             nudBase.Value = statToUse.Base;
             nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
             lblPercentage.Visible = correspondingStatInfo.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase);
+
+            chkIsUsed.Enabled = !isMandatoryStat;
 
             if (statToUse == null || !statToUse.Used || (regenerationTargetStat != null && !regenerationTargetStat.Used))
             {
