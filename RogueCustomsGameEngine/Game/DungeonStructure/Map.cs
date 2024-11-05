@@ -1213,9 +1213,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 #endregion
             }
-            Snapshot = new(Dungeon, this);
             TurnCount++;
             SetFlagValue("TurnCount", TurnCount);
+            Snapshot = new(Dungeon, this);
             Player.TookAction = false;
             Player.PerformOnTurnStart();
             Player.RemainingMovement = (int) Player.Movement.Current;
@@ -1229,12 +1229,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
 
         private void AddNPC()
-        {
+        {            
             if (!FloorConfigurationToUse.PossibleMonsters.Any() || TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
             List<ClassInFloor> usableNPCGenerators = new();
             FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
             {
-                if (!pm.CanSpawnAfterFirstTurn || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
+                if ((TurnCount == 0 && !pm.CanSpawnOnFirstTurn) || (TurnCount > 0 && !pm.CanSpawnAfterFirstTurn) || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
                 var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                 if (!string.IsNullOrWhiteSpace(pm.SpawnCondition))

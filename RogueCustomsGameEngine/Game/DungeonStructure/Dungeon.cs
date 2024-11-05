@@ -27,6 +27,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public EntityClass? PlayerClass { get; set; }
         public string? PlayerName { get; set; }
         public string Version { get; set; }
+        public string FileName { get; set; }
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 

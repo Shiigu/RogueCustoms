@@ -1,0 +1,87 @@
+[gd_scene load_steps=7 format=3 uid="uid://b30011m58nfvt"]
+
+[ext_resource type="Script" path="res://Pop-ups/SelectSaveGame.cs" id="1_cvov2"]
+[ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_vcm18"]
+[ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="3_l0qx3"]
+[ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="4_wm5lp"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="5_o3xpy"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="6_ouo0k"]
+
+[node name="SelectSaveGame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cvov2")
+
+[node name="Border" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 550.0
+offset_bottom = 412.0
+theme_override_styles/panel = ExtResource("2_vcm18")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 17.0
+offset_top = 40.0
+offset_right = 533.0
+offset_bottom = 374.0
+horizontal_scroll_mode = 0
+
+[node name="SaveGameTable" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 25.0
+offset_right = 525.0
+offset_bottom = 425.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("3_l0qx3")
+text = "TÍTULO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LoadButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_wm5lp")
+theme_override_styles/hover = ExtResource("5_o3xpy")
+theme_override_styles/normal = ExtResource("6_ouo0k")
+text = "LOAD"
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_wm5lp")
+theme_override_styles/hover = ExtResource("5_o3xpy")
+theme_override_styles/normal = ExtResource("6_ouo0k")
+text = "CANCEL"
