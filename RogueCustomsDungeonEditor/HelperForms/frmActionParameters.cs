@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics;
-
-using RogueCustomsDungeonEditor.EffectInfos;
+﻿using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
 using RogueCustomsGameEngine.Utils.Helpers;
@@ -9,25 +7,16 @@ using RogueCustomsGameEngine.Utils.Representation;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection.Emit;
-using System.Reflection.Metadata;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Control = System.Windows.Forms.Control;
 using Label = System.Windows.Forms.Label;
 using Parameter = RogueCustomsGameEngine.Utils.JsonImports.Parameter;
-using Point = System.Drawing.Point;
-using Timer = System.Windows.Forms.Timer;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
@@ -113,7 +102,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             if (lblDisplayName.PreferredWidth > baseDisplayWidth)
             {
-                var widthChange = baseDisplayWidth - lblDisplayName.PreferredWidth;
+                var widthChange = baseDisplayWidth - lblDisplayName.PreferredWidth - 5;
                 lblDisplayName.Width = lblDisplayName.PreferredWidth;
                 lblDescription.Width -= widthChange;
                 lblRequired.Width -= widthChange;
@@ -127,7 +116,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             if (lblDescription.PreferredWidth > baseDescriptionWidth)
             {
-                var widthChange = baseDescriptionWidth - lblDescription.PreferredWidth;
+                var widthChange = baseDescriptionWidth - lblDescription.PreferredWidth - 5;
                 lblDisplayName.Width -= widthChange;
                 lblDescription.Width = lblDescription.PreferredWidth;
                 lblRequired.Width -= widthChange;
@@ -141,7 +130,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             if (lblDescription.PreferredHeight > baseDescriptionHeight)
             {
-                var heightChange = baseDescriptionHeight - lblDescription.PreferredHeight;
+                var heightChange = baseDescriptionHeight - lblDescription.PreferredHeight - 5;
                 lblDescription.Height = lblDescription.PreferredHeight;
                 lblRequired.Location = new Point(lblRequired.Location.X, lblRequired.Location.Y - heightChange);
                 tlpParameters.Location = new Point(tlpParameters.Location.X, tlpParameters.Location.Y - heightChange);
@@ -153,6 +142,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             var rowNumber = 0;
             llblWikiAction.Focus();
+
+            if (paramsData.Parameters.Count == 0)
+                lblRequired.Text = "This Function has no parameters.";
 
             foreach (var parameter in paramsData.Parameters)
             {
@@ -202,15 +194,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     toolTip.SetToolTip(tlp.Controls[0], parameter.Description);
                 else
                     toolTip.SetToolTip(control, parameter.Description);
-                control.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+                nameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
                 tlpParameters.Controls.Add(nameLabel, 0, rowNumber);
                 tlpParameters.Controls.Add(control, 1, rowNumber);
 
                 rowNumber++;
             }
-            tlpParameters.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            tlpParameters.Height = 30 * rowNumber;
+            foreach (RowStyle rowStyle in tlpParameters.RowStyles)
+            {
+                rowStyle.SizeType = SizeType.Absolute;
+                rowStyle.Height = 32;
+            }
+            tlpParameters.Height = 33 * rowNumber;
         }
 
         private IEnumerable<string> GetComboBoxItems(EffectParameter parameter)
@@ -379,10 +376,36 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             };
 
+            colorTextBox.Enter += (sender, e) =>
+            {
+                PreviousTextBoxValue = colorTextBox.Text;
+            };
+
+            colorTextBox.Leave += (sender, e) =>
+            {
+                try
+                {
+                    var textColor = colorTextBox.Text.ToColor();
+                    colorButton.BackColor = textColor;
+                }
+                catch
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid color.",
+                        "Invalid parameter data",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    colorTextBox.Text = PreviousTextBoxValue;
+                }
+            };
+
             var colorPanel = new TableLayoutPanel
             {
                 ColumnCount = 2,
                 Dock = DockStyle.Fill,
+                Margin = new(0, 0, 0, 0),
+                Padding = new(0, 0, 0, 0),
                 AutoSize = true
             };
 
