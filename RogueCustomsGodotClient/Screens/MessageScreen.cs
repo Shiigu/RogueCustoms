@@ -18,13 +18,13 @@ public partial class MessageScreen : Control
     private GlobalState _globalState;
 
     private readonly string briefingMessageHeaderText = TranslationServer.Translate("BriefingMessageHeader");
-    private readonly Color briefingColor = new(255, 255, 255);
+    private readonly Color briefingColor = new() { R8 = 255, G8 = 255, B8 = 255, A8 = 255 };
 
     private readonly string theEndMessageHeaderText = TranslationServer.Translate("TheEndMessageHeader");
-    private readonly Color theEndColor = new(0, 255, 0);
+    private readonly Color theEndColor = new() { R8 = 0, G8 = 255, B8 = 0, A8 = 255 };
 
     private readonly string errorMessageHeaderText = TranslationServer.Translate("ErrorMessageHeader");
-    private readonly Color errorColor = new(255, 0, 0);
+    private readonly Color errorColor = new() { R8 = 255, G8 = 0, B8 = 0, A8 = 255 };
 
     private readonly string pressEnterToContinueText = TranslationServer.Translate("PressEnterText");
 

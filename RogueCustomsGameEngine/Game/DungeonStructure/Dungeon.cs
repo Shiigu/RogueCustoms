@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
         public bool IsDebugMode { get; set; }
+        public bool IsHardcoreMode { get; set; }
         public List<ActionWithEffects> Scripts { get; private set; }
 
         #region From JSON
@@ -53,7 +54,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<TileType> TileTypes { get; private set; }
         #endregion
 
-        public Dungeon(DungeonInfo dungeonInfo, string localeLanguage)
+        public Dungeon(DungeonInfo dungeonInfo, string localeLanguage, bool isHardcoreMode)
         {
             CurrentEntityId = 1;
             Version = dungeonInfo.Version;
@@ -89,6 +90,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             Scripts = new();
             dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s)));
+            IsHardcoreMode = isHardcoreMode;
             MapFactions();
             CurrentFloorLevel = 1;
             PlayerCharacter = null;

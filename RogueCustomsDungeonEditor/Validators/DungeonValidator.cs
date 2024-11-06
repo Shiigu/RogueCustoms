@@ -86,7 +86,7 @@ namespace RogueCustomsDungeonEditor.Validators
             ProgressBar.Value = 0;
             ProgressBar.Maximum = totalSteps;
 
-            var sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale);
+            var sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale, false);
             sampleDungeon.IsDebugMode = true;
             sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
             sampleDungeon.NewMap();

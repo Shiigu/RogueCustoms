@@ -16,6 +16,7 @@ namespace RogueCustomsGodotClient.Entities
         public string PlayerName { get; set; }
         public ConsoleRepresentation PlayerRepresentation { get; set; }
         public int PlayerLevel { get; set; }
+        public bool IsHardcoreMode { get; set; }
         public bool IsPlayerDead { get; set; }
         public DateTime SaveDate { get; set; }
         public string DungeonData { get; set; }

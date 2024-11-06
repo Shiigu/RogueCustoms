@@ -36,10 +36,13 @@ public partial class PopUp : Control
 
     public void UpdateSize()
     {
-        var labelSize = _innerTextWithoutBbCode.GetSizeToFitForDimensionsWithoutBbCode(_innerTextLabel.GetThemeDefaultFont(), 900, 900);
+        var labelSize = _innerTextWithoutBbCode.GetSizeToFitForDimensions(_innerTextLabel.GetThemeDefaultFont(), 900, 900);
         _innerTextLabel.CustomMinimumSize = new Vector2(labelSize.X, labelSize.Y);
 
-        _marginContainer.Size = new Vector2(Mathf.Min(_innerTextLabel.Size.X, 900), Mathf.Min(_titleLabel.Size.Y + _innerTextLabel.Size.Y + _buttonContainer.Size.Y - 12, 900));
+        _marginContainer.Size = new Vector2(
+            Mathf.Min(_innerTextLabel.Size.X, 900), 
+            Mathf.Min(_titleLabel.Size.Y + _innerTextLabel.Size.Y + _buttonContainer.Size.Y - 12, 900));
+
         _border.Position = new Vector2(0, 25);
         _border.Size = new Vector2(_marginContainer.Size.X, _marginContainer.Size.Y - 56);
 
@@ -51,7 +54,7 @@ public partial class PopUp : Control
     public void Show(string titleText, string innerText, PopUpButton[] buttons, Color borderColor, Action modalCloseCallback)
     {
         _originalLabelSize = _innerTextLabel.Size;
-        _innerTextWithoutBbCode = Regex.Replace(innerText, @"\[(.*?)\]", string.Empty);
+        _innerTextWithoutBbCode = innerText.ToStringWithoutBbcode();
         _titleLabel.Text = titleText;
         _innerTextLabel.BbcodeEnabled = true;
         _innerTextLabel.Text = innerText.ToBbCodeAppropriateString();

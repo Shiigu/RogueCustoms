@@ -22,6 +22,7 @@ public partial class PickDungeon : Control
     private GlobalState _globalState;
     private InputManager _inputManager;
     private FileDialog _openFileDialog;
+    private CheckButton _hardcoreCheckButton;
 
     private int _selectedIndex = -1;
     private DungeonPickDto SelectedItem => _globalState.PossibleDungeonInfo.Dungeons[_selectedIndex];
@@ -33,6 +34,7 @@ public partial class PickDungeon : Control
         _titleLabel = GetNode<Label>("TitleLabel");
         _dungeonTableHeader = GetNode<VBoxContainer>("DungeonTableHeader");
         _dungeonTable = GetNode<VBoxContainer>("ScrollContainer/DungeonTable");
+        _hardcoreCheckButton = GetNode<CheckButton>("HardcoreCheckButton");
         _pickDungeonButton = GetNode<Button>("PickDungeonButton");
         _addDungeonButton = GetNode<Button>("AddDungeonButton");
         _returnToMainMenuButton = GetNode<Button>("ReturnToMainMenuButton");
@@ -62,6 +64,7 @@ public partial class PickDungeon : Control
             _noDungeonsTextContainer.Visible = false;
             _dungeonTable.Visible = true;
             _dungeonTableHeader.Visible = true;
+            _hardcoreCheckButton.Visible = true;
 
             AddRow(TranslationServer.Translate("DungeonNameHeaderText"), TranslationServer.Translate("AuthorHeaderText"), TranslationServer.Translate("VersionHeaderText"), true);
 
@@ -76,12 +79,39 @@ public partial class PickDungeon : Control
             _noDungeonsTextContainer.Visible = true;
             _dungeonTable.Visible = false;
             _dungeonTableHeader.Visible = false;
+            _hardcoreCheckButton.Visible = false;
         }
 
+        _hardcoreCheckButton.Pressed += HardcoreCheckButton_Pressed;
         _pickDungeonButton.Pressed += PickDungeonButton_Pressed;
         _addDungeonButton.Pressed += AddDungeonButton_Pressed;
         _returnToMainMenuButton.Pressed += ReturnToMainMenuButton_Pressed;
         _openFileDialog.FileSelected += OpenFileDialog_FileSelected;
+
+        HardcoreCheckButton_Pressed();
+    }
+
+    private void HardcoreCheckButton_Pressed()
+    {
+        if (_hardcoreCheckButton.ButtonPressed)
+        {
+            _hardcoreCheckButton.Text = TranslationServer.Translate("HardcoreModeEnabledText");
+
+            _hardcoreCheckButton.AddThemeColorOverride("font_color", new Color { R8 = 255, G8 = 0, B8 = 0, A8 = 255 });
+            _hardcoreCheckButton.AddThemeColorOverride("font_focus_color", new Color { R8 = 255, G8 = 0, B8 = 0, A8 = 255 });
+            _hardcoreCheckButton.AddThemeColorOverride("font_pressed_color", new Color { R8 = 255, G8 = 0, B8 = 0, A8 = 255 });
+            _hardcoreCheckButton.AddThemeColorOverride("font_hover_pressed_color", new Color { R8 = 255, G8 = 0, B8 = 0, A8 = 255 });
+            _hardcoreCheckButton.AddThemeColorOverride("font_hover_color", new Color { R8 = 255, G8 = 0, B8 = 0, A8 = 255 });
+        }
+        else
+        {
+            _hardcoreCheckButton.Text = TranslationServer.Translate("HardcoreModeDisabledText");
+            _hardcoreCheckButton.RemoveThemeColorOverride("font_color");
+            _hardcoreCheckButton.RemoveThemeColorOverride("font_focus_color");
+            _hardcoreCheckButton.RemoveThemeColorOverride("font_pressed_color");
+            _hardcoreCheckButton.RemoveThemeColorOverride("font_hover_pressed_color");
+            _hardcoreCheckButton.RemoveThemeColorOverride("font_hover_color");
+        }
     }
 
     private void OpenFileDialog_FileSelected(string path)
@@ -94,7 +124,7 @@ public partial class PickDungeon : Control
             var dungeonAlreadyExists = FileAccess.FileExists($"{_globalState.DungeonsFolder}/{Path.GetFileName(path)}");
             if(dungeonAlreadyExists)
             {
-                this.CreateStandardPopup(TranslationServer.Translate("AddDungeonOverwriteHeaderText"),
+                _ = this.CreateStandardPopup(TranslationServer.Translate("AddDungeonOverwriteHeaderText"),
                                             TranslationServer.Translate("AddDungeonOverwritePromptText").ToString().Format(new { FileName = Path.GetFileName(path) }),
                                             new PopUpButton[]
                                             {
@@ -106,7 +136,7 @@ public partial class PickDungeon : Control
             AddOrOverwriteDungeon(path, false);
             return;
         }
-        this.CreateStandardPopup(
+        _ = this.CreateStandardPopup(
             TranslationServer.Translate("AddDungeonFailureHeaderText"),
             TranslationServer.Translate("AddDungeonFailureText").ToString(),
             new PopUpButton[]
@@ -123,7 +153,7 @@ public partial class PickDungeon : Control
         var success = _globalState.DungeonManager.AddDungeonIfPossible(path, fileContents);
         if (success)
         {
-            this.CreateStandardPopup(
+            _ = this.CreateStandardPopup(
                 isOverwrite ? TranslationServer.Translate("AddDungeonOverwriteSuccessHeaderText") : TranslationServer.Translate("AddDungeonSuccessHeaderText"),
                 isOverwrite ? TranslationServer.Translate("AddDungeonOverwriteSuccessText") : TranslationServer.Translate("AddDungeonSuccessText"),
                 new PopUpButton[]
@@ -141,6 +171,7 @@ public partial class PickDungeon : Control
             _noDungeonsTextContainer.Visible = false;
             _dungeonTable.Visible = true;
             _dungeonTableHeader.Visible = true;
+            _hardcoreCheckButton.Visible = true;
             _dungeonTable.GetChildren().Clear();
 
             AddRow(TranslationServer.Translate("DungeonNameHeaderText"), TranslationServer.Translate("AuthorHeaderText"), TranslationServer.Translate("VersionHeaderText"), true);
@@ -155,7 +186,7 @@ public partial class PickDungeon : Control
         }
         else
         {
-            this.CreateStandardPopup(
+            _ = this.CreateStandardPopup(
                 TranslationServer.Translate("AddDungeonFailureHeaderText"),
                 TranslationServer.Translate("AddDungeonFailureText").ToString(),
                 new PopUpButton[]
@@ -171,17 +202,32 @@ public partial class PickDungeon : Control
         _openFileDialog.Visible = true;
     }
 
-    private void PickDungeonButton_Pressed()
+    private async void PickDungeonButton_Pressed()
     {
         if (SelectedItem.IsAtCurrentVersion)
         {
             _globalState.MessageScreenType = MessageScreenType.Briefing;
-            _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale);
-            GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+            var passedHardcoreCheck = !_hardcoreCheckButton.ButtonPressed;
+            if(_hardcoreCheckButton.ButtonPressed)
+            {
+                _globalState.IsHardcoreMode = true;
+                await this.CreateStandardPopup(TranslationServer.Translate("HardcoreModeWarningHeaderText"),
+                                            TranslationServer.Translate("HardcoreModeWarningText"),
+                                            new PopUpButton[]
+                                            {
+                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () => passedHardcoreCheck = true, ActionPress = "ui_accept" },
+                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = () => passedHardcoreCheck = false, ActionPress = "ui_cancel" }
+                                            }, new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+            }
+            if (passedHardcoreCheck)
+            {
+                _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale, _hardcoreCheckButton.ButtonPressed);
+                _ = GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+            }
         }
         else
         {
-            this.CreateStandardPopup(
+            _ = this.CreateStandardPopup(
                 TranslationServer.Translate("IncompatibleDungeonMessageBoxHeader"),
                 TranslationServer.Translate("IncompatibleDungeonMessageBoxText").ToString().Format(new { DungeonJsonVersion = SelectedItem.Version, RequiredDungeonJsonVersion = _globalState.PossibleDungeonInfo.CurrentVersion }),
                 new PopUpButton[]
@@ -314,21 +360,28 @@ public partial class PickDungeon : Control
         else if (@event.IsActionPressed("ui_accept"))
         {
             _pickDungeonButton.GrabFocus();
-            _pickDungeonButton.EmitSignal("pressed");
+            _ = _pickDungeonButton.EmitSignal("pressed");
             _pickDungeonButton.ButtonPressed = true;
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_hardcore"))
+        {
+            _hardcoreCheckButton.GrabFocus();
+            _hardcoreCheckButton.ButtonPressed = !_hardcoreCheckButton.ButtonPressed;
+            _ = _hardcoreCheckButton.EmitSignal("pressed");
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_add"))
         {
             _addDungeonButton.GrabFocus();
-            _addDungeonButton.EmitSignal("pressed");
+            _ = _addDungeonButton.EmitSignal("pressed");
             _addDungeonButton.ButtonPressed = true;
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_cancel"))
         {
             _returnToMainMenuButton.GrabFocus();
-            _returnToMainMenuButton.EmitSignal("pressed");
+            _ = _returnToMainMenuButton.EmitSignal("pressed");
             _returnToMainMenuButton.ButtonPressed = true;
             AcceptEvent();
         }

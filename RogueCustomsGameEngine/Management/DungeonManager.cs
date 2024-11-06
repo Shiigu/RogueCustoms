@@ -85,11 +85,11 @@ namespace RogueCustomsGameEngine.Management
             return DungeonListForDisplay;
         }
 
-        public void CreateDungeon(string dungeonName, string locale)
+        public void CreateDungeon(string dungeonName, string locale, bool isHardcoreMode)
         {
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
-            ActiveDungeon = new Dungeon(dungeonInfo, locale)
+            ActiveDungeon = new Dungeon(dungeonInfo, locale, isHardcoreMode)
             {
                 FileName = dungeonName,
                 LastAccessTime = DateTime.UtcNow

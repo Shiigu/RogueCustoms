@@ -24,6 +24,7 @@ offset_bottom = 412.0
 theme_override_styles/panel = ExtResource("2_vcm18")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
 offset_left = 17.0
 offset_top = 40.0
 offset_right = 533.0

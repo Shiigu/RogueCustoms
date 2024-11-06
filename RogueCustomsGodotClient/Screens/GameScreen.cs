@@ -143,6 +143,23 @@ public partial class GameScreen : Control
             }
             else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
             {
+                if(_globalState.IsHardcoreMode)
+                {
+                    _ = this.CreateStandardPopup(
+                        TranslationServer.Translate("HardcoreModeDeathHeaderText"),
+                        TranslationServer.Translate("HardcoreModeDeathText"),
+                        new PopUpButton[]
+                        {
+                    new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
+                        },
+                        new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+
+                    if (FileAccess.FileExists(_globalState.CurrentSavePath))
+                    {
+                        var dir = DirAccess.Open(_globalState.SaveGameFolder);
+                        dir.Remove(_globalState.CurrentSavePath);
+                    }
+                }
                 _globalState.PlayerControlMode = ControlMode.None;
                 _saveGameButton.Disabled = true;
             }
@@ -259,7 +276,23 @@ public partial class GameScreen : Control
                             return;
                         }
                         if (dungeonStatus == DungeonStatus.GameOver)
+                        {
                             controlModeToPick = ControlMode.None;
+                            if (_globalState.IsHardcoreMode)
+                            {
+                                _ = this.CreateStandardPopup(
+                                    TranslationServer.Translate("HardcoreModeDeathHeaderText"),
+                                    TranslationServer.Translate("HardcoreModeDeathText"),
+                                    new PopUpButton[]
+                                    {
+                                            new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
+                                    },
+                                    new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+
+                                if (!string.IsNullOrWhiteSpace(_globalState.CurrentSavePath) && FileAccess.FileExists(_globalState.CurrentSavePath))
+                                    DirAccess.RemoveAbsolute(_globalState.CurrentSavePath);
+                            }
+                        }
                         break;
                     case DisplayEventType.SetOnStairs:
                         var onStairs = (bool)displayEvent.Params[0];
@@ -357,13 +390,17 @@ public partial class GameScreen : Control
                     PlayerLevel = dungeonStatus.PlayerEntity.Level,
                     PlayerRepresentation = dungeonStatus.PlayerEntity.ConsoleRepresentation,
                     IsPlayerDead = dungeonStatus.PlayerEntity.HP <= 0,
+                    IsHardcoreMode = dungeonStatus.IsHardcoreMode,
                     SaveDate = DateTime.Now
                 };
 
                 var saveDataAsJSON = JsonSerializer.Serialize(saveData);
+                var filePath = $"{_globalState.SaveGameFolder}/{output.FileName}.rcs";
 
-                using var file = FileAccess.Open($"{_globalState.SaveGameFolder}/{output.FileName}.rcs", FileAccess.ModeFlags.Write);
+                using var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Write);
                 file.StoreString(saveDataAsJSON);
+
+                _globalState.CurrentSavePath = filePath;
 
                 _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                             TranslationServer.Translate("SuccessfulSavePromptText"),
