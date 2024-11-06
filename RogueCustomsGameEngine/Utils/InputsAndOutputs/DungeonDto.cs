@@ -32,11 +32,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; }
         public List<GamePoint> PickableItemPositions { get; set; }
 
+        public bool IsHardcoreMode { get; set; }
+
         public DungeonDto() { }
 
         public DungeonDto(Dungeon dungeon, Map map)
         {
             DungeonName = dungeon.Name;
+            IsHardcoreMode = dungeon.IsHardcoreMode;
             FloorName = map.FloorName;
             DungeonStatus = dungeon.DungeonStatus;
             Width = map.Width;

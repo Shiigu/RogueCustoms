@@ -40,6 +40,13 @@ FloorItemDescriptionText,(Este objeto está en el piso),(This item is in the flo
 FloorItemNamePrefix,(P),(F)
 GameTitle,Rogue Customs,Rogue Customs
 GameVersionText,Versión de Juego {GameVersion},Game Version {GameVersion}
+HardcoreModeDisabledText,Modo Normal,Normal Mode
+HardcoreModeEnabledText,MODO INCONDICIONAL,HARDCORE MODE
+HardcoreModeWarningHeaderText,HABILITAR MODO INCONDICIONAL,ENABLE HARDCORE MODE
+HardcoreModeWarningText,"Estás intentando iniciar una Mazmorra en Modo Incondicional.\n\nSi mueres y tenías una partida guardada, esta se borrará INMEDIATAMENTE.\n\nNi el desarrollador ni el creador de la Mazmorra se responsabilizan por muertes inesperadas.\n\n¿Desea continuar?","You are trying to start a Dungeon on Hardcore Mode.\n\nIf you die and had a savegame, it will be IMMEDIATELY deleted.\n\nNeither the developer nor the Dungeon's creator will be responsible for surprise deaths.\n\nDo you want to proceed?"
+HardcoreModeDeathHeaderText,MODO INCONDICIONAL,HARDCORE MODE
+HardcoreModeDeathText,"Como has muerto, si tenías una partida guardada\nde este intento, se ha borrado.","Since you died, if you had a savegame\nof this run, it has been deleted."
+HardcoreModeSaveGameText,INCONDICIONAL,HARDCORE
 IncompatibleDungeonMessageBoxHeader,NO SE PUEDE JUGAR ESTA MAZMORRA,CANNOT PLAY THIS DUNGEON
 IncompatibleDungeonMessageBoxText,"Esta mazmorra está en la versión {DungeonJsonVersion}.\nLa versión de este juego requiere mazmorras en la versión {RequiredDungeonJsonVersion}.\n\nPor favor, contacta con el creador de la mazmorra para obtener la versión correcta.",This Dungeon is at version {DungeonJsonVersion}.\nThis game's version requires Dungeons at version {RequiredDungeonJsonVersion}.\n\nPlease contact the Dungeon creator to get the correct version.
 InputBoxAffirmativeButtonText,ELEGIR,CHOOSE

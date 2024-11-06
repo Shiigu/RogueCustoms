@@ -47,7 +47,7 @@ layout_mode = 2
 offset_left = 30.0
 offset_top = 137.0
 offset_right = 1336.0
-offset_bottom = 564.0
+offset_bottom = 534.0
 horizontal_scroll_mode = 0
 
 [node name="DungeonTable" type="VBoxContainer" parent="ScrollContainer"]
@@ -61,7 +61,7 @@ layout_mode = 2
 offset_left = 30.0
 offset_top = 137.0
 offset_right = 1336.0
-offset_bottom = 564.0
+offset_bottom = 534.0
 alignment = 1
 
 [node name="NoDungeonsText" type="RichTextLabel" parent="NoDungeonsTextContainer"]
@@ -72,6 +72,19 @@ size_flags_vertical = 3
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "[center][color=#FF0000FF]No dungeons![/color][/center][p] [p][center]Please get some![/center]"
+
+[node name="HardcoreCheckButton" type="CheckButton" parent="."]
+texture_filter = 1
+layout_mode = 2
+offset_left = 387.0
+offset_top = 540.0
+offset_right = 787.0
+offset_bottom = 564.0
+scale = Vector2(1.5, 1.5)
+theme_override_constants/h_separation = 25
+theme_override_font_sizes/font_size = 16
+text = "Normal Mode"
+icon_alignment = 1
 
 [node name="PickDungeonButton" type="Button" parent="."]
 layout_mode = 1

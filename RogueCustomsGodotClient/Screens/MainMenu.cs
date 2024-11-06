@@ -127,7 +127,7 @@ public partial class MainMenu : Control
                 var saveGame = JsonSerializer.Deserialize<SaveGame>(fileContent);
 
                 if (saveGame.DungeonVersion.Equals(GlobalConstants.CurrentDungeonJsonVersion))
-                    _globalState.SavedGames.Add(saveGame);
+                    _globalState.SavedGames.Add((filePath, saveGame));
             }
         }
 
@@ -153,11 +153,6 @@ public partial class MainMenu : Control
         _exitButton.Text = TranslationServer.Translate("ExitButtonText");
         var gameVersionText = TranslationServer.Translate("GameVersionText").ToString();
         _versionLabel.Text = gameVersionText.Format(new { GameVersion = GlobalConstants.GameVersion });
-        if(!_globalState.HasSaveGame)
-        {
-            _loadSavedDungeonButton.Disabled = true;
-            _buttons.Remove(_loadSavedDungeonButton);
-        }
     }
 
     private void SaveLocalization(string locale)

@@ -57,11 +57,22 @@ namespace RogueCustomsGodotClient.Helpers
         public static Vector2 GetSizeToFitForDimensions(this string text, Font font, int maxSizeX, int maxSizeY)
         {
             var textLines = text.Split('\n');
-            var longestLine = textLines.OrderByDescending(line => line.Length).FirstOrDefault().ToStringWithoutBbcode();
-            var sizeForOneLine = font.GetStringSize(longestLine);
-            var heightForMultiline = Math.Max((int)(sizeForOneLine.X / maxSizeX), 1) * sizeForOneLine.Y * textLines.Length;
+            var lineAmount = 0;
+            var maxX = 0;
+            var YSize = 0;
 
-            return new Vector2(Mathf.Min(maxSizeX, sizeForOneLine.X), Mathf.Min(maxSizeY, heightForMultiline));
+            foreach (var line in textLines)
+            {
+                var sizeForLine = font.GetStringSize(line);
+                YSize = (int) sizeForLine.Y;
+                if (sizeForLine.X > maxSizeX)
+                    maxX = maxSizeX;
+                else if (sizeForLine.X > maxX)
+                    maxX = (int)sizeForLine.X;
+                lineAmount += ((int)sizeForLine.X / maxSizeX + 1);
+            }
+
+            return new Vector2(MathF.Min(maxX, maxSizeX), Mathf.Min(maxSizeY, YSize * lineAmount));
         }
 
         public static Vector2 GetSizeToFitForDimensionsWithoutBbCode(this string text, Font font, int maxSizeX, int maxSizeY)

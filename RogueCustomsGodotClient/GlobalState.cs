@@ -20,15 +20,15 @@ public partial class GlobalState : Node
 	public ControlMode PlayerControlMode { get; set; }
     public static string GameLocale => TranslationServer.Translate("LanguageLocale");
 	public bool MustUpdateGameScreen { get; set; }
-    public bool HasSaveGame => Godot.FileAccess.FileExists(SaveGamePath);
+    public bool IsHardcoreMode { get; set; }
     public readonly string SettingsPath = "./Settings.cfg";
 
     public readonly string SaveGameFolder = "./Saves";
     public readonly string SaveGameExtension = ".rcs";
 
-    public List<SaveGame> SavedGames { get; set; } = new();
+    public string CurrentSavePath { get; set; }
 
-    public readonly string SaveGamePath = "./savedDungeon.rcs";
+    public List<(string Path, SaveGame SaveGame)> SavedGames { get; set; } = new();
     private readonly string LogFolder = "./Logs";
     public readonly string DungeonsFolder = "./JSON";
     public string LogFilePath { get; private set; }

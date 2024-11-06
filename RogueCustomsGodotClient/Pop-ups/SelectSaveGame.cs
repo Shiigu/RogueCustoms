@@ -55,7 +55,7 @@ public partial class SelectSaveGame : Control
             for (int j = i * 2; j < (i * 2) + 2; j++)
             {
                 if (j >= _globalState.SavedGames.Count) break;
-                hbox.AddChild(BuildCell(_globalState.SavedGames[j], j));
+                hbox.AddChild(BuildCell(_globalState.SavedGames[j].SaveGame, j));
             }
             hbox.AddThemeConstantOverride("separation", 0);
             _saveGameTable.AddChild(hbox);
@@ -78,8 +78,10 @@ public partial class SelectSaveGame : Control
         var selectedSave = _globalState.SavedGames[_selectedIndex];
         _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
         {
-            DungeonData = Convert.FromBase64String(selectedSave.DungeonData),
+            DungeonData = Convert.FromBase64String(selectedSave.SaveGame.DungeonData),
         });
+        _globalState.IsHardcoreMode = selectedSave.SaveGame.IsHardcoreMode;
+        _globalState.CurrentSavePath = selectedSave.Path;
         GetTree().ChangeSceneToFile("res://Screens/GameScreen.tscn");
     }
 
@@ -91,10 +93,13 @@ public partial class SelectSaveGame : Control
         labelContents.Append($"[center]{saveGame.DungeonName}[/center]");
         labelContents.Append($"[p] [/p][center]{saveGame.PlayerName}[/center][p][center]{saveGame.PlayerRepresentation.ToBbCodeRepresentation()}[/center]");
         labelContents.Append($"[p][center]{TranslationServer.Translate("PlayerLevelText").ToString().Format(new { CurrentLevel = saveGame.PlayerLevel.ToString() })}[/center][p]");
-        if(!saveGame.IsPlayerDead)
+        if (saveGame.IsPlayerDead || saveGame.IsHardcoreMode)
             labelContents.Append("[p] [/p]");
-        else
-            labelContents.Append($"[p] [/p][center][color=#FF0000FF]{TranslationServer.Translate("DeadPlayerText")}[/color][/center][p]");
+        if (saveGame.IsPlayerDead)
+            labelContents.Append($"[center][color=#FF0000FF]{TranslationServer.Translate("DeadPlayerText")}[/color][/center][p]");
+        if (saveGame.IsHardcoreMode)
+            labelContents.Append($"[center][color=#FF0000FF]{TranslationServer.Translate("HardcoreModeSaveGameText")}[/color][/center][p]");        
+        labelContents.Append("[p] [/p]");
         labelContents.Append($"[center][font_size=12]{saveGame.SaveDate.ToShortDateString()} - {saveGame.SaveDate.ToShortTimeString()}[/font_size][/center]");
 
         saveGameLabel.AddThemeFontSizeOverride("normal_font_size", 14);
