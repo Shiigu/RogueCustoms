@@ -250,6 +250,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Character = this,
                     RegenerationTarget = Hunger
                 };
+                Stats.Add(HungerDegeneration);
             }
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
