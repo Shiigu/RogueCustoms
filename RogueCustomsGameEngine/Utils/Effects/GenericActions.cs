@@ -251,7 +251,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 Params = new() { UpdatePlayerDataType.ModifyStat, targetStat.Id, targetStat.BaseAfterModifications }
                             });
                         }
-                        if (statName.Equals("movement"))
+                        if (statAlterationTarget == Map.Player && statName.Equals("movement"))
                         {
                             events.Add(new()
                             {
@@ -515,7 +515,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Rng.RollProbability() <= accuracyCheck && c.CanTakeAction)
             {
                 c.CanTakeAction = false;
-                if (c == Map.Player || Map.Player.CanSee(c))
+                if (c == Map.Player)
                 {
                     Map.DisplayEvents.Add(($"{c.Name} is forced to skip turn", new()
                     {

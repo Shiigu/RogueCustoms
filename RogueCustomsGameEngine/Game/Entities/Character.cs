@@ -364,7 +364,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     {
                         var stat = UsedStats.Find(s => s.Name.Equals(statName));
                         var totalNeutralization = modificationList?.Where(mhm => mhm.RemainingTurns == 0).Sum(mhm => mhm.Amount);
-                        if (statName.ToLowerInvariant().Equals("movement"))
+                        if (this == Map.Player && statName.ToLowerInvariant().Equals("movement"))
                         {
                             events.Add(new()
                             {
