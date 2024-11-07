@@ -406,7 +406,8 @@ public partial class GameScreen : Control
                 };
 
                 var saveDataAsJSON = JsonSerializer.Serialize(saveData);
-                var filePath = $"{_globalState.SaveGameFolder}/{output.FileName}.rcs";
+                var saveName = dungeonStatus.IsHardcoreMode ? $"{output.FileName}_H.rcs" : $"{output.FileName}.rcs";
+                var filePath = $"{_globalState.SaveGameFolder}/{saveName}";
 
                 using var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Write);
                 file.StoreString(saveDataAsJSON);
