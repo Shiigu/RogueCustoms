@@ -358,7 +358,7 @@ public partial class PlayerSelectItem : Control
         {
             _dropButton.Visible = !_itemListInfo.TileIsOccupied && selectedItem.CanBeDropped;
             _dropButton.Disabled = _isReadOnly;
-            _swapButton.Visible = _itemListInfo.TileIsOccupied && !selectedItem.IsInFloor;
+            _swapButton.Visible = _itemListInfo.TileIsOccupied && !selectedItem.IsInFloor && selectedItem.CanBeDropped;
             _swapButton.Disabled = _isReadOnly;
             _useButton.Visible = !selectedItem.IsEquippable;
             _useButton.Disabled = _isReadOnly || !selectedItem.CanBeUsed;

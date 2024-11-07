@@ -378,9 +378,12 @@ public partial class PickDungeon : Control
         }
         else if (@event.IsActionPressed("ui_accept"))
         {
-            _pickDungeonButton.GrabFocus();
-            _ = _pickDungeonButton.EmitSignal("pressed");
-            _pickDungeonButton.ButtonPressed = true;
+            if (!_pickDungeonButton.Disabled)
+            {
+                _pickDungeonButton.GrabFocus();
+                _ = _pickDungeonButton.EmitSignal("pressed");
+                _pickDungeonButton.ButtonPressed = true;
+            }
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_hardcore"))

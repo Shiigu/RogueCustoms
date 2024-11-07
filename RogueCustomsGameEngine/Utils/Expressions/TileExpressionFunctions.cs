@@ -19,7 +19,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
     {
         public static string TILEISOCCUPIED(Entity This, Entity Source, Tile Target, string[] parameters)
         {
-            return Target.IsOccupied.ToString();
+            return (Target.Type == TileType.Door || Target.IsOccupied).ToString();
         }
         public static string TILEHASDEADALLIES(Entity This, Entity Source, Tile Target, string[] parameters)
         {
