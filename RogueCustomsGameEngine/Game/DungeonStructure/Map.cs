@@ -1074,8 +1074,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             Player.Position = PickEmptyPosition(false, false);
             Player.UpdateVisibility();
-            if(Player.Hunger != null)
-                Player.UsedStats.Where(s => s.RegenerationTarget == Player.Hunger).ForEach(s => s.Base = HungerDegeneration * -1);
+            if(Player.Hunger != null && Player.HungerDegeneration != null)
+                Player.HungerDegeneration.Base = HungerDegeneration * -1;
         }
 
         private void NewTurn()
