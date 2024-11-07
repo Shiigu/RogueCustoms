@@ -445,6 +445,15 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             // Recursively go to the next property in the chain
             return GetNestedValueRecursive(nextValue, properties, level + 1);
         }
+        private static object GetDefaultValueForType(Type type)
+        {
+            if (type == typeof(string))
+                return string.Empty;
+            else if (type.IsValueType)
+                return Activator.CreateInstance(type); // Returns default(T) for value types
+            else
+                return null;
+        }
         private static decimal? GetStatValue(object obj, string statId)
         {
             if (obj == null || string.IsNullOrEmpty(statId)) return null;

@@ -1,4 +1,6 @@
-﻿using RogueCustomsDungeonEditor.EffectInfos;
+﻿using MathNet.Numerics;
+
+using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
 using RogueCustomsGameEngine.Utils.Helpers;
@@ -168,8 +170,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.Boolean => CreateCheckBox(originalValue, parameter),
                     ParameterType.Character => CreateCharacterControl(originalValue, parameter),
                     ParameterType.Color => CreateColorControl(originalValue, parameter),
-                    ParameterType.Text => new TextBox { Text = originalValue ?? parameter.Default },
-                    ParameterType.Number => new NumericUpDown { Value = decimal.TryParse(originalValue, out var result) ? result : decimal.Parse(parameter.Default) }, // Numeric input
+                    ParameterType.Text => CreateTextBoxControl(originalValue, parameter),
+                    ParameterType.Number => CreateNumberControl(originalValue, parameter),
                     ParameterType.NPC => CreateComboBox(parameter, originalValue),
                     ParameterType.Item => CreateComboBox(parameter, originalValue),
                     ParameterType.Trap => CreateComboBox(parameter, originalValue),
@@ -238,7 +240,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (originalValue != null)
                 {
-                    var valueOfKey = parameter.ValidValues.Find(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase))?.Value;
+                    var valueOfKey = comboBox.Items.Cast<string>().FirstOrDefault(vv => vv.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
                     comboBox.Text = valueOfKey;
                 }
                 else
@@ -264,7 +266,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             textBox.Enter += (sender, e) => PreviousTextBoxValue = textBox.Text;
             textBox.Leave += (sender, e) =>
             {
-                if (!string.IsNullOrWhiteSpace(textBox.Text) && !textBox.Text.TestNumericExpression(true, out string errorMessage))
+                if (!string.IsNullOrWhiteSpace(textBox.Text) && !textBox.Text.TestNumericExpression(true, out string errorMessage) && !textBox.Text.TestBooleanExpression(out errorMessage))
                 {
                     MessageBox.Show(
                         $"You have entered an invalid formula: {errorMessage}.",
@@ -299,6 +301,75 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
 
             return checkBox;
+        }
+
+        private TableLayoutPanel CreateTextBoxControl(string originalValue, EffectParameter parameter)
+        {
+            var textBoxPanel = new TableLayoutPanel
+            {
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+            };
+            textBoxPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
+            textBoxPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20));
+
+            var textBox = new TextBox()
+            {
+                Dock = DockStyle.Fill
+            };
+            textBox.Text = originalValue ?? parameter.Default;
+            var warningBox = new PictureBox()
+            {
+                ImageLocation = "./Icons/outline_info_black_24dp.png",
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Visible = false,
+                Height = textBox.Height
+            };
+            var warningBoxTooltip = new ToolTip();
+            warningBoxTooltip.SetToolTip(warningBox, "This value has been found as a Locale Entry key.\n\nIn-game, it will be replaced by the Locale Entry's value.");
+            textBox.Tag = warningBox;
+            textBox.ToggleEntryInLocaleWarning(ActiveDungeon, warningBox);
+            textBox.TextChanged += (sender, e) =>
+            {
+                textBox.ToggleEntryInLocaleWarning(ActiveDungeon, textBox.Tag as Control);
+            };
+
+            textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            textBoxPanel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+
+            textBoxPanel.Controls.Add(textBox, 0, 0);
+            textBoxPanel.Controls.Add(warningBox, 1, 0);
+
+            return textBoxPanel;
+        }
+
+        private TextBox CreateNumberControl(string originalValue, EffectParameter parameter)
+        {
+            var textBox = new TextBox()
+            {
+                Dock = DockStyle.Fill
+            };
+            textBox.Text = originalValue ?? parameter.Default;
+            textBox.Enter += (sender, e) => PreviousTextBoxValue = (sender as TextBox)?.Text;
+            textBox.Leave += (sender, e) =>
+            {
+                var valueToValidate = textBox.Text;
+                if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out string errorMessage))
+                {
+                    MessageBox.Show(
+                        $"You have entered an invalid value: {errorMessage}.",
+                        "Invalid parameter data",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    textBox.Text = PreviousTextBoxValue;
+                }
+            };
+
+            textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+
+            return textBox;
         }
 
         private TableLayoutPanel CreateCharacterControl(string originalValue, EffectParameter parameter)
@@ -488,7 +559,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Formula:
                         valueToValidate = (controlToValidate as TextBox)?.Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage))
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(true, out string errorMessage) && !valueToValidate.TestBooleanExpression(out errorMessage))
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid formula: ").Append(errorMessage).AppendLine(".");
                         break;
                     case ParameterType.Character:
@@ -516,7 +587,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Number:
                         valueToValidate = (controlToValidate as TextBox)?.Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out errorMessage))
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestNumericExpression(false, out errorMessage) && !valueToValidate.TestBooleanExpression(out errorMessage))
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid value: ").Append(errorMessage).AppendLine(".");
                         break;
                     case ParameterType.Odds:

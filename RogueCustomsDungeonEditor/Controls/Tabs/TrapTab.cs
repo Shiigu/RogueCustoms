@@ -97,11 +97,13 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void txtTrapName_TextChanged(object sender, EventArgs e)
         {
+            txtTrapName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblTrapNameLocale);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtTrapDescription_TextChanged(object sender, EventArgs e)
         {
+            txtTrapDescription.ToggleEntryInLocaleWarning(ActiveDungeon, fklblTrapDescriptionLocale);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 

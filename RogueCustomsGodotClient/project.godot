@@ -26,6 +26,7 @@ config/icon="res://Icon.png"
 
 GlobalState="*res://GlobalState.cs"
 InputManager="*res://InputManager.cs"
+ExceptionLogger="*res://ExceptionLogger.cs"
 
 [display]
 
@@ -142,6 +143,4 @@ locale/translations=PackedStringArray("res://Localizations/locales.en.translatio
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

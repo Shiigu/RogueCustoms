@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://br30ql3iw16o0"]
+[gd_scene load_steps=28 format=3 uid="uid://br30ql3iw16o0"]
 
 [ext_resource type="StyleBox" uid="uid://c05sbbd22v6ea" path="res://Styles/GameBorder.tres" id="1_4ikej"]
 [ext_resource type="Script" path="res://Screens/GameScreen.cs" id="1_khqas"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://c3ali4x7cuwqc" path="res://Textures/HungerBarForeground.png" id="11_mgl4y"]
 [ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="12_fxk87"]
 [ext_resource type="StyleBox" uid="uid://q4t0lbnjvlk0" path="res://Styles/TinyButton.tres" id="14_0jpcu"]
+[ext_resource type="Script" path="res://Pop-ups/Controls/ScalableRichTextLabel.cs" id="14_hf6xy"]
 [ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="14_ne4um"]
 [ext_resource type="Script" path="res://Screens/GameSubScreens/MessageLogPanel.cs" id="15_r7d70"]
 [ext_resource type="Script" path="res://Screens/GameSubScreens/ExperienceBarPanel.cs" id="16_q8vkj"]
@@ -161,16 +162,15 @@ alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="PlayerNameLabel" type="Label" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
+[node name="PlayerNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(224, 32)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = ExtResource("4_vn8qa")
-text = "Player Name"
-horizontal_alignment = 1
+bbcode_enabled = true
+text = "[center]Player Name[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="PlayerRepresentationLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
 texture_filter = 1
@@ -336,7 +336,7 @@ horizontal_alignment = 1
 
 [node name="WeaponNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/WeaponContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -345,10 +345,11 @@ theme_override_font_sizes/normal_font_size = 14
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FF00FFFF]¶[/color] - Staff[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="DamageNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/WeaponContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -357,6 +358,7 @@ theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Damage: [color=#FF00FFFF]1d2[/color][color=#00FF00FF]+1[/color][/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="ArmorContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
 layout_mode = 2
@@ -376,7 +378,7 @@ horizontal_alignment = 1
 
 [node name="ArmorNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/ArmorContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -385,10 +387,11 @@ theme_override_font_sizes/normal_font_size = 14
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FF00FFFF]♦[/color] - Plate[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="MitigationNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/ArmorContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -397,6 +400,7 @@ theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Mitigation: [color=#FF00FFFF]2[/color][color=#00FF00FF]+0[/color][/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="OtherStatsContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
 layout_mode = 2
@@ -404,7 +408,7 @@ theme_override_constants/separation = 0
 
 [node name="MovementLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 13)
+custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -413,10 +417,11 @@ theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Movement: 1[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="AccuracyLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 13)
+custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -425,10 +430,11 @@ theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Accuracy: 100%[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="EvasionLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 13)
+custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -437,6 +443,7 @@ theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Evasion: 0%[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="AlteredStatusesContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
 layout_mode = 2
@@ -455,7 +462,7 @@ horizontal_alignment = 1
 
 [node name="AlteredStatusesIconsLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/AlteredStatusesContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -482,7 +489,7 @@ horizontal_alignment = 1
 
 [node name="InventoryIconsLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/InventoryContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_v_padding = 0
@@ -492,17 +499,22 @@ theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FFFF00FF]CLICK BELOW![/color][/center]"
 
-[node name="ButtonContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
+[node name="ButtonContainer" type="VBoxContainer" parent="InfoPanel"]
 layout_mode = 2
+offset_left = 16.0
+offset_top = 528.0
+offset_right = 240.0
+offset_bottom = 544.0
 alignment = 1
 
-[node name="DetailsButton" type="Button" parent="InfoPanel/VBoxContainerContainer/ButtonContainer"]
+[node name="DetailsButton" type="Button" parent="InfoPanel/ButtonContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(175, 18)
+custom_minimum_size = Vector2(100, 16)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 1
+theme_override_font_sizes/font_size = 8
 theme_override_styles/disabled = ExtResource("14_ne4um")
 theme_override_styles/hover = ExtResource("12_fxk87")
 theme_override_styles/normal = ExtResource("14_0jpcu")

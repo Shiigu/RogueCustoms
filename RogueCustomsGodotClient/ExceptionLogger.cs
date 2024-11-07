@@ -39,7 +39,7 @@ namespace RogueCustomsGodotClient
             e.SetObserved();
         }
 
-        private void LogMessage(Exception ex)
+        public void LogMessage(Exception ex)
         {
             if (!_globalState.CanWriteLogs) return;
             using var file = FileAccess.Open(_globalState.LogFilePath, FileAccess.ModeFlags.ReadWrite);

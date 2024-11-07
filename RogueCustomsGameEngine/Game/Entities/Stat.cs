@@ -162,7 +162,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var fractionalPart = CarriedRegeneration - wholePart;
                 RegenerationTarget.Current = Math.Max(RegenerationTarget.MinCap, RegenerationTarget.Current + (int)wholePart);
                 CarriedRegeneration = fractionalPart;
-                if (oldCurrent > RegenerationTarget.Current && StatType == StatType.HP && Character.IsStarving)
+                if (oldCurrent > RegenerationTarget.Current && StatType == StatType.HP && Character.IsStarving && (Character == Character.Map.Player || Character.Map.Player.CanSee(Character)))
                 {
                     Character.Map.AppendMessage(Character.Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = oldCurrent - RegenerationTarget.Current, CharacterHPStat = RegenerationTarget.Name, CharacterHungerStat = Name }));
                     Character.Map.DisplayEvents.Add(($"{Character.Name} is starving", new List<DisplayEventDto>

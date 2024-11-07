@@ -110,7 +110,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                         new()
                         {
                             DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                            Params = new() { source.Position, Map.GetConsoleRepresentationForCoordinates(source.Position.X, source.Position.Y) }
+                            Params = new() { source.Position, source.Map.GetConsoleRepresentationForCoordinates(source.Position.X, source.Position.Y) }
                         }
                     }));
                 }

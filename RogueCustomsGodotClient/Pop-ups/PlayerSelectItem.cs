@@ -3,6 +3,7 @@ using Godot;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Utils;
 
@@ -13,6 +14,7 @@ using System.Linq;
 public partial class PlayerSelectItem : Control
 {
     private GlobalState _globalState;
+    private ExceptionLogger _exceptionLogger;
     private InputManager _inputManager;
 
     private Label _titleLabel;
@@ -46,6 +48,7 @@ public partial class PlayerSelectItem : Control
     {
         _globalState = GetNode<GlobalState>("/root/GlobalState");
         _inputManager = GetNode<InputManager>("/root/InputManager");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _titleLabel = GetNode<Label>("MarginContainer/VBoxContainer/TitleLabel");
         _itemDescriptionLabel = GetNode<RichTextLabel>("ItemDescriptionLabel");
         _selectionList = GetNode<VBoxContainer>("ScrollContainer/SelectionList");
@@ -85,59 +88,94 @@ public partial class PlayerSelectItem : Control
 
         _equipButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            _globalState.MustUpdateGameScreen = true;
-            onCloseCallback?.Invoke();
-            QueueFree();
+            try
+            {
+                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                _globalState.MustUpdateGameScreen = true;
+                onCloseCallback?.Invoke();
+                QueueFree();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
         };
 
         _swapButton.Text = SwapButtonText;
 
         _swapButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            _globalState.MustUpdateGameScreen = true;
-            onCloseCallback?.Invoke();
-            QueueFree();
+            try
+            {
+                _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                _globalState.MustUpdateGameScreen = true;
+                onCloseCallback?.Invoke();
+                QueueFree();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
         };
 
         _dropButton.Text = DropButtonText;
 
         _dropButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            _globalState.MustUpdateGameScreen = true;
-            onCloseCallback?.Invoke();
-            QueueFree();
+            try
+            {
+                _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                _globalState.MustUpdateGameScreen = true;
+                onCloseCallback?.Invoke();
+                QueueFree();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
         };
 
         _useButton.Text = UseButtonText;
 
         _useButton.Pressed += () =>
         {
-            _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            _globalState.MustUpdateGameScreen = true;
-            onCloseCallback?.Invoke();
-            QueueFree();
+            try
+            {
+                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                _globalState.MustUpdateGameScreen = true;
+                onCloseCallback?.Invoke();
+                QueueFree();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
         };
 
         _doButton.Text = DoButtonText;
 
         _doButton.Pressed += () =>
         {
-            var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
-
-            var attackInput = new AttackInput
+            try
             {
-                SelectionId = selectedAction.SelectionId,
-                X = targetCoords.Value.X,
-                Y = targetCoords.Value.Y,
-                SourceType = selectedAction.SourceType
-            };
-            _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
-            _globalState.MustUpdateGameScreen = true;
-            onCloseCallback?.Invoke();
-            QueueFree();
+                var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
+
+                var attackInput = new AttackInput
+                {
+                    SelectionId = selectedAction.SelectionId,
+                    X = targetCoords.Value.X,
+                    Y = targetCoords.Value.Y,
+                    SourceType = selectedAction.SourceType
+                };
+                _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
+                _globalState.MustUpdateGameScreen = true;
+                onCloseCallback?.Invoke();
+                QueueFree();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
         };
 
         _cancelButton.Text = CancelButtonText;

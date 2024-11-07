@@ -3,6 +3,7 @@ using Godot;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
 
 using System;
@@ -13,6 +14,7 @@ public partial class SelectClass : Control
 {
     private GlobalState _globalState;
     private InputManager _inputManager;
+    private ExceptionLogger _exceptionLogger;
     private List<CharacterClassDto> _possibleClasses;
     private Label _titleLabel;
 
@@ -34,6 +36,7 @@ public partial class SelectClass : Control
     {
         _globalState = GetNode<GlobalState>("/root/GlobalState");
         _inputManager = GetNode<InputManager>("/root/InputManager");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _titleLabel = GetNode<Label>("MarginContainer/VBoxContainer/TitleLabel");
         _classNameLabel = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer/ClassNameLabel");
         _leftButton = GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/LeftButton");
@@ -43,7 +46,14 @@ public partial class SelectClass : Control
         _selectButton = GetNode<Button>("VBoxContainer2/ButtonContainer/SelectButton");
         _cancelButton = GetNode<Button>("VBoxContainer2/ButtonContainer/CancelButton");
         _border = GetNode<Panel>("Border");
-        _possibleClasses = _globalState.DungeonManager.GetPlayerClassSelection().CharacterClasses;
+        try
+        {
+            _possibleClasses = _globalState.DungeonManager.GetPlayerClassSelection().CharacterClasses;
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
     }
 
     public void Show(Action<string> selectCallBack, Action cancelCallback)

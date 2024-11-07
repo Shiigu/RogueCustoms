@@ -64,7 +64,8 @@ namespace RogueCustomsGodotClient.Helpers
             foreach (var line in textLines)
             {
                 var sizeForLine = font.GetStringSize(line);
-                YSize = (int) sizeForLine.Y;
+                if(YSize == 0)
+                    YSize = (int) sizeForLine.Y;
                 if (sizeForLine.X > maxSizeX)
                     maxX = maxSizeX;
                 else if (sizeForLine.X > maxX)

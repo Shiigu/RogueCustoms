@@ -1,6 +1,7 @@
 using Godot;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
@@ -15,7 +16,7 @@ using FileAccess = Godot.FileAccess;
 
 public partial class MainMenu : Control
 {
-    private Label _titleLabel;
+    private ExceptionLogger _exceptionLogger;
     private Button _startDungeonButton;
     private Button _loadSavedDungeonButton;
     private OptionButton _languageDropdown;
@@ -33,7 +34,7 @@ public partial class MainMenu : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        _titleLabel = GetNode<Label>("TitleLabel");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _startDungeonButton = GetNode<Button>("StartDungeonButton");
         _loadSavedDungeonButton = GetNode<Button>("LoadSavedDungeonButton");
         _languageDropdown = GetNode<OptionButton>("LanguageDropdown");
@@ -147,7 +148,6 @@ public partial class MainMenu : Control
 
     private void UpdateUIWithLocalization()
     {
-        _titleLabel.Text = TranslationServer.Translate("GameTitle");
         _startDungeonButton.Text = TranslationServer.Translate("SelectDungeonText");
         _loadSavedDungeonButton.Text = TranslationServer.Translate("LoadDungeonText");
         _exitButton.Text = TranslationServer.Translate("ExitButtonText");
@@ -186,8 +186,15 @@ public partial class MainMenu : Control
 
     private void OnStartDungeonPressed()
     {
-        _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
-        GetTree().ChangeSceneToFile("res://Screens/PickDungeon.tscn");
+        try
+        {
+            _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
+            GetTree().ChangeSceneToFile("res://Screens/PickDungeon.tscn");
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
     }
 
     private void OnLoadSavedDungeonPressed()

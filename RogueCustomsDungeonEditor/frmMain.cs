@@ -1724,12 +1724,13 @@ namespace RogueCustomsDungeonEditor
                 floorInfoNodeText = $"Floors {floorLevelString}";
             else
                 floorInfoNodeText = $"Floor {floorLevelString}";
-
+            ActiveDungeon.AmountOfFloors = ActiveDungeon.FloorInfos.Select(fg => fg.MaxFloorLevel).Max();
             DirtyDungeon = true;
             DirtyTab = false;
             IsNewElement = false;
             RefreshTreeNodes();
             SelectNodeIfExists(floorInfoNodeText, "Floor Groups");
+            FloorGroupTab.LoadedFloorGroup = FloorGroupTab.OpenedFloorGroup = floorGroupToSave;
             return true;
         }
 

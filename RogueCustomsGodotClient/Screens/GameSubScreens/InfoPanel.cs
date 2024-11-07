@@ -3,6 +3,7 @@ using Godot;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
 
@@ -14,10 +15,12 @@ using System.Text;
 public partial class InfoPanel : GamePanel
 {
     private GlobalState _globalState;
+    private ExceptionLogger _exceptionLogger;
     private Label _infoTitleLabel;
 
-    private Label _playerNameLabel, _levelLabel;
+    private ScalableRichTextLabel _playerNameLabel;
     private RichTextLabel _playerRepresentationLabel;
+    private Label _levelLabel;
 
     private Label _hpNameLabel, _hpAmountLabel;
     private TextureProgressBar _hpBar;
@@ -31,12 +34,12 @@ public partial class InfoPanel : GamePanel
     private VBoxContainer _hungerContainer;
 
     private Label _weaponHeaderLabel;
-    private RichTextLabel _weaponNameLabel, _damageNumberLabel;
+    private ScalableRichTextLabel _weaponNameLabel, _damageNumberLabel;
 
     private Label _armorHeaderLabel;
-    private RichTextLabel _armorNameLabel, _mitigationNumberLabel;
+    private ScalableRichTextLabel _armorNameLabel, _mitigationNumberLabel;
 
-    private RichTextLabel _movementLabel, _accuracyLabel, _evasionLabel;
+    private ScalableRichTextLabel _movementLabel, _accuracyLabel, _evasionLabel;
 
     private Label _alteredStatusesHeaderLabel;
     private RichTextLabel _alteredStatusesIconsLabel;
@@ -53,8 +56,9 @@ public partial class InfoPanel : GamePanel
     public override void _Ready()
     {
         _globalState = GetNode<GlobalState>("/root/GlobalState");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _infoTitleLabel = GetNode<Label>("VBoxContainer/InfoTitleLabel");
-        _playerNameLabel = GetNode<Label>("VBoxContainerContainer/PlayerDescriptorContainer/PlayerNameLabel");
+        _playerNameLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/PlayerDescriptorContainer/PlayerNameLabel");
         _playerRepresentationLabel = GetNode<RichTextLabel>("VBoxContainerContainer/PlayerDescriptorContainer/PlayerRepresentationLabel");
         _levelLabel = GetNode<Label>("VBoxContainerContainer/PlayerDescriptorContainer/PlayerLevelLabel");
         _hpNameLabel = GetNode<Label>("VBoxContainerContainer/PlayerBarsContainer/HPNameLabel");
@@ -69,19 +73,19 @@ public partial class InfoPanel : GamePanel
         _hungerBar = GetNode<TextureProgressBar>("VBoxContainerContainer/HungerContainer/HungerBarContainer/HungerBar");
         _hungerAmountLabel = GetNode<Label>("VBoxContainerContainer/HungerContainer/HungerBarContainer/HungerAmountLabel");
         _weaponHeaderLabel = GetNode<Label>("VBoxContainerContainer/WeaponContainer/WeaponHeaderLabel");
-        _weaponNameLabel = GetNode<RichTextLabel>("VBoxContainerContainer/WeaponContainer/WeaponNameLabel");
-        _damageNumberLabel = GetNode<RichTextLabel>("VBoxContainerContainer/WeaponContainer/DamageNumberLabel");
+        _weaponNameLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/WeaponContainer/WeaponNameLabel");
+        _damageNumberLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/WeaponContainer/DamageNumberLabel");
         _armorHeaderLabel = GetNode<Label>("VBoxContainerContainer/ArmorContainer/ArmorHeaderLabel");
-        _armorNameLabel = GetNode<RichTextLabel>("VBoxContainerContainer/ArmorContainer/ArmorNameLabel");
-        _mitigationNumberLabel = GetNode<RichTextLabel>("VBoxContainerContainer/ArmorContainer/MitigationNumberLabel");
-        _movementLabel = GetNode<RichTextLabel>("VBoxContainerContainer/OtherStatsContainer/MovementLabel");
-        _accuracyLabel = GetNode<RichTextLabel>("VBoxContainerContainer/OtherStatsContainer/AccuracyLabel");
-        _evasionLabel = GetNode<RichTextLabel>("VBoxContainerContainer/OtherStatsContainer/EvasionLabel");
+        _armorNameLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/ArmorContainer/ArmorNameLabel");
+        _mitigationNumberLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/ArmorContainer/MitigationNumberLabel");
+        _movementLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/OtherStatsContainer/MovementLabel");
+        _accuracyLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/OtherStatsContainer/AccuracyLabel");
+        _evasionLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/OtherStatsContainer/EvasionLabel");
         _alteredStatusesHeaderLabel = GetNode<Label>("VBoxContainerContainer/AlteredStatusesContainer/AlteredStatusesHeaderLabel");
         _alteredStatusesIconsLabel = GetNode<RichTextLabel>("VBoxContainerContainer/AlteredStatusesContainer/AlteredStatusesIconsLabel");
         _inventoryHeaderLabel = GetNode<Label>("VBoxContainerContainer/InventoryContainer/InventoryHeaderLabel");
         _inventoryIconsLabel = GetNode<RichTextLabel>("VBoxContainerContainer/InventoryContainer/InventoryIconsLabel");
-        DetailsButton = GetNode<Button>("VBoxContainerContainer/ButtonContainer/DetailsButton");
+        DetailsButton = GetNode<Button>("ButtonContainer/DetailsButton");
         SetUp();
     }
 
@@ -96,25 +100,48 @@ public partial class InfoPanel : GamePanel
         _infoTitleLabel.Text = TranslationServer.Translate("PlayerInfoConsoleTitle");
         _tooManyText = $"[center][color=#FFFF00FF]{TranslationServer.Translate("PlayerInfoTooManyText")}[/color][/center]";
         DetailsButton.Pressed += DetailsButton_Pressed;
+        _playerNameLabel.DefaultFontSize = 16;
+        _playerNameLabel.MinFontSize = 6;
+        _weaponNameLabel.DefaultFontSize = 14;
+        _weaponNameLabel.MinFontSize = 7;
+        _damageNumberLabel.DefaultFontSize = 12;
+        _damageNumberLabel.MinFontSize = 6;
+        _armorNameLabel.DefaultFontSize = 14;
+        _armorNameLabel.MinFontSize = 7;
+        _mitigationNumberLabel.DefaultFontSize = 12;
+        _mitigationNumberLabel.MinFontSize = 6;
+        _movementLabel.DefaultFontSize = 12;
+        _movementLabel.MinFontSize = 6;
+        _accuracyLabel.DefaultFontSize = 12;
+        _accuracyLabel.MinFontSize = 6;
+        _evasionLabel.DefaultFontSize = 12;
+        _evasionLabel.MinFontSize = 6;
     }
 
     private void DetailsButton_Pressed()
     {
-        var playerInfo = _globalState.DungeonManager.GetPlayerDetailInfo();
-        if (playerInfo == null) return;
-        var titleText = TranslationServer.Translate("PlayerCharacterDetailWindowTitleText").ToString().Format(new { PlayerName = playerInfo.Name});
-        var innerText = new StringBuilder();
+        try
+        {
+            var playerInfo = _globalState.DungeonManager.GetPlayerDetailInfo();
+            if (playerInfo == null) return;
+            var titleText = TranslationServer.Translate("PlayerCharacterDetailWindowTitleText").ToString().Format(new { PlayerName = playerInfo.Name });
+            var innerText = new StringBuilder();
 
-        AddPlayerLevelInfo(innerText, playerInfo);
+            AddPlayerLevelInfo(innerText, playerInfo);
 
-        innerText.Append($"[center]{TranslationServer.Translate("PlayerCharacterDetailStatsHeader")}[/center][p] [p]");
-        playerInfo.Stats.ForEach(stat => AddPlayerStatsInfo(innerText, stat));
-        AddPlayerAlteredStatusesInfo(innerText, playerInfo.AlteredStatuses);
-        AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedWeaponHeader"), playerInfo.WeaponInfo);
-        AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedArmorHeader"), playerInfo.ArmorInfo);
-        AddPlayerInventoryInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailInventoryHeader"), playerInfo.Inventory);
+            innerText.Append($"[center]{TranslationServer.Translate("PlayerCharacterDetailStatsHeader")}[/center][p] [p]");
+            playerInfo.Stats.ForEach(stat => AddPlayerStatsInfo(innerText, stat));
+            AddPlayerAlteredStatusesInfo(innerText, playerInfo.AlteredStatuses);
+            AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedWeaponHeader"), playerInfo.WeaponInfo);
+            AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedArmorHeader"), playerInfo.ArmorInfo);
+            AddPlayerInventoryInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailInventoryHeader"), playerInfo.Inventory);
 
-        Parent?.CreateScrollablePopup(titleText, innerText.ToString(), new Color { R8 = 200, G8 = 100, B8 = 200, A8 = 255 }, false);
+            Parent?.CreateScrollablePopup(titleText, innerText.ToString(), new Color { R8 = 200, G8 = 100, B8 = 200, A8 = 255 }, false);
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
     }
     
     public override void Update()
@@ -122,7 +149,7 @@ public partial class InfoPanel : GamePanel
         var dungeonStatus = _globalState.DungeonInfo;
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity == null) return;
-        _playerNameLabel.Text = playerEntity.Name;
+        _playerNameLabel.SetText($"[center]{playerEntity.Name}[/center]");
         _playerRepresentationLabel.Text = $"[center]{playerEntity.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]";
         _levelLabel.Text = TranslationServer.Translate("PlayerLevelText").ToString().Format(new { CurrentLevel = playerEntity.Level.ToString() });
         
@@ -146,11 +173,11 @@ public partial class InfoPanel : GamePanel
         }
 
         _weaponHeaderLabel.Text = TranslationServer.Translate("PlayerInfoWeaponHeader");
-        _weaponNameLabel.Text = $"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name}[/center]";
+        _weaponNameLabel.SetText($"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name}[/center]");
         SetCombatStatText(_damageNumberLabel, playerEntity.DamageStatName, playerEntity.WeaponDamage, playerEntity.Attack);
 
         _armorHeaderLabel.Text = TranslationServer.Translate("PlayerInfoArmorHeader");
-        _armorNameLabel.Text = $"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name}[/center]";
+        _armorNameLabel.SetText($"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name}[/center]");
         SetCombatStatText(_mitigationNumberLabel, playerEntity.MitigationStatName, playerEntity.ArmorMitigation, playerEntity.Defense);
                 
         SetNumericStat(_movementLabel, playerEntity.MovementStatName, playerEntity.Movement, playerEntity.BaseMovement);
@@ -174,9 +201,9 @@ public partial class InfoPanel : GamePanel
         amountLabel.Text = $"{current}/{maximum}";
     }
 
-    private static void SetCombatStatText(RichTextLabel statLabel, string statName, string itemStat, int playerStat)
+    private static void SetCombatStatText(ScalableRichTextLabel statLabel, string statName, string itemStat, int playerStat)
     {
-        statLabel.Text = $"[center]{statName}: {GetColorizedItemInfluencedStat(itemStat, playerStat)}[/center]";
+        statLabel.SetText($"[center]{statName}: {GetColorizedItemInfluencedStat(itemStat, playerStat)}[/center]");
     }
 
     private static string GetColorizedItemInfluencedStat(string itemStat, int playerStat)
@@ -188,24 +215,24 @@ public partial class InfoPanel : GamePanel
         return $"[color=#FF00FFFF]{itemStat}[/color][color=#FF0000FF]-{Math.Abs(playerStat)}[/color]";
     }
 
-    private static void SetNumericStat(RichTextLabel statLabel, string statName, int current, int @base)
+    private static void SetNumericStat(ScalableRichTextLabel statLabel, string statName, int current, int @base)
     {
         if (current > @base)
-            statLabel.Text = $"[center]{statName}: [color=#00FF00FF]{current}[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#00FF00FF]{current}[/color][/center]");
         else if (current < @base)
-            statLabel.Text = $"[center]{statName}: [color=#FF0000FF]{current}[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#FF0000FF]{current}[/color][/center]");
         else
-            statLabel.Text = $"[center]{statName}: [color=#FFFFFFFF]{current}[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#FFFFFFFF]{current}[/color][/center]");
     }
 
-    private static void SetPercentageStat(RichTextLabel statLabel, string statName, decimal current, decimal @base)
+    private static void SetPercentageStat(ScalableRichTextLabel statLabel, string statName, decimal current, decimal @base)
     {
         if (current > @base)
-            statLabel.Text = $"[center]{statName}: [color=#00FF00FF]{current:F0}%[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#00FF00FF]{current:F0}%[/color][/center]");
         else if (current < @base)
-            statLabel.Text = $"[center]{statName}: [color=#FF0000FF]{current:F0}%[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#FF0000FF]{current:F0}%[/color][/center]");
         else
-            statLabel.Text = $"[center]{statName}: [color=#FFFFFFFF]{current:F0}%[/color][/center]";
+            statLabel.SetText($"[center]{statName}: [color=#FFFFFFFF]{current:F0}%[/color][/center]");
     }
 
     private static void FillIconList(RichTextLabel iconsLabel, List<SimpleEntityDto> elementList)
@@ -315,12 +342,12 @@ public partial class InfoPanel : GamePanel
 
                 if (itemType.Equals("Weapon"))
                 {
-                    _weaponNameLabel.Text = $"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]";
+                    _weaponNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]");
                     _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Attack)}[/center]";
                 }
                 else if (itemType.Equals("Armor"))
                 {
-                    _armorNameLabel.Text = $"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]";
+                    _armorNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]");
                     _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Defense)}[/center]";
                 }
 

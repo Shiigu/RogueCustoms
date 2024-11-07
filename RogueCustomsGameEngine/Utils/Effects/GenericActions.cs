@@ -88,13 +88,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
             }
 
-            if (t == Map.Player)
+            if (t == Map.Player || Map.Player.CanSee(t))
             {
-                events.Add(new()
+                if (t == Map.Player)
                 {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, "HP", t.HP.Current }
-                });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, "HP", t.HP.Current }
+                    });
+                }
                 events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -114,7 +117,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (t == Map.Player || Map.Player.CanSee(t))
             {
                 Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
-                if(t == Map.Player)
+                if(t == Map.Player || Map.Player.CanSee(t))
                     Map.Player.GainExperience((int) paramsObject.Amount);
                 else
                     t.GainExperience((int)paramsObject.Amount);
@@ -142,16 +145,19 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var success = statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                 if (success && (statusTarget == Map.Player || Map.Player.CanSee(statusTarget)))
                 {
-                    events.Add(new()
+                    if (statusTarget == Map.Player)
                     {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
-                    });
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                        });
+                    }
                     var localeToUse = targetAlreadyHadStatus ? Map.Locale["CharacterStatusGotRefreshed"] : Map.Locale["CharacterGotStatused"];
                     Map.AppendMessage(localeToUse.Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue);
 
                 }
-                if (statusTarget == Map.Player)
+                if (statusTarget == Map.Player || Map.Player.CanSee(statusTarget))
                 {
                     events.Add(new()
                         {
@@ -255,16 +261,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         }
                     }
 
-                    var message = Map.Locale[messageKey].Format(new
+                    if (statAlterationTarget == Map.Player || Map.Player.CanSee(statAlterationTarget))
                     {
-                        CharacterName = statAlterationTarget.Name,
-                        StatName = Map.Locale[targetStat.Name],
-                        Amount = amountString
-                    });
-                    Map.AppendMessage(message, Color.DeepSkyBlue);
-
-                    if (statAlterationTarget == Map.Player)
-                    {
+                        var message = Map.Locale[messageKey].Format(new
+                        {
+                            CharacterName = statAlterationTarget.Name,
+                            StatName = Map.Locale[targetStat.Name],
+                            Amount = amountString
+                        });
+                        Map.AppendMessage(message, Color.DeepSkyBlue);
                         events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -306,13 +311,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = statusToRemove.Name }), Color.DeepSkyBlue);
                 }
-                if (c == Map.Player)
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    events.Add(new()
+                    if (c == Map.Player)
                     {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, c.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
-                    });
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, c.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                        });
+                    }
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -373,15 +381,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if(t == Map.Player || Map.Player.CanSee(t))
                     {
                         Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[statName] }), Color.DeepSkyBlue);
-                        if (t == Map.Player)
+                        events.Add(new()
                         {
-                            events.Add(new()
-                                {
-                                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                                    Params = new() { specialEffect }
-                                }
-                            );
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { specialEffect }
                         }
+                        );
                     }
                 }
                 Map.DisplayEvents.Add(($"{t.Name} lost {Map.Locale[statName]} stat modifications", events));
@@ -434,15 +439,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         if (c == Map.Player || Map.Player.CanSee(c))
                         {
                             Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = c.Name, StatName = statName }), Color.DeepSkyBlue);
-                            if (c == Map.Player)
+                            events.Add(new()
                             {
-                                events.Add(new()
-                                {
-                                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                                    Params = new() { SpecialEffect.StatBuff }
-                                }
-                                );
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.StatBuff }
                             }
+                            );
                         }
                     }
                 }
@@ -471,11 +473,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = c.Name, StatusName = als.Name }), Color.DeepSkyBlue);
                         if (c == Map.Player)
                         {
-                            events.Add(new()
+                            if (c == Map.Player)
                             {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, c.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
-                            });
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                    Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, c.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                                });
+                            }
                         }
                     }
 
@@ -484,7 +489,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         modifications.RemoveAll(a => a.Id.Equals(als.Id));
                     }
                 });
-                if (c == Map.Player)
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
                     events.Add(new()
                     {
@@ -510,7 +515,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Rng.RollProbability() <= accuracyCheck && c.CanTakeAction)
             {
                 c.CanTakeAction = false;
-                if (c == Map.Player)
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
                     Map.DisplayEvents.Add(($"{c.Name} is forced to skip turn", new()
                     {
@@ -536,69 +541,77 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
             if (c.ContainingTile.Type.IsWalkable && Rng.RollProbability() <= accuracyCheck)
             {
-                if (c == Map.Player || Map.Player.CanSee(c))
-                {
-                    Map.AppendMessage(Map.Locale["CharacterWasTeleported"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue);
-                }
+                var olderFOV = c == Map.Player ? c.FOVTiles : null;
                 var initialTile = c.ContainingTile;
-                c.Position = Map.PickEmptyPosition(true, false);
+                var targetPosition = Map.PickEmptyPosition(true, false);
+                c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
-                if (c == Map.Player)
-                    Map.Player.UpdateVisibility();
-                if (c == Map.Player)
+
+                if (!Map.IsDebugMode)
                 {
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerPosition,
-                        Params = new() { c.Position }
-                    }
-                    );
-
-                    if (!Map.IsDebugMode)
-                    {
-                        if (c == Map.Player || Map.Player.FOVTiles.Contains(initialTile))
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                Params = new() { initialTile.Position, Map.GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y) }
-                            }
-                            );
-                        }
-
-                        if (c == Map.Player || Map.Player.FOVTiles.Contains(targetTile))
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                Params = new() { targetTile.Position, Map.GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y) }
-                            }
-                            );
-                        }
-                    }
-
-                    if (c == Map.Player)
-                    {
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.SetOnStairs,
-                            Params = new() { c.ContainingTile.Type == TileType.Stairs }
-                        }
-                        );
-                    }
-
                     if (c == Map.Player || Map.Player.FOVTiles.Contains(initialTile))
                     {
                         events.Add(new()
                         {
-                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                            Params = new() { SpecialEffect.Teleport }
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { initialTile.Position, Map.GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y) }
+                        }
+                        );
+                    }
+
+                    if (c == Map.Player || Map.Player.FOVTiles.Contains(targetTile))
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { targetPosition, Map.GetConsoleRepresentationForCoordinates(targetPosition.X, targetPosition.Y) }
                         }
                         );
                     }
                 }
 
+
+                if (c == Map.Player)
+                {
+                    Map.Player.UpdateVisibility();
+                    if (olderFOV != null)
+                    {
+                        foreach (var tile in olderFOV.Where(t => !t.Visible))
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                Params = new() { tile.Position, Map.GetConsoleRepresentationForCoordinates(tile.Position.X, tile.Position.Y) }
+                            }
+                            );
+                        }
+                    }
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerPosition,
+                        Params = new() { targetPosition }
+                    }
+                    );
+
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.SetOnStairs,
+                        Params = new() { c.ContainingTile.Type == TileType.Stairs }
+                    }
+                    );
+                }
+                if (c == Map.Player || Map.Player.CanSee(c))
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.Teleport }
+                    }
+                    );
+                    Map.AppendMessage(Map.Locale["CharacterWasTeleported"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue);
+                }
                 Map.DisplayEvents.Add(($"{c.Name} teleported", events));
+                c.ContainingTile?.StoodOn(c);
                 return true;
             }
             return false;
@@ -677,13 +690,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
             }
 
-            if (t == Map.Player)
+            if (t == Map.Player || Map.Player.CanSee(t))
             {
-                events.Add(new()
+                if (t == Map.Player)
                 {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, "MP", t.MP.Current }
-                });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, "MP", t.MP.Current }
+                    });
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -722,13 +738,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
             }
 
-            if (t == Map.Player)
+            if (t == Map.Player || Map.Player.CanSee(t))
             {
-                events.Add(new()
+                if (t == Map.Player)
                 {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, "Hunger", t.Hunger.Current }
-                });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, "Hunger", t.Hunger.Current }
+                    });
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -811,13 +830,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if(t == Map.Player || Map.Player.CanSee(t))
                 {
                     Map.AppendMessage(Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name }), Color.DeepSkyBlue);
-                    if (t == Map.Player)
+                    if (t == Map.Player || Map.Player.CanSee(t))
                     {
-                        events.Add(new()
+                        if (t == Map.Player)
                         {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                        });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            });
+                        }
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,

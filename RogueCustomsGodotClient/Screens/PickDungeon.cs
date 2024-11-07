@@ -1,6 +1,8 @@
 using Godot;
 
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
 
 using RogueCustomsGodotClient.Popups;
@@ -15,6 +17,7 @@ using FileAccess = Godot.FileAccess;
 
 public partial class PickDungeon : Control
 {
+    private ExceptionLogger _exceptionLogger;
     private Label _titleLabel;
     private Button _pickDungeonButton, _addDungeonButton, _returnToMainMenuButton;
 	private VBoxContainer _dungeonTableHeader, _dungeonTable, _noDungeonsTextContainer;
@@ -31,6 +34,7 @@ public partial class PickDungeon : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _titleLabel = GetNode<Label>("TitleLabel");
         _dungeonTableHeader = GetNode<VBoxContainer>("DungeonTableHeader");
         _dungeonTable = GetNode<VBoxContainer>("ScrollContainer/DungeonTable");
@@ -161,7 +165,15 @@ public partial class PickDungeon : Control
                     new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
                 },
                 new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
-            _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
+            
+            try
+            {
+                _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
 
             foreach (var row in _dungeonTable.GetChildren())
             {
@@ -221,8 +233,15 @@ public partial class PickDungeon : Control
             }
             if (passedHardcoreCheck)
             {
-                _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale, _hardcoreCheckButton.ButtonPressed);
-                _ = GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                try
+                {
+                    _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale, _hardcoreCheckButton.ButtonPressed);
+                    _ = GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
             }
         }
         else

@@ -160,7 +160,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             else if (CurrentTarget is Tile tt)
             {
                 // If I haven't reached the target Tile, I keep going as usual
-                if (tt != ContainingTile)
+                if (tt != ContainingTile && PathToUse.Route != null)
                     return true;
             }
 
@@ -276,7 +276,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (pickedAction.Action == null)
                 return false;
 
-            if (!pickedAction.Action.ChecksCondition(this, CurrentTarget) || !pickedAction.Action.ChecksAICondition(this, CurrentTarget))
+            if (!pickedAction.Action.ChecksCondition(this, pickedAction.Tile) || !pickedAction.Action.ChecksAICondition(this, pickedAction.Tile))
                 return false;
 
             pickedAction.Action.Do(this, pickedAction.Tile, true);
@@ -455,16 +455,16 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
             }
-            if(!Map.IsDebugMode)
+            if (attacker == Map.Player || Map.Player.CanSee(this))
             {
-                events.Add(new()
+                if (!Map.IsDebugMode)
                 {
-                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                    Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
-                });
-            }
-            if (attacker == Map.Player)
-            {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
+                    });
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,

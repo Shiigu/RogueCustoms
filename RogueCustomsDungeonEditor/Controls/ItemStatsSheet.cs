@@ -155,6 +155,8 @@ namespace RogueCustomsDungeonEditor.Controls
             if (e.ColumnIndex != 1) return;
             var input = e.FormattedValue?.ToString() ?? string.Empty;
 
+            input = input.Replace("+", "").Replace("%", "");
+
             if (!decimal.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal result))
             {
                 MessageBox.Show("Only numeric values are allowed.", "Item Stat Modifiers", MessageBoxButtons.OK, MessageBoxIcon.Error);

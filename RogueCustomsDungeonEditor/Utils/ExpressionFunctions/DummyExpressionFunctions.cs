@@ -36,35 +36,39 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         {
             return "true";
         }
+        public static string TILEHASDEADALLIES(Entity This, Entity Source, Tile Target, string[] parameters)
+        {
+            return "true";
+        }
 
         public static string CONCAT(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string REPLACE(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string REVERSE(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string LOWER(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string UPPER(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string TRIM(Entity This, Entity Source, Entity Target, string[] parameters)
         {
-            return "";
+            return "\"\"";
         }
 
         public static string FLOOR(Entity This, Entity Source, Entity Target, string[] parameters)
@@ -75,6 +79,21 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         public static string CEILING(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             return "1";
+        }
+
+        public static string USESSTAT(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            return "true";
+        }
+
+        public static string CURRENTWEAPON(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string CURRENTARMOR(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            return "\"\"";
         }
     }
 }

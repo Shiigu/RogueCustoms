@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
@@ -23,6 +24,7 @@ using System.Threading.Tasks;
 public partial class GameScreen : Control
 {
     private GlobalState _globalState;
+    private ExceptionLogger _exceptionLogger;
     private ExperienceBarPanel _experienceBarPanel;
     private GamePanel _controlsPanel;
     private MapPanel _mapPanel;
@@ -96,6 +98,7 @@ public partial class GameScreen : Control
 
 
         _globalState = GetNode<GlobalState>("/root/GlobalState");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _saveGameButton = GetNode<Button>("ButtonsBorder/ButtonsPanel/SaveGameButton");
         _exitButton = GetNode<Button>("ButtonsBorder/ButtonsPanel/ExitButton");
         _mapPanel = GetNode<MapPanel>("MapPanel");
@@ -131,90 +134,98 @@ public partial class GameScreen : Control
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        if (_globalState.MustUpdateGameScreen)
+        try
         {
-            _globalState.DungeonInfo = _globalState.DungeonManager.GetDungeonStatus();
-            var dungeonStatus = _globalState.DungeonInfo;
-            if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
+            if (_globalState.MustUpdateGameScreen)
             {
-                _globalState.MessageScreenType = MessageScreenType.Ending;
-                GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                _globalState.DungeonInfo = _globalState.DungeonManager.GetDungeonStatus();
+                var dungeonStatus = _globalState.DungeonInfo;
+                if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
+                {
+                    _globalState.MessageScreenType = MessageScreenType.Ending;
+                    GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                    return;
+                }
+                else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
+                {
+                    if (_globalState.IsHardcoreMode)
+                    {
+                        _ = this.CreateStandardPopup(
+                            TranslationServer.Translate("HardcoreModeDeathHeaderText"),
+                            TranslationServer.Translate("HardcoreModeDeathText"),
+                            new PopUpButton[]
+                            {
+                    new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
+                            },
+                            new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+
+                        if (FileAccess.FileExists(_globalState.CurrentSavePath))
+                        {
+                            var dir = DirAccess.Open(_globalState.SaveGameFolder);
+                            dir.Remove(_globalState.CurrentSavePath);
+                        }
+                    }
+                    _globalState.PlayerControlMode = ControlMode.None;
+                    _saveGameButton.Disabled = true;
+                }
+
+                if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+                {
+                    _saveGameButton.Disabled = false;
+                }
+
+                if (_globalState.PlayerControlMode == ControlMode.None)
+                {
+                    _mapPanel.StopTargeting();
+                    _saveGameButton.Disabled = true;
+                }
+
+                foreach (var child in _children)
+                {
+                    child.Update();
+                }
+
+                _ = UpdateUIViaEvents();
+
+                _globalState.MustUpdateGameScreen = false;
+                _lastTurn = dungeonStatus.TurnCount;
+            }
+
+            if (_globalState.PlayerControlMode == ControlMode.Waiting)
+            {
+                _coords = new CoordinateInput
+                {
+                    X = 0,
+                    Y = 0
+                };
                 return;
             }
-            else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
+            if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
             {
-                if(_globalState.IsHardcoreMode)
+                _globalState.DungeonManager.MovePlayer(_coords);
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.PlayerControlMode = ControlMode.Waiting;
+
+                _coords = new CoordinateInput
                 {
-                    _ = this.CreateStandardPopup(
-                        TranslationServer.Translate("HardcoreModeDeathHeaderText"),
-                        TranslationServer.Translate("HardcoreModeDeathText"),
-                        new PopUpButton[]
-                        {
-                    new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
-                        },
-                        new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
-
-                    if (FileAccess.FileExists(_globalState.CurrentSavePath))
-                    {
-                        var dir = DirAccess.Open(_globalState.SaveGameFolder);
-                        dir.Remove(_globalState.CurrentSavePath);
-                    }
-                }
-                _globalState.PlayerControlMode = ControlMode.None;
-                _saveGameButton.Disabled = true;
+                    X = 0,
+                    Y = 0
+                };
             }
-
-            if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+            else if ((_globalState.PlayerControlMode == ControlMode.Targeting) && (_coords.X != 0 || _coords.Y != 0))
             {
-                _saveGameButton.Disabled = false;
+                _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
+
+                _coords = new CoordinateInput
+                {
+                    X = 0,
+                    Y = 0
+                };
             }
-
-            if (_globalState.PlayerControlMode == ControlMode.None)
-            {
-                _mapPanel.StopTargeting();
-                _saveGameButton.Disabled = true;
-            }
-
-            foreach (var child in _children)
-            {
-                child.Update();
-            }
-
-            _ = UpdateUIViaEvents();
-
-            _globalState.MustUpdateGameScreen = false;
-            _lastTurn = dungeonStatus.TurnCount;
         }
-
-        if (_globalState.PlayerControlMode == ControlMode.Waiting)
+        catch (Exception ex)
         {
-            _coords = new CoordinateInput
-            {
-                X = 0,
-                Y = 0
-            };
-            return;
-        }
-        if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
-        {
-            _globalState.DungeonManager.MovePlayer(_coords);
-            _globalState.MustUpdateGameScreen = true;
-
-            _coords = new CoordinateInput
-            {
-                X = 0,
-                Y = 0
-            };
-        }
-        else if ((_globalState.PlayerControlMode == ControlMode.Targeting) && (_coords.X != 0 || _coords.Y != 0))
-        {
-            _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
-
-            _coords = new CoordinateInput
-            {
-                X = 0,
-                Y = 0
-            };
+            _exceptionLogger.LogMessage(ex);
         }
     }
     private async Task UpdateUIViaEvents()
@@ -229,7 +240,7 @@ public partial class GameScreen : Control
         var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
         _mapPanel.StopTargeting();
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
-        {            
+        {
             foreach (var displayEvent in displayEventList.Events)
             {
                 switch (displayEvent.DisplayEventType)
@@ -479,19 +490,33 @@ public partial class GameScreen : Control
         }
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
-            _globalState.DungeonManager.MovePlayer(new CoordinateInput
+            try
             {
-                X = 0,
-                Y = 0
-            });
-            AcceptEvent();
-            _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.MovePlayer(new CoordinateInput
+                {
+                    X = 0,
+                    Y = 0
+                });
+                AcceptEvent();
+                _globalState.MustUpdateGameScreen = true;
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_inventory"))
         {
-            this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
-            AcceptEvent();
+            try
+            {
+                this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
+                AcceptEvent();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_aim"))
@@ -538,19 +563,33 @@ public partial class GameScreen : Control
         }
         else if (@event.IsActionPressed("ui_skip_turn"))
         {
-            _globalState.DungeonManager.MovePlayer(new CoordinateInput
+            try
             {
-                X = 0,
-                Y = 0
-            });
-            AcceptEvent();
-            _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.MovePlayer(new CoordinateInput
+                {
+                    X = 0,
+                    Y = 0
+                });
+                AcceptEvent();
+                _globalState.MustUpdateGameScreen = true;
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_inventory"))
         {
-            this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
-            AcceptEvent();
+            try
+            {
+                this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
+                AcceptEvent();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_aim"))
@@ -574,15 +613,33 @@ public partial class GameScreen : Control
 
         if (@event.IsActionPressed("ui_skip_turn"))
         {
-            _globalState.DungeonManager.MovePlayer(coordinateInput);
-            AcceptEvent();
-            _globalState.MustUpdateGameScreen = true;
+            try
+            {
+                _globalState.DungeonManager.MovePlayer(new CoordinateInput
+                {
+                    X = 0,
+                    Y = 0
+                });
+                AcceptEvent();
+                _globalState.MustUpdateGameScreen = true;
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_inventory"))
         {
-            this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
-            AcceptEvent();
+            try
+            {
+                this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
+                AcceptEvent();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
     }
@@ -599,38 +656,52 @@ public partial class GameScreen : Control
         }
         else if (@event.IsActionPressed("ui_aim"))
         {
-            this.CreateActionSelectWindow(_globalState.DungeonManager.GetPlayerAttackActions(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y), _mapPanel.CursorCoords.Value);
-            AcceptEvent();
+            try
+            {
+                this.CreateActionSelectWindow(_globalState.DungeonManager.GetPlayerAttackActions(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y), _mapPanel.CursorCoords.Value);
+                AcceptEvent();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else if (@event.IsActionPressed("ui_view_entity"))
         {
-            var entityDetails = _globalState.DungeonManager.GetDetailsOfEntity(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y);
-            if (entityDetails != null)
+            try
             {
-                var entityWindowText = new StringBuilder();
-                if (entityDetails.ShowEntityDescription)
+                var entityDetails = _globalState.DungeonManager.GetDetailsOfEntity(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y);
+                if (entityDetails != null)
                 {
-                    entityWindowText.Append($"[center]{entityDetails.EntityName}[/center]\n\n");
-                    entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
-                    entityWindowText.Append($"{entityDetails.EntityDescription}");
-                }
-                if (entityDetails.ShowTileDescription)
-                {
+                    var entityWindowText = new StringBuilder();
                     if (entityDetails.ShowEntityDescription)
-                        entityWindowText.Append($"\n\n");
-                    entityWindowText.Append($"[center]{entityDetails.TileName}[/center]\n\n");
-                    entityWindowText.Append($"[center]{entityDetails.TileConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
-                    entityWindowText.Append($"{entityDetails.TileDescription}");
-                }
-                _ = this.CreateStandardPopup(TranslationServer.Translate("EntityDetailTitleText"),
-                                            entityWindowText.ToString(),
-                                            new PopUpButton[]
-                                            {
+                    {
+                        entityWindowText.Append($"[center]{entityDetails.EntityName}[/center]\n\n");
+                        entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
+                        entityWindowText.Append($"{entityDetails.EntityDescription}");
+                    }
+                    if (entityDetails.ShowTileDescription)
+                    {
+                        if (entityDetails.ShowEntityDescription)
+                            entityWindowText.Append($"\n\n");
+                        entityWindowText.Append($"[center]{entityDetails.TileName}[/center]\n\n");
+                        entityWindowText.Append($"[center]{entityDetails.TileConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
+                        entityWindowText.Append($"{entityDetails.TileDescription}");
+                    }
+                    _ = this.CreateStandardPopup(TranslationServer.Translate("EntityDetailTitleText"),
+                                                entityWindowText.ToString(),
+                                                new PopUpButton[]
+                                                {
                                             new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" }
-                                            }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+                                                }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+                }
+                AcceptEvent();
             }
-            AcceptEvent();
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
             return;
         }
         else
@@ -725,8 +796,15 @@ public partial class GameScreen : Control
                                     {
                                         new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
                                                     {
-                                                        _globalState.DungeonManager.PlayerTakeStairs();
-                                                        _globalState.MustUpdateGameScreen = true;
+                                                        try
+                                                        {
+                                                            _globalState.DungeonManager.PlayerTakeStairs();
+                                                            _globalState.MustUpdateGameScreen = true;
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            _exceptionLogger.LogMessage(ex);
+                                                        }
                                                     }, ActionPress = "ui_accept" },
                                         new() { Text = TranslationServer.Translate("NoButtonText"), Callback = null, ActionPress = "ui_cancel" }
                                     }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
