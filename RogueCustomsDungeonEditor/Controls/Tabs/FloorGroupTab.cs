@@ -26,8 +26,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private List<EffectTypeData> EffectParamData;
         private List<RoomDispositionData> RoomDispositionData;
         private DungeonInfo ActiveDungeon;
-        public FloorInfo OpenedFloorGroup { get; private set; }
-        public FloorInfo LoadedFloorGroup { get; private set; }
+        public FloorInfo OpenedFloorGroup { get; set; }
+        public FloorInfo LoadedFloorGroup { get; set; }
         public event EventHandler TabInfoChanged;
         public FloorGroupTab()
         {

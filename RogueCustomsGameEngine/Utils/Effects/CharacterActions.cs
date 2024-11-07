@@ -116,26 +116,32 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         || (t == Map.Player || Map.Player.CanSee(t)))
                     {
                         Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = itemToSteal.Name }), Color.DeepSkyBlue);
-                        if (s == Map.Player)
+                        if (s == Map.Player || Map.Player.CanSee(s))
                         {
-                            events.Add(new()
+                            if (s == Map.Player)
                             {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                            });
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                    Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                                });
+                            }
                             events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { SpecialEffect.ItemGet }
                             });
                         }
-                        else if (t == Map.Player)
+                        else if (t == Map.Player || Map.Player.CanSee(t))
                         {
-                            events.Add(new()
+                            if (t == Map.Player)
                             {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                            });
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                    Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                                });
+                            }
                             events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -169,7 +175,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 clonedScript.Map = Map;
                 c.OwnOnAttack.Add(clonedScript);
                 c.SetActionIds();
-                if (c == Map.Player && paramsObject.InformThePlayer)
+                if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
                 {
                     Map.AppendMessage(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
                     events.Add(new()
@@ -200,7 +206,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 c.OwnOnAttack.RemoveAll(oaa => oaa.IsScript && oaa.Id.Equals(script.Id));
                 c.SetActionIds();
-                if (c == Map.Player && paramsObject.InformThePlayer)
+                if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
                 {
                     Map.AppendMessage(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
                     events.Add(new()

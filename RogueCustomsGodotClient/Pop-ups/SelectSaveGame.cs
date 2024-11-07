@@ -2,6 +2,7 @@ using Godot;
 
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Utils;
@@ -16,6 +17,7 @@ public partial class SelectSaveGame : Control
 {
     private GlobalState _globalState;
     private InputManager _inputManager;
+    private ExceptionLogger _exceptionLogger;
     private Button _loadButton, _cancelButton;
     private VBoxContainer _saveGameTable;
     private Panel _border;
@@ -30,6 +32,7 @@ public partial class SelectSaveGame : Control
     {
         _border = GetNode<Panel>("Border");
         _globalState = GetNode<GlobalState>("/root/GlobalState");
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _inputManager = GetNode<InputManager>("/root/InputManager");
         _titleLabel = GetNode<Label>("MarginContainer/VBoxContainer/TitleLabel");
         _saveGameTable = GetNode<VBoxContainer>("ScrollContainer/SaveGameTable");
@@ -74,40 +77,51 @@ public partial class SelectSaveGame : Control
     }
 
     private void OnLoadButtonPressed() {
-        if (_selectedIndex == int.MinValue) return;
-        var selectedSave = _globalState.SavedGames[_selectedIndex];
-        _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
+        try
         {
-            DungeonData = Convert.FromBase64String(selectedSave.SaveGame.DungeonData),
-        });
-        _globalState.IsHardcoreMode = selectedSave.SaveGame.IsHardcoreMode;
-        _globalState.CurrentSavePath = selectedSave.Path;
-        GetTree().ChangeSceneToFile("res://Screens/GameScreen.tscn");
+            if (_selectedIndex == int.MinValue) return;
+            var selectedSave = _globalState.SavedGames[_selectedIndex];
+            _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
+            {
+                DungeonData = Convert.FromBase64String(selectedSave.SaveGame.DungeonData),
+            });
+            _globalState.IsHardcoreMode = selectedSave.SaveGame.IsHardcoreMode;
+            _globalState.CurrentSavePath = selectedSave.Path;
+            GetTree().ChangeSceneToFile("res://Screens/GameScreen.tscn");
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
     }
 
     private RichTextLabel BuildCell(SaveGame saveGame, int cellIndex)
     {
-        var saveGameLabel = new RichTextLabel { CustomMinimumSize = new(250, 150), Name = $"Cell_{cellIndex}", BbcodeEnabled = true };
+        var saveGameLabel = new ScalableRichTextLabel { CustomMinimumSize = new(250, 150), Size = new(250, 150), Name = $"Cell_{cellIndex}", BbcodeEnabled = true, DefaultFontSize = 16, MinFontSize = 8 };
         var labelContents = new StringBuilder();
 
         labelContents.Append($"[center]{saveGame.DungeonName}[/center]");
         labelContents.Append($"[p] [/p][center]{saveGame.PlayerName}[/center][p][center]{saveGame.PlayerRepresentation.ToBbCodeRepresentation()}[/center]");
         labelContents.Append($"[p][center]{TranslationServer.Translate("PlayerLevelText").ToString().Format(new { CurrentLevel = saveGame.PlayerLevel.ToString() })}[/center][p]");
-        if (saveGame.IsPlayerDead || saveGame.IsHardcoreMode)
-            labelContents.Append("[p] [/p]");
+
         if (saveGame.IsPlayerDead)
             labelContents.Append($"[center][color=#FF0000FF]{TranslationServer.Translate("DeadPlayerText")}[/color][/center][p]");
+        else
+            labelContents.Append("[p] [/p]");
         if (saveGame.IsHardcoreMode)
             labelContents.Append($"[center][color=#FF0000FF]{TranslationServer.Translate("HardcoreModeSaveGameText")}[/color][/center][p]");        
+        else
+            labelContents.Append("[p] [/p]");
+
         labelContents.Append("[p] [/p]");
-        labelContents.Append($"[center][font_size=12]{saveGame.SaveDate.ToShortDateString()} - {saveGame.SaveDate.ToShortTimeString()}[/font_size][/center]");
+        labelContents.Append($"[center]{saveGame.SaveDate.ToShortDateString()} - {saveGame.SaveDate.ToShortTimeString()}[/center]");
 
         saveGameLabel.AddThemeFontSizeOverride("normal_font_size", 14);
         saveGameLabel.AddThemeConstantOverride("text_highlight_v_padding", 0);
         saveGameLabel.AddThemeConstantOverride("text_highlight_h_padding", 0);
         saveGameLabel.AddThemeStyleboxOverride("normal", GlobalConstants.NormalSaveGameCellStyleBox);
         saveGameLabel.GuiInput += (eventArgs) => OnCellClicked(eventArgs, cellIndex);
-        saveGameLabel.Text = labelContents.ToString();
+        saveGameLabel.SetText(labelContents.ToString());
 
         return saveGameLabel;
     }
@@ -131,20 +145,16 @@ public partial class SelectSaveGame : Control
         {
             if (_selectedIndex == cellIndex && cellIndex == indexToPick)
             {
-                _selectedIndex = int.MinValue;
-                _loadButton.Disabled = true;
-                return;
+                indexToPick = int.MinValue;
             }
         }
 
         if (indexToPick == int.MinValue)
         {
             _selectedIndex = indexToPick;
-            _loadButton.Disabled = true;
-            return;
         }
 
-        _loadButton.Disabled = false;
+        _loadButton.Disabled = true;
 
         for (int i = 0; i < (int)Math.Ceiling(_globalState.SavedGames.Count / (float)2); i++)
         {
@@ -172,6 +182,7 @@ public partial class SelectSaveGame : Control
                     {
                         scrollContainer.ScrollVertical = (int)(cellBottom - scrollContainer.Size.Y);
                     }
+                    _loadButton.Disabled = false;
                 }
                 else
                 {
@@ -182,11 +193,16 @@ public partial class SelectSaveGame : Control
         _selectedIndex = indexToPick;
     }
 
+    public void ToggleCellSelection()
+    {
+
+    }
+
     public override void _Input(InputEvent @event)
     {
         if (@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true)))
         {
-            if (_selectedIndex == -1)
+            if (_selectedIndex == int.MinValue)
                 SelectCell(0);
             else
                 SelectCell(_selectedIndex - 2);
@@ -194,7 +210,7 @@ public partial class SelectSaveGame : Control
         }
         else if (@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true)))
         {
-            if (_selectedIndex == -1)
+            if (_selectedIndex == int.MinValue)
                 SelectCell(0);
             else
                 SelectCell(_selectedIndex + 2);
@@ -202,7 +218,7 @@ public partial class SelectSaveGame : Control
         }
         else if (@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true)))
         {
-            if (_selectedIndex == -1)
+            if (_selectedIndex == int.MinValue)
                 SelectCell(0);
             else
                 SelectCell(_selectedIndex - 1);
@@ -210,7 +226,7 @@ public partial class SelectSaveGame : Control
         }
         else if (@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true)))
         {
-            if (_selectedIndex == -1)
+            if (_selectedIndex == int.MinValue)
                 SelectCell(0);
             else
                 SelectCell(_selectedIndex + 1);

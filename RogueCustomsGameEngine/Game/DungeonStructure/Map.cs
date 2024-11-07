@@ -328,11 +328,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     success = IsFullyConnectedWithKeys();
                     if (success)
                     {
+                        var events = new List<DisplayEventDto>();
+                        foreach (var key in Keys)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                Params = new() { key.Position, GetConsoleRepresentationForCoordinates(key.Position.X, key.Position.Y) }
+                            }
+                            );
+                        }
                         foreach (var door in Doors)
                         {
                             try
                             {
                                 var existingValue = (int) GetFlagValue($"Doors_{door.DoorId}");
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                    Params = new() { door.Position, GetConsoleRepresentationForCoordinates(door.Position.X, door.Position.Y) }
+                                }
+                                );
                                 SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
                             }
                             catch (FlagNotFoundException)
@@ -340,6 +356,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 CreateFlag($"Doors_{door.DoorId}", 1, true);
                             }
                         }
+                        DisplayEvents.Add(("Placing Keys", events));
                     }
                 }
                 while (!success && _generationTries < EngineConstants.MaxGenerationTries);
@@ -360,6 +377,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     });
                 }
             }
+            Snapshot = new(Dungeon, this);
         }
 
         public (bool MapGenerationSuccess, bool KeyGenerationSuccess) DebugGenerate()
@@ -1215,7 +1233,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             TurnCount++;
             SetFlagValue("TurnCount", TurnCount);
-            Snapshot = new(Dungeon, this);
             Player.TookAction = false;
             Player.PerformOnTurnStart();
             Player.RemainingMovement = (int) Player.Movement.Current;
@@ -1226,6 +1243,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 e.TookAction = false;
                 e.PerformOnTurnStart();
             });
+            if(TurnCount > 1)
+                Snapshot = new(Dungeon, this);
         }
 
         private void AddNPC()
@@ -1320,6 +1339,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Snapshot = new(Dungeon, this);
             if (x == 0 && y == 0) // This is only possible if the player chooses to Skip Turn.
             {
+                Player.ContainingTile?.StoodOn(Player);
                 Player.RemainingMovement = 0;
                 Player.TookAction = true;
             }
@@ -1385,6 +1405,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 // Swap positions with allies, neutrals or invisibles
                 characterInTargetTile.LatestPositions.AddButKeepingCapacity(characterInTargetTile.Position, 4);
                 characterInTargetTile.Position = character.Position;
+                characterInTargetTile.ContainingTile?.StoodOn(characterInTargetTile);
                 if (characterInTargetTile.RemainingMovement > 0)
                     characterInTargetTile.RemainingMovement--;
                 if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
@@ -1396,18 +1417,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             character.LatestPositions.AddButKeepingCapacity(character.Position, 4);
             character.Position = targetTile.Position;
 
-            if (targetTile.Key != null)
-                character.TryToPickItem(targetTile.Key);
-            targetTile.GetPickableObjects().Cast<IPickable>().ForEach(i => character.TryToPickItem(i));
-            targetTile.StoodOn(character);
-            targetTile.Trap?.Stepped(character);
-
-            character.RemainingMovement--;
-
-            var initialRepresentation = GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y);
-            var targetRepresentation = GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y);
-
-            if(!IsDebugMode)
+            if (!IsDebugMode)
             {
                 if (character == Player)
                 {
@@ -1459,6 +1469,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             DisplayEvents.Add(($"{character.Name} ({character.Id}) moves to ({targetTile.Position.X}, {targetTile.Position.Y})", events));
 
+            if (targetTile.Key != null)
+                character.TryToPickItem(targetTile.Key);
+            targetTile.GetPickableObjects().Cast<IPickable>().ForEach(i => character.TryToPickItem(i));
+            targetTile.StoodOn(character);
+            targetTile.Trap?.Stepped(character);
+
+            character.RemainingMovement--;
+
             return true;
         }
 
@@ -1466,8 +1484,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var monsterHouseRoom = Rooms.Find(r => r.MustSpawnMonsterHouse);
             if (monsterHouseRoom == null) return;
-            AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red);
-            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
             DisplayEvents.Add(("MONSTER HOUSE!", new()
                 {
                     new() {
@@ -1476,6 +1492,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                 }
             ));
+            AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red);
+            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
             var acceptableTiles = monsterHouseRoom.GetTiles().Where(t => CanBeConsideredEmpty(t)).TakeNDifferentRandomElements(FloorConfigurationToUse.SimultaneousMaxMonstersInFloor, Rng);
 
             if (FloorConfigurationToUse.PossibleMonsters.Any())
@@ -2478,7 +2496,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 // We remove all the picked Tiles that lack a direct connection with one that is already walkable (to avoid producing unnecessary Islands)
                 filteredTiles = filteredTiles.Where(tile => GetAdjacentWalkableTiles(tile.Position, false).Any()).ToList();
 
-                var maximumElements = filteredTiles.Count / 5;
+                var maximumElements = filteredTiles.Count / 10;
                 tilesToConvert = filteredTiles.TakeNDifferentRandomElements(Rng.NextInclusive(maximumElements), Rng);
 
                 isValidLake = IsSpecialTileGroupValid(tilesToConvert);

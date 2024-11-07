@@ -294,7 +294,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (SightRange == EngineConstants.FullRoomSightRange)
                 {
-                    if (ContainingTile.Type == TileType.Hallway)
+                    if (ContainingTile.Type == TileType.Hallway || ContainingRoom == null || ContainingTile.IsConnectorTile)
                         return Map.GetFOVTilesWithinDistance(Position, EngineConstants.FullRoomSightRangeForHallways);
                     return Map.GetTilesInRoom(ContainingRoom);
                 }
@@ -359,7 +359,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     var events = new List<DisplayEventDto>();
                     Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
 
-                    if (this == Map.Player)
+                    if (this == Map.Player || Map.Player.CanSee(this))
                     {
                         var stat = UsedStats.Find(s => s.Name.Equals(statName));
                         var totalNeutralization = modificationList?.Where(mhm => mhm.RemainingTurns == 0).Sum(mhm => mhm.Amount);
@@ -398,7 +398,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     var events = new List<DisplayEventDto>();
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
 
-                    if (EntityType == EntityType.Player)
+                    if (this == Map.Player || Map.Player.CanSee(this))
                     {
                         events.Add(new()
                         {
@@ -414,8 +414,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 regeneration.TryToRegenerate();
             }
             if (HP.Current <= 0)
-                Die();
-            ContainingTile?.StoodOn(this);
+            {
+                if(ExistenceStatus == EntityExistenceStatus.Alive)
+                    Die();
+                ExistenceStatus = EntityExistenceStatus.Dead;
+                Passable = true;
+                StatModifications.ForEach(m => m.Modifications.Clear());
+                AlteredStatuses.Clear();
+            }
         }
 
         public bool CanSee(Entity entity)
@@ -522,7 +528,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var itemToEquipWasInTheBag = itemToEquip.Position == null;
             if (itemToEquipWasInTheBag)
                 Inventory.Remove(itemToEquip);
-            if (this == Map.Player)
+            if (this == Map.Player || Map.Player.CanSee(this))
             {
                 events.Add(new()
                 {
@@ -603,9 +609,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
             var successfulEffects = action?.Do(this, target, true);
-            if(successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
+            if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 target.AttackedBy(this);
-            if(action?.FinishesTurnWhenUsed == true)
+            if (action?.FinishesTurnWhenUsed == true)
                 TookAction = true;
             RemainingMovement = 0;
         }
@@ -655,14 +661,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public virtual void Die(Entity? attacker = null)
         {
-            if (attacker == null || attacker is Character)
-                OnDeath?.Where(oda => attacker == null || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
+            OnDeath?.Where(oda => attacker == null || attacker is not Character || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
             if(HP.Current <= 0)
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
-                StatModifications.ForEach(m => m.Modifications.Clear());
-                AlteredStatuses.Clear();
             }
         }
 

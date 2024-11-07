@@ -143,33 +143,57 @@ namespace RogueCustomsDungeonEditor.Utils
                 {
                     parsedArg = parsedArg.Replace(match.Value, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
                 }
-                else if (!string.IsNullOrEmpty(propertyPath)) // Handle regular properties
+                else if (!string.IsNullOrEmpty(propertyPath)) // Handle nested properties
                 {
-                    foreach (var entityType in entityTypes)
+                    string replacement = ResolveNestedPropertyValue(entityTypes, propertyPath, numericPlaceholder, stringPlaceholder);
+                    if (replacement != null)
                     {
-                        foreach (var property in entityType.GetProperties())
-                        {
-                            string propertyName = property.Name;
-                            string fieldToken = $"{{{eName}.{propertyName}}}";
-
-                            if (parsedArg.Contains(fieldToken, StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                if (propertyName.Equals("ClassId", StringComparison.InvariantCultureIgnoreCase)
-                                    || propertyName.Equals("Name", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    parsedArg = parsedArg.Replace(fieldToken, stringPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                                }
-                                else
-                                {
-                                    parsedArg = parsedArg.Replace(fieldToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
-                                }
-                            }
-                        }
+                        parsedArg = parsedArg.Replace(match.Value, replacement, StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
             }
 
             return parsedArg;
+        }
+
+        private static string ResolveNestedPropertyValue(IEnumerable<Type> entityTypes, string propertyPath, string numericPlaceholder, string stringPlaceholder)
+        {
+            var numericStringProperties = new List<string> { "Power", "Damage", "Mitigation" };
+            var properties = propertyPath.Split('.');
+            Type currentType = null;
+            bool isNumeric = true;
+
+            foreach (var entityType in entityTypes)
+            {
+                if (entityType.GetProperty(properties[0]) != null)
+                {
+                    currentType = entityType;
+                    break;
+                }
+            }
+
+            if (currentType == null) return null;
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var property = currentType.GetProperty(properties[i]);
+                if (property == null) return null;
+
+                // Determine the placeholder based on property type for the last property
+                if (i == properties.Length - 1)
+                {
+                    if (property.PropertyType == typeof(string) && !numericStringProperties.Contains(property.Name, StringComparer.InvariantCultureIgnoreCase))
+                    {
+                        isNumeric = false;
+                    }
+                }
+                else
+                {
+                    currentType = property.PropertyType;
+                }
+            }
+
+            return isNumeric ? numericPlaceholder : stringPlaceholder;
         }
 
         private static string ParseNamedFlags(string arg, string numericPlaceholder)

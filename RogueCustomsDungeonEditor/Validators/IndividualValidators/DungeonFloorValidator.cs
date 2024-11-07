@@ -69,7 +69,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (floorJson.PossibleMonsters.Count(pm => pm.ClassId.Equals(possibleMonster.ClassId) && pm.MinLevel == possibleMonster.MinLevel
                                                         && pm.MaxLevel == possibleMonster.MaxLevel && pm.CanSpawnOnFirstTurn == possibleMonster.CanSpawnOnFirstTurn
                                                         && pm.CanSpawnAfterFirstTurn == possibleMonster.CanSpawnAfterFirstTurn
-                                                        && pm.SpawnCondition.Equals(possibleMonster.SpawnCondition, StringComparison.InvariantCultureIgnoreCase)) > 1)
+                                                        && ((pm.SpawnCondition == null && possibleMonster.SpawnCondition == null) || pm.SpawnCondition.Equals(possibleMonster.SpawnCondition, StringComparison.InvariantCultureIgnoreCase))) > 1)
                     {
                         messages.AddError($"{possibleMonster.ClassId} shows up as a duplicate Possible NPC in the current Floor Type.");
                     }
@@ -123,7 +123,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
                         messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
-                    if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId) && pm.SpawnCondition.Equals(possibleItem.SpawnCondition, StringComparison.InvariantCultureIgnoreCase)) > 1)
+                    if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId) && ((pm.SpawnCondition == null && possibleItem.SpawnCondition == null) || pm.SpawnCondition.Equals(possibleItem.SpawnCondition, StringComparison.InvariantCultureIgnoreCase))) > 1)
                         messages.AddError($"{possibleItem.ClassId} shows up as a duplicate PossibleItem in the current Floor Type.");
                     if (possibleItem.ChanceToPick <= 0)
                         messages.AddError($"{possibleItem.ClassId}'s ChanceToPick must be an integer number higher than 0.");

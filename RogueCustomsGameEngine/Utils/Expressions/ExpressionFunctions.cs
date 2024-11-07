@@ -189,6 +189,48 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             return false.ToString();
         }
+
+        public static string CURRENTWEAPON(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentWeapon.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = entityName.ToLowerInvariant() switch
+            {
+                "this" => This,
+                "source" => Source,
+                "target" => Target,
+                "player" => This.Map.Player,
+                _ => throw new ArgumentException("Invalid entity name in CurrentWeapon.")
+            };
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in CurrentWeapon.");
+
+            return $"\"{c.Weapon.ClassId}\"";
+        }
+
+        public static string CURRENTARMOR(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentArmor.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = entityName.ToLowerInvariant() switch
+            {
+                "this" => This,
+                "source" => Source,
+                "target" => Target,
+                "player" => This.Map.Player,
+                _ => throw new ArgumentException("Invalid entity name in CurrentArmor.")
+            };
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in CurrentArmor.");
+
+            return $"\"{c.Armor.ClassId}\"";
+        }
     }
 }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

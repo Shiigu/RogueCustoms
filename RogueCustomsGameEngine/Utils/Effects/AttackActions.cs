@@ -67,7 +67,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             int damageResistance = 0;
             if(resistanceStat != null && !paramsObject.BypassesResistances)
             {
-                damageResistance = paramsObject.Damage * resistanceStat.BaseAfterModifications / 100;
+                damageResistance = (int) Math.Ceiling((float) paramsObject.Damage * (float) resistanceStat.BaseAfterModifications / 100);
             }
             if(damageResistance > paramsObject.Damage && attackElement.ExcessResistanceCausesHealDamage)
             {
@@ -136,7 +136,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Params = new() { UpdatePlayerDataType.ModifyStat, "HP", c.HP.Current }
                 });
             }
-            if (Source == Map.Player && c.EntityType == EntityType.NPC)
+            if (Map.Player.CanSee(c) && c.EntityType == EntityType.NPC)
             {
                 events.Add(new()
                 {
@@ -155,10 +155,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 );
             }
             Map.DisplayEvents.Add(($"{c.Name} took damage", events));
-            if (canCallElementEffect)
-                attackElement.OnAfterAttack?.Do(Source, c, false);
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);
+            else if (canCallElementEffect)
+            {
+                attackElement.OnAfterAttack?.Do(Source, c, false);
+                if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
+                    c.Die(paramsObject.Attacker);
+            }
             return true;
         }
 
@@ -193,13 +197,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.AppendMessage(Map.Locale["CharacterLosesMP"].Format(new { CharacterName = c.Name, BurnedMP = paramsObject.Power, CharacterMPStat = Map.Locale["CharacterMPStat"] }), Color.DeepSkyBlue);
             }
             c.MP.Current = Math.Max(0, c.MP.Current - burnAmount);
-            if (c == Map.Player)
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
-                events.Add(new()
+                if (c == Map.Player)
                 {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, "MP", c.MP.Current }
-                });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, "MP", c.MP.Current }
+                    });
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -237,13 +244,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.AppendMessage(Map.Locale["CharacterLosesHunger"].Format(new { CharacterName = c.Name, LostHunger = paramsObject.Power, CharacterHungerStat = Map.Locale["CharacterHungerStat"] }), Color.DeepSkyBlue);
             }
             c.Hunger.Current = Math.Max(0, c.Hunger.Current - lossAmount);
-            if (c == Map.Player)
+            if (c == Map.Player || Map.Player.CanSee(c))
             {
-                events.Add(new()
+                if (c == Map.Player)
                 {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, "Hunger", c.Hunger.Current }
-                });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, "Hunger", c.Hunger.Current }
+                    });
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,

@@ -2,6 +2,7 @@ using Godot;
 
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
+using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Utils;
@@ -11,6 +12,7 @@ using System.Linq;
 
 public partial class MessageScreen : Control
 {
+    private ExceptionLogger _exceptionLogger;
     private Label _titleLabel;
     private ScrollContainer _scrollContainer;
     private RichTextLabel _messagelabel;
@@ -33,6 +35,7 @@ public partial class MessageScreen : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _titleLabel = GetNode<Label>("TitleLabel");
         _scrollContainer = GetNode<ScrollContainer>("ScrollContainer");
         _messagelabel = GetNode<RichTextLabel>("ScrollContainer/MessageLabel");
@@ -48,14 +51,28 @@ public partial class MessageScreen : Control
         switch(_globalState.MessageScreenType)
         {
             case MessageScreenType.Briefing:
-                _titleLabel.Text = briefingMessageHeaderText;
-                _titleLabel.Modulate = briefingColor;
-                messageText = _globalState.DungeonManager.GetDungeonWelcomeMessage();
+                try
+                {
+                    _titleLabel.Text = briefingMessageHeaderText;
+                    _titleLabel.Modulate = briefingColor;
+                    messageText = _globalState.DungeonManager.GetDungeonWelcomeMessage();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
                 break;
             case MessageScreenType.Ending:
-                _titleLabel.Text = theEndMessageHeaderText;
-                _titleLabel.Modulate = theEndColor;
-                messageText = _globalState.DungeonManager.GetDungeonEndingMessage();
+                try
+                {
+                    _titleLabel.Text = theEndMessageHeaderText;
+                    _titleLabel.Modulate = theEndColor;
+                    messageText = _globalState.DungeonManager.GetDungeonEndingMessage();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
                 break;
             case MessageScreenType.Error:
                 _titleLabel.Text = errorMessageHeaderText;

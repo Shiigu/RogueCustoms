@@ -50,7 +50,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
-            else if (user.EntityType == EntityType.NPC)
+            else if (user.EntityType == EntityType.NPC && Map.Player.CanSee(user))
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
                 {
                     new() {

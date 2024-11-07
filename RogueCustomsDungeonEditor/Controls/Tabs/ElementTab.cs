@@ -39,7 +39,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             cmbElementResistanceStat.Items.Clear();
             foreach (var stat in activeDungeon.CharacterStats.Where(cs => !FormConstants.DefaultStats.Any(ms => ms.Equals(cs.Id, StringComparison.InvariantCultureIgnoreCase)) && cs.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase)))
             {
-                cmbElementResistanceStat.Items.Add(stat);
+                cmbElementResistanceStat.Items.Add(stat.Id);
             }
             if (cmbElementResistanceStat.Items.Cast<string>().Contains(elementToLoad.ResistanceStatId.ToString()))
                 cmbElementResistanceStat.Text = elementToLoad.ResistanceStatId.ToString();
