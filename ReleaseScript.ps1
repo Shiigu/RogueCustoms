@@ -34,7 +34,7 @@ function Export-GodotProject {
 
     Write-Host "Exporting $projectPath with Godot executable at $godotPath..."
 
-    $exportCommand = "& `"$godotPath`" --headless --export-release `"Windows Desktop`" `"$outputFolder\RogueCustomsGodotClient.exe`" --path `"$projectPath`""
+    $exportCommand = "& `"$godotPath`" --headless --export-release `"Windows Desktop`" `"$outputFolder\Rogue Customs.exe`" --path `"$projectPath`""
     Write-Host "Running command: $exportCommand"
 
     Invoke-Expression $exportCommand
