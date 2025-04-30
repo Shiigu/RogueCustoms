@@ -14,7 +14,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
     #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
     public partial class CharacterMapInputBox : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public char? CharacterToSave { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; private set; }
         private TableLayoutPanelCellPosition SelectedCell;
         private List<char> CharMapList;

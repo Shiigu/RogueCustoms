@@ -17,8 +17,10 @@ namespace RogueCustomsDungeonEditor.Controls
     public partial class ItemStatsSheet : UserControl
     {
         private string PreviousCellValue;
+
         private List<(string Id, bool IsDecimal, bool IsPercentage)> StatTableData = new();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<StatInfo> StatData
         {
             set
@@ -33,6 +35,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<PassiveStatModifierInfo> Stats
         {
             get

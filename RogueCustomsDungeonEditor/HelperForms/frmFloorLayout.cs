@@ -25,8 +25,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmFloorLayout : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FloorLayoutGenerationInfo GeneratorToSave { get; private set; }
+
         private readonly List<FloorLayoutGenerationInfo> CurrentGenerators;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; private set; }
         private readonly List<RoomDispositionData> RoomTypeTiles;
         private readonly int FloorWidth, FloorHeight;

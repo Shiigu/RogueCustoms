@@ -23,6 +23,7 @@ namespace RogueCustomsDungeonEditor.Controls
         private string actionDescription = "Action Description";
 
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ActionDescription
         {
             get { return actionDescription; }
@@ -33,6 +34,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<ActionWithEffectsInfo> Actions
         {
             get 
@@ -59,20 +61,33 @@ namespace RogueCustomsDungeonEditor.Controls
                 }
             }
         }
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DungeonInfo Dungeon { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ActionTypeText { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ClassId { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RequiresCondition { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RequiresDescription { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RequiresActionId { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RequiresActionName { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TurnEndCriteria TurnEndCriteria { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string PlaceholderActionName { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public UsageCriteria UsageCriteria { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<EffectTypeData> EffectParamData { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ThisDescription { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SourceDescription { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string TargetDescription { get; set; }
 
         public event EventHandler ActionContentsChanged;

@@ -22,7 +22,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
     public partial class frmSpecialTileGeneration : Form
     {
         private readonly FloorInfo ActiveFloorGroup;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<SpecialTileInFloorInfo> SpecialTileGenerationInfoList { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; private set; }
         private readonly List<string> ValidSpecialTileTypes;
 

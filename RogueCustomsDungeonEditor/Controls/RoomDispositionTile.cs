@@ -18,10 +18,12 @@ namespace RogueCustomsDungeonEditor.Controls
 {
     public partial class RoomDispositionTile : UserControl
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<RoomDispositionData> RoomTypes { get; set; }
         private List<RoomDispositionData> PossibleRoomTypes;
 
         private RoomDispositionType _roomDispositionType;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RoomDispositionType RoomDispositionType
         {
             get
@@ -76,6 +78,7 @@ namespace RogueCustomsDungeonEditor.Controls
         private int _x = -1;
         private int _y = -1;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int X
         {
             get
@@ -89,6 +92,7 @@ namespace RogueCustomsDungeonEditor.Controls
                     UpdateRoomTypeList();
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Y
         {
             get

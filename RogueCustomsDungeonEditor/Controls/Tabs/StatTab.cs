@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     public partial class StatTab : UserControl
     {
         private DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public StatInfo LoadedStat { get; private set; }
         public event EventHandler TabInfoChanged;
 

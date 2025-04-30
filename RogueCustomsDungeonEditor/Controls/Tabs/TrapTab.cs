@@ -21,6 +21,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private string PreviousTextBoxValue;
         private DungeonInfo ActiveDungeon;
         private List<EffectTypeData> EffectParamData;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TrapInfo LoadedTrap { get; private set; }
         public event EventHandler TabInfoChanged;
         public TrapTab()

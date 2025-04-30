@@ -21,6 +21,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private DungeonInfo ActiveDungeon;
         private List<EffectTypeData> EffectParamData;
         private Dictionary<string, string> BaseSightRangeDisplayNames;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlayerClassInfo LoadedPlayerClass { get; private set; }
         public event EventHandler TabInfoChanged;
         public PlayerClassTab()

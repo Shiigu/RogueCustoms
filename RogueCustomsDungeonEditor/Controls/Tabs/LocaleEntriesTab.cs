@@ -24,7 +24,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private DungeonInfo ActiveDungeon;
         private List<string> MandatoryLocaleKeys;
         private bool IsLoadingTab;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LocaleInfo LoadedLocale { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UnsavedLocaleEntryChanges { get; private set; }
         public event EventHandler TabInfoChanged;
 

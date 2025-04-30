@@ -12,6 +12,7 @@ namespace RogueCustomsDungeonEditor.Controls
 {
     public partial class StartingInventorySelector : UserControl
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<string> Inventory
         {
             get
@@ -42,6 +43,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private List<string> selectableItems;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<string> SelectableItems
         {
             get
@@ -58,6 +60,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int InventorySize { get; set; }
 
         public event EventHandler InventoryContentsChanged;

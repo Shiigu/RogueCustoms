@@ -24,6 +24,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private List<EffectTypeData> EffectParamData;
         private Dictionary<string, string> BaseSightRangeDisplayNames;
         private Dictionary<string, string> NPCAITypeDisplayNames;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public NPCInfo LoadedNPC { get; private set; }
         public event EventHandler TabInfoChanged;
         public NPCTab()

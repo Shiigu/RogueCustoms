@@ -15,7 +15,9 @@ using System.IO.Compression;
 using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Game.Entities;
 using System.Drawing;
+using System.Reflection;
 
+#pragma warning disable SYSLIB0011 // El tipo o el miembro están obsoletos
 namespace RogueCustomsGameEngine.Management
 {
     [Serializable]
@@ -100,7 +102,11 @@ namespace RogueCustomsGameEngine.Management
         {
             using var memoryStream = new MemoryStream();
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
-            var formatter = new BinaryFormatter();
+            var formatter = new BinaryFormatter()
+            {
+                Binder = new CustomSerializationBinder()
+            };
+            AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true);
             formatter.Serialize(gzipStream, ActiveDungeon);
             return new DungeonSaveGameDto
             {
@@ -114,10 +120,11 @@ namespace RogueCustomsGameEngine.Management
         {
             using var memoryStream = new MemoryStream(dungeonSaveGame.DungeonData);
             using var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
-            IFormatter formatter = new BinaryFormatter()
+            var formatter = new BinaryFormatter()
             {
                 Binder = new CustomSerializationBinder()
             };
+            AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", true);
             var restoredDungeon = formatter.Deserialize(gzipStream) as Dungeon;
             if (!restoredDungeon.Version.Equals(EngineConstants.CurrentDungeonJsonVersion))
                 throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {EngineConstants.CurrentDungeonJsonVersion}.");
@@ -260,3 +267,4 @@ namespace RogueCustomsGameEngine.Management
         }
     }
 }
+#pragma warning restore SYSLIB0011 // El tipo o el miembro están obsoletos

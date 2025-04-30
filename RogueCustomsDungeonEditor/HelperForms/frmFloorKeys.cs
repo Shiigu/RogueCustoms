@@ -17,7 +17,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
 {
     public partial class frmFloorKeys : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public KeyGenerationInfo KeyGenerationInfo { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; set; }
         private FloorInfo ActiveFloorGroup;
         private readonly DungeonInfo ActiveDungeon;

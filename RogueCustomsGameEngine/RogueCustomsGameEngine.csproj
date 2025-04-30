@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+	  <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="D20Tek.DiceNotation.Standard" Version="3.3.2" />
     <PackageReference Include="matheval" Version="1.0.1" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,9 +21,11 @@ namespace RogueCustomsDungeonEditor.Controls
         private string PreviousTextBoxValue = string.Empty;
         private bool SwitchingStats;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<StatInfo> StatInfos { get; set; }
         private List<CharacterStatInfoControlParams> CharacterStats;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<CharacterStatInfo> Stats
         {
             get
@@ -78,8 +80,10 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, string> BaseSightRangeDisplayNames { get; set; } = new Dictionary<string, string>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string BaseSightRange
         {
             get
@@ -128,6 +132,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool CanGainExperience
         {
             get
@@ -141,6 +146,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ExperienceToLevelUpFormula
         {
             get
@@ -153,6 +159,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MaxLevel
         {
             get
