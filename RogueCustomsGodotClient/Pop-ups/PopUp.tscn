@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cudy7a02xslal"]
 
-[ext_resource type="Script" path="res://Pop-ups/PopUp.cs" id="1_afb5u"]
+[ext_resource type="Script" uid="uid://da4p3beef3fku" path="res://Pop-ups/PopUp.cs" id="1_afb5u"]
 [ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="2_26xch"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u0jsk"]
