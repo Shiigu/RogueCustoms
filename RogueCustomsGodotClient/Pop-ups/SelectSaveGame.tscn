@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://b30011m58nfvt"]
 
-[ext_resource type="Script" path="res://Pop-ups/SelectSaveGame.cs" id="1_cvov2"]
+[ext_resource type="Script" uid="uid://b40oijjmywqsp" path="res://Pop-ups/SelectSaveGame.cs" id="1_cvov2"]
 [ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_vcm18"]
 [ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="3_l0qx3"]
 [ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="4_wm5lp"]

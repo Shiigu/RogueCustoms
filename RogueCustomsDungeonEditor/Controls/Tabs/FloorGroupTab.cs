@@ -26,7 +26,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private List<EffectTypeData> EffectParamData;
         private List<RoomDispositionData> RoomDispositionData;
         private DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FloorInfo OpenedFloorGroup { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FloorInfo LoadedFloorGroup { get; set; }
         public event EventHandler TabInfoChanged;
         public FloorGroupTab()

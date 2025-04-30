@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     public partial class TilesetTab : UserControl
     {
         private DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TileSetInfo LoadedTileSet { get; private set; }
         public event EventHandler TabInfoChanged;
         public TilesetTab()

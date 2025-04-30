@@ -601,10 +601,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             };
         }
 
-        // Explicit implementation of ISerializable
+        #region ISerializable implementation
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            // Serialize necessary information
+            // We only keep the class and method because we can't serialize a delegate
             EffectMethodName = Function.GetMethodInfo().Name;
             EffectClassName = Function.GetMethodInfo().DeclaringType.FullName;
             info.AddValue("EffectMethodName", EffectMethodName);
@@ -618,7 +618,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         // Explicit constructor for deserialization
         protected Effect(SerializationInfo info, StreamingContext context)
         {
-            // Deserialize information
             EffectMethodName = info.GetString("EffectMethodName");
             EffectClassName = info.GetString("EffectClassName");
             Params = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
@@ -640,11 +639,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
         }
+
+        #endregion
     }
-    #pragma warning restore IDE0037 // Usar nombre de miembro inferido
-    #pragma warning restore CS8601 // Posible asignación de referencia nula
-    #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning restore CS8604 // Posible argumento de referencia nulo
-    #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore IDE0037 // Usar nombre de miembro inferido
+#pragma warning restore CS8601 // Posible asignación de referencia nula
+#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning restore CS8604 // Posible argumento de referencia nulo
+#pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

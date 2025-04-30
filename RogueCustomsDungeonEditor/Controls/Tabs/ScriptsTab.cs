@@ -21,6 +21,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     public partial class ScriptsTab : UserControl
     {
         private DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<ActionWithEffectsInfo> LoadedScripts { get; private set; }
         private List<EffectTypeData> EffectParamData;
         public event EventHandler TabInfoChanged;

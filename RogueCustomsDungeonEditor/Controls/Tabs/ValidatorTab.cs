@@ -17,6 +17,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 {
     public partial class ValidatorTab : UserControl
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PassedValidation { get; private set; }
         public event EventHandler OnError;
         public event EventHandler OnValidationComplete;

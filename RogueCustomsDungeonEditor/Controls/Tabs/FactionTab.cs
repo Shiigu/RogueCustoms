@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     public partial class FactionTab : UserControl
     {
         private DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FactionInfo LoadedFaction { get; private set; }
         public event EventHandler TabInfoChanged;
         public FactionTab()

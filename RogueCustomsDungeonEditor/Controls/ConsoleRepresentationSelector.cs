@@ -31,6 +31,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public char Character
         {
             get { return consoleRepresentation.Character; }
@@ -44,6 +45,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GameColor ForegroundColor
         {
             get { return consoleRepresentation.ForegroundColor; }
@@ -57,6 +59,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GameColor BackgroundColor
         {
             get { return consoleRepresentation.BackgroundColor; }

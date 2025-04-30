@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://11gl47has08k"]
 
 [ext_resource type="StyleBox" uid="uid://b2d7mwnj72vwx" path="res://Styles/ClassSelectBorder.tres" id="1_bnm48"]
-[ext_resource type="Script" path="res://Pop-ups/SelectClass.cs" id="1_h53wd"]
+[ext_resource type="Script" uid="uid://h1gmbt6gh6uh" path="res://Pop-ups/SelectClass.cs" id="1_h53wd"]
 [ext_resource type="StyleBox" uid="uid://uy7a2ykcf8b3" path="res://Styles/SelectClassTitle.tres" id="2_o008a"]
 [ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="3_h2t1i"]
 [ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="4_5uyvq"]

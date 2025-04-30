@@ -22,7 +22,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private readonly FloorInfo ActiveFloorGroup;
         private readonly EntityTypeForForm TypeToUse;
         private string ObjectText;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ObjectGenerationParams ObjectGenerationParams { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; private set; }
         private readonly List<string> ValidObjectClasses;
 

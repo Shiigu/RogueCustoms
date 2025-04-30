@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ce0gyhsrfwxa7"]
 
-[ext_resource type="Script" path="res://Pop-ups/InputBox.cs" id="1_ruwe6"]
+[ext_resource type="Script" uid="uid://knfatdk6xv33" path="res://Pop-ups/InputBox.cs" id="1_ruwe6"]
 [ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="2_bocj3"]
 [ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="2_fe22l"]
 [ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_shkel"]

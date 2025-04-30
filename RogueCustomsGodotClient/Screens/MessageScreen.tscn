@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://cjqsmvexdyc6y"]
 
-[ext_resource type="Script" path="res://Screens/MessageScreen.cs" id="1_348ed"]
+[ext_resource type="Script" uid="uid://cuff5ruv7tql5" path="res://Screens/MessageScreen.cs" id="1_348ed"]
 [ext_resource type="StyleBox" uid="uid://dn4dot3w6yl35" path="res://Styles/PressEnterStyle.tres" id="2_gybik"]
 
 [sub_resource type="SystemFont" id="SystemFont_oax02"]

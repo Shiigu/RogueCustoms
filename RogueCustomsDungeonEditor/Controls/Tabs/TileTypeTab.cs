@@ -19,6 +19,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
     {
         private DungeonInfo ActiveDungeon;
         private List<EffectTypeData> EffectParamData;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TileTypeInfo LoadedTileType { get; private set; }
         public event EventHandler TabInfoChanged;
 

@@ -19,7 +19,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
     public partial class frmNPCGeneration : Form
     {
         private FloorInfo ActiveFloorGroup;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public NPCGenerationParams NPCGenerationParams { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public bool Saved { get; private set; }
         private List<string> ValidNPCClasses;
 

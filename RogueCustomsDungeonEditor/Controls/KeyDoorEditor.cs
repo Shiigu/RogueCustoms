@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Controls
     public partial class KeyDoorEditor : UserControl
     {
         public DungeonInfo ActiveDungeon;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string KeyTypeName
         {
             get
@@ -30,6 +31,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool CanLockStairs
         {
             get
@@ -42,6 +44,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool CanLockItems
         {
             get
@@ -54,6 +57,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ConsoleRepresentation KeyConsoleRepresentation
         {
             get
@@ -66,6 +70,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ConsoleRepresentation DoorConsoleRepresentation
         {
             get
@@ -93,6 +98,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsSelected { get; private set; }
 
         public KeyDoorEditor()

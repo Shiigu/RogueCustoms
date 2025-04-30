@@ -29,8 +29,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
 #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public partial class frmActionEdit : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ActionWithEffectsInfo ActionToSave { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Saved { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsNewAction { get; set; }
         private readonly DungeonInfo ActiveDungeon;
         private readonly List<string> UsableNPCList;
