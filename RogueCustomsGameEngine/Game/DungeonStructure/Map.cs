@@ -827,11 +827,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return room;
         }
 
-        public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent));
-        public void AppendMessage(string message, Color foregroundColor) => AppendMessage(message, new GameColor(foregroundColor));
-        public void AppendMessage(string message, GameColor foregroundColor) => AppendMessage(message, foregroundColor, new GameColor(Color.Transparent));
-        public void AppendMessage(string message, Color foregroundColor, Color backgroundColor) => AppendMessage(message, new GameColor(foregroundColor), new GameColor(backgroundColor));
-        public void AppendMessage(string message, GameColor foregroundColor, GameColor backgroundColor)
+        public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent), null);
+        public void AppendMessage(string message, List<DisplayEventDto>? eventList) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent), eventList);
+        public void AppendMessage(string message, Color foregroundColor) => AppendMessage(message, new GameColor(foregroundColor), null);
+        public void AppendMessage(string message, Color foregroundColor, List<DisplayEventDto>? eventList) => AppendMessage(message, new GameColor(foregroundColor), eventList);
+        public void AppendMessage(string message, GameColor foregroundColor) => AppendMessage(message, foregroundColor, new GameColor(Color.Transparent), null);
+        public void AppendMessage(string message, GameColor foregroundColor, List<DisplayEventDto>? eventList) => AppendMessage(message, foregroundColor, new GameColor(Color.Transparent), eventList);
+        public void AppendMessage(string message, Color foregroundColor, Color backgroundColor) => AppendMessage(message, new GameColor(foregroundColor), new GameColor(backgroundColor), null);
+        public void AppendMessage(string message, Color foregroundColor, Color backgroundColor, List<DisplayEventDto>? eventList) => AppendMessage(message, new GameColor(foregroundColor), new GameColor(backgroundColor), eventList);
+        public void AppendMessage(string message, GameColor foregroundColor, GameColor backgroundColor, List<DisplayEventDto>? eventList)
         {
             if (string.IsNullOrWhiteSpace(message)) return;
             if (!_displayedTurnMessage && TurnCount > 0)
@@ -866,7 +870,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 ForegroundColor = foregroundColor,
                 BackgroundColor = backgroundColor
             });
-            DisplayEvents.Add(("AppendMessage", new()
+
+            if(eventList != null)
+            {
+                eventList.Add(
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.AddLogMessage,
+                        Params = new()
+                        {
+                            new MessageDto
+                            {
+                                Message = message,
+                                ForegroundColor = foregroundColor,
+                                BackgroundColor = backgroundColor
+                            }
+                        }
+                    });
+            }
+            else
+            {
+                DisplayEvents.Add(("AppendMessage", new()
                 {
                     new() {
                         DisplayEventType = DisplayEventType.AddLogMessage,
@@ -881,11 +905,33 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
-            ));
+                ));
+            }
         }
-        public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor)
+        public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor) => AddMessageBox(title, message, buttonCaption, windowColor, null);
+        public void AddMessageBox(string title, string message, string buttonCaption, GameColor windowColor, List<DisplayEventDto>? eventList)
         {
-            DisplayEvents.Add(("AddMessageBox", new()
+            if (eventList != null)
+            {
+                eventList.Add(
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.AddMessageBox,
+                        Params = new()
+                        {
+                            new MessageBoxDto
+                            {
+                                Title = title,
+                                Message = message,
+                                ButtonCaption = buttonCaption,
+                                WindowColor = windowColor
+                            }
+                        }
+                    });
+            }
+            else
+            {
+                DisplayEvents.Add(("AddMessageBox", new()
                 {
                     new() {
                         DisplayEventType = DisplayEventType.AddMessageBox,
@@ -901,7 +947,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
-            ));
+                ));
+            }
         }
 
         #region Floor room setup
@@ -1203,18 +1250,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 #region Perform On Floor Start Actions
 
+                var events = new List<DisplayEventDto>();
+
                 if (FloorLevel > 1)
                 {
-                    DisplayEvents.Add(("Stair steps", new()
-                    {
-                        new() {
+                    events.Add(
+                        new()
+                        {
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { SpecialEffect.TakeStairs }
-                        }
-                    }
-                    ));
+                        });
                 }
-                AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow));
+                AddMessageBox(Dungeon.Name, Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), "OK", new GameColor(Color.Yellow), events);
+
+                DisplayEvents.Add(($"Floor {FloorLevel} start", events));
+
                 FloorConfigurationToUse.OnFloorStart?.Do(Player, Player, false);
 
                 #endregion
@@ -1361,15 +1411,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         if (targetTile.Type == TileType.Door)
                         {
-                            AppendMessage(Locale["CharacterBumpedDoor"].Format(new { CharacterName = Player.Name, DoorName = Locale[$"DoorType{targetTile.DoorId}"] }), Color.White);
-                            DisplayEvents.Add(("Bump door", new()
-                                {
-                                    new() {
-                                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                                        Params = new() { SpecialEffect.DoorClosed }
-                                    }
-                                }
-                            ));
+                            var events = new List<DisplayEventDto>();
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.DoorClosed }
+                            });
+                            AppendMessage(Locale["CharacterBumpedDoor"].Format(new { CharacterName = Player.Name, DoorName = Locale[$"DoorType{targetTile.DoorId}"] }), Color.White, events);
+                            DisplayEvents.Add(("Bump door", events));
                         }
                         else
                         {
@@ -1410,7 +1459,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     characterInTargetTile.RemainingMovement--;
                 if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
                 {
-                    AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }), Color.DeepSkyBlue);
+                    AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }), Color.DeepSkyBlue, events);
                 }
             }
 
@@ -1484,16 +1533,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var monsterHouseRoom = Rooms.Find(r => r.MustSpawnMonsterHouse);
             if (monsterHouseRoom == null) return;
-            DisplayEvents.Add(("MONSTER HOUSE!", new()
-                {
-                    new() {
+            var events = new List<DisplayEventDto>();
+            events.Add(
+                    new()
+                    {
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.MonsterHouseAlarm }
-                    }
-                }
-            ));
-            AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red);
-            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red));
+                    });
+            AppendMessage(Locale["MonsterHouseWarningLogMessage"].Format(new { CharacterName = Player.Name }), Color.Red, events);
+            AddMessageBox(Locale["MonsterHouseWarningHeader"], Locale["MonsterHouseWarningMessage"], "OK", new GameColor(Color.Red), events);
             var acceptableTiles = monsterHouseRoom.GetTiles().Where(t => CanBeConsideredEmpty(t)).TakeNDifferentRandomElements(FloorConfigurationToUse.SimultaneousMaxMonstersInFloor, Rng);
 
             if (FloorConfigurationToUse.PossibleMonsters.Any())
@@ -1506,6 +1554,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     monsterHouseEnemy.SpawnedViaMonsterHouse = true;
                 }
             }
+            DisplayEvents.Add(("MONSTER HOUSE!", events));
         }
 
         public void PlayerUseStairs()
@@ -1582,7 +1631,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
-            DisplayEvents = new();
             Snapshot = new(Dungeon, this);
             if (Player.ContainingTile.GetItems().Any())
             {
@@ -1601,7 +1649,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemInInventory = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to swap with an item that does not exist!");
-            DisplayEvents = new();
             Snapshot = new(Dungeon, this);
             var itemInTile = Items.Find(i => i.Position?.Equals(Player.Position) == true && i.ExistenceStatus != EntityExistenceStatus.Gone);
             if (itemInTile != null)

@@ -160,7 +160,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.Position = Position;
             item.Owner = null!;
             item.ExistenceStatus = EntityExistenceStatus.Alive;
-            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
             Map.DisplayEvents.Add(($"Player {Name} put item on floor", new()
                 {
                     new() {
@@ -169,6 +168,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
             ));
+            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
         }
 
         public override void PickItem(Item item, bool informToPlayer)
@@ -179,7 +179,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             item.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
                 Map.DisplayEvents.Add(($"Player {Name} picked item on floor", new()
                 {
                     new()
@@ -193,6 +192,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
+                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
             }
         }
 
@@ -204,7 +204,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             key.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
                 Map.DisplayEvents.Add(($"Player {Name} picked key", new()
                 {
                     new() {
@@ -213,6 +212,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
+                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
             }
         }
 

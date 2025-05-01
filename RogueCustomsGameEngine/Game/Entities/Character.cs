@@ -358,8 +358,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
                     var events = new List<DisplayEventDto>();
-                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue);
-
                     if (this == Map.Player || Map.Player.CanSee(this))
                     {
                         var stat = UsedStats.Find(s => s.Name.Equals(statName));
@@ -389,6 +387,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                             });
                         }
                     }
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = statName }), Color.DeepSkyBlue, events);
                     Map.DisplayEvents.Add(($"{Name} lost all the {statName} modifications", events));
                 }
             }
@@ -397,7 +396,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
                     var events = new List<DisplayEventDto>();
-                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue);
 
                     if (this == Map.Player || Map.Player.CanSee(this))
                     {
@@ -407,6 +405,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                             Params = new() { SpecialEffect.StatusLeaves }
                         });
                     }
+
+                    Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue, events);
                     Map.DisplayEvents.Add(($"{Name} lost the {statusName} status", events));
                 }
             }
@@ -498,10 +498,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
         {
             var events = new List<DisplayEventDto>();
-            if (this == Map.Player)
-            {
-                Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow);
-            }
             if (itemToEquip.EntityType == EntityType.Weapon)
             {
                 if (this == Map.Player)
@@ -536,6 +532,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.ItemEquip }
                 });
+                Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow, events);
             }
             if (equippedItem != null)
             {
@@ -544,24 +541,24 @@ namespace RogueCustomsGameEngine.Game.Entities
                     equippedItem.Position = itemToEquip.Position;
                     equippedItem.Owner = null!;
                     equippedItem.ExistenceStatus = EntityExistenceStatus.Alive;
-                    Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
 
                     if (!Map.IsDebugMode)
                     {
                         events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                            Params = new() { ContainingTile.Position, Map.GetConsoleRepresentationForCoordinates(ContainingTile.Position.X, ContainingTile.Position.Y) }
-                        }
+                            {
+                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                Params = new() { ContainingTile.Position, Map.GetConsoleRepresentationForCoordinates(ContainingTile.Position.X, ContainingTile.Position.Y) }
+                            }
                         );
                     }
+
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }), events);
                 }
                 else
                 {
-                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }));
-
-                    if (this == Map.Player)
+                    if (this == Map.Player || Map.Player.CanSee(this))
                     {
+                        Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }), events);
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.UpdatePlayerData,

@@ -360,6 +360,12 @@ public partial class GameScreen : Control
                         break;
                 }
             }
+            if (_soundIsPlaying)
+                await _soundFinished.Task;
+            while (_screenFlash.Visible)
+                await Task.Delay(50);
+            if (displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
+                await Task.Delay(50);
         }
         if (_soundIsPlaying)
             await Task.Delay(50);
