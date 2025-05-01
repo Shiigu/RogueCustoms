@@ -83,7 +83,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             else if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Map.AppendMessage(Map.Locale["CharacterConvertedTile"].Format(new { CharacterName = c.Name, TileType = Map.Locale[$"TileType{t.Type}"] }), Color.DeepSkyBlue);
+                Map.AppendMessage(Map.Locale["CharacterConvertedTile"].Format(new { CharacterName = c.Name, TileType = Map.Locale[$"TileType{t.Type}"] }), Color.DeepSkyBlue, events);
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
@@ -143,7 +143,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Map.AppendMessage(Map.Locale["CharacterCreatedATrap"].Format(new { CharacterName = c.Name, TrapName = trap.Name }), Color.DeepSkyBlue);
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
@@ -158,7 +157,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.TrapSet }
                 }
-                );
+                ); 
+                Map.AppendMessage(Map.Locale["CharacterCreatedATrap"].Format(new { CharacterName = c.Name, TrapName = trap.Name }), Color.DeepSkyBlue, events);
             }
 
             Map.DisplayEvents.Add(($"{c.Name} set up a trap", events));
@@ -203,7 +203,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 npc.Faction = c.Faction;
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterCreatedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
                     if (!Map.IsDebugMode)
                     {
                         events.Add(new()
@@ -219,6 +218,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = new() { SpecialEffect.Summon }
                     }
                     );
+                    Map.AppendMessage(Map.Locale["CharacterCreatedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{c.Name} spawned {npc.Name}", events));
                 return true;
@@ -261,7 +261,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 npc.ClearKnownCharacters();
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    Map.AppendMessage(Map.Locale["CharacterRevivedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue);
                     if (!Map.IsDebugMode)
                     {
                         events.Add(new()
@@ -277,6 +276,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = new() { SpecialEffect.NPCRevive }
                     }
                     );
+                    Map.AppendMessage(Map.Locale["CharacterRevivedAnNPC"].Format(new { CharacterName = c.Name, NPCName = npc.Name }), Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{c.Name} revive {npc.Name}", events));
                 return true;
@@ -325,7 +325,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (c == Map.Player || Map.Player.CanSee(c))
             {
-                Map.AppendMessage(Map.Locale["CharacterUnlockedDoor"].Format(new { CharacterName = c.Name, DoorName = Map.Locale[$"DoorType{paramsObject.DoorId}"] }), Color.DeepSkyBlue);
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
@@ -341,6 +340,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Params = new() { SpecialEffect.DoorOpen }
                 }
                 );
+                Map.AppendMessage(Map.Locale["CharacterUnlockedDoor"].Format(new { CharacterName = c.Name, DoorName = Map.Locale[$"DoorType{paramsObject.DoorId}"] }), Color.DeepSkyBlue, events);
             }
 
             Map.DisplayEvents.Add(($"{c.Name} unlocks door", events));

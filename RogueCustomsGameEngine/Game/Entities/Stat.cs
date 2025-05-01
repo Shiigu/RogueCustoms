@@ -166,15 +166,15 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     var starveDamage = (int) Math.Ceiling((float) Character.MaxHP / 20);
                     Character.HP.Current -= starveDamage;
-                    Character.Map.AppendMessage(Character.Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = starveDamage, CharacterHPStat = RegenerationTarget.Name, CharacterHungerStat = Name }));
-                    Character.Map.DisplayEvents.Add(($"{Character.Name} is starving", new List<DisplayEventDto>
-                    {
+                    var events = new List<DisplayEventDto>();
+                    events.Add(
                         new()
                         {
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { SpecialEffect.PlayerDamaged }
-                        }
-                    }));
+                        });
+                    Character.Map.AppendMessage(Character.Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = starveDamage, CharacterHPStat = RegenerationTarget.Name, CharacterHungerStat = Name }), events);
+                    Character.Map.DisplayEvents.Add(($"{Character.Name} is starving", events));
                     if (Character.HP.Current <= 0)
                         Character.Die();
                 }

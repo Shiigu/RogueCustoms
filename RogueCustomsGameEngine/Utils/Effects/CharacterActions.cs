@@ -115,7 +115,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if ((s == Map.Player || Map.Player.CanSee(s))
                         || (t == Map.Player || Map.Player.CanSee(t)))
                     {
-                        Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = itemToSteal.Name }), Color.DeepSkyBlue);
                         if (s == Map.Player || Map.Player.CanSee(s))
                         {
                             if (s == Map.Player)
@@ -148,6 +147,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 Params = new() { SpecialEffect.NPCItemGet }
                             });
                         }
+                        Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = itemToSteal.Name }), Color.DeepSkyBlue, events);
                     }
                     Map.DisplayEvents.Add(($"{t.Name} got an item stolen", events));
                     return true;
@@ -177,12 +177,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.SetActionIds();
                 if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
                 {
-                    Map.AppendMessage(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.StatBuff }
                     });
+                    Map.AppendMessage(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{c.Name} learned a Script", events));
                 return true;
@@ -208,12 +208,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.SetActionIds();
                 if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
                 {
-                    Map.AppendMessage(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue);
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.StatNerf }
                     });
+                    Map.AppendMessage(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = c.Name, ScriptName = script.Name }), Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{c.Name} forgot a Script", events));
                 return true;
