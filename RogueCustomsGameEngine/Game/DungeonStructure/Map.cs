@@ -189,6 +189,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ItemActions.SetActionParams(Rng, this);
             GenericActions.SetActionParams(Rng, this);
             OnTileActions.SetActionParams(Rng, this);
+            ControlBlockActions.SetActionParams(Rng, this);
             ExpressionParser.Setup(Rng, this);
         }
 

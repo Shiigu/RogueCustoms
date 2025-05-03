@@ -545,24 +545,51 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public List<string> Do(Entity This, Entity Source, ITargetable Target)
         {
+            ExecutionContext.Current = new();
             var currentEffect = this;
             var successfulEffects = new List<string>();
 
             do
             {
+                ExecutionContext.Current.CurrentEffect = currentEffect;
                 var success = currentEffect.Function(This, Source, Target, currentEffect.Params);
                 if (success)
                     successfulEffects.Add(currentEffect.Function.Method.Name);
+
                 if (currentEffect.Then != null)
                 {
                     currentEffect = currentEffect.Then;
                 }
                 else
                 {
-                    if (success)
-                        currentEffect = currentEffect.OnSuccess;
-                    else
-                        currentEffect = currentEffect.OnFailure;
+                    currentEffect = success
+                                        ? currentEffect.OnSuccess
+                                        : currentEffect.OnFailure;
+                }
+
+                if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
+                {
+                    switch (frame)
+                    {
+                        case WhileFrame wf:
+                            currentEffect = wf.StartEffect;
+                            ExecutionContext.Current.LoopStack.Pop(); // We remove it in case the While fails; if it succeeds, it will be added again, no harm done
+                            continue;
+
+                        case ForFrame ff:
+                            ff.Advance();
+                            if (ff.ShouldContinue())
+                            {
+                                currentEffect = ff.StartEffect.OnSuccess;
+                                continue;
+                            }
+                            else
+                            {
+                                currentEffect = ff.StartEffect.OnFailure;
+                                ExecutionContext.Current.LoopStack.Pop();
+                            }
+                            break;
+                    }
                 }
             }
             while (currentEffect != null);

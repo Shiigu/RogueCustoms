@@ -602,6 +602,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
+                        ActionToSave.AIUseCondition = txtActionAICondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
                         ActionToSave.Name = txtActionName.Text;
@@ -678,6 +679,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             ActionToSave.MPCost = (int)nudMPCost.Value;
                         }
                         ActionToSave.UseCondition = txtActionCondition.Text;
+                        ActionToSave.AIUseCondition = txtActionAICondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Name = txtActionName.Text;
                         ActionToSave.Description = txtActionDescription.Text;
