@@ -944,6 +944,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 PossibleItems = new List<ClassInFloorInfo>(),
                 PossibleTraps = new List<ClassInFloorInfo>(),
                 PossibleLayouts = new List<FloorLayoutGenerationInfo>(),
+                PossibleSpecialTiles = new List<SpecialTileInFloorInfo>(),
                 MaxConnectionsBetweenRooms = info.MaxConnectionsBetweenRooms,
                 OddsForExtraConnections = info.OddsForExtraConnections,
                 RoomFusionOdds = info.RoomFusionOdds,
@@ -957,14 +958,31 @@ namespace RogueCustomsDungeonEditor.Utils
                 MinTrapsInFloor = info.MinTrapsInFloor,
                 MaxTrapsInFloor = info.MaxTrapsInFloor,
                 PossibleKeys = info.PossibleKeys.Clone(),
+                MonsterHouseOdds = info.MonsterHouseOdds
             };
 
             info.PossibleMonsters.ForEach(pm => clonedFloor.PossibleMonsters.Add(pm.Clone()));
             info.PossibleItems.ForEach(pi => clonedFloor.PossibleItems.Add(pi.Clone()));
             info.PossibleTraps.ForEach(pt => clonedFloor.PossibleTraps.Add(pt.Clone()));
             info.PossibleLayouts.ForEach(pl => clonedFloor.PossibleLayouts.Add(pl.Clone()));
+            info.PossibleSpecialTiles.ForEach(pst => clonedFloor.PossibleSpecialTiles.Add(pst.Clone()));
 
             return clonedFloor;
+        }
+
+        public static SpecialTileInFloorInfo Clone(this SpecialTileInFloorInfo info)
+        {
+            if (info == null) return null;
+
+            var clonedSpecialTile = new SpecialTileInFloorInfo
+            {
+                TileTypeId = info.TileTypeId,
+                GeneratorType = info.GeneratorType,
+                MinSpecialTileGenerations = info.MinSpecialTileGenerations,
+                MaxSpecialTileGenerations = info.MaxSpecialTileGenerations
+            };
+
+            return clonedSpecialTile;
         }
 
         public static FloorLayoutGenerationInfo Clone(this FloorLayoutGenerationInfo info)
@@ -998,7 +1016,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanSpawnAfterFirstTurn = info.CanSpawnAfterFirstTurn,
                 MinimumInFirstTurn = info.MinimumInFirstTurn,
                 SimultaneousMaxForKindInFloor = info.SimultaneousMaxForKindInFloor,
-                ChanceToPick = info.ChanceToPick
+                ChanceToPick = info.ChanceToPick,
+                SpawnCondition = info.SpawnCondition
             };
 
             return clonedClassInFloor;
@@ -1054,7 +1073,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 TargetTypes = new List<string>(info.TargetTypes ?? new List<string>()),
                 Effect = info.Effect.Clone(),
                 UseCondition = info.UseCondition,
-                FinishesTurnWhenUsed = info.FinishesTurnWhenUsed
+                AIUseCondition = info.AIUseCondition,
+                FinishesTurnWhenUsed = info.FinishesTurnWhenUsed,
+                IsScript = info.IsScript
             };
 
             return clonedAction;

@@ -22,6 +22,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         public bool CanBeUsedOnTile { get; set; }
         public bool CanHaveThenChild { get; set; }
         public bool CanHaveOnSuccessOnFailureChild { get; set; }
+        public bool IsControlBlock { get; set; }
         public List<EffectParameter> Parameters { get; set; }
 
         public string GetParsedTreeViewDisplayName(Parameter[] effectParameters, List<string> statIds)

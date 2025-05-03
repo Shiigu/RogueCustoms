@@ -1,13 +1,14 @@
 [
   {
     "InternalName": "DealDamage",
-    "TreeViewDisplayText": "Deal ({Attack}) - ({Defense}) Damage to ({Target})",
+    "TreeViewDisplayText": "Deal ({Attack}) - ({Defense}) ({Element}) Damage to ({Target})",
     "ComboBoxDisplayName": "Deal Damage to Target",
     "Description": "Used by the User to damage Target.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Attacker",
@@ -148,6 +149,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Attacker",
@@ -228,6 +230,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Attacker",
@@ -308,6 +311,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -375,6 +379,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Character",
@@ -417,6 +422,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": []
   },
   {
@@ -428,6 +434,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -479,6 +486,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Text",
@@ -521,6 +529,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Title",
@@ -563,6 +572,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Source",
@@ -623,6 +633,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Source",
@@ -683,6 +694,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Source",
@@ -743,6 +755,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -784,6 +797,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -865,6 +879,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -976,6 +991,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -1037,6 +1053,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Stat",
@@ -1135,6 +1152,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1186,6 +1204,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1237,6 +1256,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1288,6 +1308,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": []
   },
   {
@@ -1297,6 +1318,7 @@
     "Description": "User will teleport the Target to a random unoccupied Floor tile.\nFails if Target is in a Hallway tile.",
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1348,6 +1370,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1399,6 +1422,7 @@
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Source",
@@ -1489,6 +1513,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "TileType",
@@ -1540,6 +1565,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -1582,6 +1608,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Id",
@@ -1634,6 +1661,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Accuracy",
@@ -1666,6 +1694,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": false,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Condition",
@@ -1683,11 +1712,12 @@
     "InternalName": "SetFlag",
     "TreeViewDisplayText": "Set ({Key}) Flag to ({Value})",
     "ComboBoxDisplayName": "Create or Update Flag",
-    "Description": "The Dungeon will create a new Flag with the set name, or update its value if it already exists.\n\nDepending on parameters, Flags can persist through Floors.\n\nRemember to Set a flag before using it.",
+    "Description": "The Dungeon will create a new Flag with the set name, or update its value if it already exists.\n\nDepending on parameters, Flags can persist through Floors.\n\nRemember to Set a flag before using it.\n\nSetFlag will throw an error if it's attempted to use on a flag that is currently used as a For counter",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Key",
@@ -1730,6 +1760,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "ScriptId",
@@ -1752,6 +1783,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1823,6 +1855,7 @@
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
     "Parameters": [
       {
         "InternalName": "Target",
@@ -1879,6 +1912,82 @@
         "Description": "If true, the Player will be informed of this Script being learnt.",
         "ParameterType": "Boolean",
         "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "While",
+    "TreeViewDisplayText": "While ({Condition}) is true...",
+    "ComboBoxDisplayName": "Enter While loop",
+    "Description": "Evaluates a boolean expression.\n\nIf the expression returns true, it enters the loop.\nIf the expression returns false, it skips the loop.\n\nThe condition is reevaluated once the loop reaches a dead-end.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": true,
+    "Parameters": [
+      {
+        "InternalName": "Condition",
+        "DisplayName": "Condition",
+        "Description": "The boolean expression to be evaluated.",
+        "ParameterType": "BooleanExpression",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "For",
+    "TreeViewDisplayText": "For ({CounterFlagKey}), from ({InitialValue}) to ({EndValue}), incrementing by ({Increment})...",
+    "ComboBoxDisplayName": "Enter For loop",
+    "Description": "Sets [CounterFlagKey] to Start.\n\nIf [CounterFlagKey] <= End, it enters the loop, and increases [CounterFlagKey] by Increment.\n\nThe loop ends if [CounterFlagKey] > End",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": true,
+    "Parameters": [
+      {
+        "InternalName": "CounterFlagKey",
+        "DisplayName": "Counter Flag Key",
+        "Description": "Key for the Flag that will be used as a counter.",
+        "ParameterType": "Key",
+        "Default": "Counter",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "InitialValue",
+        "DisplayName": "Start",
+        "Description": "The value where the counter starts.\n\nPlease note that For loops are of the [1;N] type rather than the [0;N) C-Style For loops.",
+        "ParameterType": "Formula",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "EndValue",
+        "DisplayName": "End",
+        "Description": "The value where the For loop ends if it's lower than the Counter.\n\nPlease note that For loops are of the [1;N] type rather than the [0;N) C-Style For loops.",
+        "ParameterType": "Formula",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Increment",
+        "DisplayName": "Increment",
+        "Description": "At the end of each execution of the For loop, the Counter will be increased by this value.",
+        "ParameterType": "Formula",
+        "Default": "1",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []
