@@ -22,6 +22,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 #pragma warning disable S2259 // Null pointers should not be dereferenced
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
@@ -53,10 +55,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private readonly UsageCriteria UsageCriteria;
         private readonly string ClassId;
         private readonly string PlaceholderActionId;
+        private readonly string ActionTypeText;
         private string PreviousTextBoxValue;
         public frmActionEdit(ActionWithEffectsInfo? actionToSave, DungeonInfo activeDungeon, string classId, string actionTypeText, bool canHaveCondition, bool requiresActionId, bool requiresDescription, bool requiresActionName, TurnEndCriteria turnEndCriteria, string placeholderActionIdIfNeeded, UsageCriteria usageCriteria, List<EffectTypeData> selectableEffects, string thisDescription, string sourceDescription, string targetDescription)
         {
             InitializeComponent();
+            ActionTypeText = actionTypeText;
             if (!actionToSave.IsNullOrEmpty())
                 ActionToSave = actionToSave.Clone();
             else
@@ -88,6 +92,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblThis.Text = thisDescription;
             lblSource.Text = sourceDescription;
             lblTarget.Text = targetDescription;
+
+            btnTestAction.Enabled = !ActionToSave.Effect.IsNullOrEmpty();
 
             if (!RequiresActionId)
                 PlaceholderActionId = placeholderActionIdIfNeeded;
@@ -210,6 +216,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             AddActionNode(new EffectInfoDto(ActionToSave.Effect, null, SelectableEffects), null, ActionToSave.Effect);
             tvEffectSequence.Invalidate();
             tvEffectSequence.ExpandAll();
+            btnTestAction.Enabled = !ActionToSave.Effect.IsNullOrEmpty();
         }
 
         private void AddActionNode(EffectInfoDto effectDto, TreeNode parentNode, EffectInfo tag)
@@ -218,6 +225,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 Tag = tag
             };
+            var effectData = SelectableEffects.Find(se => se.InternalName.Equals(tag.EffectName));
             var tooltipBuilder = new StringBuilder();
             tooltipBuilder.Append("Description: ").Append(effectDto.Description).AppendLine("\n\nParameters:");
 
@@ -256,7 +264,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 else
                 {
-                    var nullEffectNode = new TreeNode("ON SUCCESS - Do nothing")
+                    var nullEffectNode = new TreeNode(effectData.IsControlBlock ? "ON ENTER LOOP - Do Nothing" : "ON SUCCESS - Do nothing")
                     {
                         Tag = null,
                     };
@@ -268,7 +276,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
                 else
                 {
-                    var nullEffectNode = new TreeNode("ON FAILURE - Do nothing")
+                    var nullEffectNode = new TreeNode(effectData.IsControlBlock ? "ON LEAVE LOOP - Do Nothing" : "ON FAILURE - Do nothing")
                     {
                         Tag = null,
                     };
@@ -307,7 +315,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     foreach (TreeNode node in SelectedNode.Nodes)
                     {
-                        if (node.Text.Contains("ON SUCCESS") || node.Text.Contains("ON FAILURE"))
+                        if (node.Text.Contains("ON SUCCESS") || node.Text.Contains("ON FAILURE") || node.Text.Contains("ON ENTER LOOP") || node.Text.Contains("ON LEAVE LOOP"))
                         {
                             HasOnSuccessFailureChildNodes = true;
                             break;
@@ -388,9 +396,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     if (SelectedNode.Text.Contains("THEN"))
                         parentEffect.Then = frmActionParameter.EffectToSave;
-                    else if (SelectedNode.Text.Contains("ON SUCCESS"))
+                    else if (SelectedNode.Text.Contains("ON SUCCESS") || SelectedNode.Text.Contains("ON ENTER LOOP"))
                         parentEffect.OnSuccess = frmActionParameter.EffectToSave;
-                    else if (SelectedNode.Text.Contains("ON FAILURE"))
+                    else if (SelectedNode.Text.Contains("ON FAILURE") || SelectedNode.Text.Contains("ON LEAVE LOOP"))
                         parentEffect.OnFailure = frmActionParameter.EffectToSave;
                 }
                 else if (SelectedNode.Text.Contains("INITIAL"))
@@ -862,6 +870,45 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tvEffectSequence.SelectNodeByTag(SelectedNode.Tag);
         }
 
+        private void btnTestAction_Click(object sender, EventArgs e)
+        {
+            var actionToTest = ActionToSave != null ? ActionToSave.Clone() : new ActionWithEffectsInfo();
+            if (gbSelectionCriteria.Enabled)
+            {
+                if (rbEntity.Checked)
+                {
+                    if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                    {
+                        actionToTest.TargetTypes = new List<string>();
+                        if (chkAllies.Checked)
+                            actionToTest.TargetTypes.Add("Ally");
+                        if (chkEnemies.Checked)
+                            actionToTest.TargetTypes.Add("Enemy");
+                        if (chkSelf.Checked)
+                            actionToTest.TargetTypes.Add("Self");
+                    }
+                }
+                else if (rbTile.Checked)
+                {
+                    actionToTest.TargetTypes = new List<string> { "Tile" };
+                }
+                actionToTest.MinimumRange = (int)nudMinRange.Value;
+                actionToTest.MaximumRange = (int)nudMaxRange.Value;
+                actionToTest.CooldownBetweenUses = (int)nudCooldown.Value;
+                actionToTest.StartingCooldown = (int)nudInitialCooldown.Value;
+                actionToTest.MaximumUses = (int)nudMaximumUses.Value;
+                actionToTest.MPCost = (int)nudMPCost.Value;
+            }
+            actionToTest.UseCondition = txtActionCondition.Text;
+            actionToTest.AIUseCondition = txtActionAICondition.Text;
+            actionToTest.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
+            actionToTest.Name = txtActionName.Text;
+            actionToTest.Description = txtActionDescription.Text;
+            ScrubNullEffects(actionToTest.Effect, null);
+            actionToTest.Id = (!string.IsNullOrWhiteSpace(PlaceholderActionId)) ? PlaceholderActionId : "Test";
+            new frmActionTest(actionToTest, ActiveDungeon, ClassId, ActionTypeText, UsageCriteria).ShowDialog();
+        }
+
         private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
         {
             btnPasteStep.Enabled = SelectedNode != null && ClipboardManager.ContainsData(FormConstants.StepClipboardKey);
@@ -919,23 +966,34 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public List<(string DisplayName, string Value)> Parameters { get; set; } = new List<(string DisplayName, string Value)>();
         public static List<string> StatIds = new();
 
-        public EffectInfoDto(EffectInfo info, EffectInfo parentEffect, List<EffectTypeData> selectableEffects)
+        public EffectInfoDto(EffectInfo info, EffectInfo parentInfo, List<EffectTypeData> selectableEffects)
         {
             var effectData = selectableEffects.Find(se => se.InternalName.Equals(info.EffectName));
+            var parentEffectData = parentInfo != null ? selectableEffects.Find(se => se.InternalName.Equals(parentInfo.EffectName)) : null;
             try
             {
-                if (parentEffect.IsNullOrEmpty())
+                if (parentInfo.IsNullOrEmpty())
                 {
                     Moment = "INITIAL";
                 }
                 else
                 {
-                    if (parentEffect.Then == info)
+                    if (parentInfo.Then == info)
                         Moment = "THEN";
-                    else if (parentEffect.OnSuccess == info)
-                        Moment = "ON SUCCESS";
-                    else if (parentEffect.OnFailure == info)
-                        Moment = "ON FAILURE";
+                    else if (parentEffectData.IsControlBlock)
+                    {
+                        if (parentInfo.OnSuccess == info)
+                            Moment = "ON ENTER LOOP";
+                        else if (parentInfo.OnFailure == info)
+                            Moment = "ON LEAVE LOOP";
+                    }
+                    else
+                    {
+                        if (parentInfo.OnSuccess == info)
+                            Moment = "ON SUCCESS";
+                        else if (parentInfo.OnFailure == info)
+                            Moment = "ON FAILURE";
+                    }
                 }
                 if (effectData != null)
                 {
@@ -979,4 +1037,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
 #pragma warning restore CS8604 // Posible argumento de referencia nulo
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 #pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning restore CS8601 // Posible asignación de referencia nula
 }

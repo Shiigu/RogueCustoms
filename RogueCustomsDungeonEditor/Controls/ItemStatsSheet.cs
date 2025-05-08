@@ -9,7 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 #pragma warning disable CS8601 // Posible asignación de referencia nula
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 namespace RogueCustomsDungeonEditor.Controls
@@ -19,6 +21,10 @@ namespace RogueCustomsDungeonEditor.Controls
         private string PreviousCellValue;
 
         private List<(string Id, bool IsDecimal, bool IsPercentage)> StatTableData = new();
+
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool TreatStatsAsAbsolute { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<StatInfo> StatData
@@ -48,7 +54,7 @@ namespace RogueCustomsDungeonEditor.Controls
                     if (statData == default) continue;
                     var valueCell = dgvStatsModifiers.Rows[i].Cells[1].Value.ToString();
                     var parsedValueCell = !string.IsNullOrWhiteSpace(valueCell) ? decimal.Parse(valueCell.Replace("+", "").Replace("%", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0;
-                    if (parsedValueCell == 0) continue;
+                    if (parsedValueCell == 0 && !TreatStatsAsAbsolute) continue;
                     stats.Add(new()
                     {
                         Id = statData.Id,
@@ -68,20 +74,43 @@ namespace RogueCustomsDungeonEditor.Controls
                     {
                         var correspondingModifier = value.FirstOrDefault(v => v.Id.Equals(statData.Id));
                         if (correspondingModifier == null || correspondingModifier.Amount == 0) continue;
-                        if (!statData.IsPercentage)
+                        if(!TreatStatsAsAbsolute)
                         {
-                            if (!statData.IsDecimal)
+                            if (!statData.IsPercentage)
                             {
-                                dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0;-0", CultureInfo.InvariantCulture);
+                                if (!statData.IsDecimal)
+                                {
+                                    dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0;-0", CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                                }
                             }
                             else
                             {
-                                dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                                dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
                             }
                         }
                         else
                         {
-                            dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
+                            if (!statData.IsPercentage)
+                            {
+                                if (!statData.IsDecimal)
+                                {
+                                    if ((statData.Id.Equals("HP", StringComparison.CurrentCultureIgnoreCase) || statData.Id.Equals("MP", StringComparison.CurrentCultureIgnoreCase) || statData.Id.Equals("Hunger", StringComparison.CurrentCultureIgnoreCase)) && correspondingModifier.Amount < 2)
+                                        correspondingModifier.Amount = 2;
+                                    dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("0", CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("0.00###", CultureInfo.InvariantCulture);
+                                }
+                            }
+                            else
+                            {
+                                dgvStatsModifiers[1, i].Value = correspondingModifier.Amount.ToString("0.###", CultureInfo.InvariantCulture) + "%";
+                            }
                         }
                     }
                 }
@@ -98,12 +127,26 @@ namespace RogueCustomsDungeonEditor.Controls
             dgvStatsModifiers.Rows.Clear();
             foreach (var stat in StatTableData)
             {
-                if (stat.IsPercentage)
-                    dgvStatsModifiers.Rows.Add(stat.Id, "+0%");
-                else if (stat.IsDecimal)
-                    dgvStatsModifiers.Rows.Add(stat.Id, "+0.00");
+                if (!TreatStatsAsAbsolute)
+                {
+                    if (stat.IsPercentage)
+                        dgvStatsModifiers.Rows.Add(stat.Id, "+0%");
+                    else if (stat.IsDecimal)
+                        dgvStatsModifiers.Rows.Add(stat.Id, "+0.00");
+                    else
+                        dgvStatsModifiers.Rows.Add(stat.Id, "+0");
+                }
                 else
-                    dgvStatsModifiers.Rows.Add(stat.Id, "+0");
+                {
+                    if (stat.IsPercentage)
+                        dgvStatsModifiers.Rows.Add(stat.Id, "0%");
+                    else if (stat.IsDecimal)
+                        dgvStatsModifiers.Rows.Add(stat.Id, "0.00");
+                    else if (stat.Id.Equals("HP", StringComparison.CurrentCultureIgnoreCase) || stat.Id.Equals("MP", StringComparison.CurrentCultureIgnoreCase) || stat.Id.Equals("Hunger", StringComparison.CurrentCultureIgnoreCase))
+                        dgvStatsModifiers.Rows.Add(stat.Id, "2");
+                    else
+                        dgvStatsModifiers.Rows.Add(stat.Id, "0");
+                }
             }
         }
 
@@ -128,22 +171,47 @@ namespace RogueCustomsDungeonEditor.Controls
                 var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(firstColumnValue));
                 if(statData != default)
                 {
-                    if(!statData.IsPercentage)
+                    if (TreatStatsAsAbsolute)
                     {
-                        if (!statData.IsDecimal)
+                        if (!statData.IsPercentage)
                         {
-                            result = (int)result;
-                            dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0;-0", CultureInfo.InvariantCulture);
+                            if (!statData.IsDecimal)
+                            {
+                                result = (int)result;
+                                if ((statData.Id.Equals("HP", StringComparison.CurrentCultureIgnoreCase) || statData.Id.Equals("MP", StringComparison.CurrentCultureIgnoreCase) || statData.Id.Equals("Hunger", StringComparison.CurrentCultureIgnoreCase)) && result < 2)
+                                    result = 2;
+                                dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("0", CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("0.00###", CultureInfo.InvariantCulture);
+                            }
                         }
                         else
                         {
-                            dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                            result = (int)result;
+                            dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("0.###", CultureInfo.InvariantCulture) + "%";
                         }
                     }
                     else
                     {
-                        result = (int)result;
-                        dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
+                        if (!statData.IsPercentage)
+                        {
+                            if (!statData.IsDecimal)
+                            {
+                                result = (int)result;
+                                dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0;-0", CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                            }
+                        }
+                        else
+                        {
+                            result = (int)result;
+                            dgvStatsModifiers[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
+                        }
                     }
                 }
             }
@@ -170,3 +238,4 @@ namespace RogueCustomsDungeonEditor.Controls
 }
 #pragma warning restore CS8601 // Posible asignación de referencia nula
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

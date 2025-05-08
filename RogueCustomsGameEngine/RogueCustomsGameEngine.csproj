@@ -15,7 +15,10 @@
   <ItemGroup>
     <PackageReference Include="D20Tek.DiceNotation.Standard" Version="3.3.2" />
     <PackageReference Include="matheval" Version="1.0.1" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -138,8 +138,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Exists(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
                 var statusPower = (decimal) paramsObject.Power;
                 var turnlength = (int)paramsObject.TurnLength;
+                var couldSeeTarget = Map.Player.CanSee(statusTarget);
                 var success = statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
-                if (success && (statusTarget == Map.Player || Map.Player.CanSee(statusTarget)))
+                if (success && (statusTarget == Map.Player || couldSeeTarget))
                 {
                     events.Add(new()
                     {
@@ -204,9 +205,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         alterationAmount = -1;
                 }
 
-                if (alterationAmount > targetStat.MaxCap)
+                if (statValue + alterationAmount > targetStat.MaxCap)
                     alterationAmount = 0;
-                if (alterationAmount < targetStat.MinCap)
+                if (statValue + alterationAmount < targetStat.MinCap)
                     alterationAmount = 0;
 
                 if (alterationAmount == 0)
