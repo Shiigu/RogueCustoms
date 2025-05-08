@@ -14,16 +14,31 @@ namespace RogueCustomsDungeonEditor.Utils
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
     public static class FontHelpers
     {
-        private static PrivateFontCollection PrivateFontCollection = new();
+        private readonly static PrivateFontCollection PrivateFontCollection = new();
+        private readonly static HashSet<string> LoadedFonts = new(StringComparer.OrdinalIgnoreCase);
 
         public static bool LoadFont(string fontPath)
         {
-            byte[] fontData = File.ReadAllBytes(fontPath);
-            IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+            if (LoadedFonts.Contains(fontPath))
+            {
+                return true;
+            }
+
+            var previousFontCount = PrivateFontCollection.Families.Length;
+
+            var fontData = File.ReadAllBytes(fontPath);
+            var fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
             PrivateFontCollection.AddMemoryFont(fontPtr, fontData.Length);
             Marshal.FreeCoTaskMem(fontPtr);
-            return PrivateFontCollection.Families.Length > 0;
+
+            var success = PrivateFontCollection.Families.Length > previousFontCount;
+            if (success)
+            {
+                var fontFamily = PrivateFontCollection.Families[^1];
+                LoadedFonts.Add(fontPath);
+            }
+            return success;
         }
 
         public static FontFamily? GetFontByName(string fontName)

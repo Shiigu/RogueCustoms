@@ -151,6 +151,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloor.Generate();
         }
 
+        public void GenerateDebugMap()
+        {
+            IsDebugMode = true;
+            CurrentFloor = new Map(this, CurrentFloorLevel, []);
+            CurrentFloor.GenerateDebugMap();
+        }
+
         public void SetPlayerName(string name)
         {
             PlayerName = name;

@@ -21,6 +21,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\RogueCustomsGameEngine\RogueCustomsGameEngine.csproj" />
   </ItemGroup>
    <PropertyGroup>
@@ -28,4 +33,13 @@
     <StartProgram>D:\Descargas\Godot_v4.4-stable_mono_win64\Godot_v4.4-stable_mono_win64.exe</StartProgram>
     <StartArguments>--path "D:\Programación\Rogue Customs\RogueCustomsGodotClient"</StartArguments>
   </PropertyGroup>
+   <ItemGroup>
+     <PackageReference Update="Godot.SourceGenerators" Version="4.4.1" />
+   </ItemGroup>
+   <ItemGroup>
+     <PackageReference Update="GodotSharp" Version="4.4.1" />
+   </ItemGroup>
+   <ItemGroup>
+     <PackageReference Update="GodotSharpEditor" Version="4.4.1" />
+   </ItemGroup>
 </Project>

@@ -17,6 +17,8 @@ using System.Globalization;
 using RogueCustomsGameEngine.Utils.Expressions;
 using System.Diagnostics.Contracts;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Runtime.ExceptionServices;
+using RogueCustomsGameEngine.Utils.Exceptions;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -499,7 +501,6 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public string EffectMethodName { get; set; }
         public string EffectClassName { get; set; }
-
         public ActionMethod Function { get; set; }
 
         public (string ParamName, string Value)[] Params { get; set; }
@@ -551,45 +552,68 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             do
             {
-                ExecutionContext.Current.CurrentEffect = currentEffect;
-                var success = currentEffect.Function(This, Source, Target, currentEffect.Params);
-                if (success)
-                    successfulEffects.Add(currentEffect.Function.Method.Name);
+                try
+                {
+                    ExecutionContext.Current.CurrentEffect = currentEffect;
+                    var success = currentEffect.Function(This, Source, Target, currentEffect.Params);
+                    if (success)
+                        successfulEffects.Add(currentEffect.Function.Method.Name);
 
-                if (currentEffect.Then != null)
-                {
-                    currentEffect = currentEffect.Then;
-                }
-                else
-                {
-                    currentEffect = success
-                                        ? currentEffect.OnSuccess
-                                        : currentEffect.OnFailure;
-                }
-
-                if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
-                {
-                    switch (frame)
+                    if (currentEffect.Then != null)
                     {
-                        case WhileFrame wf:
-                            currentEffect = wf.StartEffect;
-                            ExecutionContext.Current.LoopStack.Pop(); // We remove it in case the While fails; if it succeeds, it will be added again, no harm done
-                            continue;
-
-                        case ForFrame ff:
-                            ff.Advance();
-                            if (ff.ShouldContinue())
-                            {
-                                currentEffect = ff.StartEffect.OnSuccess;
-                                continue;
-                            }
-                            else
-                            {
-                                currentEffect = ff.StartEffect.OnFailure;
-                                ExecutionContext.Current.LoopStack.Pop();
-                            }
-                            break;
+                        currentEffect = currentEffect.Then;
                     }
+                    else
+                    {
+                        currentEffect = success
+                                            ? currentEffect.OnSuccess
+                                            : currentEffect.OnFailure;
+                    }
+
+                    if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
+                    {
+                        switch (frame)
+                        {
+                            case WhileFrame wf:
+                                currentEffect = wf.StartEffect;
+                                ExecutionContext.Current.LoopStack.Pop(); // We remove it in case the While fails; if it succeeds, it will be added again, no harm done
+                                continue;
+
+                            case ForFrame ff:
+                                ff.Advance();
+                                if (ff.ShouldContinue())
+                                {
+                                    currentEffect = ff.StartEffect.OnSuccess;
+                                    continue;
+                                }
+                                else
+                                {
+                                    currentEffect = ff.StartEffect.OnFailure;
+                                    ExecutionContext.Current.LoopStack.Pop();
+                                }
+                                break;
+                        }
+                    }
+                }
+                catch (FlagNotFoundException fe)
+                {
+                    if (!This.Map.IsDebugMode)
+                    {
+                        var e = new Exception();
+                        ExceptionDispatchInfo.SetRemoteStackTrace(e, fe.StackTrace);
+                        throw e;
+                    }
+                    else
+                    {
+                        This.Map.CreateFlag(fe.FlagName, 0, false);
+                        This.Map.AppendMessage($"WARNING - {fe.FlagName} is used but not declared. It has been set to 0 to allow testing.", new GameColor(Color.Red));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var e = new Exception();
+                    ExceptionDispatchInfo.SetRemoteStackTrace(e, ex.StackTrace);
+                    throw e;
                 }
             }
             while (currentEffect != null);

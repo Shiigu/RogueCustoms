@@ -86,6 +86,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblActionNameLocale = new Button();
             txtActionName = new TextBox();
             label14 = new Label();
+            btnTestAction = new Button();
             gbSelectionCriteria.SuspendLayout();
             pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
@@ -100,7 +101,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblTitle
             // 
-            lblTitle.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitle.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold);
             lblTitle.Location = new Point(4, 2);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(939, 26);
@@ -111,7 +112,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // tvEffectSequence
             // 
             tvEffectSequence.DrawMode = TreeViewDrawMode.OwnerDrawText;
-            tvEffectSequence.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            tvEffectSequence.Font = new Font("Segoe UI", 9F);
             tvEffectSequence.FullRowSelect = true;
             tvEffectSequence.HideSelection = false;
             tvEffectSequence.Location = new Point(3, 31);
@@ -124,7 +125,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(522, 591);
+            btnCancel.Location = new Point(544, 591);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 24);
             btnCancel.TabIndex = 2;
@@ -336,7 +337,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label2.AutoSize = true;
             label2.Location = new Point(5, 83);
             label2.Name = "label2";
-            label2.Size = new Size(386, 15);
+            label2.Size = new Size(387, 15);
             label2.TabIndex = 4;
             label2.Text = "Requires a distance of                 to                 tiles to the Target to be used.";
             // 
@@ -351,7 +352,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(362, 591);
+            btnSave.Location = new Point(308, 591);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 24);
             btnSave.TabIndex = 4;
@@ -405,7 +406,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(441, 591);
+            btnSaveAs.Location = new Point(387, 591);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(75, 24);
             btnSaveAs.TabIndex = 9;
@@ -478,7 +479,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label7.AutoSize = true;
             label7.Location = new Point(3, 476);
             label7.Name = "label7";
-            label7.Size = new Size(238, 15);
+            label7.Size = new Size(239, 15);
             label7.TabIndex = 22;
             label7.Text = "To be used, it must fulfill this condition first:";
             // 
@@ -501,7 +502,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblTarget
             // 
-            lblTarget.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTarget.Font = new Font("Segoe UI", 9.75F);
             lblTarget.Location = new Point(65, 90);
             lblTarget.Name = "lblTarget";
             lblTarget.Size = new Size(384, 19);
@@ -510,7 +511,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblSource
             // 
-            lblSource.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblSource.Font = new Font("Segoe UI", 9.75F);
             lblSource.Location = new Point(65, 64);
             lblSource.Name = "lblSource";
             lblSource.Size = new Size(384, 19);
@@ -519,7 +520,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblThis
             // 
-            lblThis.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lblThis.Font = new Font("Segoe UI", 9.75F);
             lblThis.Location = new Point(65, 40);
             lblThis.Name = "lblThis";
             lblThis.Size = new Size(384, 19);
@@ -528,7 +529,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // label12
             // 
-            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label12.Location = new Point(3, 91);
             label12.Name = "label12";
             label12.Size = new Size(68, 19);
@@ -538,7 +539,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // label11
             // 
-            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label11.Location = new Point(3, 65);
             label11.Name = "label11";
             label11.Size = new Size(68, 19);
@@ -548,7 +549,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // label10
             // 
-            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label10.Location = new Point(3, 41);
             label10.Name = "label10";
             label10.Size = new Size(68, 19);
@@ -558,7 +559,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // label9
             // 
-            label9.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label9.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold);
             label9.Location = new Point(33, 3);
             label9.Name = "label9";
             label9.Size = new Size(210, 24);
@@ -580,7 +581,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             chkFinishesTurn.AutoSize = true;
             chkFinishesTurn.Location = new Point(355, 566);
             chkFinishesTurn.Name = "chkFinishesTurn";
-            chkFinishesTurn.Size = new Size(265, 19);
+            chkFinishesTurn.Size = new Size(264, 19);
             chkFinishesTurn.TabIndex = 26;
             chkFinishesTurn.Text = "Executing this action finishes the current turn";
             chkFinishesTurn.UseVisualStyleBackColor = true;
@@ -638,7 +639,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label13.AutoSize = true;
             label13.Location = new Point(476, 473);
             label13.Name = "label13";
-            label13.Size = new Size(297, 15);
+            label13.Size = new Size(298, 15);
             label13.TabIndex = 29;
             label13.Text = "To be used by an NPC, it must fulfill this condition first:";
             // 
@@ -676,11 +677,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
             label14.TabIndex = 32;
             label14.Text = "Name";
             // 
+            // btnTestAction
+            // 
+            btnTestAction.Location = new Point(466, 591);
+            btnTestAction.Name = "btnTestAction";
+            btnTestAction.Size = new Size(75, 24);
+            btnTestAction.TabIndex = 35;
+            btnTestAction.Text = "Test";
+            btnTestAction.UseVisualStyleBackColor = true;
+            btnTestAction.Click += btnTestAction_Click;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(950, 620);
+            Controls.Add(btnTestAction);
             Controls.Add(fklblActionNameLocale);
             Controls.Add(txtActionName);
             Controls.Add(label14);
@@ -785,5 +797,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private Button fklblActionNameLocale;
         private TextBox txtActionName;
         private Label label14;
+        private Button btnTestAction;
     }
 }
