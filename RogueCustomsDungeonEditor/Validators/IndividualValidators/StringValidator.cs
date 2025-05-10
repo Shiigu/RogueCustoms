@@ -37,8 +37,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     foreach (var locale in localesWithKey)
                     {
                         var localeValue = locale.LocaleStrings.Find(ls => ls.Key.Equals(localeStringKey)).Value;
-                        if (!localeValue.CanBeEncodedToIBM437())
-                            validationMessages.AddWarning($"{localeStringKey}, when localized in Language {locale.Language}, cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
+                        if (!localeValue.CanBeEncoded())
+                            validationMessages.AddWarning($"{localeStringKey}, when localized in Language {locale.Language}, cannot be properly encoded to PxPlus. Console clients may display it incorrectly.");
                     }
                 }
                 else
