@@ -397,11 +397,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
             characterMapButton.Click += (sender, e) =>
             {
-                var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), originalValue?[0]);
-                characterMapForm.ShowDialog();
-                if (characterMapForm.Saved)
+                var characterMapResult = CharacterMapInputBox.ShowDialog(originalValue?[0]);
+                if (characterMapResult.Saved)
                 {
-                    characterLabel.Text = characterMapForm.CharacterToSave.ToString();
+                    characterLabel.Text = characterMapResult.CharacterToSave.ToString();
                 }
             };
 
@@ -572,8 +571,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         break;
                     case ParameterType.Character:
                         valueToValidate = (controlToValidate as Label)?.Text;
-                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.CanBeEncodedToIBM437())
-                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a IBM437 character.");
+                        if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.CanBeEncoded())
+                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a PxPlus character.");
                         break;
                     case ParameterType.Color:
                         valueToValidate = (controlToValidate as TextBox)?.Text;

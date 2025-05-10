@@ -118,11 +118,10 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void btnChangeConsoleCharacter_Click(object sender, EventArgs e)
         {
-            var characterMapForm = new CharacterMapInputBox(CharHelpers.GetIBM437PrintableCharacters(), (!string.IsNullOrWhiteSpace(lblConsoleRepresentation.Text)) ? lblConsoleRepresentation.Text[0] : '\0');
-            characterMapForm.ShowDialog();
-            if (characterMapForm.Saved)
+            var characterMapResult = CharacterMapInputBox.ShowDialog(!string.IsNullOrWhiteSpace(lblConsoleRepresentation.Text) ? lblConsoleRepresentation.Text[0] : '\0');
+            if (characterMapResult.Saved)
             {
-                Character = characterMapForm.CharacterToSave ?? ' ';
+                Character = characterMapResult.CharacterToSave ?? ' ';
             }
         }
 

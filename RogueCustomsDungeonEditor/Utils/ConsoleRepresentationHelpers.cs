@@ -20,8 +20,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 messages.AddWarning("Console Representation lacks a visible Character. If the object is supposed to be printed to console, consider changing it.");
             if (representation.ForegroundColor == representation.BackgroundColor)
                 messages.AddWarning("Console Representation's background and foreground are of the same color. Its Character won't be visible to the player.");
-            if (!representation.Character.ToString().CanBeEncodedToIBM437())
-                messages.AddWarning("Console Representation cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
+            if (!representation.Character.ToString().CanBeEncoded())
+                messages.AddWarning("Console Representation cannot be properly encoded to PxPlus. Console clients may display it incorrectly.");
 
             if(!ownerIsPlayerClass)
                 messages.AddRange(representation.CheckIdenticalRepresentations(ownerClassId, dungeonJson.PlayerClasses.ConvertAll(pc => (pc.Id, pc.ConsoleRepresentation))));
@@ -40,8 +40,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 messages.AddWarning($"{name}'s Console Representation lacks a visible Character. If the object is supposed to be printed to console, consider changing it.");
             if (representation.ForegroundColor == representation.BackgroundColor)
                 messages.AddWarning($"{name}'s Console Representation's background and foreground are of the same color. Its Character won't be visible to the player.");
-            if (!representation.Character.ToString().CanBeEncodedToIBM437())
-                messages.AddWarning($"{name}'s Console Representation cannot be properly encoded to IBM437. Console clients may display it incorrectly.");
+            if (!representation.Character.ToString().CanBeEncoded())
+                messages.AddWarning($"{name}'s Console Representation cannot be properly encoded to PxPlus. Console clients may display it incorrectly.");
             
 
             return messages;

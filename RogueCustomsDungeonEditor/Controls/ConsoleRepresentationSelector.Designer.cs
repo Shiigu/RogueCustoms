@@ -69,12 +69,13 @@ namespace RogueCustomsDungeonEditor.Controls
             // 
             // lblConsoleRepresentation
             // 
-            lblConsoleRepresentation.Font = new Font("Consolas", 36F, FontStyle.Regular, GraphicsUnit.Point);
+            lblConsoleRepresentation.Font = new Font("Consolas", 36F);
             lblConsoleRepresentation.Location = new Point(0, 9);
             lblConsoleRepresentation.Name = "lblConsoleRepresentation";
             lblConsoleRepresentation.Size = new Size(64, 64);
             lblConsoleRepresentation.TabIndex = 112;
             lblConsoleRepresentation.TextAlign = ContentAlignment.MiddleCenter;
+            lblConsoleRepresentation.UseMnemonic = false;
             // 
             // ConsoleRepresentationSelector
             // 

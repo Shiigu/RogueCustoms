@@ -50,16 +50,30 @@ namespace RogueCustomsDungeonEditor.HelperForms
             UsageCriteria = usageCriteria;
             ClassId = classId;
 
-            var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
-            var fontName = "PxPlus Tandy1K-II 200L";
-            if (FontHelpers.LoadFont(fontPath))
+            // Check if we are in design mode
+            if (DesignMode || this.DesignMode)
             {
-                var loadedFont = FontHelpers.GetFontByName(fontName);
-                if (loadedFont != null)
+                return; // Do nothing in design mode
+            }
+
+            try
+            {
+                var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
+                var fontName = "PxPlus Tandy1K-II 200L";
+                if (FontHelpers.LoadFont(fontPath))
                 {
-                    txtMessageLog.Font = new Font(loadedFont, 8f, FontStyle.Regular);
+                    var loadedFont = FontHelpers.GetFontByName(fontName);
+                    if (loadedFont != null)
+                    {
+                        txtMessageLog.Font = new Font(loadedFont, 8f, FontStyle.Regular);
+                    }
                 }
             }
+            catch
+            {
+                // Do nothing if the Font can't be found
+            }
+
             crsSource.Visible = true;
             crsSource.Character = 'U';
             crsSource.BackgroundColor = new GameColor(Color.Black);

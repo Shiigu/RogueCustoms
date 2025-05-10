@@ -97,6 +97,8 @@ namespace RogueCustomsDungeonEditor
             MandatoryLocaleKeys.AddRange(File.ReadAllLines("./Resources/MandatoryLocaleKeys.txt"));
             BaseLocaleLanguages.AddRange(File.ReadAllLines("./Resources/BaseLocaleLanguages.txt"));
 
+            CharacterMapInputBox.ConstructCharacterMap();
+
             var jsonString = File.ReadAllText("./EffectInfos/EffectTypeData.json");
             EffectParamData = JsonSerializer.Deserialize<List<EffectTypeData>>(jsonString, new JsonSerializerOptions
             {
