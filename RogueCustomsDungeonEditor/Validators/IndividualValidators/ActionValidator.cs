@@ -279,7 +279,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (functionName == "ApplyAlteredStatus")
                     {
                         // We remove the status before testing so that, if !CanStack && !CanOverwrite, the first attempt always returns Success (the rest will return Failure).
-                        var statusId = Array.Find(nextEffect.Params, p => p.ParamName.Equals("Id", StringComparison.InvariantCultureIgnoreCase)).Value;
+                        var statusId = nextEffect.Params.Find(p => p.ParamName.Equals("Id", StringComparison.InvariantCultureIgnoreCase)).Value;
                         target.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(statusId, StringComparison.InvariantCultureIgnoreCase));
                     }
 

@@ -10,6 +10,7 @@ using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Expressions;
 using org.matheval;
 using System.Collections;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -26,11 +27,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool While(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool While(EffectCallerParams Args)
         {
             var ctx = ExecutionContext.Current
                 ?? throw new InvalidOperationException("No execution context.");
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
             var conditionResult = new Expression(paramsObject.Condition).Eval<bool>();
 
             if (conditionResult)
@@ -39,11 +40,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return conditionResult;
         }
 
-        public static bool For(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool For(EffectCallerParams Args)
         {
             var ctx = ExecutionContext.Current
                 ?? throw new InvalidOperationException("No execution context.");
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
 
             var counterFlagKey = paramsObject.CounterFlagKey;
             var start = int.Parse(paramsObject.InitialValue);

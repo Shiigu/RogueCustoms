@@ -19,6 +19,7 @@ using System.Diagnostics.Contracts;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Runtime.ExceptionServices;
 using RogueCustomsGameEngine.Utils.Exceptions;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -497,13 +498,13 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");
 
-        public delegate bool ActionMethod(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args);
+        public delegate bool ActionMethod(EffectCallerParams Args);
 
         public string EffectMethodName { get; set; }
         public string EffectClassName { get; set; }
         public ActionMethod Function { get; set; }
 
-        public (string ParamName, string Value)[] Params { get; set; }
+        public List<EffectParam> Params { get; set; }
         public Effect Then { get; set; }                     // "Then" is always executed, regardless of success or failure
         public Effect OnSuccess { get; set; }                // "OnSuccess" is executed only if the last effect was successful
         public Effect OnFailure { get; set; }                // "OnFailure" is executed only if the last effect was not successful
@@ -529,7 +530,16 @@ namespace RogueCustomsGameEngine.Game.Entities
                 try
                 {
                     Function = effectMethod.CreateDelegate<ActionMethod>();
-                    Params = info.Params.Select(p => (p.ParamName, p.Value)).ToArray();
+                    var paramsArray = info.Params.Select(p => (p.ParamName, p.Value)).ToArray();
+                    Params = [];
+                    foreach (var (paramName, Value) in paramsArray)
+                    {
+                        Params.Add(new EffectParam
+                        {
+                            ParamName = paramName,
+                            Value = Value
+                        });
+                    }
                     if (info.Then != null)
                         Then = new Effect(info.Then);
                     if (info.OnSuccess != null)
@@ -554,8 +564,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 try
                 {
-                    ExecutionContext.Current.CurrentEffect = currentEffect;
-                    var success = currentEffect.Function(This, Source, Target, currentEffect.Params);
+                    ExecutionContext.Current.CurrentEffect = currentEffect;                    
+                    var success = currentEffect.Function(new EffectCallerParams
+                    {
+                        This = This,
+                        Source = Source,
+                        Target = Target,
+                        Params = currentEffect.Params,
+                        OriginalTarget = Target
+                    });
                     if (success)
                         successfulEffects.Add(currentEffect.Function.Method.Name);
 
@@ -671,7 +688,17 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             EffectMethodName = info.GetString("EffectMethodName");
             EffectClassName = info.GetString("EffectClassName");
-            Params = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
+            var paramsArray = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
+            Params = [];
+            foreach (var (paramName, Value) in paramsArray)
+            {
+                Params.Add(new EffectParam
+                {
+                    ParamName = paramName,
+                    Value = Value
+                });
+            }
+
             Then = (Effect)info.GetValue("Then", typeof(Effect));
             OnSuccess = (Effect)info.GetValue("OnSuccess", typeof(Effect));
             OnFailure = (Effect)info.GetValue("OnFailure", typeof(Effect));

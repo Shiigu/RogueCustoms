@@ -4,6 +4,7 @@ using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Text;
 using RogueCustomsGameEngine.Utils.Expressions;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -19,9 +20,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool Remove(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool Remove(EffectCallerParams Args)
         {
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
 
             var targetItem = paramsObject.Target as Item;
             var targetKey = paramsObject.Target as Key;
@@ -29,7 +30,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (targetItem == null && targetKey == null && targetTrap == null)
                 throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name}, which isn't Removable.");
-            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Source, paramsObject.Target, paramsObject);
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
             if (Rng.RollProbability() <= accuracyCheck)
             {

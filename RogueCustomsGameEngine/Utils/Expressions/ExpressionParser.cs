@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.DiceNotation;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
@@ -69,22 +70,22 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             Map = map;
             ExpressionFunctions.Setup(rng, map);
         }
-        public static CaseInsensitiveExpandoObject ParseParams(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static CaseInsensitiveExpandoObject ParseParams(EffectCallerParams Args)
         {
             dynamic paramsObject = new CaseInsensitiveExpandoObject();
             var paramsDict = paramsObject.ToDictionary();
 
-            foreach (var (ParamName, Value) in args)
+            foreach (var param in Args.Params)
             {
                 try
                 {
-                    var paramName = ParamName.ToLower();
-                    var value = ParseArgForExpression(Map.Locale[Value], This, Source, Target);
+                    var paramName = param.ParamName.ToLower();
+                    var value = ParseArgForExpression(Map.Locale[param.Value], Args.This, Args.Source, Args.Target);
 
                     if (string.IsNullOrEmpty(value)) continue;
 
                     // If it's not just a "copy value to field"...
-                    if (RequiresCustomParsing(paramsObject, paramName, value, This, Source, Target))
+                    if (RequiresCustomParsing(paramsObject, paramName, value, Args.This, Args.Source, Args.Target))
                         continue;
 
                     // Otherwise...
@@ -97,7 +98,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 }
                 catch (Exception ex)
                 {
-                    throw new ArgumentException($"Parsing expression {Value} of parameter {ParamName} threw an exception: {ex.Message}");
+                    throw new ArgumentException($"Parsing expression {param.Value} of parameter {param.ParamName} threw an exception: {ex.Message}");
                 }
             }
 
