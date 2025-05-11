@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Utils.Expressions;
 using System.Collections.Generic;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Xml.Linq;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -26,10 +27,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool DealDamage(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool DealDamage(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
                 // Attempted to damage Target when it's not a Character.
                 return false;
@@ -59,7 +60,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (canCallElementEffect && attackElement.OnAfterAttack != null && !string.IsNullOrWhiteSpace(attackElement.OnAfterAttack.UseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(attackElement.OnAfterAttack.UseCondition, This, Source, c);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(attackElement.OnAfterAttack.UseCondition, Args.This, Args.Source, c);
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))
                     canCallElementEffect = false;
@@ -71,14 +72,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if(damageResistance > paramsObject.Damage && attackElement.ExcessResistanceCausesHealDamage)
             {
-                var targetParam = args.FirstOrDefault(a => a.ParamName.Equals("Target", StringComparison.InvariantCultureIgnoreCase));
-                var healDamageParams = new List<(string ParamName, string Value)>
+                var targetParam = Args.Params.FirstOrDefault(a => a.ParamName.Equals("Target", StringComparison.InvariantCultureIgnoreCase));
+                var healDamageParams = new List<EffectParam>
                 {
-                    ("Source", "source"),
-                    ("Target", targetParam.Value),
-                    ("Power", (damageResistance - paramsObject.Damage).ToString())
+                    new EffectParam{ParamName = "Source", Value = "source" },
+                    new EffectParam{ParamName = "Target", Value = targetParam.Value },
+                    new EffectParam{ParamName = "Power", Value = damageResistance - paramsObject.Damage },
                 };
-                var healResult = GenericActions.HealDamage(This, paramsObject.Source, c, healDamageParams.ToArray());
+
+                var healResult = GenericActions.HealDamage(new EffectCallerParams
+                {
+                    This = Args.This,
+                    Source = Args.Source,
+                    Target = c,
+                    Params = healDamageParams
+                });
 
                 if (Map.Flags.Exists(f => f.Key.Equals($"ElementCausedHealDamage")))
                     Map.SetFlagValue($"ElementCausedHealDamage", 1);
@@ -86,7 +94,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.CreateFlag($"ElementCausedHealDamage", 1, true); 
                 
                 if (healResult && canCallElementEffect)
-                    attackElement.OnAfterAttack?.Do(Source, c, false);
+                    attackElement.OnAfterAttack?.Do(Args.Source, c, false);
 
                 Map.SetFlagValue($"ElementCausedHealDamage", 0);
 
@@ -159,17 +167,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Die(paramsObject.Attacker);
             else if (canCallElementEffect)
             {
-                attackElement.OnAfterAttack?.Do(Source, c, false);
+                attackElement.OnAfterAttack?.Do(Args.Source, c, false);
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
             }
             return true;
         }
 
-        public static bool BurnMP(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool BurnMP(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
                 // Attempted to burn Target's MP when it's not a Character.
                 return false;
@@ -214,10 +222,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map.DisplayEvents.Add(($"{c.Name} lost MP", events));
             return true;
         }
-        public static bool RemoveHunger(Entity This, Entity Source, ITargetable Target, params (string ParamName, string Value)[] args)
+        public static bool RemoveHunger(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, args);
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
                 // Attempted to remove Target's Hunger when it's not a Character.
                 return false;

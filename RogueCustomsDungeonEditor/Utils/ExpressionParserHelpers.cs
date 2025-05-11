@@ -23,6 +23,7 @@ using RogueCustomsGameEngine.Utils.Expressions;
 using System.Reflection;
 using RogueCustomsDungeonEditor.Utils.ExpressionFunctions;
 using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
 
 namespace RogueCustomsDungeonEditor.Utils
@@ -253,13 +254,24 @@ namespace RogueCustomsDungeonEditor.Utils
                     var paramList = effect.Params.ToList();
                     paramList.RemoveAll(p => p.ParamName.Equals(paramValue.ParamName));
                     (string ParamName, string ParamValue) paramToReplace = new (paramValue.ParamName, paramValue.Value);
-                    paramList.Add(paramToReplace);
-                    effect.Params = paramList.ToArray();
+                    paramList.Add(new EffectParam
+                    {
+                        ParamName = paramToReplace.ParamName,
+                        Value = paramToReplace.ParamValue
+                    });
+                    effect.Params = paramList;
                 }
                 flagsAreInvolved = true;
             }
 
-            dynamic paramsObject = ExpressionParser.ParseParams(This, Source, Target, effect.Params);
+            dynamic paramsObject = ExpressionParser.ParseParams(new EffectCallerParams
+            {
+                This = This,
+                Source = Source,
+                Target = Target,
+                Params = effect.Params,
+                OriginalTarget = Target
+            });
 
             var paramsObjectAsDictionary = paramsObject.ToDictionary();
 
@@ -268,7 +280,14 @@ namespace RogueCustomsDungeonEditor.Utils
 
         public static bool TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
         {
-            return effect.Function(This, Source, Target, effect.Params);
+            return effect.Function(new EffectCallerParams
+            {
+                This = This,
+                Source = Source,
+                Target = Target,
+                Params = effect.Params,
+                OriginalTarget = Target
+            });
         }
     }
 }
