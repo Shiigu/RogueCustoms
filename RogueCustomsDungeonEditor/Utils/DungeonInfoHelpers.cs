@@ -1132,6 +1132,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 if (playerClass == null) continue;
                 if (playerClass.OnTurnStart.IsNullOrEmpty())
                     playerClass.OnTurnStart = null;
+                playerClass.OnAttack ??= [];
                 playerClass.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
                 if (playerClass.OnAttacked.IsNullOrEmpty())
                     playerClass.OnAttacked = null;
@@ -1148,7 +1149,9 @@ namespace RogueCustomsDungeonEditor.Utils
                     npc.OnSpawn = null;
                 if (npc.OnTurnStart.IsNullOrEmpty())
                     npc.OnTurnStart = null;
+                npc.OnAttack ??= [];
                 npc.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
+                npc.OnInteracted ??= [];
                 npc.OnInteracted.RemoveAll(oa => oa.IsNullOrEmpty());
                 if (npc.OnAttacked.IsNullOrEmpty())
                     npc.OnAttacked = null;
@@ -1163,6 +1166,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 if (item == null) continue;
                 if (item.OnTurnStart.IsNullOrEmpty())
                     item.OnTurnStart = null;
+                item.OnAttack ??= [];
                 item.OnAttack.RemoveAll(oa => oa.IsNullOrEmpty());
                 if (item.OnAttacked.IsNullOrEmpty())
                     item.OnAttacked = null;
