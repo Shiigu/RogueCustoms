@@ -616,7 +616,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     if (!This.Map.IsDebugMode)
                     {
-                        var e = new Exception();
+                        var e = new Exception(fe.Message);
                         ExceptionDispatchInfo.SetRemoteStackTrace(e, fe.StackTrace);
                         throw e;
                     }
@@ -628,7 +628,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 catch (Exception ex)
                 {
-                    var e = new Exception();
+                    var e = new Exception(ex.Message);
                     ExceptionDispatchInfo.SetRemoteStackTrace(e, ex.StackTrace);
                     throw e;
                 }
