@@ -579,6 +579,11 @@ namespace RogueCustomsDungeonEditor
                 try
                 {
                     var jsonString = File.ReadAllText(ofdDungeon.FileName);
+                    ActiveDungeon = JsonSerializer.Deserialize<DungeonInfo>(jsonString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                    });
                     var formerVersion = !string.IsNullOrWhiteSpace(ActiveDungeon.Version) ? new string(ActiveDungeon.Version) : "1.0";
                     ActiveDungeon = jsonString.ConvertDungeonInfoIfNeeded(LocaleTemplate, MandatoryLocaleKeys);
                     ActiveDungeon.PruneNullActions();

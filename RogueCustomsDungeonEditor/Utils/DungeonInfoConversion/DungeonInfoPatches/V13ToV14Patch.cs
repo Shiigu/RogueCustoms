@@ -63,6 +63,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 if (newKey == "OnStatusApply")
                     newKey = "OnApply";
 
+                if (newKey == "CleansedByCleanse") continue;
+
                 obj.Remove(oldKey);
                 var arr = value as JsonArray;
 
