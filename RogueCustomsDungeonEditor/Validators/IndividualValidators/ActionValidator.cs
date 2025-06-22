@@ -21,7 +21,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 #pragma warning disable CS8601 // Posible asignación de referencia nula
     public static class ActionValidator
     {
-        public static DungeonValidationMessages Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
@@ -246,14 +246,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
 
             if (!action.TargetTypes.Contains(TargetType.Tile))
-                TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+                await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
             else
-                TestOnATile(owner, source, sampleDungeon, action, messages);
+                await TestOnATile(owner, source, sampleDungeon, action, messages);
 
             return messages;
         }
 
-        private static void TestOnACharacter(Entity owner, Entity source, Character target, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
+        private static async Task TestOnACharacter(Entity owner, Entity source, Character target, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
         {
             var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
@@ -272,9 +272,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
-                if (nextEffect.Function != null)
+                if (nextEffect.AsyncFunction != null)
                 {
-                    var functionName = nextEffect.Function.Method.Name;
+                    var functionName = nextEffect.AsyncFunction.Method.Name;
 
                     if (functionName == "ApplyAlteredStatus")
                     {
@@ -336,7 +336,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             });
                             for (int i = 0; i < 100; i++)
                             {
-                                if (nextEffect.TestFunction(owner, source, target))
+                                if (await nextEffect.TestFunction(owner, source, target))
                                 {
                                     amountOfSuccesses++;
                                 }
@@ -406,7 +406,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
         }
-        private static void TestOnATile(Entity owner, Entity source, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
+        private static async Task TestOnATile(Entity owner, Entity source, Dungeon sampleDungeon, ActionWithEffects action, DungeonValidationMessages messages)
         {
             var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
@@ -426,9 +426,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
-                if (nextEffect.Function != null)
+                if (nextEffect.AsyncFunction != null)
                 {
-                    var functionName = nextEffect.Function.Method.Name;
+                    var functionName = nextEffect.AsyncFunction.Method.Name;
 
                     if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                     {
@@ -456,7 +456,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     {
                         try
                         {
-                            if (nextEffect.TestFunction(owner, source, target))
+                            if (await nextEffect.TestFunction(owner, source, target))
                             {
                                 amountOfSuccesses++;
                             }

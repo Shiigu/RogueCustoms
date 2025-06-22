@@ -179,7 +179,7 @@
             maePlayerOnAttack.TabIndex = 149;
             maePlayerOnAttack.TargetDescription = "Whoever they are targeting";
             maePlayerOnAttack.ThisDescription = "The player";
-            maePlayerOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maePlayerOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
             maePlayerOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // cmbPlayerStartingArmor

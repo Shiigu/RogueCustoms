@@ -15,11 +15,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonPlayerClassValidator
     {
-        public static DungeonValidationMessages Validate(PlayerClassInfo playerClassJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(PlayerClassInfo playerClassJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
-            messages.AddRange(DungeonCharacterValidator.Validate(playerClassJson, true, dungeonJson, sampleDungeon));
+            messages.AddRange(await DungeonCharacterValidator.Validate(playerClassJson, true, dungeonJson, sampleDungeon));
 
             var foundNameInLocales = false;
             foreach (var locale in dungeonJson.Locales)

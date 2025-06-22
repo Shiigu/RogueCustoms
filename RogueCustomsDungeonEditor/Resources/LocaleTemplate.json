@@ -18,6 +18,14 @@
       "Value": "{DungeonName} - FLOOR {FloorLevel}"
     },
     {
+      "Key": "YesButtonText",
+      "Value": "YES"
+    },
+    {
+      "Key": "NoButtonText",
+      "Value": "NO"
+    },
+    {
       "Key": "NewTurn",
       "Value": "----------TURN {TurnCount}----------"
     },

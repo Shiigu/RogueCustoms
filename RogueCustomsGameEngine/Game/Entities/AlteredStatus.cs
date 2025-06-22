@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Utils.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -48,7 +49,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
         }
 
-        public bool ApplyTo(Character target, decimal power, int turnLength)
+        public async Task<bool> ApplyTo(Character target, decimal power, int turnLength)
         {
             if (!CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId))) return false;
             if (CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId)))
@@ -61,7 +62,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             alteredStatusInstance.TurnLength = turnLength;
             alteredStatusInstance.RemainingTurns = turnLength;
             target.AlteredStatuses.Add(alteredStatusInstance);
-            alteredStatusInstance.OnApply?.Do(this, target, false);
+            if(alteredStatusInstance.OnApply != null)
+                await alteredStatusInstance.OnApply.Do(this, target, false);
             return true;
         }
 
@@ -72,19 +74,20 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override string ToString() => $"{Name} ({Description}) - {TurnLength - RemainingTurns} turns left";
 
-        public void PerformOnTurnStart()
+        public async Task PerformOnTurnStart()
         {
             if (Target == null) return;
             if (OwnOnTurnStart?.ChecksCondition(Target, Target) == true)
-                OwnOnTurnStart.Do(this, Target, false);
+                await OwnOnTurnStart.Do(this, Target, false);
         }
 
-        public void RefreshCooldownsAndUpdateTurnLength()
+        public Task RefreshCooldownsAndUpdateTurnLength()
         {
             if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
                 OwnOnTurnStart.CurrentCooldown--;
             if (RemainingTurns > 0)
                 RemainingTurns--;
+            return Task.CompletedTask;
         }
 
         public override void SetActionIds()

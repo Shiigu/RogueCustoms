@@ -10,6 +10,7 @@ using RogueCustomsGodotClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public partial class PlayerSelectItem : Control
 {
@@ -154,29 +155,14 @@ public partial class PlayerSelectItem : Control
 
         _doButton.Text = DoButtonText;
 
-        _doButton.Pressed += () =>
-        {
-            try
-            {
-                var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
 
-                var attackInput = new AttackInput
-                {
-                    SelectionId = selectedAction.SelectionId,
-                    X = targetCoords.Value.X,
-                    Y = targetCoords.Value.Y,
-                    SourceType = selectedAction.SourceType
-                };
-                _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
-                _globalState.MustUpdateGameScreen = true;
-                onCloseCallback?.Invoke();
-                QueueFree();
-            }
-            catch (Exception ex)
+        _doButton.Pressed += () => DoButton_Pressed(targetCoords, onCloseCallback).ContinueWith(t =>
+        {
+            if (t.Exception != null)
             {
-                _exceptionLogger.LogMessage(ex);
+                _exceptionLogger.LogMessage(t.Exception);
             }
-        };
+        });
 
         _cancelButton.Text = CancelButtonText;
 
@@ -188,6 +174,23 @@ public partial class PlayerSelectItem : Control
 
         var screenSize = GetViewportRect().Size;
         Position = (screenSize - _outerBorder.Size) / 2;
+    }
+
+    private async Task DoButton_Pressed(Vector2I? targetCoords, Action onCloseCallback)
+    {
+        var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
+
+        var attackInput = new AttackInput
+        {
+            SelectionId = selectedAction.SelectionId,
+            X = targetCoords.Value.X,
+            Y = targetCoords.Value.Y,
+            SourceType = selectedAction.SourceType
+        };
+        await _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
+        _globalState.MustUpdateGameScreen = true;
+        onCloseCallback?.Invoke();
+        QueueFree();
     }
 
     private void ShowInventoryScreen()

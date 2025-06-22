@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required" o declararlo como un valor que acepta valores NULL.
 namespace RogueCustomsGameEngine.Utils.Effects.Utils
 {
+    [Serializable]
     public class EffectCallerParams
     {
         public Entity This { get; set; }
@@ -31,6 +32,7 @@ namespace RogueCustomsGameEngine.Utils.Effects.Utils
         }
     }
 
+    [Serializable]
     public class EffectParam
     {
         public string ParamName { get; set; }

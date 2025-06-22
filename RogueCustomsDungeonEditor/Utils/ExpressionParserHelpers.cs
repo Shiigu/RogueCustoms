@@ -278,16 +278,30 @@ namespace RogueCustomsDungeonEditor.Utils
             return paramsObjectAsDictionary.Count >= effect.Params.Count(p => !string.IsNullOrEmpty(p.Value));
         }
 
-        public static bool TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
+        public static async Task<bool> TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
         {
-            return effect.Function(new EffectCallerParams
+            if (effect.AsyncFunction != null)
             {
-                This = This,
-                Source = Source,
-                Target = Target,
-                Params = effect.Params,
-                OriginalTarget = Target
-            });
+                return await effect.AsyncFunction(new EffectCallerParams
+                {
+                    This = This,
+                    Source = Source,
+                    Target = Target,
+                    Params = effect.Params,
+                    OriginalTarget = Target
+                });
+            }
+            else 
+            {
+                return effect.Function(new EffectCallerParams
+                {
+                    This = This,
+                    Source = Source,
+                    Target = Target,
+                    Params = effect.Params,
+                    OriginalTarget = Target
+                });
+            }
         }
     }
 }

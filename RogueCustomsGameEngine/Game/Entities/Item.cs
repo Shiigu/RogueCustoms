@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -37,9 +38,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             StatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
         }
-        public void Used(Entity user)
+        public async Task Used(Entity user)
         {
-            OnUse?.Do(this, user, true);
+            if (OnUse == null) return;
+
+            await OnUse.Do(this, user, true);
 
             if (user == Map.Player)
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
@@ -61,7 +64,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ));
         }
 
-        public void RefreshCooldownsAndUpdateTurnLength()
+        public Task RefreshCooldownsAndUpdateTurnLength()
         {
             OwnOnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             if (OwnOnAttacked?.CooldownBetweenUses > 0 && OwnOnAttacked?.CurrentCooldown > 0)
@@ -70,12 +73,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OwnOnTurnStart.CurrentCooldown--;
             if (OnUse?.CooldownBetweenUses > 0 && OnUse?.CurrentCooldown > 0)
                 OnUse.CurrentCooldown--;
+            return Task.CompletedTask;
         }
 
-        public void PerformOnTurnStart()
+        public async Task PerformOnTurnStart()
         {
             if(OwnOnTurnStart != null && Owner != null && OwnOnTurnStart.ChecksCondition(Owner, Owner))
-                OwnOnTurnStart?.Do(this, Owner, true);
+                await OwnOnTurnStart.Do(this, Owner, true);
         }
 
         public override void SetActionIds()

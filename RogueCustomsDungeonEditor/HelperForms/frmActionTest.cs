@@ -16,10 +16,13 @@ using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Game.Interaction;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
+
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required" o declararlo como un valor que acepta valores NULL.
@@ -207,13 +210,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
             txtMessageLog.Clear();
         }
 
-        private void btnTestAction_Click(object sender, EventArgs e)
+        private async void btnTestAction_Click(object sender, EventArgs e)
         {
             if (TestDungeon == null)
             {
                 TestDungeon = new Dungeon(ActiveDungeon, ActiveDungeon.Locales[0].Language, false);
+                TestDungeon.PromptInvoker = new DummyPromptInvoker();
                 TestDungeon.PlayerClass = TestDungeon.Classes.First(c => c.EntityType == EntityType.Player);
-                TestDungeon.GenerateDebugMap();
+                await TestDungeon.GenerateDebugMap();
             }
 
             TestDungeon.CurrentEntityId = 1;
@@ -296,11 +300,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 TestDungeon.CurrentFloor.Snapshot = new(TestDungeon, TestDungeon.CurrentFloor);
 
-                TestAction.Do(Source, Target, false);
+                await TestAction.Do(Source, Target, false);
 
                 txtMessageLog.Clear();
 
-                foreach (var displayEventList in TestDungeon.GetStatus().DisplayEvents)
+                var dungeonStatus = await TestDungeon.GetStatus();
+
+                foreach (var displayEventList in dungeonStatus.DisplayEvents)
                 {
                     foreach (var displayEvent in displayEventList.Events)
                     {
@@ -318,7 +324,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     }
                 }
 
-                TestDungeon.GetStatus().DisplayEvents.Clear();
+                dungeonStatus.DisplayEvents.Clear();
             }
             catch (Exception ex)
             {
@@ -447,6 +453,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Trap,
             AlteredStatus,
             Tile
+        }
+
+        private class DummyPromptInvoker : IPromptInvoker
+        {
+            public Task<bool> OpenYesNoPrompt(string title, string message, string yesButtonText, string noButtonText, GameColor color) => Task.FromResult(new Random().NextDouble() >= 0.5);
         }
     }
 }

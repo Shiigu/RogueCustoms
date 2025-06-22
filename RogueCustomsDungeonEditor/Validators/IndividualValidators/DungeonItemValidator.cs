@@ -16,7 +16,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         private static List<string> ValidStatIds = new() { "HP", "MP", "Hunger", "Attack", "Defense", "Movement", "Accuracy", "Evasion", "HPRegeneration", "MPRegeneration" };
 
-        public static DungeonValidationMessages Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
@@ -44,7 +44,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")
                     {
-                        messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
+                        messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
                     }
                     else
                     {
@@ -88,7 +88,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 if (npc.OnInteracted.Any(oa => oa.Id.Equals(onAttackAction.Id, StringComparison.InvariantCultureIgnoreCase)))
                                     messages.AddError($"Item's Attack action, {onAttackAction.Id}, has the NPC Id as one of Item {npc.Id}'s Interacted actions.");
                             }
-                            messages.AddRange(ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
+                            messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
                         }
                     }
                     else if (itemJson.EntityType == "Armor")
@@ -105,7 +105,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (itemJson.EntityType == "Armor")
                     {
-                        messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
+                        messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
                     }
                     else if (itemJson.EntityType == "Weapon")
                     {
@@ -119,12 +119,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                 if (itemJson.OnDeath != null)
                 {
-                    messages.AddRange(ActionValidator.Validate(itemAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
                 }
 
                 if (itemJson.OnUse != null)
                 {
-                    messages.AddRange(ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
                 }
                 else if (itemJson.EntityType == "Consumable" && !itemJson.OnAttack.Any())
                 {

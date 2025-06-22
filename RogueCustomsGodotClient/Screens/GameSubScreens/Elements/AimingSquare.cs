@@ -24,7 +24,7 @@ public partial class AimingSquare : ColorRect
         Color = new Color { R8 = 255, G8 = 255, B8 = 255, A = 1 };
     }
 
-    private async void Flash()
+    private async Task Flash()
     {
         while (!Disabled)
         {
@@ -33,11 +33,11 @@ public partial class AimingSquare : ColorRect
         }
     }
 
-    public void StartTargeting()
+    public Task StartTargeting()
     {
         Disabled = false;
         Visible = true;
-        Flash();
+        return Flash();
     }
 
     public void StopTargeting()

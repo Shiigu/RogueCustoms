@@ -166,7 +166,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool SpawnNPC(EffectCallerParams Args)
+        public static async Task<bool> SpawnNPC(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -197,7 +197,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var level = (int) paramsObject.Level;
 
-                if (Map.AddEntity(npcClass.Id, level, t.Position) is not NonPlayableCharacter npc 
+                if (await Map.AddEntity(npcClass.Id, level, t.Position) is not NonPlayableCharacter npc 
                     || npc.Position == null)
                     // Failed to spawn NPC
                     return false;

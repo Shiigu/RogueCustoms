@@ -352,7 +352,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var selectableEffectsToShow = rbEntity.Checked
                 ? SelectableEffects.Where(se => se.CanBeUsedOnEntity).Select(se => se.ComboBoxDisplayName).ToList()
                 : SelectableEffects.Where(se => se.CanBeUsedOnTile).Select(se => se.ComboBoxDisplayName).ToList();
-            var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", selectableEffectsToShow, currentEffectDisplayName);
+            var effectTypeSelection = ComboInputBox.Show(inputBoxPrompt, "Edit Step", [.. selectableEffectsToShow.Order()], currentEffectDisplayName);
             if (effectTypeSelection == null) return;
             var selectedEffectTypeData = SelectableEffects.Find(se => se.ComboBoxDisplayName.Equals(effectTypeSelection));
             if (selectedEffectTypeData == null) return;

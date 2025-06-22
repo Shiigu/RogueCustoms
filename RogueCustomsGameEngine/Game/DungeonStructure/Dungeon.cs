@@ -13,6 +13,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Game.Interaction;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -31,6 +33,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 
+        // The CS0592 error occurs because the [NonSerialized] attribute is only valid for fields, not properties.  
+        // To fix this, change the declaration of `PromptInvoker` from a property to a field.  
+
+        [NonSerialized]
+        private IPromptInvoker _promptInvoker;
+
+        public IPromptInvoker PromptInvoker
+        {
+            get => _promptInvoker;
+            set => _promptInvoker = value;
+        }
 
         public int CurrentEntityId { get; set; }
         private int CurrentFloorLevel;
@@ -127,7 +140,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public void NewMap()
+        public async Task NewMap()
         {
             var flagList = new List<Flag>();
             if (CurrentFloorLevel > 1)
@@ -136,7 +149,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 foreach (var statusToRemove in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
                 {
                     statusNamesToRemove.Add(statusToRemove.Name);
-                    statusToRemove.OnRemove?.Do(statusToRemove, PlayerCharacter, false);
+                    if(statusToRemove.OnRemove != null)
+                        await statusToRemove.OnRemove.Do(statusToRemove, PlayerCharacter, false);
                 }
                 foreach (var modification in PlayerCharacter.StatModifications)
                 {
@@ -148,14 +162,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
-            CurrentFloor.Generate();
+            await CurrentFloor.Generate();
         }
 
-        public void GenerateDebugMap()
+        public Task GenerateDebugMap()
         {
             IsDebugMode = true;
             CurrentFloor = new Map(this, CurrentFloorLevel, []);
-            CurrentFloor.GenerateDebugMap();
+            return CurrentFloor.GenerateDebugMap();
         }
 
         public void SetPlayerName(string name)
@@ -171,16 +185,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PlayerClass = playerClass;
         }
 
-        public DungeonDto GetStatus()
+        public async Task<DungeonDto> GetStatus()
         {
             if (CurrentFloor == null)
-                NewMap();
+                await NewMap();
             CurrentFloor.Snapshot.DisplayEvents = CurrentFloor.DisplayEvents;
             CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Any()).Select(t => t.Position).ToList();
             return CurrentFloor.Snapshot;
         }
 
-        public void TakeStairs()
+        public async Task TakeStairs()
         {
             CurrentFloorLevel++;
             if (CurrentFloorLevel > AmountOfFloors)
@@ -197,33 +211,33 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 DungeonStatus = DungeonStatus.Completed;
                 return;
             }
-            NewMap();
+            await NewMap();
         }
 
-        public void MovePlayer(int x, int y)
+        public Task MovePlayer(int x, int y)
         {
-            CurrentFloor.PlayerMove(x, y);
+            return CurrentFloor.PlayerMove(x, y);
         }
 
-        public void PlayerUseItemInFloor()
+        public Task PlayerUseItemInFloor()
         {
-            CurrentFloor.PlayerUseItemInFloor();
+            return CurrentFloor.PlayerUseItemInFloor();
         }
-        public void PlayerPickUpItemInFloor()
+        public Task PlayerPickUpItemInFloor()
         {
-            CurrentFloor.PlayerPickUpItemInFloor();
+            return CurrentFloor.PlayerPickUpItemInFloor();
         }
-        public void PlayerUseItemFromInventory(int itemId)
+        public Task PlayerUseItemFromInventory(int itemId)
         {
-            CurrentFloor.PlayerUseItemFromInventory(itemId);
+            return CurrentFloor.PlayerUseItemFromInventory(itemId);
         }
-        public void PlayerDropItemFromInventory(int itemId)
+        public Task PlayerDropItemFromInventory(int itemId)
         {
-            CurrentFloor.PlayerDropItemFromInventory(itemId);
+            return CurrentFloor.PlayerDropItemFromInventory(itemId);
         }
-        public void PlayerSwapFloorItemWithInventoryItem(int itemId)
+        public Task PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
-            CurrentFloor.PlayerSwapFloorItemWithInventoryItem(itemId);
+            return CurrentFloor.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
 
         public PlayerInfoDto GetPlayerDetailInfo()
@@ -246,14 +260,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return CurrentFloor.GetPlayerInventory();
         }
 
-        public void PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)
+        public Task PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)
         {
-            CurrentFloor.PlayerAttackTargetWith(selectionId, x, y, sourceType);
+            return CurrentFloor.PlayerAttackTargetWith(selectionId, x, y, sourceType);
         }
 
-        public void PlayerTakeStairs()
+        public Task PlayerTakeStairs()
         {
-            CurrentFloor.PlayerUseStairs();
+            return CurrentFloor.PlayerUseStairs();
         }
     }
 #pragma warning restore CS8604 // Posible argumento de referencia nulo

@@ -911,12 +911,12 @@ namespace RogueCustomsDungeonEditor
             }
         }
 
-        private void tsbValidateDungeon_Click(object sender, EventArgs e)
+        private async void tsbValidateDungeon_Click(object sender, EventArgs e)
         {
             if (!tbTabs.TabPages.Contains(TabsForNodeTypes[RogueTabTypes.Validator]))
                 tbTabs.TabPages.Add(TabsForNodeTypes[RogueTabTypes.Validator]);
             tbTabs.SelectTab(TabsForNodeTypes[RogueTabTypes.Validator]);
-            ValidatorTab.ValidateDungeon(ActiveDungeon, MandatoryLocaleKeys);
+            await ValidatorTab.ValidateDungeon(ActiveDungeon, MandatoryLocaleKeys);
         }
 
         #endregion

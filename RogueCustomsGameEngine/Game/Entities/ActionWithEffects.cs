@@ -20,6 +20,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Runtime.ExceptionServices;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -29,6 +30,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception
     [Serializable]
     public sealed class ActionWithEffects
     {
@@ -95,9 +97,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info) : null;
         }
 
-        public List<string> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
+        public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
         {
-            var successfulEffects = Effect.Do(User, source, target);
+            var successfulEffects = await Effect.Do(User, source, target);
 
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
             if (MaximumUses > 0) CurrentUses++;
@@ -488,7 +490,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 UseCondition = UseCondition,
                 TargetTypes = new List<TargetType>(TargetTypes),
                 MPCost = MPCost,
-                FinishesTurnWhenUsed = FinishesTurnWhenUsed
+                FinishesTurnWhenUsed = FinishesTurnWhenUsed,
+                AIUseCondition = AIUseCondition
             };
         }
     }
@@ -499,10 +502,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         private static readonly List<Type> EffectMethodTypes = ReflectionHelpers.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "RogueCustomsGameEngine.Utils.Effects");
 
         public delegate bool ActionMethod(EffectCallerParams Args);
+        public delegate Task<bool> AsyncActionMethod(EffectCallerParams Args);
 
         public string EffectMethodName { get; set; }
         public string EffectClassName { get; set; }
         public ActionMethod Function { get; set; }
+        public AsyncActionMethod AsyncFunction { get; set; }
 
         public List<EffectParam> Params { get; set; }
         public Effect Then { get; set; }                     // "Then" is always executed, regardless of success or failure
@@ -529,7 +534,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 try
                 {
-                    Function = effectMethod.CreateDelegate<ActionMethod>();
+                    if (effectMethod.ReturnType == typeof(Task<bool>))
+                    {
+                        AsyncFunction = (AsyncActionMethod)Delegate.CreateDelegate(typeof(AsyncActionMethod), effectMethod);
+                    }
+                    else if (effectMethod.ReturnType == typeof(bool))
+                    {
+                        Function = (ActionMethod)Delegate.CreateDelegate(typeof(ActionMethod), effectMethod);
+                    }
+                    else
+                    {
+
+                    }
                     var paramsArray = info.Params.Select(p => (p.ParamName, p.Value)).ToArray();
                     Params = [];
                     foreach (var (paramName, Value) in paramsArray)
@@ -552,9 +568,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                     // Ignore. Don't call anything at all.
                 }
             }
+            else
+            {
+
+            }
         }
 
-        public List<string> Do(Entity This, Entity Source, ITargetable Target)
+        public async Task<List<string>> Do(Entity This, Entity Source, ITargetable Target)
         {
             ExecutionContext.Current = new();
             var currentEffect = this;
@@ -564,28 +584,39 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 try
                 {
-                    ExecutionContext.Current.CurrentEffect = currentEffect;                    
-                    var success = currentEffect.Function(new EffectCallerParams
+                    ExecutionContext.Current.CurrentEffect = currentEffect;
+                    bool success = false;
+                    if (currentEffect.Function != null)
                     {
-                        This = This,
-                        Source = Source,
-                        Target = Target,
-                        Params = currentEffect.Params,
-                        OriginalTarget = Target
-                    });
-                    if (success)
-                        successfulEffects.Add(currentEffect.Function.Method.Name);
-
-                    if (currentEffect.Then != null)
-                    {
-                        currentEffect = currentEffect.Then;
+                        success = currentEffect.Function(new EffectCallerParams
+                        {
+                            This = This,
+                            Source = Source,
+                            Target = Target,
+                            Params = currentEffect.Params,
+                            OriginalTarget = Target
+                        });
+                        if (success)
+                            successfulEffects.Add(currentEffect.Function.Method.Name);
                     }
                     else
                     {
-                        currentEffect = success
-                                            ? currentEffect.OnSuccess
-                                            : currentEffect.OnFailure;
+                        success = await currentEffect.AsyncFunction(new EffectCallerParams
+                        {
+                            This = This,
+                            Source = Source,
+                            Target = Target,
+                            Params = currentEffect.Params,
+                            OriginalTarget = Target
+                        });
+                        if (success)
+                            successfulEffects.Add(currentEffect.AsyncFunction.Method.Name);
                     }
+                    
+
+                    currentEffect = currentEffect.Then ?? (success
+                                            ? currentEffect.OnSuccess
+                                            : currentEffect.OnFailure);
 
                     if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
                     {
@@ -661,7 +692,10 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             return new Effect
             {
+                AsyncFunction = AsyncFunction,
                 Function = Function,
+                EffectClassName = EffectClassName,
+                EffectMethodName = EffectMethodName,
                 Params = Params,
                 Then = Then?.Clone(),
                 OnSuccess = OnSuccess?.Clone(),
@@ -673,8 +707,17 @@ namespace RogueCustomsGameEngine.Game.Entities
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             // We only keep the class and method because we can't serialize a delegate
-            EffectMethodName = Function.GetMethodInfo().Name;
-            EffectClassName = Function.GetMethodInfo().DeclaringType.FullName;
+
+            if(AsyncFunction != null)
+            {
+                EffectMethodName = AsyncFunction.GetMethodInfo().Name;
+                EffectClassName = AsyncFunction.GetMethodInfo().DeclaringType.FullName;
+            }
+            else
+            {
+                EffectMethodName = Function.GetMethodInfo().Name;
+                EffectClassName = Function.GetMethodInfo().DeclaringType.FullName;
+            }
             info.AddValue("EffectMethodName", EffectMethodName);
             info.AddValue("EffectClassName", EffectClassName);
             info.AddValue("Params", Params);
@@ -688,17 +731,23 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             EffectMethodName = info.GetString("EffectMethodName");
             EffectClassName = info.GetString("EffectClassName");
-            var paramsArray = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
-            Params = [];
-            foreach (var (paramName, Value) in paramsArray)
+            try
             {
-                Params.Add(new EffectParam
-                {
-                    ParamName = paramName,
-                    Value = Value
-                });
+                Params = (List<EffectParam>)info.GetValue("Params", typeof(List<EffectParam>));
             }
-
+            catch (Exception)
+            {
+                var paramsArray = (ValueTuple<string, string>[])info.GetValue("Params", typeof(ValueTuple<string, string>[]));
+                Params = [];
+                foreach (var (paramName, Value) in paramsArray)
+                {
+                    Params.Add(new EffectParam
+                    {
+                        ParamName = paramName,
+                        Value = Value
+                    });
+                }
+            }
             Then = (Effect)info.GetValue("Then", typeof(Effect));
             OnSuccess = (Effect)info.GetValue("OnSuccess", typeof(Effect));
             OnFailure = (Effect)info.GetValue("OnFailure", typeof(Effect));
@@ -712,8 +761,23 @@ namespace RogueCustomsGameEngine.Game.Entities
                     MethodInfo methodInfo = effectType.GetMethod(EffectMethodName, BindingFlags.Static | BindingFlags.Public);
                     if (methodInfo != null)
                     {
-                        Function = methodInfo.CreateDelegate<ActionMethod>();
+                        if (methodInfo.ReturnType == typeof(Task<bool>))
+                        {
+                            AsyncFunction = (AsyncActionMethod)Delegate.CreateDelegate(typeof(AsyncActionMethod), methodInfo);
+                        }
+                        else if (methodInfo.ReturnType == typeof(bool))
+                        {
+                            Function = (ActionMethod)Delegate.CreateDelegate(typeof(ActionMethod), methodInfo);
+                        }
+                    } 
+                    else
+                    {
+
                     }
+                }
+                else
+                {
+
                 }
             }
         }
@@ -726,4 +790,5 @@ namespace RogueCustomsGameEngine.Game.Entities
 #pragma warning restore CS8604 // Posible argumento de referencia nulo
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception
 }

@@ -12,6 +12,7 @@ using System.Security.Principal;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Drawing;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -58,7 +59,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MapClassActions(entityClass.OnInteracted, OnInteracted);
         }
 
-        public void ProcessAI()
+        public async Task ProcessAI()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive)
             {
@@ -70,14 +71,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             ConsiderSwappingTargets();
             if (!ConsiderWalking())
             {
-                if (ConsiderUsingActionOnSelf())
+                if (await ConsiderUsingActionOnSelf())
                     return;
-                if (ConsiderUsingActionOnTarget())
+                if (await ConsiderUsingActionOnTarget())
                     return;
-                if (ConsiderUsingActionOnTile())
+                if (await ConsiderUsingActionOnTile())
                     return;
             }
-            TryToMoveToTarget();
+            await TryToMoveToTarget();
         }
 
         public void ConsiderSwappingTargets()
@@ -198,7 +199,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return true;
         }
 
-        public bool ConsiderUsingActionOnSelf()
+        public async Task<bool> ConsiderUsingActionOnSelf()
         {
             // Get all the OnAttack that target Self, and all the OnItemUse in the Inventory
             var onAttackOnSelf = OnAttack.Where(oa => oa.TargetTypes.Contains(TargetType.Self)).ToList();
@@ -222,14 +223,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!pickedAction.Action.ChecksCondition(this, this) || !pickedAction.Action.ChecksAICondition(this, this))
                 return false;
 
-            pickedAction.Action.Do(this, this, true);
+            await pickedAction.Action.Do(this, this, true);
             if (pickedAction.Action.FinishesTurnWhenUsed)
                 TookAction = true;
 
             return true;
         }
 
-        public bool ConsiderUsingActionOnTile()
+        public async Task<bool> ConsiderUsingActionOnTile()
         {
             if (CurrentTarget is not Character c || !CanSee(c)) 
                 return false;   // I won't do anything to a Tile if I don't have my Target on sight
@@ -279,14 +280,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!pickedAction.Action.ChecksCondition(this, pickedAction.Tile) || !pickedAction.Action.ChecksAICondition(this, pickedAction.Tile))
                 return false;
 
-            pickedAction.Action.Do(this, pickedAction.Tile, true);
+            await pickedAction.Action.Do(this, pickedAction.Tile, true);
             if (pickedAction.Action.FinishesTurnWhenUsed)
                 TookAction = true;
 
             return true;
         }
 
-        public bool ConsiderUsingActionOnTarget()
+        public async Task<bool> ConsiderUsingActionOnTarget()
         {
             var currentTargetInfo = KnownCharacters.Find(kc => kc.Character == CurrentTarget);
             if (currentTargetInfo == default)
@@ -329,14 +330,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return false;
             }
 
-            pickedAction.Action.Do(this, CurrentTarget, true);
+            await pickedAction.Action.Do(this, CurrentTarget, true);
             if (pickedAction.Action.FinishesTurnWhenUsed)
                 TookAction = true;
 
             return true;
         }
 
-        public void TryToMoveToTarget()
+        public async Task TryToMoveToTarget()
         {
             // Check if I the path I was going to use could be used
             RecalculatePathIfNeeded();
@@ -360,7 +361,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 TookAction = true;
                 return;
             }
-            if (Map.TryMoveCharacter(this, nextTile))
+            if (await Map.TryMoveCharacter(this, nextTile))
             {
                 PathToUse.Route = PathToUse.Route.Skip(1).ToList();
                 if (RemainingMovement <= 0)
@@ -430,9 +431,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public override void AttackedBy(Character source)
+        public override async Task AttackedBy(Character source)
         {
-            base.AttackedBy(source);
+            await base.AttackedBy(source);
 
             if (source == null) return;
 
@@ -446,10 +447,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 KnownCharacters.Add((source, TargetType.Enemy));
         }
 
-        public override void Die(Entity? attacker = null)
+        public override async Task Die(Entity? attacker = null)
         {
             var events = new List<DisplayEventDto>();
-            base.Die(attacker);
+            await base.Die(attacker);
             if (ExistenceStatus == EntityExistenceStatus.Dead)
             {
                 Inventory?.ForEach(i => DropItem(i));

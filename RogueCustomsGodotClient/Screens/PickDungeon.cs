@@ -11,6 +11,7 @@ using RogueCustomsGodotClient.Utils;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 using FileAccess = Godot.FileAccess;
@@ -87,7 +88,7 @@ public partial class PickDungeon : Control
         }
 
         _hardcoreCheckButton.Pressed += HardcoreCheckButton_Pressed;
-        _pickDungeonButton.Pressed += PickDungeonButton_Pressed;
+        _pickDungeonButton.Pressed += () => _ = PickDungeonButton_Pressed();
         _addDungeonButton.Pressed += AddDungeonButton_Pressed;
         _returnToMainMenuButton.Pressed += ReturnToMainMenuButton_Pressed;
         _openFileDialog.FileSelected += OpenFileDialog_FileSelected;
@@ -214,7 +215,7 @@ public partial class PickDungeon : Control
         _openFileDialog.Visible = true;
     }
 
-    private async void PickDungeonButton_Pressed()
+    private async Task PickDungeonButton_Pressed()
     {
         if (SelectedItem.IsAtCurrentVersion)
         {
@@ -246,7 +247,7 @@ public partial class PickDungeon : Control
         }
         else
         {
-            _ = this.CreateStandardPopup(
+            await this.CreateStandardPopup(
                 TranslationServer.Translate("IncompatibleDungeonMessageBoxHeader"),
                 TranslationServer.Translate("IncompatibleDungeonMessageBoxText").ToString().Format(new { DungeonJsonVersion = SelectedItem.Version, RequiredDungeonJsonVersion = _globalState.PossibleDungeonInfo.CurrentVersion }),
                 new PopUpButton[]

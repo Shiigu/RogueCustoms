@@ -16,17 +16,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public static class DungeonNPCValidator
     {
-        public static DungeonValidationMessages Validate(NPCInfo npcJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(NPCInfo npcJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
-            messages.AddRange(DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
+            messages.AddRange(await DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
             var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
 
             if (npcJson.OnSpawn != null)
             {
-                messages.AddRange(ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
             }
 
             if (npcAsInstance.OnInteracted.Any())
@@ -47,7 +47,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         if (item.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
                             messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Item {item.Id}'s Attack actions.");
                     }
-                    messages.AddRange(ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
                 }
             }
 

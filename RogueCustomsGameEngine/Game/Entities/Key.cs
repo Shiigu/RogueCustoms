@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,14 +26,16 @@ namespace RogueCustomsGameEngine.Game.Entities
             MapClassActions(entityClass.OnAttack, OwnOnAttack);
         }
 
-        public void RefreshCooldownsAndUpdateTurnLength()
+        public Task RefreshCooldownsAndUpdateTurnLength()
         {
             // Keys don't have any cooldowns
+            return Task.CompletedTask;
         }
 
-        public void PerformOnTurnStart()
+        public Task PerformOnTurnStart()
         {
-            // Keys don't have an OnTurnStart
+            // Keys don't have any OnTurnStart
+            return Task.CompletedTask;
         }
 
         public static ActionWithEffectsInfo GetOpenDoorActionForKey(string keyName)

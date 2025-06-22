@@ -1,6 +1,8 @@
 ﻿DungeonName
 WelcomeMessage
 EndingMessage
+YesButtonText
+NoButtonText
 FloorName
 NewTurn
 FloorEnter

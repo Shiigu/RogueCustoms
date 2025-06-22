@@ -15,6 +15,7 @@ using System.Numerics;
 using System.Security.Cryptography;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -306,7 +307,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void RefreshCooldownsAndUpdateTurnLength()
+        public async Task RefreshCooldownsAndUpdateTurnLength()
         {
             OnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnAttacked?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
@@ -320,12 +321,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 modification.Modifications?.RemoveAll(a => a.RemainingTurns == 0);
             }
-            AlteredStatuses?.Where(a => a.RemainingTurns == 0 && !a.FlaggedToRemove).ForEach(als => als.OnRemove?.Do(als, this, false));
+            foreach (var als in AlteredStatuses?.Where(a => a.RemainingTurns == 0 && !a.FlaggedToRemove && a.OnRemove != null))
+            {
+                await als.OnRemove.Do(als, this, false);
+            }
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
 
-        public void PerformOnTurnStart()
+        public async Task PerformOnTurnStart()
         {
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             FOVTiles = ComputeFOVTiles();
@@ -350,9 +354,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     ))
                     .ToList();
             }
-            RefreshCooldownsAndUpdateTurnLength();
-            OnTurnStart.Where(otsa => otsa.ChecksCondition(this, this)).ForEach(otsa => otsa?.Do(otsa.User, this, true));
-            AlteredStatuses?.ForEach(als => als.PerformOnTurnStart());
+            await RefreshCooldownsAndUpdateTurnLength();
+            foreach (var otsa in OnTurnStart.Where(otsa => otsa != null && otsa.ChecksCondition(this, this)))
+            {
+                await otsa.Do(otsa.User, this, true);
+            }
+            await Task.WhenAll(AlteredStatuses?.Select(als => als.PerformOnTurnStart()));
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && modificationList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
@@ -412,12 +419,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             foreach (var regeneration in Stats.Where(s => s.RegenerationTarget != null))
             {
-                regeneration.TryToRegenerate();
+                await regeneration.TryToRegenerate();
             }
             if (HP.Current <= 0)
             {
                 if(ExistenceStatus == EntityExistenceStatus.Alive)
-                    Die();
+                    await Die();
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
                 StatModifications.ForEach(m => m.Modifications.Clear());
@@ -441,7 +448,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return !tilesInTheLine.Any(t => !t.IsWalkable);
         }
 
-        public void GainExperience(int GamePointsToAdd)
+        public async Task GainExperience(int GamePointsToAdd)
         {
             if (!CanGainExperience) return;
             Experience += GamePointsToAdd;
@@ -460,7 +467,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 HP.Current = MaxHP;
                 if(MP != null)
                     MP.Current = MaxMP;
-                OnLevelUp?.Do(this, this, false);
+                if (OnLevelUp != null)
+                    await OnLevelUp.Do(this, this, false);
             }
         }
 
@@ -600,45 +608,57 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void AttackCharacter(Character target, ActionWithEffects action)
+        public async Task AttackCharacter(Character target, ActionWithEffects action)
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
-            AlteredStatuses.Where(als => als.RemainingTurns > 0).ForEach(als => als.BeforeAttack?.Do(this, target, true));
+            if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
+            foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
+            {
+                await als.BeforeAttack.Do(this, target, true);
+            }
             if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
-            var successfulEffects = action?.Do(this, target, true);
+            var successfulEffects = await action.Do(this, target, true);
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
-                target.AttackedBy(this);
-            if (action?.FinishesTurnWhenUsed == true)
+                await target.AttackedBy(this);
+            if (action.FinishesTurnWhenUsed)
+            {
                 TookAction = true;
-            RemainingMovement = 0;
+                RemainingMovement = 0;
+            }
         }
 
-        public void InteractWithCharacter(Character target, ActionWithEffects action)
+        public async Task InteractWithCharacter(Character target, ActionWithEffects action)
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
-            action?.Do(this, target, true);
-            if (action?.FinishesTurnWhenUsed == true)
+            await action.Do(this, target, true);
+            if (action.FinishesTurnWhenUsed)
+            {
                 TookAction = true;
-            RemainingMovement = 0;
+                RemainingMovement = 0;
+            }
         }
 
-        public void InteractWithTile(Tile target, ActionWithEffects action)
+        public async Task InteractWithTile(Tile target, ActionWithEffects action)
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive) return;
+            if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
             if (MP != null)
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
-            action?.Do(this, target, true);
-            if (action?.FinishesTurnWhenUsed == true)
+            await action.Do(this, target, true);
+            if (action.FinishesTurnWhenUsed)
+            {
                 TookAction = true;
-            RemainingMovement = 0;
+                RemainingMovement = 0;
+            }
         }
 
-        public virtual void AttackedBy(Character source)
+        public virtual async Task AttackedBy(Character source)
         {
-            OnAttacked.Where(oaa => oaa.ChecksCondition(this, source)).ForEach(oaa => oaa?.Do(this, source, false));
+            foreach (var oaa in OnAttacked.Where(oaa => oaa.ChecksCondition(this, source) && oaa != null))
+            {
+                await oaa.Do(this, source, false);
+            }
         }
 
         public TargetType CalculateTargetTypeFor(Character target)
@@ -657,9 +677,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             throw new InvalidDataException($"Cannot identify target relationship between {Name} and {target.Name}!");
         }
 
-        public virtual void Die(Entity? attacker = null)
+        public virtual async Task Die(Entity? attacker = null)
         {
-            OnDeath?.Where(oda => attacker == null || attacker is not Character || oda?.ChecksCondition(this, attacker as Character) == true).ForEach(oda => oda?.Do(this, attacker, true));
+            foreach (var oda in OnDeath?.Where(oda => oda != null && (attacker == null || attacker is not Character || oda.ChecksCondition(this, attacker as Character) == true)))
+            {
+                await oda.Do(this, attacker, true);
+            }
             if(HP.Current <= 0)
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
