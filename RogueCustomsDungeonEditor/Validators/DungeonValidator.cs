@@ -47,7 +47,7 @@ namespace RogueCustomsDungeonEditor.Validators
             DungeonJson = dungeonJson;
         }
 
-        public bool Validate(List<string> requiredLocaleStrings, ToolStripStatusLabel progressLabel, ToolStripProgressBar progressBar)
+        public async Task<bool> Validate(List<string> requiredLocaleStrings, ToolStripStatusLabel progressLabel, ToolStripProgressBar progressBar)
         {
             ProgressLabel = progressLabel;
             ProgressBar = progressBar;
@@ -87,7 +87,7 @@ namespace RogueCustomsDungeonEditor.Validators
             var sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale, false);
             sampleDungeon.IsDebugMode = true;
             sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
-            sampleDungeon.NewMap();
+            await sampleDungeon.NewMap();
 
             UpdateProgressLabel("Starting Validation...", false);
 
@@ -125,7 +125,7 @@ namespace RogueCustomsDungeonEditor.Validators
             foreach (var tileTypeInfo in DungeonJson.TileTypeInfos)
             {
                 UpdateProgressLabel($"Running Tile Type {tileTypeInfo.Id} Validation...", false);
-                TileTypeValidationMessages.Add((tileTypeInfo.Id, DungeonTileTypeValidator.Validate(tileTypeInfo, DungeonJson, sampleDungeon)));
+                TileTypeValidationMessages.Add((tileTypeInfo.Id, await DungeonTileTypeValidator.Validate(tileTypeInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Tile Type {tileTypeInfo.Id} Validation complete!", true);
             }
 
@@ -144,7 +144,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 else
                     floorInfoString = $"Floor {floorInfo.MinFloorLevel}";
                 UpdateProgressLabel($"Running {floorInfoString} Validation...", false);
-                FloorGroupValidationMessages.Add((floorInfo.MinFloorLevel, floorInfo.MaxFloorLevel, DungeonFloorValidator.ValidateFloorType(floorInfo, DungeonJson, sampleDungeon)));
+                FloorGroupValidationMessages.Add((floorInfo.MinFloorLevel, floorInfo.MaxFloorLevel, await DungeonFloorValidator.ValidateFloorType(floorInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"{floorInfoString} Validation complete!", true);
             }
 
@@ -165,44 +165,44 @@ namespace RogueCustomsDungeonEditor.Validators
             foreach (var elementInfo in DungeonJson.ElementInfos)
             {
                 UpdateProgressLabel($"Running Element {elementInfo.Id} Validation...", false);
-                ElementValidationMessages.Add((elementInfo.Id, DungeonElementValidator.Validate(elementInfo, DungeonJson, sampleDungeon)));
+                ElementValidationMessages.Add((elementInfo.Id, await DungeonElementValidator.Validate(elementInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Element {elementInfo.Id} Validation complete!", true);
             }
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {
                 UpdateProgressLabel($"Running Player Class {playerInfo.Id} Validation...", false);
-                PlayerClassValidationMessages.Add((playerInfo.Id, DungeonPlayerClassValidator.Validate(playerInfo, DungeonJson, sampleDungeon)));
+                PlayerClassValidationMessages.Add((playerInfo.Id,await DungeonPlayerClassValidator.Validate(playerInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Player Class {playerInfo.Id} Validation complete!", true);
             }
             foreach (var npcInfo in DungeonJson.NPCs)
             {
                 UpdateProgressLabel($"Running NPC {npcInfo.Id} Validation...", false);
-                NPCValidationMessages.Add((npcInfo.Id, DungeonNPCValidator.Validate(npcInfo, DungeonJson, sampleDungeon)));
+                NPCValidationMessages.Add((npcInfo.Id, await DungeonNPCValidator.Validate(npcInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"NPC {npcInfo.Id} Validation complete!", true);
             }
             foreach (var itemInfo in DungeonJson.Items)
             {
                 UpdateProgressLabel($"Running Item {itemInfo.Id} Validation...", false);
-                ItemValidationMessages.Add((itemInfo.Id, DungeonItemValidator.Validate(itemInfo, DungeonJson, sampleDungeon)));
+                ItemValidationMessages.Add((itemInfo.Id, await DungeonItemValidator.Validate(itemInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Item {itemInfo.Id} Validation complete!", true);
             }
             foreach (var trapInfo in DungeonJson.Traps)
             {
                 UpdateProgressLabel($"Running Trap {trapInfo.Id} Validation...", false);
-                TrapValidationMessages.Add((trapInfo.Id, DungeonTrapValidator.Validate(trapInfo, DungeonJson, sampleDungeon)));
+                TrapValidationMessages.Add((trapInfo.Id, await DungeonTrapValidator.Validate(trapInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Trap {trapInfo.Id} Validation complete!", true);
             }
             foreach (var alteredStatusInfo in DungeonJson.AlteredStatuses)
             {
                 UpdateProgressLabel($"Running Altered Status {alteredStatusInfo.Id} Validation...", false);
-                AlteredStatusValidationMessages.Add((alteredStatusInfo.Id, DungeonAlteredStatusValidator.Validate(alteredStatusInfo, DungeonJson, sampleDungeon)));
+                AlteredStatusValidationMessages.Add((alteredStatusInfo.Id, await DungeonAlteredStatusValidator.Validate(alteredStatusInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Altered Status {alteredStatusInfo.Id} Validation complete!", true);
             }
             foreach (var scriptInfo in DungeonJson.Scripts)
             {
                 UpdateProgressLabel($"Running Script {scriptInfo.Id} Validation...", false);
-                ScriptValidationMessages.Add((scriptInfo.Id, DungeonScriptValidator.Validate(scriptInfo, DungeonJson, sampleDungeon)));
+                ScriptValidationMessages.Add((scriptInfo.Id, await DungeonScriptValidator.Validate(scriptInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Script {scriptInfo.Id} Validation complete!", true);
             }
 

@@ -14,7 +14,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonTileTypeValidator
     {
-        public static DungeonValidationMessages Validate(TileTypeInfo tileType, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(TileTypeInfo tileType, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
@@ -34,7 +34,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (tileType.OnStood != null)
             {
                 var actionInstance = ActionWithEffects.Create(tileType.OnStood);
-                messages.AddRange(ActionValidator.Validate(actionInstance, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(actionInstance, dungeonJson, sampleDungeon));
             }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

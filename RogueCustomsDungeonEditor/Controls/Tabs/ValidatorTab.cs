@@ -27,14 +27,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             InitializeComponent();
         }
 
-        public void ValidateDungeon(DungeonInfo dungeonToValidate, List<string> MandatoryLocaleKeys)
+        public async Task ValidateDungeon(DungeonInfo dungeonToValidate, List<string> MandatoryLocaleKeys)
         {
             try
             {
                 PassedValidation = false;
                 tvValidationResults.Nodes.Clear();
                 var dungeonValidator = new DungeonValidator(dungeonToValidate);
-                PassedValidation = dungeonValidator.Validate(MandatoryLocaleKeys, tsslValidationProgress, tspbValidationProgress);
+                PassedValidation = await dungeonValidator.Validate(MandatoryLocaleKeys, tsslValidationProgress, tspbValidationProgress);
 
                 tvValidationResults.Visible = true;
                 tvValidationResults.Font = new Font("Arial", 11, FontStyle.Regular);

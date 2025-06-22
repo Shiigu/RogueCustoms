@@ -15,6 +15,7 @@ using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Numerics;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -106,7 +107,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool GiveExperience(EffectCallerParams Args)
+        public static async Task<bool> GiveExperience(EffectCallerParams Args)
         {
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character t || !t.CanGainExperience) return false;
@@ -115,14 +116,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
                 if(t == Map.Player || Map.Player.CanSee(t))
-                    Map.Player.GainExperience((int) paramsObject.Amount);
+                    await Map.Player.GainExperience((int) paramsObject.Amount);
                 else
-                    t.GainExperience((int)paramsObject.Amount);
+                    await t.GainExperience((int)paramsObject.Amount);
             }
             return true;
         }
 
-        public static bool ApplyAlteredStatus(EffectCallerParams Args)
+        public static async Task<bool> ApplyAlteredStatus(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -140,7 +141,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var statusPower = (decimal) paramsObject.Power;
                 var turnlength = (int)paramsObject.TurnLength;
                 var couldSeeTarget = Map.Player.CanSee(statusTarget);
-                var success = statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
+                var success = await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                 if (success && (statusTarget == Map.Player || couldSeeTarget))
                 {
                     events.Add(new()
@@ -281,7 +282,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CleanseAlteredStatus(EffectCallerParams Args)
+        public static async Task<bool> CleanseAlteredStatus(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -294,11 +295,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (c.AlteredStatuses.Exists(als => als.ClassId.Equals(statusToRemove.ClassId)) && Rng.RollProbability() <= accuracyCheck)
             {
-                c.AlteredStatuses.Where(als => als.ClassId.Equals(statusToRemove.ClassId)).ForEach(als => {
-                    als.OnRemove?.Do(als, c, false);
+                foreach (var als in c.AlteredStatuses.Where(als => als.ClassId.Equals(statusToRemove.ClassId)))
+                {
+                    if(als.OnRemove != null)
+                        await als.OnRemove.Do(als, c, false);
                     als.FlaggedToRemove = true;
                     als.RemainingTurns = 0;
-                });
+                }
                 foreach (var (statName, modifications) in c.StatModifications)
                 {
                     modifications.RemoveAll(a => a.Id.Equals(statusToRemove.Name));
@@ -448,7 +451,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return success;
         }
 
-        public static bool CleanseAllAlteredStatuses(EffectCallerParams Args)
+        public static async Task<bool> CleanseAllAlteredStatuses(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -458,8 +461,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
             if (Rng.RollProbability() <= accuracyCheck && c.AlteredStatuses?.Any() == true)
             {
-                c.AlteredStatuses.ForEach(als => {
-                    als.OnRemove?.Do(als, c, false);
+                foreach (var als in c.AlteredStatuses)
+                {
+                    if (als.OnRemove != null)
+                        await als.OnRemove.Do(als, c, false);
                     als.FlaggedToRemove = true;
                     als.RemainingTurns = 0;
                     if (c == Map.Player || Map.Player.CanSee(c))
@@ -479,7 +484,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     {
                         modifications.RemoveAll(a => a.Id.Equals(als.Id));
                     }
-                });
+                }
+
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {
                     events.Add(new()
@@ -491,6 +497,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
 
                 Map.DisplayEvents.Add(($"{c.Name} lost all altered statuses", events));
+                return true;
+            }
+            return false;
+        }
+        public static bool EndTurn(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character c)
+                // Attempted to end Target's turn when it's not a Character.
+                return false;
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+            if (Rng.RollProbability() <= accuracyCheck && c.CanTakeAction)
+            {
+                c.CanTakeAction = false;
+                c.TookAction = true;
                 return true;
             }
             return false;
@@ -834,17 +855,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool CallScript(EffectCallerParams Args)
+        public static async Task<bool> CallScript(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
 
             var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
                 ?? throw new ArgumentException($"Attempted to call {paramsObject.ScriptId} when it's not a Script.");
-                        
+            
+            if(script == null)
+                throw new ArgumentException($"Attempted to call {paramsObject.ScriptId} when it's not a valid Script.");
+
             var clonedScript = script.Clone();
             clonedScript.User = Args.This;
-            clonedScript.Do(Args.Source, Args.Target, false);
+            await clonedScript.Do(Args.Source, Args.Target, false);
 
             return true;
         }

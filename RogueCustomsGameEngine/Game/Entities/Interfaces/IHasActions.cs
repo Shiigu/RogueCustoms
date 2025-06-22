@@ -1,8 +1,10 @@
-﻿namespace RogueCustomsGameEngine.Game.Entities.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface IHasActions
     {
-        void PerformOnTurnStart();
-        void RefreshCooldownsAndUpdateTurnLength();
+        Task PerformOnTurnStart();
+        Task RefreshCooldownsAndUpdateTurnLength();
     }
 }

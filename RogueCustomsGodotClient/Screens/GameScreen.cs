@@ -7,6 +7,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
+using RogueCustomsGodotClient.Invokers;
 using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
 using RogueCustomsGodotClient.Utils;
@@ -21,6 +22,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable AsyncFixer03 // Fire-and-forget async-void methods or delegates
 public partial class GameScreen : Control
 {
     private GlobalState _globalState;
@@ -40,7 +42,7 @@ public partial class GameScreen : Control
     private CoordinateInput _coords;
     private AudioStreamPlayer _audioStreamPlayer;
 
-    private bool _soundIsPlaying, _popUpIsOpen;
+    private bool _soundIsPlaying, _popUpIsOpen, _processingEvents;
     private TaskCompletionSource<bool> _soundFinished;
 
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
@@ -116,6 +118,7 @@ public partial class GameScreen : Control
 
     private void SetUp()
     {
+        _globalState.DungeonManager.SetPromptInvoker(new PromptInvoker(this));
         _globalState.MustUpdateGameScreen = true;
         _lastTurn = -1;
         _saveGameButton.Pressed += SaveGameButton_Pressed;
@@ -128,17 +131,18 @@ public partial class GameScreen : Control
             Y = 0
         };
 
+        _processingEvents = false;
         _Process(0);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public override async void _Process(double delta)
     {
         try
         {
-            if (_globalState.MustUpdateGameScreen)
+            if (_globalState.MustUpdateGameScreen && !_processingEvents)
             {
-                _globalState.DungeonInfo = _globalState.DungeonManager.GetDungeonStatus();
+                _globalState.DungeonInfo = await _globalState.DungeonManager.GetDungeonStatus();
                 var dungeonStatus = _globalState.DungeonInfo;
                 if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
                 {
@@ -185,9 +189,7 @@ public partial class GameScreen : Control
                     child.Update();
                 }
 
-                _ = UpdateUIViaEvents();
-
-                _globalState.MustUpdateGameScreen = false;
+                await UpdateUIViaEvents();
                 _lastTurn = dungeonStatus.TurnCount;
             }
 
@@ -202,7 +204,7 @@ public partial class GameScreen : Control
             }
             if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
             {
-                _globalState.DungeonManager.MovePlayer(_coords);
+                await _globalState.DungeonManager.MovePlayer(_coords);
                 _globalState.MustUpdateGameScreen = true;
                 _globalState.PlayerControlMode = ControlMode.Waiting;
 
@@ -230,6 +232,7 @@ public partial class GameScreen : Control
     }
     private async Task UpdateUIViaEvents()
     {
+        _processingEvents = true;
         var controlModeToPick = ControlMode.NormalMove;
         _globalState.PlayerControlMode = ControlMode.Waiting;
         _saveGameButton.Disabled = true;
@@ -252,7 +255,7 @@ public partial class GameScreen : Control
                         if (_soundIsPlaying)
                             await _soundFinished.Task;
                         if (correspondingFlash != default)
-                            _screenFlash.Flash(correspondingFlash.Color);
+                            await _screenFlash.Flash(correspondingFlash.Color);
                         if (correspondingSound != default)
                         {
                             _soundIsPlaying = true;
@@ -372,6 +375,7 @@ public partial class GameScreen : Control
         _soundIsPlaying = false;
         _globalState.PlayerControlMode = controlModeToPick;
         _controlsPanel.Update();
+        _globalState.MustUpdateGameScreen = false;
 
         _infoPanel.DetailsButton.Disabled = false;
         _exitButton.Disabled = false;
@@ -380,6 +384,7 @@ public partial class GameScreen : Control
             _saveGameButton.Disabled = false;
         if (_globalState.PlayerControlMode == ControlMode.None)
             _saveGameButton.Disabled = true;
+        _processingEvents = false;
     }
 
     private void SaveGameButton_Pressed()
@@ -801,11 +806,11 @@ public partial class GameScreen : Control
                                     TranslationServer.Translate("StairsPromptText"),
                                     new PopUpButton[]
                                     {
-                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () =>
+                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = async () =>
                                                     {
                                                         try
                                                         {
-                                                            _globalState.DungeonManager.PlayerTakeStairs();
+                                                            await _globalState.DungeonManager.PlayerTakeStairs();
                                                             _globalState.MustUpdateGameScreen = true;
                                                         }
                                                         catch (Exception ex)
@@ -838,3 +843,4 @@ public partial class GameScreen : Control
         _soundFinished.SetResult(true);
     }
 }
+#pragma warning restore AsyncFixer03 // Fire-and-forget async-void methods or delegates

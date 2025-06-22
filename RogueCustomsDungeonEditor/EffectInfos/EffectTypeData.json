@@ -1300,6 +1300,58 @@
     ]
   },
   {
+    "InternalName": "EndTurn",
+    "TreeViewDisplayText": "Make ({Target}) end their turn",
+    "ComboBoxDisplayName": "Make Target end their turn",
+    "Description": "Used by the User to make Target end their turn.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will have their turn ended. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to have their turn ended. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
     "InternalName": "GenerateStairs",
     "TreeViewDisplayText": "Spawn Stairs",
     "ComboBoxDisplayName": "Spawn Stairs",
@@ -1988,6 +2040,69 @@
         "Description": "At the end of each execution of the For loop, the Counter will be increased by this value.",
         "ParameterType": "Formula",
         "Default": "1",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SelectYesNo",
+    "TreeViewDisplayText": "Ask ({Message}) to the player",
+    "ComboBoxDisplayName": "Yes/No Prompt",
+    "Description": "Creates a Yes/No prompt window to the player.\n\nReturns true if the user selects Yes (left button), false if No (right button).",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Message",
+        "DisplayName": "Message",
+        "Description": "The prompt text.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "YesButtonText",
+        "DisplayName": "\"Yes\" Text",
+        "Description": "The text for the \"Yes\" button's text.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "NoButtonText",
+        "DisplayName": "\"No\" Text",
+        "Description": "The text for the \"No\" button's text.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": []
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Window Border Color",
+        "Description": "The color of the prompt's border.",
+        "ParameterType": "Color",
+        "Default": "255,255,0,255",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": []

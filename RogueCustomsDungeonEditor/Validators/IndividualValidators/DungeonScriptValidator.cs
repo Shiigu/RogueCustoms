@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonScriptValidator
     {
-        public static DungeonValidationMessages Validate(ActionWithEffectsInfo script, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(ActionWithEffectsInfo script, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
@@ -26,7 +26,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             var scriptInstance = ActionWithEffects.Create(script);
 
-            var floorGroupValidationMessages = ActionValidator.Validate(scriptInstance.Clone(), dungeonJson, sampleDungeon);
+            var floorGroupValidationMessages = await ActionValidator.Validate(scriptInstance.Clone(), dungeonJson, sampleDungeon);
             if (floorGroupValidationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                 messages.AddWarning("The Script, when called by a Floor Group, throws an error. Please check this.");
 
@@ -38,7 +38,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = playerClassAsInstance;
                 playerClassAsInstance.OwnOnAttack.Add(clonedScript);
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if(validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by a Player Class, throws an error. Please check this.");
             }
@@ -55,7 +55,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = NPCAsInstance;
                 NPCAsInstance.OwnOnAttack.Add(clonedScript);
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if (validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by an NPC, throws an error. Please check this.");
             }
@@ -71,7 +71,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = itemAsInstance;
                 itemAsInstance.OwnOnAttack.Add(clonedScript);
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if (validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by an Item, throws an error. Please check this.");
             }
@@ -87,7 +87,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = trapAsInstance;
                 trapAsInstance.OnStepped = clonedScript;
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if (validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by a Trap, throws an error. Please check this.");
             }
@@ -103,7 +103,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = alteredStatusAsInstance;
                 alteredStatusAsInstance.OnApply = clonedScript;
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if (validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by an Altered Status, throws an error. Please check this.");
             }
@@ -118,7 +118,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var elementAsInstance = new Element(sampleElement, sampleDungeon.LocaleToUse);
                 var clonedScript = scriptInstance.Clone();
                 elementAsInstance.OnAfterAttack = clonedScript;
-                var validationMessages = ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
+                var validationMessages = await ActionValidator.Validate(clonedScript, dungeonJson, sampleDungeon);
                 if (validationMessages.ValidationMessages.Any(m => m.Type == DungeonValidationMessageType.Error))
                     messages.AddWarning("The Script, when called by an Element, throws an error. Please check this.");
             }

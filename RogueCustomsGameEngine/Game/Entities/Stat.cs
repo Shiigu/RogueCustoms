@@ -130,7 +130,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public void TryToRegenerate()
+        public async Task TryToRegenerate()
         {
             if (RegenerationTarget == null) return;
             if (Character.ExistenceStatus != EntityExistenceStatus.Alive) return;
@@ -176,7 +176,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Character.Map.AppendMessage(Character.Map.Locale["CharacterTakesDamageFromHunger"].Format(new { CharacterName = Name, DamageDealt = starveDamage, CharacterHPStat = RegenerationTarget.Name, CharacterHungerStat = Name }), events);
                     Character.Map.DisplayEvents.Add(($"{Character.Name} is starving", events));
                     if (Character.HP.Current <= 0)
-                        Character.Die();
+                        await Character.Die();
                 }
             }
         }

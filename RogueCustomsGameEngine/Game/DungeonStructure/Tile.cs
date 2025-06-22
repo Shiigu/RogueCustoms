@@ -13,6 +13,7 @@ using System.Reflection.Metadata.Ecma335;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -206,10 +207,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
 
 
-        public void StoodOn(Character stomper)
+        public async Task StoodOn(Character stomper)
         {
             if (OnStood == null || !OnStood.ChecksCondition(stomper, stomper)) return;
-            var successfulEffects = OnStood?.Do(stomper, stomper, true);
+            var successfulEffects = await OnStood.Do(stomper, stomper, true);
             if (successfulEffects != null)
             {
                 stomper.Visible = true;
@@ -226,7 +227,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
             }
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
-                stomper.AttackedBy(null);
+                await stomper.AttackedBy(null);
         }
 
         public bool IsHarmfulFor(Character character)

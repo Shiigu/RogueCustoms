@@ -27,8 +27,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnStepped = MapClassAction(entityClass.OnStepped);
         }
 
-        public void Stepped(Character stomper)
+        public async Task Stepped(Character stomper)
         {
+            if (OnStepped == null) return;
             if (stomper == Map.Player || Map.Player.CanSee(stomper))
             {
                 Map.DisplayEvents.Add(($"{stomper.Name} stepped on trap", new()
@@ -40,7 +41,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 ));
             }
-            var successfulEffects = OnStepped?.Do(this, stomper, true);
+            var successfulEffects = await OnStepped.Do(this, stomper, true);
             if (successfulEffects != null)
             {
                 stomper.Visible = true;
@@ -57,18 +58,20 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
-                stomper.AttackedBy(null);
+                await stomper.AttackedBy(null);
         }
 
-        public void RefreshCooldownsAndUpdateTurnLength()
+        public Task RefreshCooldownsAndUpdateTurnLength()
         {
             if (OnStepped?.CooldownBetweenUses > 0 && OnStepped?.CurrentCooldown > 0)
                 OnStepped.CurrentCooldown--;
+            return Task.CompletedTask;
         }
 
-        public void PerformOnTurnStart()
+        public Task PerformOnTurnStart()
         {
-            // Traps don't have OnTurnStart
+            // Traps don't have any OnTurnStart
+            return Task.CompletedTask;
         }
 
         public bool CanBeSeenBy(Character c)

@@ -16,6 +16,8 @@ using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Game.Entities;
 using System.Drawing;
 using System.Reflection;
+using RogueCustomsGameEngine.Game.Interaction;
+using System.Threading.Tasks;
 
 #pragma warning disable SYSLIB0011 // El tipo o el miembro están obsoletos
 namespace RogueCustomsGameEngine.Management
@@ -68,6 +70,11 @@ namespace RogueCustomsGameEngine.Management
             {
                 return false;
             }
+        }
+
+        public void SetPromptInvoker(IPromptInvoker promptInvoker)
+        {
+            ActiveDungeon.PromptInvoker = promptInvoker;
         }
 
         private static DungeonInfo? GetDungeonInfoFromFile(string path)
@@ -193,42 +200,40 @@ namespace RogueCustomsGameEngine.Management
             return ActiveDungeon.EndingMessage;
         }
 
-        public DungeonDto GetDungeonStatus()
+        public Task<DungeonDto> GetDungeonStatus()
         {
-            var dungeonStatus = ActiveDungeon.GetStatus();
-
-            return dungeonStatus;
+            return ActiveDungeon.GetStatus();
         }
 
-        public void MovePlayer(CoordinateInput input)
+        public Task MovePlayer(CoordinateInput input)
         {
-            ActiveDungeon.MovePlayer(input.X, input.Y);
+            return ActiveDungeon.MovePlayer(input.X, input.Y);
         }
 
-        public void PlayerSkipTurn()
+        public Task PlayerSkipTurn()
         {
-            ActiveDungeon.MovePlayer(0, 0);
+            return ActiveDungeon.MovePlayer(0, 0);
         }
 
-        public void PlayerUseItemInFloor()
+        public Task PlayerUseItemInFloor()
         {
-            ActiveDungeon.PlayerUseItemInFloor();
+            return ActiveDungeon.PlayerUseItemInFloor();
         }
-        public void PlayerPickUpItemInFloor()
+        public Task PlayerPickUpItemInFloor()
         {
-            ActiveDungeon.PlayerPickUpItemInFloor();
+            return ActiveDungeon.PlayerPickUpItemInFloor();
         }
-        public void PlayerUseItemFromInventory(int itemId)
+        public Task PlayerUseItemFromInventory(int itemId)
         {
-            ActiveDungeon.PlayerUseItemFromInventory(itemId);
+            return ActiveDungeon.PlayerUseItemFromInventory(itemId);
         }
-        public void PlayerDropItemFromInventory(int itemId)
+        public Task PlayerDropItemFromInventory(int itemId)
         {
-            ActiveDungeon.PlayerDropItemFromInventory(itemId);
+            return ActiveDungeon.PlayerDropItemFromInventory(itemId);
         }
-        public void PlayerSwapFloorItemWithInventoryItem(int itemId)
+        public Task PlayerSwapFloorItemWithInventoryItem(int itemId)
         {
-            ActiveDungeon.PlayerSwapFloorItemWithInventoryItem(itemId);
+            return ActiveDungeon.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
 
         public PlayerInfoDto GetPlayerDetailInfo()
@@ -249,13 +254,13 @@ namespace RogueCustomsGameEngine.Management
         {
             return ActiveDungeon.GetDetailsOfEntity(x, y);
         }
-        public void PlayerAttackTargetWith(AttackInput input)
+        public Task PlayerAttackTargetWith(AttackInput input)
         {
-            ActiveDungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y, input.SourceType);
+            return ActiveDungeon.PlayerAttackTargetWith(input.SelectionId, input.X, input.Y, input.SourceType);
         }
-        public void PlayerTakeStairs()
+        public Task PlayerTakeStairs()
         {
-            ActiveDungeon.PlayerTakeStairs();
+            return ActiveDungeon.PlayerTakeStairs();
         }
     }
 

@@ -40,7 +40,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             Instance ??= new CharacterMapInputBox(defaultSelection);
             Instance.Saved = false;
-            Instance.CharacterToSave = null;
+            Instance.CharacterToSave = defaultSelection;
             Instance.ShowDialog();
             return (Instance.Saved, Instance.CharacterToSave);
         }

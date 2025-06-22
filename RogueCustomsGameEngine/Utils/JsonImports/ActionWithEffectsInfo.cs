@@ -21,7 +21,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string UseCondition { get; set; }
         public string AIUseCondition { get; set; }
         public int MPCost { get; set; }
-        public bool FinishesTurnWhenUsed { get; set; }
+        public bool FinishesTurnWhenUsed { get; set; } = true; // Default to true, as most actions finish the turn when used
         #endregion
 
         public int StartingCooldown { get; set; }

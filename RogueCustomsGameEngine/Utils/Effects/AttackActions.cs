@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Xml.Linq;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -27,7 +28,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool DealDamage(EffectCallerParams Args)
+        public static async Task<bool> DealDamage(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -91,10 +92,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (Map.Flags.Exists(f => f.Key.Equals($"ElementCausedHealDamage")))
                     Map.SetFlagValue($"ElementCausedHealDamage", 1);
                 else
-                    Map.CreateFlag($"ElementCausedHealDamage", 1, true); 
+                    Map.CreateFlag($"ElementCausedHealDamage", 1, true);
                 
-                if (healResult && canCallElementEffect)
-                    attackElement.OnAfterAttack?.Do(Args.Source, c, false);
+                if (healResult && canCallElementEffect && attackElement.OnAfterAttack != null)
+                    await attackElement.OnAfterAttack.Do(Args.Source, c, false);
 
                 Map.SetFlagValue($"ElementCausedHealDamage", 0);
 
@@ -165,9 +166,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map.DisplayEvents.Add(($"{c.Name} took damage", events));
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                 c.Die(paramsObject.Attacker);
-            else if (canCallElementEffect)
+            else if (canCallElementEffect && attackElement.OnAfterAttack != null)
             {
-                attackElement.OnAfterAttack?.Do(Args.Source, c, false);
+                await attackElement.OnAfterAttack.Do(Args.Source, c, false);
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
             }

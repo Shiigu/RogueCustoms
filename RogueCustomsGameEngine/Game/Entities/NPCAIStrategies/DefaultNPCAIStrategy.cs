@@ -41,7 +41,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                  ? Math.Min(1, ExpressionParser.CalculateAdjustedAccuracy(Source, targetAsCharacter, paramsObject) / 100f * 2)
                  : 1;
 
-            switch (effect.Function.Method.Name)
+            switch (effect.AsyncFunction.Method.Name)
             {
                 case "DealDamage":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)
@@ -317,7 +317,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 default:
-                    throw new NotImplementedException($"Weight calculation not implemented for function: {effect.Function.Method.Name}");
+                    throw new NotImplementedException($"Weight calculation not implemented for function: {effect.AsyncFunction.Method.Name}");
             }
 
             if (effect.Then != null)

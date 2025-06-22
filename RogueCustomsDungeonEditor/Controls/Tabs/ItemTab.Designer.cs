@@ -137,7 +137,7 @@
             maeItemOnAttack.TabIndex = 243;
             maeItemOnAttack.TargetDescription = "Whoever is being targeted";
             maeItemOnAttack.ThisDescription = "The item";
-            maeItemOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maeItemOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
             maeItemOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // saeItemOnUse
@@ -159,7 +159,7 @@
             saeItemOnUse.TabIndex = 242;
             saeItemOnUse.TargetDescription = "Whoever is using it";
             saeItemOnUse.ThisDescription = "The item";
-            saeItemOnUse.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            saeItemOnUse.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
             saeItemOnUse.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // txtItemPower

@@ -14,7 +14,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public static class DungeonElementValidator
     {
-        public static DungeonValidationMessages Validate(ElementInfo element, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(ElementInfo element, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var elementAsInstance = new Element(element, sampleDungeon.LocaleToUse);
             var messages = new DungeonValidationMessages();
@@ -33,7 +33,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddWarning($"The Element does not have a Resistance Stat, but ExcessResistanceCausesHealDamage is set to true. It will be ignored.");
 
             if (element.OnAfterAttack != null)
-                messages.AddRange(ActionValidator.Validate(elementAsInstance.OnAfterAttack, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(elementAsInstance.OnAfterAttack, dungeonJson, sampleDungeon));
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 

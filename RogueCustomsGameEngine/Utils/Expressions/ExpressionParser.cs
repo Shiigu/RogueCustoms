@@ -1,5 +1,12 @@
-﻿using D20Tek.DiceNotation;
-using org.matheval;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+using D20Tek.DiceNotation;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
@@ -8,18 +15,6 @@ using RogueCustomsGameEngine.Utils.Effects.Utils;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
-
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 using Expression = org.matheval.Expression;
 
@@ -31,38 +26,43 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
     public static class ExpressionParser
     {
-        private readonly static List<string> PropertiesToParse = new()
-        {
-            "Id",
-            "ClassId",
-            "Name",
-            "Weapon",
-            "Armor",
-            "HP",
-            "MaxHP",
-            "MP",
-            "MaxMP",
-            "Attack",
-            "Damage",
-            "Defense",
-            "Mitigation",
-            "Movement",
-            "HPRegeneration",
-            "MPRegeneration",
-            "Accuracy",
-            "Evasion",
-            "Hunger",
-            "MaxHunger",
-            "ExperiencePayout",
-            "Owner",
-            "Power",
-            "TurnLength",
-            "Type",
-            "DoorId"
-        };
-
         private static RngHandler Rng;
         private static Map Map;
+
+        private static readonly Dictionary<string, string> NumericParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "attack", "Damage" },
+            { "defense", "Mitigation" },
+            { "accuracy", "Accuracy" },
+            { "chance", "Chance" },
+            { "power", "Power" },
+            { "amount", "Amount" },
+            { "turnlength", "TurnLength" },
+            { "level", "Level" },
+            { "criticalhitchance", "CriticalHitChance" }
+        };
+
+        private static readonly Dictionary<string, string> BooleanParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "bypassesaccuracycheck", "BypassesAccuracyCheck" },
+            { "bypassesvisibilitycheck", "BypassesVisibilityCheck" },
+            { "displayonlog", "DisplayOnLog" },
+            { "canbestacked", "CanBeStacked" },
+            { "canstealequippables", "CanStealEquippables" },
+            { "canstealconsumables", "CanStealConsumables" },
+            { "frominventory", "FromInventory" },
+            { "bypassesresistances", "BypassesResistances" },
+            { "bypasseselementeffect", "BypassesElementEffect" },
+            { "removeonfloorchange", "RemoveOnFloorChange" },
+            { "informtheplayer", "InformThePlayer" }
+        };
+
+        private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "color", "Color" },
+            { "forecolor", "ForeColor" },
+            { "backcolor", "BackColor" }
+        };
 
         public static void Setup(RngHandler rng, Map map)
         {
@@ -70,6 +70,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             Map = map;
             ExpressionFunctions.Setup(rng, map);
         }
+
         public static CaseInsensitiveExpandoObject ParseParams(EffectCallerParams Args)
         {
             dynamic paramsObject = new CaseInsensitiveExpandoObject();
@@ -109,91 +110,34 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         private static bool RequiresCustomParsing(dynamic paramsObject, string paramName, string value, Entity This, Entity Source, ITargetable Target)
         {
+            if (paramName is "attacker" or "source" or "target")
+            {
+                SetEntityParam(paramsObject, Capitalize(paramName), value, This, Source, Target);
+                return true;
+            }
+
+            if (NumericParams.TryGetValue(paramName, out var numericProperty))
+            {
+                paramsObject[numericProperty] = CalculateNumericExpression(value);
+                return true;
+            }
+
+            if (BooleanParams.TryGetValue(paramName, out var boolProperty))
+            {
+                paramsObject[boolProperty] = new Expression(value).Eval<bool>();
+                return true;
+            }
+
+            if (ColorParams.TryGetValue(paramName, out var colorProperty))
+            {
+                paramsObject[colorProperty] = value.ToGameColor();
+                return true;
+            }
+
             switch (paramName)
             {
-                case "attacker":
-                    if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Attacker = This;
-                    else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Attacker = Source;
-                    else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Attacker = Target;
-                    return true;
-                case "source":
-                    if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Source = This;
-                    else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Source = Source;
-                    else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Source = Target;
-                    return true;
-                case "target":
-                    if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Target = This;
-                    else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Target = Source;
-                    else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                        paramsObject.Target = Target;
-                    return true;
                 case "stat":
-                    paramsObject.StatName = char.ToUpper(value[0]) + value.ToLowerInvariant()[1..];
-                    var c = Target as Character;
-                    var statNameToLookUp = value.ToLowerInvariant();
-                    if (statNameToLookUp.StartsWith("max") && !statNameToLookUp.Equals("max"))
-                        statNameToLookUp = statNameToLookUp.TrimStart("max");
-                    var correspondingStat = c.UsedStats.Find(s => s.Id.Equals(statNameToLookUp, StringComparison.InvariantCultureIgnoreCase));
-                    paramsObject.StatAlterationList = correspondingStat != null ? correspondingStat.ActiveModifications : null;
-                    return true;
-                case "attack":
-                    paramsObject.Damage = CalculateNumericExpression(value);
-                    return true;
-                case "defense":
-                    paramsObject.Mitigation = CalculateNumericExpression(value);
-                    return true;
-                case "accuracy":
-                    paramsObject.Accuracy = CalculateNumericExpression(value);
-                    return true;
-                case "chance":
-                    paramsObject.Chance = CalculateNumericExpression(value);
-                    return true;
-                case "power":
-                    paramsObject.Power = CalculateNumericExpression(value);
-                    return true;
-                case "amount":
-                    paramsObject.Amount = CalculateNumericExpression(value);
-                    return true;
-                case "turnlength":
-                    paramsObject.TurnLength = CalculateNumericExpression(value);
-                    return true;
-                case "level":
-                    paramsObject.Level = CalculateNumericExpression(value);
-                    return true;
-                case "bypassesaccuracycheck":
-                    paramsObject.BypassesAccuracyCheck = new Expression(value).Eval<bool>();
-                    return true;
-                case "bypassesvisibilitycheck":
-                    paramsObject.BypassesVisibilityCheck = new Expression(value).Eval<bool>();
-                    return true;
-                case "displayonlog":
-                    paramsObject.DisplayOnLog = new Expression(value).Eval<bool>();
-                    return true;
-                case "canbestacked":
-                    paramsObject.CanBeStacked = new Expression(value).Eval<bool>();
-                    return true;
-                case "canstealequippables":
-                    paramsObject.CanStealEquippables = new Expression(value).Eval<bool>();
-                    return true;
-                case "canstealconsumables":
-                    paramsObject.CanStealConsumables = new Expression(value).Eval<bool>();
-                    return true;
-                case "frominventory":
-                    paramsObject.FromInventory = new Expression(value).Eval<bool>();
-                    return true;
-                case "bypassesresistances":
-                    paramsObject.BypassesResistances = new Expression(value).Eval<bool>();
-                    return true;
-                case "bypasseselementeffect":
-                    paramsObject.BypassesElementEffect = new Expression(value).Eval<bool>();
+                    SetStatParam(paramsObject, value, Target);
                     return true;
                 case "tiletype":
                     paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Id.Equals(value, StringComparison.InvariantCultureIgnoreCase));
@@ -205,14 +149,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                         return true;
                     }
                     if (value.IsMathExpression())
-                    { 
+                    {
                         paramsObject.Value = (int)CalculateNumericExpression(value);
                         return true;
                     }
                     return false;
-                case "removeonfloorchange":
-                    paramsObject.RemoveOnFloorChange = new Expression(value).Eval<bool>();
-                    return true;
                 case "character":
                     paramsObject.Character = value[0];
                     return true;
@@ -225,14 +166,35 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 case "backcolor":
                     paramsObject.BackColor = value.ToGameColor();
                     return true;
-                case "criticalhitchance":
-                    paramsObject.CriticalHitChance = CalculateNumericExpression(value);
-                    return true;
-                case "informtheplayer":
-                    paramsObject.InformThePlayer = new Expression(value).Eval<bool>();
-                    return true;
             }
-            return false; // Not a custom case, allow dynamic handling
+            return false; // Not a special case, handle it verbatim (should be a string).
+        }
+
+        private static void SetEntityParam(dynamic paramsObject, string propertyName, string value, Entity This, Entity Source, ITargetable Target)
+        {
+            if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
+                paramsObject[propertyName] = This;
+            else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
+                paramsObject[propertyName] = Source;
+            else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
+                paramsObject[propertyName] = Target;
+        }
+
+        private static void SetStatParam(dynamic paramsObject, string value, ITargetable Target)
+        {
+            paramsObject.StatName = char.ToUpper(value[0]) + value.ToLowerInvariant()[1..];
+            var c = Target as Character;
+            var statNameToLookUp = value.ToLowerInvariant();
+            if (statNameToLookUp.StartsWith("max") && !statNameToLookUp.Equals("max"))
+                statNameToLookUp = statNameToLookUp.TrimStart("max");
+            var correspondingStat = c?.UsedStats.Find(s => s.Id.Equals(statNameToLookUp, StringComparison.InvariantCultureIgnoreCase));
+            paramsObject.StatAlterationList = correspondingStat != null ? correspondingStat.ActiveModifications : null;
+        }
+
+        private static string Capitalize(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            return char.ToUpper(input[0]) + input[1..];
         }
 
         public static decimal CalculateNumericExpression(string value)

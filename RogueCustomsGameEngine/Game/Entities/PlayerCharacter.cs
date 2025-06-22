@@ -9,6 +9,8 @@ using System.Text;
 using System;
 using System.Collections.Generic;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -28,7 +30,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
         }
 
-        public new void GainExperience(int GamePointsToAdd)
+        public new async Task GainExperience(int GamePointsToAdd)
         {
             var events = new List<DisplayEventDto>();
             var oldLevel = Level;
@@ -36,7 +38,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var statsAfterExpGain = new List<(string Name, decimal Amount)>();
             foreach (var stat in UsedStats)
                 statsPreExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
-            base.GainExperience(GamePointsToAdd);
+            await base.GainExperience(GamePointsToAdd);
             events.Add(new()
             {
                 DisplayEventType = DisplayEventType.UpdateExperienceBar,
@@ -109,7 +111,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             FOVTiles = tiles;
         }
 
-        public override void Die(Entity? attacker = null)
+        public override async Task Die(Entity? attacker = null)
         {
             Map.DisplayEvents.Add(($"Player {Name} dies", new()
             {
@@ -119,7 +121,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Params = new() { SpecialEffect.GameOver }
                 }
             }));
-            base.Die(attacker);
+            await base.Die(attacker);
             if (ExistenceStatus == EntityExistenceStatus.Dead)
             {
                 var events = new List<DisplayEventDto>();

@@ -1,11 +1,13 @@
-﻿using RogueCustomsGameEngine.Utils.Representation;
+﻿using System.Threading.Tasks;
+
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface IAIControlled
     {
-        void ProcessAI();
-        void TryToMoveToTarget();
+        Task ProcessAI();
+        Task TryToMoveToTarget();
         void UpdateKnownCharacterList();
     }
 }

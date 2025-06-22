@@ -36,7 +36,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             return messages;
         }
 
-        public static DungeonValidationMessages ValidateFloorType(FloorInfo floorJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> ValidateFloorType(FloorInfo floorJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
@@ -318,7 +318,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             for (int i = 0; i < 100; i++)
             {
                 var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-                var (MapGenerationSuccess, KeyGenerationSuccess) = generationAttempt.DebugGenerate();
+                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.DebugGenerate();
                 if (MapGenerationSuccess)
                 {
                     mapSuccesses++;
@@ -336,11 +336,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             else if(keySuccesses == 0)
                 messages.AddWarning("After 100 attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
 
-            floorAsInstance.GenerateDebugMap();
+            await floorAsInstance.GenerateDebugMap();
 
             if (floorJson.OnFloorStart != null)
             {
-                messages.AddRange(ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
             }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

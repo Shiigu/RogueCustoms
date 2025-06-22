@@ -1,7 +1,9 @@
-﻿namespace RogueCustomsGameEngine.Game.Entities.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface IKillable
     {
-        void Die(Entity? attacker = null);
+        Task Die(Entity? attacker = null);
     }
 }

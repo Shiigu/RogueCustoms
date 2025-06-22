@@ -254,7 +254,7 @@
             maeNPCOnAttack.TabIndex = 243;
             maeNPCOnAttack.TargetDescription = "Whoever they are targeting";
             maeNPCOnAttack.ThisDescription = "The NPC";
-            maeNPCOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
+            maeNPCOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
             maeNPCOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // txtNPCExperiencePayout

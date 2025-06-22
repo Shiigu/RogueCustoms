@@ -9,7 +9,9 @@ using RogueCustomsGodotClient.Utils;
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
+#pragma warning disable AsyncFixer03 // Fire-and-forget async-void methods or delegates
 public partial class MessageScreen : Control
 {
     private ExceptionLogger _exceptionLogger;
@@ -120,7 +122,7 @@ public partial class MessageScreen : Control
                 _chosenClass = availablePlayerClasses.First(c => c.ClassId.Equals(classId));
                 AskForPlayerName();
             },
-            () => this.CreateStandardPopup(TranslationServer.Translate("PlayerClassWindowTitleText"),
+            async () => await this.CreateStandardPopup(TranslationServer.Translate("PlayerClassWindowTitleText"),
                                     TranslationServer.Translate("ExitPromptText"),
                                     new PopUpButton[]
                                     {
@@ -183,3 +185,4 @@ public partial class MessageScreen : Control
         }
     }
 }
+#pragma warning restore AsyncFixer03 // Fire-and-forget async-void methods or delegates
