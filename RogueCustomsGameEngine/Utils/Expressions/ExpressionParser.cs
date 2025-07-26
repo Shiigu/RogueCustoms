@@ -64,6 +64,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "backcolor", "BackColor" }
         };
 
+        private static readonly Dictionary<string, string> ListParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "items", "Items" }
+        };
+
         public static void Setup(RngHandler rng, Map map)
         {
             Rng = rng;

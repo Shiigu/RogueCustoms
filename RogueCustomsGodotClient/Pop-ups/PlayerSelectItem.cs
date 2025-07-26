@@ -210,8 +210,9 @@ public partial class PlayerSelectItem : Control
 
         foreach (var item in _itemListInfo.InventoryItems)
         {
-            var itemLabel = new ScalableLabel { HorizontalAlignment = HorizontalAlignment.Left, 
-                                SizeFlagsHorizontal = SizeFlags.ExpandFill, 
+            var itemLabel = new ScalableLabel { HorizontalAlignment = HorizontalAlignment.Left,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                SizeFlagsHorizontal = SizeFlags.ExpandFill,
                                 SizeFlagsVertical = SizeFlags.ShrinkCenter,
                                 MinFontSize = 8,
                                 DefaultFontSize = 16,
@@ -259,6 +260,7 @@ public partial class PlayerSelectItem : Control
             var actionLabel = new ScalableLabel
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
                 SizeFlagsHorizontal = SizeFlags.ExpandFill,
                 SizeFlagsVertical = SizeFlags.ShrinkCenter,
                 MinFontSize = 8,
@@ -356,7 +358,7 @@ public partial class PlayerSelectItem : Control
         else
         {
             _itemDescriptionLabel.AppendText(selectedAction.Description.ToBbCodeAppropriateString());
-        }        
+        }
         if(selectedItem != null)
         {
             _dropButton.Visible = !_itemListInfo.TileIsOccupied && selectedItem.CanBeDropped;
