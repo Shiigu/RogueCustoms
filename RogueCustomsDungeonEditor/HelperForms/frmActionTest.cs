@@ -458,6 +458,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private class DummyPromptInvoker : IPromptInvoker
         {
             public Task<bool> OpenYesNoPrompt(string title, string message, string yesButtonText, string noButtonText, GameColor color) => Task.FromResult(new Random().NextDouble() >= 0.5);
+            public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor) => Task.FromResult(choices[new Random().Next(choices.Length)].Id);
         }
     }
 }

@@ -229,11 +229,29 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var tooltipBuilder = new StringBuilder();
             tooltipBuilder.Append("Description: ").Append(effectDto.Description).AppendLine("\n\nParameters:");
 
-            if (effectDto.Parameters.Any())
+            if (effectDto.Parameters.Count != 0)
             {
-                foreach (var parameter in effectDto.Parameters)
+                foreach (var parameter in effectDto.Parameters.GroupBy(p => p.DisplayName).ToList())
                 {
-                    tooltipBuilder.Append("- ").Append(parameter.DisplayName).Append(": ").AppendLine(parameter.Value);
+                    var parameterData = effectData.Parameters.FirstOrDefault(p => p.DisplayName.Equals(parameter.FirstOrDefault().DisplayName, StringComparison.InvariantCultureIgnoreCase));
+                    if (parameterData.Type != ParameterType.Table)
+                    {
+                        tooltipBuilder.Append("- ").Append(parameter.FirstOrDefault().DisplayName).Append(": ").AppendLine(parameter.FirstOrDefault().Value);
+                    }
+                    else
+                    {
+                        tooltipBuilder.Append("- ").Append(parameter.FirstOrDefault().DisplayName).Append(":\n");
+                        foreach (var (DisplayName, Value) in parameter)
+                        {
+                            var splitRow = Value.Split('|');
+                            if(splitRow.Length == 3)
+                                tooltipBuilder.Append("\t- ").Append(splitRow[0]).Append(" => ").Append(splitRow[1]).Append(": ").Append(splitRow[2]).Append('\n');
+                            else if (splitRow.Length == 2)
+                                tooltipBuilder.Append("\t- ").Append(splitRow[0]).Append(" => ").Append(splitRow[1]).Append('\n');
+                            else if (splitRow.Length == 1)
+                                tooltipBuilder.Append("\t- ").Append(splitRow[0]).Append('\n');
+                        }
+                    }
                 }
             }
             else

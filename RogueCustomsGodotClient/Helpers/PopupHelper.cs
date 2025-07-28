@@ -113,5 +113,27 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(selectSaveGamePopup);
             selectSaveGamePopup.Show(() => { overlay.QueueFree(); });
         }
+
+        public static async Task<string> CreateSelectPopup(this Control control, string titleText, string innerText, SelectionItem[] choices, bool showCancelButton, Color borderColor)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var popup = (SelectPopUp)GD.Load<PackedScene>("res://Pop-ups/SelectPopUp.tscn").Instantiate();
+            control.AddChild(popup);
+
+            var popupClosedSignal = popup.ToSignal(popup, "PopupClosed");
+            popup.Show(titleText, innerText, choices, showCancelButton, borderColor);
+
+            var result = await popupClosedSignal;
+
+            overlay.QueueFree();
+
+            return result.Length > 0 ? (string) result[0] : null;
+        }
     }
 }

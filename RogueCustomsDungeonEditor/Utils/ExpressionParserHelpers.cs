@@ -78,14 +78,37 @@ namespace RogueCustomsDungeonEditor.Utils
             for (int i = 0; i < tokens.Count; i++)
             {
                 var token = tokens[i];
-                token = token.Replace("{CalculatedDamage}", "1");
-                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "player");
-                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
-                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
-                token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
-                token = ParseNamedFlags(token, numericPlaceholder);
-                tokens[i] = token;
+                if (Regex.IsMatch(token, @"\[\w+\]")) // It's a flag token
+                {
+                    string inferredPlaceholder = numericPlaceholder;
+
+                    // Look at the next token (right-hand side)
+                    if (i + 2 < tokens.Count && IsComparisonOperator(tokens[i + 1]))
+                    {
+                        var rhs = tokens[i + 2];
+
+                        if (Regex.IsMatch(rhs, "^\".*\"$")) // string literal
+                            inferredPlaceholder = stringPlaceholder;
+                        else if (rhs.Equals("true", StringComparison.OrdinalIgnoreCase) || rhs.Equals("false", StringComparison.OrdinalIgnoreCase))
+                            inferredPlaceholder = booleanPlaceholder;
+                        else if (double.TryParse(rhs, out _))
+                            inferredPlaceholder = numericPlaceholder;
+                    }
+
+                    tokens[i] = inferredPlaceholder;
+                }
+                else
+                {
+                    // Replace tokens for known entities (player, this, etc.)
+                    token = token.Replace("{CalculatedDamage}", numericPlaceholder);
+                    token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "player");
+                    token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "this");
+                    token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "source");
+                    token = token.ParseArgsForPlaceHolder(numericPlaceholder, stringPlaceholder, booleanPlaceholder, "target");
+                    tokens[i] = token;
+                }
             }
+
 
             // Second pass: handle function parsing and execution
             // Since logical operators might be in place, split the expression based on those, and handle function parsing for each part.
@@ -103,6 +126,14 @@ namespace RogueCustomsDungeonEditor.Utils
 
             // Return the fully parsed expression
             return string.Join("", tokens);
+        }
+        private static bool IsComparisonOperator(string token)
+        {
+            return token switch
+            {
+                "==" or "!=" or ">" or "<" or ">=" or "<=" => true,
+                _ => false
+            };
         }
 
         private static string ParseArgsForPlaceHolder(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder, string eName)
@@ -197,7 +228,7 @@ namespace RogueCustomsDungeonEditor.Utils
             return isNumeric ? numericPlaceholder : stringPlaceholder;
         }
 
-        private static string ParseNamedFlags(string arg, string numericPlaceholder)
+        private static string ParseNamedFlag(this string arg, string placeholder)
         {
             var parsedArg = arg;
 
@@ -207,7 +238,7 @@ namespace RogueCustomsDungeonEditor.Utils
             {
                 var flagToken = match.Value;
 
-                parsedArg = parsedArg.Replace(flagToken, numericPlaceholder, StringComparison.InvariantCultureIgnoreCase);
+                parsedArg = parsedArg.Replace(flagToken, placeholder, StringComparison.InvariantCultureIgnoreCase);
             }
 
             return parsedArg;

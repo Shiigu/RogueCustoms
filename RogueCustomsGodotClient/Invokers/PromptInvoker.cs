@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Godot;
 
 using RogueCustomsGameEngine.Game.Interaction;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient.Helpers;
@@ -34,6 +35,11 @@ namespace RogueCustomsGodotClient.Invokers
                                         new() { Text = noButtonText, Callback = () => promptResponse = false, ActionPress = "ui_cancel" }
                                             }, new Color() { R8 = borderColor.R, G8 = borderColor.G, B8 = borderColor.B, A8 = borderColor.A });
             return promptResponse;
+        }
+
+        public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor)
+        {
+            return Parent.CreateSelectPopup(title, message, choices, showCancelButton, new Color() { R8 = borderColor.R, G8 = borderColor.G, B8 = borderColor.B, A8 = borderColor.A });
         }
     }
 }

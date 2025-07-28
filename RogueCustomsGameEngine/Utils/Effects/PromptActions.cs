@@ -9,6 +9,7 @@ using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -44,6 +45,37 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             return await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
+        }
+
+        public static async Task<bool> SelectOption(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            SelectionItem[] options = paramsObject.Options.ToArray();
+            var optionFlag = paramsObject.OptionFlag;
+
+            string? chosenOption;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = options.TakeRandomElementWithWeights(i => 50, Rng);
+                chosenOption = randomChoice.Id;
+                if (Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nOPTION: {randomChoice.Id} => {randomChoice.Name}", paramsObject.Color);
+            }
+            else
+            {
+                chosenOption = await Map.OpenSelectOption(paramsObject.Title, paramsObject.Message, options, paramsObject.Cancellable, paramsObject.Color);
+            }
+
+            if(!Map.HasFlag(optionFlag))
+            {
+                Map.CreateFlag(optionFlag, chosenOption, true);
+            }
+            else
+            {
+                Map.SetFlagValue(optionFlag, chosenOption);
+            }
+
+            return !string.IsNullOrWhiteSpace(chosenOption);
         }
     }
 

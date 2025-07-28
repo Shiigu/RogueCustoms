@@ -110,12 +110,19 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         public List<EffectParameterValidValue> ValidValues { get; set; }
         public bool Required { get; set; }
         public List<string> OptionalIfFieldsHaveValue { get; set; }
+        public List<EffectParameterColumn> Columns { get; set; }
     }
 
     public class EffectParameterValidValue
     {
         public string Key { get; set; }
         public string Value { get; set; }
+    }
+
+    public class EffectParameterColumn
+    {
+        public string Key { get; set; }
+        public string Header { get; set; }
     }
 
     public enum ParameterType
@@ -136,7 +143,8 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Key,
         Stat,
         Element,
-        Script
+        Script,
+        Table
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

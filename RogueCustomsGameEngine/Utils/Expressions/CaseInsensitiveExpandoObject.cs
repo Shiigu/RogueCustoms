@@ -30,6 +30,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return true;
         }
 
+        public bool ContainsKey(string key)
+        {
+            return _properties.ContainsKey(key);
+        }
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _properties.Keys;

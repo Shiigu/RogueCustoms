@@ -232,9 +232,12 @@ public partial class MainMenu : Control
         }
         else if (@event.IsActionPressed("ui_accept"))
         {
-            _buttons[_selectedIndex].GrabFocus();
-            _buttons[_selectedIndex].EmitSignal("pressed");
-            _buttons[_selectedIndex].ButtonPressed = true;
+            if (_selectedIndex != -1)
+            {
+                _buttons[_selectedIndex].GrabFocus();
+                _buttons[_selectedIndex].EmitSignal("pressed");
+                _buttons[_selectedIndex].ButtonPressed = true;
+            }
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_cancel"))
