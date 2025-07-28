@@ -114,7 +114,7 @@ namespace RogueCustomsGodotClient.Helpers
             selectSaveGamePopup.Show(() => { overlay.QueueFree(); });
         }
 
-        public static async Task<string> CreateSelectPopup(this Control control, string titleText, string innerText, SelectionItem[] choices, Color borderCol)
+        public static async Task<string> CreateSelectPopup(this Control control, string titleText, string innerText, SelectionItem[] choices, bool showCancelButton, Color borderColor)
         {
             var overlay = new ColorRect
             {
@@ -127,7 +127,7 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(popup);
 
             var popupClosedSignal = popup.ToSignal(popup, "PopupClosed");
-            popup.Show(titleText, innerText, choices, borderCol);
+            popup.Show(titleText, innerText, choices, showCancelButton, borderColor);
 
             var result = await popupClosedSignal;
 

@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 
 using D20Tek.DiceNotation;
 
+using Newtonsoft.Json.Linq;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
@@ -14,6 +16,7 @@ using RogueCustomsGameEngine.Utils.DiceNotation;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
 using Expression = org.matheval.Expression;
@@ -54,7 +57,8 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "bypassesresistances", "BypassesResistances" },
             { "bypasseselementeffect", "BypassesElementEffect" },
             { "removeonfloorchange", "RemoveOnFloorChange" },
-            { "informtheplayer", "InformThePlayer" }
+            { "informtheplayer", "InformThePlayer" },
+            { "cancellable", "Cancellable" }
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)
@@ -66,7 +70,9 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         private static readonly Dictionary<string, string> ListParams = new(StringComparer.InvariantCultureIgnoreCase)
         {
-            { "items", "Items" }
+            { "items", "Items" },
+            { "choices", "Choices" },
+            { "options", "Options" }
         };
 
         public static void Setup(RngHandler rng, Map map)
@@ -136,6 +142,15 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (ColorParams.TryGetValue(paramName, out var colorProperty))
             {
                 paramsObject[colorProperty] = value.ToGameColor();
+                return true;
+            }
+
+            if (ListParams.TryGetValue(paramName, out var listProperty))
+            {
+                if(!paramsObject.ContainsKey(listProperty))
+                    paramsObject[listProperty] = new List<SelectionItem>();
+                var splitValue = value.Split('|');
+                paramsObject[listProperty].Add(new SelectionItem(splitValue[0], ParseArgForExpression(Map.Locale[splitValue[1]], This, Source, Target), splitValue.Length > 2 ? ParseArgForExpression(Map.Locale[splitValue[2]], This, Source, Target) : null));
                 return true;
             }
 
@@ -237,6 +252,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (string.IsNullOrEmpty(value)) return true;
             if (!value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is not a boolean expression but is being evaluated as one.");
+
             return new Expression(value).Eval<bool>();
         }
 
@@ -349,9 +365,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if (propertyValue != null)
                 {
                     var formattedValue = FormatParameterValue(propertyValue);
-                    if (propertyValue is string stringValue && !stringValue.IsDiceNotation() && !stringValue.IsIntervalNotation() && !stringValue.IsMathExpression())
-                        formattedValue = $"\"{formattedValue}\"";
-                    parsedArg = parsedArg.Replace(match.Value, FormatParameterValue(formattedValue), StringComparison.InvariantCultureIgnoreCase);
+                    parsedArg = parsedArg.Replace(match.Value, formattedValue, StringComparison.InvariantCultureIgnoreCase);
                 }
                 else
                 {
@@ -463,11 +477,17 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (parameterValue is decimal decimalValue)
             {
                 if (decimalValue == decimal.Truncate(decimalValue))
+                {
                     return decimal.Truncate(decimalValue).ToString(CultureInfo.InvariantCulture);
+                }
                 else
                 {
                     return decimalValue.ToString("0.#####", CultureInfo.GetCultureInfo("en-US"));
                 }
+            }
+            else if (parameterValue is string stringValue && !stringValue.IsDiceNotation() && !stringValue.IsIntervalNotation() && !stringValue.IsMathExpression())
+            {
+                return $"\"{stringValue}\"";
             }
             else
             {

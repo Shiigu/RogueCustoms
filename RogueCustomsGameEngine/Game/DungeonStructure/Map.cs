@@ -2595,6 +2595,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return PromptInvoker.OpenYesNoPrompt(title, message, yesButtonText, noButtonText, borderColor);
         }
+        public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor)
+        {
+            return PromptInvoker.OpenSelectOption(title, message, choices, showCancelButton, borderColor);
+        }
 
         #endregion
 

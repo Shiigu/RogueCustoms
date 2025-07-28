@@ -82,7 +82,7 @@ public partial class SelectPopUp : Control
         }
     }
 
-    public void Show(string titleText, string innerText, SelectionItem[] choices, Color borderColor)
+    public void Show(string titleText, string innerText, SelectionItem[] choices, bool showCancelButton, Color borderColor)
     {
         _originalLabelSize = _innerTextLabel.Size;
         _innerTextWithoutBbCode = innerText.ToStringWithoutBbcode();
@@ -133,16 +133,23 @@ public partial class SelectPopUp : Control
             }
         };
 
-        _cancelButton.Text = CancelButtonText;
-
-        _cancelButton.Pressed += () =>
+        if(showCancelButton)
         {
-            if (_selectedIndex != -1)
+            _cancelButton.Text = CancelButtonText;
+
+            _cancelButton.Pressed += () =>
             {
-                EmitSignal(nameof(PopupClosed), null);
-                QueueFree();
-            }
-        };
+                if (_selectedIndex != -1)
+                {
+                    EmitSignal(nameof(PopupClosed), null);
+                    QueueFree();
+                }
+            };
+        }
+        else
+        {
+            _cancelButton.Visible = false;
+        }
 
         var screenSize = GetViewportRect().Size;
         Position = (screenSize - _border.Size) / 2;

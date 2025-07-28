@@ -4,6 +4,7 @@ using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -14,6 +15,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
@@ -69,15 +71,30 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 EffectToSave = effectToSave.Clone();
                 if (EffectToSave.Params.Length != paramsData.Parameters.Count)
                 {
-                    var newParamsList = new Parameter[paramsData.Parameters.Count];
+                    var newParamsList = new List<Parameter>(paramsData.Parameters.Count);
                     for (int i = 0; i < EffectToSave.Params.Length; i++)
                     {
-                        newParamsList[i] = new Parameter
+                        var paramData = paramsData.Parameters.FirstOrDefault(param => param.InternalName.Equals(EffectToSave.Params[i].ParamName));
+                        if (paramData == null) continue;
+                        if (paramData.Type != ParameterType.Table)
                         {
-                            ParamName = paramsData.Parameters[i].InternalName
-                        };
-                        var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
-                        newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
+                            newParamsList.Add(new Parameter
+                            {
+                                ParamName = paramData.InternalName
+                            });
+                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
+                            newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
+                        }
+                        else
+                        {
+                            newParamsList.Add(new Parameter
+                            {
+                                ParamName = paramData.InternalName
+                            });
+                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
+                            var existingId = existingParam.Value.Split('|').FirstOrDefault();
+                            newParamsList[i].Value = existingParam != null ? existingParam.Value : null;
+                        }
                     }
                 }
             }
@@ -156,19 +173,36 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (paramsData.Parameters.Count == 0)
                 lblRequired.Text = "This Function has no parameters.";
 
+            tlpParameters.Height = 0;
             foreach (var parameter in paramsData.Parameters)
             {
-                var nameLabel = new Label
+                var nameLabel = parameter.Type != ParameterType.Table ? new Label
                 {
                     TextAlign = ContentAlignment.MiddleLeft,
                     AutoSize = false,
                     Height = 30,
-                    Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && !parameter.OptionalIfFieldsHaveValue.Any()
+                    Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Count == 0
                        ? $"{parameter.DisplayName}*"
                        : $"{parameter.DisplayName}"
-                };
+                } : null;
 
                 string originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
+                var tableValues = new List<SelectionItem>();
+
+                if(parameter.Type == ParameterType.Table)
+                {
+                    foreach (var param in effectToSave.Params.Where(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        if (param.Value != null)
+                        {
+                            var values = param.Value.Split('|');
+                            if (values.Length >= 2)
+                            {
+                                tableValues.Add(new SelectionItem(values[0], values[1], values.Length > 2 ? values[2] : string.Empty));
+                            }
+                        }
+                    }
+                }
 
                 Control control = parameter.Type switch
                 {
@@ -189,35 +223,50 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.Stat => CreateComboBox(parameter, originalValue),
                     ParameterType.Element => CreateComboBox(parameter, originalValue),
                     ParameterType.Script => CreateComboBox(parameter, originalValue),
+                    ParameterType.Table => CreateTableControl(tableValues, parameter, tlpParameters),
                     _ => new TextBox { Text = originalValue ?? parameter.Default }
                 };
 
                 var toolTip = new ToolTip();
-                if (nameLabel.PreferredSize.Width > nameLabel.Width)
+                if (nameLabel != null && nameLabel.PreferredSize.Width > nameLabel.Width)
                 {
                     tlpParameters.Width += (nameLabel.PreferredSize.Width - nameLabel.Width);
                     this.Width += (nameLabel.PreferredSize.Width - nameLabel.Width);
                     btnSave.Left += (nameLabel.PreferredSize.Width - nameLabel.Width) / 2;
                     btnCancel.Left += (nameLabel.PreferredSize.Width - nameLabel.Width) / 2;
                 }
+                else if (nameLabel == null && control.PreferredSize.Width > control.Width)
+                {
+                    tlpParameters.Width += (control.PreferredSize.Width - control.Width);
+                    this.Width += (control.PreferredSize.Width - control.Width);
+                    btnSave.Left += (control.PreferredSize.Width - control.Width) / 2;
+                    btnCancel.Left += (control.PreferredSize.Width - control.Width) / 2;
+                }
                 if (control is TableLayoutPanel tlp)
                     toolTip.SetToolTip(tlp.Controls[0], parameter.Description);
                 else
                     toolTip.SetToolTip(control, parameter.Description);
-                nameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
-                tlpParameters.Controls.Add(nameLabel, 0, rowNumber);
-                tlpParameters.Controls.Add(control, 1, rowNumber);
+                if (nameLabel != null)
+                {
+                    nameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                    tlpParameters.Controls.Add(nameLabel, 0, rowNumber);
+                    control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                    tlpParameters.Controls.Add(control, 1, rowNumber);
+                }
+                else
+                {
+                    control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                    tlpParameters.Controls.Add(control, 0, rowNumber);
+                    tlpParameters.SetColumnSpan(control, 2);
+                }
 
+                if (parameter.Type != ParameterType.Table)
+                    tlpParameters.Height += 33;
+                else
+                    tlpParameters.Height += 200;
                 rowNumber++;
             }
-            foreach (RowStyle rowStyle in tlpParameters.RowStyles)
-            {
-                rowStyle.SizeType = SizeType.Absolute;
-                rowStyle.Height = 32;
-            }
-            tlpParameters.Height = 33 * rowNumber;
         }
 
         private IEnumerable<string> GetComboBoxItems(EffectParameter parameter)
@@ -496,6 +545,84 @@ namespace RogueCustomsDungeonEditor.HelperForms
             return colorPanel;
         }
 
+        private TableLayoutPanel CreateTableControl(List<SelectionItem> originalValues, EffectParameter parameter, TableLayoutPanel parent)
+        {
+            var nameLabel = new Label
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                TextAlign = ContentAlignment.MiddleLeft,
+                AutoSize = false,
+                Height = 30,
+                Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Count == 0
+                   ? $"{parameter.DisplayName}*"
+                   : $"{parameter.DisplayName}"
+            };
+
+            var table = new DataGridView
+            {
+                ColumnHeadersVisible = true,
+                AllowUserToAddRows = true,
+                AllowUserToDeleteRows = true,
+                AllowUserToResizeColumns = true,
+                ScrollBars = ScrollBars.Vertical
+            };
+
+            var columns = new List<DataGridViewTextBoxColumn>();
+
+            foreach (var column in parameter.Columns)
+            {
+                var columnToAdd = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = column.Key,
+                    Name = column.Key,
+                    HeaderText = column.Header
+                };
+                columns.Add(columnToAdd);
+            }
+            table.Columns.AddRange([.. columns]);
+
+            for (int i = 0; i < originalValues.Count; i++)
+            {
+                if (columns.Count > 2)
+                    table.Rows.Add(originalValues[i].Id, originalValues[i].Name, originalValues[i].Description);
+                else
+                    table.Rows.Add(originalValues[i].Id, originalValues[i].Name);
+            }
+
+            table.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+
+            var tablePanel = new TableLayoutPanel
+            {
+                ColumnCount = 1,
+                RowCount = 2,
+                Margin = new Padding(0),
+                Padding = new Padding(0),
+                Height = 200
+            };
+
+            tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+            tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+            tablePanel.Controls.Add(nameLabel, 0, 0);
+            tablePanel.Controls.Add(table, 0, 1);
+
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                var column = table.Columns[i];
+                var columnData = parameter.Columns[i];
+
+                if (columnData.Key == "Id")
+                    column.Width = (int)(parent.Width * 0.3);
+                else if (columnData.Key == "Name" && table.Columns.Count == 2)
+                    column.Width = (int)(parent.Width * 0.7);
+                else
+                    column.Width = (int)(parent.Width * 0.35);
+            }
+
+            return tablePanel;
+        }
+
         private void tlpParameters_SizeChanged(object sender, EventArgs e)
         {
             var tableFinalY = tlpParameters.Location.Y + tlpParameters.Height;
@@ -534,15 +661,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private void btnSave_Click(object sender, EventArgs e)
         {
             var errorMessageStringBuilder = new StringBuilder();
-            var paramsAndValues = new List<(string ParamName, string Value)>();
+            var paramsAndValues = new List<(string ParamName, string Value, ParameterType Type)>();
             for (int i = 0; i < EffectTypeData.Parameters.Count; i++)
             {
                 var parameterData = EffectTypeData.Parameters[i];
-                Control controlToValidate = null;
+                var controlToValidate = GetAppropriateControl(parameterData, i);
                 var valueToValidate = string.Empty;
-                controlToValidate = parameterData.Type == ParameterType.Character || parameterData.Type == ParameterType.Color || parameterData.Type == ParameterType.Text
-                    ? tlpParameters.GetControlFromPosition(1, i).Controls[0]
-                    : tlpParameters.GetControlFromPosition(1, i);
+                var tableItems = new List<SelectionItem>();
 
                 switch (parameterData.Type)
                 {
@@ -608,32 +733,93 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && !valueToValidate.TestBooleanExpression(out errorMessage))
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" does not contain a valid expression: ").Append(errorMessage).AppendLine(".");
                         break;
-                }
-
-                paramsAndValues.Add((parameterData.InternalName, valueToValidate));
-
-                if (parameterData.Required && !parameterData.OptionalIfFieldsHaveValue.Any() && string.IsNullOrWhiteSpace(valueToValidate))
-                {
-                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" is required.");
-                }
-                if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Any() && string.IsNullOrWhiteSpace(valueToValidate))
-                {
-                    var fellowRequiredGroupHasValue = false;
-                    var fellowRequiredCount = parameterData.OptionalIfFieldsHaveValue.Count;
-                    var fellowRequiredEncountered = 0;
-                    foreach (var paramName in parameterData.OptionalIfFieldsHaveValue)
-                    {
-                        if (!paramsAndValues.Exists(pav => pav.ParamName.Equals(paramName))) break;
-                        fellowRequiredEncountered++;
-                        var paramValue = paramsAndValues.Find(pav => pav.ParamName.Equals(paramName)).Value;
-                        if (!string.IsNullOrWhiteSpace(paramValue))
+                    case ParameterType.Table:
+                        if (controlToValidate is DataGridView tableToValidate)
                         {
-                            fellowRequiredGroupHasValue = true;
-                            break;
+                            if (tableToValidate.Rows[0].IsNewRow && parameterData.Required)
+                            {
+                                errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" has no rows.");
+                                break;
+                            }
+                            var foundIds = new List<string>();
+                            foreach (DataGridViewRow row in tableToValidate.Rows)
+                            {
+                                if (row.IsNewRow) continue;
+                                var idCell = row.Cells["Id"];
+                                if (idCell.Value == null || string.IsNullOrWhiteSpace(idCell.Value.ToString()))
+                                {
+                                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains an empty ID.");
+                                    break;
+                                }
+                                var idValue = idCell.Value.ToString();
+                                if (foundIds.Contains(idValue))
+                                {
+                                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains duplicate IDs.");
+                                    break;
+                                }
+                                foundIds.Add(idValue);
+
+                                foreach (DataGridViewCell cell in row.Cells)
+                                {
+                                    if (string.IsNullOrWhiteSpace(cell.Value.ToString()))
+                                    {
+                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" has an empty value.");
+                                        break;
+                                    }
+                                    else if (cell.Value.ToString().Contains('|'))
+                                    {
+                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains a pipe (|), which is not allowed.");
+                                        break;
+                                    }
+                                }
+                            }
+                            if(errorMessageStringBuilder.Length == 0)
+                            {
+                                foreach (DataGridViewRow row in tableToValidate.Rows)
+                                {
+                                    if (row.IsNewRow) continue;
+                                    var valueStringBuilder = new StringBuilder();
+                                    foreach (DataGridViewCell cell in row.Cells)
+                                    {
+                                        if (string.IsNullOrWhiteSpace(cell.Value.ToString())) break;
+                                        valueStringBuilder.Append(cell.Value.ToString()).Append('|');
+                                    }
+                                    paramsAndValues.Add((parameterData.InternalName, valueStringBuilder.ToString()[..^1], parameterData.Type));
+                                }
+                            }
                         }
+                        break;
+                }
+
+                if (parameterData.Type != ParameterType.Table)
+                {
+                    if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Count == 0 && string.IsNullOrWhiteSpace(valueToValidate))
+                    {
+                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" is required.");
                     }
-                    if (!fellowRequiredGroupHasValue && fellowRequiredEncountered == fellowRequiredCount)
-                        errorMessageStringBuilder.Append("At least one of parameters (").Append(parameterData.DisplayName).Append(", ").AppendJoin(", ", parameterData.OptionalIfFieldsHaveValue).AppendLine(") is required.");
+                    else if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Count != 0 && string.IsNullOrWhiteSpace(valueToValidate))
+                    {
+                        var fellowRequiredGroupHasValue = false;
+                        var fellowRequiredCount = parameterData.OptionalIfFieldsHaveValue.Count;
+                        var fellowRequiredEncountered = 0;
+                        foreach (var paramName in parameterData.OptionalIfFieldsHaveValue)
+                        {
+                            if (!paramsAndValues.Exists(pav => pav.ParamName.Equals(paramName))) break;
+                            fellowRequiredEncountered++;
+                            var paramValue = paramsAndValues.Find(pav => pav.ParamName.Equals(paramName)).Value;
+                            if (!string.IsNullOrWhiteSpace(paramValue))
+                            {
+                                fellowRequiredGroupHasValue = true;
+                                break;
+                            }
+                        }
+                        if (!fellowRequiredGroupHasValue && fellowRequiredEncountered == fellowRequiredCount)
+                            errorMessageStringBuilder.Append("At least one of parameters (").Append(parameterData.DisplayName).Append(", ").AppendJoin(", ", parameterData.OptionalIfFieldsHaveValue).AppendLine(") is required.");
+                    }
+                    else
+                    {
+                        paramsAndValues.Add((parameterData.InternalName, valueToValidate, parameterData.Type));
+                    }
                 }
             }
             var errorMessages = errorMessageStringBuilder.ToString();
@@ -650,25 +836,47 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (string.IsNullOrWhiteSpace(EffectToSave.EffectName))
                     EffectToSave.EffectName = EffectTypeData.InternalName;
-                foreach (var (ParamName, Value) in paramsAndValues)
+                var paramsToClear = new List<Parameter>();
+                foreach (var param in EffectToSave.Params)
+                {
+                    if(!paramsToClear.Contains(param) && paramsAndValues.Any(pav => pav.ParamName.Equals(param.ParamName) && pav.Type == ParameterType.Table))
+                    {
+                        paramsToClear.Add(param);
+                    }
+                }
+                EffectToSave.Params = EffectToSave.Params.Except(paramsToClear).ToArray();
+                foreach (var (ParamName, Value, Type) in paramsAndValues)
                 {
                     var paramToSave = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(ParamName, StringComparison.InvariantCultureIgnoreCase));
-                    if (paramToSave != null)                 // This should always be true
+                    if (Type != ParameterType.Table && paramToSave != null)      // This should always be true if not a list
                     {
                         paramToSave.Value = Value;
                     }
                     else
                     {
-                        EffectToSave.Params = EffectToSave.Params.Append(new Parameter
-                        {
-                            ParamName = ParamName,
-                            Value = Value
-                        }).ToArray();
+                        EffectToSave.Params =
+                        [
+                            .. EffectToSave.Params,
+                            new Parameter
+                            {
+                                ParamName = ParamName,
+                                Value = Value
+                            },
+                        ];
                     }
                 }
                 Saved = true;
                 this.Close();
             }
+        }
+
+        private Control GetAppropriateControl(EffectParameter parameterData, int row)
+        {
+            if (parameterData.Type == ParameterType.Character || parameterData.Type == ParameterType.Color || parameterData.Type == ParameterType.Text)
+                return tlpParameters.GetControlFromPosition(1, row).Controls[0];
+            else if (parameterData.Type == ParameterType.Table)
+                return tlpParameters.GetControlFromPosition(0, row).Controls[1];
+            return tlpParameters.GetControlFromPosition(1, row);
         }
     }
 #pragma warning restore IDE1006 // Estilos de nombres

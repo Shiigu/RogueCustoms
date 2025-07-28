@@ -27,7 +27,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -46,7 +47,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Attack",
@@ -56,7 +58,8 @@
         "Default": "{source.Damage}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Defense",
@@ -66,7 +69,8 @@
         "Default": "{target.Mitigation}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -76,7 +80,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -86,7 +91,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "CriticalHitChance",
@@ -96,7 +102,8 @@
         "Default": "10",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "CriticalHitFormula",
@@ -106,7 +113,8 @@
         "Default": "{CalculatedDamage} * 2",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Element",
@@ -116,7 +124,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesResistances",
@@ -126,7 +135,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesElementEffect",
@@ -136,7 +146,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -168,7 +179,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -187,7 +199,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -197,7 +210,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -207,7 +221,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -217,7 +232,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -249,7 +265,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -268,7 +285,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -278,7 +296,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -288,7 +307,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -298,7 +318,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -326,7 +347,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -336,7 +358,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "CanStealEquippables",
@@ -346,7 +369,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "CanStealConsumables",
@@ -356,7 +380,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -366,7 +391,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -389,7 +415,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": [ "BackColor", "ForeColor" ]
+        "OptionalIfFieldsHaveValue": [ "BackColor", "ForeColor" ],
+        "Columns": []
       },
       {
         "InternalName": "BackColor",
@@ -399,7 +426,8 @@
         "Default": "0,0,0,255",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": [ "Character", "ForeColor" ]
+        "OptionalIfFieldsHaveValue": [ "Character", "ForeColor" ],
+        "Columns": []
       },
       {
         "InternalName": "ForeColor",
@@ -409,7 +437,8 @@
         "Default": "255,255,255,255",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": [ "Character", "BackColor" ]
+        "OptionalIfFieldsHaveValue": [ "Character", "BackColor" ],
+        "Columns": []
       }
     ]
   },
@@ -453,7 +482,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -463,7 +493,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -473,7 +504,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -496,7 +528,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Color",
@@ -506,7 +539,8 @@
         "Default": "255,255,255,255",
         "ValidValues": [],
         "Required": false,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesVisibilityCheck",
@@ -516,7 +550,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -539,7 +574,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Text",
@@ -549,7 +585,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Color",
@@ -559,7 +596,8 @@
         "Default": "255,255,255,255",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -591,7 +629,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -610,7 +649,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -620,7 +660,8 @@
         "Default": "{source.Power}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -652,7 +693,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -671,7 +713,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -681,7 +724,8 @@
         "Default": "{source.Power}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -713,7 +757,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -732,7 +777,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -742,7 +788,8 @@
         "Default": "{source.Power}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -774,7 +821,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Amount",
@@ -784,7 +832,8 @@
         "Default": "{this.experiencepayout}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -807,7 +856,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -826,7 +876,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -836,7 +887,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Power",
@@ -846,7 +898,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "TurnLength",
@@ -856,7 +909,8 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -866,7 +920,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -889,7 +944,8 @@
         "Default": "{this}",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -908,7 +964,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Stat",
@@ -918,7 +975,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -928,7 +986,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -938,7 +997,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Amount",
@@ -948,7 +1008,8 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "TurnLength",
@@ -958,7 +1019,8 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "CanBeStacked",
@@ -968,7 +1030,8 @@
         "Default": "false",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "DisplayOnLog",
@@ -978,7 +1041,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1001,7 +1065,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -1020,7 +1085,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1030,7 +1096,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1040,7 +1107,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1059,48 +1127,12 @@
         "InternalName": "Stat",
         "DisplayName": "Stat",
         "Description": "Indicates the Stat whose Alterations will be removed.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
-        "ParameterType": "ComboBox",
+        "ParameterType": "Stat",
         "Default": "",
-        "ValidValues": [
-          {
-            "Key": "maxHP",
-            "Value": "Max HP"
-          },
-          {
-            "Key": "maxMP",
-            "Value": "Max MP"
-          },
-          {
-            "Key": "attack",
-            "Value": "Attack"
-          },
-          {
-            "Key": "defense",
-            "Value": "Defense"
-          },
-          {
-            "Key": "movement",
-            "Value": "Movement"
-          },
-          {
-            "Key": "hpRegeneration",
-            "Value": "HP Regeneration"
-          },
-          {
-            "Key": "mpRegeneration",
-            "Value": "MP Regeneration"
-          },
-          {
-            "Key": "accuracy",
-            "Value": "Accuracy"
-          },
-          {
-            "Key": "evasion",
-            "Value": "Evasion"
-          }
-        ],
+        "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -1119,7 +1151,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1129,7 +1162,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1139,7 +1173,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1171,7 +1206,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1181,7 +1217,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1191,7 +1228,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1223,7 +1261,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1233,7 +1272,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1243,7 +1283,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1275,7 +1316,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1285,7 +1327,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1295,7 +1338,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1327,7 +1371,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1337,7 +1382,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1347,7 +1393,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1389,7 +1436,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1399,7 +1447,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1409,7 +1458,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1441,7 +1491,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1451,7 +1502,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1461,7 +1513,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1493,7 +1546,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Target",
@@ -1512,7 +1566,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Id",
@@ -1522,7 +1577,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "FromInventory",
@@ -1532,7 +1588,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1542,7 +1599,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1552,7 +1610,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1584,7 +1643,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1594,7 +1654,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1604,7 +1665,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1627,7 +1689,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1637,7 +1700,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1647,7 +1711,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1670,7 +1735,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Level",
@@ -1680,7 +1746,8 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1690,7 +1757,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1700,7 +1768,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1723,7 +1792,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1733,7 +1803,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1756,7 +1827,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1779,7 +1851,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Value",
@@ -1789,7 +1862,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "RemoveOnFloorChange",
@@ -1799,7 +1873,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1822,7 +1897,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1854,7 +1930,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "ScriptId",
@@ -1864,7 +1941,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1874,7 +1952,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1884,7 +1963,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "InformThePlayer",
@@ -1894,7 +1974,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1926,7 +2007,8 @@
           }
         ],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "ScriptId",
@@ -1936,7 +2018,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Accuracy",
@@ -1946,7 +2029,8 @@
         "Default": "100",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "BypassesAccuracyCheck",
@@ -1956,7 +2040,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "InformThePlayer",
@@ -1966,7 +2051,8 @@
         "Default": "true",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1989,7 +2075,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -2012,7 +2099,8 @@
         "Default": "Counter",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "InitialValue",
@@ -2022,7 +2110,8 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "EndValue",
@@ -2032,7 +2121,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Increment",
@@ -2042,14 +2132,15 @@
         "Default": "1",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
   {
     "InternalName": "SelectYesNo",
     "TreeViewDisplayText": "Ask ({Message}) to the player",
-    "ComboBoxDisplayName": "Yes/No Prompt",
+    "ComboBoxDisplayName": "Show Yes/No Prompt",
     "Description": "Creates a Yes/No prompt window to the player.\n\nReturns true if the user selects Yes (left button), false if No (right button).",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": true,
@@ -2065,7 +2156,8 @@
         "Default": "DungeonName",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Message",
@@ -2075,7 +2167,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "YesButtonText",
@@ -2085,7 +2178,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "NoButtonText",
@@ -2095,7 +2189,8 @@
         "Default": "",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       },
       {
         "InternalName": "Color",
@@ -2105,7 +2200,96 @@
         "Default": "255,255,0,255",
         "ValidValues": [],
         "Required": true,
-        "OptionalIfFieldsHaveValue": []
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SelectOption",
+    "TreeViewDisplayText": "Ask the player an option for ({Message})",
+    "ComboBoxDisplayName": "Show Option Prompt",
+    "Description": "Creates a prompt window to the player where they have to choose an option.\n\nReturns true if the user selects an option, false if the user selects Cancel.\n\nThe result will be set in a flag.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "Message",
+        "DisplayName": "Message",
+        "Description": "The prompt text.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "Options",
+        "DisplayName": "Options",
+        "Description": "The options the player can choose.",
+        "ParameterType": "Table",
+        "Default": "",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": [
+          {
+            "Key": "Id",
+            "Header": "Id"
+          },
+          {
+            "Key": "Name",
+            "Header": "Name"
+          }
+        ]
+      },
+      {
+        "InternalName": "OptionFlag",
+        "DisplayName": "Result Flag",
+        "Description": "The Key of the Flag upon which the selected option will be stored in. If the flag does not exist, it will be created.",
+        "ParameterType": "Key",
+        "Default": "SelectedOption",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Window Border Color",
+        "Description": "The color of the prompt's border.",
+        "ParameterType": "Color",
+        "Default": "255,255,0,255",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   }
