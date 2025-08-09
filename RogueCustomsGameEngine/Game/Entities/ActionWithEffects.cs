@@ -128,7 +128,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             var AIStrategy = NPCAIStrategyFactory.GetNPCAIStrategy(source.AIType);
 
-            return AIStrategy.GetActionWeight(this, Map, User, source, target);
+            return AIStrategy.GetActionWeight(this, Map, new EffectCallerParams
+            {
+                Source = source,
+                This = User,
+                Target = target,
+                OriginalTarget = target
+            });
         }
 
         public bool CanBeUsedOn(ITargetable target, Character? source = null)

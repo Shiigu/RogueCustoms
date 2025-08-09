@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface INPCAIStrategy
     {
-        int GetActionWeight(ActionWithEffects action, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target);
-        int GetEffectWeight(Effect effect, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target);
+        int GetActionWeight(ActionWithEffects action, Map map, EffectCallerParams args);
+        int GetEffectWeight(Effect effect, Map map, EffectCallerParams args);
     }
 }
