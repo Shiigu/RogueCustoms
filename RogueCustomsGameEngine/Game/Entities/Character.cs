@@ -43,7 +43,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public int ItemCount => Inventory.Where(i => i.EntityType != EntityType.Key).Count();
 
-        public readonly string ExperiencePayoutFormula;
+        public readonly string BaseExperiencePayoutFormula;
+        public string ExperiencePayoutFormula { get; set; }
         public int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
         public int Experience { get; set; }
         public readonly string ExperienceToLevelUpFormula;
@@ -253,6 +254,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 };
                 Stats.Add(HungerDegeneration);
             }
+            BaseExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperiencePayoutFormula = entityClass.ExperiencePayoutFormula;
             ExperienceToLevelUpFormula = entityClass.ExperienceToLevelUpFormula;
             CanGainExperience = entityClass.CanGainExperience;
@@ -448,7 +450,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return !tilesInTheLine.Any(t => !t.IsWalkable);
         }
 
-        public async Task GainExperience(int GamePointsToAdd)
+        public virtual async Task GainExperience(int GamePointsToAdd)
         {
             if (!CanGainExperience) return;
             Experience += GamePointsToAdd;
@@ -687,7 +689,19 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
+                if (attacker is Character c && ExperiencePayout > 0)
+                    await GiveExperienceTo(c);
             }
+        }
+
+        public async Task GiveExperienceTo(Character character, int? amount = null)
+        {
+            if (!character.CanGainExperience || character.Level == character.MaxLevel) return;
+            var amountToGive = amount ?? ExperiencePayout;
+            if (amountToGive == 0) return;
+            if (character == Map.Player || Map.Player.CanSee(character))
+                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = character.Name, Amount = amountToGive.ToString() }), Color.DeepSkyBlue);
+            await character.GainExperience(amountToGive);
         }
 
         public override void SetActionIds()
@@ -696,7 +710,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
                 if (OwnOnAttack[i].IsScript)
-                    OwnOnAttack[i].SelectionId += "_S"; 
+                    OwnOnAttack[i].SelectionId += "_S";
             }
         }
     }

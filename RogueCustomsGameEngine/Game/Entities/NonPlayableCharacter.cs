@@ -382,7 +382,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     foreach (var tile in adjacentTiles)
                     {
                         if (tile.IsOccupied) continue;
-                        pathsFromAdjacentTiles.Add(Map.GetPathBetweenTiles(tile.Position, CurrentTarget.Position));
+                        pathsFromAdjacentTiles.Add(Map.GetPathBetweenTiles(tile.Position, PathToUse.Route.Last().Position));
                     }
                     if (pathsFromAdjacentTiles.Any())
                         PathToUse.Route = pathsFromAdjacentTiles.TakeRandomElement(Rng);
@@ -450,29 +450,36 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override async Task Die(Entity? attacker = null)
         {
             var events = new List<DisplayEventDto>();
-            await base.Die(attacker);
-            if (ExistenceStatus == EntityExistenceStatus.Dead)
+            foreach (var oda in OnDeath?.Where(oda => oda != null && (attacker == null || attacker is not Character || oda.ChecksCondition(this, attacker as Character) == true)))
             {
+                await oda.Do(this, attacker, true);
+            }
+            if (HP.Current <= 0)
+            {
+                ExistenceStatus = EntityExistenceStatus.Dead;
+                Passable = true;
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
-            }
-            if (attacker == Map.Player || Map.Player.CanSee(this))
-            {
-                if (!Map.IsDebugMode)
+                if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
+                    if (!Map.IsDebugMode)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
+                        });
+                    }
                     events.Add(new()
                     {
-                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                        Params = new() { Position, Map.GetConsoleRepresentationForCoordinates(Position.X, Position.Y) }
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.NPCDeath }
                     });
                 }
-                events.Add(new()
-                {
-                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                    Params = new() { SpecialEffect.NPCDeath }
-                });
+                Map.DisplayEvents.Add(($"NPC {Name} dies", events));
+                if (attacker is Character c && ExperiencePayout > 0)
+                    await GiveExperienceTo(c);
             }
-            Map.DisplayEvents.Add(($"NPC {Name} dies", events));
         }
 
         public override void PickItem(Item item, bool informToPlayer)

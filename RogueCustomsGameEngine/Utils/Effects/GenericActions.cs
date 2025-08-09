@@ -113,13 +113,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t || !t.CanGainExperience) return false;
             if (t.Level == t.MaxLevel) return false;
             if (t == Map.Player || Map.Player.CanSee(t))
-            {
                 Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
-                if(t == Map.Player || Map.Player.CanSee(t))
-                    await Map.Player.GainExperience((int) paramsObject.Amount);
-                else
-                    await t.GainExperience((int)paramsObject.Amount);
-            }
+            await t.GainExperience((int)paramsObject.Amount);
             return true;
         }
 

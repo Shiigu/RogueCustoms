@@ -30,7 +30,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
         }
 
-        public new async Task GainExperience(int GamePointsToAdd)
+        public override async Task GainExperience(int GamePointsToAdd)
         {
             var events = new List<DisplayEventDto>();
             var oldLevel = Level;
