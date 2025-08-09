@@ -15,30 +15,24 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
 {
     public class DefaultNPCAIStrategy : INPCAIStrategy
     {
-        public int GetActionWeight(ActionWithEffects action, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target)
+        public int GetActionWeight(ActionWithEffects action, Map map, EffectCallerParams args)
         {
-            var distanceFactor = action.MaximumRange > 1 ? (int)GamePoint.Distance(Source.Position, Target.Position) : 0;
+            var distanceFactor = action.MaximumRange > 1 ? (int)GamePoint.Distance(args.Source.Position, args.Target.Position) : 0;
 
-            var mpUseFactor = Source.MP != null ? (double) (action.MPCost / Source.MaxMP) : 0;
-            return (int)(GetEffectWeight(action.Effect, map, This, Source, Target) * (1 - mpUseFactor) - 5 * distanceFactor);
+            var mpUseFactor = (args.Source as Character).MP != null ? (double) (action.MPCost / (args.Source as Character).MaxMP) : 0;
+            return (int)(GetEffectWeight(action.Effect, map, args) * (1 - mpUseFactor) - 5 * distanceFactor);
         }
 
-        public int GetEffectWeight(Effect effect, Map map, Entity This, NonPlayableCharacter Source, ITargetable Target)
+        public int GetEffectWeight(Effect effect, Map map, EffectCallerParams args)
         {
             var weight = 0;
 
-            var targetAsCharacter = Target is Character c ? c : null;
-            var targetAsTile = Target is Tile t ? t : null;
-            dynamic paramsObject = ExpressionParser.ParseParams(new EffectCallerParams
-            {
-                This = This,
-                Source = Source,
-                Target = Target,
-                Params = effect.Params,
-                OriginalTarget = Target
-            });
+            var sourceAsCharacter = args.Source is Character s ? s : null;
+            var targetAsCharacter = args.Target is Character c ? c : null;
+            var targetAsTile = args.Target is Tile t ? t : null;
+            dynamic paramsObject = ExpressionParser.ParseParams(args);
             var accuracyFactor = effect.Params.Any(p => p.ParamName == "Accuracy")
-                 ? Math.Min(1, ExpressionParser.CalculateAdjustedAccuracy(Source, targetAsCharacter, paramsObject) / 100f * 2)
+                 ? Math.Min(1, ExpressionParser.CalculateAdjustedAccuracy(sourceAsCharacter, targetAsCharacter, paramsObject) / 100f * 2)
                  : 1;
 
             switch (effect.AsyncFunction.Method.Name)
@@ -49,6 +43,8 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
+                    var canCallElementEffect = !paramsObject.BypassesElementEffect;
+                    var attackElement = map.Elements.Find(e => e.Id.Equals(paramsObject.Element, StringComparison.InvariantCultureIgnoreCase));
                     var damageDealt = Math.Max(0, paramsObject.Damage - paramsObject.Mitigation);
                     if (damageDealt > 0 && damageDealt < 1)
                         damageDealt = 1;
@@ -59,6 +55,10 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = 5 + damageDealt * 5;
 
                     weight = (int)(weight * accuracyFactor);
+
+                    if (canCallElementEffect && attackElement?.OnAfterAttack?.Effect != null)
+                        weight += GetEffectWeight(attackElement.OnAfterAttack.Effect, map, args);
+
                     break;
 
                 case "BurnMP":
@@ -86,7 +86,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
 
                 case "StealItem":
-                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || Source.ItemCount >= Source.InventorySize)
+                    if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive || sourceAsCharacter.ItemCount >= sourceAsCharacter.InventorySize)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
@@ -282,7 +282,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    var distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
+                    var distanceToUse = sourceAsCharacter.Position != targetAsTile.Position ? (int)GamePoint.Distance(sourceAsCharacter.Position, targetAsTile.Position) : 0.5;
                     weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
 
@@ -292,44 +292,30 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
+                    distanceToUse = sourceAsCharacter.Position != targetAsTile.Position ? (int)GamePoint.Distance(sourceAsCharacter.Position, targetAsTile.Position) : 0.5;
                     weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
                 case "ReviveNPC":
-                    if (targetAsTile == null || targetAsTile.GetDeadCharacters().Any(c => c.Faction == Source.Faction || c.Faction.AlliedWith.Contains(Source.Faction)) != null)
+                    if (targetAsTile == null || targetAsTile.GetDeadCharacters().Any(c => c.Faction == sourceAsCharacter.Faction || c.Faction.AlliedWith.Contains(sourceAsCharacter.Faction)) != null)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;
                     }
-                    distanceToUse = Source.Position != targetAsTile.Position ? (int)GamePoint.Distance(Source.Position, targetAsTile.Position) : 0.5;
+                    distanceToUse = sourceAsCharacter.Position != targetAsTile.Position ? (int)GamePoint.Distance(sourceAsCharacter.Position, targetAsTile.Position) : 0.5;
                     weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
-
-                case "Remove":
-                case "ReplaceConsoleRepresentation":
-                case "PrintText":
-                case "MessageBox":
-                case "GiveExperience":
-                case "GenerateStairs":
-                case "CheckCondition":
-                case "SetFlag":
-                    // These functions are irrelevant for NPC decision making
-                    break;
-
-                default:
-                    throw new NotImplementedException($"Weight calculation not implemented for function: {effect.AsyncFunction.Method.Name}");
             }
 
             if (effect.Then != null)
             {
-                weight += GetEffectWeight(effect.Then, map, This, Source, Target);
+                weight += GetEffectWeight(effect.Then, map, args);
             }
             else
             {
                 if (effect.OnSuccess != null)
-                    weight += GetEffectWeight(effect.OnSuccess, map, This, Source, Target);
+                    weight += GetEffectWeight(effect.OnSuccess, map, args);
                 if (effect.OnFailure != null)
-                    weight += GetEffectWeight(effect.OnFailure, map, This, Source, Target);
+                    weight += GetEffectWeight(effect.OnFailure, map, args);
             }
 
             return weight;
