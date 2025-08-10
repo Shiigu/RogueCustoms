@@ -651,7 +651,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 catch (FlagNotFoundException fe)
                 {
-                    if (!This.Map.IsDebugMode)
+                    var map = This != null ? This.Map
+                                : Source != null ? Source.Map
+                                    : Target != null ? (Target as Entity).Map
+                                        : null;
+                    if (!map.IsDebugMode)
                     {
                         var e = new Exception(fe.Message);
                         ExceptionDispatchInfo.SetRemoteStackTrace(e, fe.StackTrace);
@@ -659,8 +663,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                     else
                     {
-                        This.Map.CreateFlag(fe.FlagName, 0, false);
-                        This.Map.AppendMessage($"WARNING - {fe.FlagName} is used but not declared. It has been set to 0 to allow testing.", new GameColor(Color.Red));
+                        map.CreateFlag(fe.FlagName, 0, false);
+                        map.AppendMessage($"WARNING - {fe.FlagName} is used but not declared. It has been set to 0 to allow testing.", new GameColor(Color.Red));
                     }
                 }
                 catch (Exception ex)

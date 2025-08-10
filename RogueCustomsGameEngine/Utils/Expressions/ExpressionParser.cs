@@ -104,7 +104,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     if (!paramsDict.ContainsKey(paramName))
                         paramsDict[paramName] = value;
                 }
-                catch (FlagNotFoundException)
+                catch (FlagNotFoundException ex)
                 {
                     throw;
                 }
