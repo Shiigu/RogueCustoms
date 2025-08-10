@@ -78,7 +78,7 @@ namespace RogueCustomsDungeonEditor.Utils
             for (int i = 0; i < tokens.Count; i++)
             {
                 var token = tokens[i];
-                if (Regex.IsMatch(token, @"\[\w+\]")) // It's a flag token
+                if (Regex.IsMatch(token, @"\[.+\]")) // It's a flag token
                 {
                     string inferredPlaceholder = numericPlaceholder;
 
@@ -112,7 +112,7 @@ namespace RogueCustomsDungeonEditor.Utils
 
             // Second pass: handle function parsing and execution
             // Since logical operators might be in place, split the expression based on those, and handle function parsing for each part.
-            tokens = ExpressionParser.SplitExpression(string.Join("", tokens));
+            tokens = ExpressionParser.SplitExpression(string.Concat(tokens));
 
             for (int i = 0; i < tokens.Count; i++)
             {
@@ -267,14 +267,17 @@ namespace RogueCustomsDungeonEditor.Utils
 
                 foreach (Match match in flagValueMatches)
                 {
-                    paramValuesToReplace.Add((param.ParamName, param.Value.Replace(match.Value, "1", StringComparison.InvariantCultureIgnoreCase)));
+                    paramValuesToReplace.Add((param.ParamName, ConvertFlagToPlaceholder(param.Value, "1", "\"1\"", "true")));
                 }
 
-                var flagValueLocaleMatches = Regex.Matches(map.Locale[param.Value], regexFlagValue);
-
-                foreach (Match match in flagValueLocaleMatches)
+                if (!flagValueMatches.Any())
                 {
-                    paramValuesToReplace.Add((param.ParamName, map.Locale[param.Value].Replace(match.Value, "1", StringComparison.InvariantCultureIgnoreCase)));
+                    var flagValueLocaleMatches = Regex.Matches(map.Locale[param.Value], regexFlagValue);
+
+                    foreach (Match match in flagValueLocaleMatches)
+                    {
+                        paramValuesToReplace.Add((param.ParamName, ConvertFlagToPlaceholder(map.Locale[param.Value], "1", "\"1\"", "true")));
+                    }
                 }
             }
 
@@ -306,7 +309,38 @@ namespace RogueCustomsDungeonEditor.Utils
 
             var paramsObjectAsDictionary = paramsObject.ToDictionary();
 
-            return paramsObjectAsDictionary.Count >= effect.Params.Count(p => !string.IsNullOrEmpty(p.Value));
+            return paramsObjectAsDictionary.Count >= effect.Params.DistinctBy(p => p.ParamName).Count(p => !string.IsNullOrEmpty(p.Value));
+        }
+
+        private static string ConvertFlagToPlaceholder(this string arg, string numericPlaceholder, string stringPlaceholder, string booleanPlaceholder)
+        {
+            var tokens = ExpressionParser.SplitExpression(arg);
+
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var token = tokens[i];
+                if (Regex.IsMatch(token, @"\[.+\]")) // It's a flag token
+                {
+                    string inferredPlaceholder = numericPlaceholder;
+
+                    // Look at the next token (right-hand side)
+                    if (i + 2 < tokens.Count && IsComparisonOperator(tokens[i + 1]))
+                    {
+                        var rhs = tokens[i + 2];
+
+                        if (Regex.IsMatch(rhs, "^\".*\"$")) // string literal
+                            inferredPlaceholder = stringPlaceholder;
+                        else if (rhs.Equals("true", StringComparison.OrdinalIgnoreCase) || rhs.Equals("false", StringComparison.OrdinalIgnoreCase))
+                            inferredPlaceholder = booleanPlaceholder;
+                        else if (double.TryParse(rhs, out _))
+                            inferredPlaceholder = numericPlaceholder;
+                    }
+
+                    tokens[i] = inferredPlaceholder;
+                }
+            }
+
+            return string.Concat(tokens);
         }
 
         public static async Task<bool> TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
@@ -322,7 +356,7 @@ namespace RogueCustomsDungeonEditor.Utils
                     OriginalTarget = Target
                 });
             }
-            else 
+            else
             {
                 return effect.Function(new EffectCallerParams
                 {

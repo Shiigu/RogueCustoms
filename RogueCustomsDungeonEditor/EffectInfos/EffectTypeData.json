@@ -829,7 +829,7 @@
         "DisplayName": "Amount",
         "Description": "Amount of Experience Points to be given. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
         "ParameterType": "Formula",
-        "Default": "{this.experiencepayout}",
+        "Default": "{this.ExperiencePayout}",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
@@ -2286,6 +2286,30 @@
         "Description": "The color of the prompt's border.",
         "ParameterType": "Color",
         "Default": "255,255,0,255",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ChangeExperiencePayoutFormula",
+    "TreeViewDisplayText": "Change Own Experience Payout to ({Formula})",
+    "ComboBoxDisplayName": "Change Own Experience Payout",
+    "Description": "The amount of experience given by the calling object will be modified.\n\nThrows an error if called by anything other than a Character.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Formula",
+        "DisplayName": "Formula",
+        "Description": "The new Experience Payout formula used by this character.",
+        "ParameterType": "Formula",
+        "Default": "{this.BaseExperiencePayoutFormula}",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": [],

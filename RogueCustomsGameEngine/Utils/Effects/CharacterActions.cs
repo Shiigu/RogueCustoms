@@ -221,6 +221,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
+
+        public static bool ChangeExperiencePayoutFormula(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s Experience Payout Formula when it's not a Character.");
+
+            c.ExperiencePayoutFormula = paramsObject.Formula;
+
+            return true;
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

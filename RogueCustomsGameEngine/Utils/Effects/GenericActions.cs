@@ -784,7 +784,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool GiveItem(EffectCallerParams Args)
+        public static async Task<bool> GiveItem(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -820,7 +820,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var itemToGive = paramsObject.FromInventory
                     ? s.Inventory.Find(i => i.ClassId.Equals(itemClass.Id))
-                    : Map.AddEntity(paramsObject.Id, 1, new GamePoint(0, 0)) as Item;
+                    : await Map.AddEntity(paramsObject.Id, 1, new GamePoint(0, 0)) as Item;
                 if (paramsObject.FromInventory)
                     s.Inventory.Remove(itemToGive);
                 t.Inventory.Add(itemToGive);

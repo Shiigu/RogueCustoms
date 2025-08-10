@@ -272,9 +272,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
-                if (nextEffect.AsyncFunction != null)
+                if (nextEffect.AsyncFunction != null || nextEffect.Function != null)
                 {
-                    var functionName = nextEffect.AsyncFunction.Method.Name;
+                    var functionName = nextEffect.AsyncFunction != null
+                        ? nextEffect.AsyncFunction.Method.Name
+                        : nextEffect.Function.Method.Name;
 
                     if (functionName == "ApplyAlteredStatus")
                     {
@@ -426,9 +428,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 var nextEffect = pendingEffects.Find(pe => pe != null);
                 if (nextEffect == null) break;
                 pendingEffects.Remove(nextEffect);
-                if (nextEffect.AsyncFunction != null)
+                if (nextEffect.AsyncFunction != null || nextEffect.Function != null)
                 {
-                    var functionName = nextEffect.AsyncFunction.Method.Name;
+                    var functionName = nextEffect.AsyncFunction != null
+                        ? nextEffect.AsyncFunction.Method.Name
+                        : nextEffect.Function.Method.Name;
 
                     if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                     {
