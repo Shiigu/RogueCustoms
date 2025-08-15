@@ -2338,5 +2338,107 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "SwitchTarget",
+    "TreeViewDisplayText": "Switch Target to one where ({SelectionCondition})",
+    "ComboBoxDisplayName": "Switch Target",
+    "Description": "The current execution will try to replace a Target with another character.\n\nIt leaves an internal inaccessible flag to indicate which Characters have already been picked.\n\nIf it fails, the previous Target remains picked.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "SelectionCondition",
+        "DisplayName": "Condition",
+        "Description": "This condition must return true for a candidate character to be picked as a Target.",
+        "ParameterType": "BooleanExpression",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickSelf",
+        "DisplayName": "Can Pick Self?",
+        "Description": "If true, This can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickAllies",
+        "DisplayName": "Can Pick Allies?",
+        "Description": "If true, characters allied with This can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickNeutrals",
+        "DisplayName": "Can Pick Neutrals?",
+        "Description": "If true, characters neutral with This can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickEnemies",
+        "DisplayName": "Can Pick Enemies?",
+        "Description": "If true, characters enemies with This can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickInvisibles",
+        "DisplayName": "Can Pick non-visibles?",
+        "Description": "If true, characters This cannot see right now can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanRepeatPick",
+        "DisplayName": "Can Repeat a Pick?",
+        "Description": "If true, characters that were already picked can be chosen again in this evaluation.\n\nNaturally, this does nothing if this function isn't called again during the current Action execution.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ResetTarget",
+    "TreeViewDisplayText": "Reset Target",
+    "ComboBoxDisplayName": "Reset Target",
+    "Description": "The Action's Target will be restored to the original.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": []
   }
 ]

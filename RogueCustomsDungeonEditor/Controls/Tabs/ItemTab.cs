@@ -188,6 +188,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnDeath.ActionDescription = "When someone equipping it dies...               ";
                 saeItemOnDeath.SourceDescription = "Whoever is equipping This";
                 saeItemOnAttacked.Visible = true;
+                ItemStatsSheet.Visible = true;
             }
             else if (cmbItemType.Text == "Consumable")
             {
@@ -202,6 +203,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnDeath.SourceDescription = "Whoever is has This in their Inventory";
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
+                ItemStatsSheet.Visible = true;
             }
             else
             {

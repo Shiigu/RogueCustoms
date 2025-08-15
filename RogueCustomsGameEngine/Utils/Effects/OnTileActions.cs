@@ -244,14 +244,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target Tile must be Walkable
                 return false;
 
-            if (!t.GetDeadCharacters().Exists(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)))
+            if (!t.GetDeadCharacters().Exists(dc => dc.Faction == c.Faction || dc.Faction.IsAlliedWith(c.Faction)))
                 // Attempted to Revive when there are no dead Characters in the Tile that are of an allied Faction to Source's.
                 return false;
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, null, paramsObject);
             if (Rng.RollProbability() <= accuracyCheck)
             {
-                var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.AlliedWith.Contains(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
+                var npc = t.GetDeadCharacters().Where(dc => dc.Faction == c.Faction || dc.Faction.IsAlliedWith(c.Faction)).TakeRandomElement(Rng) as NonPlayableCharacter;
                 npc.HP.Current = npc.HP.Base;
                 if (npc.MP != null)
                     npc.MP.Current = npc.MP.Base;

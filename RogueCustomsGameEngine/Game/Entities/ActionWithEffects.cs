@@ -97,8 +97,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info) : null;
         }
 
-        public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
+        public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone, bool clearIterationFlags = true)
         {
+            if (clearIterationFlags)
+            {
+                foreach (var character in Map.GetCharacters())
+                {
+                    character.PickedForSwap = false;
+                }
+            }
             var successfulEffects = await Effect.Do(User, source, target);
 
             if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
@@ -582,100 +589,103 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task<List<string>> Do(Entity This, Entity Source, ITargetable Target)
         {
+            var priorContext = ExecutionContext.Current;
             ExecutionContext.Current = new();
-            var currentEffect = this;
-            var successfulEffects = new List<string>();
-
-            do
+            try
             {
-                try
+                var currentEffect = this;
+                var successfulEffects = new List<string>();
+                var currentTarget = Target;
+                do
                 {
-                    ExecutionContext.Current.CurrentEffect = currentEffect;
-                    bool success = false;
-                    if (currentEffect.Function != null)
+                    try
                     {
-                        success = currentEffect.Function(new EffectCallerParams
+                        ExecutionContext.Current.CurrentEffect = currentEffect;
+                        bool success = false;
+                        var effectParams = new EffectCallerParams
                         {
                             This = This,
                             Source = Source,
-                            Target = Target,
+                            Target = currentTarget,
                             Params = currentEffect.Params,
                             OriginalTarget = Target
-                        });
-                        if (success)
-                            successfulEffects.Add(currentEffect.Function.Method.Name);
-                    }
-                    else
-                    {
-                        success = await currentEffect.AsyncFunction(new EffectCallerParams
+                        };
+                        if (currentEffect.Function != null)
                         {
-                            This = This,
-                            Source = Source,
-                            Target = Target,
-                            Params = currentEffect.Params,
-                            OriginalTarget = Target
-                        });
-                        if (success)
-                            successfulEffects.Add(currentEffect.AsyncFunction.Method.Name);
-                    }
-                    
-
-                    currentEffect = currentEffect.Then ?? (success
-                                            ? currentEffect.OnSuccess
-                                            : currentEffect.OnFailure);
-
-                    if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
-                    {
-                        switch (frame)
+                            success = currentEffect.Function(effectParams);
+                            if (success)
+                                successfulEffects.Add(currentEffect.Function.Method.Name);
+                        }
+                        else
                         {
-                            case WhileFrame wf:
-                                currentEffect = wf.StartEffect;
-                                ExecutionContext.Current.LoopStack.Pop(); // We remove it in case the While fails; if it succeeds, it will be added again, no harm done
-                                continue;
+                            success = await currentEffect.AsyncFunction(effectParams);
+                            if (success)
+                                successfulEffects.Add(currentEffect.AsyncFunction.Method.Name);
+                        }
 
-                            case ForFrame ff:
-                                ff.Advance();
-                                if (ff.ShouldContinue())
-                                {
-                                    currentEffect = ff.StartEffect.OnSuccess;
+                        currentTarget = effectParams.Target;
+
+                        currentEffect = currentEffect.Then ?? (success
+                                                ? currentEffect.OnSuccess
+                                                : currentEffect.OnFailure);
+
+                        if (currentEffect == null && ExecutionContext.Current.LoopStack.TryPeek(out var frame))
+                        {
+                            switch (frame)
+                            {
+                                case WhileFrame wf:
+                                    currentEffect = wf.StartEffect;
+                                    ExecutionContext.Current.LoopStack.Pop(); // We remove it in case the While fails; if it succeeds, it will be added again, no harm done
                                     continue;
-                                }
-                                else
-                                {
-                                    currentEffect = ff.StartEffect.OnFailure;
-                                    ExecutionContext.Current.LoopStack.Pop();
-                                }
-                                break;
+
+                                case ForFrame ff:
+                                    ff.Advance();
+                                    if (ff.ShouldContinue())
+                                    {
+                                        currentEffect = ff.StartEffect.OnSuccess;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        currentEffect = ff.StartEffect.OnFailure;
+                                        ExecutionContext.Current.LoopStack.Pop();
+                                    }
+                                    break;
+                            }
                         }
                     }
-                }
-                catch (FlagNotFoundException fe)
-                {
-                    var map = This != null ? This.Map
-                                : Source != null ? Source.Map
-                                    : Target != null ? (Target as Entity).Map
-                                        : null;
-                    if (!map.IsDebugMode)
+                    catch (FlagNotFoundException fe)
                     {
-                        var e = new Exception(fe.Message);
-                        ExceptionDispatchInfo.SetRemoteStackTrace(e, fe.StackTrace);
+                        var map = This != null ? This.Map
+                                    : Source != null ? Source.Map
+                                        : Target != null ? (Target as Entity).Map
+                                            : null;
+                        if (!map.IsDebugMode)
+                        {
+                            var e = new Exception(fe.Message);
+                            ExceptionDispatchInfo.SetRemoteStackTrace(e, fe.StackTrace);
+                            throw e;
+                        }
+                        else
+                        {
+                            map.CreateFlag(fe.FlagName, 0, false);
+                            map.AppendMessage($"WARNING - {fe.FlagName} is used but not declared. It has been set to 0 to allow testing.", new GameColor(Color.Red));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var e = new Exception(ex.Message);
+                        ExceptionDispatchInfo.SetRemoteStackTrace(e, ex.StackTrace);
                         throw e;
                     }
-                    else
-                    {
-                        map.CreateFlag(fe.FlagName, 0, false);
-                        map.AppendMessage($"WARNING - {fe.FlagName} is used but not declared. It has been set to 0 to allow testing.", new GameColor(Color.Red));
-                    }
                 }
-                catch (Exception ex)
-                {
-                    var e = new Exception(ex.Message);
-                    ExceptionDispatchInfo.SetRemoteStackTrace(e, ex.StackTrace);
-                    throw e;
-                }
+                while (currentEffect != null);
+                return successfulEffects.Distinct().ToList();
             }
-            while (currentEffect != null);
-            return successfulEffects.Distinct().ToList();
+            finally
+            {
+                ExecutionContext.Current = priorContext;
+            }
         }
 
         public bool HasFunction(string fName)

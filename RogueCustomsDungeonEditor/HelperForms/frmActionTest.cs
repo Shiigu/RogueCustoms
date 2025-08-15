@@ -229,7 +229,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var equippableClassInfo = new ItemInfo()
             {
                 Id = "Equippable",
-                Name = ClassId,
+                Name = SourceObjectType == ElementType.Equippable ? ClassId : "Equippable",
                 OnAttack = new(),
                 OnAttacked = new(),
                 OnDeath = new(),
@@ -243,7 +243,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var inventoryClassInfo = new ItemInfo()
             {
                 Id = "HeldItem",
-                Name = "HeldItem",
+                Name = SourceObjectType == ElementType.Consumable ? ClassId : "HeldItem",
                 Power = "0",
                 OnAttack = new(),
                 OnAttacked = new(),
@@ -296,10 +296,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 Target = TestDungeon.CurrentFloor.Tiles.ToList().First(t => t.IsWalkable && !t.IsOccupied);
             }
 
+            for (int i = 0; i < new Random().Next(1, 6); i++)
+            {
+                if (SourceObjectType == ElementType.Character || SourceObjectType == ElementType.Tile || SourceObjectType == ElementType.Equippable)
+                    CreateNPC($"Dummy{i}", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass);
+                else if (!TestAction.TargetTypes.Contains(TargetType.Self))
+                    CreateNPC($"Dummy{i}", crsTarget, issTarget, clbTargetStatuses, equippableClass, heldItemClass);
+            }
+
             try
             {
                 TestDungeon.CurrentFloor.Snapshot = new(TestDungeon, TestDungeon.CurrentFloor);
-
+                TestAction.Map = TestDungeon.CurrentFloor;
                 await TestAction.Do(Source, Target, false);
 
                 txtMessageLog.Clear();
@@ -376,7 +384,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 status?.ApplyTo(npc, 0, 1);
             }
             npc.Visible = true;
-            npc.Position = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable && !t.IsOccupied)[0].Position;
+            var possibleTiles = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable && !t.IsOccupied);
+            npc.Position = possibleTiles[new Random().Next(possibleTiles.Count)].Position;
             npc.HP.Current -= npc.HP.Current / 5;
             npc.MP.Current -= npc.MP.Current / 5;
             npc.Hunger.Current -= npc.Hunger.Current / 5;
@@ -385,6 +394,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             npc.StartingArmor = new Item(equippableClass, TestDungeon.CurrentFloor);
             npc.StartingArmor.Power = "0";
             npc.Inventory.Add(new Item(inventoryClass, TestDungeon.CurrentFloor));
+            npc.Faction = TestDungeon.Factions[new Random().Next(TestDungeon.Factions.Count)];
+            TestDungeon.CurrentFloor.AICharacters.Add(npc);
 
             return npc;
         }

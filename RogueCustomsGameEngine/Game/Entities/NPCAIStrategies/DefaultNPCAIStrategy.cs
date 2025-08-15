@@ -297,7 +297,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     weight = (int)(2 * accuracyFactor / distanceToUse);
                     break;
                 case "ReviveNPC":
-                    if (targetAsTile == null || targetAsTile.GetDeadCharacters().Any(c => c.Faction == sourceAsCharacter.Faction || c.Faction.AlliedWith.Contains(sourceAsCharacter.Faction)) != null)
+                    if (targetAsTile == null || targetAsTile.GetDeadCharacters().Any(c => c.Faction == sourceAsCharacter.Faction || c.Faction.IsAlliedWith(sourceAsCharacter.Faction)) != null)
                     {
                         weight = (weight == 0) ? -500 : weight - 100;
                         break;

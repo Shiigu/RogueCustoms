@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityFaction = c.Faction;
 
-            return (Target.GetDeadCharacters().Any(c => c.Faction.AlliedWith.Contains(entityFaction))).ToString();
+            return (Target.GetDeadCharacters().Any(c => c.Faction.IsAlliedWith(entityFaction))).ToString();
         }
     }
 }
