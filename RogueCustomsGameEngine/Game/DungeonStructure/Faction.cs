@@ -31,5 +31,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             NeutralWith = new List<Faction>();
             EnemiesWith = new List<Faction>();
         }
+
+        public bool IsAlliedWith(Faction otherFaction)
+        {
+            return AlliedWithIds.Contains(otherFaction.Id) || AlliedWith.Exists(f => f.Id == otherFaction.Id);
+        }
+
+        public bool IsNeutralWith(Faction otherFaction)
+        {
+            return NeutralWithIds.Contains(otherFaction.Id) || NeutralWith.Exists(f => f.Id == otherFaction.Id);
+        }
+        public bool IsEnemyWith(Faction otherFaction)
+        {
+            return EnemiesWithIds.Contains(otherFaction.Id) || EnemiesWith.Exists(f => f.Id == otherFaction.Id);
+        }
     }
 }

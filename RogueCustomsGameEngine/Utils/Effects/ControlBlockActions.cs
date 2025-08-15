@@ -32,7 +32,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var ctx = ExecutionContext.Current
                 ?? throw new InvalidOperationException("No execution context.");
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
-            var conditionResult = new Expression(paramsObject.Condition).Eval<bool>();
+
+            var conditionResult = ExpressionParser.CalculateBooleanExpression(paramsObject.Condition);
 
             if (conditionResult)
                 ctx.LoopStack.Push(new WhileFrame(ctx.CurrentEffect));

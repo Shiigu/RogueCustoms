@@ -168,7 +168,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Die(paramsObject.Attacker);
             else if (canCallElementEffect && attackElement.OnAfterAttack != null)
             {
-                await attackElement.OnAfterAttack.Do(Args.Source, c, false);
+                await attackElement.OnAfterAttack.Do(Args.Source, c, false, false);
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
             }

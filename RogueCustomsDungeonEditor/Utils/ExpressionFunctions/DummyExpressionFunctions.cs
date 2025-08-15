@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 {
@@ -94,6 +95,16 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         public static string CURRENTARMOR(Entity This, Entity Source, Entity Target, string[] parameters)
         {
             return "\"\"";
+        }
+
+        public static string DISTANCEBETWEEN(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            return "1";
+        }
+
+        public static string AREINTHESAMEROOM(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            return "true";
         }
     }
 }

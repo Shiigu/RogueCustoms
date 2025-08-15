@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -218,6 +219,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
 
         public List<GamePoint> LatestPositions { get; private set; } = new List<GamePoint>(4);
+
+        [JsonIgnore]
+        public bool PickedForSwap { get; set; } = false;
 
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
@@ -459,9 +463,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 LastLevelUpExperience = ExperienceToLevelUp;
                 Level++;
                 Color forecolorToUse;
-                if (this == Map.Player || Faction.AlliedWith.Contains(Map.Player.Faction))
+                if (this == Map.Player || Faction.IsAlliedWith(Map.Player.Faction))
                     forecolorToUse = Color.Lime;
-                else if (Faction.EnemiesWith.Contains(Map.Player.Faction))
+                else if (Faction.IsEnemyWith(Map.Player.Faction))
                     forecolorToUse = Color.Red;
                 else
                     forecolorToUse = Color.DeepSkyBlue;
@@ -667,11 +671,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (target == this)
                 return TargetType.Self;
-            if (Faction.AlliedWith.Contains(target.Faction))
+            if (Faction.IsAlliedWith(target.Faction))
                 return TargetType.Ally;
-            if (Faction.NeutralWith.Contains(target.Faction))
+            if (Faction.IsNeutralWith(target.Faction))
                 return TargetType.Neutral;
-            if (Faction.EnemiesWith.Contains(target.Faction))
+            if (Faction.IsEnemyWith(target.Faction))
                 return TargetType.Enemy;
             if (Faction.Id.Equals(target.Faction.Id))
                 return TargetType.Neutral;

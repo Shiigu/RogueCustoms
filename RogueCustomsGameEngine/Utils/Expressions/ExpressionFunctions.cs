@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.Representation;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 
 namespace RogueCustomsGameEngine.Utils.Expressions
@@ -49,13 +50,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = entityName.ToLowerInvariant() switch { 
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
-                _ => throw new ArgumentException("Invalid entity name in HasStatus.")
-            };
+            var entityToCheck = GetEntityByName(entityName, "HasStatus", This, Source, Target);
 
             var statusName = parameters[1];
 
@@ -74,14 +69,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = entityName.ToLowerInvariant() switch
-            {
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
-                _ => throw new ArgumentException("Invalid entity name in DoesNotHaveStatus.")
-            };
+            var entityToCheck = GetEntityByName(entityName, "DoesNotHaveStatus", This, Source, Target);
 
             var statusExists = HASSTATUS(This, Source, Target, parameters);
             return (!(bool.Parse(statusExists))).ToString();
@@ -170,14 +158,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = entityName.ToLowerInvariant() switch
-            {
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
-                _ => throw new ArgumentException("Invalid entity name in UsesStat.")
-            };
+            var entityToCheck = GetEntityByName(entityName, "UsesStat", This, Source, Target);
 
             var statId = parameters[1];
 
@@ -196,14 +177,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = entityName.ToLowerInvariant() switch
-            {
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
-                _ => throw new ArgumentException("Invalid entity name in CurrentWeapon.")
-            };
+            var entityToCheck = GetEntityByName(entityName, "CurrentWeapon", This, Source, Target);
 
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in CurrentWeapon.");
@@ -217,19 +191,69 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = entityName.ToLowerInvariant() switch
-            {
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
-                _ => throw new ArgumentException("Invalid entity name in CurrentArmor.")
-            };
+            var entityToCheck = GetEntityByName(entityName, "CurrentArmor", This, Source, Target);
 
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in CurrentArmor.");
 
             return $"\"{c.Armor.ClassId}\"";
+        }
+
+        public static string DISTANCEBETWEEN(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for DistanceBetween.");
+
+            var entity1Name = parameters[0].ToLower();
+
+            var entity1ToCheck = GetEntityByName(entity1Name, "DistanceBetween", This, Source, Target);
+
+            var entity2Name = parameters[1].ToLower();
+
+            var entity2ToCheck = GetEntityByName(entity2Name, "DistanceBetween", This, Source, Target);
+
+            if (entity1ToCheck is not Character c1 || c1.Position == null)
+                throw new ArgumentException("Invalid entity in DistanceBetween.");
+            if (entity2ToCheck is not Character c2 || c2.Position == null)
+                throw new ArgumentException("Invalid entity in DistanceBetween.");
+
+            return Math.Floor(GamePoint.Distance(c1.Position, c2.Position)).ToString();
+        }
+        public static string AREINTHESAMEROOM(Entity This, Entity Source, Entity Target, string[] parameters)
+        {
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for AreInSameRoom.");
+
+            var entity1Name = parameters[0].ToLower();
+
+            var entity1ToCheck = GetEntityByName(entity1Name, "AreInSameRoom", This, Source, Target);
+
+            var entity2Name = parameters[1].ToLower();
+
+            var entity2ToCheck = GetEntityByName(entity2Name, "AreInSameRoom", This, Source, Target);
+
+            if (entity1ToCheck is not Character c1 || c1.Position == null)
+                throw new ArgumentException("Invalid entity in AreInSameRoom.");
+            if (entity2ToCheck is not Character c2 || c2.Position == null)
+                throw new ArgumentException("Invalid entity in AreInSameRoom.");
+
+            var c1IsInHallwayTile = c1.ContainingTile.Type == TileType.Hallway || c1.ContainingRoom == null || c1.ContainingTile.IsConnectorTile;
+            var c2IsInHallwayTile = c2.ContainingTile.Type == TileType.Hallway || c2.ContainingRoom == null || c2.ContainingTile.IsConnectorTile;
+
+            if (!c1IsInHallwayTile && !c2IsInHallwayTile)
+                return (c1.ContainingRoom == c2.ContainingRoom).ToString();
+
+            return ((Map.GetFOVTilesWithinDistance(c1.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c2.ContainingTile) || Map.GetFOVTilesWithinDistance(c2.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c1.ContainingTile))).ToString();
+        }
+
+        private static Entity GetEntityByName(string name, string functionName, Entity This, Entity Source, Entity Target)
+        {
+            return name.ToLowerInvariant() switch
+            {
+                "this" => This,
+                "source" => Source,
+                "target" => Target,
+                "player" => This.Map.Player,
+                _ => throw new ArgumentException($"Invalid entity name {name} in {functionName}.")
+            };
         }
     }
 }

@@ -195,6 +195,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ControlBlockActions.SetActionParams(Rng, this);
             PromptActions.SetActionParams(Rng, this);
             ExpressionParser.Setup(Rng, this);
+            if (FloorConfigurationToUse.OnFloorStart != null)
+                FloorConfigurationToUse.OnFloorStart.Map = this;
+            foreach (var element in Dungeon.Elements)
+            {
+                if(element.OnAfterAttack != null)
+                    element.OnAfterAttack.Map = this;
+            }
+            foreach (var tileType in Dungeon.TileTypes)
+            {
+                if (tileType.OnStood != null)
+                    tileType.OnStood.Map = this;
+            }
         }
 
         public void LoadRngState(int seed)
@@ -765,7 +777,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 if (await AddEntity(keyTypeToUse.KeyClass) is Item keyEntity && Rng.RollProbability() <= keyGenerationData.KeySpawnInEnemyInventoryOdds)
                 {
-                    var enemiesInPlayerIsland = AICharacters.Where(c => !c.Inventory.Any(i => i.EntityType == EntityType.Key) && islandWithPlayer.Contains(c.ContainingTile) && c.Faction.EnemiesWith.Contains(Player.Faction) && c.Visible);
+                    var enemiesInPlayerIsland = AICharacters.Where(c => !c.Inventory.Any(i => i.EntityType == EntityType.Key) && islandWithPlayer.Contains(c.ContainingTile) && c.Faction.IsEnemyWith(Player.Faction) && c.Visible);
                     if (enemiesInPlayerIsland.Any())
                         enemiesInPlayerIsland.TakeRandomElement(Rng).PickItem(keyEntity, false);
                 }
@@ -1270,7 +1282,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 DisplayEvents.Add(($"Floor {FloorLevel} start", events));
 
-                if(FloorConfigurationToUse.OnFloorStart != null)
+                if (FloorConfigurationToUse.OnFloorStart != null)
                     await FloorConfigurationToUse.OnFloorStart.Do(Player, Player, false);
 
                 #endregion
@@ -1460,14 +1472,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (characterInTargetTile.Movement.Current <= 0) return false;
                 if (!characterInTargetTile.CanTakeAction) return false;
                 if (!character.Visible && characterInTargetTile.Visible) return false;
-                if (characterInTargetTile.Visible && characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction)) return false;
+                if (characterInTargetTile.Visible && characterInTargetTile.Faction.IsEnemyWith(character.Faction)) return false;
                 // Swap positions with allies, neutrals or invisibles
                 characterInTargetTile.LatestPositions.AddButKeepingCapacity(characterInTargetTile.Position, 4);
                 characterInTargetTile.Position = character.Position;
                 characterInTargetTile.ContainingTile?.StoodOn(characterInTargetTile);
                 if (characterInTargetTile.RemainingMovement > 0)
                     characterInTargetTile.RemainingMovement--;
-                if (character == Player && !characterInTargetTile.Faction.EnemiesWith.Contains(character.Faction))
+                if (character == Player && !characterInTargetTile.Faction.IsEnemyWith(character.Faction))
                 {
                     AppendMessage(Locale["CharacterSwitchedPlacesWithPlayer"].Format(new { CharacterName = characterInTargetTile.Name, PlayerName = Player.Name }), Color.DeepSkyBlue, events);
                 }
@@ -1558,7 +1570,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 foreach (var tile in acceptableTiles)
                 {
-                    var pickedMonster = FloorConfigurationToUse.PossibleMonsters.Where(pm => pm.Class.Faction.EnemiesWith.Contains(Player.Faction) && pm.Class.StartsVisible).TakeRandomElement(Rng);
+                    var pickedMonster = FloorConfigurationToUse.PossibleMonsters.Where(pm => pm.Class.Faction.IsEnemyWith(Player.Faction) && pm.Class.StartsVisible).TakeRandomElement(Rng);
                     if (pickedMonster == null) return;
                     var monsterHouseEnemy = await AddEntity(pickedMonster.Class.Id, Rng.NextInclusive(pickedMonster.MinLevel, pickedMonster.MaxLevel), tile.Position) as NonPlayableCharacter;
                     monsterHouseEnemy.SpawnedViaMonsterHouse = true;
@@ -1997,7 +2009,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     BackgroundColor = tile.LivingCharacter.ConsoleRepresentation.BackgroundColor.Clone(),
                     Character = tile.LivingCharacter.ConsoleRepresentation.Character
                 };
-                if ((tile.LivingCharacter == Player || tile.LivingCharacter.Faction.AlliedWith.Contains(Player.Faction)) && !tile.LivingCharacter.Visible)
+                if ((tile.LivingCharacter == Player || tile.LivingCharacter.Faction.IsAlliedWith(Player.Faction)) && !tile.LivingCharacter.Visible)
                 {
                     // Invisible players or allies will get their colors reversed
                     characterBaseConsoleRepresentation.BackgroundColor = tile.LivingCharacter.ConsoleRepresentation.ForegroundColor.Clone();

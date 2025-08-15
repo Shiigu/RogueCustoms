@@ -32,6 +32,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
         private static RngHandler Rng;
         private static Map Map;
 
+        private static readonly Dictionary<string, string> IgnoreEntityParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "selectioncondition", "SelectionCondition" }
+        };
+
         private static readonly Dictionary<string, string> NumericParams = new(StringComparer.InvariantCultureIgnoreCase)
         {
             { "attack", "Damage" },
@@ -60,7 +65,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "informtheplayer", "InformThePlayer" },
             { "cancellable", "Cancellable" },
             { "announcestatusrefresh", "AnnounceStatusRefresh" },
-            { "canbeoverwritten", "CanBeOverwritten" }
+            { "canbeoverwritten", "CanBeOverwritten" },
+            { "canpickself", "CanPickSelf" },
+            { "canpickallies", "CanPickAllies" },
+            { "canpickneutrals", "CanPickNeutrals" },
+            { "canpickenemies", "CanPickEnemies" },
+            { "canpickinvisibles", "CanPickInvisibles" },
+            { "canrepeatpick", "CanRepeatPick" }
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)
@@ -94,7 +105,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 try
                 {
                     var paramName = param.ParamName.ToLower();
-                    var value = ParseArgForExpression(Map.Locale[param.Value], Args.This, Args.Source, Args.Target);
+                    var value = !IgnoreEntityParams.ContainsKey(paramName) ? ParseArgForExpression(Map.Locale[param.Value], Args.This, Args.Source, Args.Target) : Map.Locale[param.Value];
 
                     if (string.IsNullOrEmpty(value)) continue;
 

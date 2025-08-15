@@ -245,6 +245,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 target.Inventory.Add(new Item(sampleConsumableClass, sampleDungeon.CurrentFloor));
             }
 
+            sampleDungeon.CurrentFloor.SetActionParams();
+
             if (!action.TargetTypes.Contains(TargetType.Tile))
                 await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
             else
@@ -518,10 +520,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         private static Character GetATestCharacter(Dungeon sampleDungeon)
         {
+            var npcClasses = sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.NPC).ToList();
+            var playerClasses = sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.Player).ToList();
             return sampleDungeon.Classes.Exists(ec => ec.EntityType == EntityType.NPC)
-                ? new NonPlayableCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.NPC), 1, sampleDungeon.CurrentFloor)
-                : new PlayerCharacter(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Player), 1, sampleDungeon.CurrentFloor);
+                ? new NonPlayableCharacter(npcClasses[new Random().Next(npcClasses.Count)], 1, sampleDungeon.CurrentFloor)
+                : new PlayerCharacter(playerClasses[new Random().Next(playerClasses.Count)], 1, sampleDungeon.CurrentFloor);
         }
+
         private static Item GetASpecificItem(Dungeon sampleDungeon, string classId)
         {
             return new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), sampleDungeon.CurrentFloor);
