@@ -136,29 +136,33 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var statusPower = (decimal) paramsObject.Power;
                 var turnlength = (int)paramsObject.TurnLength;
                 var couldSeeTarget = Map.Player.CanSee(statusTarget);
-                var success = await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
-                if (success && (statusTarget == Map.Player || couldSeeTarget))
+                if(statusToApply.CanBeAppliedTo(statusTarget))
                 {
-                    events.Add(new()
+                    if (statusTarget == Map.Player || couldSeeTarget)
                     {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.Statused }
-                    }
-                    );
-                    if (statusTarget == Map.Player)
-                    {
-                        events.Add(new()
+                        if (!targetAlreadyHadStatus || statusToApply.CanStack || (statusToApply.CanOverwrite && paramsObject.AnnounceStatusRefresh))
                         {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
-                        });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                Params = new() { SpecialEffect.Statused }
+                            }
+                            );
+                            if (statusTarget == Map.Player)
+                            {
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                    Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                                });
+                            }
+                            var localeToUse = targetAlreadyHadStatus ? Map.Locale["CharacterStatusGotRefreshed"] : Map.Locale["CharacterGotStatused"];
+                            Map.AppendMessage(localeToUse.Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue, events);
+                        }
                     }
-                    var localeToUse = targetAlreadyHadStatus ? Map.Locale["CharacterStatusGotRefreshed"] : Map.Locale["CharacterGotStatused"];
-                    Map.AppendMessage(localeToUse.Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue, events);
-
+                    Map.DisplayEvents.Add(($"{statusTarget.Name} got {statusToApply.Name} status", events));
+                    return await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                 }
-                Map.DisplayEvents.Add(($"{statusTarget.Name} got {statusToApply.Name} status", events));
-                return success;
             }
             return false;
         }
@@ -183,16 +187,36 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if(targetStat == null)
                 // Attempted to alter one of Target's stats when it doesn't have it.
                 return false;
+
             var statValue = targetStat.Current;
             if (statValue > targetStat.MaxCap || statValue < targetStat.MinCap)
                 return false;
+
+            var canBeStacked = paramsObject.CanBeStacked;
+            var canBeOverwritten = paramsObject.CanBeOverwritten;
+            var statAlterationAlreadyExists = statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id));
+
+            if (!canBeStacked && !canBeOverwritten && statAlterationAlreadyExists)
+                return false;
+
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
-            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && (paramsObject.Amount != 0 && (paramsObject.CanBeStacked || !statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id)))) && Rng.RollProbability() <= accuracyCheck)
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
             {
+                var turnLength = (int)paramsObject.TurnLength;
                 var isDecimal = targetStat.StatType == StatType.Decimal || targetStat.StatType == StatType.Regeneration;
                 var isPercentage = targetStat.StatType == StatType.Percentage;
                 var alterationAmount = isDecimal ? paramsObject.Amount : (int)paramsObject.Amount;
+
+                if (!canBeStacked && canBeOverwritten && statAlterationAlreadyExists)
+                {
+                    foreach (var statAlteration in statAlterations.Where(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id) && sa.Amount == alterationAmount))
+                    {
+                        statAlteration.RemainingTurns = turnLength;
+                    }
+                    return true;
+                }
+
 
                 if(!isDecimal)
                 {
@@ -215,7 +239,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Id = paramsObject.Id,
                     Amount = alterationAmount,
-                    RemainingTurns = (int)paramsObject.TurnLength
+                    RemainingTurns = turnLength
                 });
 
                 if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
