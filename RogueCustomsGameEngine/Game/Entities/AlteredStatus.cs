@@ -49,10 +49,17 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
         }
 
+        public bool CanBeAppliedTo(Character target)
+        {
+            var alreadyHasStatus = target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId));
+            return CanOverwrite || CanStack || !alreadyHasStatus;
+        }
+
         public async Task<bool> ApplyTo(Character target, decimal power, int turnLength)
         {
-            if (!CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId))) return false;
-            if (CanOverwrite && !CanStack && target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId)))
+            var alreadyHasStatus = target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId));
+            if (!CanBeAppliedTo(target)) return false;
+            if (CanOverwrite && !CanStack && alreadyHasStatus)
             {
                 target.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(ClassId));
             }

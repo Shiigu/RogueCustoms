@@ -58,7 +58,9 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "bypasseselementeffect", "BypassesElementEffect" },
             { "removeonfloorchange", "RemoveOnFloorChange" },
             { "informtheplayer", "InformThePlayer" },
-            { "cancellable", "Cancellable" }
+            { "cancellable", "Cancellable" },
+            { "announcestatusrefresh", "AnnounceStatusRefresh" },
+            { "canbeoverwritten", "CanBeOverwritten" }
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)

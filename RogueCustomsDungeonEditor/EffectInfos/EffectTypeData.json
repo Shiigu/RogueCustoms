@@ -922,6 +922,17 @@
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
         "Columns": []
+      },
+      {
+        "InternalName": "AnnounceStatusRefresh",
+        "DisplayName": "Inform if Refreshed",
+        "Description": "If false, the player will not be informed if the Altered Status was already present and is now refreshed.\n\nDoes nothing if the Altered Status's Can Overwrite is set to false.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
@@ -1026,6 +1037,17 @@
         "InternalName": "CanBeStacked",
         "DisplayName": "Can Stack?",
         "Description": "If enabled, multiple Stat Alterations with the same Id can be present on the same Character at the same time.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanBeOverwritten",
+        "DisplayName": "Can Refresh?",
+        "Description": "If enabled, reapplying this Stat Alteration when another with the same Id on the same Character will reset its duration.\n\nDoes nothing if Can Stack is set to enabled.",
         "ParameterType": "Boolean",
         "Default": "false",
         "ValidValues": [],
