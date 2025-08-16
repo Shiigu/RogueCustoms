@@ -48,6 +48,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<string> ValidTraps { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> ValidTileTypes { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<string> ValidAlteredStatuses { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public EffectTypeData EffectTypeData { get; private set; }
@@ -62,7 +64,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ParameterType.Number
         };
 
-        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validNPCs, List<string> validItems, List<string> validTraps, List<string> validAlteredStatuses, bool isActionEdit)
+        public frmActionParameters(EffectInfo effectToSave, DungeonInfo activeDungeon, EffectTypeData paramsData, List<string> validNPCs, List<string> validItems, List<string> validTraps, List<string> validTileTypes, List<string> validAlteredStatuses, bool isActionEdit)
         {
             InitializeComponent();
             ActiveDungeon = activeDungeon;
@@ -118,6 +120,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ValidNPCs = validNPCs;
             ValidItems = validItems;
             ValidTraps = validTraps;
+            ValidTileTypes = validTileTypes;
             ValidAlteredStatuses = validAlteredStatuses;
 
             var baseDisplayWidth = lblDisplayName.Width;
@@ -216,10 +219,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.Number => CreateNumberControl(originalValue, parameter),
                     ParameterType.NPC => CreateComboBox(parameter, originalValue),
                     ParameterType.Item => CreateComboBox(parameter, originalValue),
+                    ParameterType.TileType => CreateComboBox(parameter, originalValue),
                     ParameterType.Trap => CreateComboBox(parameter, originalValue),
                     ParameterType.AlteredStatus => CreateComboBox(parameter, originalValue),
                     ParameterType.BooleanExpression => CreateFormulaTextBox(originalValue, parameter),
                     ParameterType.Key => new TextBox { Text = originalValue ?? parameter.Default },
+                    ParameterType.Area => CreateComboBox(parameter, originalValue),
                     ParameterType.Stat => CreateComboBox(parameter, originalValue),
                     ParameterType.Element => CreateComboBox(parameter, originalValue),
                     ParameterType.Script => CreateComboBox(parameter, originalValue),
@@ -277,12 +282,29 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ParameterType.NPC => ValidNPCs,
                 ParameterType.Item => ValidItems,
                 ParameterType.Trap => ValidTraps,
+                ParameterType.TileType => ValidTileTypes,
                 ParameterType.AlteredStatus => ValidAlteredStatuses,
+                ParameterType.Area => GetAreas(),
                 ParameterType.Stat => ActiveDungeon.CharacterStats.Select(s => s.Id),
                 ParameterType.Element => ActiveDungeon.ElementInfos.Select(e => e.Id),
                 ParameterType.Script => ActiveDungeon.Scripts.Select(s => s.Id),
                 _ => throw new ArgumentException($"{parameter.Type} is not valid for ComboBox parameter")
             };
+        }
+
+        private static List<string> GetAreas()
+        {
+            var areaList = new List<string>();
+
+            for (int i = 2; i < 10; i++)
+            {
+                areaList.Add($"Circle (Diametre {i})");
+                areaList.Add($"Square ({i}x{i})");
+            }
+
+            areaList.Add("Whole Map");
+
+            return areaList;
         }
 
         private ComboBox CreateComboBox(EffectParameter parameter, string originalValue)
@@ -681,7 +703,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.NPC:
                     case ParameterType.Item:
                     case ParameterType.Trap:
+                    case ParameterType.TileType:
                     case ParameterType.AlteredStatus:
+                    case ParameterType.Area:
                     case ParameterType.Stat:
                     case ParameterType.Element:
                     case ParameterType.Script:

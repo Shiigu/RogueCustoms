@@ -226,6 +226,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             TestDungeon.CurrentFloor.Traps.Clear();
             TestDungeon.CurrentFloor.Keys.Clear();
 
+            foreach (var tile in TestDungeon.CurrentFloor.Tiles.Where(t => t.Type != t.BaseType))
+            {
+                tile.ResetType();
+            }
+
             var equippableClassInfo = new ItemInfo()
             {
                 Id = "Equippable",
@@ -293,7 +298,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else if (TargetObjectType == ElementType.Tile)
             {
-                Target = TestDungeon.CurrentFloor.Tiles.ToList().First(t => t.IsWalkable && !t.IsOccupied);
+                var candidateTiles = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable && !t.IsOccupied);
+                Target = candidateTiles[new Random().Next(candidateTiles.Count)];
             }
 
             for (int i = 0; i < new Random().Next(1, 6); i++)

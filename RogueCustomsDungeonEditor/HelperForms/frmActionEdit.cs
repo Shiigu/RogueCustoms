@@ -41,6 +41,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private readonly List<string> UsableNPCList;
         private readonly List<string> UsableItemList;
         private readonly List<string> UsableTrapList;
+        private readonly List<string> UsableTileTypeList;
         private readonly List<string> UsableAlteredStatusList;
         private readonly List<EffectTypeData> SelectableEffects;
 
@@ -160,6 +161,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             UsableNPCList = activeDungeon.NPCs.ConvertAll(npc => npc.Id);
             UsableItemList = activeDungeon.Items.ConvertAll(i => i.Id);
             UsableTrapList = activeDungeon.Traps.ConvertAll(t => t.Id);
+            UsableTileTypeList = activeDungeon.TileTypeInfos.Where(tt => tt.Id != "Empty" && tt.Id != "Hallway" && tt.Id != "Stairs").Select(tt => tt.Id).ToList();
             UsableAlteredStatusList = activeDungeon.AlteredStatuses.ConvertAll(als => als.Id);
             SelectableEffects = selectableEffects;
             RefreshActionSequenceTree();
@@ -405,6 +407,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                                              UsableNPCList,
                                                              UsableItemList,
                                                              UsableTrapList,
+                                                             UsableTileTypeList,
                                                              UsableAlteredStatusList,
                                                              selectedEffectTypeData.InternalName.Equals(currentEffect?.EffectName));
             frmActionParameter.ShowDialog();

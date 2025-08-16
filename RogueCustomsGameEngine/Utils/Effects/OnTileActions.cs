@@ -35,7 +35,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool TransformTile(EffectCallerParams Args)
+        public static async Task<bool> TransformTile(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -52,7 +52,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Target must be a Tile that can be Transformed
                 return false;
 
-            if (paramsObject.TileType != TileType.Floor && paramsObject.TileType != TileType.Wall)
+            if(!paramsObject.TileType.IsWalkable && t.IsOccupied)
+                // Cannot convert an occupied Tile into a non-walkable Tile
+                return false;
+
+            if (paramsObject.TileType == TileType.Hallway || paramsObject.TileType == TileType.Stairs || paramsObject.TileType == TileType.Empty)
                 // Cannot turn the tile into Hallway, Stairs or Empty
                 return false;
 
@@ -72,28 +76,31 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var success = false;
             var oldType = t.Type;
 
-            if (t.LivingCharacter == null && t.Trap == null && t.GetPickableObjects().Count == 0)
-            {
-                t.Type = paramsObject.TileType;
-                success = Map.Tiles.IsFullyConnected(t => t.IsWalkable);
-            }
+            t.ChangeType(paramsObject.TileType);
+            success = Map.Tiles.IsFullyConnected(t => t.IsWalkable);
 
             if (!success)
             {
                 t.Type = oldType;
             }
-            else if (c == Map.Player || Map.Player.CanSee(c))
+            else
             {
-                Map.AppendMessage(Map.Locale["CharacterConvertedTile"].Format(new { CharacterName = c.Name, TileType = Map.Locale[$"TileType{t.Type}"] }), Color.DeepSkyBlue, events);
-                if (!Map.IsDebugMode)
+                t.RemainingTransformationTurns = (int) paramsObject.TurnLength;
+                if (c == Map.Player || Map.Player.CanSee(c))
                 {
-                    events.Add(new()
+                    Map.AppendMessage(Map.Locale["CharacterConvertedTile"].Format(new { CharacterName = c.Name, TileType = Map.Locale[$"TileType{t.Type}"] }), Color.DeepSkyBlue, events);
+                    if (!Map.IsDebugMode)
                     {
-                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                        Params = new() { Args.Target.Position, Map.GetConsoleRepresentationForCoordinates(Args.Target.Position.X, Args.Target.Position.Y) }
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { Args.Target.Position, Map.GetConsoleRepresentationForCoordinates(Args.Target.Position.X, Args.Target.Position.Y) }
+                        }
+                        );
                     }
-                    );
                 }
+                if(t.OnStood != null && t.LivingCharacter != null)
+                    await t.OnStood.Do(t.LivingCharacter, t.LivingCharacter, false, false);
             }
 
             Map.DisplayEvents.Add(($"A {Map.Locale[$"TileType{t.Type}"]} got created", events));

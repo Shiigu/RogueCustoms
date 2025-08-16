@@ -120,7 +120,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 if (function != null)
                 {
                     // Execute the function and replace the token with its result
-                    tokens[i] = function.Execute(null, null, null);
+                    tokens[i] = function.Execute(null);
                 }
             }
 
@@ -191,6 +191,7 @@ namespace RogueCustomsDungeonEditor.Utils
         private static string ResolveNestedPropertyValue(IEnumerable<Type> entityTypes, string propertyPath, string numericPlaceholder, string stringPlaceholder)
         {
             var numericStringProperties = new List<string> { "Power", "Damage", "Mitigation" };
+            var stringProperties = new List<string> { "Type" };
             var properties = propertyPath.Split('.');
             Type currentType = null;
             bool isNumeric = true;
@@ -214,7 +215,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 // Determine the placeholder based on property type for the last property
                 if (i == properties.Length - 1)
                 {
-                    if (property.PropertyType == typeof(string) && !numericStringProperties.Contains(property.Name, StringComparer.InvariantCultureIgnoreCase))
+                    if ((property.PropertyType == typeof(string) || stringProperties.Contains(property.Name)) && !numericStringProperties.Contains(property.Name, StringComparer.InvariantCultureIgnoreCase))
                     {
                         isNumeric = false;
                     }
@@ -345,9 +346,12 @@ namespace RogueCustomsDungeonEditor.Utils
 
         public static async Task<bool> TestFunction(this Effect effect, Entity This, Entity Source, ITargetable Target)
         {
+            var priorContext = ExecutionContext.Current;
+            ExecutionContext.Current = new();
+            bool result = false;
             if (effect.AsyncFunction != null)
             {
-                return await effect.AsyncFunction(new EffectCallerParams
+                result = await effect.AsyncFunction(new EffectCallerParams
                 {
                     This = This,
                     Source = Source,
@@ -358,7 +362,7 @@ namespace RogueCustomsDungeonEditor.Utils
             }
             else
             {
-                return effect.Function(new EffectCallerParams
+                result = effect.Function(new EffectCallerParams
                 {
                     This = This,
                     Source = Source,
@@ -367,6 +371,8 @@ namespace RogueCustomsDungeonEditor.Utils
                     OriginalTarget = Target
                 });
             }
+            ExecutionContext.Current = priorContext;
+            return result;
         }
     }
 }

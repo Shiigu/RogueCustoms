@@ -25,6 +25,7 @@ using System.Text;
 using RogueCustomsGameEngine.Utils.Expressions;
 using System.Text.Json.Serialization;
 using RogueCustomsGameEngine.Game.Interaction;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -1302,6 +1303,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TurnCount++;
             SetFlagValue("TurnCount", TurnCount);
             Player.TookAction = false;
+            foreach (var tile in Tiles.Where(t => t.Type != t.BaseType && t.RemainingTransformationTurns > 0))
+            {
+                tile.RemainingTransformationTurns--;
+                if (tile.RemainingTransformationTurns <= 0)
+                {
+                    tile.ResetType();
+                }
+            }
             await Player.PerformOnTurnStart();
             Player.RemainingMovement = (int) Player.Movement.Current;
             LatestPlayerRemainingMovement = Player.RemainingMovement;
@@ -1327,7 +1336,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                 if (!string.IsNullOrWhiteSpace(pm.SpawnCondition))
                 {
-                    var parsedCondition = ExpressionParser.ParseArgForExpression(pm.SpawnCondition, Player, Player, Player);
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pm.SpawnCondition, new EffectCallerParams {
+                        This = Player,
+                        Source = Player,
+                        OriginalTarget = Player,
+                        Target = Player
+                    });
                     if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
                 }
                 usableNPCGenerators.Add(pm);
@@ -1350,7 +1364,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (pi.SimultaneousMaxForKindInFloor > 0 && pi.TotalGeneratedInFloor >= pi.SimultaneousMaxForKindInFloor) return;
                 if (!string.IsNullOrWhiteSpace(pi.SpawnCondition))
                 {
-                    var parsedCondition = ExpressionParser.ParseArgForExpression(pi.SpawnCondition, Player, Player, Player);
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pi.SpawnCondition, new EffectCallerParams
+                    {
+                        This = Player,
+                        Source = Player,
+                        OriginalTarget = Player,
+                        Target = Player
+                    });
                     if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
                 }
                 usableItemGenerators.Add(pi);
@@ -1370,7 +1390,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (pt.SimultaneousMaxForKindInFloor > 0 && pt.TotalGeneratedInFloor >= pt.SimultaneousMaxForKindInFloor) return;
                 if (!string.IsNullOrWhiteSpace(pt.SpawnCondition))
                 {
-                    var parsedCondition = ExpressionParser.ParseArgForExpression(pt.SpawnCondition, Player, Player, Player);
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(pt.SpawnCondition, new EffectCallerParams
+                    {
+                        This = Player,
+                        Source = Player,
+                        OriginalTarget = Player,
+                        Target = Player
+                    });
                     if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return;
                 }
                 usableTrapGenerators.Add(pt);
@@ -2097,9 +2123,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return Tiles.GetAdjacentElementsWhere(GetTileFromCoordinates(position), considerDiagonals, t => t.IsWalkable);
         }
-        public List<Tile> GetTilesWithinDistance(GamePoint source, int distance)
+        public List<Tile> GetTilesWithinCenteredSquare(GamePoint source, int distance, bool considerNonVisibles)
         {
-            return Tiles.Where(t => t.Type.IsVisible && Math.Round(GamePoint.Distance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance).ToList();
+            return Tiles.Where(t => (considerNonVisibles || t.Type.IsVisible) && Math.Round(GamePoint.ChebyshevDistance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance).ToList();
+        }
+        public List<Tile> GetTilesWithinSquare(GamePoint source, int distance, bool considerNonVisibles)
+        {
+            return Tiles.Where(t => (considerNonVisibles || t.Type.IsVisible) && Math.Round(GamePoint.ManhattanDistance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance).ToList();
+        }
+        public List<Tile> GetTilesWithinDistance(GamePoint source, int distance, bool considerNonVisibles)
+        {
+            return Tiles.Where(t => (considerNonVisibles || t.Type.IsVisible) && t.Type.IsVisible && Math.Round(GamePoint.Distance(source, t.Position), 0, MidpointRounding.AwayFromZero) <= distance).ToList();
         }
         public List<Tile> GetFOVTilesWithinDistance(GamePoint source, int distance)
         {

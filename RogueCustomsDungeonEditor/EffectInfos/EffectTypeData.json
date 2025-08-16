@@ -1652,18 +1652,9 @@
         "InternalName": "TileType",
         "DisplayName": "Tile Type",
         "Description": "The type this Tile will be converted to.",
-        "ParameterType": "ComboBox",
+        "ParameterType": "TileType",
         "Default": "Wall",
-        "ValidValues": [
-          {
-            "Key": "Wall",
-            "Value": "Wall"
-          },
-          {
-            "Key": "Floor",
-            "Value": "Floor"
-          }
-        ],
+        "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
         "Columns": []
@@ -1674,6 +1665,17 @@
         "Description": "Indicates the odds for the Tile to be transformed. Final Accuracy is calculated with Accuracy * User's Accuracy%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
         "ParameterType": "Odds",
         "Default": "100",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "TurnLength",
+        "DisplayName": "Duration",
+        "Description": "Indicates the amount of turns in which the Tile will remain transformed before returning to its base type.\n\nIf set to a negative number, it will last until transformed again.",
+        "ParameterType": "Formula",
+        "Default": "-1",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
@@ -2340,12 +2342,12 @@
     ]
   },
   {
-    "InternalName": "SwitchTarget",
-    "TreeViewDisplayText": "Switch Target to one where ({SelectionCondition})",
-    "ComboBoxDisplayName": "Switch Target",
-    "Description": "The current execution will try to replace a Target with another character.\n\nIt leaves an internal inaccessible flag to indicate which Characters have already been picked.\n\nIf it fails, the previous Target remains picked.",
+    "InternalName": "SwitchTargetCharacter",
+    "TreeViewDisplayText": "Switch Target character to one in ({SearchArea}) where ({SelectionCondition})",
+    "ComboBoxDisplayName": "Switch Target character",
+    "Description": "The current execution will try to replace a Target character with another.\n\nIt leaves an internal inaccessible flag to indicate which Characters have already been picked.\n\nIf it fails, the previous Target remains picked.",
     "CanBeUsedOnEntity": true,
-    "CanBeUsedOnTile": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "IsControlBlock": false,
@@ -2356,6 +2358,17 @@
         "Description": "This condition must return true for a candidate character to be picked as a Target.",
         "ParameterType": "BooleanExpression",
         "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "SearchArea",
+        "DisplayName": "Search Area",
+        "Description": "Only the Characters within the specified area (centered around the original target) can be chosen.",
+        "ParameterType": "Area",
+        "Default": "Square (1x1)",
         "ValidValues": [],
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
@@ -2420,6 +2433,85 @@
         "InternalName": "CanRepeatPick",
         "DisplayName": "Can Repeat a Pick?",
         "Description": "If true, characters that were already picked can be chosen again in this evaluation.\n\nNaturally, this does nothing if this function isn't called again during the current Action execution.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SwitchTargetTile",
+    "TreeViewDisplayText": "Switch Target tile to one in ({SearchArea}) where ({SelectionCondition})",
+    "ComboBoxDisplayName": "Switch Target tile",
+    "Description": "The current execution will try to replace a Target tile with another.\n\nIgnores Stairs and Empty Tiles.\n\nIt leaves an internal inaccessible flag to indicate which Tiles have already been picked.\n\nIf it fails, the previous Target remains picked.",
+    "CanBeUsedOnEntity": false,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "SelectionCondition",
+        "DisplayName": "Condition",
+        "Description": "This condition must return true for a candidate tile to be picked as a Target.",
+        "ParameterType": "BooleanExpression",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "SearchArea",
+        "DisplayName": "Search Area",
+        "Description": "Only the Tiles within the specified area (centered around the original target) can be chosen.",
+        "ParameterType": "Area",
+        "Default": "Square (1x1)",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickWalls",
+        "DisplayName": "Can Pick Walls?",
+        "Description": "If true, Wall tiles can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickHallways",
+        "DisplayName": "Can Pick Hallways?",
+        "Description": "If true, Hallway tiles can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanPickInvisibles",
+        "DisplayName": "Can Pick non-visibles?",
+        "Description": "If true, tiles This cannot see right now can be chosen as a result of this evaluation.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
+      },
+      {
+        "InternalName": "CanRepeatPick",
+        "DisplayName": "Can Repeat a Pick?",
+        "Description": "If true, tiles that were already picked can be chosen again in this evaluation.\n\nNaturally, this does nothing if this function isn't called again during the current Action execution.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],

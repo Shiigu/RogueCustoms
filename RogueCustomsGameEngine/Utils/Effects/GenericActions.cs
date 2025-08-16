@@ -16,6 +16,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Numerics;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -888,6 +889,196 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var clonedScript = script.Clone();
             clonedScript.User = Args.This;
             await clonedScript.Do(Args.Source, Args.Target, false, false);
+
+            return true;
+        }
+
+        public static bool SwitchTargetCharacter(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (Args.Source is not Character s)
+                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
+
+            var searchArea = paramsObject.SearchArea;
+
+            var candidateTilesForCharacters = new List<Tile>();
+            var candidateCharacters = new List<Character>();
+
+            if (searchArea.StartsWith("Circle", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var match = EngineConstants.CirclePattern.Match(searchArea);
+                var radius = 0;
+                if (match.Success && int.TryParse(match.Groups[1].Value, out radius))
+                {
+                    candidateTilesForCharacters = Map.GetTilesWithinDistance(Args.OriginalTarget.Position, (radius - 1) / 2, true);
+                }
+            }
+            else if (searchArea.StartsWith("Square", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var match = EngineConstants.SquarePattern.Match(searchArea);
+                var size = 0;
+                if (match.Success && int.TryParse(match.Groups[1].Value, out size))
+                {
+                    candidateTilesForCharacters = Map.GetTilesWithinCenteredSquare(Args.OriginalTarget.Position, (size - 1) / 2, true);
+                }
+            }
+
+            if (candidateTilesForCharacters.Count == 0)
+            {
+                if (searchArea == "Whole Map")
+                {
+                    candidateTilesForCharacters = Map.Tiles.ToList();
+                }
+                else
+                {
+                    var displayValue = string.IsNullOrWhiteSpace(searchArea) ? "NULL" : searchArea;
+                    throw new ArgumentException($"Search Area is {displayValue}, which is incorrect.");
+                }
+            }
+
+            var canRepeatPick = paramsObject.CanRepeatPick;
+            candidateCharacters = Map.GetCharacters().Where(c => candidateTilesForCharacters.Contains(c.ContainingTile) && c.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
+
+            var selectionCondition = paramsObject.SelectionCondition;
+            var charactersToConsider = new List<Character>();
+
+            var evalParams = new EffectCallerParams
+            {
+                This = Args.This,
+                Source = Args.Source,
+                OriginalTarget = Args.OriginalTarget
+            };
+
+            foreach (var c in candidateCharacters)
+            {
+                if (!paramsObject.CanRepeatPick && c.PickedForSwap)
+                    continue;
+                if (!paramsObject.CanPickSelf && c == s)
+                    continue;
+                if (!paramsObject.CanPickAllies && (c.Faction.IsAlliedWith(s.Faction) || c.Faction == s.Faction))
+                    continue;
+                if (!paramsObject.CanPickNeutrals && c.Faction.IsNeutralWith(s.Faction))
+                    continue;
+                if (!paramsObject.CanPickEnemies && c.Faction.IsEnemyWith(s.Faction))
+                    continue;
+                if (!paramsObject.CanPickInvisibles && !c.CanBeSeenBy(s))
+                    continue;
+
+                evalParams.Target = c;
+                var condition = ExpressionParser.ParseArgForExpression(selectionCondition, evalParams);
+
+                if (!ExpressionParser.CalculateBooleanExpression(condition))
+                    continue;
+
+                charactersToConsider.Add(c);
+            }
+
+            if (charactersToConsider.Count == 0)
+                return false;
+
+            var pickedCharacter = charactersToConsider.TakeRandomElement(Rng);
+            Args.Target = pickedCharacter;
+            pickedCharacter.PickedForSwap = true;
+
+            return true;
+        }
+
+        public static bool SwitchTargetTile(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
+
+            var searchArea = paramsObject.SearchArea;
+
+            var candidateTiles = new List<Tile>();
+
+            if (searchArea.StartsWith("Circle", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var match = EngineConstants.CirclePattern.Match(searchArea);
+                var radius = 0;
+                if (match.Success && int.TryParse(match.Groups[1].Value, out radius))
+                {
+                    candidateTiles = Map.GetTilesWithinDistance(Args.OriginalTarget.Position, (radius - 1) / 2, true);
+                }
+            }
+            else if (searchArea.StartsWith("Square", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var match = EngineConstants.SquarePattern.Match(searchArea);
+                var size = 0;
+                if (match.Success && int.TryParse(match.Groups[1].Value, out size))
+                {
+                    candidateTiles = Map.GetTilesWithinCenteredSquare(Args.OriginalTarget.Position, (size - 1) / 2, true);
+                }
+            }
+
+            if (candidateTiles.Count == 0)
+            {
+                if (searchArea == "Whole Map")
+                {
+                    candidateTiles = Map.Tiles.ToList();
+                }
+                else
+                {
+                    var displayValue = string.IsNullOrWhiteSpace(searchArea) ? "NULL" : searchArea;
+                    throw new ArgumentException($"Search Area is {displayValue}, which is incorrect.");
+                }
+            }
+
+            var tilesToConsider = new List<Tile>();
+            var canRepeatPick = paramsObject.CanRepeatPick;
+            var canPickWalls = paramsObject.CanPickWalls;
+            var canPickHallways = paramsObject.CanPickHallways;
+            var canPickInvisibles = paramsObject.CanPickInvisibles;
+            var selectionCondition = paramsObject.SelectionCondition;
+
+            var evalParams = new EffectCallerParams
+            {
+                This = Args.This,
+                Source = Args.Source,
+                OriginalTarget = Args.OriginalTarget
+            };
+
+            foreach (var t in candidateTiles)
+            {
+                if (t.Type == TileType.Stairs || t.Type == TileType.Empty)
+                    continue;
+                if (!canRepeatPick && t.PickedForSwap)
+                    continue;
+                if (!canPickWalls && t.Type == TileType.Wall)
+                    continue;
+                if (!canPickHallways && t.Type == TileType.Hallway)
+                    continue;
+                if (!canPickInvisibles && c.ContainingTile != t && !c.FOVTiles.Contains(t))
+                    continue;
+
+                evalParams.Target = t;
+                var condition = ExpressionParser.ParseArgForExpression(selectionCondition, evalParams);
+
+                if (!ExpressionParser.CalculateBooleanExpression(condition))
+                    continue;
+
+                tilesToConsider.Add(t);
+            }
+
+            if (tilesToConsider.Count == 0)
+                return false;
+
+            var pickedTile = tilesToConsider.TakeRandomElement(Rng);
+            Args.Target = pickedTile;
+            pickedTile.PickedForSwap = true;
+
+            return true;
+        }
+
+        public static bool ResetTarget(EffectCallerParams Args)
+        {
+            if (Args.Source is not Character)
+                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
+
+            Args.Target = Args.OriginalTarget;
 
             return true;
         }

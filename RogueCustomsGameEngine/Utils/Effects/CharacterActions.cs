@@ -232,56 +232,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             return true;
         }
-
-        public static bool SwitchTarget(EffectCallerParams Args)
-        {
-            dynamic paramsObject = ExpressionParser.ParseParams(Args);
-
-            if (Args.Source is not Character s)
-                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
-
-            var canRepeatPick = paramsObject.CanRepeatPick;
-            var charactersToConsider = Map.GetCharacters().Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && (canRepeatPick || !c.PickedForSwap));
-
-            if (!paramsObject.CanPickSelf)
-                charactersToConsider = charactersToConsider.Where(c => c != s);
-
-            if (!paramsObject.CanPickAllies)
-                charactersToConsider = charactersToConsider.Where(c => !c.Faction.IsAlliedWith(s.Faction) && c.Faction != s.Faction);
-
-            if (!paramsObject.CanPickNeutrals)
-                charactersToConsider = charactersToConsider.Where(c => !c.Faction.IsNeutralWith(s.Faction));
-
-            if (!paramsObject.CanPickEnemies)
-                charactersToConsider = charactersToConsider.Where(c => !c.Faction.IsEnemyWith(s.Faction));
-
-            if (!paramsObject.CanPickInvisibles)
-                charactersToConsider = charactersToConsider.Where(c => !c.CanBeSeenBy(s));
-
-            foreach (var character in charactersToConsider.ToList().Shuffle(Rng))
-            {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(paramsObject.SelectionCondition, Args.This, Args.Source, character);
-
-                if (ExpressionParser.CalculateBooleanExpression(parsedCondition))
-                {
-                    Args.Target = character;
-                    character.PickedForSwap = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool ResetTarget(EffectCallerParams Args)
-        {
-            if (Args.Source is not Character)
-                throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
-
-            Args.Target = Args.OriginalTarget;
-
-            return true;
-        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

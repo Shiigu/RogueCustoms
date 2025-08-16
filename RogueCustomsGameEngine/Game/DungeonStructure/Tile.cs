@@ -14,6 +14,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -25,16 +26,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     {
         private static List<string> FunctionsThatCanMakeATileHarmful = new() { "DealDamage", "ApplyAlteredStatus", "ApplyStatAlteration", "Teleport" };
         public GamePoint Position { get; set; }
+
+        public TileType BaseType { get; private set; }
         private TileType _type { get; set; } = TileType.Empty;
         public TileType Type
         {
             get { return _type; }
             set
             {
+                BaseType = value;
                 _type = value;
                 _consoleRepresentation = null;
             }
         }
+
+        public int RemainingTransformationTurns { get; set; }
 
         public string TypeName => Map.Locale[Type.Name];
         public string TypeDescription => Map.Locale[Type.Description];
@@ -190,6 +196,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool Visible { get; set; }
         public bool Targetable => Type.IsVisible && (IsWalkable || Type == TileType.Door) && Visible;
 
+        [JsonIgnore]
+        public bool PickedForSwap { get; set; }
+
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
         public Character LivingCharacter => Map.GetCharacters().Find(e => e != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Alive);
@@ -334,6 +343,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
 
             return _consoleRepresentation;
+        }
+
+        public void ChangeType(TileType temporaryType)
+        {
+            _type = temporaryType;
+            _consoleRepresentation = null;
+        }
+
+        public void ResetType()
+        {
+            RemainingTransformationTurns = 0;
+            ChangeType(BaseType);
         }
     }
     #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo

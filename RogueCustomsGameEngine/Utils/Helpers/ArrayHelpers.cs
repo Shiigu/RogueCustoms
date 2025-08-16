@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using RogueCustomsGameEngine.Utils.Representation;
+
 namespace RogueCustomsGameEngine.Utils.Helpers
 {
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -25,6 +27,8 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static double GetSquaredEuclideanDistanceBetweenCells(int x1, int y1, int x2, int y2) => Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2);
         public static double GetManhattanDistanceBetweenCells(int x1, int y1, int x2, int y2) => Math.Abs(x2 - x1) + Math.Abs(y2 - y1);
+        public static double GetChebyshevDistanceBetweenCells(int x1, int y1, int x2, int y2) => Math.Max(Math.Abs(x2 - x1), Math.Abs(y2 - y1));
+        
         public static List<T> GetShortestPathBetween<T>(this T[,] grid, (int X, int Y) source, (int X, int Y) target, bool includeDiagonals, Func<T, int> XDataFunction, Func<T, int> YDataFunction, Func<int, int, int, int, double> GFunction, Func<int, int, int, int, double> HFunction, Func<T, bool> validCellPredicate) where T : class
         {
             if (!validCellPredicate(grid[source.Y, source.X])) throw new ArgumentException("Cannot find a path from an invalid node!");

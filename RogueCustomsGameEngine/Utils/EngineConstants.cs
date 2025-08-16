@@ -29,6 +29,9 @@ namespace RogueCustomsGameEngine.Utils
 
         public static readonly string FlagRegexPattern = @"\[(?!\d+;\d+\])([^\[\];]+)\]";
 
+        public static readonly Regex CirclePattern = new Regex(@"Circle\s*\(Diametre\s*(\d+)\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly Regex SquarePattern = new Regex(@"Square\s*\((\d+)x\d+\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         public static readonly string[] EffectsThatTriggerOnAttacked = new[]
         {
             "DealDamage", "StealItem", "ApplyAlteredStatus", "CleanseAlteredStatus", "CleanseAllAlteredStatuses",

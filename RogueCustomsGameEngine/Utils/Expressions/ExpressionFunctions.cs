@@ -10,6 +10,7 @@ using org.matheval;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -27,7 +28,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             Map = map;
         }
 
-        public static string RNG(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string RNG(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2 || !int.TryParse(parameters[0], out int min) || !int.TryParse(parameters[1], out int max) || min > max)
                 throw new ArgumentException("Invalid parameters for rng.");
@@ -35,7 +36,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return rngHandler.Next(min, max + 1).ToString();
         }
 
-        public static string FLAGEXISTS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string FLAGEXISTS(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for FlagExists.");
 
@@ -44,13 +45,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return flagExists.ToString();
         }
 
-        public static string HASSTATUS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string HASSTATUS(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for HasStatus.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "HasStatus", This, Source, Target);
+            var entityToCheck = GetEntityByName(entityName, "HasStatus", args);
 
             var statusName = parameters[1];
 
@@ -63,19 +64,19 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return false.ToString();
         }
 
-        public static string DOESNOTHAVESTATUS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string DOESNOTHAVESTATUS(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for DoesNotHaveStatus.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "DoesNotHaveStatus", This, Source, Target);
+            var entityToCheck = GetEntityByName(entityName, "DoesNotHaveStatus", args);
 
-            var statusExists = HASSTATUS(This, Source, Target, parameters);
+            var statusExists = HASSTATUS(args, parameters);
             return (!(bool.Parse(statusExists))).ToString();
         }
 
-        public static string CONCAT(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CONCAT(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length < 2) throw new ArgumentException("Invalid parameters for Concat.");
 
@@ -89,42 +90,42 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return concatResult.ToString();
         }
 
-        public static string REPLACE(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string REPLACE(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 3) throw new ArgumentException("Invalid parameters for Replace.");
 
             return parameters[0].TrimSurroundingQuotes().Replace(parameters[1].TrimSurroundingQuotes(), parameters[2].TrimSurroundingQuotes()).ToString();
         }
 
-        public static string REVERSE(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string REVERSE(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Reverse.");
 
             return parameters[0].TrimSurroundingQuotes().Reverse().ToString() ?? string.Empty;
         }
 
-        public static string LOWER(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string LOWER(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Lower.");
 
             return parameters[0].TrimSurroundingQuotes().ToLowerInvariant();
         }
 
-        public static string UPPER(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string UPPER(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Upper.");
 
             return parameters[0].TrimSurroundingQuotes().ToUpperInvariant();
         }
 
-        public static string TRIM(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string TRIM(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for Trim.");
 
             return parameters[0].TrimSurroundingQuotes().Trim();
         }
 
-        public static string FLOOR(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string FLOOR(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for Floor.");
             
@@ -138,7 +139,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return result.ToString(formatString, System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        public static string CEILING(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CEILING(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for Ceiling.");
 
@@ -152,13 +153,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return result.ToString(formatString, System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        public static string USESSTAT(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string USESSTAT(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for UsesStat.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "UsesStat", This, Source, Target);
+            var entityToCheck = GetEntityByName(entityName, "UsesStat", args);
 
             var statId = parameters[1];
 
@@ -171,13 +172,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return false.ToString();
         }
 
-        public static string CURRENTWEAPON(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CURRENTWEAPON(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentWeapon.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "CurrentWeapon", This, Source, Target);
+            var entityToCheck = GetEntityByName(entityName, "CurrentWeapon", args);
 
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in CurrentWeapon.");
@@ -185,13 +186,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return $"\"{c.Weapon.ClassId}\"";
         }
 
-        public static string CURRENTARMOR(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CURRENTARMOR(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentArmor.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "CurrentArmor", This, Source, Target);
+            var entityToCheck = GetEntityByName(entityName, "CurrentArmor", args);
 
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in CurrentArmor.");
@@ -199,17 +200,17 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return $"\"{c.Armor.ClassId}\"";
         }
 
-        public static string DISTANCEBETWEEN(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string DISTANCEBETWEEN(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for DistanceBetween.");
 
             var entity1Name = parameters[0].ToLower();
 
-            var entity1ToCheck = GetEntityByName(entity1Name, "DistanceBetween", This, Source, Target);
+            var entity1ToCheck = GetEntityByName(entity1Name, "DistanceBetween", args);
 
             var entity2Name = parameters[1].ToLower();
 
-            var entity2ToCheck = GetEntityByName(entity2Name, "DistanceBetween", This, Source, Target);
+            var entity2ToCheck = GetEntityByName(entity2Name, "DistanceBetween", args);
 
             if (entity1ToCheck is not Character c1 || c1.Position == null)
                 throw new ArgumentException("Invalid entity in DistanceBetween.");
@@ -218,17 +219,18 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             return Math.Floor(GamePoint.Distance(c1.Position, c2.Position)).ToString();
         }
-        public static string AREINTHESAMEROOM(Entity This, Entity Source, Entity Target, string[] parameters)
+
+        public static string AREINTHESAMEROOM(EffectCallerParams args, string[] parameters)
         {
             if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for AreInSameRoom.");
 
             var entity1Name = parameters[0].ToLower();
 
-            var entity1ToCheck = GetEntityByName(entity1Name, "AreInSameRoom", This, Source, Target);
+            var entity1ToCheck = GetEntityByName(entity1Name, "AreInSameRoom", args);
 
             var entity2Name = parameters[1].ToLower();
 
-            var entity2ToCheck = GetEntityByName(entity2Name, "AreInSameRoom", This, Source, Target);
+            var entity2ToCheck = GetEntityByName(entity2Name, "AreInSameRoom", args);
 
             if (entity1ToCheck is not Character c1 || c1.Position == null)
                 throw new ArgumentException("Invalid entity in AreInSameRoom.");
@@ -244,14 +246,15 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return ((Map.GetFOVTilesWithinDistance(c1.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c2.ContainingTile) || Map.GetFOVTilesWithinDistance(c2.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c1.ContainingTile))).ToString();
         }
 
-        private static Entity GetEntityByName(string name, string functionName, Entity This, Entity Source, Entity Target)
+        private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch
             {
-                "this" => This,
-                "source" => Source,
-                "target" => Target,
-                "player" => This.Map.Player,
+                "this" => args.This,
+                "source" => args.Source,
+                "target" => args.Target is Entity e ? e : throw new ArgumentException($"Invalid entity name {name} in {functionName}."),
+                "originaltarget" => args.OriginalTarget is Entity e ? e : throw new ArgumentException($"Invalid entity name {name} in {functionName}."),
+                "player" => args.This.Map.Player,
                 _ => throw new ArgumentException($"Invalid entity name {name} in {functionName}.")
             };
         }
