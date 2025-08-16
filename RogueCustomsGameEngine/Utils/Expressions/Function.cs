@@ -11,6 +11,7 @@ using org.matheval.Functions;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
 #pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
@@ -92,7 +93,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             return tokens;
         }
-        public string Execute(Entity This, Entity Source, ITargetable Target)
+        public string Execute(EffectCallerParams args)
         {
             // Recursively evaluate parameters first
             var evaluatedParameters = Parameters.Select(param =>
@@ -100,65 +101,52 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if (param is Function nestedFunction)
                 {
                     // Recursively evaluate nested function
-                    return nestedFunction.Execute(This, Source, Target);
+                    return nestedFunction.Execute(args);
                 }
 
                 // If it's a simple value (string, number), just return it
                 return param.ToString();
             }).ToArray();
 
-            // Determine the entity or tile context for the function call
-            Entity e = null;
-            Tile t = null;
-
-            if (Target is Entity targetEntity)
-            {
-                e = targetEntity;
-            }
-            else if (Target is Tile targetTile)
-            {
-                t = targetTile;
-            }
-
             // Now invoke the function
-            return InvokeAppropriateFunction(FunctionName, This, Source, e, t, evaluatedParameters);
+            return InvokeAppropriateFunction(FunctionName, args, evaluatedParameters);
         }
 
-        private string InvokeAppropriateFunction(string functionName, Entity This, Entity Source, Entity e, Tile t, string[] parameters)
+        private string InvokeAppropriateFunction(string functionName, EffectCallerParams args, string[] parameters)
         {
-            if (e != null)
+            if (args.OriginalTarget is Entity)
             {
-                return InvokeExpressionFunction(functionName, This, Source, e, parameters);
+                return InvokeExpressionFunction(functionName, args, parameters);
             }
-            else if (t != null)
+            else if (args.OriginalTarget is Tile)
             {
-                return InvokeTileExpressionFunction(functionName, This, Source, t, parameters);
+                return InvokeTileExpressionFunction(functionName, args, parameters);
             }
 
             // Return the parameters joined if no function is matched
             return string.Join(",", parameters);
         }
 
-        private string InvokeExpressionFunction(string functionName, Entity This, Entity Source, Entity Target, string[] parameters)
+        private string InvokeExpressionFunction(string functionName, EffectCallerParams args, string[] parameters)
         {
             // Assuming functions are defined in a class called ExpressionFunctions
             var type = typeof(ExpressionFunctions);
             var method = type.GetMethod(functionName.ToUpperInvariant(), BindingFlags.Static | BindingFlags.Public);
             if (method == null) return string.Join(",", parameters);
 
-            var result = method.Invoke(null, new object[] { This, Source, Target, parameters });
+            var result = method.Invoke(null, new object[] { args, parameters });
 
             return result?.ToString() ?? string.Empty;
         }
 
-        private string InvokeTileExpressionFunction(string functionName, Entity This, Entity Source, Tile Target, string[] parameters)
+        private string InvokeTileExpressionFunction(string functionName, EffectCallerParams args, string[] parameters)
         {
             // Assuming functions are defined in a class called ExpressionFunctions
             var type = typeof(TileExpressionFunctions);
             var method = type.GetMethod(functionName.ToUpperInvariant(), BindingFlags.Static | BindingFlags.Public);
             if (method == null) return string.Join(",", parameters);
 
-            var result = method.Invoke(null, new object[] { This, Source, Target, parameters });
+            var result = method.Invoke(null, new object[] { args, parameters });
 
             return result?.ToString() ?? string.Empty;
         }

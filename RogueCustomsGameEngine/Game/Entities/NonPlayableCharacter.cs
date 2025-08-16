@@ -316,7 +316,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             else if (distanceToTarget < pickedAction.Action.MinimumRange)
             {
                 // I must move further
-                var tilesAtMinimumRangeFromTarget = Map.GetTilesWithinDistance(CurrentTarget.Position, pickedAction.Action.MinimumRange).Where(t => t.IsWalkable && !t.IsOccupied);
+                var tilesAtMinimumRangeFromTarget = Map.GetTilesWithinDistance(CurrentTarget.Position, pickedAction.Action.MinimumRange, false).Where(t => t.IsWalkable && !t.IsOccupied);
                 var visibleTilesAtMinimumRangeFromTarget = FOVTiles.Intersect(tilesAtMinimumRangeFromTarget);
                 if (!visibleTilesAtMinimumRangeFromTarget.Any())
                     return false; // No valid tile, don't do anything

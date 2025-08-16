@@ -30,6 +30,14 @@ namespace RogueCustomsGameEngine.Utils.Representation
         {
             return Math.Sqrt(ArrayHelpers.GetSquaredEuclideanDistanceBetweenCells(p1.X, p1.Y, p2.X, p2.Y));
         }
+        public static double ManhattanDistance(GamePoint p1, GamePoint p2)
+        {
+            return ArrayHelpers.GetManhattanDistanceBetweenCells(p1.X, p1.Y, p2.X, p2.Y);
+        }
+        public static double ChebyshevDistance(GamePoint p1, GamePoint p2)
+        {
+            return ArrayHelpers.GetChebyshevDistanceBetweenCells(p1.X, p1.Y, p2.X, p2.Y);
+        }
 
         public override int GetHashCode()
         {

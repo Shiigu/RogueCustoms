@@ -21,6 +21,7 @@ using System.Runtime.ExceptionServices;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -101,9 +102,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (clearIterationFlags)
             {
-                foreach (var character in Map.GetCharacters())
+                foreach (var character in Map.GetCharacters().Where(c => c.PickedForSwap))
                 {
                     character.PickedForSwap = false;
+                }
+                foreach (var tile in Map.Tiles.Where(t => t.PickedForSwap))
+                {
+                    tile.PickedForSwap = false;
                 }
             }
             var successfulEffects = await Effect.Do(User, source, target);
@@ -208,7 +213,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, source, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, new EffectCallerParams
+                {
+                    This = User,
+                    Source = source,
+                    OriginalTarget = target,
+                    Target = target
+                });
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
@@ -240,7 +251,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, source, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, new EffectCallerParams
+                {
+                    This = User,
+                    Source = source,
+                    OriginalTarget = target,
+                    Target = target
+                });
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
@@ -369,7 +386,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
                 if(!string.IsNullOrWhiteSpace(UseCondition))
                 {
-                    var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, sourceAsCharacter, target);
+                    var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, new EffectCallerParams
+                    {
+                        This = User,
+                        Source = sourceAsCharacter,
+                        OriginalTarget = target,
+                        Target = target
+                    });
 
                     if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))
                     {
@@ -463,7 +486,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!MayBeUsed) return false;
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, User, character, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(UseCondition, new EffectCallerParams
+                {
+                    This = User,
+                    Source = character,
+                    OriginalTarget = target,
+                    Target = target
+                });
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }
@@ -475,7 +504,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!MayBeUsed) return false;
             if (!string.IsNullOrWhiteSpace(AIUseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(AIUseCondition, User, character, target);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(AIUseCondition, new EffectCallerParams
+                {
+                    This = User,
+                    Source = character,
+                    OriginalTarget = target,
+                    Target = target
+                });
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition)) return false;
             }

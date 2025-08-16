@@ -61,7 +61,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (canCallElementEffect && attackElement.OnAfterAttack != null && !string.IsNullOrWhiteSpace(attackElement.OnAfterAttack.UseCondition))
             {
-                var parsedCondition = ExpressionParser.ParseArgForExpression(attackElement.OnAfterAttack.UseCondition, Args.This, Args.Source, c);
+                var parsedCondition = ExpressionParser.ParseArgForExpression(attackElement.OnAfterAttack.UseCondition, new EffectCallerParams
+                {
+                    This = Args.This,
+                    Source = Args.Source,
+                    OriginalTarget = c,
+                    Target = c
+                });
 
                 if (!ExpressionParser.CalculateBooleanExpression(parsedCondition))
                     canCallElementEffect = false;

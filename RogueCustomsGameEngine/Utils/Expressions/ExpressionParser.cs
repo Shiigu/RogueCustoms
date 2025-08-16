@@ -71,7 +71,9 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "canpickneutrals", "CanPickNeutrals" },
             { "canpickenemies", "CanPickEnemies" },
             { "canpickinvisibles", "CanPickInvisibles" },
-            { "canrepeatpick", "CanRepeatPick" }
+            { "canrepeatpick", "CanRepeatPick" },
+            { "canpickwalls", "CanPickWalls" },
+            { "canpickhallways", "CanPickHallways" },
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)
@@ -93,24 +95,25 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             Rng = rng;
             Map = map;
             ExpressionFunctions.Setup(rng, map);
+            TileExpressionFunctions.Setup(rng, map);
         }
 
-        public static CaseInsensitiveExpandoObject ParseParams(EffectCallerParams Args)
+        public static CaseInsensitiveExpandoObject ParseParams(EffectCallerParams args)
         {
             dynamic paramsObject = new CaseInsensitiveExpandoObject();
             var paramsDict = paramsObject.ToDictionary();
 
-            foreach (var param in Args.Params)
+            foreach (var param in args.Params)
             {
                 try
                 {
                     var paramName = param.ParamName.ToLower();
-                    var value = !IgnoreEntityParams.ContainsKey(paramName) ? ParseArgForExpression(Map.Locale[param.Value], Args.This, Args.Source, Args.Target) : Map.Locale[param.Value];
+                    var value = !IgnoreEntityParams.ContainsKey(paramName) ? ParseArgForExpression(Map.Locale[param.Value], args) : Map.Locale[param.Value];
 
                     if (string.IsNullOrEmpty(value)) continue;
 
                     // If it's not just a "copy value to field"...
-                    if (RequiresCustomParsing(paramsObject, paramName, value, Args.This, Args.Source, Args.Target))
+                    if (RequiresCustomParsing(paramsObject, paramName, value, args))
                         continue;
 
                     // Otherwise...
@@ -132,11 +135,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return paramsObject;
         }
 
-        private static bool RequiresCustomParsing(dynamic paramsObject, string paramName, string value, Entity This, Entity Source, ITargetable Target)
+        private static bool RequiresCustomParsing(dynamic paramsObject, string paramName, string value, EffectCallerParams args)
         {
             if (paramName is "attacker" or "source" or "target")
             {
-                SetEntityParam(paramsObject, Capitalize(paramName), value, This, Source, Target);
+                SetEntityParam(paramsObject, Capitalize(paramName), value, args);
                 return true;
             }
 
@@ -163,14 +166,14 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if(!paramsObject.ContainsKey(listProperty))
                     paramsObject[listProperty] = new List<SelectionItem>();
                 var splitValue = value.Split('|');
-                paramsObject[listProperty].Add(new SelectionItem(splitValue[0], ParseArgForExpression(Map.Locale[splitValue[1]], This, Source, Target), splitValue.Length > 2 ? ParseArgForExpression(Map.Locale[splitValue[2]], This, Source, Target) : null));
+                paramsObject[listProperty].Add(new SelectionItem(splitValue[0], ParseArgForExpression(Map.Locale[splitValue[1]], args), splitValue.Length > 2 ? ParseArgForExpression(Map.Locale[splitValue[2]], args) : null));
                 return true;
             }
 
             switch (paramName)
             {
                 case "stat":
-                    SetStatParam(paramsObject, value, Target);
+                    SetStatParam(paramsObject, value, args.Target);
                     return true;
                 case "tiletype":
                     paramsObject.TileType = Map.TileTypes.FirstOrDefault(tt => tt.Id.Equals(value, StringComparison.InvariantCultureIgnoreCase));
@@ -203,14 +206,16 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return false; // Not a special case, handle it verbatim (should be a string).
         }
 
-        private static void SetEntityParam(dynamic paramsObject, string propertyName, string value, Entity This, Entity Source, ITargetable Target)
+        private static void SetEntityParam(dynamic paramsObject, string propertyName, string value, EffectCallerParams args)
         {
             if (value.Equals("this", StringComparison.InvariantCultureIgnoreCase))
-                paramsObject[propertyName] = This;
+                paramsObject[propertyName] = args.This;
             else if (value.Equals("source", StringComparison.InvariantCultureIgnoreCase))
-                paramsObject[propertyName] = Source;
+                paramsObject[propertyName] = args.Source;
             else if (value.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                paramsObject[propertyName] = Target;
+                paramsObject[propertyName] = args.Target;
+            else if (value.Equals("originaltarget", StringComparison.InvariantCultureIgnoreCase))
+                paramsObject[propertyName] = args.OriginalTarget;
         }
 
         private static void SetStatParam(dynamic paramsObject, string value, ITargetable Target)
@@ -280,7 +285,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return tokens;
         }
 
-        public static string ParseArgForExpression(string arg, Entity This, Entity Source, ITargetable Target)
+        public static string ParseArgForExpression(string arg, EffectCallerParams args)
         {
             var tokens = SplitExpression(arg);
 
@@ -289,12 +294,16 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 var token = tokens[i];
 
                 token = ParseArgForEntity(token, Map.Player, "player");
-                token = ParseArgForEntity(token, This, "this");
-                token = ParseArgForEntity(token, Source, "source");
-                if (Target is Entity targetAsEntity)
+                token = ParseArgForEntity(token, args.This, "this");
+                token = ParseArgForEntity(token, args.Source, "source");
+                if (args.Target is Entity targetAsEntity)
                     token = ParseArgForEntity(token, targetAsEntity, "target");
-                else if (Target is Tile targetAsTile)
+                else if (args.Target is Tile targetAsTile)
                     token = ParseArgForTile(token, targetAsTile, "target");
+                if (args.OriginalTarget is Entity originalTargetAsEntity)
+                    token = ParseArgForEntity(token, originalTargetAsEntity, "originalTarget");
+                else if (args.OriginalTarget is Tile originalTargetAsTile)
+                    token = ParseArgForTile(token, originalTargetAsTile, "originalTarget");
                 token = ParseNamedFlags(token);
 
                 tokens[i] = token;
@@ -310,7 +319,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if (function != null)
                 {
                     // Execute the function and replace the token with its result
-                    tokens[i] = function.Execute(This, Source, Target);
+                    tokens[i] = function.Execute(args);
                 }
             }
 

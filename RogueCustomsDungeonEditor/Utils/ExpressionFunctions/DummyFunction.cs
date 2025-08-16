@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Game.Entities;
 
 using RogueCustomsGameEngine.Utils.Expressions;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
 #pragma warning disable CS8620 // El argumento no se puede usar para el parámetro debido a las diferencias en la nulabilidad de los tipos de referencia.
@@ -92,7 +93,7 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 
             return tokens;
         }
-        public string Execute(Entity This, Entity Source, ITargetable Target)
+        public string Execute(EffectCallerParams args)
         {
             // Recursively evaluate parameters first
             var evaluatedParameters = Parameters.Select(param =>
@@ -100,42 +101,29 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
                 if (param is DummyFunction nestedFunction)
                 {
                     // Recursively evaluate nested function
-                    return nestedFunction.Execute(This, Source, Target);
+                    return nestedFunction.Execute(args);
                 }
 
                 // If it's a simple value (string, number), just return it
                 return param.ToString();
             }).ToArray();
 
-            // Determine the entity or tile context for the function call
-            Entity e = null;
-            Tile t = null;
-
-            if (Target is Entity targetEntity)
-            {
-                e = targetEntity;
-            }
-            else if (Target is Tile targetTile)
-            {
-                t = targetTile;
-            }
-
             // Now invoke the function
-            return InvokeAppropriateFunction(FunctionName, This, Source, e, t, evaluatedParameters);
+            return InvokeAppropriateFunction(FunctionName, args, evaluatedParameters);
         }
 
-        private string InvokeAppropriateFunction(string functionName, Entity This, Entity Source, Entity e, Tile t, string[] parameters)
+        private string InvokeAppropriateFunction(string functionName, EffectCallerParams args, string[] parameters)
         {
-            return InvokeDummyExpressionFunction(functionName, This, Source, e, parameters);
+            return InvokeDummyExpressionFunction(functionName, args, parameters);
         }
 
-        private string InvokeDummyExpressionFunction(string functionName, Entity This, Entity Source, Entity Target, string[] parameters)
+        private string InvokeDummyExpressionFunction(string functionName, EffectCallerParams args, string[] parameters)
         {
             var type = typeof(DummyExpressionFunctions);
             var method = type.GetMethod(functionName.ToUpperInvariant(), BindingFlags.Static | BindingFlags.Public);
             if (method == null) return string.Join(",", parameters);
 
-            var result = method.Invoke(null, new object[] { This, Source, Target, parameters });
+            var result = method.Invoke(null, new object[] { args, parameters });
 
             return result?.ToString() ?? string.Empty;
         }

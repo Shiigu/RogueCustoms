@@ -8,101 +8,102 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 {
     public static class DummyExpressionFunctions
     {
-        public static string RNG(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string RNG(EffectCallerParams args, string[] parameters)
         {
             return "1";
         }
 
-        public static string FLAGEXISTS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string FLAGEXISTS(EffectCallerParams args, string[] parameters)
         {
             return "true";
         }
 
-        public static string HASSTATUS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string HASSTATUS(EffectCallerParams args, string[] parameters)
         {
             return "true";
         }
 
-        public static string DOESNOTHAVESTATUS(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string DOESNOTHAVESTATUS(EffectCallerParams args, string[] parameters)
         {
             return "false";
         }
 
-        public static string TILEISOCCUPIED(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string TILEISOCCUPIED(EffectCallerParams args, string[] parameters)
         {
             return "true";
         }
-        public static string TILEHASDEADALLIES(Entity This, Entity Source, Tile Target, string[] parameters)
-        {
-            return "true";
-        }
-
-        public static string CONCAT(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string REPLACE(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string REVERSE(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string LOWER(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string UPPER(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string TRIM(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "\"\"";
-        }
-
-        public static string FLOOR(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "1";
-        }
-
-        public static string CEILING(Entity This, Entity Source, Entity Target, string[] parameters)
-        {
-            return "1";
-        }
-
-        public static string USESSTAT(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string TILEHASDEADALLIES(EffectCallerParams args, string[] parameters)
         {
             return "true";
         }
 
-        public static string CURRENTWEAPON(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CONCAT(EffectCallerParams args, string[] parameters)
         {
             return "\"\"";
         }
 
-        public static string CURRENTARMOR(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string REPLACE(EffectCallerParams args, string[] parameters)
         {
             return "\"\"";
         }
 
-        public static string DISTANCEBETWEEN(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string REVERSE(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string LOWER(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string UPPER(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string TRIM(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string FLOOR(EffectCallerParams args, string[] parameters)
         {
             return "1";
         }
 
-        public static string AREINTHESAMEROOM(Entity This, Entity Source, Entity Target, string[] parameters)
+        public static string CEILING(EffectCallerParams args, string[] parameters)
+        {
+            return "1";
+        }
+
+        public static string USESSTAT(EffectCallerParams args, string[] parameters)
+        {
+            return "true";
+        }
+
+        public static string CURRENTWEAPON(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string CURRENTARMOR(EffectCallerParams args, string[] parameters)
+        {
+            return "\"\"";
+        }
+
+        public static string DISTANCEBETWEEN(EffectCallerParams args, string[] parameters)
+        {
+            return "1";
+        }
+
+        public static string AREINTHESAMEROOM(EffectCallerParams args, string[] parameters)
         {
             return "true";
         }

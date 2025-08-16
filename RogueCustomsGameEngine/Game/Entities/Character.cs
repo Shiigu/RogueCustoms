@@ -193,8 +193,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnLevelUp { get; private set; }
 
-        private List<Tile> _fovTiles;
-        public List<Tile> FOVTiles
+        private HashSet<Tile> _fovTiles;
+        public HashSet<Tile> FOVTiles
         {
             get
             {
@@ -292,23 +292,23 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnLevelUp = MapClassAction(entityClass.OnLevelUp);
         }
 
-        public List<Tile> ComputeFOVTiles()
+        public HashSet<Tile> ComputeFOVTiles()
         {
             if (SightRange == EngineConstants.FullMapSightRange)
             {
-                return Map.Tiles.ToList();
+                return new HashSet<Tile>(Map.Tiles.ToList());
             }
             else
             {
                 if (SightRange == EngineConstants.FullRoomSightRange)
                 {
                     if (ContainingTile.Type == TileType.Hallway || ContainingRoom == null || ContainingTile.IsConnectorTile)
-                        return Map.GetFOVTilesWithinDistance(Position, EngineConstants.FullRoomSightRangeForHallways);
-                    return Map.GetTilesInRoom(ContainingRoom);
+                        return new HashSet<Tile>(Map.GetFOVTilesWithinDistance(Position, EngineConstants.FullRoomSightRangeForHallways));
+                    return new HashSet<Tile>(Map.GetTilesInRoom(ContainingRoom));
                 }
                 else
                 {
-                    return Map.GetFOVTilesWithinDistance(Position, SightRange);
+                    return new HashSet<Tile>(Map.GetFOVTilesWithinDistance(Position, SightRange));
                 }
             }
         }
