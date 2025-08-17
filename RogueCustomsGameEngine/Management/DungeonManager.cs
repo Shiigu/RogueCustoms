@@ -175,6 +175,7 @@ namespace RogueCustomsGameEngine.Management
                     ));
                 }
             }
+            restoredDungeon.CurrentFloor.Snapshot.Read = false;
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
             ActiveDungeon = restoredDungeon;
         }

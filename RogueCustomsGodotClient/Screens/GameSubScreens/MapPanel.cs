@@ -13,6 +13,7 @@ using RogueCustomsGodotClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 public partial class MapPanel : GamePanel
 {
@@ -37,6 +38,7 @@ public partial class MapPanel : GamePanel
 
     private AimingSquare _aimingSquare;
     private int widthToDisplay, heightToDisplay;
+    private string[,] _tileBuffer;
 
     public Vector2 MapPosition => _tileMap.Position;
 
@@ -66,9 +68,6 @@ public partial class MapPanel : GamePanel
     public override void Update()
     {
         var dungeonStatus = _globalState.DungeonInfo;
-        var n = _tileMap.GetParsedText().Count("☺");
-        var m = dungeonStatus.Tiles.FindAll(t => t.ConsoleRepresentation.Character == '☺');
-        var m2 = m.Count;
         _floorTitleLabel.Text = dungeonStatus.FloorName;
         _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = dungeonStatus.TurnCount.ToString() });
 
@@ -125,7 +124,7 @@ public partial class MapPanel : GamePanel
                 heightToDisplay = dungeonStatus.Height;
             }
 
-            _tileMap.Text = "";
+            _tileMap.Clear();
 
             // BBCode does not properly represent spaces
             var emptyCharacter = new ConsoleRepresentation
@@ -137,23 +136,34 @@ public partial class MapPanel : GamePanel
 
             _tileMap.Position = new Vector2(16 * (TopLeftCornerPosition.X + 1), 16 * (TopLeftCornerPosition.Y + 1));
 
+            _tileBuffer = new string[widthToDisplay, heightToDisplay];
+
             for (var y = 0; y < heightToDisplay; y++)
             {
-                _tileMap.PushParagraph(HorizontalAlignment.Left);
                 for (var x = 0; x < widthToDisplay; x++)
                 {
-                    var actualMapCoords = new Vector2I(x + TopLeftCornerCoords.X, y + TopLeftCornerCoords.Y);
-                    var tileInCoordinates = dungeonStatus.GetTileConsoleRepresentationFromCoordinates(actualMapCoords.X, actualMapCoords.Y);
-                    if (tileInCoordinates.Character == ' ')
-                    {
-                        tileInCoordinates = emptyCharacter;
-                    }
-                    _tileMap.AppendText($"{tileInCoordinates.ToBbCodeRepresentation()}");
+                    var rep = dungeonStatus.GetTileConsoleRepresentationFromCoordinates(x, y);
+                    _tileBuffer[x, y] = rep.ToBbCodeRepresentation();
                 }
-                _tileMap.Pop();
             }
-            _tileMap.PopAll();
+            Render();
+
         }
+    }
+
+    public void Render()
+    {
+        _tileMap.Clear();
+        for (var y = 0; y < _tileBuffer.GetLength(1); y++)
+        {
+            _tileMap.PushParagraph(HorizontalAlignment.Left);
+            for (var x = 0; x < _tileBuffer.GetLength(0); x++)
+            {
+                _tileMap.AppendText(_tileBuffer[x, y]);
+            }
+            _tileMap.Pop();
+        }
+        _tileMap.PopAll();
     }
 
     private Vector2 GetPositionForCoordinates(Vector2 coords)
@@ -165,10 +175,14 @@ public partial class MapPanel : GamePanel
 
     public void UpdateTileRepresentation(Vector2I position, ConsoleRepresentation consoleRepresentation)
     {
-        var tile = _globalState.DungeonInfo.GetTileFromCoordinates(position.X, position.Y);
-        if (tile.ConsoleRepresentation.Equals(consoleRepresentation)) return;
-        tile.ConsoleRepresentation = consoleRepresentation;
-        Update();
+        if (_globalState.DungeonInfo == null) return;
+        var newRep = consoleRepresentation.ToBbCodeRepresentation();
+
+        if (_tileBuffer[position.X, position.Y] == newRep)
+            return;
+
+        _tileBuffer[position.X, position.Y] = newRep;
+        Render();
     }
 
     public void StartTargeting()
@@ -191,7 +205,7 @@ public partial class MapPanel : GamePanel
         var tile = dungeonStatus.GetTileFromCoordinates((int) newCoordinates.X, (int) newCoordinates.Y);
         if (!tile.Targetable) return;
         CursorMapLocation = newCoordinates;
-        Update();
+        Render();
         _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
     }
 
@@ -200,6 +214,6 @@ public partial class MapPanel : GamePanel
         if (_aimingSquare.Disabled) return;
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
-        Update();
+        Render();
     }
 }

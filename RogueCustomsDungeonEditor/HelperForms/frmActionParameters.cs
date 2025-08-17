@@ -302,6 +302,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 areaList.Add($"Square ({i}x{i})");
             }
 
+            areaList.Add("Whole Room");
             areaList.Add("Whole Map");
 
             return areaList;

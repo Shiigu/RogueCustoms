@@ -91,10 +91,10 @@ public partial class PlayerSelectItem : Control
         {
             try
             {
-                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-                _globalState.MustUpdateGameScreen = true;
                 onCloseCallback?.Invoke();
                 QueueFree();
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             }
             catch (Exception ex)
             {
@@ -108,10 +108,10 @@ public partial class PlayerSelectItem : Control
         {
             try
             {
-                _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-                _globalState.MustUpdateGameScreen = true;
                 onCloseCallback?.Invoke();
                 QueueFree();
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             }
             catch (Exception ex)
             {
@@ -125,10 +125,10 @@ public partial class PlayerSelectItem : Control
         {
             try
             {
-                _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-                _globalState.MustUpdateGameScreen = true;
                 onCloseCallback?.Invoke();
                 QueueFree();
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             }
             catch (Exception ex)
             {
@@ -142,10 +142,10 @@ public partial class PlayerSelectItem : Control
         {
             try
             {
-                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-                _globalState.MustUpdateGameScreen = true;
                 onCloseCallback?.Invoke();
                 QueueFree();
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
             }
             catch (Exception ex)
             {
@@ -176,7 +176,7 @@ public partial class PlayerSelectItem : Control
         Position = (screenSize - _outerBorder.Size) / 2;
     }
 
-    private async Task DoButton_Pressed(Vector2I? targetCoords, Action onCloseCallback)
+    private Task DoButton_Pressed(Vector2I? targetCoords, Action onCloseCallback)
     {
         var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
 
@@ -187,10 +187,10 @@ public partial class PlayerSelectItem : Control
             Y = targetCoords.Value.Y,
             SourceType = selectedAction.SourceType
         };
-        await _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
-        _globalState.MustUpdateGameScreen = true;
         onCloseCallback?.Invoke();
         QueueFree();
+        _globalState.MustUpdateGameScreen = true;
+        return _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
     }
 
     private void ShowInventoryScreen()

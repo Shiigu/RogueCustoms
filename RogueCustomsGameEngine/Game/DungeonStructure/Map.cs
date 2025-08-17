@@ -1321,8 +1321,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 await character.PerformOnTurnStart();
             }
 
-            if(TurnCount > 1)
-                Snapshot = new(Dungeon, this);
+            if (TurnCount > 1)
+            {
+                while (Snapshot != null && !Snapshot.Read)
+                    await Task.Delay(10);
+                Snapshot = new(Dungeon, this) { Read = true };
+            }
         }
 
         private async Task AddNPC()
@@ -1526,7 +1530,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     );
                 }
 
-                if (character == Player || Player.FOVTiles.Contains(initialTile))
+                if (character == Player || Player.FOVTiles.Any(t => t == initialTile))
                 {
                     events.Add(new()
                     {
@@ -1536,7 +1540,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     );
                 }
 
-                if (character == Player || Player.FOVTiles.Contains(targetTile))
+                if (character == Player || Player.FOVTiles.Any(t => t == targetTile))
                 {
                     events.Add(new()
                     {

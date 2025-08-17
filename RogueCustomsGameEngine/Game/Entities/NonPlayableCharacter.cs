@@ -151,7 +151,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     var positionTile = Map.GetTileFromCoordinates(tc.LatestPositions[i]);
                     // If I can see one of these last positions, I go there as they may still be in sight
-                    if (FOVTiles.Contains(positionTile))
+                    if (FOVTiles.Any(t => t == positionTile))
                     {
                         CurrentTarget = positionTile;
                         return true;

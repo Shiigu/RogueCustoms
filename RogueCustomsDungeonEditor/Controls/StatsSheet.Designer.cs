@@ -60,7 +60,7 @@
             label68.AutoSize = true;
             label68.Location = new System.Drawing.Point(9, 246);
             label68.Name = "label68";
-            label68.Size = new System.Drawing.Size(291, 30);
+            label68.Size = new System.Drawing.Size(293, 30);
             label68.TabIndex = 245;
             label68.Text = "NOTE: When not The Whole Map, Sight is significantly\r\nreduced in hallways";
             label68.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -70,7 +70,7 @@
             chkCanGainExperience.AutoSize = true;
             chkCanGainExperience.Location = new System.Drawing.Point(9, 330);
             chkCanGainExperience.Name = "chkCanGainExperience";
-            chkCanGainExperience.Size = new System.Drawing.Size(169, 19);
+            chkCanGainExperience.Size = new System.Drawing.Size(168, 19);
             chkCanGainExperience.TabIndex = 241;
             chkCanGainExperience.Text = "Can gain Experience Points";
             chkCanGainExperience.UseVisualStyleBackColor = true;
@@ -88,7 +88,7 @@
             label78.AutoSize = true;
             label78.Location = new System.Drawing.Point(6, 385);
             label78.Name = "label78";
-            label78.Size = new System.Drawing.Size(103, 15);
+            label78.Size = new System.Drawing.Size(102, 15);
             label78.TabIndex = 239;
             label78.Text = "Maximum Level is";
             // 
@@ -106,14 +106,14 @@
             label79.AutoSize = true;
             label79.Location = new System.Drawing.Point(6, 357);
             label79.Name = "label79";
-            label79.Size = new System.Drawing.Size(126, 15);
+            label79.Size = new System.Drawing.Size(125, 15);
             label79.TabIndex = 237;
             label79.Text = "Experience to Level Up";
             // 
             // label80
             // 
             label80.AutoSize = true;
-            label80.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label80.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             label80.Location = new System.Drawing.Point(81, 295);
             label80.Name = "label80";
             label80.Size = new System.Drawing.Size(148, 32);
@@ -151,7 +151,7 @@
             // label96
             // 
             label96.AutoSize = true;
-            label96.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label96.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             label96.Location = new System.Drawing.Point(113, 0);
             label96.Name = "label96";
             label96.Size = new System.Drawing.Size(68, 32);
@@ -237,7 +237,7 @@
             // lblStatId
             // 
             lblStatId.AutoSize = true;
-            lblStatId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            lblStatId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             lblStatId.Location = new System.Drawing.Point(104, 61);
             lblStatId.Name = "lblStatId";
             lblStatId.Size = new System.Drawing.Size(86, 21);
@@ -247,12 +247,12 @@
             // lblSightRangeId
             // 
             lblSightRangeId.AutoSize = true;
-            lblSightRangeId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            lblSightRangeId.Location = new System.Drawing.Point(83, 181);
+            lblSightRangeId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            lblSightRangeId.Location = new System.Drawing.Point(97, 180);
             lblSightRangeId.Name = "lblSightRangeId";
-            lblSightRangeId.Size = new System.Drawing.Size(144, 21);
+            lblSightRangeId.Size = new System.Drawing.Size(102, 21);
             lblSightRangeId.TabIndex = 254;
-            lblSightRangeId.Text = "SightRangeName";
+            lblSightRangeId.Text = "Sight Range";
             // 
             // StatsSheet
             // 
@@ -282,7 +282,7 @@
             Controls.Add(label96);
             Controls.Add(lblSightRangeText);
             Name = "StatsSheet";
-            Size = new System.Drawing.Size(303, 408);
+            Size = new System.Drawing.Size(305, 408);
             ((System.ComponentModel.ISupportInitialize)nudMaxLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudFlatSightRange).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBase).EndInit();

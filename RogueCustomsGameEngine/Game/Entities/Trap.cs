@@ -78,7 +78,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (c == null) return false;
             if (c.CanSee(this)) return true;
-            if (!Visible && Faction != null && c.FOVTiles.Contains(ContainingTile))
+            if (!Visible && Faction != null && c.FOVTiles.Any(t => t == ContainingTile))
             {
                 if (Faction == c.Faction) return true;
                 if (Faction.IsAlliedWith(c.Faction)) return true;

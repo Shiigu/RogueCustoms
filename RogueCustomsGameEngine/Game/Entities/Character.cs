@@ -480,6 +480,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private int ParseArgForFormulaAndCalculate(string arg, bool capIfLevelIsMax)
         {
+            if (string.IsNullOrWhiteSpace(arg)) return 0;
             if (Level == MaxLevel && capIfLevelIsMax) return Experience;
             var parsedArg = arg.ToLowerInvariant();
 
@@ -512,6 +513,11 @@ namespace RogueCustomsGameEngine.Game.Entities
         private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
         {
             var events = new List<DisplayEventDto>();
+            var statsPreEquip = new List<(string Id, decimal Current, decimal Base, bool HasMax)>();
+            foreach (var stat in UsedStats)
+            {
+                statsPreEquip.Add((stat.Id, stat.Current, stat.BaseAfterModifications, stat.HasMax));
+            }
             if (itemToEquip.EntityType == EntityType.Weapon)
             {
                 if (this == Map.Player)
@@ -546,6 +552,35 @@ namespace RogueCustomsGameEngine.Game.Entities
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.ItemEquip }
                 });
+                if (this == Map.Player)
+                {
+                    var statsAfterEquip = new List<(string Id, decimal Current, decimal Base, bool HasMax)>();
+                    foreach (var stat in UsedStats)
+                    {
+                        statsAfterEquip.Add((stat.Id, stat.Current, stat.BaseAfterModifications, stat.HasMax));
+                    }
+                    foreach (var stat in statsAfterEquip)
+                    {
+                        var equivalentPreEquip = statsPreEquip.Find(s => s.Id.Equals(stat.Id));
+                        if (equivalentPreEquip == default) continue;
+                        if (stat.Current != equivalentPreEquip.Current)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                            });
+                        }
+                        if (stat.HasMax && stat.Base != equivalentPreEquip.Base)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
+                            });
+                        }
+                    }
+                }
                 Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow, events);
             }
             if (equippedItem != null)
@@ -693,7 +728,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
-                if (attacker is Character c && ExperiencePayout > 0)
+                if (this is NonPlayableCharacter && attacker is Character c && ExperiencePayout > 0)
                     await GiveExperienceTo(c);
             }
         }
