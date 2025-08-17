@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -24,6 +25,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int Height { get; private set; }
 
         public int TurnCount { get; private set; }
+
+        [JsonIgnore]
+        public bool Read { get; set; }
 
         public List<TileDto> Tiles { get; private set; }
         public ConsoleRepresentation EmptyTile { get; private set; }

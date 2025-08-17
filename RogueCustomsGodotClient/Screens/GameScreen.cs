@@ -53,6 +53,7 @@ public partial class GameScreen : Control
     {
         SpecialEffectsWithFlash = new()
         {
+            (SpecialEffect.NPCDamaged, new Color { R8 = 0, G8 = 100, B8 = 0, A = 1 }),
             (SpecialEffect.PlayerDamaged, new Color { R8 = 255, G8 = 0, B8 = 0, A = 1 }),
             (SpecialEffect.Statused, new Color { R8 = 238, G8 = 130, B8 = 238, A = 1 }),
             (SpecialEffect.HPUp, new Color { R8 = 0, G8 = 255, B8 = 0, A = 1 }),
@@ -189,7 +190,9 @@ public partial class GameScreen : Control
                     child.Update();
                 }
 
-                await UpdateUIViaEvents();
+                if (!dungeonStatus.Read)
+                    await UpdateUIViaEvents();
+
                 _lastTurn = dungeonStatus.TurnCount;
             }
 
@@ -204,15 +207,15 @@ public partial class GameScreen : Control
             }
             if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
             {
-                await _globalState.DungeonManager.MovePlayer(_coords);
                 _globalState.MustUpdateGameScreen = true;
                 _globalState.PlayerControlMode = ControlMode.Waiting;
-
+                var coordsToSend = _coords;
                 _coords = new CoordinateInput
                 {
                     X = 0,
                     Y = 0
                 };
+                await _globalState.DungeonManager.MovePlayer(coordsToSend);
             }
             else if ((_globalState.PlayerControlMode == ControlMode.Targeting) && (_coords.X != 0 || _coords.Y != 0))
             {
@@ -240,7 +243,7 @@ public partial class GameScreen : Control
         _infoPanel.DetailsButton.Disabled = true;
         _messageLogPanel.MessageWindowButton.Disabled = true;
         _controlsPanel.Update();
-        var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
+        var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.ClearLogMessages, DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
         _mapPanel.StopTargeting();
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
@@ -369,12 +372,15 @@ public partial class GameScreen : Control
                 await Task.Delay(50);
             if (displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
                 await Task.Delay(50);
+            if (!displayEventList.Events.Any(e => unimportantDisplayEventTypes.Contains(e.DisplayEventType)))
+                await ToSignal(GetTree(), "process_frame");
         }
         if (_soundIsPlaying)
             await Task.Delay(50);
         _soundIsPlaying = false;
         _globalState.PlayerControlMode = controlModeToPick;
         _controlsPanel.Update();
+        _globalState.DungeonInfo.Read = true;
         _globalState.MustUpdateGameScreen = false;
 
         _infoPanel.DetailsButton.Disabled = false;

@@ -36,7 +36,9 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                  ? Math.Min(1, ExpressionParser.CalculateAdjustedAccuracy(sourceAsCharacter, targetAsCharacter, paramsObject) / 100f * 2)
                  : 1;
 
-            switch (effect.AsyncFunction.Method.Name)
+            var functionName = effect.Function != null ? effect.Function.Method.Name : effect.AsyncFunction.Method.Name;
+
+            switch (functionName)
             {
                 case "DealDamage":
                     if (targetAsCharacter == null || targetAsCharacter.ExistenceStatus != EntityExistenceStatus.Alive)

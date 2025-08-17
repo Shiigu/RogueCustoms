@@ -264,7 +264,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (source.ContainingTile.Type != TileType.Hallway && source.ContainingRoom != target.Room) return false;
 
-            if (!source.FOVTiles.Contains(target)) return false;
+            if (!source.FOVTiles.Any(t => t == target)) return false;
 
             return true;
         }

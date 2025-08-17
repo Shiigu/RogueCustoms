@@ -581,7 +581,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 if (!Map.IsDebugMode)
                 {
-                    if (c == Map.Player || Map.Player.FOVTiles.Contains(initialTile))
+                    if (c == Map.Player || Map.Player.FOVTiles.Any(t => t == initialTile))
                     {
                         events.Add(new()
                         {
@@ -591,7 +591,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         );
                     }
 
-                    if (c == Map.Player || Map.Player.FOVTiles.Contains(targetTile))
+                    if (c == Map.Player || Map.Player.FOVTiles.Any(t => t == targetTile))
                     {
                         events.Add(new()
                         {
@@ -900,42 +900,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Args.Source is not Character s)
                 throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
 
-            var searchArea = paramsObject.SearchArea;
+            string searchArea = paramsObject.SearchArea;
 
-            var candidateTilesForCharacters = new List<Tile>();
+            var candidateTilesForCharacters = Map.GetCandidateTilesForArea(Args.OriginalTarget.Position, searchArea);
             var candidateCharacters = new List<Character>();
-
-            if (searchArea.StartsWith("Circle", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var match = EngineConstants.CirclePattern.Match(searchArea);
-                var radius = 0;
-                if (match.Success && int.TryParse(match.Groups[1].Value, out radius))
-                {
-                    candidateTilesForCharacters = Map.GetTilesWithinDistance(Args.OriginalTarget.Position, (radius - 1) / 2, true);
-                }
-            }
-            else if (searchArea.StartsWith("Square", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var match = EngineConstants.SquarePattern.Match(searchArea);
-                var size = 0;
-                if (match.Success && int.TryParse(match.Groups[1].Value, out size))
-                {
-                    candidateTilesForCharacters = Map.GetTilesWithinCenteredSquare(Args.OriginalTarget.Position, (size - 1) / 2, true);
-                }
-            }
-
-            if (candidateTilesForCharacters.Count == 0)
-            {
-                if (searchArea == "Whole Map")
-                {
-                    candidateTilesForCharacters = Map.Tiles.ToList();
-                }
-                else
-                {
-                    var displayValue = string.IsNullOrWhiteSpace(searchArea) ? "NULL" : searchArea;
-                    throw new ArgumentException($"Search Area is {displayValue}, which is incorrect.");
-                }
-            }
 
             var canRepeatPick = paramsObject.CanRepeatPick;
             candidateCharacters = Map.GetCharacters().Where(c => candidateTilesForCharacters.Contains(c.ContainingTile) && c.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
@@ -991,41 +959,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Args.Source is not Character c)
                 throw new ArgumentException($"Attempted to change {Args.Source.Name}'s current Target when it's not a Character.");
 
-            var searchArea = paramsObject.SearchArea;
+            string searchArea = paramsObject.SearchArea;
 
-            var candidateTiles = new List<Tile>();
-
-            if (searchArea.StartsWith("Circle", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var match = EngineConstants.CirclePattern.Match(searchArea);
-                var radius = 0;
-                if (match.Success && int.TryParse(match.Groups[1].Value, out radius))
-                {
-                    candidateTiles = Map.GetTilesWithinDistance(Args.OriginalTarget.Position, (radius - 1) / 2, true);
-                }
-            }
-            else if (searchArea.StartsWith("Square", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var match = EngineConstants.SquarePattern.Match(searchArea);
-                var size = 0;
-                if (match.Success && int.TryParse(match.Groups[1].Value, out size))
-                {
-                    candidateTiles = Map.GetTilesWithinCenteredSquare(Args.OriginalTarget.Position, (size - 1) / 2, true);
-                }
-            }
-
-            if (candidateTiles.Count == 0)
-            {
-                if (searchArea == "Whole Map")
-                {
-                    candidateTiles = Map.Tiles.ToList();
-                }
-                else
-                {
-                    var displayValue = string.IsNullOrWhiteSpace(searchArea) ? "NULL" : searchArea;
-                    throw new ArgumentException($"Search Area is {displayValue}, which is incorrect.");
-                }
-            }
+            var candidateTiles = Map.GetCandidateTilesForArea(Args.OriginalTarget.Position, searchArea);
 
             var tilesToConsider = new List<Tile>();
             var canRepeatPick = paramsObject.CanRepeatPick;
@@ -1051,7 +987,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     continue;
                 if (!canPickHallways && t.Type == TileType.Hallway)
                     continue;
-                if (!canPickInvisibles && c.ContainingTile != t && !c.FOVTiles.Contains(t))
+                if (!canPickInvisibles && c.ContainingTile != t && !c.FOVTiles.Any(t2 => t2 == t))
                     continue;
 
                 evalParams.Target = t;
