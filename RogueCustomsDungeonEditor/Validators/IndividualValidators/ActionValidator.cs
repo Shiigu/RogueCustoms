@@ -153,23 +153,26 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     (source as Character).EquippedArmor = fillerArmor;
                 }
             }
-            else if (owner is Item item && item.IsEquippable && action != item.OwnOnDeath)
+            else if (owner is Item item)
             {
                 source = GetATestCharacter(sampleDungeon);
                 item.Owner = source as NonPlayableCharacter;
-                if (owner.EntityType == EntityType.Weapon)
+                if (item.IsEquippable && action != item.OwnOnDeath)
                 {
-                    (source as Character).EquippedWeapon = item;
-                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
-                    fillerArmor.Owner = source as Character;
-                    (source as Character).EquippedArmor = fillerArmor;
-                }
-                else if (owner.EntityType == EntityType.Armor)
-                {
-                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-                    fillerWeapon.Owner = source as Character;
-                    (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = item;
+                    if (owner.EntityType == EntityType.Weapon)
+                    {
+                        (source as Character).EquippedWeapon = item;
+                        var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+                        fillerArmor.Owner = source as Character;
+                        (source as Character).EquippedArmor = fillerArmor;
+                    }
+                    else if (owner.EntityType == EntityType.Armor)
+                    {
+                        var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
+                        fillerWeapon.Owner = source as Character;
+                        (source as Character).EquippedWeapon = fillerWeapon;
+                        (source as Character).EquippedArmor = item;
+                    }
                 }
             }
             else if (owner is AlteredStatus alteredStatus)

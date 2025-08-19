@@ -205,27 +205,9 @@ public partial class GameScreen : Control
                 };
                 return;
             }
-            if ((_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs) && (_coords.X != 0 || _coords.Y != 0))
+            if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
             {
-                _globalState.MustUpdateGameScreen = true;
-                _globalState.PlayerControlMode = ControlMode.Waiting;
-                var coordsToSend = _coords;
-                _coords = new CoordinateInput
-                {
-                    X = 0,
-                    Y = 0
-                };
-                await _globalState.DungeonManager.MovePlayer(coordsToSend);
-            }
-            else if ((_globalState.PlayerControlMode == ControlMode.Targeting) && (_coords.X != 0 || _coords.Y != 0))
-            {
-                _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
-
-                _coords = new CoordinateInput
-                {
-                    X = 0,
-                    Y = 0
-                };
+                HandleMovementKeys();
             }
         }
         catch (Exception ex)
@@ -233,6 +215,46 @@ public partial class GameScreen : Control
             _exceptionLogger.LogMessage(ex);
         }
     }
+    
+    private async Task HandleMovementKeys()
+    {
+        if ((Input.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && Input.IsActionPressed("ui_up", true))) && _coords.Y == 0)
+        {
+            _coords.Y = -1;
+        }
+        if ((Input.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && Input.IsActionPressed("ui_down", true))) && _coords.Y == 0)
+        {
+            _coords.Y = 1;
+        }
+        if ((Input.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && Input.IsActionPressed("ui_left", true))) && _coords.X == 0)
+        {
+            _coords.X = -1;
+        }
+        if ((Input.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && Input.IsActionPressed("ui_right", true))) && _coords.X == 0)
+        {
+            _coords.X = 1;
+        }
+        if (_coords.X != 0 || _coords.Y != 0)
+        {
+            var coordsToSend = _coords;
+            _coords = new CoordinateInput
+            {
+                X = 0,
+                Y = 0
+            };
+            if (_globalState.PlayerControlMode == ControlMode.Targeting)
+            {
+                _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
+            }
+            else
+            {
+                _globalState.MustUpdateGameScreen = true;
+                _globalState.PlayerControlMode = ControlMode.Waiting;
+                await _globalState.DungeonManager.MovePlayer(coordsToSend);
+            }
+        }
+    }
+
     private async Task UpdateUIViaEvents()
     {
         _processingEvents = true;
@@ -546,29 +568,6 @@ public partial class GameScreen : Control
             AcceptEvent();
             return;
         }
-        else
-        {
-            if ((@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true))) && _coords.Y == 0)
-            {
-                _coords.Y = -1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true))) && _coords.Y == 0)
-            {
-                _coords.Y = 1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true))) && _coords.X == 0)
-            {
-                _coords.X = -1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true))) && _coords.X == 0)
-            {
-                _coords.X = 1;
-                AcceptEvent();
-            }
-        }
     }
 
     private void CheckImmobilizedModeInput(InputEvent @event)
@@ -721,29 +720,6 @@ public partial class GameScreen : Control
                 _exceptionLogger.LogMessage(ex);
             }
             return;
-        }
-        else
-        {
-            if ((@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true))) && _coords.Y == 0)
-            {
-                _coords.Y = -1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true))) && _coords.Y == 0)
-            {
-                _coords.Y = 1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true))) && _coords.X == 0)
-            {
-                _coords.X = -1;
-                AcceptEvent();
-            }
-            if ((@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true))) && _coords.X == 0)
-            {
-                _coords.X = 1;
-                AcceptEvent();
-            }
         }
 
         AcceptEvent();

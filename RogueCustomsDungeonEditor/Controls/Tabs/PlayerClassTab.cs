@@ -67,6 +67,22 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
             ssPlayer.MaxLevel = playerClass.MaxLevel;
+            cmbPlayerInitialEquippedWeapon.Items.Clear();
+            cmbPlayerInitialEquippedWeapon.Text = "";
+            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
+            {
+                cmbPlayerInitialEquippedWeapon.Items.Add(weaponId);
+                if (weaponId.Equals(playerClass.InitialEquippedWeapon))
+                    cmbPlayerInitialEquippedWeapon.Text = weaponId;
+            }
+            cmbPlayerInitialEquippedArmor.Items.Clear();
+            cmbPlayerInitialEquippedArmor.Text = "";
+            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
+            {
+                cmbPlayerInitialEquippedArmor.Items.Add(armorId);
+                if (armorId.Equals(playerClass.InitialEquippedArmor))
+                    cmbPlayerInitialEquippedArmor.Text = armorId;
+            }
             cmbPlayerStartingWeapon.Items.Clear();
             cmbPlayerStartingWeapon.Text = "";
             foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
@@ -111,8 +127,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This Player Class does not have a Faction.");
             if (string.IsNullOrWhiteSpace(cmbPlayerStartingWeapon.Text))
                 validationErrors.Add("This Player Class does not have an Emergency Weapon.");
+            else if (cmbPlayerInitialEquippedWeapon.Text.Equals(cmbPlayerStartingWeapon.Text))
+                validationErrors.Add("This Player Class's Initial Weapon is the same as the Emergency Weapon.");
             if (string.IsNullOrWhiteSpace(cmbPlayerStartingArmor.Text))
                 validationErrors.Add("This Player Class does not have an Emergency Armor.");
+            else if (cmbPlayerInitialEquippedArmor.Text.Equals(cmbPlayerStartingArmor.Text))
+                validationErrors.Add("This Player Class's Initial Armor is the same as the Emergency Armor.");
             if (ssPlayer.CanGainExperience && string.IsNullOrWhiteSpace(ssPlayer.ExperienceToLevelUpFormula))
                 validationErrors.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
             if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
@@ -133,6 +153,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.CanGainExperience = ssPlayer.CanGainExperience;
                 LoadedPlayerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
                 LoadedPlayerClass.MaxLevel = ssPlayer.MaxLevel;
+
+                LoadedPlayerClass.InitialEquippedWeapon = cmbPlayerInitialEquippedWeapon.Text;
+                LoadedPlayerClass.InitialEquippedArmor = cmbPlayerInitialEquippedArmor.Text;
 
                 LoadedPlayerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
                 LoadedPlayerClass.StartingArmor = cmbPlayerStartingArmor.Text;

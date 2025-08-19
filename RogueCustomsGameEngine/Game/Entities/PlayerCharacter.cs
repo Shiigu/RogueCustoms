@@ -19,8 +19,13 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class PlayerCharacter : Character
     {
+        public readonly string InitialEquippedWeaponId;
+        public readonly string InitialEquippedArmorId;
+
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
+            InitialEquippedWeaponId = entityClass.InitialEquippedWeaponId;
+            InitialEquippedArmorId = entityClass.InitialEquippedArmorId;
         }
 
         public int CalculateExperienceBarPercentage()

@@ -104,9 +104,13 @@ PlayerCharacterDetailInventoryHeader,INVENTARIO,INVENTORY
 PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO
 PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
 PlayerClassNoStartingInventoryText,NADA,NONE
-PlayerClassStartingArmorHeader,ARMADURA INICIAL,STARTING ARMOR
+PlayerClassEmergencyEquipmentHeader,EQUIPAMIENTO DE EMERGENCIA,EMERGENCY EQUIPMENT
+PlayerClassInitialEquippedArmorHeader,ARMADURA INICIAL,STARTING ARMOR
+PlayerClassInitialEquippedWeaponHeader,ARMA INICIAL,STARTING WEAPON
 PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
-PlayerClassStartingWeaponHeader,ARMA INICIAL,STARTING WEAPON
+PlayerClassStartingArmorHeader,ARMADURA DE EMERGENCIA,EMERGENCY ARMOR
+PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
+PlayerClassStartingWeaponHeader,ARMA DE EMERGENCIA,EMERGENCY WEAPON
 PlayerClassStatsHeader,ESTADÍSTICAS,STATS
 PlayerClassWindowTitleText,Elija una Clase,Select a Class
 PlayerHasNothingText,¡NADA!,NONE!

@@ -17,7 +17,6 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public readonly string Id;
         public readonly string Name;
-        public readonly bool RequiresNamePrompt;
         public readonly string Description;
         public readonly string FactionId;
         public Faction Faction { get; set; }
@@ -38,6 +37,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool CanGainExperience;
         public readonly string ExperiencePayoutFormula;
         public readonly string ExperienceToLevelUpFormula;
+
+        #endregion
+
+        #region Player Character-only data
+
+        public readonly bool RequiresNamePrompt;
+        public readonly string InitialEquippedWeaponId;
+        public readonly string InitialEquippedArmorId;
 
         #endregion
 
@@ -183,6 +190,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
                 Passable = false;
                 RequiresNamePrompt = playerClassInfo.RequiresNamePrompt;
+                InitialEquippedWeaponId = playerClassInfo.InitialEquippedWeapon;
+                InitialEquippedArmorId = playerClassInfo.InitialEquippedArmor;
             }
             else if (classInfo is NPCInfo npcInfo)
             {

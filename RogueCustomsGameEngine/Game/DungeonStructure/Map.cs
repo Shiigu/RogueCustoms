@@ -1106,7 +1106,35 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     CurrentEntityId++;
                 }
                 if (entity is PlayerCharacter p)
+                {
                     Dungeon.PlayerCharacter = p;
+                    if (!string.IsNullOrWhiteSpace(p.InitialEquippedWeaponId))
+                    {
+                        var initialEquippedWeaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(p.InitialEquippedWeaponId))
+                        ?? throw new InvalidDataException("Player Class does has an invalid starting equipped Weapon!");
+                        var initialWeapon = new Item(initialEquippedWeaponEntityClass, this)
+                        {
+                            Id = CurrentEntityId,
+                            Owner = c
+                        };
+                        Items.Add(initialWeapon);
+                        c.EquippedWeapon = initialWeapon;
+                        CurrentEntityId++;
+                    }
+                    if (!string.IsNullOrWhiteSpace(p.InitialEquippedArmorId))
+                    {
+                        var initialEquippedArmorEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(p.InitialEquippedArmorId))
+                        ?? throw new InvalidDataException("Player Class does has an invalid starting equipped Armpr!");
+                        var initialArmor = new Item(initialEquippedArmorEntityClass, this)
+                        {
+                            Id = CurrentEntityId,
+                            Owner = c
+                        };
+                        Items.Add(initialArmor);
+                        c.EquippedArmor = initialArmor;
+                        CurrentEntityId++;
+                    }
+                }
                 else if (entity is NonPlayableCharacter npc)
                 {
                     AICharacters.Add(npc);
@@ -1485,7 +1513,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                         return;
                     }
-                    await TryMoveCharacter(Player, targetTile);
+                    if(await TryMoveCharacter(Player, targetTile))
+                        Snapshot = new(Dungeon, this);
                 }
             }
             await ProcessTurn();
