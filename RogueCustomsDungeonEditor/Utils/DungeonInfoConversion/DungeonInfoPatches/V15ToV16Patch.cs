@@ -29,8 +29,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (tileType["OnStood"] is JsonObject onStood)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onStood);
-                    UpdateApplyStatAlterationStepsToV16(onStood);
+                    UpdateEffect(onStood);
                 }
             }
         }
@@ -42,8 +41,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (floorGroup["OnFloorStart"] is JsonObject onFloorStart)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onFloorStart);
-                    UpdateApplyStatAlterationStepsToV16(onFloorStart);
+                    UpdateEffect(onFloorStart);
                 }
             }
         }
@@ -55,8 +53,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (element["OnAfterAttack"] is JsonObject onAfterAttack)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onAfterAttack);
-                    UpdateApplyStatAlterationStepsToV16(onAfterAttack);
+                    UpdateEffect(onAfterAttack);
                 }
             }
         }
@@ -70,30 +67,33 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateApplyAlteredStatusStepsToV16(actionObj);
-                        UpdateApplyStatAlterationStepsToV16(actionObj);
+                        UpdateEffect(actionObj);
                     }
                 }
                 if (playerClass["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onAttacked);
-                    UpdateApplyStatAlterationStepsToV16(onAttacked);
+                    UpdateEffect(onAttacked);
                 }
                 if (playerClass["OnDeath"] is JsonObject onDeath)
                 {
                     RemoveGiveExperienceFromOnDeath(onDeath);
-                    UpdateApplyAlteredStatusStepsToV16(onDeath);
-                    UpdateApplyStatAlterationStepsToV16(onDeath);
+                    UpdateEffect(onDeath);
                 }
                 if (playerClass["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onTurnStart);
-                    UpdateApplyStatAlterationStepsToV16(onTurnStart);
+                    UpdateEffect(onTurnStart);
                 }
                 if (playerClass["OnLevelUp"] is JsonObject onLevelUp)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onLevelUp);
-                    UpdateApplyStatAlterationStepsToV16(onLevelUp);
+                    UpdateEffect(onLevelUp);
+                }
+                if (!playerClass.ContainsKey("InitialEquippedWeapon"))
+                {
+                    playerClass["InitialEquippedWeapon"] = null;
+                }
+                if (!playerClass.ContainsKey("InitialEquippedArmor"))
+                {
+                    playerClass["InitialEquippedArmor"] = null;
                 }
             }
         }
@@ -107,30 +107,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateApplyAlteredStatusStepsToV16(actionObj);
-                        UpdateApplyStatAlterationStepsToV16(actionObj);
+                        UpdateEffect(actionObj);
                     }
                 }
                 if (npc["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onAttacked);
-                    UpdateApplyStatAlterationStepsToV16(onAttacked);
+                    UpdateEffect(onAttacked);
                 }
                 if (npc["OnDeath"] is JsonObject onDeath)
                 {
                     RemoveGiveExperienceFromOnDeath(onDeath);
-                    UpdateApplyAlteredStatusStepsToV16(onDeath);
-                    UpdateApplyStatAlterationStepsToV16(onDeath);
+                    UpdateEffect(onDeath);
                 }
                 if (npc["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onTurnStart);
-                    UpdateApplyStatAlterationStepsToV16(onTurnStart);
+                    UpdateEffect(onTurnStart);
                 }
                 if (npc["OnLevelUp"] is JsonObject onLevelUp)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onLevelUp);
-                    UpdateApplyStatAlterationStepsToV16(onLevelUp);
+                    UpdateEffect(onLevelUp);
                 }
             }
         }
@@ -144,29 +139,24 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateApplyAlteredStatusStepsToV16(actionObj);
-                        UpdateApplyStatAlterationStepsToV16(actionObj);
+                        UpdateEffect(actionObj);
                     }
                 }
                 if (item["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onAttacked);
-                    UpdateApplyStatAlterationStepsToV16(onAttacked);
+                    UpdateEffect(onAttacked);
                 }
                 if (item["OnDeath"] is JsonObject onDeath)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onDeath);
-                    UpdateApplyStatAlterationStepsToV16(onDeath);
+                    UpdateEffect(onDeath);
                 }
                 if (item["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onTurnStart);
-                    UpdateApplyStatAlterationStepsToV16(onTurnStart);
+                    UpdateEffect(onTurnStart);
                 }
                 if (item["OnUse"] is JsonObject onUse)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onUse);
-                    UpdateApplyStatAlterationStepsToV16(onUse);
+                    UpdateEffect(onUse);
                 }
             }
         }
@@ -178,8 +168,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (trap["OnStepped"] is JsonObject onStepped)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onStepped);
-                    UpdateApplyStatAlterationStepsToV16(onStepped);
+                    UpdateEffect(onStepped);
                 }
             }
         }
@@ -191,32 +180,27 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (alteredStatus["BeforeAttack"] is JsonObject beforeAttack)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(beforeAttack);
-                    UpdateApplyStatAlterationStepsToV16(beforeAttack);
+                    UpdateEffect(beforeAttack);
                 }
 
                 if (alteredStatus["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onAttacked);
-                    UpdateApplyStatAlterationStepsToV16(onAttacked);
+                    UpdateEffect(onAttacked);
                 }
 
                 if (alteredStatus["OnApply"] is JsonObject onApply)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onApply);
-                    UpdateApplyStatAlterationStepsToV16(onApply);
+                    UpdateEffect(onApply);
                 }
 
                 if (alteredStatus["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onTurnStart);
-                    UpdateApplyStatAlterationStepsToV16(onTurnStart);
+                    UpdateEffect(onTurnStart);
                 }
 
                 if (alteredStatus["OnRemove"] is JsonObject onRemove)
                 {
-                    UpdateApplyAlteredStatusStepsToV16(onRemove);
-                    UpdateApplyStatAlterationStepsToV16(onRemove);
+                    UpdateEffect(onRemove);
                 }
             }
         }
@@ -226,8 +210,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["Scripts"] is not JsonArray scripts) return;
             foreach (var script in scripts.OfType<JsonObject>())
             {
-                UpdateApplyAlteredStatusStepsToV16(script);
-                UpdateApplyStatAlterationStepsToV16(script);
+                UpdateEffect(script);
+            }
+        }
+
+        public static void UpdateEffect(JsonObject actionWithEffects)
+        {
+            if (actionWithEffects["Effect"] is JsonObject effect)
+            {
+                UpdateApplyAlteredStatusStepsToV16(effect);
+                UpdateApplyStatAlterationStepsToV16(effect);
+                UpdateTransformTileStepsToV16(effect);
             }
         }
 
@@ -263,12 +256,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 RemoveGiveExperience(effect, onFailureObj, effect, "OnFailure");
         }
 
-        private static void UpdateApplyAlteredStatusStepsToV16(JsonObject actionWithEffects)
+        private static void UpdateApplyAlteredStatusStepsToV16(JsonObject effect)
         {
-            if (actionWithEffects["Effect"] is JsonObject effect)
-            {
-                UpdateApplyAlteredStatusParametersToV16(effect);
-            }
+            UpdateApplyAlteredStatusParametersToV16(effect);
         }
 
         private static void UpdateApplyAlteredStatusParametersToV16(JsonObject effect)
@@ -293,12 +283,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateApplyAlteredStatusParametersToV16(onFailureObj);
         }
 
-        private static void UpdateApplyStatAlterationStepsToV16(JsonObject actionWithEffects)
+        private static void UpdateApplyStatAlterationStepsToV16(JsonObject effect)
         {
-            if (actionWithEffects["Effect"] is JsonObject effect)
-            {
-                UpdateApplyStatAlterationParametersToV16(effect);
-            }
+            UpdateApplyStatAlterationParametersToV16(effect);
         }
 
         private static void UpdateApplyStatAlterationParametersToV16(JsonObject effect)
@@ -321,6 +308,32 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateApplyStatAlterationParametersToV16(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateApplyStatAlterationParametersToV16(onFailureObj);
+        }
+        private static void UpdateTransformTileStepsToV16(JsonObject effect)
+        {
+            UpdateTransformTileParametersToV16(effect);
+        }
+
+        private static void UpdateTransformTileParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "TransformTile")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("TurnLength", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "TurnLength", ["Value"] = "-1" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateTransformTileParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateTransformTileParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateTransformTileParametersToV16(onFailureObj);
         }
     }
 }

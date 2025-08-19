@@ -57,6 +57,10 @@
             label67 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             saePlayerOnLevelUp = new SingleActionEditor();
+            cmbPlayerInitialEquippedArmor = new System.Windows.Forms.ComboBox();
+            label2 = new System.Windows.Forms.Label();
+            cmbPlayerInitialEquippedWeapon = new System.Windows.Forms.ComboBox();
+            label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
             SuspendLayout();
             // 
@@ -64,129 +68,57 @@
             // 
             ssPlayer.AutoSize = true;
             ssPlayer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ssPlayer.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssPlayer.BaseSightRangeDisplayNames");
-            ssPlayer.CanGainExperience = false;
-            ssPlayer.ExperienceToLevelUpFormula = "";
             ssPlayer.Location = new System.Drawing.Point(380, 91);
-            ssPlayer.MaxLevel = 1;
             ssPlayer.Name = "ssPlayer";
-            ssPlayer.Size = new System.Drawing.Size(303, 408);
-            ssPlayer.StatInfos = null;
+            ssPlayer.Size = new System.Drawing.Size(305, 408);
             ssPlayer.TabIndex = 154;
             // 
             // sisPlayerStartingInventory
             // 
-            sisPlayerStartingInventory.Inventory = (System.Collections.Generic.List<string>)resources.GetObject("sisPlayerStartingInventory.Inventory");
-            sisPlayerStartingInventory.InventorySize = 0;
             sisPlayerStartingInventory.Location = new System.Drawing.Point(387, 589);
             sisPlayerStartingInventory.Name = "sisPlayerStartingInventory";
-            sisPlayerStartingInventory.SelectableItems = null;
             sisPlayerStartingInventory.Size = new System.Drawing.Size(293, 79);
             sisPlayerStartingInventory.TabIndex = 153;
             // 
             // saePlayerOnDeath
             // 
-            saePlayerOnDeath.Action = null;
-            saePlayerOnDeath.ActionDescription = "When they die...                   ";
-            saePlayerOnDeath.ActionTypeText = "On Death";
             saePlayerOnDeath.AutoSize = true;
             saePlayerOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            saePlayerOnDeath.ClassId = null;
-            saePlayerOnDeath.Dungeon = null;
-            saePlayerOnDeath.EffectParamData = null;
             saePlayerOnDeath.Location = new System.Drawing.Point(2, 499);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
-            saePlayerOnDeath.PlaceholderActionId = "Death";
-            saePlayerOnDeath.RequiresActionId = false;
-            saePlayerOnDeath.RequiresCondition = false;
-            saePlayerOnDeath.RequiresDescription = false;
-            saePlayerOnDeath.RequiresName = false;
             saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
-            saePlayerOnDeath.SourceDescription = "The player";
             saePlayerOnDeath.TabIndex = 152;
-            saePlayerOnDeath.TargetDescription = "Whoever killed them (if any)";
-            saePlayerOnDeath.ThisDescription = "The player";
-            saePlayerOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnAttacked
             // 
-            saePlayerOnAttacked.Action = null;
-            saePlayerOnAttacked.ActionDescription = "When they get attacked...   ";
-            saePlayerOnAttacked.ActionTypeText = "Interacted";
             saePlayerOnAttacked.AutoSize = true;
             saePlayerOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            saePlayerOnAttacked.ClassId = null;
-            saePlayerOnAttacked.Dungeon = null;
-            saePlayerOnAttacked.EffectParamData = null;
             saePlayerOnAttacked.Location = new System.Drawing.Point(2, 461);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
-            saePlayerOnAttacked.PlaceholderActionId = "Interacted";
-            saePlayerOnAttacked.RequiresActionId = false;
-            saePlayerOnAttacked.RequiresCondition = false;
-            saePlayerOnAttacked.RequiresDescription = false;
-            saePlayerOnAttacked.RequiresName = false;
             saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
-            saePlayerOnAttacked.SourceDescription = "The player";
             saePlayerOnAttacked.TabIndex = 151;
-            saePlayerOnAttacked.TargetDescription = "Whoever interacted with them";
-            saePlayerOnAttacked.ThisDescription = "The player";
-            saePlayerOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnTurnStart
             // 
-            saePlayerOnTurnStart.Action = null;
-            saePlayerOnTurnStart.ActionDescription = "When the next turn starts...";
-            saePlayerOnTurnStart.ActionTypeText = "Turn Start";
             saePlayerOnTurnStart.AutoSize = true;
             saePlayerOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            saePlayerOnTurnStart.ClassId = null;
-            saePlayerOnTurnStart.Dungeon = null;
-            saePlayerOnTurnStart.EffectParamData = null;
             saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 323);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
-            saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
-            saePlayerOnTurnStart.RequiresActionId = false;
-            saePlayerOnTurnStart.RequiresCondition = false;
-            saePlayerOnTurnStart.RequiresDescription = false;
-            saePlayerOnTurnStart.RequiresName = false;
-            saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
-            saePlayerOnTurnStart.SourceDescription = "The player";
+            saePlayerOnTurnStart.Size = new System.Drawing.Size(282, 32);
             saePlayerOnTurnStart.TabIndex = 150;
-            saePlayerOnTurnStart.TargetDescription = "The player";
-            saePlayerOnTurnStart.ThisDescription = "The player";
-            saePlayerOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maePlayerOnAttack
             // 
-            maePlayerOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
-            maePlayerOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maePlayerOnAttack.Actions");
-            maePlayerOnAttack.ActionTypeText = "Interact";
-            maePlayerOnAttack.ClassId = null;
-            maePlayerOnAttack.Dungeon = null;
-            maePlayerOnAttack.EffectParamData = null;
             maePlayerOnAttack.Location = new System.Drawing.Point(2, 361);
             maePlayerOnAttack.Name = "maePlayerOnAttack";
-            maePlayerOnAttack.PlaceholderActionName = null;
-            maePlayerOnAttack.RequiresActionId = true;
-            maePlayerOnAttack.RequiresActionName = true;
-            maePlayerOnAttack.RequiresCondition = true;
-            maePlayerOnAttack.RequiresDescription = true;
             maePlayerOnAttack.Size = new System.Drawing.Size(368, 94);
-            maePlayerOnAttack.SourceDescription = "The player";
             maePlayerOnAttack.TabIndex = 149;
-            maePlayerOnAttack.TargetDescription = "Whoever they are targeting";
-            maePlayerOnAttack.ThisDescription = "The player";
-            maePlayerOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
-            maePlayerOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // cmbPlayerStartingArmor
             // 
             cmbPlayerStartingArmor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbPlayerStartingArmor.FormattingEnabled = true;
-            cmbPlayerStartingArmor.Location = new System.Drawing.Point(522, 706);
+            cmbPlayerStartingArmor.Location = new System.Drawing.Point(522, 771);
             cmbPlayerStartingArmor.Name = "cmbPlayerStartingArmor";
             cmbPlayerStartingArmor.Size = new System.Drawing.Size(158, 23);
             cmbPlayerStartingArmor.TabIndex = 147;
@@ -195,7 +127,7 @@
             // label57
             // 
             label57.AutoSize = true;
-            label57.Location = new System.Drawing.Point(387, 709);
+            label57.Location = new System.Drawing.Point(387, 774);
             label57.Name = "label57";
             label57.Size = new System.Drawing.Size(131, 15);
             label57.TabIndex = 146;
@@ -205,7 +137,7 @@
             // 
             cmbPlayerStartingWeapon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbPlayerStartingWeapon.FormattingEnabled = true;
-            cmbPlayerStartingWeapon.Location = new System.Drawing.Point(515, 675);
+            cmbPlayerStartingWeapon.Location = new System.Drawing.Point(515, 740);
             cmbPlayerStartingWeapon.Name = "cmbPlayerStartingWeapon";
             cmbPlayerStartingWeapon.Size = new System.Drawing.Size(165, 23);
             cmbPlayerStartingWeapon.TabIndex = 145;
@@ -214,7 +146,7 @@
             // label56
             // 
             label56.AutoSize = true;
-            label56.Location = new System.Drawing.Point(387, 678);
+            label56.Location = new System.Drawing.Point(387, 743);
             label56.Name = "label56";
             label56.Size = new System.Drawing.Size(123, 15);
             label56.TabIndex = 144;
@@ -249,7 +181,7 @@
             // 
             // label30
             // 
-            label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label30.Location = new System.Drawing.Point(365, 16);
             label30.Name = "label30";
             label30.Size = new System.Drawing.Size(131, 52);
@@ -368,9 +300,6 @@
             // 
             // crsPlayer
             // 
-            crsPlayer.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.BackgroundColor");
-            crsPlayer.Character = '\0';
-            crsPlayer.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsPlayer.ForegroundColor");
             crsPlayer.Location = new System.Drawing.Point(500, 5);
             crsPlayer.Name = "crsPlayer";
             crsPlayer.Size = new System.Drawing.Size(211, 83);
@@ -380,7 +309,7 @@
             // label67
             // 
             label67.AutoSize = true;
-            label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label67.Location = new System.Drawing.Point(128, 299);
             label67.Name = "label67";
             label67.Size = new System.Drawing.Size(67, 21);
@@ -390,7 +319,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(482, 516);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(85, 21);
@@ -399,34 +328,58 @@
             // 
             // saePlayerOnLevelUp
             // 
-            saePlayerOnLevelUp.Action = null;
-            saePlayerOnLevelUp.ActionDescription = "When they level up...           ";
-            saePlayerOnLevelUp.ActionTypeText = "On Level Up";
             saePlayerOnLevelUp.AutoSize = true;
             saePlayerOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            saePlayerOnLevelUp.ClassId = null;
-            saePlayerOnLevelUp.Dungeon = null;
-            saePlayerOnLevelUp.EffectParamData = null;
             saePlayerOnLevelUp.Location = new System.Drawing.Point(2, 537);
             saePlayerOnLevelUp.Name = "saePlayerOnLevelUp";
-            saePlayerOnLevelUp.PlaceholderActionId = "LevelUp";
-            saePlayerOnLevelUp.RequiresActionId = false;
-            saePlayerOnLevelUp.RequiresCondition = false;
-            saePlayerOnLevelUp.RequiresDescription = false;
-            saePlayerOnLevelUp.RequiresName = false;
             saePlayerOnLevelUp.Size = new System.Drawing.Size(284, 32);
-            saePlayerOnLevelUp.SourceDescription = "The player";
             saePlayerOnLevelUp.TabIndex = 239;
-            saePlayerOnLevelUp.TargetDescription = "The player";
-            saePlayerOnLevelUp.ThisDescription = "The player";
-            saePlayerOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
+            // 
+            // cmbPlayerInitialEquippedArmor
+            // 
+            cmbPlayerInitialEquippedArmor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbPlayerInitialEquippedArmor.FormattingEnabled = true;
+            cmbPlayerInitialEquippedArmor.Location = new System.Drawing.Point(530, 707);
+            cmbPlayerInitialEquippedArmor.Name = "cmbPlayerInitialEquippedArmor";
+            cmbPlayerInitialEquippedArmor.Size = new System.Drawing.Size(150, 23);
+            cmbPlayerInitialEquippedArmor.TabIndex = 243;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(387, 710);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(137, 15);
+            label2.TabIndex = 242;
+            label2.Text = "Initial Equipped Armor is";
+            // 
+            // cmbPlayerInitialEquippedWeapon
+            // 
+            cmbPlayerInitialEquippedWeapon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbPlayerInitialEquippedWeapon.FormattingEnabled = true;
+            cmbPlayerInitialEquippedWeapon.Location = new System.Drawing.Point(540, 676);
+            cmbPlayerInitialEquippedWeapon.Name = "cmbPlayerInitialEquippedWeapon";
+            cmbPlayerInitialEquippedWeapon.Size = new System.Drawing.Size(140, 23);
+            cmbPlayerInitialEquippedWeapon.TabIndex = 241;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(387, 679);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(147, 15);
+            label3.TabIndex = 240;
+            label3.Text = "Initial Equipped Weapon is";
             // 
             // PlayerClassTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(cmbPlayerInitialEquippedArmor);
+            Controls.Add(label2);
+            Controls.Add(cmbPlayerInitialEquippedWeapon);
+            Controls.Add(label3);
             Controls.Add(saePlayerOnLevelUp);
             Controls.Add(label1);
             Controls.Add(label67);
@@ -456,7 +409,7 @@
             Controls.Add(txtPlayerClassName);
             Controls.Add(label27);
             Name = "PlayerClassTab";
-            Size = new System.Drawing.Size(714, 740);
+            Size = new System.Drawing.Size(714, 799);
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -492,5 +445,9 @@
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.Label label1;
         private SingleActionEditor saePlayerOnLevelUp;
+        private System.Windows.Forms.ComboBox cmbPlayerInitialEquippedArmor;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cmbPlayerInitialEquippedWeapon;
+        private System.Windows.Forms.Label label3;
     }
 }

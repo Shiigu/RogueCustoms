@@ -100,12 +100,33 @@ public partial class SelectClass : Control
         {
             PrintPlayerStatsInfo(stat);
         }
+
         _classDescriptionLabel.AppendText($"[p] [p]{currentClass.SightRangeName}: {currentClass.SightRangeStat}[p] ");
-        PrintPlayerStartingItemInfo(TranslationServer.Translate("PlayerClassStartingWeaponHeader"), currentClass.StartingWeapon);
-        _classDescriptionLabel.AppendText("[p] ");
-        PrintPlayerStartingItemInfo(TranslationServer.Translate("PlayerClassStartingArmorHeader"), currentClass.StartingArmor);
+        if (currentClass.InitialEquippedWeapon != null || currentClass.InitialEquippedArmor != null)
+        {
+            _classDescriptionLabel.AppendText("[p] [p]");
+            if (currentClass.InitialEquippedWeapon != null)
+                PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassInitialEquippedWeaponHeader"), currentClass.InitialEquippedWeapon);
+            if (currentClass.InitialEquippedWeapon != null && currentClass.InitialEquippedArmor != null)
+                _classDescriptionLabel.AppendText("[p] ");
+            if (currentClass.InitialEquippedArmor != null)
+                PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassInitialEquippedArmorHeader"), currentClass.StartingArmor);
+
+            _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassEmergencyEquipmentHeader")}[/center][p] [p]");
+
+            _classDescriptionLabel.AppendText($"{TranslationServer.Translate("PlayerInfoWeaponHeader")}: {currentClass.StartingWeapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {currentClass.StartingWeapon.Name}[p]");
+            _classDescriptionLabel.AppendText($"{TranslationServer.Translate("PlayerInfoArmorHeader")}: {currentClass.StartingArmor.ConsoleRepresentation.ToBbCodeRepresentation()} - {currentClass.StartingArmor.Name}[p]");
+        }
+        else
+        {
+            PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassStartingWeaponHeader"), currentClass.StartingWeapon);
+            _classDescriptionLabel.AppendText("[p] ");
+            PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassStartingArmorHeader"), currentClass.StartingArmor);
+        }
+
         _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassStartingInventoryHeader")}[/center][p] ");
-        if (currentClass.StartingInventory.Any())
+        
+        if (currentClass.StartingInventory.Count != 0)
         {
             _classDescriptionLabel.AppendText("[p]");
             foreach (var item in currentClass.StartingInventory)
@@ -141,7 +162,7 @@ public partial class SelectClass : Control
         }
     }
 
-    private void PrintPlayerStartingItemInfo(string itemTypeHeader, ItemDetailDto item)
+    private void PrintPlayerEquipmentInfo(string itemTypeHeader, ItemDetailDto item)
     {
         _classDescriptionLabel.AppendText($"[center]{itemTypeHeader}[/center][p] ");
         _classDescriptionLabel.AppendText($"[p][center]{item.Name}[/center][p]");
