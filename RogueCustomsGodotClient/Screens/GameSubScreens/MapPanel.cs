@@ -4,6 +4,7 @@ using org.matheval.Node;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient.Helpers;
@@ -12,6 +13,7 @@ using RogueCustomsGodotClient.Utils;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -69,7 +71,9 @@ public partial class MapPanel : GamePanel
     {
         var dungeonStatus = _globalState.DungeonInfo;
         _floorTitleLabel.Text = dungeonStatus.FloorName;
-        _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = dungeonStatus.TurnCount.ToString() });
+        var isJustBump = dungeonStatus.DisplayEvents.Any(de => de.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect && ((SpecialEffect)e.Params[0] == SpecialEffect.Bumped || (SpecialEffect)e.Params[0] == SpecialEffect.DoorClosed)));
+        var turnNumber = isJustBump ? dungeonStatus.TurnCount - 1 : dungeonStatus.TurnCount;
+        _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = turnNumber.ToString() });
 
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity != null)

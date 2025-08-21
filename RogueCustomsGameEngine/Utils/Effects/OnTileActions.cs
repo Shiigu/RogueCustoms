@@ -204,10 +204,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var level = (int) paramsObject.Level;
 
-                if (await Map.AddEntity(npcClass.Id, level, t.Position) is not NonPlayableCharacter npc 
+                if (await Map.AddEntity(npcClass.Id, level, t.Position) is not NonPlayableCharacter npc
                     || npc.Position == null)
                     // Failed to spawn NPC
                     return false;
+
+                if(paramsObject.InheritsSpawnerColour)
+                {
+                    npc.ConsoleRepresentation.ForegroundColor = c.ConsoleRepresentation.ForegroundColor;
+                    npc.ConsoleRepresentation.BackgroundColor = c.ConsoleRepresentation.BackgroundColor;
+                }
+
                 npc.Faction = c.Faction;
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {

@@ -207,7 +207,7 @@ public partial class GameScreen : Control
             }
             if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
             {
-                HandleMovementKeys();
+                await HandleMovementKeys();
             }
         }
         catch (Exception ex)
@@ -218,19 +218,22 @@ public partial class GameScreen : Control
     
     private async Task HandleMovementKeys()
     {
-        if ((Input.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && Input.IsActionPressed("ui_up", true))) && _coords.Y == 0)
+        if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
+        if (GetChildren().Any(c => c.IsPopUp())) return;
+
+        if (_inputManager.IsActionAllowed("ui_up") && Input.IsActionPressed("ui_up") && _coords.Y == 0)
         {
             _coords.Y = -1;
         }
-        if ((Input.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && Input.IsActionPressed("ui_down", true))) && _coords.Y == 0)
+        if (_inputManager.IsActionAllowed("ui_down") && Input.IsActionPressed("ui_down") && _coords.Y == 0)
         {
             _coords.Y = 1;
         }
-        if ((Input.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && Input.IsActionPressed("ui_left", true))) && _coords.X == 0)
+        if (_inputManager.IsActionAllowed("ui_left") && Input.IsActionPressed("ui_left") && _coords.X == 0)
         {
             _coords.X = -1;
         }
-        if ((Input.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && Input.IsActionPressed("ui_right", true))) && _coords.X == 0)
+        if (_inputManager.IsActionAllowed("ui_right") && Input.IsActionPressed("ui_right") && _coords.X == 0)
         {
             _coords.X = 1;
         }
@@ -244,7 +247,7 @@ public partial class GameScreen : Control
             };
             if (_globalState.PlayerControlMode == ControlMode.Targeting)
             {
-                _mapPanel.MoveTarget(new(_coords.X, _coords.Y));
+                _mapPanel.MoveTarget(new(coordsToSend.X, coordsToSend.Y));
             }
             else
             {
@@ -267,6 +270,7 @@ public partial class GameScreen : Control
         _controlsPanel.Update();
         var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.ClearLogMessages, DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
         _mapPanel.StopTargeting();
+            
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
             foreach (var displayEvent in displayEventList.Events)

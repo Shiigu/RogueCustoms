@@ -1794,6 +1794,17 @@
         "Required": true,
         "OptionalIfFieldsHaveValue": [],
         "Columns": []
+      },
+      {
+        "InternalName": "InheritsSpawnerColour",
+        "DisplayName": "Inherits Colour?",
+        "Description": "If true, the spawned NPC will have the same foreground and background colour as whoever spawned it.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": true,
+        "OptionalIfFieldsHaveValue": [],
+        "Columns": []
       }
     ]
   },
