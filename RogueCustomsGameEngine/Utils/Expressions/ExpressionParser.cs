@@ -74,6 +74,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "canrepeatpick", "CanRepeatPick" },
             { "canpickwalls", "CanPickWalls" },
             { "canpickhallways", "CanPickHallways" },
+            { "inheritsspawnercolour", "InheritsSpawnerColour" },
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)

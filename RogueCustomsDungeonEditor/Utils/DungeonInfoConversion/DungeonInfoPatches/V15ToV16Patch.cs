@@ -221,6 +221,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateApplyAlteredStatusStepsToV16(effect);
                 UpdateApplyStatAlterationStepsToV16(effect);
                 UpdateTransformTileStepsToV16(effect);
+                UpdateSpawnNPCStepsToV16(effect);
             }
         }
 
@@ -334,6 +335,33 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateTransformTileParametersToV16(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateTransformTileParametersToV16(onFailureObj);
+        }
+
+        private static void UpdateSpawnNPCStepsToV16(JsonObject effect)
+        {
+            UpdateSpawnNPCParametersToV16(effect);
+        }
+
+        private static void UpdateSpawnNPCParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "SpawnNPC")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("InheritsSpawnerColour", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "InheritsSpawnerColour", ["Value"] = "false" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateSpawnNPCParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateSpawnNPCParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateSpawnNPCParametersToV16(onFailureObj);
         }
     }
 }
