@@ -139,30 +139,33 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var couldSeeTarget = Map.Player.CanSee(statusTarget);
                 if(statusToApply.CanBeAppliedTo(statusTarget))
                 {
-                    if (statusTarget == Map.Player || couldSeeTarget)
+                    var success = await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
+                    if(success)
                     {
-                        if (!targetAlreadyHadStatus || statusToApply.CanStack || (statusToApply.CanOverwrite && paramsObject.AnnounceStatusRefresh))
+                        if (statusTarget == Map.Player || couldSeeTarget)
                         {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                                Params = new() { SpecialEffect.Statused }
-                            }
-                            );
-                            if (statusTarget == Map.Player)
+                            if (!targetAlreadyHadStatus || statusToApply.CanStack || (statusToApply.CanOverwrite && paramsObject.AnnounceStatusRefresh))
                             {
                                 events.Add(new()
                                 {
-                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                    Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
-                                });
+                                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                                    Params = new() { SpecialEffect.Statused }
+                                }
+                                );
+                                if (statusTarget == Map.Player)
+                                {
+                                    events.Add(new()
+                                    {
+                                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                        Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, statusTarget.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                                    });
+                                }
+                                var localeToUse = targetAlreadyHadStatus ? Map.Locale["CharacterStatusGotRefreshed"] : Map.Locale["CharacterGotStatused"];
+                                Map.AppendMessage(localeToUse.Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue, events);
+                                Map.DisplayEvents.Add(($"{statusTarget.Name} got {statusToApply.Name} status", events));
                             }
-                            var localeToUse = targetAlreadyHadStatus ? Map.Locale["CharacterStatusGotRefreshed"] : Map.Locale["CharacterGotStatused"];
-                            Map.AppendMessage(localeToUse.Format(new { CharacterName = paramsObject.Target.Name, StatusName = statusToApply.Name }), Color.DeepSkyBlue, events);
                         }
                     }
-                    Map.DisplayEvents.Add(($"{statusTarget.Name} got {statusToApply.Name} status", events));
-                    return await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                 }
             }
             return false;
@@ -355,7 +358,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character t)
-                // Attempted to remove of Target's Altered Statuses when it's not a Character.
+                // Attempted to remove of Target's stat alterations when it's not a Character.
                 return false;
             var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
             if (statAlterations == null)
@@ -363,27 +366,59 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, t, paramsObject);
 
-            if (statAlterations?.Any() == true && Rng.RollProbability() <= accuracyCheck)
+            if (statAlterations?.Count > 0 && Rng.RollProbability() <= accuracyCheck)
             {
-                var amount = statAlterations.Sum(sa => sa.Amount);
+                var canClearBuffs = paramsObject.ClearsBuffs;
+                var canClearDebuffs = paramsObject.ClearsDebuffs;
+                var canClearFromStatuses = paramsObject.ClearsFromStatuses;
+
+                var validAlterations = statAlterations;
+                var alterationsFromStatuses = statAlterations.Where(sa => Map.PossibleStatuses.Any(ps => ps.ClassId.Equals(sa.Id, StringComparison.InvariantCultureIgnoreCase) && ps.CleansedByCleanseActions));
+
+                if (!canClearFromStatuses)
+                    validAlterations = statAlterations.Except(alterationsFromStatuses).ToList();
+                if (!canClearBuffs)
+                    validAlterations = validAlterations.Where(sa => sa.Amount < 0).ToList();
+                if (!canClearDebuffs)
+                    validAlterations = validAlterations.Where(sa => sa.Amount > 0).ToList();
+
+                var amount = validAlterations.Sum(sa => sa.Amount);
+
+                if (amount == 0) return false;
+
+                var priorAmount = amount;
                 var statName = paramsObject.StatName.ToLowerInvariant();
-                statAlterations.Clear();
+
+                foreach (var alteration in validAlterations)
+                {
+                    if ((alteration.Amount > 0 && !canClearBuffs) || (alteration.Amount < 0 && !canClearDebuffs))
+                        continue;
+                    statAlterations.Remove(alteration);
+                }
 
                 if (t.EntityType == EntityType.Player
                     || (t.EntityType == EntityType.NPC && Map.Player.CanSee(t)))
                 {
                     var stat = t.UsedStats.Find(s => s.Name.ToLowerInvariant().Equals(statName));
+                    amount = validAlterations.Sum(sa => sa.Amount);
 
-                    var specialEffect = amount < 0 ? SpecialEffect.StatBuff : SpecialEffect.StatNerf;
+                    var specialEffect = amount > priorAmount ? SpecialEffect.StatBuff : SpecialEffect.StatNerf;
+
                     if (t == Map.Player || Map.Player.CanSee(t))
                     {
+                        var messageKey = "CharacterStatGotNeutralized";
+                        if(amount != 0)
+                            messageKey = amount > 0 ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
+
+                        var amountString = stat.StatType == StatType.Percentage ? $"{Math.Abs(amount)}%" : Math.Abs(amount).ToString("0.#####");
+
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { specialEffect }
                         }
                         );
-                        Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = t.Name, StatName = Map.Locale[statName] }), Color.DeepSkyBlue, events);
+                        Map.AppendMessage(Map.Locale[messageKey].Format(new { CharacterName = t.Name, StatName = Map.Locale[statName], Amount = amountString }), Color.DeepSkyBlue, events);
                     }
 
                     if (t == Map.Player && Stat.StatsInUI.Contains(statName))
@@ -406,7 +441,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         }
                     }
                 }
-                Map.DisplayEvents.Add(($"{t.Name} lost {Map.Locale[statName]} stat modifications", events));
+                Map.DisplayEvents.Add(($"{t.Name} lost some, if not all {Map.Locale[statName]} stat modifications", events));
                 return true;
             }
 
@@ -418,18 +453,41 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
-                // Attempted to alter one of Target's stats when it's not a Character.
+                // Attempted to alter Target's stats when it's not a Character.
                 return false;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
             var success = false;
             if (Rng.RollProbability() <= accuracyCheck)
             {
+                var canClearBuffs = paramsObject.ClearsBuffs;
+                var canClearDebuffs = paramsObject.ClearsDebuffs;
+                var canClearFromStatuses = paramsObject.ClearsFromStatuses;
                 foreach (var (statName, modifications) in c.StatModifications)
                 {
                     if (modifications.Any())
                     {
+                        var validAlterations = modifications;
+                        var alterationsFromStatuses = modifications.Where(sa => Map.PossibleStatuses.Any(ps => ps.ClassId.Equals(sa.Id, StringComparison.InvariantCultureIgnoreCase) && ps.CleansedByCleanseActions));
+
+                        if (!canClearFromStatuses)
+                            validAlterations = modifications.Except(alterationsFromStatuses).ToList();
+                        if (!canClearBuffs)
+                            validAlterations = validAlterations.Where(sa => sa.Amount < 0).ToList();
+                        if (!canClearDebuffs)
+                            validAlterations = validAlterations.Where(sa => sa.Amount > 0).ToList();
+
+                        var amount = validAlterations.Sum(sa => sa.Amount);
+
+                        if (amount == 0) continue;
+
                         success = true;
-                        modifications.Clear();
+
+                        foreach (var alteration in validAlterations)
+                        {
+                            if ((alteration.Amount > 0 && !canClearBuffs) || (alteration.Amount < 0 && !canClearDebuffs))
+                                continue;
+                            modifications.Remove(alteration);
+                        }
 
                         var stat = c.UsedStats.Find(c => c.Name.Equals(statName));
                         var loweredStatName = statName.ToLowerInvariant();
@@ -467,7 +525,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
             }
 
-            Map.DisplayEvents.Add(($"{c.Name} lost all stat modifications", events));
+            Map.DisplayEvents.Add(($"{c.Name} lost some, if not all stat modifications", events));
             return success;
         }
 
@@ -516,7 +574,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     );
                 }
 
-                Map.DisplayEvents.Add(($"{c.Name} lost all altered statuses", events));
+                Map.DisplayEvents.Add(($"{c.Name} lost some, if not all altered statuses", events));
                 return true;
             }
             return false;
