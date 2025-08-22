@@ -43,7 +43,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblDisplayName
             // 
-            lblDisplayName.Font = new Font("Segoe UI", 13F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDisplayName.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             lblDisplayName.Location = new Point(11, 7);
             lblDisplayName.Name = "lblDisplayName";
             lblDisplayName.Size = new Size(314, 26);
@@ -97,12 +97,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             // lblRequired
             // 
-            lblRequired.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblRequired.Location = new Point(10, 79);
+            lblRequired.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblRequired.Location = new Point(10, 84);
             lblRequired.Name = "lblRequired";
-            lblRequired.Size = new Size(315, 33);
+            lblRequired.Size = new Size(315, 22);
             lblRequired.TabIndex = 6;
-            lblRequired.Text = "Fields with an * require a value.\r\nFields with an ^ require a value on at least one of them.";
+            lblRequired.Text = "Fields with an * require a value.\r\n";
             // 
             // lblDescription
             // 

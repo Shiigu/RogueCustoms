@@ -1314,22 +1314,28 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 if (FloorConfigurationToUse.OnFloorStart != null)
                     await FloorConfigurationToUse.OnFloorStart.Do(Player, Player, false);
 
+                TurnCount = 1;
+                SetFlagValue("TurnCount", TurnCount);
                 #endregion
             }
-            else if (TurnCount - LastMonsterGenerationTurn >= FloorConfigurationToUse.TurnsPerMonsterGeneration)
+            else 
             {
+                TurnCount++;
+                SetFlagValue("TurnCount", TurnCount);
+                if (Snapshot != null && !Snapshot.Read)
+                    Snapshot.TurnCount = TurnCount;
+
                 #region Generate A monster
-
-                var currentMonsters = AICharacters.Where(e => e.EntityType == EntityType.NPC && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
-                if (currentMonsters.Count() < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor)
+                if (TurnCount - LastMonsterGenerationTurn >= FloorConfigurationToUse.TurnsPerMonsterGeneration)
                 {
-                    await AddNPC();
+                    var currentMonsters = AICharacters.Where(e => e.EntityType == EntityType.NPC && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
+                    if (currentMonsters.Count() < FloorConfigurationToUse.SimultaneousMaxMonstersInFloor)
+                    {
+                        await AddNPC();
+                    }
                 }
-
                 #endregion
             }
-            TurnCount++;
-            SetFlagValue("TurnCount", TurnCount);
             Player.TookAction = false;
             foreach (var tile in Tiles.Where(t => t.Type != t.BaseType && t.RemainingTransformationTurns > 0))
             {

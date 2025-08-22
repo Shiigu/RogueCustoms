@@ -32,11 +32,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
-            if (ExpandoObjectHelper.HasProperty(paramsObject, "Character"))
+            if (ExpandoObjectHelper.HasProperty(paramsObject, "Character") && paramsObject.Character != '\0')
                 Args.Source.ConsoleRepresentation.Character = paramsObject.Character;
-            if (ExpandoObjectHelper.HasProperty(paramsObject, "ForeColor"))
+            if (ExpandoObjectHelper.HasProperty(paramsObject, "ForeColor") && paramsObject.ForeColor != null)
                 Args.Source.ConsoleRepresentation.ForegroundColor = paramsObject.ForeColor;
-            if (ExpandoObjectHelper.HasProperty(paramsObject, "BackColor"))
+            if (ExpandoObjectHelper.HasProperty(paramsObject, "BackColor") && paramsObject.BackColor != null)
                 Args.Source.ConsoleRepresentation.BackgroundColor = paramsObject.BackColor;
             if (!Map.IsDebugMode)
             {

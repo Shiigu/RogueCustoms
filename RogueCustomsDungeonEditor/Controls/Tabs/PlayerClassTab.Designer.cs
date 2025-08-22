@@ -82,37 +82,101 @@
             // 
             // saePlayerOnDeath
             // 
+            saePlayerOnDeath.Action = null;
+            saePlayerOnDeath.ActionDescription = "When they die...                   ";
+            saePlayerOnDeath.ActionTypeText = "On Death";
             saePlayerOnDeath.AutoSize = true;
             saePlayerOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saePlayerOnDeath.ClassId = null;
+            saePlayerOnDeath.Dungeon = null;
+            saePlayerOnDeath.EffectParamData = null;
             saePlayerOnDeath.Location = new System.Drawing.Point(2, 499);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
+            saePlayerOnDeath.PlaceholderActionId = "Death";
+            saePlayerOnDeath.RequiresActionId = false;
+            saePlayerOnDeath.RequiresCondition = false;
+            saePlayerOnDeath.RequiresDescription = false;
+            saePlayerOnDeath.RequiresName = false;
             saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
+            saePlayerOnDeath.SourceDescription = "The player";
             saePlayerOnDeath.TabIndex = 152;
+            saePlayerOnDeath.TargetDescription = "Whoever killed them (if any)";
+            saePlayerOnDeath.ThisDescription = "The player";
+            saePlayerOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnAttacked
             // 
+            saePlayerOnAttacked.Action = null;
+            saePlayerOnAttacked.ActionDescription = "When they get attacked...   ";
+            saePlayerOnAttacked.ActionTypeText = "Interacted";
             saePlayerOnAttacked.AutoSize = true;
             saePlayerOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saePlayerOnAttacked.ClassId = null;
+            saePlayerOnAttacked.Dungeon = null;
+            saePlayerOnAttacked.EffectParamData = null;
             saePlayerOnAttacked.Location = new System.Drawing.Point(2, 461);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
+            saePlayerOnAttacked.PlaceholderActionId = "Interacted";
+            saePlayerOnAttacked.RequiresActionId = false;
+            saePlayerOnAttacked.RequiresCondition = false;
+            saePlayerOnAttacked.RequiresDescription = false;
+            saePlayerOnAttacked.RequiresName = false;
             saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
+            saePlayerOnAttacked.SourceDescription = "The player";
             saePlayerOnAttacked.TabIndex = 151;
+            saePlayerOnAttacked.TargetDescription = "Whoever interacted with them";
+            saePlayerOnAttacked.ThisDescription = "The player";
+            saePlayerOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnTurnStart
             // 
+            saePlayerOnTurnStart.Action = null;
+            saePlayerOnTurnStart.ActionDescription = "When the next turn starts...";
+            saePlayerOnTurnStart.ActionTypeText = "Turn Start";
             saePlayerOnTurnStart.AutoSize = true;
             saePlayerOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saePlayerOnTurnStart.ClassId = null;
+            saePlayerOnTurnStart.Dungeon = null;
+            saePlayerOnTurnStart.EffectParamData = null;
             saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 323);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
-            saePlayerOnTurnStart.Size = new System.Drawing.Size(282, 32);
+            saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
+            saePlayerOnTurnStart.RequiresActionId = false;
+            saePlayerOnTurnStart.RequiresCondition = false;
+            saePlayerOnTurnStart.RequiresDescription = false;
+            saePlayerOnTurnStart.RequiresName = false;
+            saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
+            saePlayerOnTurnStart.SourceDescription = "The player";
             saePlayerOnTurnStart.TabIndex = 150;
+            saePlayerOnTurnStart.TargetDescription = "The player";
+            saePlayerOnTurnStart.ThisDescription = "The player";
+            saePlayerOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maePlayerOnAttack
             // 
+            maePlayerOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
+            maePlayerOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maePlayerOnAttack.Actions");
+            maePlayerOnAttack.ActionTypeText = "Interact";
+            maePlayerOnAttack.ClassId = null;
+            maePlayerOnAttack.Dungeon = null;
+            maePlayerOnAttack.EffectParamData = null;
             maePlayerOnAttack.Location = new System.Drawing.Point(2, 361);
             maePlayerOnAttack.Name = "maePlayerOnAttack";
+            maePlayerOnAttack.PlaceholderActionName = null;
+            maePlayerOnAttack.RequiresActionId = true;
+            maePlayerOnAttack.RequiresActionName = true;
+            maePlayerOnAttack.RequiresCondition = true;
+            maePlayerOnAttack.RequiresDescription = true;
             maePlayerOnAttack.Size = new System.Drawing.Size(368, 94);
+            maePlayerOnAttack.SourceDescription = "The player";
             maePlayerOnAttack.TabIndex = 149;
+            maePlayerOnAttack.TargetDescription = "Whoever they are targeting";
+            maePlayerOnAttack.ThisDescription = "The player";
+            maePlayerOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
+            maePlayerOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
             // 
             // cmbPlayerStartingArmor
             // 
@@ -328,12 +392,28 @@
             // 
             // saePlayerOnLevelUp
             // 
+            saePlayerOnLevelUp.Action = null;
+            saePlayerOnLevelUp.ActionDescription = "When they level up...           ";
+            saePlayerOnLevelUp.ActionTypeText = "On Level Up";
             saePlayerOnLevelUp.AutoSize = true;
             saePlayerOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saePlayerOnLevelUp.ClassId = null;
+            saePlayerOnLevelUp.Dungeon = null;
+            saePlayerOnLevelUp.EffectParamData = null;
             saePlayerOnLevelUp.Location = new System.Drawing.Point(2, 537);
             saePlayerOnLevelUp.Name = "saePlayerOnLevelUp";
+            saePlayerOnLevelUp.PlaceholderActionId = "LevelUp";
+            saePlayerOnLevelUp.RequiresActionId = false;
+            saePlayerOnLevelUp.RequiresCondition = false;
+            saePlayerOnLevelUp.RequiresDescription = false;
+            saePlayerOnLevelUp.RequiresName = false;
             saePlayerOnLevelUp.Size = new System.Drawing.Size(284, 32);
+            saePlayerOnLevelUp.SourceDescription = "The player";
             saePlayerOnLevelUp.TabIndex = 239;
+            saePlayerOnLevelUp.TargetDescription = "The player";
+            saePlayerOnLevelUp.ThisDescription = "The player";
+            saePlayerOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
+            saePlayerOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // cmbPlayerInitialEquippedArmor
             // 

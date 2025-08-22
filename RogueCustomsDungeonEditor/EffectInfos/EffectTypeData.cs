@@ -104,12 +104,12 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         public string InternalName { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public ParameterType Type => (ParameterType) Enum.Parse(typeof(ParameterType), ParameterType);
+        public ParameterType Type => Enum.Parse<ParameterType>(ParameterType);
         public string ParameterType { get; set; }
         public string Default { get; set; }
         public List<EffectParameterValidValue> ValidValues { get; set; }
-        public bool Required { get; set; }
-        public List<string> OptionalIfFieldsHaveValue { get; set; }
+        public string Required { get; set; }
+        public string ReadOnly { get; set; }
         public List<EffectParameterColumn> Columns { get; set; }
     }
 
