@@ -379,7 +379,7 @@ public partial class PlayerSelectItem : Control
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true)))
+        if (@event.IsActionPressed("ui_up") && _inputManager.IsActionAllowed("ui_up"))
         {
             if (_selectedIndex == 0)
                 SelectRow(_selectionList.GetChildCount() - 1);
@@ -387,7 +387,7 @@ public partial class PlayerSelectItem : Control
                 SelectRow(_selectedIndex - 1);
             AcceptEvent();
         }
-        else if (@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true)))
+        else if (@event.IsActionPressed("ui_down") && _inputManager.IsActionAllowed("ui_down"))
         {
             if (_selectedIndex == _selectionList.GetChildCount() - 1)
                 SelectRow(0);

@@ -193,6 +193,7 @@ public partial class GameScreen : Control
                 if (!dungeonStatus.Read)
                     await UpdateUIViaEvents();
 
+                _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
                 _lastTurn = dungeonStatus.TurnCount;
             }
 
@@ -215,25 +216,25 @@ public partial class GameScreen : Control
             _exceptionLogger.LogMessage(ex);
         }
     }
-    
+
     private async Task HandleMovementKeys()
     {
         if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
         if (GetChildren().Any(c => c.IsPopUp())) return;
 
-        if (_inputManager.IsActionAllowed("ui_up") && Input.IsActionPressed("ui_up") && _coords.Y == 0)
+        if (Input.IsActionPressed("ui_up") && _inputManager.IsActionAllowed("ui_up") && _coords.Y == 0)
         {
             _coords.Y = -1;
         }
-        if (_inputManager.IsActionAllowed("ui_down") && Input.IsActionPressed("ui_down") && _coords.Y == 0)
+        if (Input.IsActionPressed("ui_down") && _inputManager.IsActionAllowed("ui_down") && _coords.Y == 0)
         {
             _coords.Y = 1;
         }
-        if (_inputManager.IsActionAllowed("ui_left") && Input.IsActionPressed("ui_left") && _coords.X == 0)
+        if (Input.IsActionPressed("ui_left") && _inputManager.IsActionAllowed("ui_left") &&  _coords.X == 0)
         {
             _coords.X = -1;
         }
-        if (_inputManager.IsActionAllowed("ui_right") && Input.IsActionPressed("ui_right") && _coords.X == 0)
+        if (Input.IsActionPressed("ui_right") && _inputManager.IsActionAllowed("ui_right") && _coords.X == 0)
         {
             _coords.X = 1;
         }
@@ -273,6 +274,8 @@ public partial class GameScreen : Control
             
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
+            if (_soundIsPlaying && displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
+                await _soundFinished.Task;
             foreach (var displayEvent in displayEventList.Events)
             {
                 switch (displayEvent.DisplayEventType)
@@ -392,8 +395,6 @@ public partial class GameScreen : Control
                         break;
                 }
             }
-            if (_soundIsPlaying)
-                await _soundFinished.Task;
             while (_screenFlash.Visible)
                 await Task.Delay(50);
             if (displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))

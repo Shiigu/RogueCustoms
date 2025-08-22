@@ -198,10 +198,10 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     paramsObject.Color = value.ToGameColor();
                     return true;
                 case "forecolor":
-                    paramsObject.ForeColor = value.ToGameColor();
+                    paramsObject.ForeColor = !string.IsNullOrWhiteSpace(value) ? value.ToGameColor() : null;
                     return true;
                 case "backcolor":
-                    paramsObject.BackColor = value.ToGameColor();
+                    paramsObject.BackColor = !string.IsNullOrWhiteSpace(value) ? value.ToGameColor() : null;
                     return true;
             }
             return false; // Not a special case, handle it verbatim (should be a string).

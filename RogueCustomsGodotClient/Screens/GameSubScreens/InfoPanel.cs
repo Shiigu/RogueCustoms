@@ -404,13 +404,28 @@ public partial class InfoPanel : GamePanel
         else
         {
             if (stat.HasMaxStat && stat.Max != null && !stat.IsDecimalStat)
-                innerText.Append($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}");
+            {
+                if (stat.IsHP)
+                {
+                    AppendStatWithColor(innerText, stat.Name, stat.Current, stat.Max.Value);
+                }
+                else
+                {
+                    innerText.Append($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}");
+                }
+            }
             else if (stat.HasMaxStat && stat.Max != null && stat.IsDecimalStat)
+            {
                 innerText.Append($"{stat.Name}: {(int)stat.Current}/{(int)stat.Max}");
+            }
             else if (!stat.HasMaxStat && stat.IsDecimalStat)
+            {
                 innerText.Append($"{stat.Name}: {stat.Current:0.#####}");
+            }
             else if (!stat.HasMaxStat && !stat.IsDecimalStat)
+            {
                 innerText.Append($"{stat.Name}: {(int)stat.Current}");
+            }
         }
         innerText.Append("[p]");
         AddStatDetails(innerText, stat);
@@ -442,6 +457,23 @@ public partial class InfoPanel : GamePanel
             innerText.Append($"[color={modificationDisplayForegroundColor}]{modificationText}[/color]");
         });
     }
+
+    private static void AppendStatWithColor(StringBuilder innerText, string statName, decimal current, decimal max)
+    {
+        string color;
+
+        if (current > max * 0.5M)
+            color = "#00FF00FF";
+        else if (current > max * 0.25M)
+            color = "#FFA500FF";
+        else if (current > 0)
+            color = "#FF5C00FF";
+        else
+            color = "#FF0000FF";
+
+        innerText.Append($"{statName}: [color={color}]{(int)current}[/color]/{(int)max}");
+    }
+
     private static void AddStatDetails(StringBuilder innerText, StatDto stat)
     {
         string baseText = stat.HasMaxStat ? TranslationServer.Translate("PlayerCharacterDetailMaxBaseText") : TranslationServer.Translate("PlayerCharacterDetailBaseText");

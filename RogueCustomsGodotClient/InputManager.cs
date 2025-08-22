@@ -1,6 +1,7 @@
 ﻿using Godot;
 
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class InputManager : Node
 {
@@ -11,11 +12,19 @@ public partial class InputManager : Node
     public override void _Process(double delta)
     {
         // Update all timers
-        List<string> keys = new List<string>(actionTimers.Keys);
-        foreach (string action in keys)
+        foreach (string action in new List<string>(actionTimers.Keys))
         {
             actionTimers[action] -= (float)delta;
             if (actionTimers[action] <= 0)
+            {
+                actionTimers.Remove(action);
+            }
+        }
+
+        // Refresh cooldown of keys that have been released
+        foreach (var action in actionTimers.Keys.ToList())
+        {
+            if (!Input.IsActionPressed(action))
             {
                 actionTimers.Remove(action);
             }

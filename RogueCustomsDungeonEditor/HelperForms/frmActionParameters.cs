@@ -1,5 +1,7 @@
 ﻿using MathNet.Numerics;
 
+using org.matheval;
+
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
@@ -14,6 +16,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -56,6 +59,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private readonly DungeonInfo ActiveDungeon;
         private string PreviousTextBoxValue;
+        private readonly Font FontToUse;
 
         private readonly List<ParameterType> TypesThatAlwaysHoldAValue = new()
         {
@@ -123,6 +127,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
             ValidTileTypes = validTileTypes;
             ValidAlteredStatuses = validAlteredStatuses;
 
+            var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
+            var fontName = "PxPlus Tandy1K-II 200L";
+            if (FontHelpers.LoadFont(fontPath))
+            {
+                var loadedFont = FontHelpers.GetFontByName(fontName);
+                if (loadedFont != null)
+                {
+                    FontToUse = new Font(loadedFont, 8f, FontStyle.Regular);
+                }
+            }
+
             var baseDisplayWidth = lblDisplayName.Width;
             var baseDescriptionWidth = lblDescription.Width;
             var baseDescriptionHeight = lblDescription.Height;
@@ -183,10 +198,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     TextAlign = ContentAlignment.MiddleLeft,
                     AutoSize = false,
-                    Height = 30,
-                    Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Count == 0
-                       ? $"{parameter.DisplayName}*"
-                       : $"{parameter.DisplayName}"
+                    Height = 30
                 } : null;
 
                 string originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
@@ -272,6 +284,88 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     tlpParameters.Height += 200;
                 rowNumber++;
             }
+            RecalculateFields();
+        }
+
+        private void RecalculateFields()
+        {
+            for (int i = 0; i < EffectTypeData.Parameters.Count; i++)
+            {
+                var parameterData = EffectTypeData.Parameters[i];
+
+                var required = GetRequired(parameterData);
+                if (tlpParameters.GetControlFromPosition(0, i) is Label label)
+                {
+                    label.Text = required
+                        ? $"{parameterData.DisplayName}*"
+                        : $"{parameterData.DisplayName}";
+                }
+
+                var readOnly = GetReadOnly(parameterData);
+                if (tlpParameters.GetControlFromPosition(1, i) is TableLayoutPanel tlp)
+                {
+                    foreach (Control innerControl in tlp.Controls)
+                    {
+                        innerControl.Enabled = !readOnly;
+                        if (readOnly)
+                        {
+                            if (innerControl is NumericUpDown nud)
+                            {
+                                nud.Value = parameterData.Default != null && int.TryParse(parameterData.Default, out int parsedIntValue) ? parsedIntValue : 0;
+                            }
+                            else if (innerControl is CheckBox checkBox)
+                            {
+                                checkBox.Checked = parameterData.Default != null && bool.TryParse(parameterData.Default, out bool parsedBoolValue) ? parsedBoolValue : false;
+                            }
+                            else if (innerControl is TextBox textBox)
+                            {
+                                textBox.Text = parameterData.Default ?? string.Empty;
+                            }
+                            else if (innerControl is Label innerLabel)
+                            {
+                                innerLabel.Text = parameterData.Default ?? string.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool GetRequired(EffectParameter parameter)
+        {
+            var parsedExpression = parameter.Required;
+            foreach (var field in EffectTypeData.Parameters)
+            {
+                parsedExpression = parsedExpression.Replace($"{{{field.InternalName}}}", $"\"{GetValue(field.InternalName)}\"");
+            }
+            return new Expression(parsedExpression).Eval<bool>();
+        }
+
+        public bool GetReadOnly(EffectParameter parameter)
+        {
+            var parsedExpression = parameter.ReadOnly;
+            foreach (var field in EffectTypeData.Parameters)
+            {
+                parsedExpression = parsedExpression.Replace($"{{{field.InternalName}}}", $"\"{GetValue(field.InternalName)}\"");
+            }
+            return new Expression(parsedExpression).Eval<bool>();
+        }
+
+        private string GetValue(string fieldName)
+        {
+            var field = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
+            var fieldIndex = EffectTypeData.Parameters.FindIndex(p => p.InternalName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
+            var control = GetAppropriateControl(EffectTypeData.Parameters[fieldIndex], fieldIndex);
+            return control switch
+            {
+                Label label => label.Text,
+                TextBox textBox => textBox.Text,
+                NumericUpDown numericUpDown => numericUpDown.Value.ToString(),
+                CheckBox checkBox => checkBox.Checked.ToString(),
+                ComboBox comboBox => comboBox.Text,
+                TableLayoutPanel tableLayoutPanel => string.Join("|", tableLayoutPanel.Controls.OfType<TextBox>().Select(tb => tb.Text)),
+                _ => throw new ArgumentException($"Control type {control.GetType()} for field {fieldName} is not supported for parameter validation")
+            };
         }
 
         private IEnumerable<string> GetComboBoxItems(EffectParameter parameter)
@@ -333,6 +427,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 comboBox.Text = parameter.Default;
             }
 
+            comboBox.Leave += (sender, e) => RecalculateFields();
+
             return comboBox;
         }
 
@@ -358,6 +454,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             };
 
+            textBox.Leave += (sender, e) => RecalculateFields();
+
             return textBox;
         }
 
@@ -370,6 +468,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 Value = originalValue != null && int.TryParse(originalValue, out int parsedIntValue) ? parsedIntValue : int.Parse(parameter.Default)
             };
 
+            numericUpDown.Leave += (sender, e) => RecalculateFields();
+
             return numericUpDown;
         }
 
@@ -379,6 +479,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 Checked = originalValue != null && bool.TryParse(originalValue, out bool parsedBoolValue) ? parsedBoolValue : bool.Parse(parameter.Default)
             };
+
+            checkBox.CheckedChanged += (sender, e) => RecalculateFields();
 
             return checkBox;
         }
@@ -421,6 +523,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             textBoxPanel.Controls.Add(textBox, 0, 0);
             textBoxPanel.Controls.Add(warningBox, 1, 0);
 
+            textBox.Leave += (sender, e) => RecalculateFields();
+
             return textBoxPanel;
         }
 
@@ -449,6 +553,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
 
+            textBox.Leave += (sender, e) => RecalculateFields();
+
             return textBox;
         }
 
@@ -459,7 +565,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter,
                 AutoSize = false,
-                Text = originalValue ?? parameter.Default
+                Text = originalValue ?? parameter.Default,
+                Font = FontToUse
             };
 
             var characterMapButton = new Button
@@ -473,6 +580,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (characterMapResult.Saved)
                 {
                     characterLabel.Text = characterMapResult.CharacterToSave.ToString();
+                    RecalculateFields();
                 }
             };
 
@@ -511,7 +619,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 var colorDialog = new ColorDialog();
                 try
                 {
-                    colorDialog.Color = colorTextBox.Text.ToColor();
+                    colorDialog.Color = (!string.IsNullOrWhiteSpace(colorTextBox.Text)) ? colorTextBox.Text.ToColor() : Color.White;
                     colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
                 }
                 catch
@@ -523,6 +631,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     colorTextBox.Text = new GameColor(colorDialog.Color).ToString();
                     colorButton.BackColor = colorDialog.Color;
+                    RecalculateFields();
                 }
             };
 
@@ -535,8 +644,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 try
                 {
-                    var textColor = colorTextBox.Text.ToColor();
-                    colorButton.BackColor = textColor;
+                    if (!string.IsNullOrWhiteSpace(colorTextBox.Text))
+                    {
+                        var textColor = colorTextBox.Text.ToColor();
+                        colorButton.BackColor = textColor;
+                    }
+                    else
+                    {
+                        colorButton.BackColor = Color.White;
+                    }
+                    RecalculateFields();
                 }
                 catch
                 {
@@ -575,10 +692,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 TextAlign = ContentAlignment.MiddleLeft,
                 AutoSize = false,
-                Height = 30,
-                Text = parameter.Required && !TypesThatAlwaysHoldAValue.Contains(parameter.Type) && parameter.OptionalIfFieldsHaveValue.Count == 0
-                   ? $"{parameter.DisplayName}*"
-                   : $"{parameter.DisplayName}"
+                Height = 30
             };
 
             var table = new DataGridView
@@ -643,6 +757,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     column.Width = (int)(parent.Width * 0.35);
             }
 
+            tablePanel.Leave += (sender, e) => RecalculateFields();
+
             return tablePanel;
         }
 
@@ -691,6 +807,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 var controlToValidate = GetAppropriateControl(parameterData, i);
                 var valueToValidate = string.Empty;
                 var tableItems = new List<SelectionItem>();
+                var required = GetRequired(parameterData);
 
                 switch (parameterData.Type)
                 {
@@ -761,7 +878,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Table:
                         if (controlToValidate is DataGridView tableToValidate)
                         {
-                            if (tableToValidate.Rows[0].IsNewRow && parameterData.Required)
+                            if (tableToValidate.Rows[0].IsNewRow && required)
                             {
                                 errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" has no rows.");
                                 break;
@@ -818,28 +935,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
                 if (parameterData.Type != ParameterType.Table)
                 {
-                    if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Count == 0 && string.IsNullOrWhiteSpace(valueToValidate))
+                    if (required && string.IsNullOrWhiteSpace(valueToValidate))
                     {
                         errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" is required.");
-                    }
-                    else if (parameterData.Required && parameterData.OptionalIfFieldsHaveValue.Count != 0 && string.IsNullOrWhiteSpace(valueToValidate))
-                    {
-                        var fellowRequiredGroupHasValue = false;
-                        var fellowRequiredCount = parameterData.OptionalIfFieldsHaveValue.Count;
-                        var fellowRequiredEncountered = 0;
-                        foreach (var paramName in parameterData.OptionalIfFieldsHaveValue)
-                        {
-                            if (!paramsAndValues.Exists(pav => pav.ParamName.Equals(paramName))) break;
-                            fellowRequiredEncountered++;
-                            var paramValue = paramsAndValues.Find(pav => pav.ParamName.Equals(paramName)).Value;
-                            if (!string.IsNullOrWhiteSpace(paramValue))
-                            {
-                                fellowRequiredGroupHasValue = true;
-                                break;
-                            }
-                        }
-                        if (!fellowRequiredGroupHasValue && fellowRequiredEncountered == fellowRequiredCount)
-                            errorMessageStringBuilder.Append("At least one of parameters (").Append(parameterData.DisplayName).Append(", ").AppendJoin(", ", parameterData.OptionalIfFieldsHaveValue).AppendLine(") is required.");
                     }
                     else
                     {

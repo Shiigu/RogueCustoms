@@ -71,9 +71,6 @@ public partial class MapPanel : GamePanel
     {
         var dungeonStatus = _globalState.DungeonInfo;
         _floorTitleLabel.Text = dungeonStatus.FloorName;
-        var isJustBump = dungeonStatus.DisplayEvents.Any(de => de.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect && ((SpecialEffect)e.Params[0] == SpecialEffect.Bumped || (SpecialEffect)e.Params[0] == SpecialEffect.DoorClosed)));
-        var turnNumber = isJustBump ? dungeonStatus.TurnCount - 1 : dungeonStatus.TurnCount;
-        _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = turnNumber.ToString() });
 
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity != null)
@@ -153,6 +150,11 @@ public partial class MapPanel : GamePanel
             Render();
 
         }
+    }
+
+    public void UpdateTurnCount(int turnCount)
+    {
+        _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = turnCount.ToString() });
     }
 
     public void Render()

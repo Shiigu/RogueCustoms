@@ -24,7 +24,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public int TurnCount { get; private set; }
+        public int TurnCount { get; set; }
 
         [JsonIgnore]
         public bool Read { get; set; }
@@ -161,7 +161,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Y = entity.Position.Y;
             Name = entity.Name;
             OnTop = !entity.Passable;
-            ConsoleRepresentation = entity.ConsoleRepresentation;
+            ConsoleRepresentation = entity.ConsoleRepresentation.Clone();
             switch (entity.EntityType)
             {
                 case EntityType.Player:

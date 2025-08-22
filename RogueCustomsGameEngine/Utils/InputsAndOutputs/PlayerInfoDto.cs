@@ -60,6 +60,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     IsDecimalStat = stat.StatType == StatType.Regeneration || stat.StatType == StatType.Decimal,
                     IsPercentileStat = stat.StatType == StatType.Percentage,
                     HasMaxStat = stat.HasMax,
+                    IsHP = stat.StatType == StatType.HP,
                     Modifications = new List<StatModificationDto>()
                 };
                 stat.ActiveModifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
@@ -87,6 +88,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsDecimalStat { get; set; }
         public bool IsPercentileStat { get; set; }
         public bool HasMaxStat { get; set; }
+        public bool IsHP { get; set; }
         public List<StatModificationDto> Modifications { get; set; }
     }
 

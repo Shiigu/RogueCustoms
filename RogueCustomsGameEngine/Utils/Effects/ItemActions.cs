@@ -5,6 +5,10 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Text;
 using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Xml.Linq;
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -36,8 +40,18 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 if(targetItem != null)
                 {
-                    targetItem.Owner?.Inventory?.Remove(targetItem);
-                    targetItem.Owner = null;
+                    if (targetItem.Owner is Character c)
+                    {
+                        var events = new List<DisplayEventDto>();
+                        targetItem.Owner?.Inventory?.Remove(targetItem);
+                        targetItem.Owner = null;
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                        });
+                        Map.DisplayEvents.Add(($"{targetItem.Name} disappears from {c.Name}'s inventory", events));
+                    }
                     targetItem.ExistenceStatus = EntityExistenceStatus.Gone;
                     targetItem.Position = null;
                     Map.Items.Remove(targetItem);
