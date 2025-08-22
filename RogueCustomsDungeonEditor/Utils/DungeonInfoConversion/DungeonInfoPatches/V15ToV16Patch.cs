@@ -222,6 +222,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateApplyStatAlterationStepsToV16(effect);
                 UpdateTransformTileStepsToV16(effect);
                 UpdateSpawnNPCStepsToV16(effect);
+                UpdateCleanseStatAlterationStepsToV16(effect);
+                UpdateCleanseStatAlterationsStepsToV16(effect);
             }
         }
 
@@ -362,6 +364,76 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateSpawnNPCParametersToV16(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateSpawnNPCParametersToV16(onFailureObj);
+        }
+
+        private static void UpdateCleanseStatAlterationStepsToV16(JsonObject effect)
+        {
+            UpdateCleanseStatAlterationParametersToV16(effect);
+        }
+
+        private static void UpdateCleanseStatAlterationParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "CleanseStatAlteration")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsBuffs", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsBuffs", ["Value"] = "True" });
+                }
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsDebuffs", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsDebuffs", ["Value"] = "True" });
+                }
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsFromStatuses", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsFromStatuses", ["Value"] = "True" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateCleanseStatAlterationParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateCleanseStatAlterationParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateCleanseStatAlterationParametersToV16(onFailureObj);
+        }
+
+        private static void UpdateCleanseStatAlterationsStepsToV16(JsonObject effect)
+        {
+            UpdateCleanseStatAlterationsParametersToV16(effect);
+        }
+
+        private static void UpdateCleanseStatAlterationsParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "CleanseStatAlterations")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsBuffs", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsBuffs", ["Value"] = "True" });
+                }
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsDebuffs", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsDebuffs", ["Value"] = "True" });
+                }
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("ClearsFromStatuses", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "ClearsFromStatuses", ["Value"] = "True" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateCleanseStatAlterationsParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateCleanseStatAlterationsParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateCleanseStatAlterationsParametersToV16(onFailureObj);
         }
     }
 }

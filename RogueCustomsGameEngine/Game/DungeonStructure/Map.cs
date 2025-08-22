@@ -858,25 +858,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (string.IsNullOrWhiteSpace(message)) return;
             if (!_displayedTurnMessage && TurnCount > 0)
             {
-                Messages.Add(new MessageDto
-                                {
-                                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
-                                    BackgroundColor = new GameColor(Color.Black),
-                                    ForegroundColor = new GameColor(Color.Yellow)
-                                });
+                var newTurnMessage = new MessageDto
+                {
+                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Yellow)
+                };
+                Messages.Add(newTurnMessage);
                 DisplayEvents.Add(($"Turn {TurnCount}", new()
                     {
                         new() { 
                             DisplayEventType = DisplayEventType.AddLogMessage, 
-                            Params = new()
-                            {
-                                new MessageDto
-                                {
-                                    Message = Locale["NewTurn"].Format(new { TurnCount = TurnCount.ToString() }),
-                                    BackgroundColor = new GameColor(Color.Black),
-                                    ForegroundColor = new GameColor(Color.Yellow)
-                                }
-                            } 
+                            Params = new() { newTurnMessage } 
                         }
                     }
                 ));
