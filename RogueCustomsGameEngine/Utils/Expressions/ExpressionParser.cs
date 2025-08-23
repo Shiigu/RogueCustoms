@@ -78,6 +78,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "clearsbuffs", "ClearsBuffs" },
             { "clearsdebuffs", "ClearsDebuffs" },
             { "clearsfromstatuses", "ClearsFromStatuses" },
+            { "informofsource", "InformOfSource" },
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)
@@ -92,6 +93,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "items", "Items" },
             { "choices", "Choices" },
             { "options", "Options" }
+        };
+
+        private static readonly Dictionary<string, string> IdParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "customid", "CustomId" },
         };
 
         public static void Setup(RngHandler rng, Map map)
@@ -165,6 +171,12 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 return true;
             }
 
+            if (IdParams.TryGetValue(paramName, out var stringProperty))
+            {
+                paramsObject[stringProperty] = value.TrimSurroundingQuotes();
+                return true;
+            }
+
             if (ListParams.TryGetValue(paramName, out var listProperty))
             {
                 if(!paramsObject.ContainsKey(listProperty))
@@ -186,6 +198,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                     if (bool.TryParse(value, out bool boolValue))
                     {
                         paramsObject.Value = boolValue;
+                        return true;
+                    }
+                    if (value.IsBooleanExpression())
+                    {
+                        paramsObject.Value = CalculateBooleanExpression(value);
                         return true;
                     }
                     if (value.IsMathExpression())

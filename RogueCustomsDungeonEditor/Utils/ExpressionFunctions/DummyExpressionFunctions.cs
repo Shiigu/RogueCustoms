@@ -9,6 +9,7 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using RogueCustomsGameEngine.Utils.Helpers;
 
 namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 {
@@ -106,6 +107,16 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         public static string AREINTHESAMEROOM(EffectCallerParams args, string[] parameters)
         {
             return "true";
+        }
+
+        public static string ROLLACLASS(EffectCallerParams args, string[] parameters)
+        {
+            return "1";
+        }
+
+        public static string ROLLANITEM(EffectCallerParams args, string[] parameters)
+        {
+            return "1";
         }
     }
 }

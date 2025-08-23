@@ -1669,6 +1669,17 @@
         "Columns": []
       },
       {
+        "InternalName": "CustomId",
+        "DisplayName": "Custom Id",
+        "Description": "Class Id of the Item to give. Customized.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "{Id} == \"<<CUSTOM>>\"",
+        "ReadOnly": "{Id} != \"<<CUSTOM>>\"",
+        "Columns": []
+      },
+      {
         "InternalName": "FromInventory",
         "DisplayName": "Must be in Inventory",
         "Description": "If true, this fails if Source does not have the Item in the Inventory. If it succeeds, they give away said item.\n\nIf false, the Item materializes out of nowhere.",
@@ -1699,6 +1710,17 @@
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformOfSource",
+        "DisplayName": "Mention the giver?",
+        "Description": "If false, whoever gave the Item won't be mentioned.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "{FromInventory} == \"True\"",
         "Columns": []
       }
     ]

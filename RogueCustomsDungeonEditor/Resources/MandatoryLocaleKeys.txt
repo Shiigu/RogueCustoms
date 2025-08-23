@@ -9,6 +9,7 @@ FloorEnter
 FloorLeave
 CharacterSwitchedPlacesWithPlayer
 CharacterGotAnItem
+CharacterObtainedAnItem
 PlayerPutItemOnBag
 PlayerPutItemOnFloor
 PlayerEquippedItem

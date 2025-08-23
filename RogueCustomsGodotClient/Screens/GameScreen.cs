@@ -141,10 +141,10 @@ public partial class GameScreen : Control
     {
         try
         {
-            if (_globalState.MustUpdateGameScreen && !_processingEvents)
+            _globalState.DungeonInfo = await _globalState.DungeonManager.GetDungeonStatus();
+            var dungeonStatus = _globalState.DungeonInfo;
+            if ((_globalState.MustUpdateGameScreen || !dungeonStatus.Read) && !_processingEvents)
             {
-                _globalState.DungeonInfo = await _globalState.DungeonManager.GetDungeonStatus();
-                var dungeonStatus = _globalState.DungeonInfo;
                 if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
                 {
                     _globalState.MessageScreenType = MessageScreenType.Ending;

@@ -50,7 +50,7 @@ namespace RogueCustomsDungeonEditor.Controls
             set
             {
                 lbActions.Items.Clear();
-                foreach (var action in value)
+                foreach (var action in value ?? [])
                 {
                     var actionItem = new ListBoxItem
                     {

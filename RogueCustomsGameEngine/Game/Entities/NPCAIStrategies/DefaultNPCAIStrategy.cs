@@ -18,8 +18,11 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
         public int GetActionWeight(ActionWithEffects action, Map map, EffectCallerParams args)
         {
             var distanceFactor = action.MaximumRange > 1 ? (int)GamePoint.Distance(args.Source.Position, args.Target.Position) : 0;
+            var sourceAsCharacter = args.Source as Character;
+            var sourceMP = sourceAsCharacter != null && sourceAsCharacter.MP != null ? sourceAsCharacter.MP.Current : 0;
+            var sourceMaxMP = sourceAsCharacter != null && sourceAsCharacter.MP != null ? sourceAsCharacter.MP.Base : 0;
 
-            var mpUseFactor = (args.Source as Character).MP != null ? (double) (action.MPCost / (args.Source as Character).MaxMP) : 0;
+            var mpUseFactor = sourceMaxMP > 0 ? (double) (action.MPCost / sourceMaxMP) : 0;
             return (int)(GetEffectWeight(action.Effect, map, args) * (1 - mpUseFactor) - 5 * distanceFactor);
         }
 
