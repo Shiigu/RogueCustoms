@@ -110,6 +110,13 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                         UpdateEffect(actionObj);
                     }
                 }
+                foreach (var action in npc["OnInteracted"]?.AsArray() ?? [])
+                {
+                    if (action is JsonObject actionObj)
+                    {
+                        UpdateEffect(actionObj);
+                    }
+                }
                 if (npc["OnAttacked"] is JsonObject onAttacked)
                 {
                     UpdateEffect(onAttacked);
@@ -224,6 +231,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateSpawnNPCStepsToV16(effect);
                 UpdateCleanseStatAlterationStepsToV16(effect);
                 UpdateCleanseStatAlterationsStepsToV16(effect);
+                UpdateGiveItemStepsToV16(effect);
             }
         }
 
@@ -434,6 +442,33 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateCleanseStatAlterationsParametersToV16(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateCleanseStatAlterationsParametersToV16(onFailureObj);
+        }
+
+        private static void UpdateGiveItemStepsToV16(JsonObject effect)
+        {
+            UpdateGiveItemParametersToV16(effect);
+        }
+
+        private static void UpdateGiveItemParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "GiveItem")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("InformOfSource", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "InformOfSource", ["Value"] = "True" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateGiveItemParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateGiveItemParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateGiveItemParametersToV16(onFailureObj);
         }
     }
 }

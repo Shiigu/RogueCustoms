@@ -61,7 +61,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int LastMonsterGenerationTurn;
         private int LatestPlayerRemainingMovement;
 
-        private readonly Dungeon Dungeon;
+        public readonly Dungeon Dungeon;
 
         public List<ActionWithEffects> Scripts => Dungeon.Scripts;
         public Locale Locale => Dungeon.LocaleToUse;
@@ -134,6 +134,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<Flag> Flags { get; set; }
 
+        public List<EntityClass> PossibleClasses => Dungeon.Classes;
         public List<EntityClass> PossibleNPCClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.NPC).ToList();
         public List<EntityClass> PossibleItemClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable).ToList();
         public List<EntityClass> PossibleTrapClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
@@ -1933,8 +1934,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void GetPossibleRoomData()
         {
             // Calculate MaxRoomWidth and MaxRoomHeight with adjusted constraints
-            MaxRoomWidth = Math.Max(GeneratorToUse.MaxRoomSize.Width, Width / RoomCountColumns);
-            MaxRoomHeight = Math.Max(GeneratorToUse.MaxRoomSize.Height, Height / RoomCountRows);
+            MaxRoomWidth = Math.Min(GeneratorToUse.MaxRoomSize.Width, Width / RoomCountColumns);
+            MaxRoomHeight = Math.Min(GeneratorToUse.MaxRoomSize.Height, Height / RoomCountRows);
 
             // Ensure the room size is at least 5x5 and the min width/height is not less than that
             if (MaxRoomWidth < EngineConstants.MinRoomWidthOrHeight || MaxRoomHeight < EngineConstants.MinRoomWidthOrHeight)

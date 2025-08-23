@@ -139,9 +139,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var couldSeeTarget = Map.Player.CanSee(statusTarget);
                 if(statusToApply.CanBeAppliedTo(statusTarget))
                 {
+                    var eventsAsOfNow = Map.DisplayEvents.Count;
                     var success = await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
                     if(success)
                     {
+                        var newTurnString = Map.Locale["NewTurn"].Format(new { TurnCount = Map.TurnCount.ToString() });
+                        var statusApplyEvents = Map.DisplayEvents.Where(de => Map.DisplayEvents.IndexOf(de) >= eventsAsOfNow).ToList();
+                        if (statusApplyEvents.Count > 0 && statusApplyEvents[0].Events.Count > 0 && statusApplyEvents[0].Events[0].DisplayEventType == DisplayEventType.AddLogMessage && (statusApplyEvents[0].Events[0].Params[0] as MessageDto).Message.Equals(newTurnString))
+                            statusApplyEvents.RemoveAt(0);
+                        Map.DisplayEvents = Map.DisplayEvents.Except(statusApplyEvents).ToList();
                         if (statusTarget == Map.Player || couldSeeTarget)
                         {
                             if (!targetAlreadyHadStatus || statusToApply.CanStack || (statusToApply.CanOverwrite && paramsObject.AnnounceStatusRefresh))
@@ -165,6 +171,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 Map.DisplayEvents.Add(($"{statusTarget.Name} got {statusToApply.Name} status", events));
                             }
                         }
+                        Map.DisplayEvents.AddRange(statusApplyEvents);
                     }
                 }
             }
@@ -888,13 +895,18 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             s = paramsObject.Source as Character;
 
-            var itemClass = Map.PossibleItemClasses.Find(c => c.Id.Equals(paramsObject.Id));
+            string itemId = paramsObject.Id;
+            string customItemId = paramsObject.CustomId;
+
+            string idToLookUp = itemId == "<<CUSTOM>>" ? customItemId : itemId;
+
+            var itemClass = Map.PossibleItemClasses.Find(c => c.Id.Equals(idToLookUp));
 
             if (itemClass == null)
-                // Must have a valid Trap class to spawn
+                // Must have a valid Item class to spawn
                 return false;
 
-            if (paramsObject.FromInventory && !s.Inventory.Exists(i => i.ClassId.Equals(itemClass.Id)))
+            if (paramsObject.FromInventory && !s.Inventory.Exists(i => i.ClassId.Equals(idToLookUp)))
                 // Attempted to give Target an Item from Source's inventory, when Source does not have such an item.
                 return false;
 
@@ -902,8 +914,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (Rng.RollProbability() <= accuracyCheck)
             {
                 var itemToGive = paramsObject.FromInventory
-                    ? s.Inventory.Find(i => i.ClassId.Equals(itemClass.Id))
-                    : await Map.AddEntity(paramsObject.Id, 1, new GamePoint(0, 0)) as Item;
+                    ? s.Inventory.Find(i => i.ClassId.Equals(idToLookUp))
+                    : await Map.AddEntity(idToLookUp, 1, new GamePoint(0, 0)) as Item;
                 if (paramsObject.FromInventory)
                     s.Inventory.Remove(itemToGive);
                 t.Inventory.Add(itemToGive);
@@ -924,8 +936,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.ItemGet }
                     });
-                    Map.AppendMessage(Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name }), Color.DeepSkyBlue, events);
-
+                    var message = paramsObject.InformOfSource
+                        ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name })
+                        : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = itemToGive.Name });
+                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{t.Name} received an item", events));
                 return true;

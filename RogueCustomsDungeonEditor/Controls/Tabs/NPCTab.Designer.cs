@@ -108,7 +108,7 @@
             maeNPCOnInteracted.TargetDescription = "The NPC";
             maeNPCOnInteracted.ThisDescription = "The NPC";
             maeNPCOnInteracted.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
-            maeNPCOnInteracted.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
+            maeNPCOnInteracted.UsageCriteria = HelperForms.UsageCriteria.AnyTarget;
             // 
             // saeNPCOnSpawn
             // 

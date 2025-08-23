@@ -198,17 +198,20 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public bool CanBeUsedOnCharacter(Character target, Character source)
         {
-            if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
-            if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
 
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
-
-            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
-
-            if (MPCost > 0)
+            if (User != target || source == target)
             {
-                if (source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
-                    return false;
+                if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
+                if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
+
+                if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+
+                if (MPCost > 0)
+                {
+                    if (source.MP == null || source.MP.Current < MPCost || (source.MaxMP == 0 && MPCost > 0))
+                        return false;
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
@@ -358,29 +361,32 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (target != null)
             {
-                if (distance < MinimumRange)
+                if (target is NonPlayableCharacter && (User != target || target == source)) // If it's not an OnInteract
                 {
-                    if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
-                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooClose"]);
-                }
-                else if (distance > MaximumRange)
-                {
-                    if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
-                        descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
-                    descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
-                }
-
-                if(target is Character tc && !TargetTypes.Contains(TargetType.Tile))
-                {
-                    var targetType = sourceAsCharacter.CalculateTargetTypeFor(tc);
-                    if (!TargetTypes.Contains(targetType))
+                    if (distance < MinimumRange)
                     {
                         if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
                             descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
-                        var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
-                        var usableTargetTypesString = string.Join('/', usableTargetTypes);
-                        descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
+                        descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooClose"]);
+                    }
+                    else if (distance > MaximumRange)
+                    {
+                        if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                            descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
+                        descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
+                    }
+
+                    if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
+                    {
+                        var targetType = sourceAsCharacter.CalculateTargetTypeFor(tc);
+                        if (!TargetTypes.Contains(targetType))
+                        {
+                            if (!descriptionWithUsageNotes.ToString().Contains(cannotBeUsedString))
+                                descriptionWithUsageNotes.Append("\n\n").Append(cannotBeUsedString).AppendLine("\n");
+                            var usableTargetTypes = TargetTypes.Select(tt => Locale[$"TargetType{tt}"]);
+                            var usableTargetTypesString = string.Join('/', usableTargetTypes);
+                            descriptionWithUsageNotes.AppendLine(Locale["TargetIsOfWrongFaction"].Format(new { FactionTargets = usableTargetTypesString }));
+                        }
                     }
                 }
 

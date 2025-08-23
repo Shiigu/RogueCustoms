@@ -19,12 +19,12 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 {
     public static class ExpressionFunctions
     {
-        private static RngHandler rngHandler;
+        private static RngHandler Rng;
         private static Map Map;
 
         public static void Setup(RngHandler rng, Map map)
         {
-            rngHandler = rng;
+            Rng = rng;
             Map = map;
         }
 
@@ -33,7 +33,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (parameters.Length != 2 || !int.TryParse(parameters[0], out int min) || !int.TryParse(parameters[1], out int max) || min > max)
                 throw new ArgumentException("Invalid parameters for rng.");
 
-            return rngHandler.Next(min, max + 1).ToString();
+            return Rng.Next(min, max + 1).ToString();
         }
 
         public static string FLAGEXISTS(EffectCallerParams args, string[] parameters)
@@ -244,6 +244,32 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 return (c1.ContainingRoom == c2.ContainingRoom).ToString();
 
             return ((Map.GetFOVTilesWithinDistance(c1.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c2.ContainingTile) || Map.GetFOVTilesWithinDistance(c2.Position, EngineConstants.FullRoomSightRangeForHallways).Contains(c1.ContainingTile))).ToString();
+        }
+
+        public static string ROLLACLASS(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length < 2) throw new ArgumentException("Invalid parameters for RollAClass.");
+
+            var classesAndWeights = new List<(string Id, int Weight)>();
+
+            foreach (var parameter in parameters)
+            {
+                var paramParts = parameter.Split('|');
+                if(paramParts.Length != 2) throw new ArgumentException("Invalid parameters for RollAClass.");
+                var id = paramParts[0];
+                if(!Map.PossibleClasses.Any(pc => pc.Id.Equals(id))) throw new ArgumentException("Invalid parameters for RollAClass.");
+                if(!int.TryParse(paramParts[1], out int weight)) throw new ArgumentException("Invalid parameters for RollAClass.");
+                classesAndWeights.Add((paramParts[0], weight));
+            }
+
+            return classesAndWeights.TakeRandomElementWithWeights(iaw => iaw.Weight, Rng).Id;
+        }
+
+        public static string ROLLANITEM(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length > 0) throw new ArgumentException("Invalid parameters for RollAnItem.");
+
+            return Map.PossibleItemClasses.TakeRandomElement(Rng).Id;
         }
 
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)

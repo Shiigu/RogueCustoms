@@ -43,7 +43,11 @@
     },
     {
       "Key": "CharacterGotAnItem",
-      "Value": "{CharacterName} got an {ItemName} from {SourceName}."
+      "Value": "{CharacterName} got {ItemName} from {SourceName}."
+    },
+    {
+      "Key": "CharacterObtainedAnItem",
+      "Value": "{CharacterName} got an item: {ItemName}!"
     },
     {
       "Key": "PlayerEquippedItem",

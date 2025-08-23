@@ -44,7 +44,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return true; // NPCs will only try to do this if they want to, so we assume they say "yes" to the prompt.
             }
 
-            return await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
+            var result = await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
+
+            Map.DisplayEvents = new();
+            Map.Snapshot = new(Map.Dungeon, Map);
+
+            return result;
         }
 
         public static async Task<bool> SelectOption(EffectCallerParams Args)
@@ -64,6 +69,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             else
             {
                 chosenOption = await Map.OpenSelectOption(paramsObject.Title, paramsObject.Message, options, paramsObject.Cancellable, paramsObject.Color);
+                Map.DisplayEvents = new();
+                Map.Snapshot = new(Map.Dungeon, Map);
             }
 
             if(!Map.HasFlag(optionFlag))

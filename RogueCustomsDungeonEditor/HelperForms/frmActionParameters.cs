@@ -122,10 +122,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             EffectTypeData = paramsData;
             ValidNPCs = validNPCs;
+            ValidNPCs.Add("<<CUSTOM>>");
             ValidItems = validItems;
+            ValidItems.Add("<<CUSTOM>>");
             ValidTraps = validTraps;
+            ValidTraps.Add("<<CUSTOM>>");
             ValidTileTypes = validTileTypes;
+            ValidTileTypes.Add("<<CUSTOM>>");
             ValidAlteredStatuses = validAlteredStatuses;
+            ValidAlteredStatuses.Add("<<CUSTOM>>");
 
             var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
             var fontName = "PxPlus Tandy1K-II 200L";
