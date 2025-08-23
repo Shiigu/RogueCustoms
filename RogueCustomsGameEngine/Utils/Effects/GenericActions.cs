@@ -928,6 +928,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 else if (targetNPC != null)
                 {
                     targetNPC.ExistenceStatus = EntityExistenceStatus.Gone;
+                    targetNPC.LastPositionBeforeRemove = targetNPC.Position;
                     targetNPC.Position = null;
                     Map.AICharacters.Remove(targetNPC);
                     removed = true;

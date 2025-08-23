@@ -32,6 +32,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private ITargetable CurrentTarget;
         private GamePoint LatestTargetPosition;
+        public GamePoint LastPositionBeforeRemove { get; set; }
 
         private readonly bool KnowsAllCharacterPositions;
         private readonly bool PursuesOutOfSightCharacters;
@@ -48,6 +49,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             KnownCharacters.Add((this, TargetType.Self));
             PathToUse = (null, null);
+            LastPositionBeforeRemove = null;
             CurrentTarget = null;
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
             PursuesOutOfSightCharacters = entityClass.PursuesOutOfSightCharacters;
@@ -504,15 +506,18 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void DropItem(Item item)
         {
+            if (Position != null && ContainingTile != null && LastPositionBeforeRemove == null) return;
             var events = new List<DisplayEventDto>();
+            var centralPosition = Position ?? LastPositionBeforeRemove;
+            var centralTile = Map.GetTileFromCoordinates(centralPosition);
             Tile pickedEmptyTile = null;
-            if (!ContainingTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (ContainingTile.Trap == null || ContainingTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
-                pickedEmptyTile = ContainingTile;
+            if (!centralTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (centralTile.Trap == null || centralTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+                pickedEmptyTile = centralTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (t.Key == null || t.Key.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
-                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => GamePoint.Distance(t.Position, Position)) : -1;
-                var closestEmptyTiles = closeEmptyTiles.Where(t => GamePoint.Distance(t.Position, Position) <= closestDistance);
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (t.Key == null || t.Key.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => GamePoint.Distance(t.Position, centralPosition)) : -1;
+                var closestEmptyTiles = closeEmptyTiles.Where(t => GamePoint.Distance(t.Position, centralPosition) <= closestDistance);
                 if (closestEmptyTiles.Any())
                 {
                     pickedEmptyTile = closestEmptyTiles.TakeRandomElement(Rng);

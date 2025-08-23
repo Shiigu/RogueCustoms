@@ -109,8 +109,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddWarning("SimultaneousMinMonstersAtStart is 0. No monsters will be present at start.");
                 if (floorJson.SimultaneousMaxMonstersInFloor < 0)
                     messages.AddError("SimultaneousMaxMonstersInFloor must be an integer number equal to or higher than 0.");
-                else if (floorJson.SimultaneousMinMonstersAtStart == 0 && floorJson.PossibleMonsters.Any())
-                    messages.AddError("SimultaneousMaxMonstersInFloor is 0 but PossibleMonsters is not empty.");
+                else if (floorJson.SimultaneousMaxMonstersInFloor == 0 && !floorJson.PossibleMonsters.Any())
+                    messages.AddError("SimultaneousMaxMonstersInFloor is not 0 but PossibleMonsters is empty.");
                 if (floorJson.SimultaneousMinMonstersAtStart > floorJson.SimultaneousMaxMonstersInFloor)
                     messages.AddError("SimultaneousMinMonstersAtStart is higher than SimultaneousMaxMonstersInFloor.");
                 if (floorJson.TurnsPerMonsterGeneration <= 0)
@@ -278,6 +278,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (floorJson.Width < 5)
                         messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create a {floorLayoutGenerator.Name} floor. Width must be at least 5.");
                 }
+
+                if(floorLayoutGenerator.MaxRoomSize.Width > floorJson.Width)
+                    messages.AddError($"{floorLayoutGenerator.Name}: A Max Width of {floorLayoutGenerator.MaxRoomSize.Width} is higher than the Floor Width, which is {floorJson.Width}.");
+                if (floorLayoutGenerator.MaxRoomSize.Height > floorJson.Height)
+                    messages.AddError($"{floorLayoutGenerator.Name}: A Max Height of {floorLayoutGenerator.MaxRoomSize.Height} is higher than the Floor Height, which is {floorJson.Height}.");
+
                 var expandedColumns = floorLayoutGenerator.Columns * 2 - 1;
                 var expandedRows = floorLayoutGenerator.Rows * 2 - 1;
                 var roomDispositionMatrix = new RoomDispositionType[expandedRows, expandedColumns];
@@ -318,7 +324,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             for (int i = 0; i < 100; i++)
             {
                 var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.DebugGenerate();
+                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
                 if (MapGenerationSuccess)
                 {
                     mapSuccesses++;
