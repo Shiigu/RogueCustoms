@@ -230,8 +230,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             DisplayEvents = new() { };
         }
 
-        public async Task Generate()
+        public async Task<(bool MapGenerationSuccess, bool KeyGenerationSuccess)> Generate(bool isGeneratingForDebug)
         {
+            var mapGenerationSuccess = false;
+            var keyGenerationSuccess = true;    // Defaults to true just in case there were no keys to generate
             _generationTries = 0;
             bool success;
             do
@@ -239,7 +241,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 success = false;
                 _generationTries++;
 
-                if(RoomDispositionToUse == null || _generationTries % 100 == 0)
+                if (RoomDispositionToUse == null || _generationTries % 100 == 0)
                 {
                     var possibleRoomDisposition = RollRoomDistributionToUse();
 
@@ -274,22 +276,26 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
                                 Player.ContainingRoom.WasVisited = true;
-                                DisplayEvents = new();
-                                DisplayEvents.Add(("ClearMessageLog", new()
+                                if (!isGeneratingForDebug)
                                 {
-                                    new() {
-                                        DisplayEventType = DisplayEventType.ClearLogMessages,
-                                        Params = new() { }
+                                    DisplayEvents = new();
+                                    DisplayEvents.Add(("ClearMessageLog", new()
+                                    {
+                                        new() {
+                                            DisplayEventType = DisplayEventType.ClearLogMessages,
+                                            Params = new() { }
+                                        }
                                     }
+                                    ));
+                                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                 }
-                                ));
-                                AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
                     }
                 }
             }
             while (!success && _generationTries < EngineConstants.MaxGenerationTries);
+            mapGenerationSuccess = success;
             if (!success)
             {
                 success = false;
@@ -320,162 +326,36 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 if (FloorConfigurationToUse.GenerateStairsOnStart)
                                     SetStairs();
                                 Player.ContainingRoom.WasVisited = true;
-                                DisplayEvents = new();
-                                DisplayEvents.Add(("ClearMessageLog", new()
+                                if (!isGeneratingForDebug)
                                 {
-                                    new() {
-                                        DisplayEventType = DisplayEventType.ClearLogMessages,
-                                        Params = new() { }
+                                    DisplayEvents = new();
+                                    DisplayEvents.Add(("ClearMessageLog", new()
+                                    {
+                                        new() {
+                                            DisplayEventType = DisplayEventType.ClearLogMessages,
+                                            Params = new() { }
+                                        }
                                     }
+                                    ));
+                                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                 }
-                                ));
-                                AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                             }
                         }
                     }
                 }
             }
 
-            await NewTurn();
-
-            if(Rooms.Count(r => !r.IsDummy) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
+            try
             {
-                do
-                {
-                    _generationTries++;
-                    await PlaceKeysAndDoors();
-                    success = IsFullyConnectedWithKeys();
-                    if (success)
-                    {
-                        var events = new List<DisplayEventDto>();
-                        foreach (var key in Keys)
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                Params = new() { key.Position, GetConsoleRepresentationForCoordinates(key.Position.X, key.Position.Y) }
-                            }
-                            );
-                        }
-                        foreach (var door in Doors)
-                        {
-                            try
-                            {
-                                var existingValue = (int) GetFlagValue($"Doors_{door.DoorId}");
-                                events.Add(new()
-                                {
-                                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                    Params = new() { door.Position, GetConsoleRepresentationForCoordinates(door.Position.X, door.Position.Y) }
-                                }
-                                );
-                                SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
-                            }
-                            catch (FlagNotFoundException)
-                            {
-                                CreateFlag($"Doors_{door.DoorId}", 1, true);
-                            }
-                        }
-                        DisplayEvents.Add(("Placing Keys", events));
-                    }
-                }
-                while (!success && _generationTries < EngineConstants.MaxGenerationTries);
-                if (!success)
-                {
-                    foreach (var key in Keys)
-                    {
-                        key.ExistenceStatus = EntityExistenceStatus.Gone;
-                        key.Owner = null;
-                        key.Position = null;
-                    }
-                    Keys.Clear();
-                    GetEntities().RemoveAll(e => e.EntityType == EntityType.Key);
-                    Tiles.Where(t => t.Type == TileType.Door).ForEach(t =>
-                    {
-                        t.Type = TileType.Hallway;
-                        t.DoorId = string.Empty;
-                    });
-                }
+                await NewTurn();
             }
-            Snapshot = new(Dungeon, this);
-        }
-
-        public async Task<(bool MapGenerationSuccess, bool KeyGenerationSuccess)> DebugGenerate()
-        {
-            _generationTries = 0;
-            bool success;
-            do
+            catch (Exception)
             {
-                success = false;
-                _generationTries++;
-
-                if (RoomDispositionToUse == null || _generationTries % 100 == 0)
-                {
-                    var possibleRoomDisposition = RollRoomDistributionToUse();
-
-                    if (!possibleRoomDisposition.IsFullyConnected(d => d != RoomDispositionType.NoRoom && d != RoomDispositionType.NoConnection && d != RoomDispositionType.ConnectionImpossible)) continue;
-
-                    RoomDispositionToUse = possibleRoomDisposition;
-                }
-
-                Hallways = new();
-                Fusions = new();
-
-                ResetAndCreateTiles();
-                CreateRooms();
-                FuseRooms();
-                Rooms = Rooms.Distinct().ToList();
-                if (Rooms.Count(r => !r.IsDummy) > 1)
-                    ConnectRooms();
-                Parallel.ForEach(Rooms, r => r.CreateTiles());
-                if ((Rooms.Count == 1 && !Rooms.Any(r => r.IsDummy)) || Rooms.Count(r => !r.IsDummy) > 1)
-                {
-                    success = Tiles.IsFullyConnected(t => t.IsWalkable);
-                    if(success)
-                    {
-                        PlaceSpecialTiles();
-                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
-                        if (success)
-                        {
-                            await PlacePlayer();
-                            success = Player.Position != null;
-                        }
-                    }
-                }
+                if (!IsDebugMode)
+                    throw;
+                else
+                    mapGenerationSuccess = false;
             }
-            while (!success && _generationTries < EngineConstants.MaxGenerationTries);
-            if (!success)
-            {
-                success = false;
-                GeneratorToUse = DefaultGeneratorToUse;
-                RoomDispositionToUse = DefaultGeneratorToUse.RoomDisposition;
-
-                Hallways = new();
-                Fusions = new();
-
-                ResetAndCreateTiles();
-                CreateRooms();
-                FuseRooms();
-                Parallel.ForEach(Rooms, r => r.CreateTiles());
-                ConnectRooms();
-                if (Rooms.Count == 1 || Rooms.Count(r => !r.IsDummy) != 1)
-                {
-                    success = Tiles.IsFullyConnected(t => t.IsWalkable);
-                    if (success)
-                    {
-                        PlaceSpecialTiles();
-                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
-                        if (success)
-                        {
-                            await PlacePlayer();
-                            success = Player.Position != null;
-                        }
-                    }
-                }
-                success = false;
-            }
-
-            var mapGenerationSuccess = success;
-            var keyGenerationSuccess = success;
 
             if (Rooms.Count(r => !r.IsDummy) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
             {
@@ -486,22 +366,41 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     success = IsFullyConnectedWithKeys();
                     if (success)
                     {
-                        foreach (var door in Doors)
+                        var events = new List<DisplayEventDto>();
+                        if (!isGeneratingForDebug)
                         {
-                            try
+                            foreach (var key in Keys)
                             {
-                                var existingValue = (int) GetFlagValue($"Doors_{door.DoorId}");
-                                SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
+                                events.Add(new()
+                                {
+                                    DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                    Params = new() { key.Position, GetConsoleRepresentationForCoordinates(key.Position.X, key.Position.Y) }
+                                }
+                                );
                             }
-                            catch (FlagNotFoundException)
+                            foreach (var door in Doors)
                             {
-                                CreateFlag($"Doors_{door.DoorId}", 1, true);
+                                try
+                                {
+                                    var existingValue = (int)GetFlagValue($"Doors_{door.DoorId}");
+                                    events.Add(new()
+                                    {
+                                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                                        Params = new() { door.Position, GetConsoleRepresentationForCoordinates(door.Position.X, door.Position.Y) }
+                                    }
+                                    );
+                                    SetFlagValue($"Doors_{door.DoorId}", existingValue + 1);
+                                }
+                                catch (FlagNotFoundException)
+                                {
+                                    CreateFlag($"Doors_{door.DoorId}", 1, true);
+                                }
                             }
+                            DisplayEvents.Add(("Placing Keys", events));
                         }
                     }
                 }
                 while (!success && _generationTries < EngineConstants.MaxGenerationTries);
-                keyGenerationSuccess = success;
                 if (!success)
                 {
                     foreach (var key in Keys)
@@ -518,7 +417,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         t.DoorId = string.Empty;
                     });
                 }
+                keyGenerationSuccess = success;
             }
+            if(!isGeneratingForDebug)
+                Snapshot = new(Dungeon, this);
             return (mapGenerationSuccess, keyGenerationSuccess);
         }
 
@@ -601,7 +503,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         var rngY2 = Rng.NextInclusive(rngY1 + GeneratorToUse.MinRoomSize.Height, MaxY);
                         var roomHeight = Math.Min(GeneratorToUse.MaxRoomSize.Height, rngY2 - rngY1 + 1);
 
-                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));                        
+                        Rooms.Add(new Room(this, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
                     }
                     else if (roomTile == RoomDispositionType.GuaranteedDummyRoom)
                     {
@@ -1934,8 +1836,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private void GetPossibleRoomData()
         {
             // Calculate MaxRoomWidth and MaxRoomHeight with adjusted constraints
-            MaxRoomWidth = Math.Min(GeneratorToUse.MaxRoomSize.Width, Width / RoomCountColumns);
-            MaxRoomHeight = Math.Min(GeneratorToUse.MaxRoomSize.Height, Height / RoomCountRows);
+            MaxRoomWidth = Math.Max(Math.Min(GeneratorToUse.MaxRoomSize.Width, Width), Width / RoomCountColumns);
+            MaxRoomHeight = Math.Max(Math.Min(GeneratorToUse.MaxRoomSize.Height, Height), Height / RoomCountRows);
 
             // Ensure the room size is at least 5x5 and the min width/height is not less than that
             if (MaxRoomWidth < EngineConstants.MinRoomWidthOrHeight || MaxRoomHeight < EngineConstants.MinRoomWidthOrHeight)
@@ -1968,6 +1870,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         X = Math.Min(Width - widthGap, topLeftCorner.X + MaxRoomWidth - 1),
                         Y = Math.Min(Height - heightGap, topLeftCorner.Y + MaxRoomHeight - 1)
                     };
+
+                    if(topLeftCorner.X < 0 || topLeftCorner.Y < 0 || bottomRightCorner.X < 0 || bottomRightCorner.Y < 0 || bottomRightCorner.X < topLeftCorner.X || bottomRightCorner.Y < topLeftCorner.Y)
+                        throw new InvalidDataException($"Floor data for Floor Level {FloorLevel} is incorrect. Room cell ({j}, {i}) produced incorrect boundaries of ({topLeftCorner.X}, {topLeftCorner.Y}) to ({bottomRightCorner.X}, {bottomRightCorner.Y}).");
+
                     RoomLimitsTable[i, j] = (topLeftCorner, bottomRightCorner);
                 }
             }

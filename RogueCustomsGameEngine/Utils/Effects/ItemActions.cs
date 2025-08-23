@@ -53,9 +53,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             s = paramsObject.Source as Character;
 
             string itemId = paramsObject.Id;
-            string customItemId = paramsObject.CustomId;
+            string idToLookUp = itemId;
 
-            string idToLookUp = itemId == "<<CUSTOM>>" ? customItemId : itemId;
+            if(itemId == "<<CUSTOM>>")
+                idToLookUp = paramsObject.CustomId;
 
             var itemClass = Map.PossibleItemClasses.Find(c => c.Id.Equals(idToLookUp));
 

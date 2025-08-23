@@ -162,7 +162,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
-            await CurrentFloor.Generate();
+            await CurrentFloor.Generate(false);
         }
 
         public Task GenerateDebugMap()
