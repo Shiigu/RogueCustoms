@@ -9,6 +9,7 @@ using Godot;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 using RogueCustomsGodotClient.Popups;
+using RogueCustomsGodotClient.Utils;
 
 namespace RogueCustomsGodotClient.Helpers
 {
@@ -62,7 +63,7 @@ namespace RogueCustomsGodotClient.Helpers
 
             var inventoryPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(inventoryPopup);
-            inventoryPopup.Show(itemInfo, null, null, () => overlay.QueueFree());
+            inventoryPopup.Show(itemInfo, SelectionMode.Inventory, () => overlay.QueueFree());
         }
 
         public static void CreateActionSelectWindow(this Control control, ActionListDto actionInfo, Vector2I targetCoords)
@@ -76,7 +77,7 @@ namespace RogueCustomsGodotClient.Helpers
 
             var actionSelectPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(actionSelectPopup);
-            actionSelectPopup.Show(null, actionInfo, targetCoords, () => overlay.QueueFree());
+            actionSelectPopup.Show(actionInfo, SelectionMode.Interact, targetCoords, () => overlay.QueueFree());
         }
 
         public static void CreateInputBox(this Control control, string titleText, string promptText, string placeholderText, Color borderColor, Action<string> okCallback, Action cancelCallback)

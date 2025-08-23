@@ -21,7 +21,7 @@ public partial class PlayerSelectItem : Control
     private Label _titleLabel;
     private VBoxContainer _selectionList;
     private RichTextLabel _itemDescriptionLabel;
-    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton;
+    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton, _selectButton;
 
     private Panel _outerBorder, _verticalBorder, _overlappingVerticalBorder;
 
@@ -30,6 +30,9 @@ public partial class PlayerSelectItem : Control
 
     private InventoryDto _itemListInfo;
     private ActionListDto _actionListInfo;
+    private SelectionMode _selectionMode;
+    private string Title;
+    public object SelectedElement { get; private set; }
 
     private readonly string DoButtonText = TranslationServer.Translate("UseButtonText");
     private readonly string UseButtonText = TranslationServer.Translate("UseButtonText");
@@ -37,6 +40,7 @@ public partial class PlayerSelectItem : Control
     private readonly string DropButtonText = TranslationServer.Translate("DropButtonText");
     private readonly string SwapButtonText = TranslationServer.Translate("SwapButtonText");
     private readonly string CancelButtonText = TranslationServer.Translate("CancelButtonText");
+    private readonly string SelectButtonText = TranslationServer.Translate("SelectButtonText");
 
     private readonly StyleBoxFlat normalItemStyleBox = (StyleBoxFlat)GlobalConstants.NormalItemStyleBox.Duplicate();
     private readonly StyleBoxFlat selectItemStyleBox = (StyleBoxFlat)GlobalConstants.SelectedItemStyleBox.Duplicate();
@@ -58,22 +62,27 @@ public partial class PlayerSelectItem : Control
         _dropButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/DropButton");
         _useButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/UseButton");
         _doButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/DoButton");
+        _selectButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/SelectButton");
         _cancelButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/CancelButton");
         _outerBorder = GetNode<Panel>("OuterBorder");
         _verticalBorder = GetNode<Panel>("VerticalBorder");
         _overlappingVerticalBorder = GetNode<Panel>("OverlappingVerticalBorder");
     }
 
-    public void Show(InventoryDto itemInfo, ActionListDto actionInfo, Vector2I? targetCoords = null, Action onCloseCallback = null)
+    public void Show(InventoryDto itemInfo, SelectionMode selectionMode, Action onCloseCallback = null, string title = null)
     {
-        if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null) return;
-        _isReadOnly = _globalState.PlayerControlMode == ControlMode.MustSkipTurn || _globalState.PlayerControlMode == ControlMode.None;
-        if (actionInfo != null && actionInfo.Actions.Any())
+        if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null)
         {
-            _actionListInfo = actionInfo;
-            ShowActionScreen(targetCoords);
+            onCloseCallback?.Invoke();
+            QueueFree();
+            return;
         }
-        else if (itemInfo != null && itemInfo.InventoryItems.Any())
+
+        _selectionMode = selectionMode;
+        _isReadOnly = _globalState.PlayerControlMode == ControlMode.MustSkipTurn || _globalState.PlayerControlMode == ControlMode.None;
+        Title = title ?? TranslationServer.Translate("InventoryWindowTitleText");
+        
+        if (itemInfo != null && itemInfo.InventoryItems.Any())
         {
             _itemListInfo = itemInfo;
             ShowInventoryScreen();
@@ -85,84 +94,160 @@ public partial class PlayerSelectItem : Control
             return;
         }
 
-        _equipButton.Text = EquipButtonText;
-
-        _equipButton.Pressed += () =>
+        if(_selectionMode == SelectionMode.Inventory)
         {
-            try
+            _equipButton.Text = EquipButtonText;
+
+            _equipButton.Pressed += () =>
             {
-                onCloseCallback?.Invoke();
-                QueueFree();
-                _globalState.MustUpdateGameScreen = true;
-                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            }
-            catch (Exception ex)
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+
+            _swapButton.Text = SwapButtonText;
+
+            _swapButton.Pressed += () =>
             {
-                _exceptionLogger.LogMessage(ex);
-            }
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+
+            _dropButton.Text = DropButtonText;
+
+            _dropButton.Pressed += () =>
+            {
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+
+            _useButton.Text = UseButtonText;
+
+            _useButton.Pressed += () =>
+            {
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+        }
+        else if (_selectionMode == SelectionMode.SelectItem)
+        {
+            _selectButton.Text = SelectButtonText;
+
+            _selectButton.Pressed += () =>
+            {
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+        }
+
+        _cancelButton.Text = CancelButtonText;
+
+        _cancelButton.Pressed += () =>
+        {
+            onCloseCallback?.Invoke();
+            QueueFree();
         };
 
-        _swapButton.Text = SwapButtonText;
+        var screenSize = GetViewportRect().Size;
+        Position = (screenSize - _outerBorder.Size) / 2;
+    }
 
-        _swapButton.Pressed += () =>
+    public void Show(ActionListDto actionInfo, SelectionMode selectionMode, Vector2I? targetCoords = null, Action onCloseCallback = null, string title = null)
+    {
+        if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null)
         {
-            try
-            {
-                onCloseCallback?.Invoke();
-                QueueFree();
-                _globalState.MustUpdateGameScreen = true;
-                _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            }
-            catch (Exception ex)
-            {
-                _exceptionLogger.LogMessage(ex);
-            }
-        };
+            onCloseCallback?.Invoke();
+            QueueFree();
+            return;
+        }
 
-        _dropButton.Text = DropButtonText;
-
-        _dropButton.Pressed += () =>
+        Title = title ?? TranslationServer.Translate("ActionWindowTitleText").ToString().Format(new { TargetName = _actionListInfo.TargetName });
+        _selectionMode = selectionMode;
+        _isReadOnly = _globalState.PlayerControlMode == ControlMode.MustSkipTurn || _globalState.PlayerControlMode == ControlMode.None;
+        
+        if (actionInfo != null && actionInfo.Actions.Any())
         {
-            try
-            {
-                onCloseCallback?.Invoke();
-                QueueFree();
-                _globalState.MustUpdateGameScreen = true;
-                _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            }
-            catch (Exception ex)
-            {
-                _exceptionLogger.LogMessage(ex);
-            }
-        };
-
-        _useButton.Text = UseButtonText;
-
-        _useButton.Pressed += () =>
+            _actionListInfo = actionInfo;
+            ShowActionScreen(targetCoords);
+        }
+        else
         {
-            try
-            {
-                onCloseCallback?.Invoke();
-                QueueFree();
-                _globalState.MustUpdateGameScreen = true;
-                _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
-            }
-            catch (Exception ex)
-            {
-                _exceptionLogger.LogMessage(ex);
-            }
-        };
+            onCloseCallback?.Invoke();
+            QueueFree();
+            return;
+        }
 
-        _doButton.Text = DoButtonText;
-
-
-        _doButton.Pressed += () => DoButton_Pressed(targetCoords, onCloseCallback).ContinueWith(t =>
+        if(_selectionMode == SelectionMode.Interact)
         {
-            if (t.Exception != null)
+            _doButton.Text = DoButtonText;
+
+            _doButton.Pressed += () => DoButton_Pressed(targetCoords, onCloseCallback).ContinueWith(t =>
             {
-                _exceptionLogger.LogMessage(t.Exception);
-            }
-        });
+                if (t.Exception != null)
+                {
+                    _exceptionLogger.LogMessage(t.Exception);
+                }
+            });
+        }
+        else if (_selectionMode == SelectionMode.SelectAction)
+        {
+            _selectButton.Text = SelectButtonText;
+
+            _selectButton.Pressed += () =>
+            {
+                try
+                {
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+        }
 
         _cancelButton.Text = CancelButtonText;
 
@@ -195,7 +280,24 @@ public partial class PlayerSelectItem : Control
 
     private void ShowInventoryScreen()
     {
-        _doButton.Visible = false;
+        if (_selectionMode == SelectionMode.Inventory)
+        {
+            _dropButton.Visible = true;
+            _equipButton.Visible = true;
+            _swapButton.Visible = true;
+            _useButton.Visible = true;
+            _doButton.Visible = false;
+            _selectButton.Visible = false;
+        }
+        else if (_selectionMode == SelectionMode.SelectItem)
+        {
+            _dropButton.Visible = false;
+            _equipButton.Visible = false;
+            _swapButton.Visible = false;
+            _useButton.Visible = false;
+            _doButton.Visible = false;
+            _selectButton.Visible = true;
+        }
 
         var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
         borderStyleBox.BorderColor = new Color { R8 = 255, G8 = 255, B8 = 0, A = 1 };
@@ -206,7 +308,7 @@ public partial class PlayerSelectItem : Control
         var titleStyleBox = (StyleBoxFlat)GlobalConstants.PopUpTitleStyle.Duplicate();
         titleStyleBox.BgColor = new Color { R8 = 255, G8 = 255, B8 = 0, A = 1 };
         _titleLabel.AddThemeStyleboxOverride("normal", titleStyleBox);
-        _titleLabel.Text = TranslationServer.Translate("InventoryWindowTitleText");
+        _titleLabel.Text = Title;
 
         foreach (var item in _itemListInfo.InventoryItems)
         {
@@ -232,81 +334,28 @@ public partial class PlayerSelectItem : Control
             _selectionList.AddChild(itemLabel);
         }
 
-        SelectRow(0);
+        SelectInventoryRow(0);
     }
 
-    private void ShowActionScreen(Vector2I? targetCoords = null)
+    private void SelectInventoryRow(int index)
     {
-        if (targetCoords == null) return;
-        _dropButton.Visible = false;
-        _equipButton.Visible = false;
-        _swapButton.Visible = false;
-        _useButton.Visible = false;
-        _doButton.Visible = true;
-
-        var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
-        borderStyleBox.BorderColor = new Color { R8 = 255, G8 = 0, B8 = 0, A = 1 };
-        _outerBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
-        _verticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
-        _overlappingVerticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
-
-        var titleStyleBox = (StyleBoxFlat)GlobalConstants.PopUpTitleStyle.Duplicate();
-        titleStyleBox.BgColor = new Color { R8 = 139, G8 = 0, B8 = 0, A = 1 };
-        _titleLabel.AddThemeStyleboxOverride("normal", titleStyleBox);
-        _titleLabel.Text = TranslationServer.Translate("ActionWindowTitleText").ToString().Format(new { TargetName = _actionListInfo.TargetName });
-
-        foreach (var action in _actionListInfo.Actions)
-        {
-            var actionLabel = new ScalableLabel
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                SizeFlagsHorizontal = SizeFlags.ExpandFill,
-                SizeFlagsVertical = SizeFlags.ShrinkCenter,
-                MinFontSize = 8,
-                DefaultFontSize = 16,
-                Size = new() { X = _selectionList.Size.X, Y = 16}
-            };
-            actionLabel.SetText(action.Name);
-            actionLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            if(action.CanBeUsed)
-                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
-            else
-                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
-            _selectionList.AddChild(actionLabel);
-        }
-
-        SelectRow(0);
-    }
-
-    private void SelectRow(int index)
-    {
-        var selectedItem = _itemListInfo != null && _selectedIndex != -1
+        var selectedItem = _selectedIndex != -1
             ? _itemListInfo.InventoryItems[_selectedIndex]
-            : null;
-        var selectedAction = _actionListInfo != null && _selectedIndex != -1
-            ? _actionListInfo.Actions[_selectedIndex]
             : null;
         if (_selectedIndex != -1)
         {
-            var selectedLabel = (Label) _selectionList.GetChildren()[_selectedIndex];
+            var selectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
             selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            if((selectedItem != null && !selectedItem.CanBeUsed)
-                || (selectedAction != null && !selectedAction.CanBeUsed))
+            if (selectedItem?.CanBeUsed == false && _selectionMode != SelectionMode.SelectItem)
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
             else
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
         }
         _selectedIndex = index;
         var newSelectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
-        selectedItem = _itemListInfo != null
-            ? _itemListInfo.InventoryItems[_selectedIndex]
-            : null;
-        selectedAction = _actionListInfo != null
-            ? _actionListInfo.Actions[_selectedIndex]
-            : null;
-        if ((selectedItem != null && !selectedItem.CanBeUsed)
-            || (selectedAction != null && !selectedAction.CanBeUsed))
+        selectedItem = _itemListInfo.InventoryItems[_selectedIndex];
+
+        if (selectedItem?.CanBeUsed == false && _selectionMode != SelectionMode.SelectItem)
             newSelectedLabel.AddThemeStyleboxOverride("normal", unusableSelectItemStyleBox);
         else
             newSelectedLabel.AddThemeStyleboxOverride("normal", selectItemStyleBox);
@@ -314,12 +363,12 @@ public partial class PlayerSelectItem : Control
 
         _itemDescriptionLabel.Text = "";
 
-        if(selectedItem != null)
+        if (selectedItem != null)
         {
             _itemDescriptionLabel.AppendText($"{selectedItem.Name}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
             _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
 
-            if(!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
+            if (!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
             {
                 _itemDescriptionLabel.AppendText($"[p] [p]{selectedItem.PowerName}: {selectedItem.Power}");
             }
@@ -355,11 +404,8 @@ public partial class PlayerSelectItem : Control
                     _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("OccupiedTileDescriptionText")}");
             }
         }
-        else
-        {
-            _itemDescriptionLabel.AppendText(selectedAction.Description.ToBbCodeAppropriateString());
-        }
-        if(selectedItem != null)
+
+        if (_selectionMode == SelectionMode.Inventory)
         {
             _dropButton.Visible = !_itemListInfo.TileIsOccupied && selectedItem.CanBeDropped;
             _dropButton.Disabled = _isReadOnly;
@@ -369,10 +415,125 @@ public partial class PlayerSelectItem : Control
             _useButton.Disabled = _isReadOnly || !selectedItem.CanBeUsed;
             _equipButton.Visible = selectedItem.IsEquippable;
             _equipButton.Disabled = _isReadOnly || selectedItem.IsEquipped;
+            _selectButton.Visible = false;
+            _selectButton.Disabled = true;
         }
+        else if (_selectionMode == SelectionMode.SelectItem)
+        {
+            _selectButton.Visible = true;
+            _selectButton.Disabled = false;
+        }
+    }
+
+    private void ShowActionScreen(Vector2I? targetCoords = null)
+    {
+        if (targetCoords == null) return;
+
+        if (_selectionMode == SelectionMode.Interact)
+        {
+            _dropButton.Visible = false;
+            _equipButton.Visible = false;
+            _swapButton.Visible = false;
+            _useButton.Visible = false;
+            _doButton.Visible = true;
+            _selectButton.Visible = false;
+        }
+        else if (_selectionMode == SelectionMode.SelectAction)
+        {
+            _dropButton.Visible = false;
+            _equipButton.Visible = false;
+            _swapButton.Visible = false;
+            _useButton.Visible = false;
+            _doButton.Visible = false;
+            _selectButton.Visible = true;
+        }
+
+        var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
+        borderStyleBox.BorderColor = new Color { R8 = 255, G8 = 0, B8 = 0, A = 1 };
+        _outerBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+        _verticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+        _overlappingVerticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+
+        var titleStyleBox = (StyleBoxFlat)GlobalConstants.PopUpTitleStyle.Duplicate();
+        titleStyleBox.BgColor = new Color { R8 = 139, G8 = 0, B8 = 0, A = 1 };
+        _titleLabel.AddThemeStyleboxOverride("normal", titleStyleBox);
+        _titleLabel.Text = Title;
+
+        foreach (var action in _actionListInfo.Actions)
+        {
+            var actionLabel = new ScalableLabel
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                SizeFlagsHorizontal = SizeFlags.ExpandFill,
+                SizeFlagsVertical = SizeFlags.ShrinkCenter,
+                MinFontSize = 8,
+                DefaultFontSize = 16,
+                Size = new() { X = _selectionList.Size.X, Y = 16}
+            };
+            actionLabel.SetText(action.Name);
+            actionLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
+            if(action.CanBeUsed)
+                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            else
+                actionLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
+            _selectionList.AddChild(actionLabel);
+        }
+
+        SelectActionRow(0);
+    }
+
+    private void SelectActionRow(int index)
+    {
+        var selectedAction = _selectedIndex != -1
+            ? _actionListInfo.Actions[_selectedIndex]
+            : null;
+        if (_selectedIndex != -1)
+        {
+            var selectedLabel = (Label) _selectionList.GetChildren()[_selectedIndex];
+            selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
+            if(selectedAction?.CanBeUsed == false && _selectionMode != SelectionMode.SelectAction)
+                selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
+            else
+                selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+        }
+        _selectedIndex = index;
+        var newSelectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
+        selectedAction = _actionListInfo.Actions[_selectedIndex];
+        if (selectedAction?.CanBeUsed == false && _selectionMode != SelectionMode.SelectAction)
+            newSelectedLabel.AddThemeStyleboxOverride("normal", unusableSelectItemStyleBox);
         else
+            newSelectedLabel.AddThemeStyleboxOverride("normal", selectItemStyleBox);
+        newSelectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 });
+
+        _itemDescriptionLabel.Text = selectedAction.Description.ToBbCodeAppropriateString();
+
+        if (_selectionMode == SelectionMode.Interact)
         {
             _doButton.Disabled = _isReadOnly || !selectedAction.CanBeUsed;
+            _selectButton.Visible = false;
+            _selectButton.Disabled = true;
+        }
+        else if (_selectionMode == SelectionMode.SelectAction)
+        {
+            _selectButton.Visible = true;
+            _selectButton.Disabled = false;
+        }
+    }
+
+    private void SelectRow(int index)
+    {
+        if (_selectionMode == SelectionMode.Inventory || _selectionMode == SelectionMode.SelectItem)
+        {
+            if (index < 0 || index >= _itemListInfo.InventoryItems.Count)
+                return;
+            SelectInventoryRow(index);
+        }
+        else if (_selectionMode == SelectionMode.Interact || _selectionMode == SelectionMode.SelectAction)
+        {
+            if (index < 0 || index >= _actionListInfo.Actions.Count)
+                return;
+            SelectActionRow(index);
         }
     }
 
