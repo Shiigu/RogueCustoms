@@ -462,7 +462,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Inventory?.Clear();
                 if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
-                    if (!Map.IsDebugMode)
+                    if (!Map.IsDebugMode && Position != null)
                     {
                         events.Add(new()
                         {
