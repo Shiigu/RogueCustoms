@@ -43,5 +43,10 @@ namespace RogueCustomsGameEngine.Utils.Representation
         {
             return base.GetHashCode();
         }
+
+        public GamePoint Clone()
+        {
+            return new GamePoint(X, Y);
+        }
     }
 }

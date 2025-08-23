@@ -9,6 +9,11 @@ using System.Xml.Linq;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Collections.Generic;
 using System.Linq;
+using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.Representation;
+using System.Drawing;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -24,55 +29,76 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
-        public static bool Remove(EffectCallerParams Args)
+
+
+        public static async Task<bool> GiveItem(EffectCallerParams Args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
 
-            var targetItem = paramsObject.Target as Item;
-            var targetKey = paramsObject.Target as Key;
-            var targetTrap = paramsObject.Target as Trap;
+            if (paramsObject.Target is not Character t)
+                // Attempted to give Target an Item when it's not a Character.
+                return false;
 
-            if (targetItem == null && targetKey == null && targetTrap == null)
-                throw new InvalidOperationException($"Attempted to remove {paramsObject.Target.Name}, which isn't Removable.");
-            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+            t = paramsObject.Target as Character;
 
+            if (t.ItemCount == t.InventorySize)
+                // Attempted to give Target an Item when their inventory is full.
+                return false;
+
+            if (paramsObject.FromInventory && paramsObject.Source is not Character s)
+                // Attempted to give Target an Item from Source's inventory, when Source's not a Character.
+                return false;
+
+            s = paramsObject.Source as Character;
+
+            string itemId = paramsObject.Id;
+            string customItemId = paramsObject.CustomId;
+
+            string idToLookUp = itemId == "<<CUSTOM>>" ? customItemId : itemId;
+
+            var itemClass = Map.PossibleItemClasses.Find(c => c.Id.Equals(idToLookUp));
+
+            if (itemClass == null)
+                // Must have a valid Item class to spawn
+                return false;
+
+            if (paramsObject.FromInventory && !s.Inventory.Exists(i => i.ClassId.Equals(idToLookUp)))
+                // Attempted to give Target an Item from Source's inventory, when Source does not have such an item.
+                return false;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, t, paramsObject);
             if (Rng.RollProbability() <= accuracyCheck)
             {
-                if(targetItem != null)
+                var itemToGive = paramsObject.FromInventory
+                    ? s.Inventory.Find(i => i.ClassId.Equals(idToLookUp))
+                    : await Map.AddEntity(idToLookUp, 1, new GamePoint(0, 0)) as Item;
+                if (paramsObject.FromInventory)
+                    s.Inventory.Remove(itemToGive);
+                t.Inventory.Add(itemToGive);
+                itemToGive.Owner = t;
+                itemToGive.Position = null;
+                if (t == Map.Player || Map.Player.CanSee(t))
                 {
-                    if (targetItem.Owner is Character c)
+                    if (t == Map.Player)
                     {
-                        var events = new List<DisplayEventDto>();
-                        targetItem.Owner?.Inventory?.Remove(targetItem);
-                        targetItem.Owner = null;
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
                         });
-                        Map.DisplayEvents.Add(($"{targetItem.Name} disappears from {c.Name}'s inventory", events));
                     }
-                    targetItem.ExistenceStatus = EntityExistenceStatus.Gone;
-                    targetItem.Position = null;
-                    Map.Items.Remove(targetItem);
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.ItemGet }
+                    });
+                    var message = paramsObject.InformOfSource
+                        ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name })
+                        : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = itemToGive.Name });
+                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
                 }
-                else if (targetKey != null)
-                {
-                    targetKey.Owner?.KeySet?.Remove(targetKey);
-                    targetKey.Owner = null;
-                    targetKey.ExistenceStatus = EntityExistenceStatus.Gone;
-                    targetKey.Position = null;
-                    Map.Keys.Remove(targetKey);
-                }
-                else if (targetTrap != null)
-                {
-                    targetTrap.ExistenceStatus = EntityExistenceStatus.Gone;
-                    targetTrap.Position = null;
-                    Map.Traps.Remove(targetTrap);
-                }
-                else
-                    return false;
-
+                Map.DisplayEvents.Add(($"{t.Name} received an item", events));
                 return true;
             }
             return false;
