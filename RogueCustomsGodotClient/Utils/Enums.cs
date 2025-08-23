@@ -24,4 +24,12 @@ namespace RogueCustomsGodotClient.Utils
         Waiting,
         None
     }
+
+    public enum SelectionMode
+    {
+        Interact,
+        Inventory,
+        SelectAction,
+        SelectItem
+    }
 }

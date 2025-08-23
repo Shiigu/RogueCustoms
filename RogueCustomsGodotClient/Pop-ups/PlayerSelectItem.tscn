@@ -134,6 +134,16 @@ theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
 text = "DROP"
 
+[node name="SelectButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/normal = ExtResource("5_evv5s")
+text = "SELECT"
+
 [node name="DoButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
