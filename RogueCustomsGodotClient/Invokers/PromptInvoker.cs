@@ -39,7 +39,17 @@ namespace RogueCustomsGodotClient.Invokers
 
         public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor)
         {
-            return Parent.CreateSelectPopup(title, message, choices, showCancelButton, new Color() { R8 = borderColor.R, G8 = borderColor.G, B8 = borderColor.B, A8 = borderColor.A });
+            return Parent.CreateSelectOptionPopup(title, message, choices, showCancelButton, new Color() { R8 = borderColor.R, G8 = borderColor.G, B8 = borderColor.B, A8 = borderColor.A });
+        }
+
+        public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return Parent.CreateSelectItemWindow(choices, title, showCancelButton);
+        }
+
+        public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton)
+        {
+            return Parent.CreateSelectActionWindow(choices, title, showCancelButton);
         }
     }
 }

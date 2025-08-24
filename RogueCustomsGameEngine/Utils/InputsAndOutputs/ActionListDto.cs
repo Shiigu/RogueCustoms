@@ -30,6 +30,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 SourceType = isPlayerAction ? ActionSourceType.Player : ActionSourceType.NPC
             });
         }
+
+        public void AddAction(ActionWithEffects action, Map map)
+        {
+            Actions.Add(new ActionItemDto(action, map)
+            {
+                SelectionId = action.SelectionId
+            });
+        }
     }
 
     [Serializable]
@@ -44,9 +52,16 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public ActionItemDto(ActionWithEffects action, Character source, ITargetable target, Map map)
         {
-            Name = map.Locale[action.Name];            
+            Name = map.Locale[action.Name];
             Description = action.GetDescriptionWithUsageNotes(target, source);
             CanBeUsed = action.CanBeUsedOn(target, source);
+        }
+
+        public ActionItemDto(ActionWithEffects action, Map map)
+        {
+            Name = map.Locale[action.Name];
+            Description = map.Locale[action.Description];
+            CanBeUsed = true;
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

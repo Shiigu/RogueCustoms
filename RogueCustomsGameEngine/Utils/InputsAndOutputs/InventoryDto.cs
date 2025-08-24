@@ -28,6 +28,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Description { get; set; }
         public string PowerName { get; set; }
         public string Power { get; set; }
+        public string ClassId { get; set; }
         public List<StatModificationDto> StatModifications { get; set; }
         public List<string> OnAttackActions { get; set; }
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
@@ -69,6 +70,30 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             });
             OnAttackActions = new();
             pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
+        }
+
+        public InventoryItemDto(EntityClass e, Map map)
+        {
+            if (e == null) return;
+            Name = map.Locale[e.Name];
+            Description = e.Description;
+            PowerName = e.EntityType switch
+            {
+                EntityType.Weapon => map.Locale["CharacterDamageStat"],
+                EntityType.Armor => map.Locale["CharacterMitigationStat"],
+                _ => string.Empty
+            };
+            Power = e.Power ?? string.Empty;
+            ConsoleRepresentation = e.ConsoleRepresentation;
+            ClassId = e.Id;
+            StatModifications = [];
+            e.StatModifiers.ForEach(m => {
+                var correspondingStat = map.Player.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
+                if (correspondingStat != null)
+                    StatModifications.Add(new StatModificationDto(m, correspondingStat, map));
+            });
+            OnAttackActions = [];
+            e.OnAttack.ForEach(ooa => OnAttackActions.Add(map.Locale[ooa.Name]));
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

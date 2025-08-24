@@ -123,6 +123,8 @@ namespace RogueCustomsDungeonEditor.EffectInfos
     {
         public string Key { get; set; }
         public string Header { get; set; }
+        public bool Required { get; set; }
+        public bool Unique { get; set; }
     }
 
     public enum ParameterType

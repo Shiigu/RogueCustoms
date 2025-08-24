@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.VisualBasic.FileIO;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
@@ -44,6 +47,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return true; // NPCs will only try to do this if they want to, so we assume they say "yes" to the prompt.
             }
 
+            var events = new List<DisplayEventDto>();
+            var triggerPromptEvent = new DisplayEventDto()
+            {
+                DisplayEventType = DisplayEventType.TriggerPrompt,
+                Params = [false]
+            };
+            events.Add(triggerPromptEvent);
+            Map.DisplayEvents.Add(($"Open Yes/No Prompt {paramsObject.Title}", events));
+
+            while (!(bool) triggerPromptEvent.Params[0]) await Task.Delay(10);
+
             var result = await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
 
             Map.DisplayEvents = new();
@@ -68,12 +82,200 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             else
             {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Select Option Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
                 chosenOption = await Map.OpenSelectOption(paramsObject.Title, paramsObject.Message, options, paramsObject.Cancellable, paramsObject.Color);
                 Map.DisplayEvents = new();
                 Map.Snapshot = new(Map.Dungeon, Map);
             }
 
             if(!Map.HasFlag(optionFlag))
+            {
+                Map.CreateFlag(optionFlag, chosenOption, true);
+            }
+            else
+            {
+                Map.SetFlagValue(optionFlag, chosenOption);
+            }
+
+            return !string.IsNullOrWhiteSpace(chosenOption);
+        }
+
+        public static async Task<bool> SelectItem(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            SelectionItem[] items = paramsObject.Items.ToArray();
+
+            var optionDtos = new InventoryDto();
+
+            foreach (var option in items)
+            {
+                var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == option.Id.TrimSurroundingQuotes());
+                if (itemEntityClass == null) continue; // Invalid IDs are just ignored
+                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map));
+            }
+
+            if(optionDtos.InventoryItems.Count == 0)
+                throw new ArgumentException($"Invalid item selection for Select Item Prompt.");
+
+            var optionFlag = paramsObject.OptionFlag;
+
+            string? chosenOption;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
+                chosenOption = randomChoice.ClassId;
+                if (Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
+            }
+            else
+            {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Select Item Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+                chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+                Map.DisplayEvents = new();
+                Map.Snapshot = new(Map.Dungeon, Map);
+            }
+
+            if (!Map.HasFlag(optionFlag))
+            {
+                Map.CreateFlag(optionFlag, chosenOption, true);
+            }
+            else
+            {
+                Map.SetFlagValue(optionFlag, chosenOption);
+            }
+
+            return !string.IsNullOrWhiteSpace(chosenOption);
+        }
+
+        public static async Task<bool> SelectOfferedItem(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if(Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to have {Args.Source.Name} choose an Item when it's not a Character.");
+            if(paramsObject.Target is not Character t)
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} offer Items when it's not a Character.");
+
+            var optionDtos = new InventoryDto();
+
+            foreach (var item in t.Inventory)
+            {
+                var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == item.ClassId);
+                if (itemEntityClass == null) continue; // Invalid IDs are just ignored
+                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map));
+            }
+
+            var optionFlag = paramsObject.OptionFlag;
+
+            string? chosenOption;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
+                chosenOption = randomChoice.ClassId;
+                if (Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
+            }
+            else
+            {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Select Inventory Item Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+                chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+                Map.DisplayEvents = new();
+                Map.Snapshot = new(Map.Dungeon, Map);
+            }
+
+            if (!Map.HasFlag(optionFlag))
+            {
+                Map.CreateFlag(optionFlag, chosenOption, true);
+            }
+            else
+            {
+                Map.SetFlagValue(optionFlag, chosenOption);
+            }
+
+            return !string.IsNullOrWhiteSpace(chosenOption);
+        }
+
+        public static async Task<bool> SelectAction(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to have {Args.Source.Name} choose an Interaction when it's not a Character.");
+            if (paramsObject.Target is not Character t)
+                throw new ArgumentException($"Attempted to choose one of {paramsObject.Target.Name}'s Interactions when it's not a Character.");
+
+            var actionsNotFromConsumables = t.OnAttack.Where(oa => oa.User.EntityType != EntityType.Consumable).ToList();
+
+            // Can't choose Interactions not from Consumables if there aren't any
+            if (actionsNotFromConsumables.Count == 0)
+                return false;
+
+            var optionDtos = new ActionListDto(t.Name);
+
+            foreach (var interaction in actionsNotFromConsumables)
+            {
+                optionDtos.Actions.Add(new ActionItemDto(interaction, Map));
+            }
+
+            var optionFlag = paramsObject.OptionFlag;
+
+            string? chosenOption;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = optionDtos.Actions.TakeRandomElementWithWeights(i => 50, Rng);
+                chosenOption = randomChoice.SelectionId;
+                if (Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.SelectionId} => {randomChoice.Name}", Color.DarkRed);
+            }
+            else
+            {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Select Interaction Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+                chosenOption = await Map.OpenSelectAction(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+                Map.DisplayEvents = new();
+                Map.Snapshot = new(Map.Dungeon, Map);
+            }
+
+            if (!Map.HasFlag(optionFlag))
             {
                 Map.CreateFlag(optionFlag, chosenOption, true);
             }

@@ -1722,6 +1722,17 @@
         "Required": "true",
         "ReadOnly": "{FromInventory} == \"True\"",
         "Columns": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of this Item being obtained. Only applies if the Item is obtained by another Character.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
       }
     ]
   },
@@ -2262,9 +2273,9 @@
   },
   {
     "InternalName": "SelectYesNo",
-    "TreeViewDisplayText": "Ask ({Message}) to the player",
+    "TreeViewDisplayText": "Ask ({Message})",
     "ComboBoxDisplayName": "Show Yes/No Prompt",
-    "Description": "Creates a Yes/No prompt window to the player.\n\nReturns true if the user selects Yes (left button), false if No (right button).",
+    "Description": "Creates a Yes/No prompt window to the user.\n\nReturns true if the user selects Yes (left button), false if No (right button).",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": false,
@@ -2274,7 +2285,7 @@
       {
         "InternalName": "Title",
         "DisplayName": "Title",
-        "Description": "The prompt window title.",
+        "Description": "The prompt window title. Can be a Locale.",
         "ParameterType": "Text",
         "Default": "DungeonName",
         "ValidValues": [],
@@ -2285,7 +2296,7 @@
       {
         "InternalName": "Message",
         "DisplayName": "Message",
-        "Description": "The prompt text.",
+        "Description": "The prompt text. Can be a Locale.",
         "ParameterType": "Text",
         "Default": "",
         "ValidValues": [],
@@ -2296,9 +2307,9 @@
       {
         "InternalName": "YesButtonText",
         "DisplayName": "\"Yes\" Text",
-        "Description": "The text for the \"Yes\" button's text.",
+        "Description": "The text for the \"Yes\" button's text. Can be a Locale.",
         "ParameterType": "Text",
-        "Default": "",
+        "Default": "YesButtonText",
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",
@@ -2307,9 +2318,9 @@
       {
         "InternalName": "NoButtonText",
         "DisplayName": "\"No\" Text",
-        "Description": "The text for the \"No\" button's text.",
+        "Description": "The text for the \"No\" button's text. Can be a Locale.",
         "ParameterType": "Text",
-        "Default": "",
+        "Default": "NoButtonText",
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",
@@ -2330,9 +2341,9 @@
   },
   {
     "InternalName": "SelectOption",
-    "TreeViewDisplayText": "Ask the player an option for ({Message})",
+    "TreeViewDisplayText": "Ask for an option for ({Message})",
     "ComboBoxDisplayName": "Show Option Prompt",
-    "Description": "Creates a prompt window to the player where they have to choose an option.\n\nReturns true if the user selects an option, false if the user selects Cancel.\n\nThe result will be set in a flag.",
+    "Description": "Creates a prompt window to the user where they have to choose an option.\n\nReturns true if the user selects an option, false if the user selects Cancel.\n\nThe result will be set in a flag.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": true,
     "CanHaveThenChild": true,
@@ -2342,7 +2353,7 @@
       {
         "InternalName": "Title",
         "DisplayName": "Title",
-        "Description": "The prompt window title.",
+        "Description": "The prompt window title. Can be a Locale.",
         "ParameterType": "Text",
         "Default": "DungeonName",
         "ValidValues": [],
@@ -2353,7 +2364,7 @@
       {
         "InternalName": "Message",
         "DisplayName": "Message",
-        "Description": "The prompt text.",
+        "Description": "The prompt text. Can be a Locale.",
         "ParameterType": "Text",
         "Default": "",
         "ValidValues": [],
@@ -2384,11 +2395,15 @@
         "Columns": [
           {
             "Key": "Id",
-            "Header": "Id"
+            "Header": "Id",
+            "Required": true,
+            "Unique": true
           },
           {
             "Key": "Name",
-            "Header": "Name"
+            "Header": "Name",
+            "Required": true,
+            "Unique": false
           }
         ]
       },
@@ -2631,5 +2646,201 @@
     "CanHaveOnSuccessOnFailureChild": false,
     "IsControlBlock": false,
     "Parameters": []
+  },
+  {
+    "InternalName": "SelectItem",
+    "TreeViewDisplayText": "Ask to select an Item due to ({Title})",
+    "ComboBoxDisplayName": "Show Item Choice Prompt",
+    "Description": "Creates a prompt window to the user where they have to choose an Item from a list.\n\nReturns true if the user selects an Item, false if the user selects Cancel.\n\nThe Class Id of the chosen Item will be set in a flag.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Items",
+        "DisplayName": "Items",
+        "Description": "The Items the player can choose.",
+        "ParameterType": "Table",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": [
+          {
+            "Key": "Id",
+            "Header": "Item Class Id",
+            "Required": true,
+            "Unique": false
+          }
+        ]
+      },
+      {
+        "InternalName": "OptionFlag",
+        "DisplayName": "Result Flag",
+        "Description": "The Key of the Flag upon which the selected Item Class will be stored in. If the flag does not exist, it will be created.",
+        "ParameterType": "Key",
+        "Default": "SelectedOption",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SelectOfferedItem",
+    "TreeViewDisplayText": "Ask to select an Item from ({Target})'s Inventory due to ({Title})",
+    "ComboBoxDisplayName": "Show Inventory Item Choice Prompt",
+    "Description": "Creates a prompt window to the user where they have to choose an Item from the Target's Inventory.\n\nReturns true if the user selects an Item, false if the user selects Cancel.\n\nThe Class Id of the chosen Item will be set in a flag.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will offer their Items. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "OptionFlag",
+        "DisplayName": "Result Flag",
+        "Description": "The Key of the Flag upon which the selected Item Class will be stored in. If the flag does not exist, it will be created.",
+        "ParameterType": "Key",
+        "Default": "SelectedOption",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "SelectAction",
+    "TreeViewDisplayText": "Ask to select an Action from ({Target})'s Interactions due to ({Title})",
+    "ComboBoxDisplayName": "Show Interaction Choice Prompt",
+    "Description": "Creates a prompt window to the user where they have to choose one of Target's Interactions.\n\nInteractions from Consumables are not included.\n\nReturns true if the user selects an Item, false if the user selects Cancel.\n\nThe Class Id of the chosen Item will be set in a flag.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Whose Interactions will be shown. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "OptionFlag",
+        "DisplayName": "Result Flag",
+        "Description": "The Key of the Flag upon which the selected Item Class will be stored in. If the flag does not exist, it will be created.",
+        "ParameterType": "Key",
+        "Default": "SelectedOption",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]

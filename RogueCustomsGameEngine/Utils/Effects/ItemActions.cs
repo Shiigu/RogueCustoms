@@ -89,15 +89,18 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
                         });
                     }
-                    events.Add(new()
+                    if (t == Map.Player || paramsObject.InformThePlayer)
                     {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.ItemGet }
-                    });
-                    var message = paramsObject.InformOfSource
-                        ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name })
-                        : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = itemToGive.Name });
-                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.ItemGet }
+                        });
+                        var message = paramsObject.InformOfSource
+                            ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name })
+                            : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = itemToGive.Name });
+                        Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                    }
                 }
                 Map.DisplayEvents.Add(($"{t.Name} received an item", events));
                 return true;
