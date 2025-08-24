@@ -182,7 +182,10 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 if(!paramsObject.ContainsKey(listProperty))
                     paramsObject[listProperty] = new List<SelectionItem>();
                 var splitValue = value.Split('|');
-                paramsObject[listProperty].Add(new SelectionItem(splitValue[0], ParseArgForExpression(Map.Locale[splitValue[1]], args), splitValue.Length > 2 ? ParseArgForExpression(Map.Locale[splitValue[2]], args) : null));
+                if(splitValue.Length > 1)
+                    paramsObject[listProperty].Add(new SelectionItem(splitValue[0], splitValue.Length > 1 ? ParseArgForExpression(Map.Locale[splitValue[1]], args) : null, splitValue.Length > 2 ? ParseArgForExpression(Map.Locale[splitValue[2]], args) : null));
+                else
+                    paramsObject[listProperty].Add(new SelectionItem(ParseArgForExpression(Map.Locale[splitValue[0]], args)));
                 return true;
             }
 

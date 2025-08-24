@@ -428,6 +428,10 @@
     {
       "Key": "MonsterHouseWarningHeader",
       "Value": "OH NO!"
+    },
+    {
+      "Key": "SelectItemWindowText",
+      "Value": "Select an Item"
     }
   ]
 }

@@ -262,7 +262,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         {
             var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
-            var name = action.Name;
+            var name = !string.IsNullOrWhiteSpace(action.Name) ? action.Name : action.Id;
             var currentEffect = action.Effect;
             var amountOfSuccesses = 0;
             var amountOfFailures = 0;

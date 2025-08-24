@@ -27,7 +27,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         SetCanAct,
         UpdatePlayerData,
         UpdatePlayerPosition,
-        UpdateExperienceBar
+        UpdateExperienceBar,
+        TriggerPrompt
     }
 
     [Serializable]

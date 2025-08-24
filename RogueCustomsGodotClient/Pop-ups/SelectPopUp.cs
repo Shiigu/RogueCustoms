@@ -41,7 +41,7 @@ public partial class SelectPopUp : Control
     private readonly static Color WhiteColor = new() { R8 = 255, G8 = 255, B8 = 255, A8 = 255 };
     private readonly static Color ItemColor = new() { R8 = 0, G8 = 170, B8 = 170, A8 = 255 };
 
-[Signal]
+    [Signal]
     public delegate void PopupClosedEventHandler();
     public override void _Ready()
     {
@@ -139,11 +139,9 @@ public partial class SelectPopUp : Control
 
             _cancelButton.Pressed += () =>
             {
-                if (_selectedIndex != -1)
-                {
-                    EmitSignal(nameof(PopupClosed), null);
-                    QueueFree();
-                }
+                _selectedIndex = -1;
+                EmitSignal(nameof(PopupClosed), null);
+                QueueFree();
             };
         }
         else

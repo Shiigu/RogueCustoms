@@ -460,6 +460,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     parameters.Add(new JsonObject { ["ParamName"] = "InformOfSource", ["Value"] = "True" });
                 }
 
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("InformThePlayer", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "InformThePlayer", ["Value"] = "True" });
+                }
+
                 effect["Params"] = parameters;
             }
 

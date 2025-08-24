@@ -33,7 +33,7 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(popup);
 
             var popupClosedSignal = popup.ToSignal(popup, "PopupClosed");
-            popup.Show(titleText, innerText, buttons, borderColor, () => overlay.QueueFree());
+            popup.Show(titleText, innerText, buttons, borderColor, overlay.QueueFree);
             
             await popupClosedSignal;
         }
@@ -49,7 +49,7 @@ namespace RogueCustomsGodotClient.Helpers
 
             var scrollablePopup = (ScrollablePopUp)GD.Load<PackedScene>("res://Pop-ups/ScrollablePopUp.tscn").Instantiate();
             control.AddChild(scrollablePopup);
-            scrollablePopup.Show(titleText, innerText, borderColor, () => overlay.QueueFree(), scrollToEnd);
+            scrollablePopup.Show(titleText, innerText, borderColor, overlay.QueueFree, scrollToEnd);
         }
 
         public static void CreateInventoryWindow(this Control control, InventoryDto itemInfo)
@@ -63,10 +63,10 @@ namespace RogueCustomsGodotClient.Helpers
 
             var inventoryPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(inventoryPopup);
-            inventoryPopup.Show(itemInfo, SelectionMode.Inventory, () => overlay.QueueFree());
+            inventoryPopup.Show(itemInfo, SelectionMode.Inventory, true, overlay.QueueFree);
         }
 
-        public static void CreateActionSelectWindow(this Control control, ActionListDto actionInfo, Vector2I targetCoords)
+        public static void CreateInteractWindow(this Control control, ActionListDto actionInfo, Vector2I targetCoords)
         {
             var overlay = new ColorRect
             {
@@ -77,7 +77,7 @@ namespace RogueCustomsGodotClient.Helpers
 
             var actionSelectPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(actionSelectPopup);
-            actionSelectPopup.Show(actionInfo, SelectionMode.Interact, targetCoords, () => overlay.QueueFree());
+            actionSelectPopup.Show(actionInfo, SelectionMode.Interact, true, targetCoords, overlay.QueueFree);
         }
 
         public static void CreateInputBox(this Control control, string titleText, string promptText, string placeholderText, Color borderColor, Action<string> okCallback, Action cancelCallback)
@@ -98,7 +98,7 @@ namespace RogueCustomsGodotClient.Helpers
         {
             var selectClassWindow = (SelectClass)GD.Load<PackedScene>("res://Pop-ups/SelectClass.tscn").Instantiate();
             control.AddChild(selectClassWindow);
-            selectClassWindow.Show((classId) => { selectCallback?.Invoke(classId); }, () => cancelCallback?.Invoke());
+            selectClassWindow.Show((classId) => selectCallback?.Invoke(classId), () => cancelCallback?.Invoke());
         }
 
         public static void CreateLoadSaveGamePopup(this Control control)
@@ -112,10 +112,10 @@ namespace RogueCustomsGodotClient.Helpers
 
             var selectSaveGamePopup = (SelectSaveGame)GD.Load<PackedScene>("res://Pop-ups/SelectSaveGame.tscn").Instantiate();
             control.AddChild(selectSaveGamePopup);
-            selectSaveGamePopup.Show(() => { overlay.QueueFree(); });
+            selectSaveGamePopup.Show(overlay.QueueFree);
         }
 
-        public static async Task<string> CreateSelectPopup(this Control control, string titleText, string innerText, SelectionItem[] choices, bool showCancelButton, Color borderColor)
+        public static async Task<string> CreateSelectOptionPopup(this Control control, string titleText, string innerText, SelectionItem[] choices, bool showCancelButton, Color borderColor)
         {
             var overlay = new ColorRect
             {
@@ -135,6 +135,47 @@ namespace RogueCustomsGodotClient.Helpers
             overlay.QueueFree();
 
             return result.Length > 0 ? (string) result[0] : null;
+        }
+
+        public static async Task<string> CreateSelectItemWindow(this Control control, InventoryDto itemInfo, string title, bool showCancelButton)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var inventoryPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
+            control.AddChild(inventoryPopup);
+
+            var popupClosedSignal = inventoryPopup.ToSignal(inventoryPopup, "PopupClosed");
+            inventoryPopup.Show(itemInfo, SelectionMode.SelectItem, showCancelButton, overlay.QueueFree, title);
+
+            var result = await popupClosedSignal;
+
+            return result.Length > 0 ? (string)result[0] : null;
+        }
+
+        public static async Task<string> CreateSelectActionWindow(this Control control, ActionListDto actionInfo, string title, bool showCancelButton)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var actionSelectPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
+            control.AddChild(actionSelectPopup);
+
+            var popupClosedSignal = actionSelectPopup.ToSignal(actionSelectPopup, "PopupClosed");
+            
+            actionSelectPopup.Show(actionInfo, SelectionMode.Interact, showCancelButton, null, overlay.QueueFree, title);
+
+            var result = await popupClosedSignal;
+
+            return result.Length > 0 ? (string)result[0] : null;
         }
     }
 }

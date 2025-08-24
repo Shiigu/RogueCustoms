@@ -476,6 +476,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             public Task<bool> OpenYesNoPrompt(string title, string message, string yesButtonText, string noButtonText, GameColor color) => Task.FromResult(new Random().NextDouble() >= 0.5);
             public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor) => Task.FromResult(choices[new Random().Next(choices.Length)].Id);
+            public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult(choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ClassId);
+            public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton) => Task.FromResult(choices.Actions[new Random().Next(choices.Actions.Count)].SelectionId);
         }
     }
 }
