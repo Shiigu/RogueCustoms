@@ -73,7 +73,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             set { Dungeon.DungeonStatus = value; }
         }
 
-        private readonly int FloorLevel;
+        public readonly int FloorLevel;
 
         public readonly FloorType FloorConfigurationToUse;
 
@@ -2583,6 +2583,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor)
         {
             return PromptInvoker.OpenSelectOption(title, message, choices, showCancelButton, borderColor);
+        }
+        public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return PromptInvoker.OpenSelectItem(title, choices, showCancelButton);
+        }
+        public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton)
+        {
+            return PromptInvoker.OpenSelectAction(title, choices, showCancelButton);
         }
 
         #endregion

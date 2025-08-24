@@ -393,6 +393,9 @@ public partial class GameScreen : Control
                         var currentExperiencePercentage = (int) displayEvent.Params[2];
                         _experienceBarPanel.UpdateExperienceBar(experience, experienceToLevelUp, currentExperiencePercentage);
                         break;
+                    case DisplayEventType.TriggerPrompt:
+                        displayEvent.Params[0] = true;
+                        break;
                 }
             }
             while (_screenFlash.Visible)
@@ -680,7 +683,7 @@ public partial class GameScreen : Control
         {
             try
             {
-                this.CreateActionSelectWindow(_globalState.DungeonManager.GetPlayerAttackActions(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y), _mapPanel.CursorCoords.Value);
+                this.CreateInteractWindow(_globalState.DungeonManager.GetPlayerAttackActions(_mapPanel.CursorCoords.Value.X, _mapPanel.CursorCoords.Value.Y), _mapPanel.CursorCoords.Value);
                 AcceptEvent();
             }
             catch (Exception ex)

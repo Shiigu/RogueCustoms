@@ -209,17 +209,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 string originalValue = isActionEdit ? effectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase))?.Value : null;
                 var tableValues = new List<SelectionItem>();
 
-                if(parameter.Type == ParameterType.Table)
+                if(isActionEdit && parameter.Type == ParameterType.Table)
                 {
                     foreach (var param in effectToSave.Params.Where(p => p.ParamName.Equals(parameter.InternalName, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         if (param.Value != null)
                         {
                             var values = param.Value.Split('|');
-                            if (values.Length >= 2)
-                            {
-                                tableValues.Add(new SelectionItem(values[0], values[1], values.Length > 2 ? values[2] : string.Empty));
-                            }
+                            tableValues.Add(new SelectionItem(values[0], values.Length > 1 ? values[1] : string.Empty, values.Length > 2 ? values[2] : string.Empty));
                         }
                     }
                 }
@@ -369,7 +366,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 CheckBox checkBox => checkBox.Checked.ToString(),
                 ComboBox comboBox => comboBox.Text,
                 TableLayoutPanel tableLayoutPanel => string.Join("|", tableLayoutPanel.Controls.OfType<TextBox>().Select(tb => tb.Text)),
-                _ => throw new ArgumentException($"Control type {control.GetType()} for field {fieldName} is not supported for parameter validation")
+                _ => string.Empty // Unsupported
             };
         }
 
@@ -888,34 +885,33 @@ namespace RogueCustomsDungeonEditor.HelperForms
                                 errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" has no rows.");
                                 break;
                             }
-                            var foundIds = new List<string>();
+                            var foundUniques = new Dictionary<string, List<string>>();
                             foreach (DataGridViewRow row in tableToValidate.Rows)
                             {
                                 if (row.IsNewRow) continue;
-                                var idCell = row.Cells["Id"];
-                                if (idCell.Value == null || string.IsNullOrWhiteSpace(idCell.Value.ToString()))
-                                {
-                                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains an empty ID.");
-                                    break;
-                                }
-                                var idValue = idCell.Value.ToString();
-                                if (foundIds.Contains(idValue))
-                                {
-                                    errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains duplicate IDs.");
-                                    break;
-                                }
-                                foundIds.Add(idValue);
 
                                 foreach (DataGridViewCell cell in row.Cells)
                                 {
-                                    if (string.IsNullOrWhiteSpace(cell.Value.ToString()))
+                                    var rowIndex = cell.OwningRow.Index;
+                                    var headerText = cell.OwningColumn.HeaderText;
+                                    var correspondingColumn = parameterData.Columns.FirstOrDefault(c => c.Header.Equals(headerText, StringComparison.InvariantCultureIgnoreCase));
+                                    if ((correspondingColumn.Required || correspondingColumn.Unique) && string.IsNullOrWhiteSpace(cell.Value.ToString()))
                                     {
-                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" has an empty value.");
+                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" has an empty value, which is not allowed, in row ").Append(rowIndex).Append(", column ").AppendLine(correspondingColumn.Header);
                                         break;
                                     }
-                                    else if (cell.Value.ToString().Contains('|'))
+                                    if(correspondingColumn.Unique && !string.IsNullOrWhiteSpace(cell.Value.ToString()))
                                     {
-                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains a pipe (|), which is not allowed.");
+                                        var foundValues = foundUniques[correspondingColumn.Key];
+                                        if(!foundValues.Contains(cell.Value.ToString()))
+                                        {
+                                            foundValues.Add(cell.Value.ToString());
+                                            errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).Append("\" has a duplicate ").Append(correspondingColumn.Key).Append(", which is not allowed, in row ").Append(rowIndex).Append(", column ").AppendLine(correspondingColumn.Header);
+                                        }
+                                    }
+                                    if (cell.Value.ToString().Contains('|'))
+                                    {
+                                        errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" contains a pipe (|), which is not allowed, in row ").Append(rowIndex).Append(", column ").AppendLine(correspondingColumn.Header);
                                         break;
                                     }
                                 }

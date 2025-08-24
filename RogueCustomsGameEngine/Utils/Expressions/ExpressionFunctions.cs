@@ -272,6 +272,27 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return Map.PossibleItemClasses.TakeRandomElement(Rng).Id;
         }
 
+        public static string CURRENTFLOORLEVEL(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length > 0) throw new ArgumentException("Invalid parameters for CurrentFloorLevel.");
+
+            return Map.FloorLevel.ToString();
+        }
+
+        public static string ISINVENTORYFULL(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length > 1) throw new ArgumentException("Invalid parameters for IsInventoryFull.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = GetEntityByName(entityName, "IsInventoryFull", args);
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in IsInventoryFull.");
+
+            return (c.Inventory.Count == c.InventorySize).ToString();
+        }
+
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch

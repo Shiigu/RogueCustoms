@@ -106,3 +106,4 @@ TileIsOccupied
 MonsterHouseWarningLogMessage
 MonsterHouseWarningMessage
 MonsterHouseWarningHeader
+SelectItemWindowText
