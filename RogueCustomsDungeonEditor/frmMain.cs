@@ -497,13 +497,15 @@ namespace RogueCustomsDungeonEditor
         private void SelectNodeIfExists(string nodeText, string parentNodeText)
         {
             if (ReselectingNode) return;
-            var matchingNodes = tvDungeonInfo.Nodes.Find(nodeText, true).Where(n => (n.Parent == null && string.IsNullOrWhiteSpace(parentNodeText)) || n.Parent.Text.Equals(parentNodeText)).ToList();
-            if (matchingNodes.Any())
+            var matchingNodes = tvDungeonInfo.Nodes.Find(nodeText, true).Where(n => (n.Parent == null && n.Tag != null && string.IsNullOrWhiteSpace(parentNodeText)) || n.Parent.Text.Equals(parentNodeText)).ToList();
+            if (matchingNodes.Count != 0)
             {
                 matchingNodes[0].Parent?.Expand();
                 tvDungeonInfo.SelectedNode = matchingNodes[0];
                 tvDungeonInfo.SelectedNode.EnsureVisible();
                 tvDungeonInfo.Focus();
+                LoadTabDataForTag(matchingNodes[0].Tag as NodeTag);
+                DirtyTab = false;
             }
         }
 
