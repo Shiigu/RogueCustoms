@@ -22,6 +22,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<FloorInfo> FloorInfos { get; set; }
         public List<FactionInfo> FactionInfos { get; set; }
         public List<ElementInfo> ElementInfos { get; set; }
+        public List<ActionSchoolInfo> ActionSchoolInfos { get; set; }
         public List<StatInfo> CharacterStats { get; set; }
         public List<PlayerClassInfo> PlayerClasses { get; set; }
         public List<NPCInfo> NPCs { get; set; }

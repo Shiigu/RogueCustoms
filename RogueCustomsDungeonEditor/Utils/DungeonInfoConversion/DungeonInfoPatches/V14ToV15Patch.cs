@@ -16,6 +16,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
     {
         public static void Apply(JsonObject root)
         {
+            UpdateLocaleInfos(root);
             UpdateTileTypeInfos(root);
             UpdateTileSetInfos(root);
             UpdateFloorInfos(root);
@@ -29,6 +30,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
 
             root["Scripts"] = new JsonArray();
             root["Version"] = "1.5";
+        }
+
+        private static void UpdateLocaleInfos(JsonObject root)
+        {
+            if (root["LocaleInfos"] is not JsonArray locales) return;
+            foreach (var locale in locales.OfType<JsonObject>())
+            {
+                UpdateLocaleStrings(locale);
+            }
+        }
+
+        private static void UpdateLocaleStrings(JsonObject root)
+        {
+            if (root["LocaleStrings"] is not JsonArray localeStrings) return;
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ElementNameNormal", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ElementNameNormal", ["Value"] = "Normal" });
+            }
         }
 
         private static void UpdateTileTypeInfos(JsonObject root)

@@ -29,6 +29,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.PlayerClasses.ConvertAll(pc => (pc.Id, pc.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.NPCs.ConvertAll(npc => (npc.Id, npc.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.Items.ConvertAll(i => (i.Id, i.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.Traps.ConvertAll(t => (t.Id, t.Name)));

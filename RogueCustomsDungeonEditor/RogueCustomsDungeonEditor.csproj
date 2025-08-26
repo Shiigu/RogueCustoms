@@ -35,6 +35,9 @@
     <Compile Update="Controls\Tabs\ElementTab.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Controls\Tabs\ActionSchoolsTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\Tabs\StatTab.cs">
       <SubType>UserControl</SubType>
     </Compile>

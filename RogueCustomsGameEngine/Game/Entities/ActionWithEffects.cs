@@ -59,6 +59,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string UseCondition { get; set; }
         public string AIUseCondition { get; set; }
         public bool FinishesTurnWhenUsed { get; set; }
+        public ActionSchool School { get; set; }
 
         public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
         #endregion
@@ -69,7 +70,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private ActionWithEffects() { }
 
-        private ActionWithEffects(ActionWithEffectsInfo info)
+        private ActionWithEffects(ActionWithEffectsInfo info, List<ActionSchool> actionSchools)
         {
             Id = info.Id;
             Name = info.Name;
@@ -91,11 +92,16 @@ namespace RogueCustomsGameEngine.Game.Entities
             MPCost = info.MPCost;
             info.TargetTypes?.ForEach(tt => TargetTypes.Add(Enum.Parse<TargetType>(tt, true)));
             Effect = new Effect(info.Effect);
+            if (!string.IsNullOrWhiteSpace(info.School))
+            {
+                School = actionSchools.Find(s => s.Id.Equals(info.School, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Dungeon has no Action School of Id {info.School}");
+            }
         }
 
-        public static ActionWithEffects Create(ActionWithEffectsInfo info)
+        public static ActionWithEffects Create(ActionWithEffectsInfo info, List<ActionSchool> actionSchools)
         {
-            return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info) : null;
+            return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info, actionSchools) : null;
         }
 
         public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone, bool clearIterationFlags = true)
@@ -545,7 +551,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 TargetTypes = new List<TargetType>(TargetTypes),
                 MPCost = MPCost,
                 FinishesTurnWhenUsed = FinishesTurnWhenUsed,
-                AIUseCondition = AIUseCondition
+                AIUseCondition = AIUseCondition,
+                School = School
             };
         }
     }

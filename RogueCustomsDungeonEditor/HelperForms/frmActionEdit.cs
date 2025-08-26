@@ -94,6 +94,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblSource.Text = sourceDescription;
             lblTarget.Text = targetDescription;
 
+            cmbActionSchool.Items.Clear();
+
+            foreach (var school in ActiveDungeon.ActionSchoolInfos)
+            {
+                cmbActionSchool.Items.Add(school.Id);
+                if (!string.IsNullOrWhiteSpace(actionToSave.School) && actionToSave.School.Equals(school.Id, StringComparison.InvariantCultureIgnoreCase))
+                    cmbActionSchool.Text = school.Id;
+            }
+
             btnTestAction.Enabled = !ActionToSave.Effect.IsNullOrEmpty();
 
             if (!RequiresActionId)
@@ -635,6 +644,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
                         ActionToSave.Name = txtActionName.Text;
+                        ActionToSave.School = cmbActionSchool.Text;
                         if (!RequiresActionId)
                             ActionToSave.Id = PlaceholderActionId;
                         ScrubNullEffects(ActionToSave.Effect, null);
@@ -712,6 +722,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Name = txtActionName.Text;
                         ActionToSave.Description = txtActionDescription.Text;
+                        ActionToSave.School = cmbActionSchool.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         ActionToSave.Id = idToUse;
                         this.IsNewAction = RequiresActionId;
@@ -743,6 +754,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     }
                 }
             }
+            if (string.IsNullOrWhiteSpace(cmbActionSchool.Text))
+                errorMessages.Add("Action does not have a School.");
             if (RequiresDescription && string.IsNullOrWhiteSpace(txtActionDescription.Text))
                 errorMessages.Add("Action does not have a Description.");
             return !errorMessages.Any();

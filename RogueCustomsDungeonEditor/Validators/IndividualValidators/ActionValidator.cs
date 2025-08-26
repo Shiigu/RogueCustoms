@@ -21,32 +21,44 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 #pragma warning disable CS8601 // Posible asignación de referencia nula
     public static class ActionValidator
     {
+        public static async Task<DungeonValidationMessages> Validate(ActionWithEffectsInfo action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        {
+            var messages = new DungeonValidationMessages();
+            var name = action.Name;
+            var id = action.Id;
+            if (string.IsNullOrWhiteSpace(action.School) || !dungeonJson.ActionSchoolInfos.Any(s => s.Id.Equals(action.School, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                messages.AddError($"Action {name ?? id ?? "NULL"} does not have a valid Action School.");
+            }
+            return messages;
+        }
         public static async Task<DungeonValidationMessages> Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
 
             var owner = action.User;
             var name = action.Name;
+            var id = action.Id;
             var ownerName = owner != null ? owner.ClassId : "The Floor Type";
 
             if (string.IsNullOrWhiteSpace(action.Id))
             {
-                messages.AddError($"Action {name ?? "NULL"} does not have an Id.");
+                messages.AddError($"Action {name ?? id ?? "NULL"} does not have an Id.");
             }
 
             if (!string.IsNullOrWhiteSpace(action.UseCondition))
             {
                 if(action.UseCondition.IsBooleanExpression() && action.UseCondition.TestBooleanExpression(out _))
-                    messages.AddWarning($"Action {name ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
                 else
-                    messages.AddError($"Action {name ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a Use Condition that does not seem to be a valid boolean expression.");
             }
             if (!string.IsNullOrWhiteSpace(action.AIUseCondition))
             {
                 if (action.AIUseCondition.IsBooleanExpression() && action.AIUseCondition.TestBooleanExpression(out _))
-                    messages.AddWarning($"Action {name ?? "NULL"} has an AI Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has an AI Use Condition that seems to be a valid boolean expression, but you must check in-game whether it works as intended.");
                 else
-                    messages.AddError($"Action {name ?? "NULL"} has an AI Use Condition that does not seem to be a valid boolean expression.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has an AI Use Condition that does not seem to be a valid boolean expression.");
             }
 
             var isSelectable = (owner is PlayerCharacter opc && opc.OnAttack.Contains(action))
@@ -58,69 +70,69 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if (isSelectable)
                 {
                     messages.AddRange(dungeonJson.ValidateString(action.NameLocaleKey, $"An Action of {ownerName}", "Name", true));
-                    messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {name ?? "NULL"}", "Description", false));
+                    messages.AddRange(dungeonJson.ValidateString(action.DescriptionLocaleKey, $"Action {name ?? id ?? "NULL"}", "Description", false));
                 }
 
                 var duplicateTargetTypes = action.TargetTypes.GroupBy(tt => tt).Where(gtt => gtt.Count() > 1);
                 foreach (var targetType in duplicateTargetTypes.Select(gtt => gtt.Key))
                 {
-                    messages.AddError($"Action {name ?? "NULL"} has {targetType} as a duplicate TargetType.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has {targetType} as a duplicate TargetType.");
                 }
 
                 if (action.MinimumRange < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MinimumRange under 0, which is not valid.");
                 
                 if (action.MaximumRange < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumRange under 0, which is not valid.");
 
                 if (action.MinimumRange > action.MaximumRange)
-                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange higher than its MaximumRange.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MinimumRange higher than its MaximumRange.");
 
                 if (!action.TargetTypes.Exists(tt => tt == TargetType.Tile))
                 {
                     if (action.MinimumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
-                        messages.AddError($"Action {name ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has a MinimumRange of 0 but does not have Self as a TargetType, making the MinimumRange useless.");
                     else if (action.MinimumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
-                        messages.AddError($"Action {name ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has a MinimumRange above 0 but only has Self as a TargetType, making the action unusable.");
                     if (action.MaximumRange == 0 && action.TargetTypes.Any() && !action.TargetTypes.Exists(tt => tt == TargetType.Self))
-                        messages.AddError($"Action {name ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumRange of 0 but does not have Self as a TargetType, making the MaximumRange useless.");
                     else if (action.MaximumRange > 0 && action.TargetTypes.Any() && action.TargetTypes.TrueForAll(tt => tt == TargetType.Self))
-                        messages.AddError($"Action {name ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumRange above 0 but only has Self as a TargetType, making the action unusable.");
                 }
 
                 if (action.CooldownBetweenUses < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
 
                 if (action.StartingCooldown < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
                 else if (action.CooldownBetweenUses < action.StartingCooldown)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a StartingCooldown higher than its CooldownBetweenUses.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a StartingCooldown higher than its CooldownBetweenUses.");
 
                 if (action.MaximumUses < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumUses under 0, which is not valid.");
             }
             else
             {
                 if (action.MinimumRange < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MinimumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MinimumRange under 0, which is not valid.");
                 else if (action.MinimumRange > 0)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a MinimumRange above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a MinimumRange above 0, which will be ignored by the game. Consider removing it.");
                 if (action.MaximumRange < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumRange under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumRange under 0, which is not valid.");
                 else if (action.MaximumRange > 0)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a MaximumRange above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a MaximumRange above 0, which will be ignored by the game. Consider removing it.");
                 if (action.CooldownBetweenUses < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a CooldownBetweenUses under 0, which is not valid.");
                 else if (action.CooldownBetweenUses > 0)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a CooldownBetweenUses above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a CooldownBetweenUses above 0, which will be ignored by the game. Consider removing it.");
                 if (action.StartingCooldown < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a StartingCooldown under 0, which is not valid.");
                 else if (action.StartingCooldown > 0)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a StartingCooldown above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a StartingCooldown above 0, which will be ignored by the game. Consider removing it.");
                 if (action.MaximumUses < 0)
-                    messages.AddError($"Action {name ?? "NULL"} has a MaximumUses under 0, which is not valid.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} has a MaximumUses under 0, which is not valid.");
                 else if (action.MaximumUses > 0)
-                    messages.AddWarning($"Action {name ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
+                    messages.AddWarning($"Action {name ?? id ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
             }
 
             Entity source;
@@ -262,13 +274,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         {
             var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
-            var name = !string.IsNullOrWhiteSpace(action.Name) ? action.Name : action.Id;
+            var name = action.Name;
+            var id = action.Id;
             var currentEffect = action.Effect;
             var amountOfSuccesses = 0;
             var amountOfFailures = 0;
 
             if (currentEffect == null)
-                messages.AddError($"Action {name ?? "NULL"} has no function chain programmed to it.");
+                messages.AddError($"Action {name ?? id ?? "NULL"} has no function chain programmed to it.");
             else
                 pendingEffects.Add(currentEffect);
 
@@ -293,7 +306,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"Action {name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
                     }
 
                     try
@@ -409,7 +422,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
                 else
                 {
-                    messages.AddError($"Action {name ?? "NULL"} attempts to call an undefined function.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} attempts to call an undefined function.");
                 }
             }
         }
@@ -418,12 +431,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var errorOnActionChain = false;
             var pendingEffects = new List<Effect>();
             var name = action.Name;
+            var id = action.Id;
             var currentEffect = action.Effect;
             var amountOfSuccesses = 0;
             var amountOfFailures = 0;
 
             if (currentEffect == null)
-                messages.AddError($"Action {name ?? "NULL"} has no function chain programmed to it.");
+                messages.AddError($"Action {name ?? id ?? "NULL"} has no function chain programmed to it.");
             else
                 pendingEffects.Add(currentEffect);
 
@@ -442,7 +456,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (nextEffect.Then != null && nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"Action {name ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
+                        messages.AddError($"Action {name ?? id ?? "NULL"} has both a Then and an OnSuccess/OnFailure programmed to it. Either has to be removed.");
                     }
 
                     try
@@ -516,7 +530,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
                 else
                 {
-                    messages.AddError($"Action {name ?? "NULL"} attempts to call an undefined function.");
+                    messages.AddError($"Action {name ?? id ?? "NULL"} attempts to call an undefined function.");
                 }
             }
         }

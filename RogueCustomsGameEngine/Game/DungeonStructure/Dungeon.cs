@@ -61,6 +61,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<TileSet> TileSets { get; set; }
         public List<FloorType> FloorTypes { get; set; }
         public List<Element> Elements { get; set; }
+        public List<ActionSchool> ActionSchools { get; set; }
         public List<EntityClass> Classes { get; set; }
 
         public List<Faction> Factions { get; private set; }
@@ -74,6 +75,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Author = dungeonInfo.Author;
             AmountOfFloors = dungeonInfo.AmountOfFloors;
             Elements = new List<Element>();
+            ActionSchools = new List<ActionSchool>();
             Classes = new List<EntityClass>();
             TileTypes = new List<TileType>();
             TileSets = new List<TileSet>();
@@ -84,16 +86,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
-            dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl)));
+            dungeonInfo.ActionSchoolInfos.ForEach(s => ActionSchools.Add(new ActionSchool(s, LocaleToUse)));
+            dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
-            dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse)));
-            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats)));
-            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null)));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null)));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null)));
+            dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse, ActionSchools)));
+            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats, ActionSchools)));
+            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats, ActionSchools)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null, ActionSchools)));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null, ActionSchools)));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null, ActionSchools)));
             FloorTypes = new List<FloorType>();
-            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes)));
+            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes, ActionSchools)));
             FloorTypes.ForEach(ft => {
                 ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId))
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");
@@ -102,7 +105,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Factions = new List<Faction>();
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             Scripts = new();
-            dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s)));
+            dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s, ActionSchools)));
             IsHardcoreMode = isHardcoreMode;
             MapFactions();
             CurrentFloorLevel = 1;

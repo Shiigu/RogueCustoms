@@ -173,6 +173,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         }
                         Map.DisplayEvents.AddRange(statusApplyEvents);
                     }
+                    return success;
                 }
             }
             return false;
@@ -430,7 +431,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                     if (t == Map.Player && Stat.StatsInUI.Contains(statName))
                     {
-                        if (statName.Equals("hp") || statName.Equals("mp") || statName.Equals("hunger"))
+                        if (stat.HasMax)
                         {
                             events.Add(new()
                             {

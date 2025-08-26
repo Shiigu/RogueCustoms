@@ -82,6 +82,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.FactionInfo] = tpFactionInfos;
             TabsForNodeTypes[RogueTabTypes.StatInfo] = tbStatInfos;
             TabsForNodeTypes[RogueTabTypes.ElementInfo] = tbElementInfos;
+            TabsForNodeTypes[RogueTabTypes.ActionSchoolsInfo] = tbActionSchoolInfos;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -139,6 +140,7 @@ namespace RogueCustomsDungeonEditor
             TrapTab.TabInfoChanged += TrapTab_TabInfoChanged;
             AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
+            ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -238,7 +240,7 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewElement = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
             }
             else
@@ -281,6 +283,13 @@ namespace RogueCustomsDungeonEditor
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
+                        break;
+                    case "Action Schools":
+                        tssDungeonElement.Visible = false;
+                        tsbAddElement.Visible = false;
+                        tsbSaveElement.Visible = true;
+                        tsbSaveElementAs.Visible = false;
+                        tsbDeleteElement.Visible = false;
                         break;
                     case "Attack Elements":
                         tssDungeonElement.Visible = true;
@@ -423,6 +432,13 @@ namespace RogueCustomsDungeonEditor
                 elementInfosRootNode.Nodes.Add(elementInfoNode);
             }
             tvDungeonInfo.Nodes.Add(elementInfosRootNode);
+
+            var actionSchoolsInfoNode = new TreeNode("Action Schools")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.ActionSchoolsInfo, DungeonElement = null },
+                Name = "Action Schools"
+            };
+            tvDungeonInfo.Nodes.Add(actionSchoolsInfoNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -805,6 +821,8 @@ namespace RogueCustomsDungeonEditor
                         return SaveStat();
                     case RogueTabTypes.ElementInfo:
                         return SaveAttackElement();
+                    case RogueTabTypes.ActionSchoolsInfo:
+                        return SaveActionSchools();
                     case RogueTabTypes.PlayerClass:
                         return SavePlayerClass();
                     case RogueTabTypes.NPC:
@@ -1003,6 +1021,9 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element";
                     break;
+                case RogueTabTypes.ActionSchoolsInfo:
+                    LoadActionSchools();
+                    break;
                 case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
                     LoadPlayerClassInfoFor(tagPlayerClass);
@@ -1085,6 +1106,16 @@ namespace RogueCustomsDungeonEditor
                 tsbValidateDungeon.Visible = true;
             }
             else if (tbTabs.SelectedTab.Text.Equals("Scripts"))
+            {
+                tssDungeonElement.Visible = true;
+                tsbAddElement.Visible = false;
+                tsbSaveElement.Visible = true;
+                tsbSaveElementAs.Visible = false;
+                tsbDeleteElement.Visible = false;
+                tssElementValidate.Visible = true;
+                tsbValidateDungeon.Visible = true;
+            }
+            else if (tbTabs.SelectedTab.Text.Equals("Action Schools"))
             {
                 tssDungeonElement.Visible = true;
                 tsbAddElement.Visible = false;
@@ -2865,6 +2896,49 @@ namespace RogueCustomsDungeonEditor
         }
         #endregion
 
+        #region Action Schools
+
+        private void LoadActionSchools()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            ActionSchoolsTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveActionSchools()
+        {
+            var validationErrors = ActionSchoolsTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Action Schools cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Action Schools",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Scripts has been successfully saved!",
+                "Save Action Schools",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void ActionSchoolsTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
         #region Validator
 
         private void ValidatorTab_OnValidationComplete(object? sender, EventArgs e)
@@ -2898,6 +2972,7 @@ namespace RogueCustomsDungeonEditor
         FactionInfo,
         StatInfo,
         ElementInfo,
+        ActionSchoolsInfo,
         PlayerClass,
         NPC,
         Item,

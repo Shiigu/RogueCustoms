@@ -122,7 +122,7 @@
             saeNPCOnSpawn.EffectParamData = null;
             saeNPCOnSpawn.Location = new System.Drawing.Point(6, 468);
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
-            saeNPCOnSpawn.PlaceholderActionId = "TurnStart";
+            saeNPCOnSpawn.PlaceholderActionId = "Spawn";
             saeNPCOnSpawn.RequiresActionId = false;
             saeNPCOnSpawn.RequiresCondition = true;
             saeNPCOnSpawn.RequiresDescription = false;

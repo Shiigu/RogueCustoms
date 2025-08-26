@@ -49,7 +49,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public TileType() { }
 
-        public TileType(TileTypeInfo tileTypeInfo)
+        public TileType(TileTypeInfo tileTypeInfo, List<ActionSchool> actionSchools)
         {
             if (tileTypeInfo.Id.Equals("Empty"))
                 Empty = this;
@@ -71,7 +71,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CanBeTransformed = tileTypeInfo.CanBeTransformed;
             CanVisiblyConnectWithOtherTiles = tileTypeInfo.CanVisiblyConnectWithOtherTiles;
             CanHaveMultilineConnections = tileTypeInfo.CanHaveMultilineConnections;
-            OnStood = ActionWithEffects.Create(tileTypeInfo.OnStood);
+            OnStood = ActionWithEffects.Create(tileTypeInfo.OnStood, actionSchools);
         }
     }
 }

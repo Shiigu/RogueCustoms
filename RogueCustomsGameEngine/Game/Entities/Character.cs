@@ -325,13 +325,47 @@ namespace RogueCustomsGameEngine.Game.Entities
             AlteredStatuses?.Where(a => a.RemainingTurns != 0).ForEach(als => als.RefreshCooldownsAndUpdateTurnLength());
             foreach (var modification in StatModifications)
             {
+                if(this == Map.Player && modification.Modifications?.Any(a => a.RemainingTurns == 0) == true)
+                {
+                    var stat = modification.StatName != null ? UsedStats.Find(s => s.Name.Equals(modification.StatName)) : null;
+                    if (stat != null)
+                    {
+                        var events = new List<DisplayEventDto>();
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.BaseAfterModifications }
+                        });
+                        if (stat.HasMax)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.BaseAfterModifications }
+                            });
+                        }
+                        Map.DisplayEvents.Add(($"Update player {stat.Name} display data", events));
+                    }
+                }
                 modification.Modifications?.RemoveAll(a => a.RemainingTurns == 0);
             }
             foreach (var als in AlteredStatuses?.Where(a => a.RemainingTurns == 0 && !a.FlaggedToRemove && a.OnRemove != null))
             {
                 await als.OnRemove.Do(als, this, false);
             }
+            var alteredStatusesBeforeUpdate = AlteredStatuses.Count;
             AlteredStatuses?.RemoveAll(als => als.RemainingTurns == 0);
+            if(this == Map.Player && alteredStatusesBeforeUpdate > AlteredStatuses.Count)
+            {
+                Map.DisplayEvents.Add(("Update player Altered Status display data", new List<DisplayEventDto>
+                {
+                    new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateAlteredStatuses, this.AlteredStatuses.Select(als => new SimpleEntityDto(als)).ToList() }
+                    }
+                }));
+            }
             Inventory?.ForEach(i => i.RefreshCooldownsAndUpdateTurnLength());
         }
 
@@ -341,7 +375,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             FOVTiles = ComputeFOVTiles();
             CanTakeAction = true;
             var modificationsThatMightBeNeutralized = new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>();
-            var alteredStatusesThatMightBeNeutralized = new List<(List<AlteredStatus> alteredStatusList, string statusName, bool mightEnd)>();
+            var alteredStatusesThatMightBeNeutralized = new List<(List<AlteredStatus> alteredStatusList, string statusId, string statusName, bool mightEnd)>();
 
             if (this == Map.Player || Map.Player.CanSee(this))
             {
@@ -355,6 +389,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     .GroupBy(als => als.ClassId)
                     .Select(group => (
                         group.ToList(),
+                        group.First().ClassId,
                         group.FirstOrDefault()?.Name ?? "",
                         !group.Any(als => als.RemainingTurns > 1)
                     ))
@@ -404,7 +439,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Map.DisplayEvents.Add(($"{Name} lost all the {statName} modifications", events));
                 }
             }
-            foreach (var (alteredStatusList, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
+            var gotToUpdateStatuses = false;
+            foreach (var (alteredStatusList, statusId, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
                 if (mightBeNeutralized && alteredStatusList?.TrueForAll(mhm => mhm.RemainingTurns == 0) == true)
                 {
@@ -417,8 +453,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { SpecialEffect.StatusLeaves }
                         });
+                        if (this == Map.Player)
+                            gotToUpdateStatuses = true;
                     }
-
                     Map.AppendMessage(Map.Locale["CharacterIsNoLongerStatused"].Format(new { CharacterName = Name, StatusName = statusName }), Color.DeepSkyBlue, events);
                     Map.DisplayEvents.Add(($"{Name} lost the {statusName} status", events));
                 }

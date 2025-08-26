@@ -54,7 +54,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly ActionWithEffects OnFloorStart;
 
-        public FloorType(FloorInfo floorInfo, Locale locale, List<TileType> tileTypes)
+        public FloorType(FloorInfo floorInfo, Locale locale, List<TileType> tileTypes, List<ActionSchool> actionSchools)
         {
             MinFloorLevel = floorInfo.MinFloorLevel;
             MaxFloorLevel = floorInfo.MaxFloorLevel;
@@ -99,7 +99,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     MaxRoomSize = layout.MaxRoomSize,
                 });
             }
-            OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart);
+            OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart, actionSchools);
             PossibleKeys = new();
             if(floorInfo.PossibleKeys != null)
             {
@@ -122,7 +122,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         OnDeath = new(),
                         OnTurnStart = new(),
                         OnUse = new(),
-                        OnAttack = new() { Key.GetOpenDoorActionForKey(keyType.KeyTypeName) }
+                        OnAttack = new() { Key.GetOpenDoorActionForKey(keyType.KeyTypeName) },
                     };
                     PossibleKeys.KeyTypes.Add(new()
                     {
@@ -130,7 +130,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CanLockItems = keyType.CanLockItems,
                         CanLockStairs = keyType.CanLockStairs,
                         DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null)
+                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, actionSchools)
                     });
                 }
             }
@@ -206,9 +206,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
         }
 
-        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
+        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList, List<ActionSchool> actionSchools)
         {
-            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
+            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa, actionSchools)));
         }
     }
 

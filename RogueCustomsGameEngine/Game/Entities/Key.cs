@@ -54,6 +54,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingCooldown = 0,
                 TargetTypes = new() { "Tile" },
                 UseCondition = $"{{target.Type}} == \"Door\" && {{target.DoorId}} == \"{keyName}\"",
+                School = null,
                 Effect = new()
                 {
                     EffectName = "PrintText",

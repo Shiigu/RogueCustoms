@@ -87,6 +87,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             txtActionName = new TextBox();
             label14 = new Label();
             btnTestAction = new Button();
+            label15 = new Label();
+            cmbActionSchool = new ComboBox();
             gbSelectionCriteria.SuspendLayout();
             pnlCharacterTargets.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMPCost).BeginInit();
@@ -652,7 +654,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             fklblActionNameLocale.ImageAlign = ContentAlignment.TopLeft;
             fklblActionNameLocale.Location = new Point(476, 328);
             fklblActionNameLocale.Name = "fklblActionNameLocale";
-            fklblActionNameLocale.Size = new Size(467, 42);
+            fklblActionNameLocale.Size = new Size(331, 42);
             fklblActionNameLocale.TabIndex = 34;
             fklblActionNameLocale.Text = "This value has been found as a Locale Entry key.\r\nIn-game, it will be replaced by the Locale Entry's value.";
             fklblActionNameLocale.TextAlign = ContentAlignment.MiddleLeft;
@@ -664,7 +666,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             // 
             txtActionName.Location = new Point(476, 299);
             txtActionName.Name = "txtActionName";
-            txtActionName.Size = new Size(467, 23);
+            txtActionName.Size = new Size(331, 23);
             txtActionName.TabIndex = 33;
             txtActionName.TextChanged += txtActionName_TextChanged;
             // 
@@ -687,11 +689,31 @@ namespace RogueCustomsDungeonEditor.HelperForms
             btnTestAction.UseVisualStyleBackColor = true;
             btnTestAction.Click += btnTestAction_Click;
             // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new Point(819, 282);
+            label15.Name = "label15";
+            label15.Size = new Size(43, 15);
+            label15.TabIndex = 36;
+            label15.Text = "School";
+            // 
+            // cmbActionSchool
+            // 
+            cmbActionSchool.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbActionSchool.FormattingEnabled = true;
+            cmbActionSchool.Location = new Point(819, 300);
+            cmbActionSchool.Name = "cmbActionSchool";
+            cmbActionSchool.Size = new Size(121, 23);
+            cmbActionSchool.TabIndex = 37;
+            // 
             // frmActionEdit
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(950, 620);
+            Controls.Add(cmbActionSchool);
+            Controls.Add(label15);
             Controls.Add(btnTestAction);
             Controls.Add(fklblActionNameLocale);
             Controls.Add(txtActionName);
@@ -798,5 +820,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private TextBox txtActionName;
         private Label label14;
         private Button btnTestAction;
+        private Label label15;
+        private ComboBox cmbActionSchool;
     }
 }
