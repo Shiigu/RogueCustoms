@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Text.Json.Nodes;
 
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches.Interfaces;
+
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches
 {
@@ -10,9 +13,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
     {
         public static void Apply(JsonObject root)
         {
+            UpdateLocaleInfos(root);
             UpdateTileTypeInfos(root);
             UpdateFloorInfos(root);
             UpdateElementInfos(root);
+            UpdateActionSchools(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateItems(root);
@@ -22,6 +27,26 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
 
             root["Version"] = "1.6";
         }
+
+        private static void UpdateLocaleInfos(JsonObject root)
+        {
+            if (root["Locales"] is not JsonArray locales) return;
+            foreach (var locale in locales.OfType<JsonObject>())
+            {
+                UpdateLocaleStrings(locale);
+            }
+        }
+
+        private static void UpdateLocaleStrings(JsonObject root)
+        {
+            if (root["LocaleStrings"] is not JsonArray localeStrings) return;
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("SchoolNameNormal", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "SchoolNameNormal", ["Value"] = "Normal" });
+            }
+        }
+
         private static void UpdateTileTypeInfos(JsonObject root)
         {
             if (root["TileTypeInfos"] is not JsonArray tileTypeInfos) return;
@@ -29,7 +54,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (tileType["OnStood"] is JsonObject onStood)
                 {
-                    UpdateEffect(onStood);
+                    UpdateAction(onStood);
                 }
             }
         }
@@ -41,7 +66,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (floorGroup["OnFloorStart"] is JsonObject onFloorStart)
                 {
-                    UpdateEffect(onFloorStart);
+                    UpdateAction(onFloorStart);
                 }
             }
         }
@@ -53,10 +78,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (element["OnAfterAttack"] is JsonObject onAfterAttack)
                 {
-                    UpdateEffect(onAfterAttack);
+                    UpdateAction(onAfterAttack);
                 }
             }
         }
+
+
+        private static void UpdateActionSchools(JsonObject root)
+        {
+            var actionSchoolInfos = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["Id"] = "Normal",
+                    ["Name"] = "SchoolNameNormal"
+                }
+            };
+            root["ActionSchoolInfos"] = actionSchoolInfos;
+        }
+
 
         private static void UpdatePlayerClasses(JsonObject root)
         {
@@ -67,25 +107,25 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateEffect(actionObj);
+                        UpdateAction(actionObj);
                     }
                 }
                 if (playerClass["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateEffect(onAttacked);
+                    UpdateAction(onAttacked);
                 }
                 if (playerClass["OnDeath"] is JsonObject onDeath)
                 {
                     RemoveGiveExperienceFromOnDeath(onDeath);
-                    UpdateEffect(onDeath);
+                    UpdateAction(onDeath);
                 }
                 if (playerClass["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateEffect(onTurnStart);
+                    UpdateAction(onTurnStart);
                 }
                 if (playerClass["OnLevelUp"] is JsonObject onLevelUp)
                 {
-                    UpdateEffect(onLevelUp);
+                    UpdateAction(onLevelUp);
                 }
                 if (!playerClass.ContainsKey("InitialEquippedWeapon"))
                 {
@@ -103,36 +143,42 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["NPCs"] is not JsonArray npcs) return;
             foreach (var npc in npcs.OfType<JsonObject>())
             {
+                if (npc["OnSpawn"] is JsonObject onSpawn)
+                {
+                    npc["OnSpawn"]["Id"] = "Spawn";
+                    npc["OnSpawn"]["Name"] = "Spawn";
+                    UpdateAction(onSpawn);
+                }
                 foreach (var action in npc["OnAttack"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateEffect(actionObj);
+                        UpdateAction(actionObj);
                     }
                 }
                 foreach (var action in npc["OnInteracted"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateEffect(actionObj);
+                        UpdateAction(actionObj);
                     }
                 }
                 if (npc["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateEffect(onAttacked);
+                    UpdateAction(onAttacked);
                 }
                 if (npc["OnDeath"] is JsonObject onDeath)
                 {
                     RemoveGiveExperienceFromOnDeath(onDeath);
-                    UpdateEffect(onDeath);
+                    UpdateAction(onDeath);
                 }
                 if (npc["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateEffect(onTurnStart);
+                    UpdateAction(onTurnStart);
                 }
                 if (npc["OnLevelUp"] is JsonObject onLevelUp)
                 {
-                    UpdateEffect(onLevelUp);
+                    UpdateAction(onLevelUp);
                 }
             }
         }
@@ -146,24 +192,24 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     if (action is JsonObject actionObj)
                     {
-                        UpdateEffect(actionObj);
+                        UpdateAction(actionObj);
                     }
                 }
                 if (item["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateEffect(onAttacked);
+                    UpdateAction(onAttacked);
                 }
                 if (item["OnDeath"] is JsonObject onDeath)
                 {
-                    UpdateEffect(onDeath);
+                    UpdateAction(onDeath);
                 }
                 if (item["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateEffect(onTurnStart);
+                    UpdateAction(onTurnStart);
                 }
                 if (item["OnUse"] is JsonObject onUse)
                 {
-                    UpdateEffect(onUse);
+                    UpdateAction(onUse);
                 }
             }
         }
@@ -175,7 +221,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (trap["OnStepped"] is JsonObject onStepped)
                 {
-                    UpdateEffect(onStepped);
+                    UpdateAction(onStepped);
                 }
             }
         }
@@ -187,27 +233,27 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (alteredStatus["BeforeAttack"] is JsonObject beforeAttack)
                 {
-                    UpdateEffect(beforeAttack);
+                    UpdateAction(beforeAttack);
                 }
 
                 if (alteredStatus["OnAttacked"] is JsonObject onAttacked)
                 {
-                    UpdateEffect(onAttacked);
+                    UpdateAction(onAttacked);
                 }
 
                 if (alteredStatus["OnApply"] is JsonObject onApply)
                 {
-                    UpdateEffect(onApply);
+                    UpdateAction(onApply);
                 }
 
                 if (alteredStatus["OnTurnStart"] is JsonObject onTurnStart)
                 {
-                    UpdateEffect(onTurnStart);
+                    UpdateAction(onTurnStart);
                 }
 
                 if (alteredStatus["OnRemove"] is JsonObject onRemove)
                 {
-                    UpdateEffect(onRemove);
+                    UpdateAction(onRemove);
                 }
             }
         }
@@ -217,11 +263,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["Scripts"] is not JsonArray scripts) return;
             foreach (var script in scripts.OfType<JsonObject>())
             {
-                UpdateEffect(script);
+                UpdateAction(script);
             }
         }
 
-        public static void UpdateEffect(JsonObject actionWithEffects)
+        public static void UpdateAction(JsonObject actionWithEffects)
+        {
+            actionWithEffects["School"] = "Normal";
+            UpdateActionSteps(actionWithEffects);
+        }
+
+        public static void UpdateActionSteps(JsonObject actionWithEffects)
         {
             if (actionWithEffects["Effect"] is JsonObject effect)
             {

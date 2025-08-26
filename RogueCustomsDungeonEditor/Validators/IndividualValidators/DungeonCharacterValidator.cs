@@ -18,8 +18,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         public static async Task<DungeonValidationMessages> Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             Character characterAsInstance = isPlayerCharacter
-                                        ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor)
-                                        : new NonPlayableCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
+                                        ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor)
+                                        : new NonPlayableCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
 
             var messages = new DungeonValidationMessages();
 
@@ -39,6 +39,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnTurnStart != null)
             {
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnTurnStart, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
             }
 
@@ -142,6 +143,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     messages.AddError("Character has at least two Attack actions with the same Id.");
                 }
+                foreach (var onAttackAction in characterJson.OnAttack)
+                {
+                    messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
+                }
                 foreach (var onAttackAction in characterAsInstance.OwnOnAttack)
                 {
                     messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
@@ -154,11 +159,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnAttacked != null)
             {
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnAttacked, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
             }
 
             if (characterJson.OnDeath != null)
             {
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnDeath, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
             }
             else
@@ -168,6 +175,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnLevelUp != null)
             {
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnLevelUp, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(characterAsInstance.OnLevelUp, dungeonJson, sampleDungeon));
             }
 

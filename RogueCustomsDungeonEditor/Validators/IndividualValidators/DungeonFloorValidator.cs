@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
@@ -346,6 +347,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (floorJson.OnFloorStart != null)
             {
+                messages.AddRange(await ActionValidator.Validate(floorJson.OnFloorStart, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
             }
 

@@ -18,7 +18,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         public static async Task<DungeonValidationMessages> Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null), sampleDungeon.CurrentFloor);
+            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(itemJson.Name, "Item", "Name", true));
@@ -44,6 +44,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")
                     {
+                        messages.AddRange(await ActionValidator.Validate(itemJson.OnTurnStart, dungeonJson, sampleDungeon));
                         messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
                     }
                     else
@@ -73,6 +74,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         if (itemAsInstance.OwnOnAttack.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
                         {
                             messages.AddError("Item has at least two Attack actions with the same Id.");
+                        }
+
+                        foreach (var onAttackAction in itemJson.OnAttack)
+                        {
+                            messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
                         }
                         foreach (var onAttackAction in itemAsInstance.OwnOnAttack)
                         {
@@ -105,6 +111,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     if (itemJson.EntityType == "Armor")
                     {
+                        messages.AddRange(await ActionValidator.Validate(itemJson.OnAttacked, dungeonJson, sampleDungeon));
                         messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
                     }
                     else if (itemJson.EntityType == "Weapon")
@@ -119,11 +126,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                 if (itemJson.OnDeath != null)
                 {
+                    messages.AddRange(await ActionValidator.Validate(itemJson.OnDeath, dungeonJson, sampleDungeon));
                     messages.AddRange(await ActionValidator.Validate(itemAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
                 }
 
                 if (itemJson.OnUse != null)
                 {
+                    messages.AddRange(await ActionValidator.Validate(itemJson.OnUse, dungeonJson, sampleDungeon));
                     messages.AddRange(await ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
                 }
                 else if (itemJson.EntityType == "Consumable" && !itemJson.OnAttack.Any())

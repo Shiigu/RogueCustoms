@@ -22,10 +22,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             messages.AddRange(await DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
-            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
+            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
 
             if (npcJson.OnSpawn != null)
             {
+                messages.AddRange(await ActionValidator.Validate(npcJson.OnSpawn, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
             }
 
@@ -34,6 +35,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if (npcAsInstance.OnInteracted.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
                 {
                     messages.AddError("NPC has at least two Interacted actions with the same Id.");
+                }
+
+                foreach (var onInteractedAction in npcJson.OnInteracted)
+                {
+                    messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
                 }
                 foreach (var onInteractedAction in npcAsInstance.OnInteracted)
                 {

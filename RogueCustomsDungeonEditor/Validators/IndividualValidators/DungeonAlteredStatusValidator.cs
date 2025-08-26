@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(AlteredStatusInfo alteredStatus, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var alteredStatusAsInstance = new AlteredStatus(new EntityClass(alteredStatus, sampleDungeon.LocaleToUse, EntityType.AlteredStatus, null), sampleDungeon.CurrentFloor);
+            var alteredStatusAsInstance = new AlteredStatus(new EntityClass(alteredStatus, sampleDungeon.LocaleToUse, EntityType.AlteredStatus, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(alteredStatus.Name, "Trap", "Name", true));
@@ -35,27 +35,32 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 if (alteredStatus.OnTurnStart != null)
                 {
+                    messages.AddRange(await ActionValidator.Validate(alteredStatus.OnTurnStart, dungeonJson, sampleDungeon));
                     messages.AddRange(await ActionValidator.Validate(alteredStatusAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
                 }
 
                 if (alteredStatus.OnApply != null)
                 {
+                    messages.AddRange(await ActionValidator.Validate(alteredStatus.OnApply, dungeonJson, sampleDungeon));
                     messages.AddRange(await ActionValidator.Validate(alteredStatusAsInstance.OnApply, dungeonJson, sampleDungeon));
                 }
             }
 
             if (alteredStatus.BeforeAttack != null)
             {
+                messages.AddRange(await ActionValidator.Validate(alteredStatus.BeforeAttack, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(alteredStatusAsInstance.BeforeAttack, dungeonJson, sampleDungeon));
             }
 
             if (alteredStatus.OnAttacked != null)
             {
+                messages.AddRange(await ActionValidator.Validate(alteredStatus.OnAttacked, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(alteredStatusAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
             }
 
             if (alteredStatus.OnRemove != null)
             {
+                messages.AddRange(await ActionValidator.Validate(alteredStatus.OnRemove, dungeonJson, sampleDungeon));
                 messages.AddRange(await ActionValidator.Validate(alteredStatusAsInstance.OnRemove, dungeonJson, sampleDungeon));
             }
 

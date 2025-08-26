@@ -33,7 +33,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (tileType.OnStood != null)
             {
-                var actionInstance = ActionWithEffects.Create(tileType.OnStood);
+                var actionInstance = ActionWithEffects.Create(tileType.OnStood, sampleDungeon.ActionSchools);
                 messages.AddRange(await ActionValidator.Validate(actionInstance, dungeonJson, sampleDungeon));
             }
 

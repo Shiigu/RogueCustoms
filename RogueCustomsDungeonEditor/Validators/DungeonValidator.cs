@@ -32,6 +32,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> FactionValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> StatValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ElementValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
+        public DungeonValidationMessages ActionSchoolValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -66,13 +67,14 @@ namespace RogueCustomsDungeonEditor.Validators
             
             }
 
-            var totalSteps = DungeonJson.Locales.Count 
-                + DungeonJson.TileTypeInfos.Count 
-                + DungeonJson.TileSetInfos.Count 
+            var totalSteps = DungeonJson.Locales.Count
+                + DungeonJson.TileTypeInfos.Count
+                + DungeonJson.TileSetInfos.Count
                 + DungeonJson.FloorInfos.Count
                 + DungeonJson.FactionInfos.Count
                 + DungeonJson.CharacterStats.Count
                 + DungeonJson.ElementInfos.Count
+                + DungeonJson.ActionSchoolInfos.Count
                 + DungeonJson.PlayerClasses.Count
                 + DungeonJson.NPCs.Count
                 + DungeonJson.Items.Count
@@ -168,6 +170,10 @@ namespace RogueCustomsDungeonEditor.Validators
                 ElementValidationMessages.Add((elementInfo.Id, await DungeonElementValidator.Validate(elementInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Element {elementInfo.Id} Validation complete!", true);
             }
+
+            UpdateProgressLabel($"Running Action School Validation...", false);
+            ActionSchoolValidationMessages = DungeonActionSchoolValidator.Validate(DungeonJson);
+            UpdateProgressLabel($"Action School Validation complete!", true);
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {

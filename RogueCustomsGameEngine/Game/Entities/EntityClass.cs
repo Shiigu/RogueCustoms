@@ -89,7 +89,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnRemove { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos)
+        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos, List<ActionSchool> actionSchools)
         {
             Id = classInfo.Id;
             Name = Locale[classInfo.Name];
@@ -114,12 +114,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
-                OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart);
+                OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart, actionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, itemInfo.OnAttack);
-                OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked);
-                OnDeath = ActionWithEffects.Create(itemInfo.OnDeath);
-                OnUse = ActionWithEffects.Create(itemInfo.OnUse);
+                MapActions(OnAttack, itemInfo.OnAttack, actionSchools);
+                OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked, actionSchools);
+                OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, actionSchools);
+                OnUse = ActionWithEffects.Create(itemInfo.OnUse, actionSchools);
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
@@ -179,12 +179,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = playerClassInfo.InventorySize;
-                OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart);
+                OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart, actionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, playerClassInfo.OnAttack);
-                OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked);
-                OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath);
-                OnLevelUp = ActionWithEffects.Create(playerClassInfo.OnLevelUp);
+                MapActions(OnAttack, playerClassInfo.OnAttack, actionSchools);
+                OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked, actionSchools);
+                OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath, actionSchools);
+                OnLevelUp = ActionWithEffects.Create(playerClassInfo.OnLevelUp, actionSchools);
                 EntityType = EntityType.Player;
                 StartsVisible = playerClassInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
@@ -251,12 +251,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = npcInfo.InventorySize;
-                OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart);
+                OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart, actionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, npcInfo.OnAttack);
-                OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked);
-                OnDeath = ActionWithEffects.Create(npcInfo.OnDeath);
-                OnLevelUp = ActionWithEffects.Create(npcInfo.OnLevelUp);
+                MapActions(OnAttack, npcInfo.OnAttack, actionSchools);
+                OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked, actionSchools);
+                OnDeath = ActionWithEffects.Create(npcInfo.OnDeath, actionSchools);
+                OnLevelUp = ActionWithEffects.Create(npcInfo.OnLevelUp, actionSchools);
 
                 EntityType = EntityType.NPC;
                 StartsVisible = npcInfo.StartsVisible;
@@ -266,9 +266,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
                 WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;
-                OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn);
+                OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn, actionSchools);
                 OnInteracted = new List<ActionWithEffects>();
-                MapActions(OnInteracted, npcInfo.OnInteracted);
+                MapActions(OnInteracted, npcInfo.OnInteracted, actionSchools);
             }
             else if (classInfo is TrapInfo trapInfo)
             {
@@ -276,7 +276,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Power = trapInfo.Power;
                 StartsVisible = trapInfo.StartsVisible;
                 Passable = true;
-                OnStepped = ActionWithEffects.Create(trapInfo.OnStepped);
+                OnStepped = ActionWithEffects.Create(trapInfo.OnStepped, actionSchools);
             }
             else if (classInfo is AlteredStatusInfo alteredStatusInfo)
             {
@@ -286,17 +286,17 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CanOverwrite = alteredStatusInfo.CanOverwrite;
                 CleanseOnFloorChange = alteredStatusInfo.CleanseOnFloorChange;
                 CleansedByCleanseActions = alteredStatusInfo.CleansedByCleanseActions;
-                OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart);
-                OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply);
-                OnAttacked = ActionWithEffects.Create(alteredStatusInfo.OnAttacked);
-                BeforeAttack = ActionWithEffects.Create(alteredStatusInfo.BeforeAttack);
-                OnRemove = ActionWithEffects.Create(alteredStatusInfo.OnRemove);
+                OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart, actionSchools);
+                OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply, actionSchools);
+                OnAttacked = ActionWithEffects.Create(alteredStatusInfo.OnAttacked, actionSchools);
+                BeforeAttack = ActionWithEffects.Create(alteredStatusInfo.BeforeAttack, actionSchools);
+                OnRemove = ActionWithEffects.Create(alteredStatusInfo.OnRemove, actionSchools);
             }
         }
 
-        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList)
+        protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList, List<ActionSchool> actionSchools)
         {
-            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa)));
+            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa, actionSchools)));
         }
     }
     #pragma warning restore CS8601 // Posible asignación de referencia nula

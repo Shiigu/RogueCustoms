@@ -58,12 +58,14 @@ namespace RogueCustomsDungeonEditor
             TilesetTab = new Controls.Tabs.TilesetTab();
             tpFloorInfos = new TabPage();
             FloorGroupTab = new Controls.Tabs.FloorGroupTab();
+            tbActionSchoolInfos = new TabPage();
+            ActionSchoolsTab = new Controls.Tabs.ActionSchoolsTab();
+            tbElementInfos = new TabPage();
+            ElementTab = new Controls.Tabs.ElementTab();
             tpFactionInfos = new TabPage();
             FactionTab = new Controls.Tabs.FactionTab();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
-            tbElementInfos = new TabPage();
-            ElementTab = new Controls.Tabs.ElementTab();
             tpPlayerClass = new TabPage();
             PlayerClassTab = new Controls.Tabs.PlayerClassTab();
             tpNPC = new TabPage();
@@ -88,9 +90,10 @@ namespace RogueCustomsDungeonEditor
             tpTileTypeInfo.SuspendLayout();
             tpTileSetInfos.SuspendLayout();
             tpFloorInfos.SuspendLayout();
+            tbActionSchoolInfos.SuspendLayout();
+            tbElementInfos.SuspendLayout();
             tpFactionInfos.SuspendLayout();
             tbStatInfos.SuspendLayout();
-            tbElementInfos.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
             tpItem.SuspendLayout();
@@ -119,7 +122,7 @@ namespace RogueCustomsDungeonEditor
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -267,9 +270,10 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpTileTypeInfo);
             tbTabs.Controls.Add(tpTileSetInfos);
             tbTabs.Controls.Add(tpFloorInfos);
+            tbTabs.Controls.Add(tbActionSchoolInfos);
+            tbTabs.Controls.Add(tbElementInfos);
             tbTabs.Controls.Add(tpFactionInfos);
             tbTabs.Controls.Add(tbStatInfos);
-            tbTabs.Controls.Add(tbElementInfos);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
             tbTabs.Controls.Add(tpItem);
@@ -383,6 +387,45 @@ namespace RogueCustomsDungeonEditor
             FloorGroupTab.Size = new System.Drawing.Size(708, 399);
             FloorGroupTab.TabIndex = 0;
             // 
+            // tbActionSchoolInfos
+            // 
+            tbActionSchoolInfos.Controls.Add(ActionSchoolsTab);
+            tbActionSchoolInfos.Location = new System.Drawing.Point(4, 24);
+            tbActionSchoolInfos.Name = "tbActionSchoolInfos";
+            tbActionSchoolInfos.Padding = new Padding(3);
+            tbActionSchoolInfos.Size = new System.Drawing.Size(740, 356);
+            tbActionSchoolInfos.TabIndex = 15;
+            tbActionSchoolInfos.Text = "Action Schools";
+            tbActionSchoolInfos.UseVisualStyleBackColor = true;
+            // 
+            // ActionSchoolsTab
+            // 
+            ActionSchoolsTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ActionSchoolsTab.Dock = DockStyle.Fill;
+            ActionSchoolsTab.Location = new System.Drawing.Point(3, 3);
+            ActionSchoolsTab.Name = "ActionSchoolsTab";
+            ActionSchoolsTab.Size = new System.Drawing.Size(734, 350);
+            ActionSchoolsTab.TabIndex = 0;
+            // 
+            // tbElementInfos
+            // 
+            tbElementInfos.Controls.Add(ElementTab);
+            tbElementInfos.Location = new System.Drawing.Point(4, 24);
+            tbElementInfos.Name = "tbElementInfos";
+            tbElementInfos.Size = new System.Drawing.Size(740, 356);
+            tbElementInfos.TabIndex = 13;
+            tbElementInfos.Text = "Attack Element";
+            tbElementInfos.UseVisualStyleBackColor = true;
+            // 
+            // ElementTab
+            // 
+            ElementTab.AutoSize = true;
+            ElementTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ElementTab.Location = new System.Drawing.Point(0, 0);
+            ElementTab.Name = "ElementTab";
+            ElementTab.Size = new System.Drawing.Size(657, 198);
+            ElementTab.TabIndex = 0;
+            // 
             // tpFactionInfos
             // 
             tpFactionInfos.Controls.Add(FactionTab);
@@ -419,27 +462,8 @@ namespace RogueCustomsDungeonEditor
             StatTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             StatTab.Location = new System.Drawing.Point(0, 0);
             StatTab.Name = "StatTab";
-            StatTab.Size = new System.Drawing.Size(657, 166);
+            StatTab.Size = new System.Drawing.Size(656, 166);
             StatTab.TabIndex = 0;
-            // 
-            // tbElementInfos
-            // 
-            tbElementInfos.Controls.Add(ElementTab);
-            tbElementInfos.Location = new System.Drawing.Point(4, 24);
-            tbElementInfos.Name = "tbElementInfos";
-            tbElementInfos.Size = new System.Drawing.Size(740, 356);
-            tbElementInfos.TabIndex = 13;
-            tbElementInfos.Text = "Attack Element";
-            tbElementInfos.UseVisualStyleBackColor = true;
-            // 
-            // ElementTab
-            // 
-            ElementTab.AutoSize = true;
-            ElementTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ElementTab.Location = new System.Drawing.Point(0, 0);
-            ElementTab.Name = "ElementTab";
-            ElementTab.Size = new System.Drawing.Size(657, 198);
-            ElementTab.TabIndex = 0;
             // 
             // tpPlayerClass
             // 
@@ -458,7 +482,7 @@ namespace RogueCustomsDungeonEditor
             PlayerClassTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             PlayerClassTab.Location = new System.Drawing.Point(5, 0);
             PlayerClassTab.Name = "PlayerClassTab";
-            PlayerClassTab.Size = new System.Drawing.Size(714, 732);
+            PlayerClassTab.Size = new System.Drawing.Size(714, 797);
             PlayerClassTab.TabIndex = 0;
             // 
             // tpNPC
@@ -478,7 +502,7 @@ namespace RogueCustomsDungeonEditor
             NPCTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             NPCTab.Location = new System.Drawing.Point(4, 3);
             NPCTab.Name = "NPCTab";
-            NPCTab.Size = new System.Drawing.Size(714, 819);
+            NPCTab.Size = new System.Drawing.Size(714, 853);
             NPCTab.TabIndex = 0;
             // 
             // tpItem
@@ -616,12 +640,13 @@ namespace RogueCustomsDungeonEditor
             tpTileSetInfos.PerformLayout();
             tpFloorInfos.ResumeLayout(false);
             tpFloorInfos.PerformLayout();
+            tbActionSchoolInfos.ResumeLayout(false);
+            tbElementInfos.ResumeLayout(false);
+            tbElementInfos.PerformLayout();
             tpFactionInfos.ResumeLayout(false);
             tpFactionInfos.PerformLayout();
             tbStatInfos.ResumeLayout(false);
             tbStatInfos.PerformLayout();
-            tbElementInfos.ResumeLayout(false);
-            tbElementInfos.PerformLayout();
             tpPlayerClass.ResumeLayout(false);
             tpPlayerClass.PerformLayout();
             tpNPC.ResumeLayout(false);
@@ -689,5 +714,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ElementTab ElementTab;
         private TabPage tpScripts;
         private Controls.Tabs.ScriptsTab ScriptsTab;
+        private TabPage tbActionSchoolInfos;
+        private Controls.Tabs.ActionSchoolsTab ActionSchoolsTab;
     }
 }
