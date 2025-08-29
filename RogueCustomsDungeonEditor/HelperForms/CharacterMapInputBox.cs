@@ -41,6 +41,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Instance ??= new CharacterMapInputBox(defaultSelection);
             Instance.Saved = false;
             Instance.CharacterToSave = defaultSelection;
+
+            foreach(Label charLabel in Instance.tlpCharacters.Controls)
+            {
+                if (charLabel.Text[0] == Instance.CharacterToSave)
+                    Instance.CharacterLabel_Click(charLabel, EventArgs.Empty);
+            }
+
             Instance.ShowDialog();
             return (Instance.Saved, Instance.CharacterToSave);
         }

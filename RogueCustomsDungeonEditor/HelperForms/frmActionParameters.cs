@@ -620,21 +620,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             colorButton.Click += (sender, e) =>
             {
-                var colorDialog = new ColorDialog();
-                try
+                var initialColor = !string.IsNullOrWhiteSpace(colorTextBox.Text) ? colorTextBox.Text.ToColor() : Color.White;
+                (DialogResult Result, Color pickedColor) = ColorDialogHandler.Show(initialColor);
+                if (Result == DialogResult.OK)
                 {
-                    colorDialog.Color = (!string.IsNullOrWhiteSpace(colorTextBox.Text)) ? colorTextBox.Text.ToColor() : Color.White;
-                    colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-                }
-                catch
-                {
-                    // Ignore invalid colors
-                }
-
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    colorTextBox.Text = new GameColor(colorDialog.Color).ToString();
-                    colorButton.BackColor = colorDialog.Color;
+                    colorTextBox.Text = new GameColor(pickedColor).ToString();
+                    colorButton.BackColor = pickedColor;
                     RecalculateFields();
                 }
             };

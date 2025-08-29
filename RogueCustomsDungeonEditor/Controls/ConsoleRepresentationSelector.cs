@@ -127,27 +127,19 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void btnChangeConsoleCharacterForeColor_Click(object sender, EventArgs e)
         {
-            var colorDialog = new ColorDialog
+            (DialogResult Result, Color pickedColor) = ColorDialogHandler.Show(lblConsoleRepresentation.ForeColor);
+            if (Result == DialogResult.OK)
             {
-                Color = lblConsoleRepresentation.ForeColor
-            };
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                ForegroundColor = new GameColor(colorDialog.Color);
+                ForegroundColor = new GameColor(pickedColor);
             }
         }
 
         private void btnChangeConsoleCharacterBackColor_Click(object sender, EventArgs e)
         {
-            var colorDialog = new ColorDialog
+            (DialogResult Result, Color pickedColor) = ColorDialogHandler.Show(lblConsoleRepresentation.BackColor);
+            if (Result == DialogResult.OK)
             {
-                Color = lblConsoleRepresentation.BackColor
-            };
-            colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                BackgroundColor = new GameColor(colorDialog.Color);
+                BackgroundColor = new GameColor(pickedColor);
             }
         }
 
