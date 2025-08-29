@@ -55,6 +55,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<string> ValidAlteredStatuses { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> ValidActionSchools { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public EffectTypeData EffectTypeData { get; private set; }
 
         private readonly DungeonInfo ActiveDungeon;
@@ -80,7 +82,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     var newParamsList = new List<Parameter>(paramsData.Parameters.Count);
                     for (int i = 0; i < EffectToSave.Params.Length; i++)
                     {
-                        var paramData = paramsData.Parameters.FirstOrDefault(param => param.InternalName.Equals(EffectToSave.Params[i].ParamName));
+                        var paramData = paramsData.Parameters.FirstOrDefault(param => param.InternalName.Equals(EffectToSave.Params[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
                         if (paramData == null) continue;
                         if (paramData.Type != ParameterType.Table)
                         {
@@ -88,7 +90,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             {
                                 ParamName = paramData.InternalName
                             });
-                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
+                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
                             newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
                         }
                         else
@@ -97,7 +99,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             {
                                 ParamName = paramData.InternalName
                             });
-                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName));
+                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
                             var existingId = existingParam.Value.Split('|').FirstOrDefault();
                             newParamsList[i].Value = existingParam != null ? existingParam.Value : null;
                         }
@@ -121,16 +123,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 }
             }
             EffectTypeData = paramsData;
-            ValidNPCs = validNPCs;
-            ValidNPCs.Add("<<CUSTOM>>");
-            ValidItems = validItems;
-            ValidItems.Add("<<CUSTOM>>");
-            ValidTraps = validTraps;
-            ValidTraps.Add("<<CUSTOM>>");
-            ValidTileTypes = validTileTypes;
-            ValidTileTypes.Add("<<CUSTOM>>");
-            ValidAlteredStatuses = validAlteredStatuses;
-            ValidAlteredStatuses.Add("<<CUSTOM>>");
+            ValidNPCs = validNPCs.Union(["<<CUSTOM>>"]).ToList();
+            ValidItems = validItems.Union(["<<CUSTOM>>"]).ToList();
+            ValidTraps = validTraps.Union(["<<CUSTOM>>"]).ToList();
+            ValidTileTypes = validTileTypes.Union(["<<CUSTOM>>"]).ToList();
+            ValidAlteredStatuses = validAlteredStatuses.Union(["<<CUSTOM>>"]).ToList();
+            ValidActionSchools = activeDungeon.ActionSchoolInfos.Select(asi => asi.Id).Union(["All", "<<CUSTOM>>"]).ToList();
 
             var fontPath = Path.Combine(Application.StartupPath, "Resources\\PxPlus_Tandy1K-II_200L.ttf");
             var fontName = "PxPlus Tandy1K-II 200L";
@@ -236,6 +234,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.TileType => CreateComboBox(parameter, originalValue),
                     ParameterType.Trap => CreateComboBox(parameter, originalValue),
                     ParameterType.AlteredStatus => CreateComboBox(parameter, originalValue),
+                    ParameterType.ActionSchool => CreateComboBox(parameter, originalValue),
                     ParameterType.BooleanExpression => CreateFormulaTextBox(originalValue, parameter),
                     ParameterType.Key => new TextBox { Text = originalValue ?? parameter.Default },
                     ParameterType.Area => CreateComboBox(parameter, originalValue),
@@ -380,6 +379,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ParameterType.Trap => ValidTraps,
                 ParameterType.TileType => ValidTileTypes,
                 ParameterType.AlteredStatus => ValidAlteredStatuses,
+                ParameterType.ActionSchool => ValidActionSchools,
                 ParameterType.Area => GetAreas(),
                 ParameterType.Stat => ActiveDungeon.CharacterStats.Select(s => s.Id),
                 ParameterType.Element => ActiveDungeon.ElementInfos.Select(e => e.Id),
@@ -430,6 +430,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
 
             comboBox.Leave += (sender, e) => RecalculateFields();
+            comboBox.SelectedValueChanged += (sender, e) => RecalculateFields();
+            comboBox.TextChanged += (sender, e) => RecalculateFields();
 
             return comboBox;
         }
@@ -825,6 +827,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Trap:
                     case ParameterType.TileType:
                     case ParameterType.AlteredStatus:
+                    case ParameterType.ActionSchool:
                     case ParameterType.Area:
                     case ParameterType.Stat:
                     case ParameterType.Element:

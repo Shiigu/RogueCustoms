@@ -315,9 +315,9 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task RefreshCooldownsAndUpdateTurnLength()
         {
-            OnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnAttacked?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            OnTurnStart?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnAttack?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnAttacked?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            OnTurnStart?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             foreach (var modification in StatModifications)
             {
                 modification.Modifications?.Where(a => a.RemainingTurns > 0).ForEach(a => a.RemainingTurns--);

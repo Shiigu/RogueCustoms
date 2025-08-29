@@ -66,12 +66,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Task RefreshCooldownsAndUpdateTurnLength()
         {
-            OwnOnAttack?.Where(a => a.CooldownBetweenUses > 0 && a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
-            if (OwnOnAttacked?.CooldownBetweenUses > 0 && OwnOnAttacked?.CurrentCooldown > 0)
+            OwnOnAttack?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
+            if (OwnOnAttacked?.CurrentCooldown > 0)
                 OwnOnAttacked.CurrentCooldown--;
-            if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
+            if (OwnOnTurnStart?.CurrentCooldown > 0)
                 OwnOnTurnStart.CurrentCooldown--;
-            if (OnUse?.CooldownBetweenUses > 0 && OnUse?.CurrentCooldown > 0)
+            if (OnUse?.CurrentCooldown > 0)
                 OnUse.CurrentCooldown--;
             return Task.CompletedTask;
         }

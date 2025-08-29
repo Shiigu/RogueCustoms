@@ -196,6 +196,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             OnTileActions.SetActionParams(Rng, this);
             ControlBlockActions.SetActionParams(Rng, this);
             PromptActions.SetActionParams(Rng, this);
+            OnActionActions.SetActionParams(Rng, this);
             ExpressionParser.Setup(Rng, this);
             if (FloorConfigurationToUse.OnFloorStart != null)
                 FloorConfigurationToUse.OnFloorStart.Map = this;
@@ -1082,12 +1083,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     var totalGuaranteedNPCs = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.MinimumInFirstTurn);
                     foreach (var possibleNPC in FloorConfigurationToUse.PossibleMonsters)
                     {
-                        if (possibleNPC.MinimumInFirstTurn <= 0) continue;
-                        var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
-                        var npc = await AddEntity(possibleNPC.Class.Id, level) as NonPlayableCharacter;
-                        npc.SpawnedViaMonsterHouse = false;
-                        possibleNPC.TotalGeneratedInFloor++;
-                        LastMonsterGenerationTurn = TurnCount;
+                        for (int i = 0; i < possibleNPC.MinimumInFirstTurn; i++)
+                        {
+                            var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
+                            var npc = await AddEntity(possibleNPC.Class.Id, level) as NonPlayableCharacter;
+                            npc.SpawnedViaMonsterHouse = false;
+                            possibleNPC.TotalGeneratedInFloor++;
+                            LastMonsterGenerationTurn = TurnCount;
+                        }
                     }
                     var minimumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMinMonstersAtStart - totalGuaranteedNPCs);
                     var maximumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor - totalGuaranteedNPCs);
@@ -1106,9 +1109,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     var totalGuaranteedItems = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.MinimumInFirstTurn);
                     foreach (var possibleItem in FloorConfigurationToUse.PossibleItems)
                     {
-                        if (possibleItem.MinimumInFirstTurn <= 0) continue;
-                        await AddEntity(possibleItem.Class.Id);
-                        possibleItem.TotalGeneratedInFloor++;
+                        for (int i = 0; i < possibleItem.MinimumInFirstTurn; i++)
+                        {
+                            await AddEntity(possibleItem.Class.Id);
+                            possibleItem.TotalGeneratedInFloor++;
+                        }
                     }
                     var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinItemsInFloor - totalGuaranteedItems);
                     var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxItemsInFloor - totalGuaranteedItems);
@@ -1128,9 +1133,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     var totalGuaranteedTraps = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.MinimumInFirstTurn);
                     foreach (var possibleTrap in FloorConfigurationToUse.PossibleTraps)
                     {
-                        if (possibleTrap.MinimumInFirstTurn <= 0) continue;
-                        await AddEntity(possibleTrap.Class.Id);
-                        possibleTrap.TotalGeneratedInFloor++;
+                        for (int i = 0; i < possibleTrap.MinimumInFirstTurn; i++)
+                        {
+                            await AddEntity(possibleTrap.Class.Id);
+                            possibleTrap.TotalGeneratedInFloor++;
+                        }
                     }
                     var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinTrapsInFloor - totalGuaranteedTraps);
                     var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxTrapsInFloor - totalGuaranteedTraps);

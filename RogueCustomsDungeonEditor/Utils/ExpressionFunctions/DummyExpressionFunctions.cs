@@ -118,12 +118,18 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         {
             return "1";
         }
+
         public static string CURRENTFLOORLEVEL(EffectCallerParams args, string[] parameters)
         {
             return "1";
         }
 
         public static string ISINVENTORYFULL(EffectCallerParams args, string[] parameters)
+        {
+            return "false";
+        }
+
+        public static string ROLLANACTION(EffectCallerParams args, string[] parameters)
         {
             return "false";
         }

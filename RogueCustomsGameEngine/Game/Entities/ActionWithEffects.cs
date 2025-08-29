@@ -61,7 +61,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool FinishesTurnWhenUsed { get; set; }
         public ActionSchool School { get; set; }
 
-        public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && (CooldownBetweenUses == 0 || CurrentCooldown == 0);
+        public bool MayBeUsed => (MaximumUses == 0 || CurrentUses < MaximumUses) && CurrentCooldown == 0;
         #endregion
 
         public Effect Effect { get; set; }                       // What is going to be executed when the action is called

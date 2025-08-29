@@ -63,7 +63,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Task RefreshCooldownsAndUpdateTurnLength()
         {
-            if (OnStepped?.CooldownBetweenUses > 0 && OnStepped?.CurrentCooldown > 0)
+            if (OnStepped?.CurrentCooldown > 0)
                 OnStepped.CurrentCooldown--;
             return Task.CompletedTask;
         }

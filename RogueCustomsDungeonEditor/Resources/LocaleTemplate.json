@@ -432,6 +432,18 @@
     {
       "Key": "SelectItemWindowText",
       "Value": "Select an Item"
+    },
+    {
+      "Key": "CharacterActionCooldownRemoved",
+      "Value": "{CharacterName}'s {ActionName} is no longer on Cooldown!"
+    },
+    {
+      "Key": "CharacterActionCooldownIncreased",
+      "Value": "{CharacterName}'s {ActionName}'s Cooldown got increased by {Amount}!"
+    },
+    {
+      "Key": "CharacterActionCooldownDecreased",
+      "Value": "{CharacterName}'s {ActionName}'s Cooldown got decreased by {Amount}!"
     }
   ]
 }
