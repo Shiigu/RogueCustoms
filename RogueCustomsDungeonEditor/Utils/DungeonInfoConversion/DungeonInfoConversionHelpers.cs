@@ -16,7 +16,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
 {
     public static class DungeonInfoConversionHelpers
@@ -54,13 +56,20 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             }
 
             var finalDungeon = jsonRoot.Deserialize<DungeonInfo>(JsonSerializerOptions);
+            var localesWereAdded = false;
 
             foreach (var localeInfo in finalDungeon.Locales)
             {
-                localeInfo.AddMissingMandatoryLocalesIfNeeded(localeTemplate, mandatoryLocaleKeys);
+                localesWereAdded = localesWereAdded || localeInfo.AddMissingMandatoryLocalesIfNeeded(localeTemplate, mandatoryLocaleKeys);
+            }
+
+            if(localesWereAdded)
+            {
+                MessageBox.Show($"Dungeon has been found to lack certain required Locale entries.\n\nThey have been added for every Locale with a default value.\n\nRemember to update them accordingly, and save the Dungeon afterwards.", "Open Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return finalDungeon!;
         }
     }
 }
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

@@ -90,7 +90,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Task RefreshCooldownsAndUpdateTurnLength()
         {
-            if (OwnOnTurnStart?.CooldownBetweenUses > 0 && OwnOnTurnStart?.CurrentCooldown > 0)
+            if (OwnOnTurnStart?.CurrentCooldown > 0)
                 OwnOnTurnStart.CurrentCooldown--;
             if (RemainingTurns > 0)
                 RemainingTurns--;

@@ -77,6 +77,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 // Do nothing if the Font can't be found
             }
 
+            if (TestDungeon == null)
+            {
+                TestDungeon = new Dungeon(ActiveDungeon, ActiveDungeon.Locales[0].Language, false);
+                TestDungeon.PromptInvoker = new DummyPromptInvoker();
+                TestDungeon.PlayerClass = TestDungeon.Classes.First(c => c.EntityType == EntityType.Player);
+            }
+            TestAction = ActionWithEffects.Create(actionToTest, TestDungeon.ActionSchools);
+
             crsSource.Visible = true;
             crsSource.Character = 'U';
             crsSource.BackgroundColor = new GameColor(Color.Black);
@@ -217,15 +225,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 TestDungeon = new Dungeon(ActiveDungeon, ActiveDungeon.Locales[0].Language, false);
                 TestDungeon.PromptInvoker = new DummyPromptInvoker();
                 TestDungeon.PlayerClass = TestDungeon.Classes.First(c => c.EntityType == EntityType.Player);
-                await TestDungeon.GenerateDebugMap();
             }
+
+            await TestDungeon.GenerateDebugMap();
 
             TestDungeon.CurrentEntityId = 1;
             TestDungeon.CurrentFloor.AICharacters.Clear();
             TestDungeon.CurrentFloor.Items.Clear();
             TestDungeon.CurrentFloor.Traps.Clear();
             TestDungeon.CurrentFloor.Keys.Clear();
-            TestAction = ActionWithEffects.Create(actionToTest, TestDungeon.ActionSchools);
 
             foreach (var tile in TestDungeon.CurrentFloor.Tiles.Where(t => t.Type != t.BaseType))
             {

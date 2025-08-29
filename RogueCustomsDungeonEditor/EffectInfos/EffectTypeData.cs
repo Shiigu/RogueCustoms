@@ -93,6 +93,22 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                     if (fromInventoryParsed)
                         return "From Inventory";
                     return "Out of Thin Air";
+                case "actionsfromschool":
+                    var actionSchoolParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("ActionSchool", StringComparison.InvariantCultureIgnoreCase));
+                    if (actionSchoolParam == null) return "[UNDEFINED]";
+                    var actionSchoolValue = actionSchoolParam.Value;
+                    if (actionSchoolValue.Equals("All", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return "All Actions";
+                    }
+                    else if (actionSchoolValue.Equals("<<CUSTOM>>", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var actionIdParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("CustomId", StringComparison.InvariantCultureIgnoreCase));
+                        if (actionIdParam == null) return "[UNDEFINED]";
+                        var actionIdValue = actionIdParam.Value;
+                        return $"Action {actionIdValue}";
+                    }
+                    return $"All {actionSchoolValue} Actions";
                 default:
                     return "[UNDEFINED]";
             }
@@ -139,6 +155,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         NPC,
         Item,
         Trap,
+        ActionSchool,
         TileType,
         AlteredStatus,
         Number,

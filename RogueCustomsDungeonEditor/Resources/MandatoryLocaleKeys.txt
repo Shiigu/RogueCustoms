@@ -107,3 +107,6 @@ MonsterHouseWarningLogMessage
 MonsterHouseWarningMessage
 MonsterHouseWarningHeader
 SelectItemWindowText
+CharacterActionCooldownRemoved
+CharacterActionCooldownIncreased
+CharacterActionCooldownDecreased

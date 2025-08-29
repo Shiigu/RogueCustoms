@@ -83,7 +83,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 {
                     var isValidLocale = true;
                     var key = row.Cells[0].Value.ToString();
-                    var value = row.Cells[1].Value.ToString();
+                    var value = row.Cells[1].Value.ToString().Replace(Environment.NewLine, "\n");
                     if (string.IsNullOrWhiteSpace(key))
                     {
                         isValidLocale = false;

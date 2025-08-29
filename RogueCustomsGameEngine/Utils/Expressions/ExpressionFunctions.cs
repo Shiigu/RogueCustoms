@@ -293,6 +293,22 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return (c.Inventory.Count == c.InventorySize).ToString();
         }
 
+        public static string ROLLANACTION(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length > 1) throw new ArgumentException("Invalid parameters for RollAnAction.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = GetEntityByName(entityName, "RollAnAction", args);
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in RollAnAction.");
+
+            var actionsNotFromConsumables = c.OnAttack.Where(oa => oa.User is not Item i || i.EntityType != EntityType.Consumable).ToList();
+
+            return actionsNotFromConsumables.Count > 0 ? actionsNotFromConsumables.TakeRandomElement(Rng).SelectionId : "<<NULL>>";
+        }
+
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch

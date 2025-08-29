@@ -151,20 +151,25 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chosenOption))
+            {
+                if (!Map.HasFlag(optionFlag))
+                {
+                    Map.CreateFlag(optionFlag, chosenOption, true);
+                }
+                else
+                {
+                    Map.SetFlagValue(optionFlag, chosenOption);
+                }
                 Map.DisplayEvents = new();
                 Map.Snapshot = new(Map.Dungeon, Map);
+
+                return true;
             }
 
-            if (!Map.HasFlag(optionFlag))
-            {
-                Map.CreateFlag(optionFlag, chosenOption, true);
-            }
-            else
-            {
-                Map.SetFlagValue(optionFlag, chosenOption);
-            }
-
-            return !string.IsNullOrWhiteSpace(chosenOption);
+            return false;
         }
 
         public static async Task<bool> SelectOfferedItem(EffectCallerParams Args)
@@ -209,20 +214,25 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chosenOption))
+            {
+                if (!Map.HasFlag(optionFlag))
+                {
+                    Map.CreateFlag(optionFlag, chosenOption, true);
+                }
+                else
+                {
+                    Map.SetFlagValue(optionFlag, chosenOption);
+                }
                 Map.DisplayEvents = new();
                 Map.Snapshot = new(Map.Dungeon, Map);
+
+                return true;
             }
 
-            if (!Map.HasFlag(optionFlag))
-            {
-                Map.CreateFlag(optionFlag, chosenOption, true);
-            }
-            else
-            {
-                Map.SetFlagValue(optionFlag, chosenOption);
-            }
-
-            return !string.IsNullOrWhiteSpace(chosenOption);
+            return false;
         }
 
         public static async Task<bool> SelectAction(EffectCallerParams Args)
@@ -248,8 +258,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             var optionFlag = paramsObject.OptionFlag;
+            var schoolFlag = paramsObject.SchoolFlag;
 
-            string? chosenOption;
+            string? chosenOption = null;
+            string? chosenOptionSchool = null;
+
             if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
             {
                 var randomChoice = optionDtos.Actions.TakeRandomElementWithWeights(i => 50, Rng);
@@ -271,20 +284,37 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
                 chosenOption = await Map.OpenSelectAction(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+            }
+
+            if (chosenOption != null)
+            {
+                chosenOptionSchool = actionsNotFromConsumables.Find(a => a.SelectionId == chosenOption).School.Id;
+
+                if (!Map.HasFlag(optionFlag))
+                {
+                    Map.CreateFlag(optionFlag, chosenOption, true);
+                }
+                else
+                {
+                    Map.SetFlagValue(optionFlag, chosenOption);
+                }
+
+                if (!Map.HasFlag(schoolFlag))
+                {
+                    Map.CreateFlag(schoolFlag, chosenOptionSchool, true);
+                }
+                else
+                {
+                    Map.SetFlagValue(schoolFlag, chosenOptionSchool);
+                }
+
                 Map.DisplayEvents = new();
                 Map.Snapshot = new(Map.Dungeon, Map);
+
+                return true;
             }
 
-            if (!Map.HasFlag(optionFlag))
-            {
-                Map.CreateFlag(optionFlag, chosenOption, true);
-            }
-            else
-            {
-                Map.SetFlagValue(optionFlag, chosenOption);
-            }
-
-            return !string.IsNullOrWhiteSpace(chosenOption);
+            return false;
         }
     }
 
