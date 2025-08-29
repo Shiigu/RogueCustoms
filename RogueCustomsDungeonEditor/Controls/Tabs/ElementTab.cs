@@ -100,19 +100,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void btnElementColor_Click(object sender, EventArgs e)
         {
-            var colorDialog = new ColorDialog();
-            try
+            (DialogResult Result, Color pickedColor) = ColorDialogHandler.Show(btnElementColor.BackColor);
+            if (Result == DialogResult.OK)
             {
-                colorDialog.Color = btnElementColor.BackColor;
-                colorDialog.CustomColors = new int[] { ColorTranslator.ToOle(colorDialog.Color) };
-            }
-            catch
-            {
-                // Ignore invalid colors.
-            }
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                btnElementColor.BackColor = colorDialog.Color;
+                btnElementColor.BackColor = pickedColor;
             }
         }
 
