@@ -267,9 +267,24 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         public static string ROLLANITEM(EffectCallerParams args, string[] parameters)
         {
-            if (parameters.Length > 0) throw new ArgumentException("Invalid parameters for RollAnItem.");
+            if (parameters.Length > 1) throw new ArgumentException("Invalid parameters for RollAnItem.");
 
-            return Map.PossibleItemClasses.TakeRandomElement(Rng).Id;
+            var acceptableItemClasses = Map.PossibleItemClasses.Except(Map.UndroppableItemClasses).ToList();
+
+            if (parameters.Length == 1)
+            {
+                var specificItemType = parameters[0];
+                acceptableItemClasses = specificItemType.ToLowerInvariant() switch
+                {
+                    "weapon" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList(),
+                    "armor" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList(),
+                    "equippable" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList(),
+                    "consumable" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList(),
+                    _ => throw new ArgumentException("Invalid parameters for RollAnItem."),
+                };
+            }
+
+            return acceptableItemClasses.TakeRandomElement(Rng).Id;
         }
 
         public static string CURRENTFLOORLEVEL(EffectCallerParams args, string[] parameters)
@@ -295,7 +310,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
         public static string ROLLANACTION(EffectCallerParams args, string[] parameters)
         {
-            if (parameters.Length > 1) throw new ArgumentException("Invalid parameters for RollAnAction.");
+            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for RollAnAction.");
 
             var entityName = parameters[0].ToLower();
 
