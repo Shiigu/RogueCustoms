@@ -107,6 +107,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             return success;
         }
+
         public static bool ChangeUses(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();

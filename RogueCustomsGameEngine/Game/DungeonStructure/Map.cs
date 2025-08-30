@@ -120,8 +120,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
         public List<Trap> Traps { get; set; }
 
-        public List<AlteredStatus> PossibleStatuses { get; private set; }
-
         public RngHandler Rng { get; private set; }
         public (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
         private List<(Room RoomA, Room RoomB, Tile ConnectorA, Tile ConnectorB, List<Tile> Tiles)> Hallways { get; set; }
@@ -135,9 +133,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Flag> Flags { get; set; }
 
         public List<EntityClass> PossibleClasses => Dungeon.Classes;
-        public List<EntityClass> PossibleNPCClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.NPC).ToList();
-        public List<EntityClass> PossibleItemClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable).ToList();
-        public List<EntityClass> PossibleTrapClasses => Dungeon.Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
+        public List<EntityClass> PossibleNPCClasses => Dungeon.NPCClasses;
+        public List<EntityClass> PossibleItemClasses => Dungeon.ItemClasses;
+        public List<EntityClass> PossibleTrapClasses => Dungeon.TrapClasses;
+
+        public List<AlteredStatus> PossibleStatuses { get; private set; }
+
+        public List<EntityClass> UndroppableItemClasses => Dungeon.UndroppableItemClasses;
 
         public List<TileType> TileTypes { get; private set; }
 
@@ -183,7 +185,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Messages = new();
             DisplayEvents = new();
             PossibleStatuses = new List<AlteredStatus>();
-            Dungeon.Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
+            Dungeon.AlteredStatusClasses.ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
             SetActionParams();
         }
 

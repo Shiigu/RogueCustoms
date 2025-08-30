@@ -15,6 +15,7 @@ using System.Collections;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Game.Interaction;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -63,6 +64,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Element> Elements { get; set; }
         public List<ActionSchool> ActionSchools { get; set; }
         public List<EntityClass> Classes { get; set; }
+        [JsonIgnore]
+        public List<EntityClass> PlayerClasses => Classes.Where(c => c.EntityType == EntityType.Player).ToList();
+        [JsonIgnore]
+        public List<EntityClass> NPCClasses => Classes.Where(c => c.EntityType == EntityType.NPC).ToList();
+        [JsonIgnore]
+        public List<EntityClass> CharacterClasses => PlayerClasses.Union(NPCClasses).ToList();
+        [JsonIgnore]
+        public List<EntityClass> ItemClasses => Classes.Where(c => c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable).ToList();
+        [JsonIgnore]
+        public List<EntityClass> TrapClasses => Classes.Where(c => c.EntityType == EntityType.Trap).ToList();
+        [JsonIgnore]
+        public List<EntityClass> AlteredStatusClasses => Classes.Where(c => c.EntityType == EntityType.AlteredStatus).ToList();
+
+        public List<EntityClass> UndroppableItemClasses { get; set; }
 
         public List<Faction> Factions { get; private set; }
         public List<TileType> TileTypes { get; private set; }
@@ -111,6 +126,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloorLevel = 1;
             PlayerCharacter = null;
             DungeonStatus = DungeonStatus.Running;
+            UndroppableItemClasses = [];
+            foreach (var itemClass in ItemClasses)
+            {
+                if (CharacterClasses.Any(c => c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.StartingInventoryIds?.Contains(itemClass.Id) == true)) continue;
+                if (FloorTypes.Any(ft => ft.PossibleItems.Any(pi => pi.Class == itemClass))) continue;
+                UndroppableItemClasses.Add(itemClass);
+            }
         }
 
         private void MapFactions()
