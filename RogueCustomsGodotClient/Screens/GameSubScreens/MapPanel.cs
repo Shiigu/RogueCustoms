@@ -222,4 +222,9 @@ public partial class MapPanel : GamePanel
         CursorMapLocation = null;
         Render();
     }
+
+    public bool IsTargeting()
+    {
+        return !_aimingSquare.Disabled;
+    }
 }
