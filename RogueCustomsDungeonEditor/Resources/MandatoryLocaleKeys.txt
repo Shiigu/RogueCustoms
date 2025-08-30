@@ -110,3 +110,6 @@ SelectItemWindowText
 CharacterActionCooldownRemoved
 CharacterActionCooldownIncreased
 CharacterActionCooldownDecreased
+CharacterActionUsesMaximized
+CharacterActionUsesIncreased
+CharacterActionUsesDecreased

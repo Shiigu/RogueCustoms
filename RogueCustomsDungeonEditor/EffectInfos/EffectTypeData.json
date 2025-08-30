@@ -2868,7 +2868,7 @@
       {
         "InternalName": "Target",
         "DisplayName": "Target",
-        "Description": "Whose Interactions will be shown. Generally Target, but can be any Character.",
+        "Description": "Whose Actions will get their Cooldown Modified. Generally Target, but can be any Character.",
         "ParameterType": "ComboBox",
         "Default": "target",
         "ValidValues": [
@@ -2909,8 +2909,8 @@
       },
       {
         "InternalName": "Amount",
-        "DisplayName": "Amount of Turns",
-        "Description": "The Key of the Flag upon which the Id of the selected Action will be stored in. If the flag does not exist, it will be created.",
+        "DisplayName": "Cooldown changes by...",
+        "Description": "Indicates how turns will the Cooldown of the Actions get altered by. Can be any number, but Cooldown will not get dropped any lower than 0.",
         "ParameterType": "Number",
         "Default": "1",
         "ValidValues": [],
@@ -2935,6 +2935,116 @@
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of the Action Cooldown Change (if applicable).",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ChangeUses",
+    "TreeViewDisplayText": "Modify the Uses of ({ActionsFromSchool}) by ({Amount})",
+    "ComboBoxDisplayName": "Modify an Action's Uses",
+    "Description": "Modifies the Uses of one of Target's Interaction Actions by the specified value.\n\nCan modify all Actions, all from a specific School, or one Action in particular.\n\nInteractions from Consumables can't be altered.\n\nReturns true if at least an Action got its Uses modified.\n\nCannot give an amount of Uses higher than the Maximum Uses.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Whose Actions will get their Uses Modified. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "ActionSchool",
+        "DisplayName": "Action School",
+        "Description": "The School whose Actions will get their Uses Modified.",
+        "ParameterType": "ActionSchool",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "CustomId",
+        "DisplayName": "Custom Id",
+        "Description": "The specific Selection Id of the Action that will get its Uses Modified.",
+        "ParameterType": "Text",
+        "Default": "[SelectedOption]",
+        "ValidValues": [],
+        "Required": "{ActionSchool} == \"<<CUSTOM>>\"",
+        "ReadOnly": "{ActionSchool} != \"<<CUSTOM>>\"",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Uses change by...",
+        "Description": "Indicates how Uses the Actions will get (if positive) or lose (if negative). Can be any number, but the Uses of an Action cannot drop lower than 0 nor be higher than the Maximum Uses.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Actions to get their Uses Modified. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of the Action Uses Change (if applicable).",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",
