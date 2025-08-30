@@ -444,6 +444,18 @@
     {
       "Key": "CharacterActionCooldownDecreased",
       "Value": "{CharacterName}'s {ActionName}'s Cooldown got decreased by {Amount}!"
+    },
+    {
+      "Key": "CharacterActionUsesMaximized",
+      "Value": "{CharacterName}'s {ActionName} now has Maximum Uses!"
+    },
+    {
+      "Key": "CharacterActionUsesIncreased",
+      "Value": "{CharacterName}'s {ActionName} has gained {Amount} use(s)!"
+    },
+    {
+      "Key": "CharacterActionUsesDecreased",
+      "Value": "{CharacterName}'s {ActionName} has lost {Amount} use(s)!"
     }
   ]
 }

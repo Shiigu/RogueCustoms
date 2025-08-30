@@ -74,6 +74,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     correspondingActions.Add(correspondingAction);
             }
 
+            bool informThePlayer = paramsObject.InformThePlayer;
+
             foreach (var correspondingAction in correspondingActions)
             {
                 var priorCooldown = correspondingAction.CurrentCooldown;
@@ -84,7 +86,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 var actualCooldownChange = correspondingAction.CurrentCooldown - priorCooldown;
 
-                if (t == Map.Player || Map.Player.CanSee(t))
+                if (informThePlayer && (t == Map.Player || Map.Player.CanSee(t)))
                 {
                     var message = string.Empty;
 
@@ -100,7 +102,81 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 Map.DisplayEvents.Add(($"{t.Name} got {correspondingAction.Name}'s Cooldown modified", events));
 
-                success = true;
+                success = success || actualCooldownChange > 0;
+            }
+
+            return success;
+        }
+        public static bool ChangeUses(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (paramsObject.Target is not Character t)
+                // Target must be a Character
+                return false;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, null, paramsObject);
+
+            if (Rng.RollProbability() > accuracyCheck)
+                return false;
+
+            var success = false;
+
+            string actionSchool = paramsObject.ActionSchool;
+            int usesModifier = (int)paramsObject.Amount;
+
+            if (usesModifier == 0)
+                // Uses Modifier must not be 0
+                return false;
+
+            List<ActionWithEffects> correspondingActions = [];
+
+            if (!actionSchool.Equals("<<CUSTOM>>", StringComparison.InvariantCultureIgnoreCase))
+            {
+                correspondingActions.AddRange(t.OnAttack.Where(oa => oa.MaximumUses > 0 && (actionSchool.Equals("All", StringComparison.InvariantCultureIgnoreCase) || oa.School.Id.Equals(actionSchool, StringComparison.InvariantCultureIgnoreCase))));
+            }
+            else
+            {
+                string actionId = paramsObject.CustomId;
+
+                var correspondingAction = t.OnAttack.Find(oa => oa.MaximumUses > 0 && oa.SelectionId.Equals(actionId, StringComparison.InvariantCultureIgnoreCase));
+
+                if (correspondingAction != null)
+                    correspondingActions.Add(correspondingAction);
+            }
+
+            bool informThePlayer = paramsObject.InformThePlayer;
+
+            foreach (var correspondingAction in correspondingActions)
+            {
+                var priorUses = correspondingAction.CurrentUses;
+                correspondingAction.CurrentCooldown += usesModifier;
+
+                if (correspondingAction.CurrentUses < 0)
+                    correspondingAction.CurrentUses = 0;
+                if (correspondingAction.CurrentUses > correspondingAction.MaximumUses)
+                    correspondingAction.CurrentUses = correspondingAction.MaximumUses;
+
+                var actualUsesChange = correspondingAction.CurrentUses - priorUses;
+
+                if (informThePlayer && (t == Map.Player || Map.Player.CanSee(t)))
+                {
+                    var message = string.Empty;
+
+                    if (correspondingAction.CurrentUses == correspondingAction.MaximumUses)
+                        message = Map.Locale["CharacterActionUsesMaximized"].Format(new { CharacterName = t.Name, ActionName = correspondingAction.Name, Amount = actualUsesChange.ToString() });
+                    else if (actualUsesChange > 0)
+                        message = Map.Locale["CharacterActionUsesIncreased"].Format(new { CharacterName = t.Name, ActionName = correspondingAction.Name, Amount = actualUsesChange.ToString() });
+                    else if (actualUsesChange < 0)
+                        message = Map.Locale["CharacterActionUsesDecreased"].Format(new { CharacterName = t.Name, ActionName = correspondingAction.Name, Amount = actualUsesChange.ToString() });
+
+                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                }
+
+                Map.DisplayEvents.Add(($"{t.Name} got {correspondingAction.Name}'s Uses modified", events));
+
+                success = success || actualUsesChange > 0;
             }
 
             return success;
