@@ -63,11 +63,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task ProcessAI()
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive)
+            if (ExistenceStatus != EntityExistenceStatus.Alive || Map.Player.ExistenceStatus != EntityExistenceStatus.Alive)
             {
                 RemainingMovement = 0;
                 TookAction = true;
                 return;     // Dead entities don't move. Set all the possible flags to ensure they aren't seen as movable.
+                            // Also, disable movement if the player is dead because there's nothing else to do here.
             }
             UpdateKnownCharacterList();
             ConsiderSwappingTargets();
@@ -89,30 +90,35 @@ namespace RogueCustomsGameEngine.Game.Entities
                 VisitedRooms.Add(ContainingRoom);
 
             var formerTarget = CurrentTarget;
-            var distanceToCurrentTarget = (CurrentTarget is Character c) ? GamePoint.Distance(c.Position, Position) : int.MaxValue;
-            var targetsWithinSight = KnownCharacters.Where(kc => kc.Character.ExistenceStatus == EntityExistenceStatus.Alive && CanSee(kc.Character));
+            var distanceToCurrentTarget = (CurrentTarget is Character c && c.ExistenceStatus == EntityExistenceStatus.Alive) ? (int) GamePoint.Distance(c.Position, Position) : int.MaxValue;
+            var targetsWithinSight = KnownCharacters.Where(kc => kc.Character != this && kc.Character.ExistenceStatus == EntityExistenceStatus.Alive && CanSee(kc.Character));
 
-            // If I don't have a target or someone's closer than my current target, swap to them
-            var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget && OnAttack.Any(oa => oa.TargetTypes.Contains(t.TargetType)));
+            // If I don't have a target or someone valid is closer than my current target, consider swapping to them
+            var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget && OnAttack.Any(oa => oa.CanBeUsedOn(t.Character)));
+
+            if (!closerCharacters.Any())
+                closerCharacters = targetsWithinSight.Where(t => OnAttack.Any(oa => oa.CanBeUsedOn(t.Character)));
 
             if(closerCharacters.Any())
             {
                 var targetingPreferences = new List<(Character Character, int Weight)>();
                 foreach (var character in closerCharacters)
                 {
+                    var distanceToTarget = Math.Max(1, (int)GamePoint.Distance(character.Character.Position, Position));
+
                     // I prefer targeting enemies
-                    switch(character.TargetType)
+                    var factionWeight = character.TargetType switch
                     {
-                        case TargetType.Enemy:
-                            targetingPreferences.Add((character.Character, 4));
-                            break;
-                        case TargetType.Ally:
-                            targetingPreferences.Add((character.Character, 2));
-                            break;
-                        case TargetType.Neutral:
-                            targetingPreferences.Add((character.Character, 1));
-                            break;
-                    }
+                        TargetType.Enemy => 40,
+                        TargetType.Ally => 20,
+                        TargetType.Neutral => 10,
+                        _ => 0
+                    };
+
+                    // I prefer closer targets
+                    var finalWeight = factionWeight - (distanceToTarget * 2);
+
+                    targetingPreferences.Add((character.Character, Math.Max(1, finalWeight)));
                 }
                 CurrentTarget = targetingPreferences.TakeRandomElementWithWeights(c => c.Weight, Rng).Character;
             }
@@ -294,7 +300,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var currentTargetInfo = KnownCharacters.Find(kc => kc.Character == CurrentTarget);
             if (currentTargetInfo == default)
                 return false; // This ideally shouldn't happen, but in case it does...
-            var distanceToTarget = GamePoint.Distance(Position, CurrentTarget.Position);
+            var distanceToTarget = (int) GamePoint.Distance(Position, CurrentTarget.Position);
             var possibleActionsOnTarget = OnAttack.Where(oa => oa.TargetTypes.Contains(currentTargetInfo.TargetType)).ToList();
             var actionsAndWeights = new List<(ActionWithEffects Action, int Weight)>();
             foreach (var action in possibleActionsOnTarget)
@@ -325,7 +331,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var tilesAndWeights = new List<(Tile Tile, int Weight)>();
                 foreach (var tile in visibleTilesAtMinimumRangeFromTarget)
                 {
-                    tilesAndWeights.Add((tile, (int) (1 / (GamePoint.Distance(Position, tile.Position) / 10)) * 100));
+                    tilesAndWeights.Add((tile, (int) (1 / ((int) GamePoint.Distance(Position, tile.Position) / 10F)) * 100));
                 }
                 var pickedTile = tilesAndWeights.TakeRandomElementWithWeights(taw => taw.Weight, Rng);
                 CurrentTarget = pickedTile.Tile;
@@ -516,8 +522,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             if(pickedEmptyTile == null)
             {
                 var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (t.Key == null || t.Key.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
-                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => GamePoint.Distance(t.Position, centralPosition)) : -1;
-                var closestEmptyTiles = closeEmptyTiles.Where(t => GamePoint.Distance(t.Position, centralPosition) <= closestDistance);
+                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => (int) GamePoint.Distance(t.Position, centralPosition)) : -1;
+                var closestEmptyTiles = closeEmptyTiles.Where(t => (int) GamePoint.Distance(t.Position, centralPosition) <= closestDistance);
                 if (closestEmptyTiles.Any())
                 {
                     pickedEmptyTile = closestEmptyTiles.TakeRandomElement(Rng);

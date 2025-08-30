@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Reflection;
 using RogueCustomsGameEngine.Game.Interaction;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 #pragma warning disable SYSLIB0011 // El tipo o el miembro están obsoletos
 namespace RogueCustomsGameEngine.Management
@@ -174,6 +175,15 @@ namespace RogueCustomsGameEngine.Management
                 }
                     ));
                 }
+            }
+            if (restoredDungeon.PlayerCharacter.ExistenceStatus == EntityExistenceStatus.Dead)
+            {
+                restoredDungeon.DungeonStatus = DungeonStatus.GameOver;
+                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName} is really dead", [new()
+                    {
+                        DisplayEventType = DisplayEventType.SetDungeonStatus,
+                    Params = new() { DungeonStatus.GameOver }
+                    }]));
             }
             restoredDungeon.CurrentFloor.Snapshot.Read = false;
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;

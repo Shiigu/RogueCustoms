@@ -483,9 +483,12 @@ public partial class GameScreen : Control
 
     private void ExitButton_Pressed()
     {
-        _mapPanel.StopTargeting();
-        _globalState.PlayerControlMode = _previousControlMode;
-        _controlsPanel.Update();
+        if (_mapPanel.IsTargeting())
+        {
+            _mapPanel.StopTargeting();
+            _globalState.PlayerControlMode = _previousControlMode;
+            _controlsPanel.Update();
+        }
         _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                     TranslationServer.Translate("ExitPromptText"),
                                     new PopUpButton[]
