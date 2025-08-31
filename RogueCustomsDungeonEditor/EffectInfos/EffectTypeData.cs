@@ -109,6 +109,15 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                         return $"Action {actionIdValue}";
                     }
                     return $"All {actionSchoolValue} Actions";
+                case "sightrangeamount":
+                    var valueParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("Value", StringComparison.InvariantCultureIgnoreCase));
+                    if (valueParam == null) return "[UNDEFINED]";
+                    var valueParamValue = valueParam.Value;
+                    if (!valueParamValue.Equals("SpecificValue", StringComparison.InvariantCultureIgnoreCase))
+                        return valueParamValue;
+                    var amountParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("Amount", StringComparison.InvariantCultureIgnoreCase));
+                    if (amountParam == null) return "[UNDEFINED]";
+                    return amountParam.Value;
                 default:
                     return "[UNDEFINED]";
             }

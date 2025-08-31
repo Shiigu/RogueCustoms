@@ -96,8 +96,16 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Stat Evasion => Stats.Find(s => s.Id.Equals("Evasion", StringComparison.InvariantCultureIgnoreCase));
 
         public readonly int BaseSightRange;
-        public int TotalSightRangeIncrements { get; set; } = 0;
-        public int SightRange => BaseSightRange + TotalSightRangeIncrements;
+        public StatModification SightRangeModification { get; set; }
+        public int SightRange
+        {
+            get
+            {
+                if (SightRangeModification == null)
+                    return BaseSightRange;
+                return (int) SightRangeModification.Amount;
+            }
+        }
 
         public bool TookAction { get; set; }
         public List<AlteredStatus> AlteredStatuses { get; set; }
@@ -315,6 +323,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task RefreshCooldownsAndUpdateTurnLength()
         {
+            if(SightRangeModification != null)
+            {
+                SightRangeModification.RemainingTurns--;
+                if(SightRangeModification.RemainingTurns == 0)
+                    SightRangeModification = null;
+            }
             OnAttack?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnAttacked?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
             OnTurnStart?.Where(a => a.CurrentCooldown > 0).ForEach(a => a.CurrentCooldown--);
@@ -374,6 +388,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (ExistenceStatus != EntityExistenceStatus.Alive) return;
             FOVTiles = ComputeFOVTiles();
             CanTakeAction = true;
+            var hadSightRangeModification = SightRangeModification != null;
+            var hadSightRangeModificationToInform = hadSightRangeModification && SightRangeModification.InformOfExpiration;
+            var priorSightRange = hadSightRangeModificationToInform ? SightRange : BaseSightRange;
             var modificationsThatMightBeNeutralized = new List<(List<StatModification> modificationList, string statName, bool mightBeNeutralized)>();
             var alteredStatusesThatMightBeNeutralized = new List<(List<AlteredStatus> alteredStatusList, string statusId, string statusName, bool mightEnd)>();
 
@@ -439,6 +456,31 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Map.DisplayEvents.Add(($"{Name} lost all the {statName} modifications", events));
                 }
             }
+            if(SightRangeModification == null && hadSightRangeModification)
+            {
+                var events = new List<DisplayEventDto>();
+                if(hadSightRangeModificationToInform)
+                {
+                    var sightRangeWasHigher = (priorSightRange == EngineConstants.FullMapSightRange && BaseSightRange != EngineConstants.FullMapSightRange)
+                        || (priorSightRange == EngineConstants.FullRoomSightRange && BaseSightRange != EngineConstants.FullMapSightRange && BaseSightRange != EngineConstants.FullRoomSightRange)
+                        || priorSightRange > BaseSightRange;
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { sightRangeWasHigher ? SpecialEffect.StatNerf : SpecialEffect.StatBuff }
+                    });
+                    Map.AppendMessage(Map.Locale["CharacterStatGotNeutralized"].Format(new { CharacterName = Name, StatName = Map.Locale["CharacterSightRangeStat"] }), Color.DeepSkyBlue, events);
+                }
+                if (this == Map.Player || Map.Player.CanSee(this))
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.RedrawMap,
+                        Params = []
+                    });
+                }
+                Map.DisplayEvents.Add(($"{Name} sight range returned to normal", events));
+            }
             var gotToUpdateStatuses = false;
             foreach (var (alteredStatusList, statusId, statusName, mightBeNeutralized) in alteredStatusesThatMightBeNeutralized)
             {
@@ -481,7 +523,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 || (entity.Visible
                 && entity.Position != null
                 && ComputeFOVTiles().Contains(entity.ContainingTile))
-                && (!entity.ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type));
+                && (!entity.ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type))
+                && (!ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type));
         }
 
         public bool HasNoObstructionsTowards(Entity entity)

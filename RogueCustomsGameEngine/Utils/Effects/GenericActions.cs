@@ -251,7 +251,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Id = paramsObject.Id,
                     Amount = alterationAmount,
-                    RemainingTurns = turnLength
+                    RemainingTurns = turnLength,
+                    InformOfExpiration = true
                 });
 
                 if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
@@ -672,6 +673,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (c == Map.Player)
                 {
                     Map.Player.UpdateVisibility();
+
+                    if (c.EntityType == EntityType.Player)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.RedrawMap,
+                            Params = []
+                        });
+                    }
                     if (olderFOV != null)
                     {
                         foreach (var tile in olderFOV.Where(t => !t.Visible))
@@ -1096,6 +1106,83 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Args.Target = Args.OriginalTarget;
 
             return true;
+        }
+
+        public static bool ChangeSightRange(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character t)
+                // Attempted to alter Target's Sight Range when it's not a Character.
+                return false;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+
+            if (t.ExistenceStatus == EntityExistenceStatus.Alive && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
+            {
+                var turnLength = (int)paramsObject.TurnLength;
+                var newSightRange = (int)paramsObject.Amount;
+                var informOfExpiration = (bool)paramsObject.DisplayOnLog;
+
+                if (newSightRange == t.BaseSightRange)
+                    // There's nothing to change
+                    return false;
+
+                var sightRangeWasHigher = (t.SightRange == EngineConstants.FullMapSightRange && newSightRange != EngineConstants.FullMapSightRange)
+                        || (t.SightRange == EngineConstants.FullRoomSightRange && newSightRange != EngineConstants.FullMapSightRange && newSightRange != EngineConstants.FullRoomSightRange)
+                        || t.SightRange > newSightRange;
+
+                t.SightRangeModification = new()
+                {
+                    InformOfExpiration = informOfExpiration,
+                    RemainingTurns = turnLength,
+                    Amount = newSightRange,
+                };
+
+                if (t.EntityType == EntityType.Player)
+                {
+                    Map.Player.UpdateVisibility();
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.RedrawMap,
+                        Params = []
+                    });
+                }
+                else
+                {
+                    t.ComputeFOVTiles();
+                }
+
+                if (paramsObject.DisplayOnLog && (t.EntityType == EntityType.Player || Map.Player.CanSee(t)))
+                {
+                    var messageKey = sightRangeWasHigher ? "CharacterStatGotNerfed" : "CharacterStatGotBuffed";
+                    var specialEffect = sightRangeWasHigher ? SpecialEffect.StatNerf : SpecialEffect.StatBuff;
+                    var amountString = newSightRange switch
+                    {
+                        EngineConstants.FullMapSightRange => Map.Locale["SightRangeStatFullMap"],
+                        EngineConstants.FullRoomSightRange => Map.Locale["SightRangeStatFullRoom"],
+                        _ => newSightRange.ToString()
+                    };
+
+                    var message = Map.Locale[messageKey].Format(new
+                    {
+                        CharacterName = t.Name,
+                        StatName = Map.Locale["CharacterSightRangeStat"],
+                        Amount = amountString
+                    });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { specialEffect }
+                    }
+                    );
+                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
+
+                }
+                Map.DisplayEvents.Add(($"{t.Name} got their {Map.Locale["CharacterSightRangeStat"]} changed", events));
+                return true;
+            }
+            return false;
         }
     }
     #pragma warning restore S2259 // Null Pointers should not be dereferenced

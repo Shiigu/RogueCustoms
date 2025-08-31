@@ -99,7 +99,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             foreach (var school in ActiveDungeon.ActionSchoolInfos)
             {
                 cmbActionSchool.Items.Add(school.Id);
-                if (!string.IsNullOrWhiteSpace(actionToSave.School) && actionToSave.School.Equals(school.Id, StringComparison.InvariantCultureIgnoreCase))
+                if (actionToSave != null && !string.IsNullOrWhiteSpace(actionToSave.School) && actionToSave.School.Equals(school.Id, StringComparison.InvariantCultureIgnoreCase))
                     cmbActionSchool.Text = school.Id;
             }
 

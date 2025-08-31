@@ -96,10 +96,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             // If I don't have a target or someone valid is closer than my current target, consider swapping to them
             var closerCharacters = targetsWithinSight.Where(t => GamePoint.Distance(t.Character.Position, Position) < distanceToCurrentTarget && OnAttack.Any(oa => oa.CanBeUsedOn(t.Character)));
 
+            // If no one close enough is valid, consider swapping to anyone within sight that I can attack
             if (!closerCharacters.Any())
                 closerCharacters = targetsWithinSight.Where(t => OnAttack.Any(oa => oa.CanBeUsedOn(t.Character)));
 
-            if(closerCharacters.Any())
+            // If no one within sight is valid, consider swapping to anyone within sight that I can potentially attack if I'm at range
+            if (!closerCharacters.Any())
+                closerCharacters = targetsWithinSight.Where(t => OnAttack.Any(oa => oa.MaximumRange > 0 && oa.TargetTypes.Contains(t.TargetType)));
+
+            if (closerCharacters.Any())
             {
                 var targetingPreferences = new List<(Character Character, int Weight)>();
                 foreach (var character in closerCharacters)
@@ -305,7 +310,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var actionsAndWeights = new List<(ActionWithEffects Action, int Weight)>();
             foreach (var action in possibleActionsOnTarget)
             {
-                if (!action.ChecksCondition(this, CurrentTarget) || !action.ChecksAICondition(this, CurrentTarget)) continue;
+                if (!action.ChecksCondition(this, CurrentTarget) || !action.ChecksAICondition(this, CurrentTarget) || !action.CanBeUsedOn(CurrentTarget)) continue;
                 var weight = action.GetActionWeightFor(CurrentTarget, this);
                 if (weight > 0)
                     actionsAndWeights.Add((action, weight));

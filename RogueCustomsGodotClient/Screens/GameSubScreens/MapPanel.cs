@@ -137,24 +137,29 @@ public partial class MapPanel : GamePanel
 
             _tileMap.Position = new Vector2(16 * (TopLeftCornerPosition.X + 1), 16 * (TopLeftCornerPosition.Y + 1));
 
-            _tileBuffer = new string[widthToDisplay, heightToDisplay];
-
-            for (var y = 0; y < heightToDisplay; y++)
-            {
-                for (var x = 0; x < widthToDisplay; x++)
-                {
-                    var rep = dungeonStatus.GetTileConsoleRepresentationFromCoordinates(x, y);
-                    _tileBuffer[x, y] = rep.ToBbCodeRepresentation();
-                }
-            }
-            Render();
-
+            UpdateBuffer();
         }
     }
 
     public void UpdateTurnCount(int turnCount)
     {
         _turnNumberLabel.Text = TranslationServer.Translate("TurnNumberText").ToString().Format(new { TurnNumber = turnCount.ToString() });
+    }
+
+    public void UpdateBuffer()
+    {
+        var dungeonStatus = _globalState.DungeonInfo;
+        _tileBuffer = new string[widthToDisplay, heightToDisplay];
+
+        for (var y = 0; y < heightToDisplay; y++)
+        {
+            for (var x = 0; x < widthToDisplay; x++)
+            {
+                var rep = dungeonStatus.GetTileConsoleRepresentationFromCoordinates(x, y);
+                _tileBuffer[x, y] = rep.ToBbCodeRepresentation();
+            }
+        }
+        Render();
     }
 
     public void Render()

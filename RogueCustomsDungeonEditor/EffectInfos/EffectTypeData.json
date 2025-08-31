@@ -3051,5 +3051,117 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "ChangeSightRange",
+    "TreeViewDisplayText": "Modify ({Target})'s SightRange to ({SightRangeAmount})",
+    "ComboBoxDisplayName": "Alter Target's SightRange",
+    "Description": "Used by the User to increase or decrease one of Target's stats.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be get their Sight Range modified. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Value",
+        "DisplayName": "Change to",
+        "Description": "Indicates the new value for the Target's Sight Range.",
+        "ParameterType": "ComboBox",
+        "Default": "FullMap",
+        "ValidValues": [
+          {
+            "Key": "FullMap",
+            "Value": "Full Map"
+          },
+          {
+            "Key": "Room",
+            "Value": "Whole Room"
+          },
+          {
+            "Key": "SpecificValue",
+            "Value": "A specific value"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Custom Amount",
+        "Description": "The specific Amount of Tiles the Sight Range will be modified to.",
+        "ParameterType": "Formula",
+        "Default": "{target.SightRange}",
+        "ValidValues": [],
+        "Required": "{Value} == \"SpecificValue\"",
+        "ReadOnly": "{Value} != \"SpecificValue\"",
+        "Columns": []
+      },
+      {
+        "InternalName": "TurnLength",
+        "DisplayName": "Duration",
+        "Description": "Indicates how long the Sight Range Alteration will apply. Negative values indicate indefinite duration.",
+        "ParameterType": "Number",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "DisplayOnLog",
+        "DisplayName": "Display on Log?",
+        "Description": "If enabled, the Sight Range alteration will be informed in the Message Log. Disabling it can be useful for passive changes.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]
