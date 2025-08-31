@@ -1964,22 +1964,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 throw new ArgumentException("Tile does not exist");
             if (!tile.Discovered)
                 return ConsoleRepresentation.EmptyTile;
-            var tileBaseConsoleRepresentation = new ConsoleRepresentation
-            {
-                ForegroundColor = tile.ConsoleRepresentation.ForegroundColor.Clone(),
-                BackgroundColor = tile.ConsoleRepresentation.BackgroundColor.Clone(),
-                Character = tile.ConsoleRepresentation.Character
-            };
             if (tile.Discovered && !tile.Visible)
             {
-                tileBaseConsoleRepresentation.BackgroundColor.A /= 2;
-                tileBaseConsoleRepresentation.ForegroundColor.A /= 2;
-                return tileBaseConsoleRepresentation;
+                if (tile.Trap != null && tile.Trap.Discovered && (!tile.Trap.ContainingTile.Type.CausesPartialInvisibility || tile.Trap.ContainingTile.Type == Player.ContainingTile.Type))
+                {
+                    return tile.Trap.ConsoleRepresentation.AsDarkened();
+                }
+                else
+                {
+                    return tile.ConsoleRepresentation.AsDarkened();
+                }
             }
             if (tile.LivingCharacter != null)
             {
                 if(tile.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive && tile == StairsTile)
-                        return tileBaseConsoleRepresentation;
+                        return tile.ConsoleRepresentation;
 
                 var characterBaseConsoleRepresentation = new ConsoleRepresentation
                 {
@@ -2002,18 +2001,32 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (Player.ContainingTile == tile)
                 return Player.ConsoleRepresentation;
             if (tile == StairsTile)
-                return tileBaseConsoleRepresentation;
+                return tile.ConsoleRepresentation;
             var visibleItems = tile.GetPickableObjects().Where(i => i.CanBeSeenBy(Player));
             if (visibleItems.Any())
                 return visibleItems.First().ConsoleRepresentation;
             if (tile.Key != null)
                 return tile.Key.ConsoleRepresentation;
+            if (tile.Trap != null)
+            {
+                if (tile.Trap.CanBeSeenBy(Player) || (tile.Trap.Discovered && Player.CanSee(tile)))
+                {
+                    tile.Trap.Discovered = true;
+                    return tile.Trap.ConsoleRepresentation;
+                }
+                else if (tile.Trap.Discovered && (!tile.Trap.ContainingTile.Type.CausesPartialInvisibility || tile.Trap.ContainingTile.Type == Player.ContainingTile.Type))
+                {
+                    return tile.Trap.ConsoleRepresentation.AsDarkened();
+                }
+            }
+            if (tile.Trap?.CanBeSeenBy(Player) == true)
+                return tile.Trap.ConsoleRepresentation;
             if (tile.Trap?.CanBeSeenBy(Player) == true)
                 return tile.Trap.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
             if (deadEntityInCoordinates != null && (!deadEntityInCoordinates.ContainingTile.Type.CausesPartialInvisibility || deadEntityInCoordinates.ContainingTile.Type == Player.ContainingTile.Type))
                 return deadEntityInCoordinates.ConsoleRepresentation;
-            return tileBaseConsoleRepresentation;
+            return tile.ConsoleRepresentation;
         }
 
         #endregion

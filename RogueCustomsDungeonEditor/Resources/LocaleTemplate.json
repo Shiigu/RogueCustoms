@@ -460,6 +460,14 @@
     {
       "Key": "CharacterSightRangeGotModified",
       "Value": "{CharacterName}'s {StatName} is now {Amount}."
+    },
+    {
+      "Key": "CharacterRevealsFloor",
+      "Value": "{CharacterName} now knows the path!"
+    },
+    {
+      "Key": "CharacterRevealsTraps",
+      "Value": "{CharacterName} can see all traps now!"
     }
   ]
 }

@@ -643,10 +643,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.AIUseCondition = txtActionAICondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
                         ActionToSave.Description = txtActionDescription.Text;
-                        ActionToSave.Name = txtActionName.Text;
                         ActionToSave.School = cmbActionSchool.Text;
                         if (!RequiresActionId)
                             ActionToSave.Id = PlaceholderActionId;
+                        ActionToSave.Name = RequiresActionName ? txtActionName.Text : ActionToSave.Id;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         this.Saved = true;
                         this.Close();
@@ -720,11 +720,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         ActionToSave.UseCondition = txtActionCondition.Text;
                         ActionToSave.AIUseCondition = txtActionAICondition.Text;
                         ActionToSave.FinishesTurnWhenUsed = chkFinishesTurn.Checked;
-                        ActionToSave.Name = txtActionName.Text;
                         ActionToSave.Description = txtActionDescription.Text;
                         ActionToSave.School = cmbActionSchool.Text;
                         ScrubNullEffects(ActionToSave.Effect, null);
                         ActionToSave.Id = idToUse;
+                        ActionToSave.Name = RequiresActionName ? txtActionName.Text : ActionToSave.Id;
                         this.IsNewAction = RequiresActionId;
                         this.Saved = true;
                         this.Close();

@@ -44,6 +44,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionWithEffects OnSpawn { get; set; }
         public List<ActionWithEffects> OnInteracted { get; set; }
         public bool SpawnedViaMonsterHouse { get; set; }
+        public bool CanSeeTraps { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
@@ -54,6 +55,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
             PursuesOutOfSightCharacters = entityClass.PursuesOutOfSightCharacters;
             WandersIfWithoutTarget = entityClass.WandersIfWithoutTarget;
+            CanSeeTraps = false;
             AIType = entityClass.AIType;
 
             OnSpawn = MapClassAction(entityClass.OnSpawn);

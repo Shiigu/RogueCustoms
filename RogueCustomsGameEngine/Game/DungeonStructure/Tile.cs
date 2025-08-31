@@ -241,7 +241,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public bool IsHarmfulFor(Character character)
         {
-            return (Trap != null && Trap.ExistenceStatus == EntityExistenceStatus.Alive && Trap.CanBeSeenBy(character) && Trap.OnStepped != null && FunctionsThatCanMakeATileHarmful.Any(f => Trap.OnStepped.HasFunction(f))) || (OnStood != null && FunctionsThatCanMakeATileHarmful.Any(f => OnStood.HasFunction(f)));
+            return (Trap != null && Trap.ExistenceStatus == EntityExistenceStatus.Alive && (Trap.CanBeSeenBy(character) || (character is NonPlayableCharacter npc && npc.CanSeeTraps)) && Trap.OnStepped != null && FunctionsThatCanMakeATileHarmful.Any(f => Trap.OnStepped.HasFunction(f))) || (OnStood != null && FunctionsThatCanMakeATileHarmful.Any(f => OnStood.HasFunction(f)));
         }
 
         public override bool Equals(object? obj)
