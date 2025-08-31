@@ -416,8 +416,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (originalValue != null)
                 {
-                    var valueOfKey = comboBox.Items.Cast<string>().FirstOrDefault(vv => vv.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
-                    comboBox.Text = valueOfKey;
+                    if(parameter.Type == ParameterType.ComboBox)
+                    {
+                        var validValue = parameter.ValidValues.FirstOrDefault(vv => vv.Key.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                        comboBox.Text = validValue != null ? validValue.Value : "";
+                    }
+                    else
+                    {
+                        var valueOfKey = comboBox.Items.Cast<string>().FirstOrDefault(vv => vv.Equals(originalValue, StringComparison.InvariantCultureIgnoreCase));
+                        comboBox.Text = valueOfKey;
+                    }
                 }
                 else
                 {

@@ -270,6 +270,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
 
         public static void UpdateAction(JsonObject actionWithEffects)
         {
+            if (actionWithEffects["Name"].GetValue<string>()?.Length == 0)
+                actionWithEffects["Name"] = actionWithEffects["Id"].ToString();
             actionWithEffects["School"] = "Normal";
             UpdateActionSteps(actionWithEffects);
         }

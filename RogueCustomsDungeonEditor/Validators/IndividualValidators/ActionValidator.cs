@@ -314,15 +314,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         if (!nextEffect.HaveAllParametersBeenParsed(owner, source, target, sampleDungeon.CurrentFloor, out bool flagsAreInvolved))
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has parameters that haven't been parsed.");
+                            messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has parameters that haven't been parsed.");
                         }
                         if (flagsAreInvolved)
-                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
+                            messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
                     }
                     catch (Exception ex)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
+                        messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
                     }
 
                     if (!errorOnActionChain)
@@ -382,12 +382,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         }
                         catch (FlagNotFoundException ex)
                         {
-                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated with autonomously. Make sure it generates previously, or the game will throw an error.");
+                            messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated with autonomously. Make sure it generates previously, or the game will throw an error.");
                         }
                         catch (Exception ex)
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running against {target?.ClassId ?? "NULL"}: {ex.Message}.");
+                            messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has thrown an Exception when running against {target?.ClassId ?? "NULL"}: {ex.Message}.");
                         }
 
                         if (!errorOnActionChain)
@@ -395,17 +395,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             if (nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                             {
                                 if (amountOfSuccesses == 0)
-                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
                                 else if (amountOfFailures == 0)
-                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess != null && nextEffect.OnFailure == null && amountOfSuccesses == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess == null && nextEffect.OnFailure != null && amountOfFailures == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
 
                             if (nextEffect.Then != null)
@@ -464,15 +464,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         if (!nextEffect.HaveAllParametersBeenParsed(owner, source, null, sampleDungeon.CurrentFloor, out bool flagsAreInvolved))
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has parameters that haven't been parsed.");
+                            messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has parameters that haven't been parsed.");
                         }
                         if (flagsAreInvolved)
-                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
+                            messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} makes use of Flags. Due to their variability, they have been hardcoded for the Validator, and can only be properly validated in-game.");
                     }
                     catch (Exception ex)
                     {
                         errorOnActionChain = true;
-                        messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
+                        messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has thrown an Exception when trying to parse its parameters: {ex.Message}.");
                     }
 
                     if (!errorOnActionChain)
@@ -490,12 +490,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         }
                         catch (FlagNotFoundException ex)
                         {
-                            messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated autonomously. Make sure it generates previously, or the game will throw an error.");
+                            messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} can cause the read of a Flag, {ex.FlagName}, that is not generated autonomously. Make sure it generates previously, or the game will throw an error.");
                         }
                         catch (Exception ex)
                         {
                             errorOnActionChain = true;
-                            messages.AddError($"The effect {functionName} of {name ?? "NULL"} has thrown an Exception when running against a certain {target?.Type} Tile: {ex.Message}.");
+                            messages.AddError($"The effect {functionName} of {name ?? id ?? "NULL"} has thrown an Exception when running against a certain {target?.Type} Tile: {ex.Message}.");
                         }
 
                         if (!errorOnActionChain)
@@ -503,17 +503,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             if (nextEffect.OnSuccess != null && nextEffect.OnFailure != null)
                             {
                                 if (amountOfSuccesses == 0)
-                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} has OnSuccess/OnFailure but it never returned Success in 100 different attempts. Please check.");
                                 else if (amountOfFailures == 0)
-                                    messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                    messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} has OnSuccess/OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess != null && nextEffect.OnFailure == null && amountOfSuccesses == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} only has OnSuccess but it never returned Success in 100 different attempts. Please check.");
                             }
                             else if (nextEffect.OnSuccess == null && nextEffect.OnFailure != null && amountOfFailures == 0)
                             {
-                                messages.AddWarning($"The effect {functionName} of {name ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
+                                messages.AddWarning($"The effect {functionName} of {name ?? id ?? "NULL"} only has OnFailure but it never returned Failure in 100 different attempts. Please check.");
                             }
 
                             if (nextEffect.Then != null)
@@ -539,19 +539,31 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         {
             var npcClasses = sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.NPC).ToList();
             var playerClasses = sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.Player).ToList();
-            return sampleDungeon.Classes.Exists(ec => ec.EntityType == EntityType.NPC)
+            Character resultCharacter = sampleDungeon.Classes.Exists(ec => ec.EntityType == EntityType.NPC)
                 ? new NonPlayableCharacter(npcClasses[new Random().Next(npcClasses.Count)], 1, sampleDungeon.CurrentFloor)
                 : new PlayerCharacter(playerClasses[new Random().Next(playerClasses.Count)], 1, sampleDungeon.CurrentFloor);
+
+            resultCharacter.Id = new Random().Next(1, int.MaxValue);
+
+            return resultCharacter;
         }
 
         private static Item GetASpecificItem(Dungeon sampleDungeon, string classId)
         {
-            return new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), sampleDungeon.CurrentFloor);
+            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), sampleDungeon.CurrentFloor);
+
+            resultItem.Id = new Random().Next(1, int.MaxValue);
+
+            return resultItem;
         }
 
         private static Item GetATestItem(Dungeon sampleDungeon, EntityType entityType)
         {
-            return new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), sampleDungeon.CurrentFloor);
+            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), sampleDungeon.CurrentFloor);
+
+            resultItem.Id = new Random().Next(1, int.MaxValue);
+
+            return resultItem;
         }
     }
     #pragma warning restore CS8601 // Posible asignación de referencia nula

@@ -20,6 +20,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Faction Faction { get; set; }                // Exclusively used to allow Traps to be visible only to certain characters.
         public ActionWithEffects OnStepped { get; set; }
         public string Power { get; set; }
+        public bool Discovered { get; set; }
 
         public Trap(EntityClass entityClass, Map map) : base(entityClass, map)
         {

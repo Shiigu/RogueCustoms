@@ -527,6 +527,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 && (!ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type));
         }
 
+        public bool CanSee(Tile tile)
+        {
+            return ContainingTile == tile || ComputeFOVTiles().Contains(tile);
+        }
+
         public bool HasNoObstructionsTowards(Entity entity)
         {
             if (this == entity) return true;

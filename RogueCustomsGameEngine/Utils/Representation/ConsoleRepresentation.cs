@@ -47,6 +47,16 @@ namespace RogueCustomsGameEngine.Utils.Representation
             };
         }
 
+        public ConsoleRepresentation AsDarkened()
+        {
+            return new ConsoleRepresentation
+            {
+                Character = Character,
+                BackgroundColor = BackgroundColor.AsDarkened(),
+                ForegroundColor = ForegroundColor.AsDarkened()
+            };
+        }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Character, BackgroundColor, ForegroundColor);

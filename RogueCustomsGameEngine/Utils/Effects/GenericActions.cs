@@ -672,16 +672,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 if (c == Map.Player)
                 {
-                    Map.Player.UpdateVisibility();
-
-                    if (c.EntityType == EntityType.Player)
-                    {
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.RedrawMap,
-                            Params = []
-                        });
-                    }
                     if (olderFOV != null)
                     {
                         foreach (var tile in olderFOV.Where(t => !t.Visible))
@@ -707,6 +697,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = new() { c.ContainingTile.Type == TileType.Stairs }
                     }
                     );
+
+                    Map.Player.UpdateVisibility();
+
+                    if (c.EntityType == EntityType.Player)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.RedrawMap,
+                            Params = []
+                        });
+                    }
                 }
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {

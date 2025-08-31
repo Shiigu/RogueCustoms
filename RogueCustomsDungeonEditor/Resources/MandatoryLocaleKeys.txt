@@ -114,3 +114,5 @@ CharacterActionUsesMaximized
 CharacterActionUsesIncreased
 CharacterActionUsesDecreased
 CharacterSightRangeGotModified
+CharacterRevealsFloor
+CharacterRevealsTraps

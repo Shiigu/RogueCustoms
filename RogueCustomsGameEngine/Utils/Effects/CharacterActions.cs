@@ -162,7 +162,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
-                throw new ArgumentException($"Attempted to have {Args.Source.Name} learn a Script when it's not a Character.");
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} learn a Script when it's not a Character.");
 
             var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
                 ?? throw new ArgumentException($"Attempted to learn {paramsObject.ScriptId} when it's not a Script.");
@@ -196,7 +196,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character c)
-                throw new ArgumentException($"Attempted to have {Args.Source.Name} forget a Script when it's not a Character.");
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} forget a Script when it's not a Character.");
 
             var script = Map.Scripts.Find(s => s.Id.Equals(paramsObject.ScriptId, StringComparison.InvariantCultureIgnoreCase))
                 ?? throw new ArgumentException($"Attempted to forget {paramsObject.ScriptId} when it's not a Script.");
@@ -231,6 +231,76 @@ namespace RogueCustomsGameEngine.Utils.Effects
             c.ExperiencePayoutFormula = paramsObject.Formula;
 
             return true;
+        }
+
+        public static bool Reveal(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character c)
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} get a revelation when it's not a Character.");
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+
+            if (Rng.RollProbability() <= accuracyCheck)
+            {
+                var message = string.Empty;
+                string whatToReveal = paramsObject.WhatToReveal;
+                var wasAnythingLeftUndiscovered = false;
+
+                switch(whatToReveal.ToLowerInvariant())
+                {
+                    case "floor":
+                        wasAnythingLeftUndiscovered = Map.Tiles.Any(t => !t.Discovered);
+                        if (c == Map.Player)
+                            Map.Tiles.ForEach(t => t.Discovered = true);
+                        message = Map.Locale["CharacterRevealsFloor"].Format(new { CharacterName = c.Name });
+                        break;
+                    case "traps":
+                        wasAnythingLeftUndiscovered = Map.Traps.Any(t => !t.Discovered);
+                        if (c == Map.Player)
+                        {
+                            Map.Traps.ForEach(t => t.Discovered = true);
+                        }
+                        else if (c is NonPlayableCharacter npc)
+                        {
+                            npc.CanSeeTraps = true;
+                        }
+                        message = Map.Locale["CharacterRevealsTraps"].Format(new { CharacterName = c.Name });
+                        break;
+                    default:
+                        throw new ArgumentException($"Attempted to have {c.Name} get an invalid revelation of {whatToReveal}.");
+                }
+
+                if(c == Map.Player)
+                {
+                    if (wasAnythingLeftUndiscovered)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = [SpecialEffect.Reveal]
+                        });
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.RedrawMap,
+                            Params = []
+                        });
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
+                {
+                    Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                }
+                Map.DisplayEvents.Add(($"{c.Name} got a revelation", events));
+                return true;
+            }
+            return false;
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

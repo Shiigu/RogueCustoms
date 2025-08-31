@@ -35,6 +35,17 @@ namespace RogueCustomsGameEngine.Utils.Representation
             };
         }
 
+        public GameColor AsDarkened()
+        {
+            return new GameColor
+            {
+                R = R,
+                G = G,
+                B = B,
+                A = (byte) (A / 2)
+            };
+        }
+
         public override string ToString()
         {
             return $"{R},{G},{B},{A}";

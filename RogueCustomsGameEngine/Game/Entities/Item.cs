@@ -42,8 +42,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (OnUse == null) return;
 
-            await OnUse.Do(this, user, true);
-
             if (user == Map.Player)
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
                 {
@@ -62,6 +60,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
+
+            await OnUse.Do(this, user, true);
         }
 
         public Task RefreshCooldownsAndUpdateTurnLength()
