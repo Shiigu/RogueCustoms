@@ -480,7 +480,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             return this == entity
                 || (entity.Visible
                 && entity.Position != null
-                && ComputeFOVTiles().Contains(entity.ContainingTile));
+                && ComputeFOVTiles().Contains(entity.ContainingTile))
+                && (!entity.ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type));
         }
 
         public bool HasNoObstructionsTowards(Entity entity)

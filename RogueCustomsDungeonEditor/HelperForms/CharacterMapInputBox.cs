@@ -42,6 +42,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Instance.Saved = false;
             Instance.CharacterToSave = defaultSelection;
 
+            Instance.btnSave.Enabled = Instance.CharacterToSave != null;
+            Instance.ActiveControl = null;
+
             foreach(Label charLabel in Instance.tlpCharacters.Controls)
             {
                 if (charLabel.Text[0] == Instance.CharacterToSave)

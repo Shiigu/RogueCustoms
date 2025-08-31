@@ -42,6 +42,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkTileTypeCanBeTransformed.Checked = LoadedTileType.CanBeTransformed;
             chkTileTypeCanVisiblyConnectWithOtherTiles.Checked = LoadedTileType.CanVisiblyConnectWithOtherTiles;
             chkTileTypeCanHaveMultilineConnections.Checked = LoadedTileType.CanHaveMultilineConnections;
+            chkTileTypeCausesPartialInvisibility.Checked = LoadedTileType.CausesPartialInvisibility;
             SetSingleActionEditorParams(saeOnStood, tileTypeInfoToLoad.Id, tileTypeInfoToLoad.OnStood);
             ToggleCheckboxes();
         }
@@ -70,6 +71,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     CanBeTransformed = chkTileTypeCanBeTransformed.Checked,
                     CanVisiblyConnectWithOtherTiles = chkTileTypeCanVisiblyConnectWithOtherTiles.Checked,
                     CanHaveMultilineConnections = chkTileTypeCanHaveMultilineConnections.Checked,
+                    CausesPartialInvisibility = chkTileTypeCausesPartialInvisibility.Checked,
                     OnStood = saeOnStood.Action
                 };
                 if (LoadedTileType.OnStood != null)
@@ -141,6 +143,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void chkTileTypeCanHaveMultilineConnections_CheckedChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(this, EventArgs.Empty);
+            ToggleCheckboxes();
+        }
+
+        private void chkTileTypeCausesPartialInvisibility_CheckedChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(this, EventArgs.Empty);
             ToggleCheckboxes();
