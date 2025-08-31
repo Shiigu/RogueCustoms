@@ -30,6 +30,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CanBeTransformed = false,
             CanVisiblyConnectWithOtherTiles = false,
             CanHaveMultilineConnections = false,
+            CausesPartialInvisibility = false,
         };
 
         public override string ToString() => Id;
@@ -44,6 +45,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool CanBeTransformed { get; set; }
         public bool CanVisiblyConnectWithOtherTiles { get; set; } // If true, it will make use of TopLeft, TopRight, Central, BottomVertical, etc. ConsoleRepresentations
         public bool CanHaveMultilineConnections { get; set; }
+        public bool CausesPartialInvisibility { get; set; } // If true, it will make the Character invisible to Characters in Tiles of a different Type
         public ActionWithEffects OnStood { get; set; }
         public TileTypeSet TileTypeSet { get; set; }
 
@@ -71,6 +73,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CanBeTransformed = tileTypeInfo.CanBeTransformed;
             CanVisiblyConnectWithOtherTiles = tileTypeInfo.CanVisiblyConnectWithOtherTiles;
             CanHaveMultilineConnections = tileTypeInfo.CanHaveMultilineConnections;
+            CausesPartialInvisibility = tileTypeInfo.CausesPartialInvisibility;
             OnStood = ActionWithEffects.Create(tileTypeInfo.OnStood, actionSchools);
         }
     }

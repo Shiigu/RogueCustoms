@@ -52,6 +52,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["TileTypeInfos"] is not JsonArray tileTypeInfos) return;
             foreach (var tileType in tileTypeInfos.OfType<JsonObject>())
             {
+                tileType["CausesPartialInvisibility"] = false;
                 if (tileType["OnStood"] is JsonObject onStood)
                 {
                     UpdateAction(onStood);

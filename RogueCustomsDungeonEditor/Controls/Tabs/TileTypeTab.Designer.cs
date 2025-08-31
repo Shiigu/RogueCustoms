@@ -45,6 +45,7 @@
             label98 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             saeOnStood = new SingleActionEditor();
+            chkTileTypeCausesPartialInvisibility = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // fklblTileTypeDescriptionLocale
@@ -222,7 +223,7 @@
             saeOnStood.ClassId = null;
             saeOnStood.Dungeon = null;
             saeOnStood.EffectParamData = null;
-            saeOnStood.Location = new System.Drawing.Point(372, 121);
+            saeOnStood.Location = new System.Drawing.Point(372, 156);
             saeOnStood.Name = "saeOnStood";
             saeOnStood.PlaceholderActionId = "OnTileStand";
             saeOnStood.RequiresActionId = false;
@@ -238,10 +239,22 @@
             saeOnStood.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             saeOnStood.ActionContentsChanged += saeOnStood_ActionContentsChanged;
             // 
+            // chkTileTypeCausesPartialInvisibility
+            // 
+            chkTileTypeCausesPartialInvisibility.AutoSize = true;
+            chkTileTypeCausesPartialInvisibility.Location = new System.Drawing.Point(372, 116);
+            chkTileTypeCausesPartialInvisibility.Name = "chkTileTypeCausesPartialInvisibility";
+            chkTileTypeCausesPartialInvisibility.Size = new System.Drawing.Size(269, 34);
+            chkTileTypeCausesPartialInvisibility.TabIndex = 241;
+            chkTileTypeCausesPartialInvisibility.Text = "Characters standing here are invisible to\r\nCharacters standing on tiles of a different type";
+            chkTileTypeCausesPartialInvisibility.UseVisualStyleBackColor = true;
+            chkTileTypeCausesPartialInvisibility.CheckedChanged += chkTileTypeCausesPartialInvisibility_CheckedChanged;
+            // 
             // TileTypeTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(chkTileTypeCausesPartialInvisibility);
             Controls.Add(saeOnStood);
             Controls.Add(label1);
             Controls.Add(label98);
@@ -282,5 +295,6 @@
         private System.Windows.Forms.Label label98;
         private System.Windows.Forms.Label label1;
         private SingleActionEditor saeOnStood;
+        private System.Windows.Forms.CheckBox chkTileTypeCausesPartialInvisibility;
     }
 }

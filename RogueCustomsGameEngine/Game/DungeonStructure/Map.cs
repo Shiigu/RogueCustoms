@@ -1991,7 +1991,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     characterBaseConsoleRepresentation.ForegroundColor = tile.LivingCharacter.ConsoleRepresentation.BackgroundColor.Clone();
                     return characterBaseConsoleRepresentation;
                 }
-                else if (tile.LivingCharacter.Visible)
+                else if (tile.LivingCharacter.CanBeSeenBy(Player))
                 {
                     return characterBaseConsoleRepresentation;
                 }
