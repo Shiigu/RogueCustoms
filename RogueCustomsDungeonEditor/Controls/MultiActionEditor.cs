@@ -20,13 +20,33 @@ namespace RogueCustomsDungeonEditor.Controls
     #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class MultiActionEditor : UserControl
     {
-        private string actionDescription = "Action Description";
+        // For some weird reason, I need this because it otherwise loses all values on a Designer change.
+        private string actionDescription = "MultiActionEditor";
+        private List<ActionWithEffectsInfo> actions = new();
+        private DungeonInfo dungeon = null;
+        private string actionTypeText = "";
+        private string classId = "";
+        private bool requiresCondition = false;
+        private bool requiresDescription = false;
+        private bool requiresActionId = false;
+        private bool requiresActionName = false;
+        private TurnEndCriteria turnEndCriteria = TurnEndCriteria.CannotEndTurn;
+        private string placeholderActionName = "Placeholder";
+        private UsageCriteria usageCriteria = UsageCriteria.AnyTargetAnyTime;
+        private List<EffectTypeData> effectParamData = null;
+        private string thisDescription = "";
+        private string sourceDescription = "";
+        private string targetDescription = "";
 
+        // Serializable in Designer (safe types)
+
+        // Label text for the editor
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue("MultiActionEditor")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string ActionDescription
         {
-            get { return actionDescription; }
+            get => actionDescription;
             set
             {
                 actionDescription = value;
@@ -34,11 +54,109 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        [DefaultValue("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ActionTypeText
+        {
+            get => actionTypeText;
+            set => actionTypeText = value;
+        }
+
+        [DefaultValue("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ClassId
+        {
+            get => classId;
+            set => classId = value;
+        }
+
+        [DefaultValue(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool RequiresCondition
+        {
+            get => requiresCondition;
+            set => requiresCondition = value;
+        }
+
+        [DefaultValue(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool RequiresDescription
+        {
+            get => requiresDescription;
+            set => requiresDescription = value;
+        }
+
+        [DefaultValue(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool RequiresActionId
+        {
+            get => requiresActionId;
+            set => requiresActionId = value;
+        }
+
+        [DefaultValue(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool RequiresActionName
+        {
+            get => requiresActionName;
+            set => requiresActionName = value;
+        }
+
+        [DefaultValue(TurnEndCriteria.CannotEndTurn)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public TurnEndCriteria TurnEndCriteria
+        {
+            get => turnEndCriteria;
+            set => turnEndCriteria = value;
+        }
+
+        [DefaultValue("Placeholder")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string PlaceholderActionName
+        {
+            get => placeholderActionName;
+            set => placeholderActionName = value;
+        }
+
+        [DefaultValue(UsageCriteria.AnyTargetAnyTime)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public UsageCriteria UsageCriteria
+        {
+            get => usageCriteria;
+            set => usageCriteria = value;
+        }
+
+        [DefaultValue("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ThisDescription
+        {
+            get => thisDescription;
+            set => thisDescription = value;
+        }
+
+        [DefaultValue("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string SourceDescription
+        {
+            get => sourceDescription;
+            set => sourceDescription = value;
+        }
+
+        [DefaultValue("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string TargetDescription
+        {
+            get => targetDescription;
+            set => targetDescription = value;
+        }
+
+        // Hidden from Designer (complex runtime-only types)
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<ActionWithEffectsInfo> Actions
         {
-            get 
-            { 
+            get
+            {
                 var actions = new List<ActionWithEffectsInfo>();
                 foreach (ListBoxItem actionItem in lbActions.Items)
                 {
@@ -61,34 +179,20 @@ namespace RogueCustomsDungeonEditor.Controls
                 }
             }
         }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DungeonInfo Dungeon { get; set; }
+        public DungeonInfo Dungeon
+        {
+            get => dungeon;
+            set => dungeon = value;
+        }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string ActionTypeText { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string ClassId { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool RequiresCondition { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool RequiresDescription { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool RequiresActionId { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool RequiresActionName { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public TurnEndCriteria TurnEndCriteria { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string PlaceholderActionName { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public UsageCriteria UsageCriteria { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<EffectTypeData> EffectParamData { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string ThisDescription { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string SourceDescription { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string TargetDescription { get; set; }
+        public List<EffectTypeData> EffectParamData
+        {
+            get => effectParamData;
+            set => effectParamData = value;
+        }
 
         public event EventHandler ActionContentsChanged;
 
