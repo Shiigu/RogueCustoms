@@ -456,6 +456,10 @@
     {
       "Key": "CharacterActionUsesDecreased",
       "Value": "{CharacterName}'s {ActionName} has lost {Amount} use(s)!"
+    },
+    {
+      "Key": "CharacterSightRangeGotModified",
+      "Value": "{CharacterName}'s {StatName} is now {Amount}."
     }
   ]
 }

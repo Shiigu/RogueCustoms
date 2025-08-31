@@ -28,7 +28,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         UpdatePlayerData,
         UpdatePlayerPosition,
         UpdateExperienceBar,
-        TriggerPrompt
+        TriggerPrompt,
+        RedrawMap
     }
 
     [Serializable]

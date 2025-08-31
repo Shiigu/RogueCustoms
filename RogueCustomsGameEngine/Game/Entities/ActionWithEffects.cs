@@ -365,7 +365,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
 
-            if (target != null)
+            if (target != null && (target is Character t && sourceAsCharacter.CanSee(t)))
             {
                 if (target is NonPlayableCharacter && (User != target || target == source)) // If it's not an OnInteract
                 {

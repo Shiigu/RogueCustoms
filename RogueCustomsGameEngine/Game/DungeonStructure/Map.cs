@@ -1251,6 +1251,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
             }
             await Player.PerformOnTurnStart();
+            if(Player.ContainingTile.OnStood != null)
+                await Player.ContainingTile.OnStood.Do(Player, Player, true);
             Player.RemainingMovement = (int) Player.Movement.Current;
             LatestPlayerRemainingMovement = Player.RemainingMovement;
             foreach (var character in AICharacters.Where(e => e != null))
@@ -1258,6 +1260,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 character.RemainingMovement = (int)character.Movement.Current;
                 character.TookAction = false;
                 await character.PerformOnTurnStart();
+                if(character.ContainingTile.OnStood != null)
+                    await character.ContainingTile.OnStood.Do(character, character, true);
             }
 
             if (TurnCount > 1)
@@ -1381,7 +1385,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Snapshot = new(Dungeon, this);
             if (x == 0 && y == 0) // This is only possible if the player chooses to Skip Turn.
             {
-                Player.ContainingTile?.StoodOn(Player);
                 Player.RemainingMovement = 0;
                 Player.TookAction = true;
             }
@@ -1756,13 +1759,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
             var showTileDescription = !DefaultTileTypes.Contains(tile.Type);
-            if (characterInTile?.Visible == true)
+            if (characterInTile != null && Player.CanSee(characterInTile))
                 return new EntityDetailDto(characterInTile, tile, showTileDescription);
             var itemInTile = tile.GetPickableObjects().FirstOrDefault();
-            if(itemInTile?.Visible == true)
+            if(itemInTile != null && Player.CanSee(itemInTile))
                 return new EntityDetailDto(itemInTile, tile, showTileDescription);
             var trapInTile = tile.Trap;
-            if (trapInTile?.Visible == true)
+            if (trapInTile != null && Player.CanSee(trapInTile))
                 return new EntityDetailDto(trapInTile, tile, showTileDescription);
             return showTileDescription ? new EntityDetailDto(null, tile, showTileDescription) : null;
         }
@@ -2008,7 +2011,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (tile.Trap?.CanBeSeenBy(Player) == true)
                 return tile.Trap.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
-            if (deadEntityInCoordinates != null)
+            if (deadEntityInCoordinates != null && (!deadEntityInCoordinates.ContainingTile.Type.CausesPartialInvisibility || deadEntityInCoordinates.ContainingTile.Type == Player.ContainingTile.Type))
                 return deadEntityInCoordinates.ConsoleRepresentation;
             return tileBaseConsoleRepresentation;
         }

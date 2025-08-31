@@ -25,6 +25,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int Height { get; private set; }
 
         public int TurnCount { get; set; }
+        private Map _map;
 
         [JsonIgnore]
         public bool Read { get; set; }
@@ -42,6 +43,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public DungeonDto(Dungeon dungeon, Map map)
         {
+            _map = map;
             DungeonName = dungeon.Name;
             IsHardcoreMode = dungeon.IsHardcoreMode;
             FloorName = map.FloorName;
@@ -50,16 +52,26 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Height = map.Height;
             TurnCount = map.TurnCount;
             EmptyTile = map.TileSet.Empty;
+            GetTiles();
             PlayerEntity = new EntityDto(map.Player, map);
+            var playerEntity = map.Player;
+            playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
+            playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
+            playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
+        }
+
+        public void GetTiles()
+        {
+            _map.Player.UpdateVisibility();
             var _tiles = new ConcurrentBag<TileDto>();
             if (DungeonStatus != DungeonStatus.Completed)
             {
-                Parallel.For(0, map.Tiles.GetLength(0), y =>
+                Parallel.For(0, _map.Tiles.GetLength(0), y =>
                 {
-                    Parallel.For(0, map.Tiles.GetLength(1), x =>
+                    Parallel.For(0, _map.Tiles.GetLength(1), x =>
                     {
-                        var tile = map.Tiles[y, x];
-                        _tiles.Add(new TileDto(tile, map));
+                        var tile = _map.Tiles[y, x];
+                        _tiles.Add(new TileDto(tile, _map));
                     });
                 });
                 Tiles = _tiles.ToList();
@@ -68,10 +80,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             {
                 Tiles = new List<TileDto>();
             }
-            var playerEntity = map.Player;
-            playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
-            playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
-            playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
         }
     }
 

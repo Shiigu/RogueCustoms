@@ -396,6 +396,10 @@ public partial class GameScreen : Control
                     case DisplayEventType.TriggerPrompt:
                         displayEvent.Params[0] = true;
                         break;
+                    case DisplayEventType.RedrawMap:
+                        _globalState.DungeonInfo.GetTiles();
+                        _mapPanel.UpdateBuffer();
+                        break;
                 }
             }
             while (_screenFlash.Visible)
