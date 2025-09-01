@@ -8,11 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using RogueCustomsDungeonEditor.Utils;
+
+using RogueCustomsGameEngine.Utils;
+
 namespace RogueCustomsDungeonEditor.HelperForms
 {
     #pragma warning disable IDE1006 // Estilos de nombres
     public partial class InputBox : Form
     {
+        private bool _rejectReservedWords;
         public string PromptText => txtPromptText.Text;
 
         private InputBox()
@@ -20,12 +25,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
             InitializeComponent();
         }
 
-        public static string? Show(string prompt, string title, string defaultText = "")
+        public static string? Show(string prompt, string title, string defaultText = "", bool rejectReservedWords = false)
         {
             using var inputBox = new InputBox();
             inputBox.Text = title;
             inputBox.lblPrompt.Text = prompt;
             inputBox.txtPromptText.Text = defaultText;
+            inputBox._rejectReservedWords = rejectReservedWords;
 
             if (inputBox.ShowDialog() == DialogResult.OK)
             {
@@ -37,6 +43,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            if(EditorConstants.ReservedWords.Any(rw => txtPromptText.Text.Contains(rw, StringComparison.InvariantCultureIgnoreCase)) && _rejectReservedWords)
+            {
+                MessageBox.Show("The input is invalid, for it contains a reserved word.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             DialogResult = DialogResult.OK;
             Close();
         }

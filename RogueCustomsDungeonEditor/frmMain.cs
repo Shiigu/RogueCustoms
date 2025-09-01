@@ -1466,7 +1466,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTileTypeAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Tile Type Identifier", "Save Special Tile As");
+            var inputBoxResult = InputBox.Show("Indicate the Tile Type Identifier", "Save Special Tile As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.TileTypeInfos.Exists(tti => tti.Id.Equals(inputBoxResult)))
@@ -1604,7 +1604,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTileSetAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As");
+            var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(inputBoxResult)))
@@ -1832,7 +1832,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveFactionAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As");
+            var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
@@ -1980,7 +1980,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveStatAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As");
+            var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if(FormConstants.DefaultStats.Exists(s => s.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
@@ -2121,7 +2121,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveAttackElementAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Attack Element Identifier", "Save Attack Element As");
+            var inputBoxResult = InputBox.Show("Indicate the Attack Element Identifier", "Save Attack Element As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.ElementInfos.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
@@ -2245,7 +2245,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SavePlayerClassAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As");
+            var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.PlayerClasses.Exists(pc => pc.Id.Equals(inputBoxResult)))
@@ -2369,7 +2369,7 @@ namespace RogueCustomsDungeonEditor
         
         private bool SaveNPCAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As");
+            var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.NPCs.Exists(npc => npc.Id.Equals(inputBoxResult)))
@@ -2493,7 +2493,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveItemAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As");
+            var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.Items.Exists(i => i.Id.Equals(inputBoxResult)))
@@ -2618,7 +2618,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTrapAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As");
+            var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.Traps.Exists(i => i.Id.Equals(inputBoxResult)))
@@ -2743,7 +2743,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveAlteredStatusAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As");
+            var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As", string.Empty, true);
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.AlteredStatuses.Exists(i => i.Id.Equals(inputBoxResult)))
