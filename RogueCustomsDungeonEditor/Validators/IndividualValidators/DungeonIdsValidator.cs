@@ -39,7 +39,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 if (idDictionary[key].Count > 1)
                 {
-                    messages.Add($"{key} is a duplicate Id for {idDictionary[key].JoinAnd()}", DungeonValidationMessageType.Error);
+                    messages.AddError($"{key} is a duplicate Id for {idDictionary[key].JoinAnd()}");
+                }
+                if (EditorConstants.ReservedWords.Any(rw => key.Contains(rw, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    messages.AddError($"Id {key} is invalid, for it contains a reserved word.");
                 }
             }
 

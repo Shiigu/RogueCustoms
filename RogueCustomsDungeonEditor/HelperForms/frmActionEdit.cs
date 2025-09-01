@@ -688,7 +688,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     var idToUse = (!RequiresActionId)
                            ? PlaceholderActionId
-                           : InputBox.Show("Please enter an Id for the Action.\nTo cancel Saving, leave the field empty.", "Give the Action an Id", "");
+                           : InputBox.Show("Please enter an Id for the Action.\nTo cancel Saving, leave the field empty.", "Give the Action an Id", string.Empty, true);
                     if (!string.IsNullOrWhiteSpace(idToUse))
                     {
                         if (gbSelectionCriteria.Enabled)
