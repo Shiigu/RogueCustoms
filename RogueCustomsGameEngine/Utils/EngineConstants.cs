@@ -48,6 +48,12 @@ namespace RogueCustomsGameEngine.Utils
         public const int MIN_EVASION_CAP = -100;
         public const int MAX_EVASION_CAP = 100;
 
-        public const int HOURS_BEFORE_DUNGEON_CACHE_DELETION = 2;
+        public static readonly string LOOT_NO_DROP = "No Drop";
+        public static readonly string LOOT_WEAPON = "Weapon";
+        public static readonly string LOOT_ARMOR = "Armor";
+        public static readonly string LOOT_EQUIPPABLE = "Equippable";
+        public static readonly string LOOT_CONSUMABLE = "Consumable";
+
+        public static readonly string[] SPECIAL_LOOT_ENTRIES = [ LOOT_NO_DROP, LOOT_WEAPON, LOOT_ARMOR, LOOT_EQUIPPABLE, LOOT_CONSUMABLE ];
     }
 }

@@ -64,6 +64,8 @@ namespace RogueCustomsDungeonEditor
             ElementTab = new Controls.Tabs.ElementTab();
             tpFactionInfos = new TabPage();
             FactionTab = new Controls.Tabs.FactionTab();
+            tpLootTableInfos = new TabPage();
+            LootTableTab = new Controls.Tabs.LootTableTab();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tpPlayerClass = new TabPage();
@@ -93,6 +95,7 @@ namespace RogueCustomsDungeonEditor
             tbActionSchoolInfos.SuspendLayout();
             tbElementInfos.SuspendLayout();
             tpFactionInfos.SuspendLayout();
+            tpLootTableInfos.SuspendLayout();
             tbStatInfos.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
@@ -273,6 +276,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tbActionSchoolInfos);
             tbTabs.Controls.Add(tbElementInfos);
             tbTabs.Controls.Add(tpFactionInfos);
+            tbTabs.Controls.Add(tpLootTableInfos);
             tbTabs.Controls.Add(tbStatInfos);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
@@ -444,6 +448,24 @@ namespace RogueCustomsDungeonEditor
             FactionTab.Name = "FactionTab";
             FactionTab.Size = new System.Drawing.Size(732, 328);
             FactionTab.TabIndex = 0;
+            // 
+            // tpLootTableInfos
+            // 
+            tpLootTableInfos.Controls.Add(LootTableTab);
+            tpLootTableInfos.Location = new System.Drawing.Point(4, 24);
+            tpLootTableInfos.Name = "tpLootTableInfos";
+            tpLootTableInfos.Size = new System.Drawing.Size(740, 356);
+            tpLootTableInfos.TabIndex = 16;
+            tpLootTableInfos.Text = "Loot Tables";
+            tpLootTableInfos.UseVisualStyleBackColor = true;
+            // 
+            // LootTableTab
+            // 
+            LootTableTab.Anchor = AnchorStyles.Top;
+            LootTableTab.Location = new System.Drawing.Point(82, 3);
+            LootTableTab.Name = "LootTableTab";
+            LootTableTab.Size = new System.Drawing.Size(543, 352);
+            LootTableTab.TabIndex = 0;
             // 
             // tbStatInfos
             // 
@@ -645,6 +667,7 @@ namespace RogueCustomsDungeonEditor
             tbElementInfos.PerformLayout();
             tpFactionInfos.ResumeLayout(false);
             tpFactionInfos.PerformLayout();
+            tpLootTableInfos.ResumeLayout(false);
             tbStatInfos.ResumeLayout(false);
             tbStatInfos.PerformLayout();
             tpPlayerClass.ResumeLayout(false);
@@ -716,5 +739,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ScriptsTab ScriptsTab;
         private TabPage tbActionSchoolInfos;
         private Controls.Tabs.ActionSchoolsTab ActionSchoolsTab;
+        private TabPage tpLootTableInfos;
+        private Controls.Tabs.LootTableTab LootTableTab;
     }
 }

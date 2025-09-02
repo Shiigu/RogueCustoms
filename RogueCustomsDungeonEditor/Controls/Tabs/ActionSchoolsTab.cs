@@ -38,6 +38,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 dgvSchools.Rows.Add(entry.Id, entry.Name);
             }
             dgvSchools.Rows[0].Selected = true;
+            dgvSchools.CellValueChanged += (sender, e) => TabInfoChanged(sender, e);
         }
 
         public List<string> SaveData()

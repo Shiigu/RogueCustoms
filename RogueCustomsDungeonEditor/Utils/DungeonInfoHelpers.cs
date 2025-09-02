@@ -28,6 +28,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 FactionInfos = new(),
                 CharacterStats = new(),
                 ElementInfos = new(),
+                ActionSchoolInfos = new(),
                 PlayerClasses = new(),
                 NPCs = new(),
                 Items = new(),
@@ -60,6 +61,8 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.CharacterStats = CreateStatsTemplate();
 
             templateDungeon.ElementInfos = new() { CreateElementTemplate() };
+
+            templateDungeon.ActionSchoolInfos = new() { CreateActionSchoolTemplate() };
 
             templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate(templateDungeon.CharacterStats));
 
@@ -733,6 +736,24 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
+        public static ActionSchoolInfo CreateActionSchoolTemplate()
+        {
+            return new ActionSchoolInfo()
+            {
+                Id = "School",
+                Name = "ActionSchoolName",
+            };
+        }
+
+        public static LootTableInfo CreateLootTableTemplate()
+        {
+            return new LootTableInfo()
+            {
+                Id = "TC Okay",
+                Entries = []
+            };
+        }
+
         public static PlayerClassInfo CreatePlayerClassTemplate(List<StatInfo> stats)
         {
             var playerClassTemplate = new PlayerClassInfo
@@ -1234,6 +1255,36 @@ namespace RogueCustomsDungeonEditor.Utils
         public static List<TileTypeInfo> GetSpecialTileTypes(this DungeonInfo dungeonInfo, List<string> defaultTileTypeIds)
         {
             return dungeonInfo.TileTypeInfos.Where(tti => !defaultTileTypeIds.Contains(tti.Id, StringComparer.OrdinalIgnoreCase)).ToList();
+        }
+
+        public static List<string> GetAllIds(this DungeonInfo dungeonInfo, Type typeToExclude)
+        {
+            var ids = new List<string>();
+            if (typeToExclude != typeof(TileTypeInfo))
+                ids.AddRange(dungeonInfo.TileTypeInfos.Select(t => t.Id));
+            if (typeToExclude != typeof(TileSetInfo))
+                ids.AddRange(dungeonInfo.TileSetInfos.Select(t => t.Id));
+            if (typeToExclude != typeof(FactionInfo))
+                ids.AddRange(dungeonInfo.FactionInfos.Select(f => f.Id));
+            if (typeToExclude != typeof(CharacterStatInfo))
+                ids.AddRange(dungeonInfo.CharacterStats.Select(s => s.Id));
+            if (typeToExclude != typeof(ElementInfo))
+                ids.AddRange(dungeonInfo.ElementInfos.Select(e => e.Id));
+            if (typeToExclude != typeof(ActionSchoolInfo))
+                ids.AddRange(dungeonInfo.ActionSchoolInfos.Select(a => a.Id));
+            if (typeToExclude != typeof(LootTableInfo))
+                ids.AddRange(dungeonInfo.LootTableInfos.Select(a => a.Id));
+            if (typeToExclude != typeof(PlayerClassInfo))
+                ids.AddRange(dungeonInfo.PlayerClasses.Select(p => p.Id));
+            if (typeToExclude != typeof(NPCInfo))
+                ids.AddRange(dungeonInfo.NPCs.Select(n => n.Id));
+            if (typeToExclude != typeof(ItemInfo))
+                ids.AddRange(dungeonInfo.Items.Select(i => i.Id));
+            if (typeToExclude != typeof(TrapInfo))
+                ids.AddRange(dungeonInfo.Traps.Select(t => t.Id));
+            if (typeToExclude != typeof(AlteredStatusInfo))
+                ids.AddRange(dungeonInfo.AlteredStatuses.Select(a => a.Id));
+            return ids;
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

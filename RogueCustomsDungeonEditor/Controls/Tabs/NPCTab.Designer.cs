@@ -66,7 +66,14 @@
             chkNPCWandersIfWithoutTarget = new System.Windows.Forms.CheckBox();
             label2 = new System.Windows.Forms.Label();
             saeNPCOnLevelUp = new SingleActionEditor();
+            label3 = new System.Windows.Forms.Label();
+            cmbNPCLootTable = new System.Windows.Forms.ComboBox();
+            label4 = new System.Windows.Forms.Label();
+            label5 = new System.Windows.Forms.Label();
+            nudNPCDropPicks = new System.Windows.Forms.NumericUpDown();
+            label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).BeginInit();
             SuspendLayout();
             // 
             // cmbNPCAIType
@@ -90,11 +97,8 @@
             // maeNPCOnInteracted
             // 
             maeNPCOnInteracted.ActionDescription = "Someone can interact with\r\nthem with the following:";
-            maeNPCOnInteracted.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeNPCOnInteracted.Actions");
             maeNPCOnInteracted.ActionTypeText = "Interact";
             maeNPCOnInteracted.ClassId = null;
-            maeNPCOnInteracted.Dungeon = null;
-            maeNPCOnInteracted.EffectParamData = null;
             maeNPCOnInteracted.Location = new System.Drawing.Point(6, 644);
             maeNPCOnInteracted.Name = "maeNPCOnInteracted";
             maeNPCOnInteracted.PlaceholderActionName = null;
@@ -112,143 +116,96 @@
             // 
             // saeNPCOnSpawn
             // 
-            saeNPCOnSpawn.Action = null;
             saeNPCOnSpawn.ActionDescription = "When spawning...                ";
             saeNPCOnSpawn.ActionTypeText = "Turn Start";
             saeNPCOnSpawn.AutoSize = true;
             saeNPCOnSpawn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnSpawn.ClassId = null;
-            saeNPCOnSpawn.Dungeon = null;
-            saeNPCOnSpawn.EffectParamData = null;
             saeNPCOnSpawn.Location = new System.Drawing.Point(6, 468);
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
             saeNPCOnSpawn.PlaceholderActionId = "Spawn";
-            saeNPCOnSpawn.RequiresActionId = false;
             saeNPCOnSpawn.RequiresCondition = true;
-            saeNPCOnSpawn.RequiresDescription = false;
-            saeNPCOnSpawn.RequiresName = false;
             saeNPCOnSpawn.Size = new System.Drawing.Size(283, 32);
             saeNPCOnSpawn.SourceDescription = "The NPC (won't become visible)";
             saeNPCOnSpawn.TabIndex = 248;
             saeNPCOnSpawn.TargetDescription = "The NPC (won't become visible)";
             saeNPCOnSpawn.ThisDescription = "The NPC (won't become visible)";
-            saeNPCOnSpawn.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeNPCOnSpawn.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // ssNPC
             // 
             ssNPC.AutoSize = true;
             ssNPC.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ssNPC.BaseSightRangeDisplayNames = (System.Collections.Generic.Dictionary<string, string>)resources.GetObject("ssNPC.BaseSightRangeDisplayNames");
-            ssNPC.CanGainExperience = false;
-            ssNPC.ExperienceToLevelUpFormula = "";
             ssNPC.Location = new System.Drawing.Point(380, 92);
-            ssNPC.MaxLevel = 1;
             ssNPC.Name = "ssNPC";
-            ssNPC.Size = new System.Drawing.Size(303, 408);
-            ssNPC.StatInfos = null;
+            ssNPC.Size = new System.Drawing.Size(305, 408);
             ssNPC.TabIndex = 247;
             // 
             // sisNPCStartingInventory
             // 
-            sisNPCStartingInventory.Inventory = (System.Collections.Generic.List<string>)resources.GetObject("sisNPCStartingInventory.Inventory");
-            sisNPCStartingInventory.InventorySize = 0;
             sisNPCStartingInventory.Location = new System.Drawing.Point(387, 587);
             sisNPCStartingInventory.Name = "sisNPCStartingInventory";
-            sisNPCStartingInventory.SelectableItems = null;
             sisNPCStartingInventory.Size = new System.Drawing.Size(293, 79);
             sisNPCStartingInventory.TabIndex = 228;
             // 
             // saeNPCOnDeath
             // 
-            saeNPCOnDeath.Action = null;
             saeNPCOnDeath.ActionDescription = "When they die...                   ";
             saeNPCOnDeath.ActionTypeText = "On Death";
             saeNPCOnDeath.AutoSize = true;
             saeNPCOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnDeath.ClassId = null;
-            saeNPCOnDeath.Dungeon = null;
-            saeNPCOnDeath.EffectParamData = null;
             saeNPCOnDeath.Location = new System.Drawing.Point(6, 784);
             saeNPCOnDeath.Name = "saeNPCOnDeath";
             saeNPCOnDeath.PlaceholderActionId = "Death";
-            saeNPCOnDeath.RequiresActionId = false;
-            saeNPCOnDeath.RequiresCondition = false;
-            saeNPCOnDeath.RequiresDescription = false;
-            saeNPCOnDeath.RequiresName = false;
             saeNPCOnDeath.Size = new System.Drawing.Size(283, 32);
             saeNPCOnDeath.SourceDescription = "The NPC";
             saeNPCOnDeath.TabIndex = 246;
             saeNPCOnDeath.TargetDescription = "Whoever killed them (if any)";
             saeNPCOnDeath.ThisDescription = "The NPC";
-            saeNPCOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeNPCOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeNPCOnAttacked
             // 
-            saeNPCOnAttacked.Action = null;
             saeNPCOnAttacked.ActionDescription = "When they get attacked...  ";
             saeNPCOnAttacked.ActionTypeText = "Attacked";
             saeNPCOnAttacked.AutoSize = true;
             saeNPCOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnAttacked.ClassId = null;
-            saeNPCOnAttacked.Dungeon = null;
-            saeNPCOnAttacked.EffectParamData = null;
             saeNPCOnAttacked.Location = new System.Drawing.Point(6, 744);
             saeNPCOnAttacked.Name = "saeNPCOnAttacked";
             saeNPCOnAttacked.PlaceholderActionId = "Interacted";
-            saeNPCOnAttacked.RequiresActionId = false;
-            saeNPCOnAttacked.RequiresCondition = false;
-            saeNPCOnAttacked.RequiresDescription = false;
-            saeNPCOnAttacked.RequiresName = false;
             saeNPCOnAttacked.Size = new System.Drawing.Size(281, 32);
             saeNPCOnAttacked.SourceDescription = "The NPC";
             saeNPCOnAttacked.TabIndex = 245;
             saeNPCOnAttacked.TargetDescription = "Whoever interacted with them";
             saeNPCOnAttacked.ThisDescription = "The NPC";
-            saeNPCOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeNPCOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeNPCOnTurnStart
             // 
-            saeNPCOnTurnStart.Action = null;
             saeNPCOnTurnStart.ActionDescription = "When the next turn starts...";
             saeNPCOnTurnStart.ActionTypeText = "Turn Start";
             saeNPCOnTurnStart.AutoSize = true;
             saeNPCOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnTurnStart.ClassId = null;
-            saeNPCOnTurnStart.Dungeon = null;
-            saeNPCOnTurnStart.EffectParamData = null;
             saeNPCOnTurnStart.Location = new System.Drawing.Point(6, 506);
             saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
             saeNPCOnTurnStart.PlaceholderActionId = "TurnStart";
-            saeNPCOnTurnStart.RequiresActionId = false;
-            saeNPCOnTurnStart.RequiresCondition = false;
-            saeNPCOnTurnStart.RequiresDescription = false;
-            saeNPCOnTurnStart.RequiresName = false;
-            saeNPCOnTurnStart.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnTurnStart.Size = new System.Drawing.Size(282, 32);
             saeNPCOnTurnStart.SourceDescription = "The NPC";
             saeNPCOnTurnStart.TabIndex = 244;
             saeNPCOnTurnStart.TargetDescription = "The NPC";
             saeNPCOnTurnStart.ThisDescription = "The NPC";
-            saeNPCOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeNPCOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maeNPCOnAttack
             // 
             maeNPCOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
-            maeNPCOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeNPCOnAttack.Actions");
             maeNPCOnAttack.ActionTypeText = "Interact";
             maeNPCOnAttack.ClassId = null;
-            maeNPCOnAttack.Dungeon = null;
-            maeNPCOnAttack.EffectParamData = null;
             maeNPCOnAttack.Location = new System.Drawing.Point(6, 544);
             maeNPCOnAttack.Name = "maeNPCOnAttack";
             maeNPCOnAttack.PlaceholderActionName = null;
             maeNPCOnAttack.RequiresActionId = true;
             maeNPCOnAttack.RequiresActionName = true;
             maeNPCOnAttack.RequiresCondition = true;
-            maeNPCOnAttack.RequiresDescription = false;
             maeNPCOnAttack.Size = new System.Drawing.Size(368, 94);
             maeNPCOnAttack.SourceDescription = "The NPC";
             maeNPCOnAttack.TabIndex = 243;
@@ -271,7 +228,7 @@
             label103.AutoSize = true;
             label103.Location = new System.Drawing.Point(6, 270);
             label103.Name = "label103";
-            label103.Size = new System.Drawing.Size(104, 15);
+            label103.Size = new System.Drawing.Size(103, 15);
             label103.TabIndex = 238;
             label103.Text = "Experience Payout";
             // 
@@ -289,7 +246,7 @@
             // label67
             // 
             label67.AutoSize = true;
-            label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label67.Location = new System.Drawing.Point(129, 444);
             label67.Name = "label67";
             label67.Size = new System.Drawing.Size(67, 21);
@@ -363,7 +320,7 @@
             // 
             // label98
             // 
-            label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label98.Location = new System.Drawing.Point(365, 17);
             label98.Name = "label98";
             label98.Size = new System.Drawing.Size(131, 52);
@@ -471,9 +428,6 @@
             // 
             // crsNPC
             // 
-            crsNPC.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.BackgroundColor");
-            crsNPC.Character = '\0';
-            crsNPC.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsNPC.ForegroundColor");
             crsNPC.Location = new System.Drawing.Point(500, 5);
             crsNPC.Name = "crsNPC";
             crsNPC.Size = new System.Drawing.Size(211, 83);
@@ -483,7 +437,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(485, 510);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(85, 21);
@@ -515,7 +469,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label2.Location = new System.Drawing.Point(170, 304);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(26, 21);
@@ -524,34 +478,87 @@
             // 
             // saeNPCOnLevelUp
             // 
-            saeNPCOnLevelUp.Action = null;
             saeNPCOnLevelUp.ActionDescription = "When they level up...           ";
             saeNPCOnLevelUp.ActionTypeText = "On Level Up";
             saeNPCOnLevelUp.AutoSize = true;
             saeNPCOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnLevelUp.ClassId = null;
-            saeNPCOnLevelUp.Dungeon = null;
-            saeNPCOnLevelUp.EffectParamData = null;
             saeNPCOnLevelUp.Location = new System.Drawing.Point(4, 818);
             saeNPCOnLevelUp.Name = "saeNPCOnLevelUp";
             saeNPCOnLevelUp.PlaceholderActionId = "LevelUp";
-            saeNPCOnLevelUp.RequiresActionId = false;
-            saeNPCOnLevelUp.RequiresCondition = false;
-            saeNPCOnLevelUp.RequiresDescription = false;
-            saeNPCOnLevelUp.RequiresName = false;
             saeNPCOnLevelUp.Size = new System.Drawing.Size(284, 32);
             saeNPCOnLevelUp.SourceDescription = "The NPC";
             saeNPCOnLevelUp.TabIndex = 256;
             saeNPCOnLevelUp.TargetDescription = "The NPC";
             saeNPCOnLevelUp.ThisDescription = "The NPC";
-            saeNPCOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeNPCOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            label3.Location = new System.Drawing.Point(500, 746);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(44, 21);
+            label3.TabIndex = 257;
+            label3.Text = "Loot";
+            // 
+            // cmbNPCLootTable
+            // 
+            cmbNPCLootTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbNPCLootTable.FormattingEnabled = true;
+            cmbNPCLootTable.Location = new System.Drawing.Point(550, 777);
+            cmbNPCLootTable.Name = "cmbNPCLootTable";
+            cmbNPCLootTable.Size = new System.Drawing.Size(128, 23);
+            cmbNPCLootTable.TabIndex = 259;
+            cmbNPCLootTable.SelectedIndexChanged += cmbNPCLootTable_SelectedIndexChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(387, 780);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(157, 15);
+            label4.TabIndex = 258;
+            label4.Text = "Uses the following loot table";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(513, 814);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(36, 15);
+            label5.TabIndex = 262;
+            label5.Text = "items";
+            // 
+            // nudNPCDropPicks
+            // 
+            nudNPCDropPicks.Location = new System.Drawing.Point(462, 809);
+            nudNPCDropPicks.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
+            nudNPCDropPicks.Name = "nudNPCDropPicks";
+            nudNPCDropPicks.Size = new System.Drawing.Size(45, 23);
+            nudNPCDropPicks.TabIndex = 261;
+            nudNPCDropPicks.ValueChanged += nudNPCDropPicks_ValueChanged;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(387, 811);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(69, 15);
+            label6.TabIndex = 260;
+            label6.Text = "Drops up to";
             // 
             // NPCTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(label5);
+            Controls.Add(nudNPCDropPicks);
+            Controls.Add(label6);
+            Controls.Add(cmbNPCLootTable);
+            Controls.Add(label4);
+            Controls.Add(label3);
             Controls.Add(saeNPCOnLevelUp);
             Controls.Add(label2);
             Controls.Add(chkNPCWandersIfWithoutTarget);
@@ -592,6 +599,7 @@
             Name = "NPCTab";
             Size = new System.Drawing.Size(714, 853);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -634,5 +642,11 @@
         private System.Windows.Forms.CheckBox chkNPCWandersIfWithoutTarget;
         private System.Windows.Forms.Label label2;
         private SingleActionEditor saeNPCOnLevelUp;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cmbNPCLootTable;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown nudNPCDropPicks;
+        private System.Windows.Forms.Label label6;
     }
 }

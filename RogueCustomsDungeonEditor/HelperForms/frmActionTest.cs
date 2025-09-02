@@ -252,7 +252,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
 
-            var equippableClass = new EntityClass(equippableClassInfo, TestDungeon.LocaleToUse, EntityType.Weapon, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var equippableClass = new EntityClass(equippableClassInfo, TestDungeon.LocaleToUse, EntityType.Weapon, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
 
             var inventoryClassInfo = new ItemInfo()
             {
@@ -266,7 +266,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnUse = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var heldItemClass = new EntityClass(inventoryClassInfo, TestDungeon.LocaleToUse, EntityType.Consumable, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var heldItemClass = new EntityClass(inventoryClassInfo, TestDungeon.LocaleToUse, EntityType.Consumable, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
 
             if (SourceObjectType == ElementType.Character || SourceObjectType == ElementType.Tile || SourceObjectType == ElementType.Equippable)
             {
@@ -391,7 +391,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     IncreasePerLevel = 0
                 });
             }
-            var npcClass = new EntityClass(npcClassInfo, TestDungeon.LocaleToUse, EntityType.NPC, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var npcClass = new EntityClass(npcClassInfo, TestDungeon.LocaleToUse, EntityType.NPC, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
             var npc = new NonPlayableCharacter(npcClass, 1, TestDungeon.CurrentFloor);
             foreach (var item in clb.CheckedItems)
             {
@@ -429,7 +429,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnUse = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var consumableClass = new EntityClass(consumableClassInfo, TestDungeon.LocaleToUse, EntityType.Consumable, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var consumableClass = new EntityClass(consumableClassInfo, TestDungeon.LocaleToUse, EntityType.Consumable, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
             return new Item(consumableClass, TestDungeon.CurrentFloor);
         }
 
@@ -443,7 +443,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnStepped = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var trapClass = new EntityClass(trapClassInfo, TestDungeon.LocaleToUse, EntityType.Trap, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var trapClass = new EntityClass(trapClassInfo, TestDungeon.LocaleToUse, EntityType.Trap, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
             var trap = new Trap(trapClass, TestDungeon.CurrentFloor);
             trap.Position = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable)[0].Position;
             return trap;
@@ -461,7 +461,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnTurnStart = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var alteredStatusClass = new EntityClass(alteredStatusClassInfo, TestDungeon.LocaleToUse, EntityType.AlteredStatus, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools);
+            var alteredStatusClass = new EntityClass(alteredStatusClassInfo, TestDungeon.LocaleToUse, EntityType.AlteredStatus, ActiveDungeon.CharacterStats, TestDungeon.ActionSchools, []);
             var alteredStatus = new AlteredStatus(alteredStatusClass, TestDungeon.CurrentFloor);
             do
             {
