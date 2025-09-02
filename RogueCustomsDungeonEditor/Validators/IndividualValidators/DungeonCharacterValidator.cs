@@ -18,8 +18,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         public static async Task<DungeonValidationMessages> Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             Character characterAsInstance = isPlayerCharacter
-                                        ? new PlayerCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor)
-                                        : new NonPlayableCharacter (new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
+                                        ? new PlayerCharacter(new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor)
+                                        : new NonPlayableCharacter(new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
 
             var messages = new DungeonValidationMessages();
 

@@ -63,6 +63,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<FloorType> FloorTypes { get; set; }
         public List<Element> Elements { get; set; }
         public List<ActionSchool> ActionSchools { get; set; }
+        public List<LootTable> LootTables { get; set; }
         public List<EntityClass> Classes { get; set; }
         [JsonIgnore]
         public List<EntityClass> PlayerClasses => Classes.Where(c => c.EntityType == EntityType.Player).ToList();
@@ -91,6 +92,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             AmountOfFloors = dungeonInfo.AmountOfFloors;
             Elements = new List<Element>();
             ActionSchools = new List<ActionSchool>();
+            LootTables = new List<LootTable>();
             Classes = new List<EntityClass>();
             TileTypes = new List<TileType>();
             TileSets = new List<TileSet>();
@@ -105,11 +107,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
             dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse, ActionSchools)));
-            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats, ActionSchools)));
-            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats, ActionSchools)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null, ActionSchools)));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null, ActionSchools)));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null, ActionSchools)));
+            dungeonInfo.LootTableInfos.ForEach(lt => LootTables.Add(new LootTable(lt)));
+            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats, ActionSchools, [])));
+            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats, ActionSchools, LootTables)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null, ActionSchools, [])));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null, ActionSchools, [])));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null, ActionSchools, [])));
+            LootTables.ForEach(lt => lt.FillEntries(this));
             FloorTypes = new List<FloorType>();
             dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes, ActionSchools)));
             FloorTypes.ForEach(ft => {
@@ -131,6 +135,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 if (CharacterClasses.Any(c => c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.StartingInventoryIds?.Contains(itemClass.Id) == true)) continue;
                 if (FloorTypes.Any(ft => ft.PossibleItems.Any(pi => pi.Class == itemClass))) continue;
+                if (LootTables.Any(lt => lt.Entries.Any(lte => lte.Pick == itemClass))) continue;
                 UndroppableItemClasses.Add(itemClass);
             }
         }

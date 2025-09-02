@@ -17,18 +17,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             var idDictionary = new Dictionary<string, List<string>>();
 
-            foreach (var faction in dungeonJson.FactionInfos)
-            {
-                if(!idDictionary.ContainsKey(faction.Id))
-                {
-                    idDictionary[faction.Id] = new List<string> { faction.Name };
-                }
-                else
-                {
-                    idDictionary[faction.Id].Add(faction.Name);
-                }
-            }
-
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.LootTableInfos.ConvertAll(lt => (lt.Id, lt.Id)));
+            UpdateIdDictionaryWith(idDictionary, dungeonJson.ElementInfos.ConvertAll(e => (e.Id, e.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.PlayerClasses.ConvertAll(pc => (pc.Id, pc.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.NPCs.ConvertAll(npc => (npc.Id, npc.Name)));
             UpdateIdDictionaryWith(idDictionary, dungeonJson.Items.ConvertAll(i => (i.Id, i.Name)));
@@ -41,7 +31,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     messages.AddError($"{key} is a duplicate Id for {idDictionary[key].JoinAnd()}");
                 }
-                if (EditorConstants.ReservedWords.Any(rw => key.Contains(rw, StringComparison.InvariantCultureIgnoreCase)))
+                if (EditorConstants.ReservedWords.Any(rw => key.Equals(rw, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     messages.AddError($"Id {key} is invalid, for it contains a reserved word.");
                 }

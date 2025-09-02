@@ -130,7 +130,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         CanLockItems = keyType.CanLockItems,
                         CanLockStairs = keyType.CanLockStairs,
                         DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, actionSchools)
+                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, actionSchools, null)
                     });
                 }
             }

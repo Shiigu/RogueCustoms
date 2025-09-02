@@ -18,7 +18,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         public static async Task<DungeonValidationMessages> Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
+            var itemAsInstance = new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor);
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(itemJson.Name, "Item", "Name", true));

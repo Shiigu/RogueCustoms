@@ -13,6 +13,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Drawing;
 using System.Numerics;
 using System.Threading.Tasks;
+using RogueCustomsGameEngine.Utils;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -45,6 +46,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnInteracted { get; set; }
         public bool SpawnedViaMonsterHouse { get; set; }
         public bool CanSeeTraps { get; set; }
+        public List<EntityClass> Drops { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
@@ -61,6 +63,70 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnSpawn = MapClassAction(entityClass.OnSpawn);
             OnInteracted = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnInteracted, OnInteracted);
+
+            CreateDrops(entityClass.LootTable, entityClass.DropPicks);
+        }
+
+        private void CreateDrops(LootTable lootTable, int dropPicks)
+        {
+            Drops = [];
+
+            if (lootTable == null || lootTable.Entries.Count == 0 || dropPicks == 0) return;
+
+            var validItemClasses = Map.PossibleItemClasses.Except(Map.UndroppableItemClasses).ToList();
+            var currentLootTable = lootTable;
+            object pickedObject = null;
+
+            for (int i = 0; i < dropPicks; i++)
+            {
+                var foundAPick = false;
+                do
+                {
+                    pickedObject = currentLootTable.Entries.TakeRandomElementWithWeights(e => e.Weight, Rng).Pick;
+                    if (pickedObject is LootTable lt)
+                    {
+                        currentLootTable = lt;
+                    }
+                    else if (pickedObject is EntityClass ec)
+                    {
+                        Drops.Add(ec);
+                        foundAPick = true;
+                    }
+                    else if (pickedObject is string s && EngineConstants.SPECIAL_LOOT_ENTRIES.Contains(s))
+                    {
+                        if (s == EngineConstants.LOOT_NO_DROP)
+                        {
+                            // Do nothing
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_WEAPON)
+                        {
+                            var chosenWeapon = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList().TakeRandomElement(Rng);
+                            Drops.Add(chosenWeapon);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_ARMOR)
+                        {
+                            var chosenArmor = validItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            Drops.Add(chosenArmor);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_EQUIPPABLE)
+                        {
+                            var chosenEquippable = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            Drops.Add(chosenEquippable);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_CONSUMABLE)
+                        {
+                            var chosenConsumable = validItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList().TakeRandomElement(Rng);
+                            Drops.Add(chosenConsumable);
+                            foundAPick = true;
+                        }
+                    }
+                }
+                while (!foundAPick);
+            }
         }
 
         public async Task ProcessAI()
@@ -181,7 +247,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
 
             if (!WandersIfWithoutTarget)
-                return false;
+            {
+                // If I'm on a Hallway or connector tile, I wander to prevent blocking other Characters
+                if (ContainingTile.Type != TileType.Hallway && !Map.GetAdjacentTiles(Position, true).Any(t => t.Type == TileType.Hallway))
+                    return false;
+            }
 
             // IF EITHER
             //    a)  I can't see my target nor their last four positions (they got out of sight)
@@ -475,6 +545,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Passable = true;
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
+                foreach (var dropEntry in Drops)
+                {
+                    var itemForDrop = await Map.AddEntity(dropEntry) as Item;
+                    DropItem(itemForDrop);
+                }
                 if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
                     if (!Map.IsDebugMode && Position != null)
@@ -519,7 +594,6 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void DropItem(Item item)
         {
-            if (Position != null && ContainingTile != null && LastPositionBeforeRemove == null) return;
             var events = new List<DisplayEventDto>();
             var centralPosition = Position ?? LastPositionBeforeRemove;
             var centralTile = Map.GetTileFromCoordinates(centralPosition);

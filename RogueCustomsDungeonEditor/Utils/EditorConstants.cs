@@ -8,6 +8,6 @@ namespace RogueCustomsDungeonEditor.Utils
 {
     public static class EditorConstants
     {
-        public static readonly List<string> ReservedWords = ["<<CUSTOM>>"];
+        public static readonly List<string> ReservedWords = ["<<CUSTOM>>", "NO DROP", "WEAPON", "ARMOR", "EQUIPPABLE", "CONSUMABLE", "NONE"];
     }
 }

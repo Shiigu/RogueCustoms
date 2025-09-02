@@ -61,7 +61,7 @@ namespace RogueCustomsDungeonEditor
         private bool DirtyTab;
         private bool DirtyDungeon;
         private bool AutomatedChange; // If true, does not set DirtyTab to true
-        private bool IsNewElement;
+        private bool IsNewObject;
         private bool PassedValidation;
         private bool ReclickOnFailedSave;
         private bool ReselectingNode;
@@ -83,6 +83,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.StatInfo] = tbStatInfos;
             TabsForNodeTypes[RogueTabTypes.ElementInfo] = tbElementInfos;
             TabsForNodeTypes[RogueTabTypes.ActionSchoolsInfo] = tbActionSchoolInfos;
+            TabsForNodeTypes[RogueTabTypes.LootTableInfo] = tpLootTableInfos;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -141,6 +142,7 @@ namespace RogueCustomsDungeonEditor
             AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;
+            LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -199,7 +201,7 @@ namespace RogueCustomsDungeonEditor
                 if (DirtyTab)
                 {
                     var messageBoxResult = MessageBox.Show(
-                        "The currently-opened Element has unsaved changes.\n\nDo you wish to save them?\n\n(Selecting \"No\" will make you lose all changes)",
+                        "The currently-opened object has unsaved changes.\n\nDo you wish to save them?\n\n(Selecting \"No\" will make you lose all changes)",
                         "Unsaved Changes",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -207,7 +209,7 @@ namespace RogueCustomsDungeonEditor
 
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        SaveElement();
+                        SaveObject();
                         if (DirtyTab)
                         {
                             if (ActiveNode != null)
@@ -238,7 +240,7 @@ namespace RogueCustomsDungeonEditor
                     tvDungeonInfo.Focus();
                 }
                 ActiveNode = e.Node;
-                IsNewElement = false;
+                IsNewObject = false;
                 LoadTabDataForTag(tag);
                 tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
@@ -296,10 +298,15 @@ namespace RogueCustomsDungeonEditor
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.ElementInfo;
                         break;
+                    case "Loot Tables":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
+                        break;
                     case "Player Classes":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.PlayerClass;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.PlayerClass;
                         break;
                     case "NPCs":
                         tssDungeonElement.Visible = true;
@@ -439,6 +446,18 @@ namespace RogueCustomsDungeonEditor
                 Name = "Action Schools"
             };
             tvDungeonInfo.Nodes.Add(actionSchoolsInfoNode);
+
+            var lootTableInfosRootNode = new TreeNode("Loot Tables");
+            foreach (var lootTableInfo in ActiveDungeon.LootTableInfos)
+            {
+                var lootTableInfoNode = new TreeNode(lootTableInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.LootTableInfo, DungeonElement = lootTableInfo },
+                    Name = lootTableInfo.Id
+                };
+                lootTableInfosRootNode.Nodes.Add(lootTableInfoNode);
+            }
+            tvDungeonInfo.Nodes.Add(lootTableInfosRootNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -657,14 +676,14 @@ namespace RogueCustomsDungeonEditor
                 if (DirtyTab)
                 {
                     var messageBoxResult = MessageBox.Show(
-                        $"The currently-opened Element has unsaved changes.\n\nDo you wish to save them before saving the Dungeon?",
+                        $"The currently-opened object has unsaved changes.\n\nDo you wish to save them before saving the Dungeon?",
                         "Save Dungeon",
                         MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Warning
                     );
-                    if (messageBoxResult == DialogResult.Yes && !SaveElement())
+                    if (messageBoxResult == DialogResult.Yes && !SaveObject())
                     {
-                        MessageBox.Show($"The currently-opened Element could not be saved due to errors. Please check it.\n\nThe Dungeon saving process will proceed nonetheless.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show($"The currently-opened object could not be saved due to errors. Please check it.\n\nThe Dungeon saving process will proceed nonetheless.", "Save Dungeon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 File.WriteAllText(filePath, string.Empty);
@@ -724,6 +743,9 @@ namespace RogueCustomsDungeonEditor
                     case "Attack Elements":
                         tabToOpen = RogueTabTypes.ElementInfo;
                         break;
+                    case "Loot Tables":
+                        tabToOpen = RogueTabTypes.LootTableInfo;
+                        break;
                     case "Player Classes":
                         tabToOpen = RogueTabTypes.PlayerClass;
                         break;
@@ -767,6 +789,9 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.ElementInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateElementTemplate();
                     break;
+                case RogueTabTypes.LootTableInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateLootTableTemplate();
+                    break;
                 case RogueTabTypes.PlayerClass:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate(ActiveDungeon.CharacterStats);
                     break;
@@ -785,7 +810,7 @@ namespace RogueCustomsDungeonEditor
                 default:
                     break;
             }
-            IsNewElement = true;
+            IsNewObject = true;
             ActiveNode = null;
             LoadTabDataForTag(ActiveNodeTag);
             DirtyTab = true;
@@ -795,53 +820,38 @@ namespace RogueCustomsDungeonEditor
         {
             ClickedSave = true;
             ActiveControl = null;
-            SaveElement();
+            SaveObject();
             ClickedSave = false;
         }
 
-        private bool SaveElement()
+        private bool SaveObject()
         {
-            if (!IsNewElement)
+            if (!IsNewObject)
             {
-                switch (ActiveNodeTag.TabToOpen)
+                return ActiveNodeTag.TabToOpen switch
                 {
-                    case RogueTabTypes.BasicInfo:
-                        return SaveBasicInfo();
-                    case RogueTabTypes.Locales:
-                        return SaveLocale();
-                    case RogueTabTypes.TileTypeInfo:
-                        return SaveTileType();
-                    case RogueTabTypes.TileSetInfo:
-                        return SaveTileSet();
-                    case RogueTabTypes.FloorInfo:
-                        return SaveFloorGroup(false);
-                    case RogueTabTypes.FactionInfo:
-                        return SaveFaction();
-                    case RogueTabTypes.StatInfo:
-                        return SaveStat();
-                    case RogueTabTypes.ElementInfo:
-                        return SaveAttackElement();
-                    case RogueTabTypes.ActionSchoolsInfo:
-                        return SaveActionSchools();
-                    case RogueTabTypes.PlayerClass:
-                        return SavePlayerClass();
-                    case RogueTabTypes.NPC:
-                        return SaveNPC();
-                    case RogueTabTypes.Item:
-                        return SaveItem();
-                    case RogueTabTypes.Trap:
-                        return SaveTrap();
-                    case RogueTabTypes.AlteredStatus:
-                        return SaveAlteredStatus();
-                    case RogueTabTypes.Scripts:
-                        return SaveScripts();
-                    default:
-                        return true;
-                }
+                    RogueTabTypes.BasicInfo => SaveBasicInfo(),
+                    RogueTabTypes.Locales => SaveLocale(),
+                    RogueTabTypes.TileTypeInfo => SaveTileType(),
+                    RogueTabTypes.TileSetInfo => SaveTileSet(),
+                    RogueTabTypes.FloorInfo => SaveFloorGroup(false),
+                    RogueTabTypes.FactionInfo => SaveFaction(),
+                    RogueTabTypes.StatInfo => SaveStat(),
+                    RogueTabTypes.ElementInfo => SaveElement(),
+                    RogueTabTypes.ActionSchoolsInfo => SaveActionSchools(),
+                    RogueTabTypes.LootTableInfo => SaveLootTable(),
+                    RogueTabTypes.PlayerClass => SavePlayerClass(),
+                    RogueTabTypes.NPC => SaveNPC(),
+                    RogueTabTypes.Item => SaveItem(),
+                    RogueTabTypes.Trap => SaveTrap(),
+                    RogueTabTypes.AlteredStatus => SaveAlteredStatus(),
+                    RogueTabTypes.Scripts => SaveScripts(),
+                    _ => true,
+                };
             }
             else
             {
-                return SaveElementAs();
+                return SaveObjectAs();
             }
         }
 
@@ -849,11 +859,11 @@ namespace RogueCustomsDungeonEditor
         {
             ClickedSave = true;
             ActiveControl = null;
-            SaveElementAs();
+            SaveObjectAs();
             ClickedSave = false;
         }
 
-        private bool SaveElementAs()
+        private bool SaveObjectAs()
         {
             switch (ActiveNodeTag.TabToOpen)
             {
@@ -870,7 +880,9 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.StatInfo:
                     return SaveStatAs();
                 case RogueTabTypes.ElementInfo:
-                    return SaveAttackElementAs();
+                    return SaveElementAs();
+                case RogueTabTypes.LootTableInfo:
+                    return SaveLootTableAs();
                 case RogueTabTypes.PlayerClass:
                     return SavePlayerClassAs();
                 case RogueTabTypes.NPC:
@@ -910,6 +922,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.ElementInfo:
                     DeleteAttackElement();
+                    break;
+                case RogueTabTypes.LootTableInfo:
+                    DeleteLootTable();
                     break;
                 case RogueTabTypes.PlayerClass:
                     DeletePlayerClass();
@@ -960,7 +975,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.Locales:
                     var tagLocale = (LocaleInfo)tag.DungeonElement;
                     LoadLocaleInfoFor(tagLocale);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale - {tagLocale.Language}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Locale";
@@ -968,7 +983,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.TileTypeInfo:
                     var tagTileType = (TileTypeInfo)tag.DungeonElement;
                     LoadTileTypeInfoFor(tagTileType);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Tile Type - {tagTileType.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Tile Type";
@@ -976,7 +991,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.TileSetInfo:
                     var tagTileSet = (TileSetInfo)tag.DungeonElement;
                     LoadTileSetInfoFor(tagTileSet);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Tileset - {tagTileSet.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Tileset";
@@ -984,7 +999,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.FloorInfo:
                     var tagFloorGroup = (FloorInfo)tag.DungeonElement;
                     LoadFloorInfoFor(tagFloorGroup);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                     {
                         if (tagFloorGroup.MinFloorLevel != tagFloorGroup.MaxFloorLevel)
                             TabsForNodeTypes[tag.TabToOpen].Text = $"Floor Group - {tagFloorGroup.MinFloorLevel} to {tagFloorGroup.MaxFloorLevel}";
@@ -1000,7 +1015,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.FactionInfo:
                     var tagFaction = (FactionInfo)tag.DungeonElement;
                     LoadFactionInfoFor(tagFaction);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction - {tagFaction.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Faction";
@@ -1008,7 +1023,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.StatInfo:
                     var tagStat = (StatInfo)tag.DungeonElement;
                     LoadStatInfoFor(tagStat);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Stat - {tagStat.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Stat";
@@ -1016,7 +1031,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.ElementInfo:
                     var tagElement = (ElementInfo)tag.DungeonElement;
                     LoadAttackElementInfoFor(tagElement);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element - {tagElement.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element";
@@ -1024,10 +1039,18 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.ActionSchoolsInfo:
                     LoadActionSchools();
                     break;
+                case RogueTabTypes.LootTableInfo:
+                    var tagLootTable = (LootTableInfo)tag.DungeonElement;
+                    LoadLootTableInfoFor(tagLootTable);
+                    if (!IsNewObject)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Loot Table - {tagLootTable.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Loot Table";
+                    break;
                 case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
                     LoadPlayerClassInfoFor(tagPlayerClass);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Player Class - {tagPlayerClass.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Player Class";
@@ -1035,7 +1058,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.NPC:
                     var tagNPC = (NPCInfo)tag.DungeonElement;
                     LoadNPCInfoFor(tagNPC);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"NPC - {tagNPC.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"NPC";
@@ -1043,7 +1066,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.Item:
                     var tagItem = (ItemInfo)tag.DungeonElement;
                     LoadItemInfoFor(tagItem);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Item - {tagItem.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Item";
@@ -1051,7 +1074,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.Trap:
                     var tagTrap = (TrapInfo)tag.DungeonElement;
                     LoadTrapInfoFor(tagTrap);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Trap - {tagTrap.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Trap";
@@ -1059,7 +1082,7 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.AlteredStatus:
                     var tagAlteredStatus = (AlteredStatusInfo)tag.DungeonElement;
                     LoadAlteredStatusInfoFor(tagAlteredStatus);
-                    if (!IsNewElement)
+                    if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Altered Status - {tagAlteredStatus.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Altered Status";
@@ -1211,7 +1234,7 @@ namespace RogueCustomsDungeonEditor
             if (localeClone.AddMissingMandatoryLocalesIfNeeded(LocaleTemplate, MandatoryLocaleKeys))
             {
                 DirtyTab = true;
-                if(!IsNewElement)
+                if(!IsNewObject)
                     MessageBox.Show(
                         "This Locale is missing some mandatory keys.\n\nThey have been added at the end of the table. Please check them.",
                         "Locale",
@@ -1222,7 +1245,7 @@ namespace RogueCustomsDungeonEditor
             if (AddMissingCustomLocalesIfNeeded(localeClone))
             {
                 DirtyTab = true;
-                if (!IsNewElement)
+                if (!IsNewObject)
                     MessageBox.Show(
                         "This Locale is missing some custom keys present in other Locales.\n\nThey have been added at the end of the table. Please check them.",
                         "Locale",
@@ -1233,7 +1256,7 @@ namespace RogueCustomsDungeonEditor
             if (AddMissingKeyDoorLocalesIfNeeded(localeClone))
             {
                 DirtyTab = true;
-                if (!IsNewElement)
+                if (!IsNewObject)
                     MessageBox.Show(
                         "This Locale is missing some custom keys related to Keys and Doors.\n\nThey have been added at the end of the table. Please check them.",
                         "Locale",
@@ -1325,7 +1348,7 @@ namespace RogueCustomsDungeonEditor
             string inputBoxResult;
             do
             {
-                inputBoxResult = InputBox.Show("Indicate the Locale Identifier. It must be exactly two characters long.\n\n(For example, \"en\" or \"es\")", "Save Locale As");
+                inputBoxResult = InputBox.Show("Indicate the Locale Identifier. It must be exactly two characters long.\n\n(For example, \"en\" or \"es\")", "Save Locale As", string.Empty, false, ActiveDungeon.Locales.ConvertAll(l => l.Language));
                 if (inputBoxResult == null) return false;
                 if (ActiveDungeon.Locales.Exists(l => l.Language.Equals(inputBoxResult)))
                 {
@@ -1391,7 +1414,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(localeToSave.Language, "Locales");
@@ -1401,7 +1424,7 @@ namespace RogueCustomsDungeonEditor
         private void DeleteLocale()
         {
             var activeLocale = LocaleEntriesTab.LoadedLocale;
-            var deleteLocalePrompt = IsNewElement
+            var deleteLocalePrompt = IsNewObject
                 ? "Do you want to remove this unsaved Locale?"
                 : $"Do you want to PERMANENTLY delete Locale \"{activeLocale.Language}\"?";
             var messageBoxResult = MessageBox.Show(
@@ -1413,7 +1436,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     ActiveDungeon.Locales.RemoveAll(l => l.Language.Equals(activeLocale.Language));
                     MessageBox.Show(
@@ -1433,7 +1456,7 @@ namespace RogueCustomsDungeonEditor
                         );
                     }
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1466,7 +1489,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTileTypeAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Tile Type Identifier", "Save Special Tile As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Tile Type Identifier", "Save Special Tile As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(TileTypeInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.TileTypeInfos.Exists(tti => tti.Id.Equals(inputBoxResult)))
@@ -1536,7 +1559,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(tileTypeToSave.Id, "Special Tiles");
@@ -1546,7 +1569,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteTileType()
         {
             var activeTileType = TileTypeTab.LoadedTileType;
-            var deleteTileTypePrompt = IsNewElement
+            var deleteTileTypePrompt = IsNewObject
                 ? "Do you want to remove this unsaved Special Tile?"
                 : $"Do you want to PERMANENTLY delete Special Tile {activeTileType.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -1558,7 +1581,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeTileType.Id);
                     ActiveDungeon.TileTypeInfos.RemoveAll(tti => tti.Id.Equals(activeTileType.Id));
@@ -1570,7 +1593,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1604,7 +1627,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTileSetAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Tileset Identifier", "Save Tileset As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(TileSetInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.TileSetInfos.Exists(tsi => tsi.Id.Equals(inputBoxResult)))
@@ -1661,7 +1684,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(tilesetToSave.Id, "Tilesets");
@@ -1671,7 +1694,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteTileSet()
         {
             var activeTileSet = TilesetTab.LoadedTileSet;
-            var deleteTileSetPrompt = IsNewElement
+            var deleteTileSetPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Tileset?"
                 : $"Do you want to PERMANENTLY delete Tileset {activeTileSet.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -1683,7 +1706,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeTileSet.Id);
                     ActiveDungeon.TileSetInfos.RemoveAll(tsi => tsi.Id.Equals(activeTileSet.Id));
@@ -1694,7 +1717,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1762,7 +1785,7 @@ namespace RogueCustomsDungeonEditor
             ActiveDungeon.AmountOfFloors = ActiveDungeon.FloorInfos.Select(fg => fg.MaxFloorLevel).Max();
             DirtyDungeon = true;
             DirtyTab = false;
-            IsNewElement = false;
+            IsNewObject = false;
             RefreshTreeNodes();
             SelectNodeIfExists(floorInfoNodeText, "Floor Groups");
             FloorGroupTab.LoadedFloorGroup = FloorGroupTab.OpenedFloorGroup = floorGroupToSave;
@@ -1776,7 +1799,7 @@ namespace RogueCustomsDungeonEditor
             var floorLevelString = (activeFloorGroup.MinFloorLevel != activeFloorGroup.MaxFloorLevel)
                     ? $"{activeFloorGroup.MinFloorLevel}-{activeFloorGroup.MaxFloorLevel}"
                     : activeFloorGroup.MinFloorLevel.ToString();
-            var deleteFloorGroupPrompt = IsNewElement
+            var deleteFloorGroupPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Floor Group?"
                 : $"Do you want to PERMANENTLY delete Floor Group {floorLevelString}?";
             var messageBoxResult = MessageBox.Show(
@@ -1788,7 +1811,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     ActiveDungeon.FloorInfos.RemoveAll(fi => fi.MinFloorLevel == activeFloorGroup.MinFloorLevel && fi.MaxFloorLevel == activeFloorGroup.MaxFloorLevel);
                     MessageBox.Show(
@@ -1798,7 +1821,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1832,7 +1855,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveFactionAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Faction Identifier", "Save Faction As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(FactionInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.FactionInfos.Exists(fi => fi.Id.Equals(inputBoxResult)))
@@ -1907,7 +1930,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(factionToSave.Id, "Factions");
@@ -1917,7 +1940,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteFaction()
         {
             var activeFaction = FactionTab.LoadedFaction;
-            var deleteFactionPrompt = IsNewElement
+            var deleteFactionPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Faction?"
                 : $"Do you want to PERMANENTLY delete Faction {activeFaction.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -1929,7 +1952,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeFaction.Id);
                     ActiveDungeon.FactionInfos.RemoveAll(fi => fi.Id.Equals(activeFaction.Id));
@@ -1946,7 +1969,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -1980,7 +2003,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveStatAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(CharacterStatInfo)));
             if (inputBoxResult != null)
             {
                 if(FormConstants.DefaultStats.Exists(s => s.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
@@ -2047,7 +2070,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(statToSave.Id, "Custom Stats");
@@ -2057,7 +2080,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteStat()
         {
             var activeStat = StatTab.LoadedStat;
-            var deleteStatPrompt = IsNewElement
+            var deleteStatPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Stat?"
                 : $"Do you want to PERMANENTLY delete Stat {activeStat.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2069,7 +2092,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeStat.Id);
                     ActiveDungeon.CharacterStats.RemoveAll(s => s.Id.Equals(activeStat.Id));
@@ -2088,7 +2111,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2112,16 +2135,16 @@ namespace RogueCustomsDungeonEditor
             ElementTab.LoadData(element, ActiveDungeon, EffectParamData);
         }
 
-        private bool SaveAttackElement()
+        private bool SaveElement()
         {
             if (string.IsNullOrWhiteSpace(ElementTab.LoadedElement.Id))
-                return SaveAttackElementAs();
-            return SaveAttackElementToDungeon(ElementTab.LoadedElement.Id);
+                return SaveElementAs();
+            return SaveElementToDungeon(ElementTab.LoadedElement.Id);
         }
 
-        private bool SaveAttackElementAs()
+        private bool SaveElementAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Attack Element Identifier", "Save Attack Element As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Attack Element Identifier", "Save Attack Element As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(ElementInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.ElementInfos.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
@@ -2134,18 +2157,18 @@ namespace RogueCustomsDungeonEditor
                     );
                     if (messageBoxResult == DialogResult.Yes)
                     {
-                        return SaveAttackElementToDungeon(inputBoxResult);
+                        return SaveElementToDungeon(inputBoxResult);
                     }
                 }
                 else
                 {
-                    return SaveAttackElementToDungeon(inputBoxResult);
+                    return SaveElementToDungeon(inputBoxResult);
                 }
             }
             return false;
         }
 
-        private bool SaveAttackElementToDungeon(string id)
+        private bool SaveElementToDungeon(string id)
         {
             var validationErrors = ElementTab.SaveData(id);
             if (validationErrors.Any())
@@ -2178,7 +2201,7 @@ namespace RogueCustomsDungeonEditor
             );
             DirtyTab = false;
             DirtyDungeon = true;
-            IsNewElement = false;
+            IsNewObject = false;
             PassedValidation = false;
             RefreshTreeNodes();
             SelectNodeIfExists(elementToSave.Id, "Attack Elements");
@@ -2188,7 +2211,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteAttackElement()
         {
             var activeAttackElement = ElementTab.LoadedElement;
-            var deleteAttackElementPrompt = IsNewElement
+            var deleteAttackElementPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Attack Element?"
                 : $"Do you want to PERMANENTLY delete Attack Element {activeAttackElement.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2200,7 +2223,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeAttackElement.Id);
                     ActiveDungeon.ElementInfos.RemoveAll(s => s.Id.Equals(activeAttackElement.Id));
@@ -2211,7 +2234,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2223,6 +2246,130 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void ElementTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
+        #region Element
+
+        public void LoadLootTableInfoFor(LootTableInfo lootTable)
+        {
+            LootTableTab.LoadData(ActiveDungeon, lootTable);
+        }
+
+        private bool SaveLootTable()
+        {
+            if (string.IsNullOrWhiteSpace(LootTableTab.LoadedLootTable.Id))
+                return SaveLootTableAs();
+            return SaveLootTableToDungeon(LootTableTab.LoadedLootTable.Id);
+        }
+
+        private bool SaveLootTableAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Loot Table Identifier", "Save Loot Table As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(LootTableInfo)));
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.LootTableInfos.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Loot Table with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Loot Table As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveLootTableToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveLootTableToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveLootTableToDungeon(string id)
+        {
+            var validationErrors = LootTableTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Loot Table. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Loot Table",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var lootTableToSave = LootTableTab.LoadedLootTable;
+            var preExistingLootTable = ActiveDungeon.LootTableInfos.FirstOrDefault(s => s.Id.Equals(id));
+            var isNewLootTable = preExistingLootTable == null;
+            if (isNewLootTable)
+            {
+                ActiveDungeon.LootTableInfos.Add(lootTableToSave);
+            }
+            else
+            {
+                ActiveDungeon.LootTableInfos[ActiveDungeon.LootTableInfos.IndexOf(preExistingLootTable)] = lootTableToSave;
+            }
+            var verb = isNewLootTable ? "Save" : "Update";
+            MessageBox.Show(
+                $"Loot Table {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Loot Table",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewObject = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(lootTableToSave.Id, "Loot Tables");
+            return true;
+        }
+
+        public void DeleteLootTable()
+        {
+            var activeLootTable = LootTableTab.LoadedLootTable;
+            var deleteLootTablePrompt = IsNewObject
+                ? "Do you want to remove this unsaved Loot Table?"
+                : $"Do you want to PERMANENTLY delete Loot Table {activeLootTable.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteLootTablePrompt,
+                "Loot Table",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewObject)
+                {
+                    var removedId = new string(activeLootTable.Id);
+                    ActiveDungeon.LootTableInfos.RemoveAll(s => s.Id.Equals(activeLootTable.Id));
+                    MessageBox.Show(
+                        $"Loot Table {removedId} has been successfully deleted.",
+                        "Delete Loot Table",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewObject = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void LootTableTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
         }
@@ -2245,7 +2392,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SavePlayerClassAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Player Class Identifier", "Save Player Class As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(PlayerClassInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.PlayerClasses.Exists(pc => pc.Id.Equals(inputBoxResult)))
@@ -2300,7 +2447,7 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            IsNewElement = false;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
             RefreshTreeNodes();
@@ -2313,7 +2460,7 @@ namespace RogueCustomsDungeonEditor
         public void DeletePlayerClass()
         {
             var activePlayerClass = PlayerClassTab.LoadedPlayerClass;
-            var deletePlayerClassPrompt = IsNewElement
+            var deletePlayerClassPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Player Class?"
                 : $"Do you want to PERMANENTLY delete Player Class {activePlayerClass.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2325,7 +2472,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activePlayerClass.Id);
                     ActiveDungeon.PlayerClasses.RemoveAll(pc => pc.Id.Equals(activePlayerClass.Id));
@@ -2336,7 +2483,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2369,7 +2516,7 @@ namespace RogueCustomsDungeonEditor
         
         private bool SaveNPCAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(NPCInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.NPCs.Exists(npc => npc.Id.Equals(inputBoxResult)))
@@ -2424,7 +2571,7 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            IsNewElement = false;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
             RefreshTreeNodes();
@@ -2437,7 +2584,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteNPC()
         {
             var activeNPC = NPCTab.LoadedNPC;
-            var deleteNPCPrompt = IsNewElement
+            var deleteNPCPrompt = IsNewObject
                 ? "Do you want to remove this unsaved NPC?"
                 : $"Do you want to PERMANENTLY delete NPC {activeNPC.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2449,7 +2596,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeNPC.Id);
                     ActiveDungeon.NPCs.RemoveAll(npc => npc.Id.Equals(activeNPC.Id));
@@ -2460,7 +2607,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2493,7 +2640,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveItemAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Item Identifier", "Save Item As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(ItemInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.Items.Exists(i => i.Id.Equals(inputBoxResult)))
@@ -2548,7 +2695,7 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            IsNewElement = false;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
             RefreshTreeNodes();
@@ -2561,7 +2708,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteItem()
         {
             var activeItem = (ItemInfo)ActiveNodeTag.DungeonElement;
-            var deleteItemPrompt = IsNewElement
+            var deleteItemPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Item?"
                 : $"Do you want to PERMANENTLY delete Item {activeItem.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2573,7 +2720,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeItem.Id);
                     ActiveDungeon.Items.RemoveAll(i => i.Id.Equals(activeItem.Id));
@@ -2584,7 +2731,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2618,7 +2765,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveTrapAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Trap Identifier", "Save Trap As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(TrapInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.Traps.Exists(i => i.Id.Equals(inputBoxResult)))
@@ -2673,7 +2820,7 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            IsNewElement = false;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
             RefreshTreeNodes();
@@ -2686,7 +2833,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteTrap()
         {
             var activeTrap = (TrapInfo)ActiveNodeTag.DungeonElement;
-            var deleteTrapPrompt = IsNewElement
+            var deleteTrapPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Trap?"
                 : $"Do you want to PERMANENTLY delete Trap {activeTrap.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2698,7 +2845,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeTrap.Id);
                     ActiveDungeon.Traps.RemoveAll(t => t.Id.Equals(activeTrap.Id));
@@ -2709,7 +2856,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2743,7 +2890,7 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveAlteredStatusAs()
         {
-            var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As", string.Empty, true);
+            var inputBoxResult = InputBox.Show("Indicate the Altered Status Identifier", "Save Altered Status As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(AlteredStatusInfo)));
             if (inputBoxResult != null)
             {
                 if (ActiveDungeon.AlteredStatuses.Exists(i => i.Id.Equals(inputBoxResult)))
@@ -2798,7 +2945,7 @@ namespace RogueCustomsDungeonEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            IsNewElement = false;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
             RefreshTreeNodes();
@@ -2811,7 +2958,7 @@ namespace RogueCustomsDungeonEditor
         public void DeleteAlteredStatus()
         {
             var activeAlteredStatus = (AlteredStatusInfo)ActiveNodeTag.DungeonElement;
-            var deleteAlteredStatusPrompt = IsNewElement
+            var deleteAlteredStatusPrompt = IsNewObject
                 ? "Do you want to remove this unsaved Altered Status?"
                 : $"Do you want to PERMANENTLY delete Altered Status {activeAlteredStatus.Id}?";
             var messageBoxResult = MessageBox.Show(
@@ -2823,7 +2970,7 @@ namespace RogueCustomsDungeonEditor
 
             if (messageBoxResult == DialogResult.Yes)
             {
-                if (!IsNewElement)
+                if (!IsNewObject)
                 {
                     var removedId = new string(activeAlteredStatus.Id);
                     ActiveDungeon.AlteredStatuses.RemoveAll(als => als.Id.Equals(activeAlteredStatus.Id));
@@ -2834,7 +2981,7 @@ namespace RogueCustomsDungeonEditor
                         MessageBoxIcon.Information
                     );
                 }
-                IsNewElement = false;
+                IsNewObject = false;
                 DirtyDungeon = true;
                 DirtyTab = false;
                 ActiveNodeTag.DungeonElement = null;
@@ -2973,6 +3120,7 @@ namespace RogueCustomsDungeonEditor
         StatInfo,
         ElementInfo,
         ActionSchoolsInfo,
+        LootTableInfo,
         PlayerClass,
         NPC,
         Item,

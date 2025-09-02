@@ -34,6 +34,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 PassedValidation = false;
                 tvValidationResults.Nodes.Clear();
                 var dungeonValidator = new DungeonValidator(dungeonToValidate);
+
+                Cursor.Current = Cursors.WaitCursor;
+
                 PassedValidation = await dungeonValidator.Validate(MandatoryLocaleKeys, tsslValidationProgress, tspbValidationProgress);
 
                 tvValidationResults.Visible = true;
@@ -87,6 +90,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddValidationResultNode("Action Schools", dungeonValidator.ActionSchoolValidationMessages);
 
+                foreach (var (Id, ValidationMessages) in dungeonValidator.LootTableValidationMessages)
+                {
+                    AddValidationResultNode($"Loot Table {Id}", ValidationMessages);
+                }
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)
                 {
                     AddValidationResultNode($"Player Class {Id}", ValidationMessages);
@@ -116,6 +124,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 {
                     AddValidationResultNode($"Script {Id}", ValidationMessages);
                 }
+
+                Cursor.Current = Cursors.Default;
 
                 if (PassedValidation)
                     MessageBox.Show($"This Dungeon has passed Validation. You can save and play with it, assured no known game-breaking bugs will happen.\nCheck Validation Results for more info.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Information);

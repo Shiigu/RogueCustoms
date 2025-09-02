@@ -58,6 +58,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool WandersIfWithoutTarget;
         public readonly AIType AIType;
 
+        public readonly LootTable LootTable;
+        public readonly int DropPicks;
+
         #endregion
         public readonly string Power;
 
@@ -89,7 +92,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnRemove { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos, List<ActionSchool> actionSchools)
+        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos, List<ActionSchool> actionSchools, List<LootTable> lootTables)
         {
             Id = classInfo.Id;
             Name = Locale[classInfo.Name];
@@ -263,6 +266,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
                 AIType = Enum.Parse<AIType>(npcInfo.AIType);
+                LootTable = (npcInfo.LootTableId != null && npcInfo.LootTableId != "None") ? lootTables.Find(lt => lt.Id.Equals(npcInfo.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
+                DropPicks = npcInfo.DropPicks;
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
                 WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;

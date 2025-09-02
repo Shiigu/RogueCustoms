@@ -33,6 +33,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> StatValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ElementValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages ActionSchoolValidationMessages { get; private set; }
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> LootTableValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -75,6 +76,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.CharacterStats.Count
                 + DungeonJson.ElementInfos.Count
                 + DungeonJson.ActionSchoolInfos.Count
+                + DungeonJson.LootTableInfos.Count
                 + DungeonJson.PlayerClasses.Count
                 + DungeonJson.NPCs.Count
                 + DungeonJson.Items.Count
@@ -175,12 +177,20 @@ namespace RogueCustomsDungeonEditor.Validators
             ActionSchoolValidationMessages = DungeonActionSchoolValidator.Validate(DungeonJson);
             UpdateProgressLabel($"Action School Validation complete!", true);
 
+            foreach (var lootTable in DungeonJson.LootTableInfos)
+            {
+                UpdateProgressLabel($"Running Loot Table {lootTable.Id} Validation...", false);
+                LootTableValidationMessages.Add((lootTable.Id, await DungeonLootTableValidator.Validate(lootTable, DungeonJson)));
+                UpdateProgressLabel($"Loot Table {lootTable.Id} Validation complete!", true);
+            }
+
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {
                 UpdateProgressLabel($"Running Player Class {playerInfo.Id} Validation...", false);
                 PlayerClassValidationMessages.Add((playerInfo.Id,await DungeonPlayerClassValidator.Validate(playerInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Player Class {playerInfo.Id} Validation complete!", true);
             }
+
             foreach (var npcInfo in DungeonJson.NPCs)
             {
                 UpdateProgressLabel($"Running NPC {npcInfo.Id} Validation...", false);

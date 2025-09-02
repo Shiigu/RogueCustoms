@@ -106,6 +106,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
             SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
             SetSingleActionEditorParams(saeNPCOnLevelUp, npc.Id, npc.OnLevelUp);
+
             cmbNPCAIType.Items.Clear();
             cmbNPCAIType.Text = "";
             foreach (var aiType in NPCAITypeDisplayNames)
@@ -114,6 +115,17 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 if (aiType.Key.Equals(npc.AIType))
                     cmbNPCAIType.Text = aiType.Value;
             }
+
+            cmbNPCLootTable.Items.Clear();
+            cmbNPCLootTable.Items.Add("None");
+            cmbNPCLootTable.Text = "None";
+            foreach (var lootTable in dungeon.LootTableInfos.ConvertAll(lt => lt.Id))
+            {
+                cmbNPCLootTable.Items.Add(lootTable);
+                if (lootTable.Equals(npc.LootTableId))
+                    cmbNPCLootTable.Text = lootTable;
+            }
+            nudNPCDropPicks.Value = cmbNPCLootTable.Text != "None" ? npc.DropPicks : 0;
         }
 
         public List<string> SaveData(string id)
@@ -142,6 +154,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This NPC can gain experience, but cannot level up.");
             if (ssNPC.MaxLevel > 1 && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
                 validationErrors.Add("This NPC has a maximum level above 1, but does not have a Level Up Formula.");
+            if ((cmbNPCLootTable.Text == "None" || string.IsNullOrWhiteSpace(cmbNPCLootTable.Text)) && nudNPCDropPicks.Value > 0)
+                validationErrors.Add("This NPC is set to drop items as loot, but has no Loot Table.");
+            if (cmbNPCLootTable.Text != "None" && !string.IsNullOrWhiteSpace(cmbNPCLootTable.Text) && nudNPCDropPicks.Value <= 0)
+                validationErrors.Add("This NPC has a Loot Table set, but is set to drop no items as loot.");
 
             if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
                 validationErrors.Add("This NPC does not have a set AI strategy.");
@@ -203,6 +219,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                         LoadedNPC.AIType = aiType.Key;
                     }
                 }
+
+                LoadedNPC.LootTableId = cmbNPCLootTable.Text != "None" ? cmbNPCLootTable.Text : "";
+                LoadedNPC.DropPicks = LoadedNPC.LootTableId != "" ? (int)nudNPCDropPicks.Value : 0;
             }
 
             return validationErrors;
@@ -316,6 +335,21 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void chkNPCWandersIfWithoutTarget_CheckedChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void cmbNPCLootTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            nudNPCDropPicks.Enabled = !cmbNPCLootTable.Text.Equals("None");
+            if (!nudNPCDropPicks.Enabled)
+                nudNPCDropPicks.Value = 0;
+        }
+
+        private void nudNPCDropPicks_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            if(nudNPCDropPicks.Value == 0)
+                cmbNPCLootTable.Text = "None";
         }
     }
 }

@@ -22,7 +22,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             messages.AddRange(await DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
-            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
+            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
+
+            if((npcJson.LootTableId == "None" || string.IsNullOrWhiteSpace(npcJson.LootTableId)) && npcJson.DropPicks > 0)
+                messages.AddError("This NPC is set to drop items as loot, but has no Loot Table.");
+            else if (npcJson.LootTableId != "None" && !string.IsNullOrWhiteSpace(npcJson.LootTableId) && npcJson.DropPicks <= 0)
+                messages.AddError("This NPC has a Loot Table but is not set to drop items as loot.");
 
             if (npcJson.OnSpawn != null)
             {

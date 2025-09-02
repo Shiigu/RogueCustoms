@@ -13,5 +13,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool WandersIfWithoutTarget { get; set; }
         public ActionWithEffectsInfo OnSpawn { get; set; }
         public List<ActionWithEffectsInfo> OnInteracted { get; set; }
+        public string LootTableId { get; set; }
+        public int DropPicks { get; set; }
     }
 }

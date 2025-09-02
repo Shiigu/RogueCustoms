@@ -35,7 +35,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if(samplePlayerClass != null)
             {
-                var playerClassAsInstance = new PlayerCharacter(new EntityClass(samplePlayerClass, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
+                var playerClassAsInstance = new PlayerCharacter(new EntityClass(samplePlayerClass, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = playerClassAsInstance;
                 playerClassAsInstance.OwnOnAttack.Add(clonedScript);
@@ -52,7 +52,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (sampleNPC != null)
             {
-                var NPCAsInstance = new NonPlayableCharacter(new EntityClass(sampleNPC, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools), 1, sampleDungeon.CurrentFloor);
+                var NPCAsInstance = new NonPlayableCharacter(new EntityClass(sampleNPC, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = NPCAsInstance;
                 NPCAsInstance.OwnOnAttack.Add(clonedScript);
@@ -68,7 +68,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var sampleItem = dungeonJson.Items.FirstOrDefault();
             if (sampleItem != null)
             {
-                var itemAsInstance = new Item(new EntityClass(sampleItem, sampleDungeon.LocaleToUse, EntityType.Weapon, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
+                var itemAsInstance = new Item(new EntityClass(sampleItem, sampleDungeon.LocaleToUse, EntityType.Weapon, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor);
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = itemAsInstance;
                 itemAsInstance.OwnOnAttack.Add(clonedScript);
@@ -84,7 +84,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var sampleTrap = dungeonJson.Traps.FirstOrDefault();
             if (sampleTrap != null)
             {
-                var trapAsInstance = new Trap(new EntityClass(sampleTrap, sampleDungeon.LocaleToUse, EntityType.Trap, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
+                var trapAsInstance = new Trap(new EntityClass(sampleTrap, sampleDungeon.LocaleToUse, EntityType.Trap, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor);
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = trapAsInstance;
                 trapAsInstance.OnStepped = clonedScript;
@@ -100,7 +100,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var sampleAlteredStatus = dungeonJson.AlteredStatuses.FirstOrDefault();
             if (sampleAlteredStatus != null)
             {
-                var alteredStatusAsInstance = new AlteredStatus(new EntityClass(sampleAlteredStatus, sampleDungeon.LocaleToUse, EntityType.AlteredStatus, null, sampleDungeon.ActionSchools), sampleDungeon.CurrentFloor);
+                var alteredStatusAsInstance = new AlteredStatus(new EntityClass(sampleAlteredStatus, sampleDungeon.LocaleToUse, EntityType.AlteredStatus, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor);
                 var clonedScript = scriptInstance.Clone();
                 clonedScript.User = alteredStatusAsInstance;
                 alteredStatusAsInstance.OnApply = clonedScript;

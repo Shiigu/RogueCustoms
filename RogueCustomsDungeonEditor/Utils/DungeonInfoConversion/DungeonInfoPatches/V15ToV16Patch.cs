@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateFloorInfos(root);
             UpdateElementInfos(root);
             UpdateActionSchools(root);
+            UpdateLootTables(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateItems(root);
@@ -84,20 +85,38 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             }
         }
 
-
         private static void UpdateActionSchools(JsonObject root)
         {
             var actionSchoolInfos = new JsonArray
             {
                 new JsonObject
                 {
-                    ["Id"] = "Normal",
-                    ["Name"] = "SchoolNameNormal"
+                    ["Id"] = "Default",
+                    ["Name"] = "SchoolNameDefault"
                 }
             };
             root["ActionSchoolInfos"] = actionSchoolInfos;
         }
 
+        private static void UpdateLootTables(JsonObject root)
+        {
+            var lootTableInfos = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["Id"] = "Default",
+                    ["Entries"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["PickId"] = "No Drop",
+                            ["Weight"] = 100
+                        }
+                    }
+                }
+            };
+            root["LootTableInfos"] = lootTableInfos;
+        }
 
         private static void UpdatePlayerClasses(JsonObject root)
         {
@@ -181,6 +200,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onLevelUp);
                 }
+                npc["LootTableId"] = "None";
+                npc["DropPicks"] = 0;
             }
         }
 
@@ -272,7 +293,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
         {
             if (actionWithEffects["Name"].GetValue<string>()?.Length == 0)
                 actionWithEffects["Name"] = actionWithEffects["Id"].ToString();
-            actionWithEffects["School"] = "Normal";
+            actionWithEffects["School"] = "Default";
             UpdateActionSteps(actionWithEffects);
         }
 
