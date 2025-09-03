@@ -72,6 +72,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Max Level is 1, which prevents getting experience points, but CanGainExperience is set to true. Reconcile this contradiction.");
             else if (playerClassJson.MaxLevel == 1)
                 messages.AddWarning("Character is set as a Player Class, but its Max Level is 1, so it's not allowed to gain any experience points. Reconsider this.");
+            if (playerClassJson.SaleValuePercentage < 1)
+                messages.AddError("Character is set as a Player Class, but the percentage of Sales is set as a non-positive number.");
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");
 

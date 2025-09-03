@@ -116,38 +116,24 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if ((s == Map.Player || Map.Player.CanSee(s))
                         || (t == Map.Player || Map.Player.CanSee(t)))
                     {
-                        if (s == Map.Player || Map.Player.CanSee(s))
+                        if (s == Map.Player || t == Map.Player)
                         {
-                            if (s == Map.Player)
+                            events.Add(new()
                             {
-                                events.Add(new()
-                                {
-                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                    Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                                });
-                            }
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, Map.Player.Inventory.Cast<Entity>().Union(Map.Player.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            });
                             events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { SpecialEffect.ItemGet }
                             });
                         }
-                        else if (t == Map.Player || Map.Player.CanSee(t))
+                        events.Add(new()
                         {
-                            if (t == Map.Player)
-                            {
-                                events.Add(new()
-                                {
-                                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                    Params = new() { UpdatePlayerDataType.UpdateInventory, s.Inventory.Cast<Entity>().Union(s.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                                });
-                            }
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                                Params = new() { SpecialEffect.NPCItemGet }
-                            });
-                        }
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { s == Map.Player ? SpecialEffect.ItemGet : SpecialEffect.NPCItemGet }
+                        });
                         Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = itemToSteal.Name }), Color.DeepSkyBlue, events);
                     }
                     Map.DisplayEvents.Add(($"{t.Name} got an item stolen", events));
@@ -284,7 +270,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.RedrawMap,
-                            Params = []
+                            Params = new() { Map.Snapshot.GetTiles() }
                         });
                     }
                     else

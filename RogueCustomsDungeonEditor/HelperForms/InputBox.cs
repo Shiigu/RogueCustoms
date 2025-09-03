@@ -45,7 +45,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if(EditorConstants.ReservedWords.Any(rw => txtPromptText.Text.Equals(rw, StringComparison.InvariantCultureIgnoreCase)) && _rejectReservedWords)
+            if(EditorConstants.ReservedWords.Any(rw => txtPromptText.Text.Equals(rw, StringComparison.InvariantCultureIgnoreCase) || EditorConstants.PartialReservedWords.Any(rw => txtPromptText.Text.Contains(rw, StringComparison.InvariantCultureIgnoreCase)) && _rejectReservedWords))
             {
                 MessageBox.Show("The input is invalid, for it contains a reserved word.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

@@ -115,7 +115,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             SelectionItem[] items = paramsObject.Items.ToArray();
 
-            var optionDtos = new InventoryDto();
+            var optionDtos = new InventoryDto()
+            {
+                CurrencyConsoleRepresentation = Map.CurrencyClass.ConsoleRepresentation.Clone()
+            };
 
             foreach (var option in items)
             {
@@ -181,7 +184,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if(paramsObject.Target is not Character t)
                 throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} offer Items when it's not a Character.");
 
-            var optionDtos = new InventoryDto();
+            var optionDtos = new InventoryDto()
+            {
+                CurrencyConsoleRepresentation = Map.CurrencyClass.ConsoleRepresentation.Clone()
+            };
 
             foreach (var item in t.Inventory)
             {

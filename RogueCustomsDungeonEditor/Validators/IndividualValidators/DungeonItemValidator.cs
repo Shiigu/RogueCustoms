@@ -40,6 +40,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError($"Item does not have a set {powerFieldName}. If it's not meant to be used, place a 0.");
                 }
 
+                if(itemJson.BaseValue < 0)
+                {
+                    messages.AddError($"Item has a Base Sale Value lower than 0.");
+                }
+                else if (itemJson.BaseValue == 0)
+                {
+                    messages.AddWarning($"Item has a Base Sale Value that is 0. It won't be able to be sold or purchased.");
+                }
+
                 if (itemJson.OnTurnStart != null)
                 {
                     if (itemJson.EntityType == "Weapon" || itemJson.EntityType == "Armor")

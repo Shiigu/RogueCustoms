@@ -27,13 +27,23 @@ namespace RogueCustomsGodotClient.Helpers
 
         public static TileDto GetTileFromCoordinates(this DungeonDto dungeon, int x, int y)
         {
-            return dungeon.Tiles.Find(t => t.X == x && t.Y == y)
+            return dungeon.Tiles.GetTileFromCoordinates(x,y);
+        }
+
+        public static TileDto GetTileFromCoordinates(this List<TileDto> tiles, int x, int y)
+        {
+            return tiles.Find(t => t.X == x && t.Y == y)
                 ?? throw new ArgumentException("Tile does not exist");
         }
 
         public static ConsoleRepresentation GetTileConsoleRepresentationFromCoordinates(this DungeonDto dungeon, int x, int y)
         {
             return dungeon.GetTileFromCoordinates(x, y).ConsoleRepresentation;
+        }
+
+        public static ConsoleRepresentation GetTileConsoleRepresentationFromCoordinates(this List<TileDto> tiles, int x, int y)
+        {
+            return tiles.GetTileFromCoordinates(x,y).ConsoleRepresentation;
         }
     }
 }

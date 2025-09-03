@@ -230,6 +230,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         [JsonIgnore]
         public bool PickedForSwap { get; set; } = false;
+        public int CurrencyCarried { get; set; }
 
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
@@ -298,6 +299,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             OwnOnDeath = MapClassAction(entityClass.OnDeath);
             OnLevelUp = MapClassAction(entityClass.OnLevelUp);
+            CurrencyCarried = 0;
         }
 
         public HashSet<Tile> ComputeFOVTiles()
@@ -476,7 +478,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.RedrawMap,
-                        Params = []
+                        Params = new() { Map.Snapshot.GetTiles() }
                     });
                 }
                 Map.DisplayEvents.Add(($"{Name} sight range returned to normal", events));
@@ -582,9 +584,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public abstract void DropItem(Item item);
+        public abstract void DropItem(IPickable pickable);
 
-        public abstract void PickItem(Item item, bool informToPlayer);
+        public abstract void PickItem(IPickable pickable, bool informToPlayer);
         public abstract void PickKey(Key key, bool informToPlayer);
 
         public void EquipItem(Item item)
@@ -717,7 +719,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (EntityType != EntityType.Player && !Visible) return;
             var item = p as Item;
             var key = p as Key;
-            if(item == null && key == null) return;
+            var currency = p as Currency;
+            if (item == null && key == null && currency == null) return;
             if(key != null && EntityType == EntityType.Player)
             {
                 PickKey(key, true);
@@ -732,6 +735,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     Map.AppendMessage(Map.Locale["ItemSteppedText"].Format(new { CharacterName = Name, ItemName = item.Name }));
                 }
+            }
+            else if (currency != null)
+            {
+                PickItem(currency, true);
             }
         }
 

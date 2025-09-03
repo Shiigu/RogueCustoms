@@ -45,6 +45,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool RequiresNamePrompt;
         public readonly string InitialEquippedWeaponId;
         public readonly string InitialEquippedArmorId;
+        public readonly float SaleValuePercentage;
 
         #endregion
 
@@ -67,6 +68,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         #region Item-only data
         public ActionWithEffects OnUse { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
+        public int BaseValue { get; set; }
        
         #endregion
 
@@ -123,6 +125,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked, actionSchools);
                 OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, actionSchools);
                 OnUse = ActionWithEffects.Create(itemInfo.OnUse, actionSchools);
+                BaseValue = itemInfo.BaseValue;
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
@@ -195,6 +198,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 RequiresNamePrompt = playerClassInfo.RequiresNamePrompt;
                 InitialEquippedWeaponId = playerClassInfo.InitialEquippedWeapon;
                 InitialEquippedArmorId = playerClassInfo.InitialEquippedArmor;
+                SaleValuePercentage = playerClassInfo.SaleValuePercentage / 100f;
             }
             else if (classInfo is NPCInfo npcInfo)
             {

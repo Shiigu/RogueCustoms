@@ -468,6 +468,14 @@
     {
       "Key": "CharacterRevealsTraps",
       "Value": "{CharacterName} can see all traps now!"
+    },
+    {
+      "Key": "CurrencyDisplayName",
+      "Value": "{Amount} {CurrencyName}"
+    },
+    {
+      "Key": "CharacterPicksCurrency",
+      "Value": "{CharacterName} picked {CurrencyName}."
     }
   ]
 }

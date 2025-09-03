@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches.Interfaces;
@@ -19,6 +20,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateElementInfos(root);
             UpdateActionSchools(root);
             UpdateLootTables(root);
+            UpdateCurrencyInfo(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateItems(root);
@@ -45,6 +47,16 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("SchoolNameNormal", StringComparison.OrdinalIgnoreCase) == true))
             {
                 localeStrings.Add(new JsonObject { ["Key"] = "SchoolNameNormal", ["Value"] = "Normal" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("CurrencyName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "CurrencyName", ["Value"] = "Gold" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("CurrencyDescription", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "CurrencyDescription", ["Value"] = "Sparkling coins used as trade money" });
             }
         }
 
@@ -87,6 +99,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
 
         private static void UpdateActionSchools(JsonObject root)
         {
+            if (root["ActionSchoolInfos"] is JsonArray) return;
             var actionSchoolInfos = new JsonArray
             {
                 new JsonObject
@@ -100,6 +113,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
 
         private static void UpdateLootTables(JsonObject root)
         {
+            if (root["LootTableInfos"] is JsonArray) return;
             var lootTableInfos = new JsonArray
             {
                 new JsonObject
@@ -116,6 +130,32 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 }
             };
             root["LootTableInfos"] = lootTableInfos;
+        }
+
+        private static void UpdateCurrencyInfo(JsonObject root)
+        {
+            if (root["CurrencyInfo"] is JsonObject) return;
+            var currencyInfo = new JsonObject
+            {
+                ["Name"] = "CurrencyName",
+                ["Description"] = "CurrencyDescription",
+                ["ConsoleRepresentation"] = JsonSerializer.SerializeToNode(new ConsoleRepresentation()
+                {
+                    Character = '$',
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Yellow)
+                }),
+                ["CurrencyPiles"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["Id"] = "Normal",
+                        ["Minimum"] = 1,
+                        ["Maximum"] = 1
+                    }
+                }
+            };
+            root["CurrencyInfo"] = currencyInfo;
         }
 
         private static void UpdatePlayerClasses(JsonObject root)
@@ -155,6 +195,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     playerClass["InitialEquippedArmor"] = null;
                 }
+                if (playerClass["SaleValuePercentage"] is not JsonObject)
+                    playerClass["SaleValuePercentage"] = 50;
             }
         }
 
@@ -200,8 +242,10 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onLevelUp);
                 }
-                npc["LootTableId"] = "None";
-                npc["DropPicks"] = 0;
+                if(npc["LootTableId"] is not JsonObject)
+                    npc["LootTableId"] = "None";
+                if (npc["DropPicks"] is not JsonObject)
+                    npc["DropPicks"] = 0;
             }
         }
 
@@ -233,6 +277,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onUse);
                 }
+                if (item["BaseValue"] is not JsonObject)
+                    item["BaseValue"] = 0;
             }
         }
 

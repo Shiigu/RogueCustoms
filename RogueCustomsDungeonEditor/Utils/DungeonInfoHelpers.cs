@@ -749,7 +749,7 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new LootTableInfo()
             {
-                Id = "TC Okay",
+                Id = "Okay",
                 Entries = []
             };
         }

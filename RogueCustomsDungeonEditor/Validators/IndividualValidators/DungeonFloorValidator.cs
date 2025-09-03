@@ -2,12 +2,14 @@
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -122,8 +124,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 foreach (var possibleItem in floorJson.PossibleItems)
                 {
-                    if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
-                        messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
+                    var match = Regex.Match(possibleItem.ClassId, EngineConstants.CurrencyRegexPattern);
+                    if (match.Success)
+                    {
+                        var currencyPileId = match.Groups[1].Value;
+                        if(!dungeonJson.CurrencyInfo.CurrencyPiles.Any(cp => cp.Id.Equals(currencyPileId, StringComparison.InvariantCultureIgnoreCase)))
+                            messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but {currencyPileId} is not a known Currency Pile Type.");
+                    }
+                    else
+                    {
+                        if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
+                            messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
+                    }
                     if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId) && ((pm.SpawnCondition == null && possibleItem.SpawnCondition == null) || pm.SpawnCondition.Equals(possibleItem.SpawnCondition, StringComparison.InvariantCultureIgnoreCase))) > 1)
                         messages.AddError($"{possibleItem.ClassId} shows up as a duplicate PossibleItem in the current Floor Type.");
                     if (possibleItem.ChanceToPick <= 0)

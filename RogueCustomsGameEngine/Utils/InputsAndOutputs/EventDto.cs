@@ -40,6 +40,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         ModifyMaxStat,
         ModifyEquippedItem,
         UpdateAlteredStatuses,
-        UpdateInventory
+        UpdateInventory,
+        UpdateCurrency
     }
 }

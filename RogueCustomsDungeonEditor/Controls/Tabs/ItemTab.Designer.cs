@@ -49,82 +49,65 @@
             crsItem = new ConsoleRepresentationSelector();
             ItemStatsSheet = new ItemStatsSheet();
             label98 = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
+            nudItemBaseValue = new System.Windows.Forms.NumericUpDown();
+            fklblWarningItemBaseValue = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).BeginInit();
             SuspendLayout();
             // 
             // saeItemOnDeath
             // 
-            saeItemOnDeath.Action = null;
             saeItemOnDeath.ActionDescription = "When someone carrying it dies...                ";
             saeItemOnDeath.ActionTypeText = "On Death";
             saeItemOnDeath.AutoSize = true;
             saeItemOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeItemOnDeath.ClassId = null;
-            saeItemOnDeath.Dungeon = null;
-            saeItemOnDeath.EffectParamData = null;
             saeItemOnDeath.Location = new System.Drawing.Point(342, 280);
             saeItemOnDeath.Name = "saeItemOnDeath";
             saeItemOnDeath.PlaceholderActionId = "Death";
-            saeItemOnDeath.RequiresCondition = false;
             saeItemOnDeath.Size = new System.Drawing.Size(361, 32);
             saeItemOnDeath.SourceDescription = "The item";
             saeItemOnDeath.TabIndex = 246;
             saeItemOnDeath.TargetDescription = "Whoever killed on them (if any)";
             saeItemOnDeath.ThisDescription = "The item";
-            saeItemOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeItemOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeItemOnTurnStart
             // 
-            saeItemOnTurnStart.Action = null;
             saeItemOnTurnStart.ActionDescription = "When the Item's owner starts a new turn...";
             saeItemOnTurnStart.ActionTypeText = "On Turn Start";
             saeItemOnTurnStart.AutoSize = true;
             saeItemOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeItemOnTurnStart.ClassId = null;
-            saeItemOnTurnStart.Dungeon = null;
-            saeItemOnTurnStart.EffectParamData = null;
             saeItemOnTurnStart.Location = new System.Drawing.Point(341, 241);
             saeItemOnTurnStart.Name = "saeItemOnTurnStart";
             saeItemOnTurnStart.PlaceholderActionId = "Death";
-            saeItemOnTurnStart.RequiresCondition = false;
             saeItemOnTurnStart.Size = new System.Drawing.Size(362, 32);
             saeItemOnTurnStart.SourceDescription = "Whoever is equipping This";
             saeItemOnTurnStart.TabIndex = 245;
             saeItemOnTurnStart.TargetDescription = "Whoever is equipping This";
             saeItemOnTurnStart.ThisDescription = "The item";
-            saeItemOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeItemOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saeItemOnAttacked
             // 
-            saeItemOnAttacked.Action = null;
             saeItemOnAttacked.ActionDescription = "When the Item's owner gets interacted...   ";
             saeItemOnAttacked.ActionTypeText = "Interacted";
             saeItemOnAttacked.AutoSize = true;
             saeItemOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeItemOnAttacked.ClassId = null;
-            saeItemOnAttacked.Dungeon = null;
-            saeItemOnAttacked.EffectParamData = null;
             saeItemOnAttacked.Location = new System.Drawing.Point(341, 203);
             saeItemOnAttacked.Name = "saeItemOnAttacked";
             saeItemOnAttacked.PlaceholderActionId = "Interacted";
-            saeItemOnAttacked.RequiresCondition = false;
             saeItemOnAttacked.Size = new System.Drawing.Size(362, 32);
             saeItemOnAttacked.SourceDescription = "Whoever is equipping it";
             saeItemOnAttacked.TabIndex = 244;
             saeItemOnAttacked.TargetDescription = "The owner's interactor";
             saeItemOnAttacked.ThisDescription = "The item";
-            saeItemOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeItemOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maeItemOnAttack
             // 
             maeItemOnAttack.ActionDescription = "The Item's owner can do the following to interact with someone:";
-            maeItemOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maeItemOnAttack.Actions");
             maeItemOnAttack.ActionTypeText = "Interact";
             maeItemOnAttack.ClassId = null;
-            maeItemOnAttack.Dungeon = null;
-            maeItemOnAttack.EffectParamData = null;
             maeItemOnAttack.Location = new System.Drawing.Point(341, 103);
             maeItemOnAttack.Name = "maeItemOnAttack";
             maeItemOnAttack.PlaceholderActionName = null;
@@ -142,14 +125,11 @@
             // 
             // saeItemOnUse
             // 
-            saeItemOnUse.Action = null;
             saeItemOnUse.ActionDescription = "When someone uses it on themselves...     ";
             saeItemOnUse.ActionTypeText = "Item Use";
             saeItemOnUse.AutoSize = true;
             saeItemOnUse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeItemOnUse.ClassId = null;
-            saeItemOnUse.Dungeon = null;
-            saeItemOnUse.EffectParamData = null;
             saeItemOnUse.Location = new System.Drawing.Point(341, 241);
             saeItemOnUse.Name = "saeItemOnUse";
             saeItemOnUse.PlaceholderActionId = "ItemUse";
@@ -160,7 +140,6 @@
             saeItemOnUse.TargetDescription = "Whoever is using it";
             saeItemOnUse.ThisDescription = "The item";
             saeItemOnUse.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
-            saeItemOnUse.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // txtItemPower
             // 
@@ -205,16 +184,16 @@
             label107.AutoSize = true;
             label107.Location = new System.Drawing.Point(4, 209);
             label107.Name = "label107";
-            label107.Size = new System.Drawing.Size(58, 15);
+            label107.Size = new System.Drawing.Size(59, 15);
             label107.TabIndex = 234;
             label107.Text = "Item Type";
             // 
             // lblStatsModifier
             // 
-            lblStatsModifier.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            lblStatsModifier.Location = new System.Drawing.Point(4, 267);
+            lblStatsModifier.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            lblStatsModifier.Location = new System.Drawing.Point(342, 315);
             lblStatsModifier.Name = "lblStatsModifier";
-            lblStatsModifier.Size = new System.Drawing.Size(329, 52);
+            lblStatsModifier.Size = new System.Drawing.Size(361, 52);
             lblStatsModifier.TabIndex = 233;
             lblStatsModifier.Text = "When in the Inventory, it modifies:";
             lblStatsModifier.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -289,9 +268,6 @@
             // 
             // crsItem
             // 
-            crsItem.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.BackgroundColor");
-            crsItem.Character = '\0';
-            crsItem.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsItem.ForegroundColor");
             crsItem.Location = new System.Drawing.Point(498, 5);
             crsItem.Name = "crsItem";
             crsItem.Size = new System.Drawing.Size(211, 83);
@@ -300,16 +276,15 @@
             // 
             // ItemStatsSheet
             // 
-            ItemStatsSheet.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            ItemStatsSheet.Location = new System.Drawing.Point(68, 320);
+            ItemStatsSheet.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            ItemStatsSheet.Location = new System.Drawing.Point(406, 368);
             ItemStatsSheet.Name = "ItemStatsSheet";
-            ItemStatsSheet.Size = new System.Drawing.Size(202, 137);
-            ItemStatsSheet.Stats = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.PassiveStatModifierInfo>)resources.GetObject("ItemStatsSheet.Stats");
+            ItemStatsSheet.Size = new System.Drawing.Size(234, 137);
             ItemStatsSheet.TabIndex = 248;
             // 
             // label98
             // 
-            label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label98.Location = new System.Drawing.Point(365, 17);
             label98.Name = "label98";
             label98.Size = new System.Drawing.Size(131, 52);
@@ -317,11 +292,49 @@
             label98.Text = "Appearance";
             label98.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(4, 280);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(89, 15);
+            label1.TabIndex = 250;
+            label1.Text = "Item Base Value";
+            // 
+            // nudItemBaseValue
+            // 
+            nudItemBaseValue.Location = new System.Drawing.Point(99, 278);
+            nudItemBaseValue.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
+            nudItemBaseValue.Name = "nudItemBaseValue";
+            nudItemBaseValue.Size = new System.Drawing.Size(93, 23);
+            nudItemBaseValue.TabIndex = 251;
+            nudItemBaseValue.ValueChanged += nudItemBaseValue_ValueChanged;
+            // 
+            // fklblWarningItemBaseValue
+            // 
+            fklblWarningItemBaseValue.Enabled = false;
+            fklblWarningItemBaseValue.FlatAppearance.BorderSize = 0;
+            fklblWarningItemBaseValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            fklblWarningItemBaseValue.Image = (System.Drawing.Image)resources.GetObject("fklblWarningItemBaseValue.Image");
+            fklblWarningItemBaseValue.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            fklblWarningItemBaseValue.Location = new System.Drawing.Point(4, 307);
+            fklblWarningItemBaseValue.Name = "fklblWarningItemBaseValue";
+            fklblWarningItemBaseValue.Size = new System.Drawing.Size(329, 42);
+            fklblWarningItemBaseValue.TabIndex = 252;
+            fklblWarningItemBaseValue.Text = "A Value of 0 means the Item can't be bought or sold!";
+            fklblWarningItemBaseValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblWarningItemBaseValue.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            fklblWarningItemBaseValue.UseVisualStyleBackColor = true;
+            fklblWarningItemBaseValue.Visible = false;
+            // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(fklblWarningItemBaseValue);
+            Controls.Add(nudItemBaseValue);
+            Controls.Add(label1);
             Controls.Add(label98);
             Controls.Add(ItemStatsSheet);
             Controls.Add(crsItem);
@@ -343,7 +356,8 @@
             Controls.Add(txtItemName);
             Controls.Add(label106);
             Name = "ItemTab";
-            Size = new System.Drawing.Size(714, 460);
+            Size = new System.Drawing.Size(714, 509);
+            ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -370,5 +384,8 @@
         private ConsoleRepresentationSelector crsItem;
         private ItemStatsSheet ItemStatsSheet;
         private System.Windows.Forms.Label label98;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown nudItemBaseValue;
+        private System.Windows.Forms.Button fklblWarningItemBaseValue;
     }
 }

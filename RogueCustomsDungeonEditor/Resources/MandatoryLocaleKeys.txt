@@ -116,3 +116,5 @@ CharacterActionUsesDecreased
 CharacterSightRangeGotModified
 CharacterRevealsFloor
 CharacterRevealsTraps
+CurrencyDisplayName
+CharacterPicksCurrency

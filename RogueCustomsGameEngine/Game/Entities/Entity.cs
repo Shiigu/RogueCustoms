@@ -117,6 +117,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         Armor,
         Trap,
         Key,
+        Currency,
         AlteredStatus
     }
     public enum EntityExistenceStatus
