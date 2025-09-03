@@ -109,6 +109,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
             SetSingleActionEditorParams(saePlayerOnDeath, playerClass.Id, playerClass.OnDeath);
             SetSingleActionEditorParams(saePlayerOnLevelUp, playerClass.Id, playerClass.OnLevelUp);
+            nudPlayerSaleValuePercentage.Value = playerClass.SaleValuePercentage;
         }
 
         public List<string> SaveData(string id)
@@ -180,6 +181,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.OnLevelUp = saePlayerOnLevelUp.Action;
                 if (LoadedPlayerClass.OnLevelUp != null)
                     LoadedPlayerClass.OnLevelUp.IsScript = false;
+
+                LoadedPlayerClass.SaleValuePercentage = (int)nudPlayerSaleValuePercentage.Value;
             }
 
             return validationErrors;
@@ -245,6 +248,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void crsPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudPlayerSaleValuePercentage_ValueChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }

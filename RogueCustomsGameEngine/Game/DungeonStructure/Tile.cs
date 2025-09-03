@@ -82,6 +82,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
             }
         }
+
+        public bool AllowsDrops => IsWalkable && !GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (Trap == null || Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (Key == null || Key.ExistenceStatus != EntityExistenceStatus.Alive);
         public ActionWithEffects OnStood => Type.OnStood;
 
         private ConsoleRepresentation _consoleRepresentation;
@@ -207,11 +209,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Key Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Entity> GetPickableObjects() {
             var itemsAsEntities = GetItems().Cast<Entity>().ToList();
+            if (CurrencyPile != null)
+                itemsAsEntities.Add(CurrencyPile);
             if (Key != null)
                 itemsAsEntities.Add(Key);
             return itemsAsEntities;
         }
         public Trap Trap => Map.Traps.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus == EntityExistenceStatus.Alive);
+        public Currency CurrencyPile => Map.CurrencyPiles.Find(t => t?.Position?.Equals(Position) == true && t.ExistenceStatus != EntityExistenceStatus.Gone);
 
         public override string ToString() => $"Position: {Position}; Type: {Type}; Char: {ConsoleRepresentation.Character}";
 

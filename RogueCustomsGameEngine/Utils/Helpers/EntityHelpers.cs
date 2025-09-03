@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.JsonImports;
+
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+namespace RogueCustomsGameEngine.Utils.Helpers
+{
+    public static class EntityHelpers
+    {
+        public static KeyType Parse(this KeyTypeInfo keyType, Locale locale)
+        {
+            var keyClassTemplate = new ItemInfo()
+            {
+                Id = $"KeyType{keyType.KeyTypeName}",
+                Name = $"KeyType{keyType.KeyTypeName}",
+                ConsoleRepresentation = keyType.KeyConsoleRepresentation,
+                Description = "KeyDescription",
+                EntityType = "Key",
+                StartsVisible = true,
+                Power = "0",
+                OnAttacked = new(),
+                OnDeath = new(),
+                OnTurnStart = new(),
+                OnUse = new(),
+                OnAttack = [Key.GetOpenDoorActionForKey(keyType.KeyTypeName)],
+            };
+            return new()
+            {
+                KeyTypeName = keyType.KeyTypeName,
+                CanLockItems = keyType.CanLockItems,
+                CanLockStairs = keyType.CanLockStairs,
+                DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
+                KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, [], [])
+            };
+        }
+
+        public static EntityClass Parse(this CurrencyInfo currency, Locale locale)
+        {
+            var currencyClassTemplate = new ItemInfo()
+            {
+                Id = $"Currency",
+                Name = locale[currency.Name],
+                Description = locale[currency.Description],
+                ConsoleRepresentation = currency.ConsoleRepresentation,
+                EntityType = "Currency",
+                StartsVisible = true,
+                Power = "0",
+                OnAttacked = new(),
+                OnDeath = new(),
+                OnTurnStart = new(),
+                OnUse = new(),
+                OnAttack = [],
+            };
+            return new EntityClass(currencyClassTemplate, locale, EntityType.Currency, null, [], []);
+        }
+    }
+}
+#pragma warning restore CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.

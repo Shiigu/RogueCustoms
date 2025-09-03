@@ -52,7 +52,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Height = map.Height;
             TurnCount = map.TurnCount;
             EmptyTile = map.TileSet.Empty;
-            GetTiles();
+            Tiles = GetTiles();
             PlayerEntity = new EntityDto(map.Player, map);
             var playerEntity = map.Player;
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
@@ -60,7 +60,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
         }
 
-        public void GetTiles()
+        public List<TileDto> GetTiles()
         {
             _map.Player.UpdateVisibility();
             var _tiles = new ConcurrentBag<TileDto>();
@@ -74,11 +74,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                         _tiles.Add(new TileDto(tile, _map));
                     });
                 });
-                Tiles = _tiles.ToList();
+                return _tiles.ToList();
             }
             else
             {
-                Tiles = new List<TileDto>();
+                return new List<TileDto>();
             }
         }
     }
@@ -116,10 +116,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Name { get; private set; }
         public bool OnTop { get; private set; }
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
-
-        public EntityDtoType Type { get; private set; }
-
-        public bool IsPlayer => Type == EntityDtoType.Player;
 
         #region Player-only fields
         public int Level { get; set; }
@@ -159,6 +155,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int MaxHunger { get; set; }
         public List<SimpleEntityDto> AlteredStatuses { get; set; }
         public List<SimpleEntityDto> Inventory { get; set; }
+        public CurrencyDto Currency { get; private set; }
         #endregion
 
         public EntityDto() { }
@@ -170,24 +167,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = entity.Name;
             OnTop = !entity.Passable;
             ConsoleRepresentation = entity.ConsoleRepresentation.Clone();
-            switch (entity.EntityType)
-            {
-                case EntityType.Player:
-                    Type = EntityDtoType.Player;
-                    break;
-                case EntityType.Weapon:
-                case EntityType.Armor:
-                case EntityType.Consumable:
-                    Type = EntityDtoType.PickableObject;
-                    break;
-                case EntityType.NPC:
-                    Type = EntityDtoType.Character;
-                    break;
-                case EntityType.Trap:
-                    Type = EntityDtoType.Trap;
-                    break;
-            }
-            if (IsPlayer && entity is PlayerCharacter pc)
+            if (entity is PlayerCharacter pc)
             {
                 Level = pc.Level;
                 Experience = pc.Experience;
@@ -231,6 +211,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 }
                 AlteredStatuses = new List<SimpleEntityDto>();
                 Inventory = new List<SimpleEntityDto>();
+                Currency = new(map.CurrencyClass, pc.CurrencyCarried);
             }
         }
     }
@@ -247,14 +228,28 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = e.Name;
             ConsoleRepresentation = e.ConsoleRepresentation;
         }
+        public SimpleEntityDto(EntityClass? ec)
+        {
+            if (ec == null) return;
+            Name = ec.Name;
+            ConsoleRepresentation = ec.ConsoleRepresentation;
+        }
     }
 
-    public enum EntityDtoType
+    [Serializable]
+    public class CurrencyDto
     {
-        Player = 0,
-        Character = 1,
-        PickableObject = 2,
-        Trap = 3
+        public string Name { get; private set; }
+        public ConsoleRepresentation ConsoleRepresentation { get; private set; }
+        public int Amount { get; private set; }
+
+        public CurrencyDto(EntityClass ec, int amount)
+        {
+            Name = ec.Name;
+            ConsoleRepresentation = ec.ConsoleRepresentation;
+            Amount = amount;
+        }
+
     }
 #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

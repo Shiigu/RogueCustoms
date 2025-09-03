@@ -59,6 +59,8 @@ InventoryWindowStatModifierText,{Number} de {StatName},{Number} to {StatName}
 InventoryWindowOnEquipText,al Equipar,on Equip
 InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventory
 InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
+InventoryWindowSaleValueText,Valor de venta: {Symbol}{Amount},Sale Value: {Symbol}{Amount}
+InventoryWindowCannotBeSoldText,No se puede intercambiar por {Symbol},Cannot be traded for {Symbol}
 LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English
@@ -102,6 +104,7 @@ PlayerCharacterDetailStatAlterationText,{Alteration} por {Source},{Alteration} f
 PlayerCharacterDetailStatsHeader,ESTADÍSTICAS,STATS
 PlayerCharacterDetailInventoryHeader,INVENTARIO,INVENTORY
 PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO
+PlayerCharacterDetailCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName}: {Symbol}{Amount}
 PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
 PlayerClassNoStartingInventoryText,NADA,NONE
 PlayerClassEmergencyEquipmentHeader,EQUIPAMIENTO DE EMERGENCIA,EMERGENCY EQUIPMENT
@@ -120,6 +123,7 @@ PlayerInfoInventoryHeader,INVENTARIO,INVENTORY
 PlayerInfoStatusesHeader,ESTADOS,STATUSES
 PlayerInfoTooManyText,¡CLICK DEBAJO!,CLICK BELOW!
 PlayerInfoWeaponHeader,ARMA,WEAPON
+PlayerInfoCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName}: {Symbol}{Amount}
 PlayerLevelText,NIVEL {CurrentLevel},LEVEL {CurrentLevel}
 PressEnterText,Presiona Enter para Continuar...,Press Enter to Continue...
 RadioButtonHeaderText,UBICACIÓN DEL HOST,GAME HOST LOCATION

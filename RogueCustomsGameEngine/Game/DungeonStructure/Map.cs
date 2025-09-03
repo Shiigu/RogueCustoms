@@ -26,6 +26,7 @@ using RogueCustomsGameEngine.Utils.Expressions;
 using System.Text.Json.Serialization;
 using RogueCustomsGameEngine.Game.Interaction;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -115,6 +116,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool StairsAreSet { get; set; } = false;
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Element> Elements => Dungeon.Elements;
+        public List<Currency> CurrencyPiles { get; set; }
         public List<Item> Items { get; set; }
         public List<Key> Keys { get; set; }
         public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
@@ -132,6 +134,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<Flag> Flags { get; set; }
 
+        public EntityClass CurrencyClass => Dungeon.CurrencyClass;
+        public float SaleValuePercentage => Player.SaleValuePercentage;
         public List<EntityClass> PossibleClasses => Dungeon.Classes;
         public List<EntityClass> PossibleNPCClasses => Dungeon.NPCClasses;
         public List<EntityClass> PossibleItemClasses => Dungeon.ItemClasses;
@@ -163,6 +167,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Dungeon = dungeon;
             FloorLevel = floorLevel;
             AICharacters = new List<NonPlayableCharacter>();
+            CurrencyPiles = new List<Currency>();
             Items = new List<Item>();
             Keys = new List<Key>();
             Traps = new List<Trap>();
@@ -352,7 +357,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 await NewTurn();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (!IsDebugMode)
                     throw;
@@ -905,23 +910,105 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentEntityId++;
         }
 
-        public Task<Entity> AddEntity(string classId, int level = 1, GamePoint predeterminatePosition = null)
+        public Currency CreateCurrency(CurrencyPile pileType, GamePoint predeterminatePosition = null, bool mustPickPosition = false)
         {
-            var entityClass = Dungeon.Classes.Find(c => c.Id.Equals(classId))
-                ?? throw new InvalidDataException("Class does not exist!");
-            return AddEntity(entityClass, level, predeterminatePosition);
+            GamePoint? PositionToUse = null;
+            if (predeterminatePosition != null)
+            {
+                PositionToUse = predeterminatePosition;
+            }
+            else if (mustPickPosition)
+            {
+                PositionToUse = PickEmptyPosition(TurnCount == 0, true);
+            }
+
+            var currencyPile = new Currency(CurrencyClass, this)
+            {
+                Id = CurrentEntityId,
+                Position = PositionToUse,
+                Amount = Rng.NextInclusive(pileType.Minimum, pileType.Maximum)
+            };
+
+            var baseName = currencyPile.Name;
+            currencyPile.Name = Locale["CurrencyDisplayName"].Format(new { Amount = currencyPile.Amount.ToString(), CurrencyName = baseName });
+
+            CurrencyPiles.Add(currencyPile);
+
+            CurrentEntityId++;
+
+            return currencyPile;
         }
 
-        public async Task<Entity> AddEntity(EntityClass entityClass, int level = 1, GamePoint predeterminatePosition = null)
+        public Currency CreateCurrency(int amount, GamePoint predeterminatePosition = null, bool mustPickPosition = false)
+        {
+            GamePoint? PositionToUse = null;
+            if (predeterminatePosition != null)
+            {
+                PositionToUse = predeterminatePosition;
+            }
+            else if (mustPickPosition)
+            {
+                PositionToUse = PickEmptyPosition(TurnCount == 0, true);
+            }
+
+            var currencyPile = new Currency(CurrencyClass, this)
+            {
+                Id = CurrentEntityId,
+                Position = PositionToUse,
+                Amount = amount
+            };
+
+            var baseName = currencyPile.Name;
+            currencyPile.Name = Locale["CurrencyDisplayName"].Format(new { Amount = currencyPile.Amount.ToString(), CurrencyName = baseName });
+
+            CurrencyPiles.Add(currencyPile);
+
+            CurrentEntityId++;
+
+            return currencyPile;
+        }
+
+        public async Task<Entity> AddEntity(string classId, int level = 1, GamePoint predeterminatePosition = null, bool mustPickPosition = true)
+        {
+            var classIdToUse = classId;
+
+            var match = Regex.Match(classIdToUse, EngineConstants.CurrencyRegexPattern);
+
+            if (match.Success)
+            {
+                var pileTypeId = match.Groups[1].Value;
+                var correspondingPileType = Dungeon.CurrencyData.Find(pt => pt.Id.Equals(pileTypeId))
+                    ?? throw new InvalidDataException($"Currency pile type {pileTypeId} does not exist!");
+                return CreateCurrency(correspondingPileType, predeterminatePosition, mustPickPosition);
+            }
+            else
+            {
+                var entityClass = Dungeon.Classes.Find(c => c.Id.Equals(classIdToUse))
+                    ?? throw new InvalidDataException("Class does not exist!");
+                return await AddEntity(entityClass, level, predeterminatePosition, mustPickPosition);
+            }
+        }
+
+        public async Task<Entity> AddEntity(EntityClass entityClass, int level = 1, GamePoint predeterminatePosition = null, bool mustPickPosition = true)
         {
             Entity entity = null;
+            GamePoint? PositionToUse = null;
+            if(predeterminatePosition != null)
+            {
+                PositionToUse = predeterminatePosition;
+            }
+            else if (mustPickPosition)
+            {
+                var isAPassableEntity = entityClass.EntityType == EntityType.Weapon || entityClass.EntityType == EntityType.Armor || entityClass.EntityType == EntityType.Consumable || entityClass.EntityType == EntityType.Trap || entityClass.EntityType == EntityType.Key;
+                PositionToUse = PickEmptyPosition(TurnCount == 0, isAPassableEntity);
+            }
             switch (entityClass.EntityType)
             {
                 case EntityType.Player:
                     entity = new PlayerCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, false)
+                        Position = PositionToUse
                     };
                     if (Dungeon.PlayerClass.RequiresNamePrompt && !string.IsNullOrWhiteSpace(Dungeon.PlayerName))
                         entity.Name = Dungeon.PlayerName;
@@ -930,7 +1017,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new NonPlayableCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, false)
+                        Position = PositionToUse
                     };
                     break;
                 case EntityType.Weapon:
@@ -939,28 +1026,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new Item(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
+                        Position = PositionToUse
                     };
                     break;
                 case EntityType.Trap:
                     entity = new Trap(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
+                        Position = PositionToUse
                     };
                     break;
                 case EntityType.Key:
                     entity = new Key(entityClass, this)
                     {
                         Id = CurrentEntityId,
-                        Position = predeterminatePosition != null ? predeterminatePosition : PickEmptyPosition(TurnCount == 0, true)
+                        Position = PositionToUse
                     };
                     break;
                 default:
                     throw new InvalidDataException("Entity lacks a valid type!");
             }
             CurrentEntityId++;
-            if (entity.Position == null) return entity;
             if (entity is Item i)
             {
                 Items.Add(i);
@@ -1088,7 +1174,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         for (int i = 0; i < possibleNPC.MinimumInFirstTurn; i++)
                         {
                             var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
-                            var npc = await AddEntity(possibleNPC.Class.Id, level) as NonPlayableCharacter;
+                            var npc = await AddEntity(possibleNPC.ClassId, level) as NonPlayableCharacter;
                             npc.SpawnedViaMonsterHouse = false;
                             possibleNPC.TotalGeneratedInFloor++;
                             LastMonsterGenerationTurn = TurnCount;
@@ -1113,7 +1199,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         for (int i = 0; i < possibleItem.MinimumInFirstTurn; i++)
                         {
-                            await AddEntity(possibleItem.Class.Id);
+                            await AddEntity(possibleItem.ClassId);
                             possibleItem.TotalGeneratedInFloor++;
                         }
                     }
@@ -1137,7 +1223,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         for (int i = 0; i < possibleTrap.MinimumInFirstTurn; i++)
                         {
-                            await AddEntity(possibleTrap.Class.Id);
+                            await AddEntity(possibleTrap.ClassId);
                             possibleTrap.TotalGeneratedInFloor++;
                         }
                     }
@@ -1181,7 +1267,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         foreach (var tile in tilesForItems)
                         {
                             if (Rng.RollProbability() > 80) continue;
-                            var pickedItemId = FloorConfigurationToUse.PossibleItems.TakeRandomElement(Rng).Class.Id;
+                            var pickedItemId = FloorConfigurationToUse.PossibleItems.TakeRandomElement(Rng).ClassId;
                             await AddEntity(pickedItemId, 1, tile.Position);
                         }
                     }
@@ -1191,7 +1277,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         foreach (var tile in tilesForTraps)
                         {
                             if (Rng.RollProbability() > 80) continue;
-                            var pickedTrapId = FloorConfigurationToUse.PossibleTraps.TakeRandomElement(Rng).Class.Id;
+                            var pickedTrapId = FloorConfigurationToUse.PossibleTraps.TakeRandomElement(Rng).ClassId;
                             await AddEntity(pickedTrapId, 1, tile.Position);
                         }
                     }
@@ -1250,19 +1336,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     tile.ResetType();
                 }
             }
-            await Player.PerformOnTurnStart();
-            if(Player.ContainingTile.OnStood != null)
-                await Player.ContainingTile.OnStood.Do(Player, Player, true);
-            Player.RemainingMovement = (int) Player.Movement.Current;
-            LatestPlayerRemainingMovement = Player.RemainingMovement;
-            foreach (var character in AICharacters.Where(e => e != null))
+
+            foreach (var character in GetCharacters().Where(e => e != null))
             {
+                await Player.PerformOnTurnStart();
+                if (Player.ContainingTile.OnStood != null)
+                    await Player.ContainingTile.OnStood.Do(Player, Player, true);
+                Player.RemainingMovement = (int)Player.Movement.Current;
                 character.RemainingMovement = (int)character.Movement.Current;
                 character.TookAction = false;
                 await character.PerformOnTurnStart();
-                if(character.ContainingTile.OnStood != null)
+                if (character.ContainingTile.OnStood != null)
                     await character.ContainingTile.OnStood.Do(character, character, true);
             }
+            LatestPlayerRemainingMovement = Player.RemainingMovement;
 
             if (TurnCount > 1)
             {
@@ -1279,7 +1366,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
             {
                 if ((TurnCount == 0 && !pm.CanSpawnOnFirstTurn) || (TurnCount > 0 && !pm.CanSpawnAfterFirstTurn) || (pm.OverallMaxForKindInFloor > 0 && pm.TotalGeneratedInFloor >= pm.OverallMaxForKindInFloor)) return;
-                var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.Class.Id) && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
+                var currentMonstersWithId = AICharacters.Where(e => e.ClassId.Equals(pm.ClassId) && !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
                 if (currentMonstersWithId.Count() >= pm.SimultaneousMaxForKindInFloor) return;
                 if (!string.IsNullOrWhiteSpace(pm.SpawnCondition))
                 {
@@ -1296,7 +1383,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var pickedGenerator = usableNPCGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
             if (pickedGenerator == null) return;
             var level = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
-            var npc = await AddEntity(pickedGenerator.Class.Id, level) as NonPlayableCharacter;
+            var npc = await AddEntity(pickedGenerator.ClassId, level) as NonPlayableCharacter;
             npc.SpawnedViaMonsterHouse = false;
             pickedGenerator.TotalGeneratedInFloor++;
             LastMonsterGenerationTurn = TurnCount;
@@ -1324,7 +1411,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
             var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
             if (pickedGenerator == null) return;
-            await AddEntity(pickedGenerator.Class.Id);
+            await AddEntity(pickedGenerator.ClassId);
             pickedGenerator.TotalGeneratedInFloor++;
         }
 
@@ -1350,7 +1437,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
             var pickedGenerator = usableTrapGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
             if (pickedGenerator == null) return;
-            await AddEntity(pickedGenerator.Class.Id);
+            await AddEntity(pickedGenerator.ClassId);
             pickedGenerator.TotalGeneratedInFloor++;
         }
 
@@ -1544,9 +1631,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 foreach (var tile in acceptableTiles)
                 {
-                    var pickedMonster = FloorConfigurationToUse.PossibleMonsters.Where(pm => pm.Class.Faction.IsEnemyWith(Player.Faction) && pm.Class.StartsVisible).TakeRandomElement(Rng);
-                    if (pickedMonster == null) return;
-                    var monsterHouseEnemy = await AddEntity(pickedMonster.Class.Id, Rng.NextInclusive(pickedMonster.MinLevel, pickedMonster.MaxLevel), tile.Position) as NonPlayableCharacter;
+                    var possibleMonsterClasses = PossibleNPCClasses.Where(pnc => FloorConfigurationToUse.PossibleMonsters.ConvertAll(pm => pm.ClassId).Contains(pnc.Id));
+                    var pickedMonster = possibleMonsterClasses.Where(pm => pm.Faction.IsEnemyWith(Player.Faction) && pm.StartsVisible).TakeRandomElement(Rng);
+                    var monsterSpawnData = FloorConfigurationToUse.PossibleMonsters.Find(pm => pm.ClassId.Equals(pickedMonster.Id));
+                    if (pickedMonster == null || monsterSpawnData == null) return;
+                    var monsterHouseEnemy = await AddEntity(pickedMonster.Id, Rng.NextInclusive(monsterSpawnData.MinLevel, monsterSpawnData.MaxLevel), tile.Position) as NonPlayableCharacter;
                     monsterHouseEnemy.SpawnedViaMonsterHouse = true;
                 }
             }
@@ -1627,6 +1716,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
+            DisplayEvents = new();
             Snapshot = new(Dungeon, this);
             if (Player.ContainingTile.GetItems().Any())
             {
@@ -1681,6 +1771,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 inventory.InventoryItems.Add(new InventoryItemDto(itemsOnTile[i], Player, this));
             }
+            inventory.CurrencyConsoleRepresentation = CurrencyClass.ConsoleRepresentation.Clone();
             return inventory;
         }
 
@@ -2019,10 +2110,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     return tile.Trap.ConsoleRepresentation.AsDarkened();
                 }
             }
-            if (tile.Trap?.CanBeSeenBy(Player) == true)
-                return tile.Trap.ConsoleRepresentation;
-            if (tile.Trap?.CanBeSeenBy(Player) == true)
-                return tile.Trap.ConsoleRepresentation;
+            if (tile.CurrencyPile != null)
+                return tile.CurrencyPile.ConsoleRepresentation;
             var deadEntityInCoordinates = GetEntitiesFromCoordinates(tile.Position).Find(e => e.Passable && e.ExistenceStatus == EntityExistenceStatus.Dead);
             if (deadEntityInCoordinates != null && (!deadEntityInCoordinates.ContainingTile.Type.CausesPartialInvisibility || deadEntityInCoordinates.ContainingTile.Type == Player.ContainingTile.Type))
                 return deadEntityInCoordinates.ConsoleRepresentation;

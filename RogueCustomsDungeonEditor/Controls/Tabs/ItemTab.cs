@@ -71,6 +71,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
             SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
+            nudItemBaseValue.Value = item.BaseValue;
+            fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
         }
 
         public List<string> SaveData(string id)
@@ -127,6 +129,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItem.OnDeath = saeItemOnDeath.Action;
                 if (LoadedItem.OnDeath != null)
                     LoadedItem.OnDeath.IsScript = false;
+
+                LoadedItem.BaseValue = (int) nudItemBaseValue.Value;
             }
 
             return validationErrors;
@@ -163,7 +167,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void ToggleItemTypeControlsVisibility()
         {
-            lblPower.Text = cmbItemType.Text switch { 
+            lblPower.Text = cmbItemType.Text switch
+            {
                 "Weapon" => "Weapon Damage",
                 "Armor" => "Armor Mitigation",
                 "Consumable" => "Consumable Power",
@@ -290,6 +295,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void crsItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudItemBaseValue_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
         }
     }
 }

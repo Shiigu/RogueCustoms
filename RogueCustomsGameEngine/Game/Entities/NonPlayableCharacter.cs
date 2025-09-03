@@ -46,7 +46,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnInteracted { get; set; }
         public bool SpawnedViaMonsterHouse { get; set; }
         public bool CanSeeTraps { get; set; }
-        public List<EntityClass> Drops { get; set; }
+        public List<(EntityClass Class, int Amount)> Drops { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
@@ -89,7 +89,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                     else if (pickedObject is EntityClass ec)
                     {
-                        Drops.Add(ec);
+                        Drops.Add((ec, 0));
+                        foundAPick = true;
+                    }
+                    else if (pickedObject is CurrencyPile cp)
+                    {
+                        Drops.Add((Map.CurrencyClass, Map.Rng.NextInclusive(cp.Minimum, cp.Maximum)));
                         foundAPick = true;
                     }
                     else if (pickedObject is string s && EngineConstants.SPECIAL_LOOT_ENTRIES.Contains(s))
@@ -102,25 +107,25 @@ namespace RogueCustomsGameEngine.Game.Entities
                         else if (s == EngineConstants.LOOT_WEAPON)
                         {
                             var chosenWeapon = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList().TakeRandomElement(Rng);
-                            Drops.Add(chosenWeapon);
+                            Drops.Add((chosenWeapon, 0));
                             foundAPick = true;
                         }
                         else if (s == EngineConstants.LOOT_ARMOR)
                         {
                             var chosenArmor = validItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
-                            Drops.Add(chosenArmor);
+                            Drops.Add((chosenArmor, 0));
                             foundAPick = true;
                         }
                         else if (s == EngineConstants.LOOT_EQUIPPABLE)
                         {
                             var chosenEquippable = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
-                            Drops.Add(chosenEquippable);
+                            Drops.Add((chosenEquippable, 0));
                             foundAPick = true;
                         }
                         else if (s == EngineConstants.LOOT_CONSUMABLE)
                         {
                             var chosenConsumable = validItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList().TakeRandomElement(Rng);
-                            Drops.Add(chosenConsumable);
+                            Drops.Add((chosenConsumable, 0));
                             foundAPick = true;
                         }
                     }
@@ -545,10 +550,27 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Passable = true;
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
+                var droppedCurrency = false;
+                if(CurrencyCarried > 0)
+                {
+                    droppedCurrency = true;
+                    var currencyForDrop = Map.CreateCurrency(CurrencyCarried, null, false);
+                    DropItem(currencyForDrop);
+                }
                 foreach (var dropEntry in Drops)
                 {
-                    var itemForDrop = await Map.AddEntity(dropEntry) as Item;
-                    DropItem(itemForDrop);
+                    var entryClass = dropEntry.Class;
+                    if (entryClass != Map.CurrencyClass)
+                    {
+                        var itemForDrop = await Map.AddEntity(entryClass, 1, null, false) as Item;
+                        DropItem(itemForDrop);
+                    }
+                    else
+                    {
+                        droppedCurrency = true;
+                        var currencyForDrop = Map.CreateCurrency(dropEntry.Amount, null, false);
+                        DropItem(currencyForDrop);
+                    }
                 }
                 if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
@@ -565,6 +587,15 @@ namespace RogueCustomsGameEngine.Game.Entities
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.NPCDeath }
                     });
+                    if (droppedCurrency)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Currency }
+                        }
+                        );
+                    }
                 }
                 Map.DisplayEvents.Add(($"NPC {Name} dies", events));
                 if (attacker is Character c && ExperiencePayout > 0)
@@ -572,28 +603,54 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public override void PickItem(Item item, bool informToPlayer)
+        public override void PickItem(IPickable pickable, bool informToPlayer)
         {
-            Inventory.Add(item);
-            item.Owner = this;
-            item.Position = null;
-            item.ExistenceStatus = EntityExistenceStatus.Gone;
+            var pickableAsEntity = pickable as Entity;
+            var isCurrency = false;
+            pickable.Owner = this;
+            if (pickable is Item i)
+            {
+                Inventory.Add(i);
+            }
+            else if (pickable is Currency c)
+            {
+                isCurrency = true;
+                CurrencyCarried += c.Amount;
+            }
+            pickableAsEntity.Position = null;
+            pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = item.Name }));
-                Map.DisplayEvents.Add(($"NPC {Name} picks item", new()
+                if (isCurrency)
+                {
+                    Map.AppendMessage(Map.Locale["CharacterPicksCurrency"].Format(new { CharacterName = Name, CurrencyName = pickableAsEntity.Name }));
+                    Map.DisplayEvents.Add(($"NPC {Name} picked currency", new()
                     {
                         new() {
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { SpecialEffect.NPCItemGet }
                         }
                     }
-                ));
+                    ));
+                }
+                else
+                {
+                    Map.AppendMessage(Map.Locale["NPCPickItem"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
+                    Map.DisplayEvents.Add(($"NPC {Name} picks item", new()
+                    {
+                        new() {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.NPCItemGet }
+                        }
+                    }
+                    ));
+                }
             }
         }
 
-        public override void DropItem(Item item)
+        public override void DropItem(IPickable pickable)
         {
+            var pickableAsEntity = pickable as Entity;
             var events = new List<DisplayEventDto>();
             var centralPosition = Position ?? LastPositionBeforeRemove;
             var centralTile = Map.GetTileFromCoordinates(centralPosition);
@@ -602,7 +659,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 pickedEmptyTile = centralTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.IsWalkable && !t.IsOccupied && !t.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (t.Trap == null || t.Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (t.Key == null || t.Key.ExistenceStatus != EntityExistenceStatus.Alive)).ToList();
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.AllowsDrops).ToList();
+                if(ContainingTile.AllowsDrops)
+                    closeEmptyTiles.Add(ContainingTile);
+                closeEmptyTiles = closeEmptyTiles.Where(t => t.LivingCharacter == null || t.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive || t.LivingCharacter == this).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => (int) GamePoint.Distance(t.Position, centralPosition)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => (int) GamePoint.Distance(t.Position, centralPosition) <= closestDistance);
                 if (closestEmptyTiles.Any())
@@ -611,25 +671,26 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 else
                 {
-                    item.Position = null;
-                    item.Owner = null!;
-                    item.ExistenceStatus = EntityExistenceStatus.Gone;
-                    Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = item.Name }));
-                    Map.Items.Remove(item);
+                    pickableAsEntity.Position = null;
+                    pickable.Owner = null!;
+                    pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
+                    Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }));
+                    if(pickableAsEntity is Item i)
+                        Map.Items.Remove(i);
                 }
             }
             if (pickedEmptyTile != null)
             {
-                item.Position = pickedEmptyTile.Position;
-                item.Owner = null!;
-                item.ExistenceStatus = EntityExistenceStatus.Alive;
-                Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                pickableAsEntity.Position = pickedEmptyTile.Position;
+                pickable.Owner = null!;
+                pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
+                Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                        Params = new() { item.Position, Map.GetConsoleRepresentationForCoordinates(item.Position.X, item.Position.Y) }
+                        Params = new() { pickableAsEntity.Position, Map.GetConsoleRepresentationForCoordinates(pickableAsEntity.Position.X, pickableAsEntity.Position.Y) }
                     }
                     );
                 }

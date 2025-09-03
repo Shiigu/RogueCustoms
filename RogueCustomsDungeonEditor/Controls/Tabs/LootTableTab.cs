@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
@@ -26,9 +29,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         public LootTableInfo LoadedLootTable { get; private set; }
         public event EventHandler TabInfoChanged;
 
-        private Color CategoryColor = Color.Violet;
-        private Color ItemColor = Color.LightBlue;
-        private Color LootTableColor = Color.Gold;
+        private readonly Color CategoryColor = Color.Violet;
+        private readonly Color ItemColor = Color.LightBlue;
+        private readonly Color LootTableColor = Color.FromArgb(0, 255, 0);
+        private readonly Color CurrencyColor = Color.Gold;
 
         public LootTableTab()
         {
@@ -42,6 +46,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ValidPickIds = ["No Drop", "Weapon", "Armor", "Equippable", "Consumable"];
             ValidPickIds.AddRange(activeDungeon.LootTableInfos.Where(lt => lootTableToLoad.Id == null || !lt.Id.Equals(lootTableToLoad.Id)).Select(lt => lt.Id));
             ValidPickIds.AddRange(activeDungeon.Items.Select(i => i.Id));
+            foreach (var currencyPile in activeDungeon.CurrencyInfo.CurrencyPiles)
+            {
+                ValidPickIds.Add($"Currency ({currencyPile.Id})");
+            }
             var pickIdColumn = (DataGridViewComboBoxColumn)dgvLootTable.Columns["PickId"];
             pickIdColumn.DataSource = ValidPickIds;
             dgvLootTable.Rows.Clear();
@@ -102,7 +110,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && !dgvLootTable.Rows[e.RowIndex].IsNewRow && dgvLootTable.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewComboBoxCell)
             {
                 var cell = dgvLootTable.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-                var itemText = cell.Value.ToString();
+                var itemText = cell.Value != null 
+                    ? cell.Value.ToString() 
+                    : cell.FormattedValue != null ? cell.FormattedValue.ToString() : string.Empty;
                 Color? backColor = GetColorForEntry(itemText);
 
                 e.Paint(e.ClipBounds, DataGridViewPaintParts.Border);
@@ -127,6 +137,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private Color? GetColorForEntry(string entryText)
         {
+            var match = Regex.Match(entryText, EngineConstants.CurrencyRegexPattern);
+
             if (entryText.Equals("No Drop", StringComparison.InvariantCultureIgnoreCase) ||
                 entryText.Equals("Weapon", StringComparison.InvariantCultureIgnoreCase) ||
                 entryText.Equals("Armor", StringComparison.InvariantCultureIgnoreCase) ||
@@ -139,6 +151,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             {
                 return LootTableColor;
             }
+            else if (match.Success)
+            {
+                return CurrencyColor;
+            }
             else
             {
                 return ItemColor;
@@ -147,6 +163,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         public List<string> SaveData(string id)
         {
+            dgvLootTable.EndEdit();
             var validationErrors = new List<string>();
             var lootTableToSave = new LootTableInfo()
             {

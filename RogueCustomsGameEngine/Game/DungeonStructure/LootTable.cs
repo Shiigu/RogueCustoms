@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using RogueCustomsGameEngine.Utils;
@@ -53,6 +54,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 var pickAsItem = dungeon.ItemClasses.FirstOrDefault(i => i.Id.Equals(info.PickId, StringComparison.InvariantCultureIgnoreCase));
                 if (pickAsItem != null) Pick = pickAsItem;
+            }
+
+            var match = Regex.Match(info.PickId, EngineConstants.CurrencyRegexPattern);
+
+            if (Pick == null && match.Success)
+            {
+                var pileTypeId = match.Groups[1].Value;
+                Pick = dungeon.CurrencyData.Find(pt => pt.Id.Equals(pileTypeId))
+                    ?? throw new InvalidDataException($"Currency pile type {pileTypeId} does not exist!");
             }
 
             if (Pick == null)

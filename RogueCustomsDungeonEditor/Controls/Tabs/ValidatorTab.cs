@@ -95,6 +95,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     AddValidationResultNode($"Loot Table {Id}", ValidationMessages);
                 }
 
+                AddValidationResultNode("Currency", dungeonValidator.CurrencyValidationMessages);
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)
                 {
                     AddValidationResultNode($"Player Class {Id}", ValidationMessages);

@@ -117,16 +117,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                     tile.PickedForSwap = false;
                 }
             }
-            var successfulEffects = await Effect.Do(User, source, target);
 
-            if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
-            if (MaximumUses > 0) CurrentUses++;
-
-            if (source != null && source.Position != null && turnSourceVisibleWhenDone)
+            if (source != null && source.Position != null && !source.Visible && turnSourceVisibleWhenDone)
             {
-                var wasAlreadyVisible = source.Visible;
                 source.Visible = true;
-                if (!wasAlreadyVisible && !source.Map.IsDebugMode)
+                if (!source.Map.IsDebugMode)
                 {
                     source.Map.DisplayEvents.Add(($"{source.Name} got revealed after action", new()
                     {
@@ -134,10 +129,20 @@ namespace RogueCustomsGameEngine.Game.Entities
                         {
                             DisplayEventType = DisplayEventType.UpdateTileRepresentation,
                             Params = new() { source.Position, source.Map.GetConsoleRepresentationForCoordinates(source.Position.X, source.Position.Y) }
+                        },
+                        new()
+                        {
+                            DisplayEventType = DisplayEventType.RedrawMap,
+                            Params = new() { source.Map.Snapshot.GetTiles() }
                         }
                     }));
                 }
             }
+
+            var successfulEffects = await Effect.Do(User, source, target);
+
+            if (CooldownBetweenUses > 0) CurrentCooldown = CooldownBetweenUses;
+            if (MaximumUses > 0) CurrentUses++;
 
             return successfulEffects;
         }

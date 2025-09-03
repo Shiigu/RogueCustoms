@@ -646,9 +646,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
 
-                if (!Map.IsDebugMode)
+                if (Map.Player.CanSee(initialTile) || Map.Player.CanSee(targetTile))
                 {
-                    if (c == Map.Player || Map.Player.FOVTiles.Any(t => t == initialTile))
+                    if (!Map.IsDebugMode)
                     {
                         events.Add(new()
                         {
@@ -656,23 +656,27 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             Params = new() { initialTile.Position, Map.GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y) }
                         }
                         );
-                    }
-
-                    if (c == Map.Player || Map.Player.FOVTiles.Any(t => t == targetTile))
-                    {
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                            Params = new() { targetPosition, Map.GetConsoleRepresentationForCoordinates(targetPosition.X, targetPosition.Y) }
+                            Params = new() { targetTile.Position, Map.GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y) }
                         }
                         );
                     }
                 }
 
-
                 if (c == Map.Player)
                 {
-                    if (olderFOV != null)
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerPosition,
+                        Params = new() { targetPosition }
+                    }
+                    );
+
+                    Map.Player.UpdateVisibility();
+
+                    if (!Map.IsDebugMode && c == Map.Player && olderFOV != null && olderFOV.Count > 0)
                     {
                         foreach (var tile in olderFOV.Where(t => !t.Visible))
                         {
@@ -684,12 +688,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             );
                         }
                     }
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerPosition,
-                        Params = new() { targetPosition }
-                    }
-                    );
 
                     events.Add(new()
                     {
@@ -697,18 +695,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = new() { c.ContainingTile.Type == TileType.Stairs }
                     }
                     );
+                }
 
-                    Map.Player.UpdateVisibility();
-
+                if (olderFOV != null)
+                {
                     if (c.EntityType == EntityType.Player)
                     {
                         events.Add(new()
                         {
                             DisplayEventType = DisplayEventType.RedrawMap,
-                            Params = []
+                            Params = new() { Map.Snapshot.GetTiles() }
                         });
                     }
                 }
+
                 if (c == Map.Player || Map.Player.CanSee(c))
                 {
                     events.Add(new()
@@ -716,9 +716,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                         Params = new() { SpecialEffect.Teleport }
                     }
-                    ); 
+                    );
                     Map.AppendMessage(Map.Locale["CharacterWasTeleported"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue, events);
                 }
+
                 Map.DisplayEvents.Add(($"{c.Name} teleported", events));
                 c.ContainingTile?.StoodOn(c);
                 return true;
@@ -909,11 +910,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         var events = new List<DisplayEventDto>();
                         targetItem.Owner?.Inventory?.Remove(targetItem);
                         targetItem.Owner = null;
-                        events.Add(new()
+                        if (c == Map.Player)
                         {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                        });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                            });
+                        }
                         Map.DisplayEvents.Add(($"{targetItem.Name} disappears from {c.Name}'s inventory", events));
                     }
                     targetItem.ExistenceStatus = EntityExistenceStatus.Gone;
@@ -1146,7 +1150,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.RedrawMap,
-                        Params = []
+                        Params = new() { Map.Snapshot.GetTiles() }
                     });
                 }
                 else

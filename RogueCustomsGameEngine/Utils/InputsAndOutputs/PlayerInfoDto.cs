@@ -18,6 +18,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsAtMaxLevel { get; set; }
         public int CurrentExperience { get; set; }
         public int ExperienceToNextLevel { get; set; }
+        public int CurrencyCarried { get; set; }
 
         public List<StatDto> Stats { get; set; }
 
@@ -40,6 +41,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 CurrentExperience = character.Experience;
                 ExperienceToNextLevel = character.ExperienceToLevelUpDifference;
             }
+            CurrencyCarried = character.CurrencyCarried;
             Stats = new();
             foreach (var stat in character.UsedStats)
             {

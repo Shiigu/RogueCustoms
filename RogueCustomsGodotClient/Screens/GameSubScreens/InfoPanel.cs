@@ -47,8 +47,13 @@ public partial class InfoPanel : GamePanel
     private Label _inventoryHeaderLabel;
     private RichTextLabel _inventoryIconsLabel;
 
+    private ScalableRichTextLabel _currencyLabel;
+
     private string _tooManyText;
     private const int MaxIconsPerRow = 12;
+
+    private string _currencyName;
+    private string _currencySymbolBBCode;
 
     public Button DetailsButton { get; private set; }
 
@@ -85,6 +90,7 @@ public partial class InfoPanel : GamePanel
         _alteredStatusesIconsLabel = GetNode<RichTextLabel>("VBoxContainerContainer/AlteredStatusesContainer/AlteredStatusesIconsLabel");
         _inventoryHeaderLabel = GetNode<Label>("VBoxContainerContainer/InventoryContainer/InventoryHeaderLabel");
         _inventoryIconsLabel = GetNode<RichTextLabel>("VBoxContainerContainer/InventoryContainer/InventoryIconsLabel");
+        _currencyLabel = GetNode<ScalableRichTextLabel>("VBoxContainerContainer/CurrencyContainer/CurrencyLabel");
         DetailsButton = GetNode<Button>("ButtonContainer/DetailsButton");
         SetUp();
     }
@@ -116,6 +122,8 @@ public partial class InfoPanel : GamePanel
         _accuracyLabel.MinFontSize = 6;
         _evasionLabel.DefaultFontSize = 12;
         _evasionLabel.MinFontSize = 6;
+        _currencyLabel.DefaultFontSize = 12;
+        _currencyLabel.MinFontSize = 6;
     }
 
     private void DetailsButton_Pressed()
@@ -131,6 +139,7 @@ public partial class InfoPanel : GamePanel
 
             innerText.Append($"[center]{TranslationServer.Translate("PlayerCharacterDetailStatsHeader")}[/center][p] [p]");
             playerInfo.Stats.ForEach(stat => AddPlayerStatsInfo(innerText, stat));
+            innerText.Append($"[p] [p]{GetCurrencyText("PlayerCharacterDetailCurrencyText", _currencyName, _currencySymbolBBCode, playerInfo.CurrencyCarried)}[p] [p]");
             AddPlayerAlteredStatusesInfo(innerText, playerInfo.AlteredStatuses);
             AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedWeaponHeader"), playerInfo.WeaponInfo);
             AddPlayerEquippedItemInfo(innerText, TranslationServer.Translate("PlayerCharacterDetailEquippedArmorHeader"), playerInfo.ArmorInfo);
@@ -189,6 +198,16 @@ public partial class InfoPanel : GamePanel
 
         _inventoryHeaderLabel.Text = TranslationServer.Translate("PlayerInfoInventoryHeader");
         FillIconList(_inventoryIconsLabel, playerEntity.Inventory);
+
+        _currencyName = playerEntity.Currency.Name;
+        _currencySymbolBBCode = playerEntity.Currency.ConsoleRepresentation.ToBbCodeRepresentation();
+
+        _currencyLabel.SetText($"[center]{GetCurrencyText("PlayerInfoCurrencyText", _currencyName, _currencySymbolBBCode, playerEntity.Currency.Amount)}[/center]");
+    }
+
+    private static string GetCurrencyText(string locale, string currencyName, string consoleRepresentationBBCode, int amount)
+    {
+        return $"{TranslationServer.Translate(locale).ToString().Format(new { CurrencyName = currencyName, Symbol = consoleRepresentationBBCode, Amount = amount.ToString() })}";
     }
 
     private static void SetBar(Container? barContainer, Label statLabel, string statName, TextureProgressBar statBar, Label amountLabel, double current, double maximum)
@@ -366,6 +385,10 @@ public partial class InfoPanel : GamePanel
                 var consoleRepresentation = data[1] as ConsoleRepresentation;
                 playerEntity.ConsoleRepresentation = consoleRepresentation;
                 _playerRepresentationLabel.Text = $"[center]{playerEntity.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]";
+                break;
+            case UpdatePlayerDataType.UpdateCurrency:
+                var amount = (int) data[1];
+                _currencyLabel.SetText($"[center]{TranslationServer.Translate("PlayerInfoCurrencyText").ToString().Format(new { CurrencyName = _currencyName, Symbol = _currencySymbolBBCode, Amount = amount.ToString() })}[/center]");
                 break;
         }
     }

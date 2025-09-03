@@ -64,7 +64,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Element> Elements { get; set; }
         public List<ActionSchool> ActionSchools { get; set; }
         public List<LootTable> LootTables { get; set; }
+        public List<CurrencyPile> CurrencyData { get; set; }
+        public float SaleValuePercentage { get; set; }
         public List<EntityClass> Classes { get; set; }
+        [JsonIgnore]
+        public EntityClass CurrencyClass => Classes.FirstOrDefault(c => c.EntityType == EntityType.Currency);
         [JsonIgnore]
         public List<EntityClass> PlayerClasses => Classes.Where(c => c.EntityType == EntityType.Player).ToList();
         [JsonIgnore]
@@ -96,6 +100,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Classes = new List<EntityClass>();
             TileTypes = new List<TileType>();
             TileSets = new List<TileSet>();
+            CurrencyData = new List<CurrencyPile>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
                 ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
@@ -103,6 +108,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
+            Classes.Add(dungeonInfo.CurrencyInfo.Parse(LocaleToUse));
+            dungeonInfo.CurrencyInfo.CurrencyPiles.ForEach(cp => CurrencyData.Add(new CurrencyPile(cp)));
             dungeonInfo.ActionSchoolInfos.ForEach(s => ActionSchools.Add(new ActionSchool(s, LocaleToUse)));
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
@@ -134,7 +141,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             foreach (var itemClass in ItemClasses)
             {
                 if (CharacterClasses.Any(c => c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.InitialEquippedWeaponId?.Equals(itemClass.Id) == true || c.StartingInventoryIds?.Contains(itemClass.Id) == true)) continue;
-                if (FloorTypes.Any(ft => ft.PossibleItems.Any(pi => pi.Class == itemClass))) continue;
+                if (FloorTypes.Any(ft => ft.PossibleItems.Any(pi => pi.ClassId.Equals(itemClass.Id)))) continue;
                 if (LootTables.Any(lt => lt.Entries.Any(lte => lte.Pick == itemClass))) continue;
                 UndroppableItemClasses.Add(itemClass);
             }

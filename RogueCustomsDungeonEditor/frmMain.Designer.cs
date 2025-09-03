@@ -66,6 +66,7 @@ namespace RogueCustomsDungeonEditor
             FactionTab = new Controls.Tabs.FactionTab();
             tpLootTableInfos = new TabPage();
             LootTableTab = new Controls.Tabs.LootTableTab();
+            tpCurrencyInfo = new TabPage();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tpPlayerClass = new TabPage();
@@ -84,6 +85,7 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
+            CurrencyTab = new Controls.Tabs.CurrencyTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -96,6 +98,7 @@ namespace RogueCustomsDungeonEditor
             tbElementInfos.SuspendLayout();
             tpFactionInfos.SuspendLayout();
             tpLootTableInfos.SuspendLayout();
+            tpCurrencyInfo.SuspendLayout();
             tbStatInfos.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
@@ -277,6 +280,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tbElementInfos);
             tbTabs.Controls.Add(tpFactionInfos);
             tbTabs.Controls.Add(tpLootTableInfos);
+            tbTabs.Controls.Add(tpCurrencyInfo);
             tbTabs.Controls.Add(tbStatInfos);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
@@ -467,6 +471,16 @@ namespace RogueCustomsDungeonEditor
             LootTableTab.Size = new System.Drawing.Size(543, 352);
             LootTableTab.TabIndex = 0;
             // 
+            // tpCurrencyInfo
+            // 
+            tpCurrencyInfo.Controls.Add(CurrencyTab);
+            tpCurrencyInfo.Location = new System.Drawing.Point(4, 24);
+            tpCurrencyInfo.Name = "tpCurrencyInfo";
+            tpCurrencyInfo.Size = new System.Drawing.Size(740, 356);
+            tpCurrencyInfo.TabIndex = 17;
+            tpCurrencyInfo.Text = "Currency";
+            tpCurrencyInfo.UseVisualStyleBackColor = true;
+            // 
             // tbStatInfos
             // 
             tbStatInfos.Controls.Add(StatTab);
@@ -544,7 +558,7 @@ namespace RogueCustomsDungeonEditor
             ItemTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ItemTab.Location = new System.Drawing.Point(-5, 1);
             ItemTab.Name = "ItemTab";
-            ItemTab.Size = new System.Drawing.Size(712, 460);
+            ItemTab.Size = new System.Drawing.Size(712, 508);
             ItemTab.TabIndex = 0;
             // 
             // tpTrap
@@ -631,6 +645,13 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
+            // CurrencyTab
+            // 
+            CurrencyTab.Location = new System.Drawing.Point(3, 3);
+            CurrencyTab.Name = "CurrencyTab";
+            CurrencyTab.Size = new System.Drawing.Size(711, 302);
+            CurrencyTab.TabIndex = 0;
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -668,6 +689,7 @@ namespace RogueCustomsDungeonEditor
             tpFactionInfos.ResumeLayout(false);
             tpFactionInfos.PerformLayout();
             tpLootTableInfos.ResumeLayout(false);
+            tpCurrencyInfo.ResumeLayout(false);
             tbStatInfos.ResumeLayout(false);
             tbStatInfos.PerformLayout();
             tpPlayerClass.ResumeLayout(false);
@@ -741,5 +763,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ActionSchoolsTab ActionSchoolsTab;
         private TabPage tpLootTableInfos;
         private Controls.Tabs.LootTableTab LootTableTab;
+        private TabPage tpCurrencyInfo;
+        private Controls.Tabs.CurrencyTab CurrencyTab;
     }
 }

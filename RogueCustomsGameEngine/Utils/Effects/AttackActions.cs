@@ -80,11 +80,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if(damageResistance > paramsObject.Damage && attackElement.ExcessResistanceCausesHealDamage)
             {
                 var targetParam = Args.Params.FirstOrDefault(a => a.ParamName.Equals("Target", StringComparison.InvariantCultureIgnoreCase));
+                
                 var healDamageParams = new List<EffectParam>
                 {
-                    new EffectParam{ParamName = "Source", Value = "source" },
-                    new EffectParam{ParamName = "Target", Value = targetParam.Value },
-                    new EffectParam{ParamName = "Power", Value = damageResistance - paramsObject.Damage },
+                    new EffectParam { ParamName = "Source", Value = "source" },
+                    new EffectParam { ParamName = "Target", Value = targetParam.Value },
+                    new EffectParam { ParamName = "Power", Value = (damageResistance - paramsObject.Damage).ToString() },
                 };
 
                 var healResult = GenericActions.HealDamage(new EffectCallerParams

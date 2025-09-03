@@ -25,6 +25,7 @@ namespace RogueCustomsGameEngine.Utils.Enums
         NPCItemUse,
         NPCItemGet,
         ItemGet,
+        Currency,
         StairsReveal,
         NPCDeath,
         NPCRevive,

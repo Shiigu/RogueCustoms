@@ -104,6 +104,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             dgvObjectTable.Size = new Size(546, 209);
             dgvObjectTable.TabIndex = 36;
             dgvObjectTable.Leave += dgvObjectTable_Leave;
+            dgvObjectTable.SelectionMode = DataGridViewSelectionMode.CellSelect;
             // 
             // lblFloorGroupTitle
             // 

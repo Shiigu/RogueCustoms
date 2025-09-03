@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
+using System.Numerics;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -13,6 +14,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     public class InventoryDto
     {
         public bool TileIsOccupied { get; set; }
+        public ConsoleRepresentation CurrencyConsoleRepresentation { get; set; }
 
         public List<InventoryItemDto> InventoryItems { get; set; }
 
@@ -38,6 +40,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool CanBeDropped { get; set; }
         public bool IsInFloor { get; set; }
         public int ItemId { get; set; }
+        public int SaleValue { get; set; }
 
         public InventoryItemDto() { }
 
@@ -62,6 +65,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
+            SaleValue = (int) Math.Max(1, (pickableAsItem.Value * player.SaleValuePercentage));
             StatModifications = new();
             pickableAsItem?.StatModifiers.ForEach(m => {
                 var correspondingStat = player.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
@@ -94,6 +98,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             });
             OnAttackActions = [];
             e.OnAttack.ForEach(ooa => OnAttackActions.Add(map.Locale[ooa.Name]));
+            SaleValue = (int) Math.Max(1,(e.BaseValue * map.Player.SaleValuePercentage));
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

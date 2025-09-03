@@ -17,6 +17,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public ActionWithEffectsInfo OnAttacked { get; set; }
         public ActionWithEffectsInfo OnDeath { get; set; }
         public ActionWithEffectsInfo OnUse { get; set; }
+        public int BaseValue { get; set; }
     }
 
     [Serializable]

@@ -164,12 +164,13 @@ theme_override_constants/separation = 0
 
 [node name="PlayerNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(224, 32)
+custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
-text = "[center]Player Name[/center]"
+text = "[center]Player Name[/center]
+"
 script = ExtResource("14_hf6xy")
 
 [node name="PlayerRepresentationLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
@@ -498,6 +499,23 @@ theme_override_font_sizes/normal_font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FFFF00FF]CLICK BELOW![/color][/center]"
+
+[node name="CurrencyContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="CurrencyLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/CurrencyContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(224, 16)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/text_highlight_v_padding = 0
+theme_override_constants/text_highlight_h_padding = 0
+theme_override_font_sizes/normal_font_size = 13
+theme_override_styles/normal = ExtResource("4_vn8qa")
+bbcode_enabled = true
+text = "[center]Currency: [color=#FFFF00FF]$[/color]0[/center]"
+script = ExtResource("14_hf6xy")
 
 [node name="ButtonContainer" type="VBoxContainer" parent="InfoPanel"]
 layout_mode = 2

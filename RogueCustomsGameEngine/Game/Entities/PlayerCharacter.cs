@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using RogueCustomsGameEngine.Game.Entities.Interfaces;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -21,11 +22,13 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public readonly string InitialEquippedWeaponId;
         public readonly string InitialEquippedArmorId;
+        public readonly float SaleValuePercentage;
 
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
             InitialEquippedWeaponId = entityClass.InitialEquippedWeaponId;
             InitialEquippedArmorId = entityClass.InitialEquippedArmorId;
+            SaleValuePercentage = entityClass.SaleValuePercentage;
         }
 
         public int CalculateExperienceBarPercentage()
@@ -156,17 +159,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public override void DropItem(Item item)
+        public override void DropItem(IPickable pickable)
         {
-            if (item == EquippedWeapon)
-                EquippedWeapon = null;
-            else if (item == EquippedArmor)
-                EquippedArmor = null;
-            else
-                Inventory.Remove(item);
-            item.Position = Position;
-            item.Owner = null!;
-            item.ExistenceStatus = EntityExistenceStatus.Alive;
+            var pickableAsEntity = pickable as Entity;
+            if (pickable is Item i)
+            {
+                if (i == EquippedWeapon)
+                    EquippedWeapon = null;
+                else if (i == EquippedArmor)
+                    EquippedArmor = null;
+                else
+                    Inventory.Remove(i);
+            }
+            pickableAsEntity.Position = Position;
+            pickable.Owner = null!;
+            pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
             Map.DisplayEvents.Add(($"Player {Name} put item on floor", new()
                 {
                     new() {
@@ -175,31 +182,61 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
             ));
-            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = item.Name }));
+            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
         }
 
-        public override void PickItem(Item item, bool informToPlayer)
+        public override void PickItem(IPickable pickable, bool informToPlayer)
         {
-            Inventory.Add(item);
-            item.Owner = this;
-            item.Position = null;
-            item.ExistenceStatus = EntityExistenceStatus.Gone;
+            var pickableAsEntity = pickable as Entity;
+            pickable.Owner = this;
+            var isCurrency = false;
+            if (pickable is Item i)
+            {
+                Inventory.Add(i);
+            }
+            else if (pickable is Currency c)
+            {
+                isCurrency = true;
+                CurrencyCarried += c.Amount;
+            }
+            pickableAsEntity.Position = null;
+            pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
             if (informToPlayer)
             {
-                Map.DisplayEvents.Add(($"Player {Name} picked item on floor", new()
+                if (isCurrency)
                 {
-                    new()
+                    Map.AppendMessage(Map.Locale["CharacterPicksCurrency"].Format(new { CharacterName = Name, CurrencyName = pickableAsEntity.Name }));
+                    Map.DisplayEvents.Add(($"Player {Name} picked currency", new()
                     {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                    },
-                    new() {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.ItemGet }
+                        new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateCurrency, CurrencyCarried }
+                        },
+                        new() {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Currency }
+                        }
                     }
+                    ));
                 }
-                ));
-                Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = item.Name }));
+                else
+                {
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
+                    Map.DisplayEvents.Add(($"Player {Name} picked item on floor", new()
+                    {
+                        new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                        },
+                        new() {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.ItemGet }
+                        }
+                    }
+                    ));
+                }
             }
         }
 

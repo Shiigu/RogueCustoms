@@ -109,29 +109,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PossibleKeys.KeyTypes = new();
                 foreach (var keyType in floorInfo.PossibleKeys.KeyTypes)
                 {
-                    var keyClassTemplate = new ItemInfo()
-                    {
-                        Id = $"KeyType{keyType.KeyTypeName}",
-                        Name = $"KeyType{keyType.KeyTypeName}",
-                        ConsoleRepresentation = keyType.KeyConsoleRepresentation,
-                        Description = "KeyDescription",
-                        EntityType = "Key",
-                        StartsVisible = true,
-                        Power = "0",
-                        OnAttacked = new(),
-                        OnDeath = new(),
-                        OnTurnStart = new(),
-                        OnUse = new(),
-                        OnAttack = new() { Key.GetOpenDoorActionForKey(keyType.KeyTypeName) },
-                    };
-                    PossibleKeys.KeyTypes.Add(new()
-                    {
-                        KeyTypeName = keyType.KeyTypeName,
-                        CanLockItems = keyType.CanLockItems,
-                        CanLockStairs = keyType.CanLockStairs,
-                        DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                        KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, actionSchools, null)
-                    });
+                    PossibleKeys.KeyTypes.Add(keyType.Parse(locale));
                 }
             }
 
@@ -163,10 +141,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleMonsters = new List<ClassInFloor>();
             PossibleMonstersInfo.ForEach(pmi =>
             {
-                var classForMonster = classList.Find(c => c.Id.Equals(pmi.ClassId) && c.EntityType == EntityType.NPC) ?? throw new InvalidDataException($"There's no class matching for {pmi.ClassId}!");
                 PossibleMonsters.Add(new ClassInFloor
                 {
-                    Class = classForMonster,
+                    ClassId = pmi.ClassId,
                     MinLevel = pmi.MinLevel,
                     MaxLevel = pmi.MaxLevel,
                     OverallMaxForKindInFloor = pmi.OverallMaxForKindInFloor,
@@ -181,10 +158,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleItems = new List<ClassInFloor>();
             PossibleItemsInfo.ForEach(pii =>
             {
-                var classForItem = classList.Find(c => c.Id.Equals(pii.ClassId) && (c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable)) ?? throw new InvalidDataException($"There's no class matching for {pii.ClassId}!");
                 PossibleItems.Add(new ClassInFloor
                 {
-                    Class = classForItem,
+                    ClassId = pii.ClassId,
                     MinimumInFirstTurn = pii.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pii.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pii.ChanceToPick,
@@ -194,10 +170,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleTraps = new List<ClassInFloor>();
             PossibleTrapsInfo.ForEach(pti =>
             {
-                var classForTrap = classList.Find(c => c.Id.Equals(pti.ClassId) && c.EntityType == EntityType.Trap) ?? throw new InvalidDataException($"There's no class matching for {pti.ClassId}!");
                 PossibleTraps.Add(new ClassInFloor
                 {
-                    Class = classForTrap,
+                    ClassId = pti.ClassId,
                     MinimumInFirstTurn = pti.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pti.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pti.ChanceToPick,
@@ -215,7 +190,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class ClassInFloor
     {
-        public EntityClass Class { get; set; }
+        public string ClassId { get; set; }
 
         #region Monster-only
         public int MinLevel { get; set; }

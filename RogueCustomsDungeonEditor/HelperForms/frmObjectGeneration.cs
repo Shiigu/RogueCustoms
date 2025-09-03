@@ -72,6 +72,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (typeToUse == EntityTypeForForm.Item)
             {
                 ValidObjectClasses = activeDungeon.Items.ConvertAll(item => item.Id);
+                foreach (var currencyPile in activeDungeon.CurrencyInfo.CurrencyPiles)
+                {
+                    ValidObjectClasses.Add($"Currency ({currencyPile.Id})");
+                }
             }
             else if (typeToUse == EntityTypeForForm.Trap)
             {

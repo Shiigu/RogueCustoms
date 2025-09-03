@@ -14,26 +14,17 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private const int DefaultIncrement = 1013904223;
         private const int DefaultModulus = int.MaxValue;
 
-        private int _seed;
-
         public RngHandler(int seed)
         {
             Seed = seed;
         }
 
-        public int Seed
-        {
-            get { return _seed; }
-            set
-            {
-                _seed = value;
-            }
-        }
+        public int Seed { get; set; }
 
         public int Next()
         {
-            _seed = (_seed * DefaultMultiplier + DefaultIncrement) % DefaultModulus;
-            return _seed;
+            Seed = (Seed * DefaultMultiplier + DefaultIncrement) % DefaultModulus;
+            return Seed;
         }
 
         public int Next(int maxValue)
@@ -43,6 +34,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int Next(int minValue, int maxValue)
         {
+            if (maxValue < minValue)
+            {
+                throw new ArgumentException("maxValue must be greater than or equal to minValue");
+            }
+
             return Math.Abs(Next()) % (maxValue - minValue) + minValue;
         }
 
@@ -53,6 +49,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int NextInclusive(int minValue, int maxValue)
         {
+            if(maxValue < minValue)
+            {
+                throw new ArgumentException("maxValue must be greater than or equal to minValue");
+            }
+
             return Math.Abs(Next()) % (maxValue - minValue + 1) + minValue;
         }
         public int RollProbability()

@@ -61,7 +61,10 @@
             label2 = new System.Windows.Forms.Label();
             cmbPlayerInitialEquippedWeapon = new System.Windows.Forms.ComboBox();
             label3 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            nudPlayerSaleValuePercentage = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudPlayerSaleValuePercentage).BeginInit();
             SuspendLayout();
             // 
             // ssPlayer
@@ -82,88 +85,58 @@
             // 
             // saePlayerOnDeath
             // 
-            saePlayerOnDeath.Action = null;
             saePlayerOnDeath.ActionDescription = "When they die...                   ";
             saePlayerOnDeath.ActionTypeText = "On Death";
             saePlayerOnDeath.AutoSize = true;
             saePlayerOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnDeath.ClassId = null;
-            saePlayerOnDeath.Dungeon = null;
-            saePlayerOnDeath.EffectParamData = null;
-            saePlayerOnDeath.Location = new System.Drawing.Point(2, 499);
+            saePlayerOnDeath.Location = new System.Drawing.Point(2, 530);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
             saePlayerOnDeath.PlaceholderActionId = "Death";
-            saePlayerOnDeath.RequiresActionId = false;
-            saePlayerOnDeath.RequiresCondition = false;
-            saePlayerOnDeath.RequiresDescription = false;
-            saePlayerOnDeath.RequiresName = false;
             saePlayerOnDeath.Size = new System.Drawing.Size(283, 32);
             saePlayerOnDeath.SourceDescription = "The player";
             saePlayerOnDeath.TabIndex = 152;
             saePlayerOnDeath.TargetDescription = "Whoever killed them (if any)";
             saePlayerOnDeath.ThisDescription = "The player";
-            saePlayerOnDeath.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnDeath.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnAttacked
             // 
-            saePlayerOnAttacked.Action = null;
             saePlayerOnAttacked.ActionDescription = "When they get attacked...   ";
             saePlayerOnAttacked.ActionTypeText = "Interacted";
             saePlayerOnAttacked.AutoSize = true;
             saePlayerOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnAttacked.ClassId = null;
-            saePlayerOnAttacked.Dungeon = null;
-            saePlayerOnAttacked.EffectParamData = null;
-            saePlayerOnAttacked.Location = new System.Drawing.Point(2, 461);
+            saePlayerOnAttacked.Location = new System.Drawing.Point(2, 492);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
             saePlayerOnAttacked.PlaceholderActionId = "Interacted";
-            saePlayerOnAttacked.RequiresActionId = false;
-            saePlayerOnAttacked.RequiresCondition = false;
-            saePlayerOnAttacked.RequiresDescription = false;
-            saePlayerOnAttacked.RequiresName = false;
             saePlayerOnAttacked.Size = new System.Drawing.Size(284, 32);
             saePlayerOnAttacked.SourceDescription = "The player";
             saePlayerOnAttacked.TabIndex = 151;
             saePlayerOnAttacked.TargetDescription = "Whoever interacted with them";
             saePlayerOnAttacked.ThisDescription = "The player";
-            saePlayerOnAttacked.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnAttacked.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // saePlayerOnTurnStart
             // 
-            saePlayerOnTurnStart.Action = null;
             saePlayerOnTurnStart.ActionDescription = "When the next turn starts...";
             saePlayerOnTurnStart.ActionTypeText = "Turn Start";
             saePlayerOnTurnStart.AutoSize = true;
             saePlayerOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnTurnStart.ClassId = null;
-            saePlayerOnTurnStart.Dungeon = null;
-            saePlayerOnTurnStart.EffectParamData = null;
-            saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 323);
+            saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 354);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
             saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
-            saePlayerOnTurnStart.RequiresActionId = false;
-            saePlayerOnTurnStart.RequiresCondition = false;
-            saePlayerOnTurnStart.RequiresDescription = false;
-            saePlayerOnTurnStart.RequiresName = false;
-            saePlayerOnTurnStart.Size = new System.Drawing.Size(283, 32);
+            saePlayerOnTurnStart.Size = new System.Drawing.Size(282, 32);
             saePlayerOnTurnStart.SourceDescription = "The player";
             saePlayerOnTurnStart.TabIndex = 150;
             saePlayerOnTurnStart.TargetDescription = "The player";
             saePlayerOnTurnStart.ThisDescription = "The player";
-            saePlayerOnTurnStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnTurnStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // maePlayerOnAttack
             // 
             maePlayerOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
-            maePlayerOnAttack.Actions = (System.Collections.Generic.List<RogueCustomsGameEngine.Utils.JsonImports.ActionWithEffectsInfo>)resources.GetObject("maePlayerOnAttack.Actions");
             maePlayerOnAttack.ActionTypeText = "Interact";
             maePlayerOnAttack.ClassId = null;
-            maePlayerOnAttack.Dungeon = null;
-            maePlayerOnAttack.EffectParamData = null;
-            maePlayerOnAttack.Location = new System.Drawing.Point(2, 361);
+            maePlayerOnAttack.Location = new System.Drawing.Point(2, 392);
             maePlayerOnAttack.Name = "maePlayerOnAttack";
             maePlayerOnAttack.PlaceholderActionName = null;
             maePlayerOnAttack.RequiresActionId = true;
@@ -374,7 +347,7 @@
             // 
             label67.AutoSize = true;
             label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label67.Location = new System.Drawing.Point(128, 299);
+            label67.Location = new System.Drawing.Point(128, 330);
             label67.Name = "label67";
             label67.Size = new System.Drawing.Size(67, 21);
             label67.TabIndex = 237;
@@ -392,28 +365,19 @@
             // 
             // saePlayerOnLevelUp
             // 
-            saePlayerOnLevelUp.Action = null;
             saePlayerOnLevelUp.ActionDescription = "When they level up...           ";
             saePlayerOnLevelUp.ActionTypeText = "On Level Up";
             saePlayerOnLevelUp.AutoSize = true;
             saePlayerOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnLevelUp.ClassId = null;
-            saePlayerOnLevelUp.Dungeon = null;
-            saePlayerOnLevelUp.EffectParamData = null;
-            saePlayerOnLevelUp.Location = new System.Drawing.Point(2, 537);
+            saePlayerOnLevelUp.Location = new System.Drawing.Point(2, 568);
             saePlayerOnLevelUp.Name = "saePlayerOnLevelUp";
             saePlayerOnLevelUp.PlaceholderActionId = "LevelUp";
-            saePlayerOnLevelUp.RequiresActionId = false;
-            saePlayerOnLevelUp.RequiresCondition = false;
-            saePlayerOnLevelUp.RequiresDescription = false;
-            saePlayerOnLevelUp.RequiresName = false;
             saePlayerOnLevelUp.Size = new System.Drawing.Size(284, 32);
             saePlayerOnLevelUp.SourceDescription = "The player";
             saePlayerOnLevelUp.TabIndex = 239;
             saePlayerOnLevelUp.TargetDescription = "The player";
             saePlayerOnLevelUp.ThisDescription = "The player";
-            saePlayerOnLevelUp.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saePlayerOnLevelUp.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // cmbPlayerInitialEquippedArmor
             // 
@@ -451,11 +415,32 @@
             label3.TabIndex = 240;
             label3.Text = "Initial Equipped Weapon is";
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(8, 301);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(291, 15);
+            label4.TabIndex = 244;
+            label4.Text = "When selling items, they get                    % of the Value";
+            // 
+            // nudPlayerSaleValuePercentage
+            // 
+            nudPlayerSaleValuePercentage.Location = new System.Drawing.Point(165, 299);
+            nudPlayerSaleValuePercentage.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudPlayerSaleValuePercentage.Name = "nudPlayerSaleValuePercentage";
+            nudPlayerSaleValuePercentage.Size = new System.Drawing.Size(52, 23);
+            nudPlayerSaleValuePercentage.TabIndex = 245;
+            nudPlayerSaleValuePercentage.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudPlayerSaleValuePercentage.ValueChanged += nudPlayerSaleValuePercentage_ValueChanged;
+            // 
             // PlayerClassTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(nudPlayerSaleValuePercentage);
+            Controls.Add(label4);
             Controls.Add(cmbPlayerInitialEquippedArmor);
             Controls.Add(label2);
             Controls.Add(cmbPlayerInitialEquippedWeapon);
@@ -491,6 +476,7 @@
             Name = "PlayerClassTab";
             Size = new System.Drawing.Size(714, 799);
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudPlayerSaleValuePercentage).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -529,5 +515,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cmbPlayerInitialEquippedWeapon;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown nudPlayerSaleValuePercentage;
     }
 }

@@ -83,6 +83,7 @@ public partial class GameScreen : Control
             (SpecialEffect.ItemGet, "res://Sounds/itemget.wav"),
             (SpecialEffect.ItemEquip, "res://Sounds/itemequip.wav"),
             (SpecialEffect.NPCItemGet, "res://Sounds/npcitemget.wav"),
+            (SpecialEffect.Currency, "res://Sounds/currency.wav"),
             (SpecialEffect.StatBuff, "res://Sounds/statbuff.wav"),
             (SpecialEffect.StatNerf, "res://Sounds/statnerf.wav"),
             (SpecialEffect.Statused, "res://Sounds/statused.wav"),
@@ -272,7 +273,7 @@ public partial class GameScreen : Control
         _controlsPanel.Update();
         var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.ClearLogMessages, DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
         _mapPanel.StopTargeting();
-            
+
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
             if (_soundIsPlaying && displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
@@ -398,8 +399,8 @@ public partial class GameScreen : Control
                         displayEvent.Params[0] = true;
                         break;
                     case DisplayEventType.RedrawMap:
-                        _globalState.DungeonInfo.GetTiles();
-                        _mapPanel.UpdateBuffer();
+                        var tiles = displayEvent.Params[0] as List<TileDto>;
+                        _mapPanel.UpdateBuffer(tiles);
                         break;
                 }
             }

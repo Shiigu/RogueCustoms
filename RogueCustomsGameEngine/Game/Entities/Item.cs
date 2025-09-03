@@ -26,6 +26,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Character Owner { get; set; }
         public ActionWithEffects OnUse { get; set; }
+        public int Value { get; set; }
 
         public Item(EntityClass entityClass, Map map) : base(entityClass, map)
         {
@@ -37,6 +38,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             MapClassActions(entityClass.OnAttack, OwnOnAttack);
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             StatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
+            Value = entityClass.BaseValue;
         }
         public async Task Used(Entity user)
         {

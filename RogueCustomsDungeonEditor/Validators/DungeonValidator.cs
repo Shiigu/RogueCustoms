@@ -34,6 +34,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ElementValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages ActionSchoolValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> LootTableValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
+        public DungeonValidationMessages CurrencyValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -76,6 +77,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.CharacterStats.Count
                 + DungeonJson.ElementInfos.Count
                 + DungeonJson.ActionSchoolInfos.Count
+                + DungeonJson.CurrencyInfo.CurrencyPiles.Count
                 + DungeonJson.LootTableInfos.Count
                 + DungeonJson.PlayerClasses.Count
                 + DungeonJson.NPCs.Count
@@ -183,6 +185,10 @@ namespace RogueCustomsDungeonEditor.Validators
                 LootTableValidationMessages.Add((lootTable.Id, await DungeonLootTableValidator.Validate(lootTable, DungeonJson)));
                 UpdateProgressLabel($"Loot Table {lootTable.Id} Validation complete!", true);
             }
+
+            UpdateProgressLabel($"Running Currency Validation...", false);
+            CurrencyValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
+            UpdateProgressLabel($"Currency Validation complete!", true);
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {

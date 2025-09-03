@@ -1,5 +1,6 @@
 using Godot;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
@@ -428,6 +429,15 @@ public partial class PlayerSelectItem : Control
                 _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("EquippedItemDescriptionText")}");
                 if (_itemListInfo.TileIsOccupied)
                     _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("OccupiedTileDescriptionText")}");
+            }
+
+            if(selectedItem.SaleValue > 0)
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowSaleValueText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation(), Amount = selectedItem.SaleValue.ToString() })}");
+            }
+            else
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowCannotBeSoldText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation() })}");
             }
         }
 

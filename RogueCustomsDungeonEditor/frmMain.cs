@@ -84,6 +84,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.ElementInfo] = tbElementInfos;
             TabsForNodeTypes[RogueTabTypes.ActionSchoolsInfo] = tbActionSchoolInfos;
             TabsForNodeTypes[RogueTabTypes.LootTableInfo] = tpLootTableInfos;
+            TabsForNodeTypes[RogueTabTypes.CurrencyInfo] = tpCurrencyInfo;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -242,7 +243,7 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewObject = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
             }
             else
@@ -458,6 +459,13 @@ namespace RogueCustomsDungeonEditor
                 lootTableInfosRootNode.Nodes.Add(lootTableInfoNode);
             }
             tvDungeonInfo.Nodes.Add(lootTableInfosRootNode);
+
+            var currencyInfoNode = new TreeNode("Currency")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.CurrencyInfo, DungeonElement = null },
+                Name = "Currency"
+            };
+            tvDungeonInfo.Nodes.Add(currencyInfoNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -840,6 +848,7 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.ElementInfo => SaveElement(),
                     RogueTabTypes.ActionSchoolsInfo => SaveActionSchools(),
                     RogueTabTypes.LootTableInfo => SaveLootTable(),
+                    RogueTabTypes.CurrencyInfo => SaveCurrency(),
                     RogueTabTypes.PlayerClass => SavePlayerClass(),
                     RogueTabTypes.NPC => SaveNPC(),
                     RogueTabTypes.Item => SaveItem(),
@@ -921,7 +930,7 @@ namespace RogueCustomsDungeonEditor
                     DeleteStat();
                     break;
                 case RogueTabTypes.ElementInfo:
-                    DeleteAttackElement();
+                    DeleteElement();
                     break;
                 case RogueTabTypes.LootTableInfo:
                     DeleteLootTable();
@@ -1030,7 +1039,7 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.ElementInfo:
                     var tagElement = (ElementInfo)tag.DungeonElement;
-                    LoadAttackElementInfoFor(tagElement);
+                    LoadElementInfoFor(tagElement);
                     if (!IsNewObject)
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Attack Element - {tagElement.Id}";
                     else
@@ -1038,6 +1047,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.ActionSchoolsInfo:
                     LoadActionSchools();
+                    break;
+                case RogueTabTypes.CurrencyInfo:
+                    LoadCurrencyInfo();
                     break;
                 case RogueTabTypes.LootTableInfo:
                     var tagLootTable = (LootTableInfo)tag.DungeonElement;
@@ -2130,7 +2142,7 @@ namespace RogueCustomsDungeonEditor
 
         #region Element
 
-        public void LoadAttackElementInfoFor(ElementInfo element)
+        public void LoadElementInfoFor(ElementInfo element)
         {
             ElementTab.LoadData(element, ActiveDungeon, EffectParamData);
         }
@@ -2208,7 +2220,7 @@ namespace RogueCustomsDungeonEditor
             return true;
         }
 
-        public void DeleteAttackElement()
+        public void DeleteElement()
         {
             var activeAttackElement = ElementTab.LoadedElement;
             var deleteAttackElementPrompt = IsNewObject
@@ -2252,7 +2264,7 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
-        #region Element
+        #region Loot Table
 
         public void LoadLootTableInfoFor(LootTableInfo lootTable)
         {
@@ -2370,6 +2382,48 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void LootTableTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
+        #region Currency
+
+        public void LoadCurrencyInfo()
+        {
+            CurrencyTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveCurrency()
+        {
+            var validationErrors = CurrencyTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Currency Data. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Currency Data",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            ActiveDungeon.CurrencyInfo = CurrencyTab.LoadedCurrency;
+            MessageBox.Show(
+                $"Currency Data has been successfully saved!",
+                $"Save Currency Data",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            return true;
+        }
+
+
+        private void CurrencyTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
         }
@@ -3069,7 +3123,7 @@ namespace RogueCustomsDungeonEditor
                 return false;
             }
             MessageBox.Show(
-                "Dungeon's Scripts has been successfully saved!",
+                "Dungeon's Action Schools have been successfully saved!",
                 "Save Action Schools",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
@@ -3121,6 +3175,7 @@ namespace RogueCustomsDungeonEditor
         ElementInfo,
         ActionSchoolsInfo,
         LootTableInfo,
+        CurrencyInfo,
         PlayerClass,
         NPC,
         Item,
