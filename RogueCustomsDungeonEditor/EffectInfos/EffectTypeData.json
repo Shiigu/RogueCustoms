@@ -3168,7 +3168,7 @@
     "InternalName": "Reveal",
     "TreeViewDisplayText": "Let ({Target}) see ({WhatToReveal})",
     "ComboBoxDisplayName": "Reveal the Floor/Traps to Target",
-    "Description": "Used by the User reveal either the Floor Plan or the Traps to Target.\n\nSpecifically if the Target is the Player, it returns a Failure if there's nothing left to reveal.'",
+    "Description": "Used by the User to reveal either the Floor Plan or the Traps to Target.\n\nSpecifically if the Target is the Player, it returns a Failure if there's nothing left to reveal.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
@@ -3178,7 +3178,7 @@
       {
         "InternalName": "Target",
         "DisplayName": "Target",
-        "Description": "Who will be get a revelation. Generally Target, but can be any Character.",
+        "Description": "Who will get a revelation. Generally Target, but can be any Character.",
         "ParameterType": "ComboBox",
         "Default": "target",
         "ValidValues": [
@@ -3241,6 +3241,151 @@
         "InternalName": "InformThePlayer",
         "DisplayName": "Inform the Player?",
         "Description": "If true, the Player will be informed of this Revelation.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "GenerateInventoryFromLootTable",
+    "TreeViewDisplayText": "Generate ({Amount}) Items on Own's Inventory using Loot Table ({Id}) as a reference",
+    "ComboBoxDisplayName": "Fill Own's Inventory from a Loot Table",
+    "Description": "Used by the User to generate Items on their Inventory, using the odds from a Loot Table as reference.\n\nEntries involving Currency Drops are treated as No Drop.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Loot Table Id",
+        "Description": "Indicates the Id of the Loot Table to be used.",
+        "ParameterType": "LootTable",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Picks",
+        "Description": "Indicates the maximum amount of Items to be Generated. If higher than the Character's amount of free inventory slots, it will be capped to said amount.",
+        "ParameterType": "Number",
+        "Default": "6",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "OpenSellPrompt",
+    "TreeViewDisplayText": "Open Prompt to Sell Items from the Inventory to ({Target})",
+    "ComboBoxDisplayName": "Offer to sell items",
+    "Description": "Used by the User to offer Items to sell.\n\nIf used on a Player, a Prompt will be opened.\n\nReturns Success if a sale was made, Failure otherwise or if the seller has no items.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will buy the Items. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "SellItemWindowText",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "OpenBuyPrompt",
+    "TreeViewDisplayText": "Open Prompt to Buy Items from ({Target})'s Inventory",
+    "ComboBoxDisplayName": "Offer to buy items",
+    "Description": "Used by the User to buy items from someone else.\n\nIf used by a Player, a Prompt will be opened.\n\nReturns Success if a purchase was made, Failure otherwise or if the buyer's inventory is full (in which case there will be no prompt).",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will sell the Items. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "BuyItemWindowText",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Cancellable",
+        "DisplayName": "Cancellable?",
+        "Description": "If true, the prompt has a Cancel button. If false, the player is forced to select an option.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],

@@ -51,7 +51,8 @@ namespace RogueCustomsDungeonEditor
             { "Default", "Default strategy" },
             { "Random", "Heavily Randomized" },
             { "CostEfficient", "Cost-efficiently" },
-            { "AllOut", "All-out" }
+            { "AllOut", "All-out" },
+            { "Null", "None (NPC does nothing)" }
         };
 
         private DungeonInfo ActiveDungeon;

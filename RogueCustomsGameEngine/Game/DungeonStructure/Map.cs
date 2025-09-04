@@ -122,6 +122,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Tile> Doors => Tiles.Where(t => t.Type == TileType.Door);
         public List<Trap> Traps { get; set; }
 
+        public List<LootTable> LootTables => Dungeon.LootTables;
         public RngHandler Rng { get; private set; }
         public (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable { get; set; }
         private List<(Room RoomA, Room RoomB, Tile ConnectorA, Tile ConnectorB, List<Tile> Tiles)> Hallways { get; set; }
@@ -1756,20 +1757,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var itemsOnTile = Items.Where(i => i.Position?.Equals(Player.Position) == true).ToList();
             inventory.TileIsOccupied = itemsOnTile.Any();
             if (Player.EquippedWeapon != null)
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedWeapon, Player, this));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedWeapon, Player, this, false));
             if (Player.EquippedArmor != null)
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedArmor, Player, this));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.EquippedArmor, Player, this, false));
             for (int i = 0; i < Player.Inventory.Count; i++)
             {
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.Inventory[i], Player, this));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.Inventory[i], Player, this, false));
             }
             for (int i = 0; i < Player.KeySet.Count; i++)
             {
-                inventory.InventoryItems.Add(new InventoryItemDto(Player.KeySet[i], Player, this));
+                inventory.InventoryItems.Add(new InventoryItemDto(Player.KeySet[i], Player, this, false));
             }
             for (int i = 0; i < itemsOnTile.Count; i++)
             {
-                inventory.InventoryItems.Add(new InventoryItemDto(itemsOnTile[i], Player, this));
+                inventory.InventoryItems.Add(new InventoryItemDto(itemsOnTile[i], Player, this, false));
             }
             inventory.CurrencyConsoleRepresentation = CurrencyClass.ConsoleRepresentation.Clone();
             return inventory;
@@ -2706,6 +2707,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton)
         {
             return PromptInvoker.OpenSelectAction(title, choices, showCancelButton);
+        }
+        public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return PromptInvoker.OpenBuyPrompt(title, choices, showCancelButton);
+        }
+        public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return PromptInvoker.OpenSellPrompt(title, choices, showCancelButton);
         }
 
         #endregion

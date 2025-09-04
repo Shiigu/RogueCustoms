@@ -118,3 +118,7 @@ CharacterRevealsFloor
 CharacterRevealsTraps
 CurrencyDisplayName
 CharacterPicksCurrency
+SellItemWindowText
+BuyItemWindowText
+CharacterSoldItem
+CharacterBoughtItem

@@ -11,6 +11,7 @@ namespace RogueCustomsGameEngine.Utils.Enums
         Default,
         Random,
         CostEfficient,
-        AllOut
+        AllOut,
+        Null
     }
 }

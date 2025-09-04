@@ -235,6 +235,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.Trap => CreateComboBox(parameter, originalValue),
                     ParameterType.AlteredStatus => CreateComboBox(parameter, originalValue),
                     ParameterType.ActionSchool => CreateComboBox(parameter, originalValue),
+                    ParameterType.LootTable => CreateComboBox(parameter, originalValue),
                     ParameterType.BooleanExpression => CreateFormulaTextBox(originalValue, parameter),
                     ParameterType.Key => new TextBox { Text = originalValue ?? parameter.Default },
                     ParameterType.Area => CreateComboBox(parameter, originalValue),
@@ -380,6 +381,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ParameterType.TileType => ValidTileTypes,
                 ParameterType.AlteredStatus => ValidAlteredStatuses,
                 ParameterType.ActionSchool => ValidActionSchools,
+                ParameterType.LootTable => ActiveDungeon.LootTableInfos.Select(s => s.Id),
                 ParameterType.Area => GetAreas(),
                 ParameterType.Stat => ActiveDungeon.CharacterStats.Select(s => s.Id),
                 ParameterType.Element => ActiveDungeon.ElementInfos.Select(e => e.Id),
@@ -831,6 +833,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Stat:
                     case ParameterType.Element:
                     case ParameterType.Script:
+                    case ParameterType.LootTable:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;
                         if (!string.IsNullOrWhiteSpace(valueToValidate) && (controlToValidate as ComboBox)?.Items.Contains(valueToValidate) != true)
                             errorMessageStringBuilder.Append("Parameter \"").Append(parameterData.DisplayName).AppendLine("\" does not contain a valid value.");

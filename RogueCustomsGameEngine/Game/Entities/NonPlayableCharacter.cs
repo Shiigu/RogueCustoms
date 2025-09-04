@@ -74,11 +74,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (lootTable == null || lootTable.Entries.Count == 0 || dropPicks == 0) return;
 
             var validItemClasses = Map.PossibleItemClasses.Except(Map.UndroppableItemClasses).ToList();
-            var currentLootTable = lootTable;
             object pickedObject = null;
 
             for (int i = 0; i < dropPicks; i++)
             {
+                var currentLootTable = lootTable;
                 var foundAPick = false;
                 do
                 {
@@ -136,12 +136,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task ProcessAI()
         {
-            if (ExistenceStatus != EntityExistenceStatus.Alive || Map.Player.ExistenceStatus != EntityExistenceStatus.Alive)
+            if (ExistenceStatus != EntityExistenceStatus.Alive || Map.Player.ExistenceStatus != EntityExistenceStatus.Alive || AIType == AIType.Null)
             {
                 RemainingMovement = 0;
                 TookAction = true;
                 return;     // Dead entities don't move. Set all the possible flags to ensure they aren't seen as movable.
                             // Also, disable movement if the player is dead because there's nothing else to do here.
+                            // Also, disable AI if type is Null
             }
             UpdateKnownCharacterList();
             ConsiderSwappingTargets();

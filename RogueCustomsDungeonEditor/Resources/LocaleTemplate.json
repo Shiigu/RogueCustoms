@@ -476,6 +476,22 @@
     {
       "Key": "CharacterPicksCurrency",
       "Value": "{CharacterName} picked {CurrencyName}."
+    },
+    {
+      "Key": "SellItemWindowText",
+      "Value": "What do you want to sell?"
+    },
+    {
+      "Key": "BuyItemWindowText",
+      "Value": "What do you want to buy?"
+    },
+    {
+      "Key": "CharacterSoldItem",
+      "Value": "{CharacterName} sold {ItemName} for {CurrencyDisplayName}."
+    },
+    {
+      "Key": "CharacterBoughtItem",
+      "Value": "{CharacterName} bought {ItemName} for {CurrencyDisplayName}."
     }
   ]
 }

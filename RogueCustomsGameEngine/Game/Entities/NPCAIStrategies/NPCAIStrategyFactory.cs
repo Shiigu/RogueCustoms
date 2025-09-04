@@ -16,12 +16,13 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
             { AIType.Default, new DefaultNPCAIStrategy() },
             { AIType.Random, new RandomNPCAIStrategy() },
             { AIType.CostEfficient, new CostEfficientNPCAIStrategy() },
-            { AIType.AllOut, new AllOutNPCAIStrategy() }
+            { AIType.AllOut, new AllOutNPCAIStrategy() },
+            { AIType.Null, new NullAIStrategy() }
         };
 
         public static INPCAIStrategy GetNPCAIStrategy(AIType type)
         {
-            return NPCAIStrategyDictionary.GetValueOrDefault(type) ?? new DefaultNPCAIStrategy();
+            return NPCAIStrategyDictionary.GetValueOrDefault(type) ?? new NullAIStrategy();
         }
     }
 }

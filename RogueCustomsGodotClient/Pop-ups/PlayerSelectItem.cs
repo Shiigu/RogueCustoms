@@ -22,7 +22,7 @@ public partial class PlayerSelectItem : Control
     private Label _titleLabel;
     private VBoxContainer _selectionList;
     private RichTextLabel _itemDescriptionLabel;
-    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton, _selectButton;
+    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton, _selectButton, _buyButton, _sellButton;
 
     private Panel _outerBorder, _verticalBorder, _overlappingVerticalBorder;
 
@@ -44,6 +44,8 @@ public partial class PlayerSelectItem : Control
     private readonly string SwapButtonText = TranslationServer.Translate("SwapButtonText");
     private readonly string CancelButtonText = TranslationServer.Translate("CancelButtonText");
     private readonly string SelectButtonText = TranslationServer.Translate("SelectButtonText");
+    private readonly string BuyButtonText = TranslationServer.Translate("BuyButtonText");
+    private readonly string SellButtonText = TranslationServer.Translate("SellButtonText");
 
     private readonly StyleBoxFlat normalItemStyleBox = (StyleBoxFlat)GlobalConstants.NormalItemStyleBox.Duplicate();
     private readonly StyleBoxFlat selectItemStyleBox = (StyleBoxFlat)GlobalConstants.SelectedItemStyleBox.Duplicate();
@@ -67,6 +69,8 @@ public partial class PlayerSelectItem : Control
         _doButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/DoButton");
         _selectButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/SelectButton");
         _cancelButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/CancelButton");
+        _buyButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/BuyButton");
+        _sellButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/SellButton");
         _outerBorder = GetNode<Panel>("OuterBorder");
         _verticalBorder = GetNode<Panel>("VerticalBorder");
         _overlappingVerticalBorder = GetNode<Panel>("OverlappingVerticalBorder");
@@ -177,6 +181,42 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ClassId);
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+        }
+        else if (_selectionMode == SelectionMode.Buy)
+        {
+            _buyButton.Text = BuyButtonText;
+
+            _buyButton.Pressed += () =>
+            {
+                try
+                {
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
+                    onCloseCallback?.Invoke();
+                    QueueFree();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionLogger.LogMessage(ex);
+                }
+            };
+        }
+        else if (_selectionMode == SelectionMode.Sell)
+        {
+            _sellButton.Text = SellButtonText;
+
+            _sellButton.Pressed += () =>
+            {
+                try
+                {
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                     onCloseCallback?.Invoke();
                     QueueFree();
                 }
@@ -315,6 +355,8 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = true;
             _doButton.Visible = false;
             _selectButton.Visible = false;
+            _sellButton.Visible = false;
+            _buyButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.SelectItem)
         {
@@ -324,6 +366,19 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = false;
             _doButton.Visible = false;
             _selectButton.Visible = true;
+            _sellButton.Visible = false;
+            _buyButton.Visible = false;
+        }
+        else if (_selectionMode == SelectionMode.Sell || _selectionMode == SelectionMode.Buy)
+        {
+            _dropButton.Visible = false;
+            _equipButton.Visible = false;
+            _swapButton.Visible = false;
+            _useButton.Visible = false;
+            _doButton.Visible = false;
+            _selectButton.Visible = false;
+            _sellButton.Visible = _selectionMode == SelectionMode.Sell;
+            _buyButton.Visible = _selectionMode == SelectionMode.Buy;
         }
 
         var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
@@ -431,14 +486,26 @@ public partial class PlayerSelectItem : Control
                     _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("OccupiedTileDescriptionText")}");
             }
 
-            if(selectedItem.SaleValue > 0)
+            if (selectedItem.Value > 0)
             {
-                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowSaleValueText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation(), Amount = selectedItem.SaleValue.ToString() })}");
+                if (_selectionMode != SelectionMode.Buy)
+                {
+                    _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowSaleValueText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation(), Amount = selectedItem.Value.ToString() })}");
+                }
+                else
+                {
+                    _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowBuyValueText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation(), Amount = selectedItem.Value.ToString() })}");
+                    if (!selectedItem.CanBeUsed)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowCannotAffordText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation() })}");
+                    }
+                }
             }
             else
             {
                 _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowCannotBeSoldText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation() })}");
             }
+
         }
 
         if (_selectionMode == SelectionMode.Inventory)
@@ -458,6 +525,19 @@ public partial class PlayerSelectItem : Control
         {
             _selectButton.Visible = true;
             _selectButton.Disabled = false;
+        }
+        else if (_selectionMode == SelectionMode.Sell || _selectionMode == SelectionMode.Buy)
+        {
+            _dropButton.Visible = false;
+            _equipButton.Visible = false;
+            _swapButton.Visible = false;
+            _useButton.Visible = false;
+            _doButton.Visible = false;
+            _selectButton.Visible = false;
+            _sellButton.Visible = _selectionMode == SelectionMode.Sell;
+            _sellButton.Disabled = !selectedItem.CanBeUsed;
+            _buyButton.Visible = _selectionMode == SelectionMode.Buy;
+            _buyButton.Disabled = !selectedItem.CanBeUsed;
         }
     }
 
@@ -559,7 +639,7 @@ public partial class PlayerSelectItem : Control
 
     private void SelectRow(int index)
     {
-        if (_selectionMode == SelectionMode.Inventory || _selectionMode == SelectionMode.SelectItem)
+        if (_selectionMode == SelectionMode.Inventory || _selectionMode == SelectionMode.SelectItem || _selectionMode == SelectionMode.Buy || _selectionMode == SelectionMode.Sell)
         {
             if (index < 0 || index >= _itemListInfo.InventoryItems.Count)
                 return;
@@ -603,6 +683,10 @@ public partial class PlayerSelectItem : Control
                 buttonToUse = _equipButton;
             else if (_selectButton.Visible && !_selectButton.Disabled)
                 buttonToUse = _selectButton;
+            else if (_sellButton.Visible && !_sellButton.Disabled)
+                buttonToUse = _sellButton;
+            else if (_buyButton.Visible && !_buyButton.Disabled)
+                buttonToUse = _buyButton;
             if (buttonToUse == null)
             {
                 AcceptEvent();

@@ -410,6 +410,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             npc.StartingArmor.Power = "0";
             npc.Inventory.Add(new Item(inventoryClass, TestDungeon.CurrentFloor));
             npc.Faction = TestDungeon.Factions[new Random().Next(TestDungeon.Factions.Count)];
+
+            var mostExpensiveItemInTheDungeon = TestDungeon.CurrentFloor.Items.OrderByDescending(i => i.Value).FirstOrDefault();
+            npc.CurrencyCarried = new Random().Next(mostExpensiveItemInTheDungeon.Value * 2);
             TestDungeon.CurrentFloor.AICharacters.Add(npc);
 
             return npc;
@@ -487,6 +490,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor) => Task.FromResult(choices[new Random().Next(choices.Length)].Id);
             public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult(choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ClassId);
             public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton) => Task.FromResult(choices.Actions[new Random().Next(choices.Actions.Count)].SelectionId);
+            public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?) choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
+            public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?) choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
         }
     }
 }
