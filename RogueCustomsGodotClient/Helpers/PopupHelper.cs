@@ -177,5 +177,25 @@ namespace RogueCustomsGodotClient.Helpers
 
             return result.Length > 0 ? (string)result[0] : null;
         }
+
+        public static async Task<int?> CreateBuySellWindow(this Control control, InventoryDto itemInfo, string title, bool showCancelButton, SelectionMode selectionMode)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var inventoryPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
+            control.AddChild(inventoryPopup);
+
+            var popupClosedSignal = inventoryPopup.ToSignal(inventoryPopup, "PopupClosed");
+            inventoryPopup.Show(itemInfo, selectionMode, showCancelButton, overlay.QueueFree, title);
+
+            var result = await popupClosedSignal;
+
+            return result.Length > 0 ? (int)result[0] : null;
+        }
     }
 }

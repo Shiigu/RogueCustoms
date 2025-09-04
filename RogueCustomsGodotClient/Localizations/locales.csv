@@ -15,6 +15,7 @@ AddDungeonFailureHeaderText,NO SE PUDO AÑADIR,COULD NOT ADD
 AddDungeonFailureText,"No se pudo añadir la mazmorra seleccionada.\n\nPor favor, comprueba si es una Mazmorra válida.",The chosen dungeon could not be added.\n\nPlease check if it's a valid Dungeon.
 AuthorHeaderText,Autor,Author
 BriefingMessageHeader,RESUMEN,BRIEFING
+BuyButtonText,COMPRAR,BUY
 CancelButtonText,CANCELAR,CANCEL
 CloseButtonText,CERRAR,CLOSE
 DeadPlayerText,MUERTO,DEAD
@@ -59,8 +60,10 @@ InventoryWindowStatModifierText,{Number} de {StatName},{Number} to {StatName}
 InventoryWindowOnEquipText,al Equipar,on Equip
 InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventory
 InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
+InventoryWindowBuyValueText,Costo: {Symbol}{Amount},Cost: {Symbol}{Amount}
 InventoryWindowSaleValueText,Valor de venta: {Symbol}{Amount},Sale Value: {Symbol}{Amount}
 InventoryWindowCannotBeSoldText,No se puede intercambiar por {Symbol},Cannot be traded for {Symbol}
+InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE ENOUGH {Symbol}
 LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English
@@ -133,6 +136,7 @@ SaveDungeonButtonText,GUARDAR JUEGO,SAVE GAME
 SaveSettingsButtonText,GUARDAR OPCIONES,SAVE SETTINGS
 SelectButtonText,ELEGIR,SELECT
 SelectDungeonText,INICIAR MAZMORRA,START A DUNGEON
+SellButtonText,VENDER,SELL
 ServerAddressTextBoxHeaderText,DIRECCIÓN DE SERVIDOR,SERVER ADDRESS
 ServerRadioButtonText,EN SERVIDOR,IN A SERVER
 StairsPromptText,¿Quieres usar las escaleras?,Do you want to use the stairs?

@@ -16,5 +16,7 @@ namespace RogueCustomsGameEngine.Game.Interaction
         Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor);
         Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton);
         Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton);
+        Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton);
+        Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton);
     }
 }

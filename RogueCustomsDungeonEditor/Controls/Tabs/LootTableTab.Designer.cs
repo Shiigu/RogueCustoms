@@ -1,4 +1,6 @@
-﻿namespace RogueCustomsDungeonEditor.Controls.Tabs
+﻿using System.Windows.Forms;
+
+namespace RogueCustomsDungeonEditor.Controls.Tabs
 {
     partial class LootTableTab
     {
@@ -39,13 +41,14 @@
             // 
             dgvLootTable.AllowUserToResizeColumns = false;
             dgvLootTable.AllowUserToResizeRows = false;
+            dgvLootTable.AllowUserToDeleteRows = true;
             dgvLootTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLootTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { PickId, Weight });
             dgvLootTable.Dock = System.Windows.Forms.DockStyle.Top;
             dgvLootTable.Location = new System.Drawing.Point(0, 0);
             dgvLootTable.MultiSelect = false;
             dgvLootTable.Name = "dgvLootTable";
-            dgvLootTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            dgvLootTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLootTable.Size = new System.Drawing.Size(543, 315);
             dgvLootTable.TabIndex = 0;
             // 

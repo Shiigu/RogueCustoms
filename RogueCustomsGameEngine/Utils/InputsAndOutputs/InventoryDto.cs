@@ -40,11 +40,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool CanBeDropped { get; set; }
         public bool IsInFloor { get; set; }
         public int ItemId { get; set; }
-        public int SaleValue { get; set; }
+        public int Value { get; set; }
 
         public InventoryItemDto() { }
 
-        public InventoryItemDto(IPickable p, PlayerCharacter player, Map map)
+        public InventoryItemDto(IPickable p, Character character, Map map, bool forBuy)
         {
             var pickableAsEntity = p as Entity;
             if (p == null) return;
@@ -59,16 +59,17 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             };
             Power = pickableAsItem?.Power ?? string.Empty;
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
-            CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(player) == true;
+            CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
             CanBeDropped = p is not Key;
-            IsEquipped = player.EquippedWeapon == pickableAsItem || player.EquippedArmor == pickableAsItem;
+            IsEquipped = character.EquippedWeapon == pickableAsItem || character.EquippedArmor == pickableAsItem;
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
-            SaleValue = (int) Math.Max(1, (pickableAsItem.Value * player.SaleValuePercentage));
+            var saleValuePercentage = character is PlayerCharacter pc ? pc.SaleValuePercentage : 1.0f;
+            Value = forBuy || pickableAsItem.Value == 0 ? pickableAsItem.Value : (int) Math.Max(1, (pickableAsItem.Value * saleValuePercentage));
             StatModifications = new();
             pickableAsItem?.StatModifiers.ForEach(m => {
-                var correspondingStat = player.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
+                var correspondingStat = character.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
                 if(correspondingStat != null)
                     StatModifications.Add(new StatModificationDto(m, correspondingStat, map));
             });
@@ -76,7 +77,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
         }
 
-        public InventoryItemDto(EntityClass e, Map map)
+        public InventoryItemDto(EntityClass e, Map map, bool forBuy)
         {
             if (e == null) return;
             Name = map.Locale[e.Name];
@@ -98,7 +99,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             });
             OnAttackActions = [];
             e.OnAttack.ForEach(ooa => OnAttackActions.Add(map.Locale[ooa.Name]));
-            SaleValue = (int) Math.Max(1,(e.BaseValue * map.Player.SaleValuePercentage));
+            Value = forBuy || e.BaseValue == 0 ? e.BaseValue : (int) Math.Max(1,(e.BaseValue * map.Player.SaleValuePercentage));
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

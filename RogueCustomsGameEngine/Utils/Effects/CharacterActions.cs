@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using System.Threading.Tasks;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -287,6 +288,89 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return true;
             }
             return false;
+        }
+
+        public static async Task<bool> GenerateInventoryFromLootTable(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to fill {Args.Source.Name}'s Inventory when it's not a Character.");
+
+            string id = paramsObject.Id;
+            int maximumPicks = (int) paramsObject.Amount;
+
+            if(maximumPicks > (c.InventorySize - c.Inventory.Count))
+                maximumPicks = c.InventorySize - c.Inventory.Count;
+
+            LootTable lootTable = Map.LootTables.Find(lt => lt.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase));
+
+            if (lootTable == null || lootTable.Entries.Count == 0)
+                throw new ArgumentException($"Attempted to fill {Args.Source.Name}'s Inventory with an invalid Loot Table of id {id}.");
+
+            var validItemClasses = Map.PossibleItemClasses.Except(Map.UndroppableItemClasses).ToList();
+            var itemPicks = new List<EntityClass>();
+            object pickedObject = null;
+
+            for (int i = 0; i < maximumPicks; i++)
+            {
+                var currentLootTable = lootTable;
+                var foundAPick = false;
+                do
+                {
+                    pickedObject = currentLootTable.Entries.TakeRandomElementWithWeights(e => e.Weight, Rng).Pick;
+                    if (pickedObject is LootTable lt)
+                    {
+                        currentLootTable = lt;
+                    }
+                    else if (pickedObject is EntityClass ec)
+                    {
+                        itemPicks.Add(ec);
+                        foundAPick = true;
+                    }
+                    else if (pickedObject is string s && EngineConstants.SPECIAL_LOOT_ENTRIES.Contains(s))
+                    {
+                        if (s == EngineConstants.LOOT_NO_DROP || pickedObject is CurrencyPile)
+                        {
+                            // Do nothing
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_WEAPON)
+                        {
+                            var chosenWeapon = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList().TakeRandomElement(Rng);
+                            itemPicks.Add(chosenWeapon);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_ARMOR)
+                        {
+                            var chosenArmor = validItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            itemPicks.Add(chosenArmor);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_EQUIPPABLE)
+                        {
+                            var chosenEquippable = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            itemPicks.Add(chosenEquippable);
+                            foundAPick = true;
+                        }
+                        else if (s == EngineConstants.LOOT_CONSUMABLE)
+                        {
+                            var chosenConsumable = validItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList().TakeRandomElement(Rng);
+                            itemPicks.Add(chosenConsumable);
+                            foundAPick = true;
+                        }
+                    }
+                }
+                while (!foundAPick);
+            }
+
+            foreach (var pick in itemPicks)
+            {
+                var newItem = await Map.AddEntity(pick, 1, null, false) as Item;
+                newItem.Owner = c;
+                c.Inventory.Add(newItem);
+            }
+
+            return true;
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

@@ -10,6 +10,7 @@ using Microsoft.VisualBasic.FileIO;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
@@ -124,7 +125,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == option.Id.TrimSurroundingQuotes());
                 if (itemEntityClass == null) continue; // Invalid IDs are just ignored
-                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map));
+                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map, false));
             }
 
             if(optionDtos.InventoryItems.Count == 0)
@@ -193,7 +194,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == item.ClassId);
                 if (itemEntityClass == null) continue; // Invalid IDs are just ignored
-                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map));
+                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map, false));
             }
 
             var optionFlag = paramsObject.OptionFlag;
@@ -315,6 +316,174 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
 
                 Map.DisplayEvents = new();
+                Map.Snapshot = new(Map.Dungeon, Map);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public static async Task<bool> OpenSellPrompt(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to have {Args.Source.Name} sell an Item when it's not a Character.");
+            if (paramsObject.Target is not Character t)
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} buy Items when it's not a Character.");
+
+            if (c.Inventory.Count == 0)
+            {
+                // Need items to sell something
+                return false;
+            }
+
+            var optionDtos = new InventoryDto()
+            {
+                CurrencyConsoleRepresentation = Map.CurrencyClass.ConsoleRepresentation.Clone()
+            };
+
+            foreach (var item in c.Inventory)
+            {
+                var inventoryItem = new InventoryItemDto(item, c, Map, false);
+                inventoryItem.CanBeUsed = inventoryItem.Value > 0;
+                optionDtos.InventoryItems.Add(inventoryItem);
+            }
+
+            int? chosenOption = null;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = optionDtos.InventoryItems.Where(i => i.Value < c.CurrencyCarried).TakeRandomElementWithWeights(i => 50, Rng);
+                if(randomChoice != null)
+                    chosenOption = randomChoice.ItemId;
+                if (chosenOption != null && Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
+            }
+            else
+            {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Sell Items Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+                chosenOption = await Map.OpenSellPrompt(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+            }
+
+            if (chosenOption != null)
+            {
+                var itemToSell = c.Inventory.Find(i => i.Id == chosenOption);
+                var choiceData = optionDtos.InventoryItems.Find(i => i.ItemId == chosenOption);
+                var currencyBeforeSale = c.CurrencyCarried;
+
+                c.CurrencyCarried += choiceData.Value;
+                c.Inventory.Remove(itemToSell);
+                t.Inventory.Add(itemToSell);
+
+                Map.DisplayEvents = new();
+
+                var events = new List<DisplayEventDto>
+                {
+                    new DisplayEventDto()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = [SpecialEffect.Currency]
+                    }
+                };
+                Map.AppendMessage(Map.Locale["CharacterSoldItem"].Format(new { CharacterName = c.Name, ItemName = itemToSell.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (c.CurrencyCarried - currencyBeforeSale).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
+
+                Map.DisplayEvents.Add(($"{c.Name} sells {itemToSell.Name}", events));
+
+                Map.Snapshot = new(Map.Dungeon, Map);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public static async Task<bool> OpenBuyPrompt(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (Args.Source is not Character c)
+                throw new ArgumentException($"Attempted to have {Args.Source.Name} buy an Item when it's not a Character.");
+            if (paramsObject.Target is not Character t)
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} sell Items when it's not a Character.");
+
+            if(c.Inventory.Count >= c.InventorySize)
+            {
+                // Cannot buy items if the inventory is full
+                return false;
+            }
+
+            var optionDtos = new InventoryDto()
+            {
+                CurrencyConsoleRepresentation = Map.CurrencyClass.ConsoleRepresentation.Clone()
+            };
+
+            foreach (var item in t.Inventory)
+            {
+                var inventoryItem = new InventoryItemDto(item, c, Map, true);
+                inventoryItem.CanBeUsed = inventoryItem.Value <= c.CurrencyCarried;
+                optionDtos.InventoryItems.Add(inventoryItem);
+            }
+
+            int? chosenOption = null;
+            if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+            {
+                var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
+                if (randomChoice != null)
+                    chosenOption = randomChoice.ItemId;
+                if (chosenOption != null && Map.IsDebugMode)
+                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
+            }
+            else
+            {
+                var events = new List<DisplayEventDto>();
+                var triggerPromptEvent = new DisplayEventDto()
+                {
+                    DisplayEventType = DisplayEventType.TriggerPrompt,
+                    Params = [false]
+                };
+                events.Add(triggerPromptEvent);
+                Map.DisplayEvents.Add(($"Open Buy Items Prompt {paramsObject.Title}", events));
+
+                while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+                chosenOption = await Map.OpenBuyPrompt(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+            }
+
+            if (chosenOption != null)
+            {
+                var itemToBuy = t.Inventory.Find(i => i.Id == chosenOption);
+                var choiceData = optionDtos.InventoryItems.Find(i => i.ItemId == chosenOption);
+                var currencyBeforePurchase = c.CurrencyCarried;
+
+                c.CurrencyCarried -= choiceData.Value;
+                t.Inventory.Remove(itemToBuy);
+                c.Inventory.Add(itemToBuy);
+
+                Map.DisplayEvents = new();
+
+                var events = new List<DisplayEventDto>
+                {
+                    new DisplayEventDto()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = [SpecialEffect.Currency]
+                    }
+                };
+                Map.AppendMessage(Map.Locale["CharacterBoughtItem"].Format(new { CharacterName = c.Name, ItemName = itemToBuy.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (currencyBeforePurchase - c.CurrencyCarried).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
+
+                Map.DisplayEvents.Add(($"{c.Name} buys {itemToBuy.Name}", events));
+
                 Map.Snapshot = new(Map.Dungeon, Map);
 
                 return true;

@@ -12,6 +12,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Popups;
+using RogueCustomsGodotClient.Utils;
 
 namespace RogueCustomsGodotClient.Invokers
 {
@@ -50,6 +51,16 @@ namespace RogueCustomsGodotClient.Invokers
         public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton)
         {
             return Parent.CreateSelectActionWindow(choices, title, showCancelButton);
+        }
+
+        public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return Parent.CreateBuySellWindow(choices, title, showCancelButton, SelectionMode.Buy);
+        }
+
+        public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton)
+        {
+            return Parent.CreateBuySellWindow(choices, title, showCancelButton, SelectionMode.Sell);
         }
     }
 }

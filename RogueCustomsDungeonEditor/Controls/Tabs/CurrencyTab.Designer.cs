@@ -1,4 +1,6 @@
-﻿namespace RogueCustomsDungeonEditor.Controls.Tabs
+﻿using System.Windows.Forms;
+
+namespace RogueCustomsDungeonEditor.Controls.Tabs
 {
     partial class CurrencyTab
     {
@@ -110,6 +112,8 @@
             // 
             dgvCurrencyPileTypes.AllowUserToResizeColumns = false;
             dgvCurrencyPileTypes.AllowUserToResizeRows = false;
+            dgvCurrencyPileTypes.AllowUserToDeleteRows = true;
+            dgvCurrencyPileTypes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvCurrencyPileTypes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvCurrencyPileTypes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Id, Minimum, Maximum });
             dgvCurrencyPileTypes.Location = new System.Drawing.Point(352, 121);
