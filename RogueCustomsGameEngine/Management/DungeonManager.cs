@@ -273,6 +273,10 @@ namespace RogueCustomsGameEngine.Management
         {
             return ActiveDungeon.PlayerTakeStairs();
         }
+        public void RefreshDisplay(bool refreshWholeMap)
+        {
+            ActiveDungeon.RefreshDisplay(refreshWholeMap);
+        }
     }
 
     public class CustomSerializationBinder : SerializationBinder

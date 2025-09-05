@@ -61,9 +61,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var result = await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
 
-            Map.DisplayEvents = new();
-            Map.Snapshot = new(Map.Dungeon, Map);
-
             return result;
         }
 
@@ -95,8 +92,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
                 chosenOption = await Map.OpenSelectOption(paramsObject.Title, paramsObject.Message, options, paramsObject.Cancellable, paramsObject.Color);
-                Map.DisplayEvents = new();
-                Map.Snapshot = new(Map.Dungeon, Map);
             }
 
             if(!Map.HasFlag(optionFlag))
@@ -167,8 +162,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.SetFlagValue(optionFlag, chosenOption);
                 }
-                Map.DisplayEvents = new();
-                Map.Snapshot = new(Map.Dungeon, Map);
 
                 return true;
             }
@@ -233,8 +226,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     Map.SetFlagValue(optionFlag, chosenOption);
                 }
-                Map.DisplayEvents = new();
-                Map.Snapshot = new(Map.Dungeon, Map);
 
                 return true;
             }
@@ -315,9 +306,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.SetFlagValue(schoolFlag, chosenOptionSchool);
                 }
 
-                Map.DisplayEvents = new();
-                Map.Snapshot = new(Map.Dungeon, Map);
-
                 return true;
             }
 
@@ -386,8 +374,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Inventory.Remove(itemToSell);
                 t.Inventory.Add(itemToSell);
 
-                Map.DisplayEvents = new();
-
                 if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
                 {
                     if (chosenOption != null)
@@ -405,8 +391,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.AppendMessage(Map.Locale["CharacterSoldItem"].Format(new { CharacterName = c.Name, ItemName = itemToSell.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (c.CurrencyCarried - currencyBeforeSale).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
 
                 Map.DisplayEvents.Add(($"{c.Name} sells {itemToSell.Name}", events));
-
-                Map.Snapshot = new(Map.Dungeon, Map);
 
                 return true;
             }
@@ -476,8 +460,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 t.Inventory.Remove(itemToBuy);
                 c.Inventory.Add(itemToBuy);
 
-                Map.DisplayEvents = new();
-
                 if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
                 {
                     if (chosenOption != null)
@@ -495,8 +477,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.AppendMessage(Map.Locale["CharacterBoughtItem"].Format(new { CharacterName = c.Name, ItemName = itemToBuy.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (currencyBeforePurchase - c.CurrencyCarried).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
 
                 Map.DisplayEvents.Add(($"{c.Name} buys {itemToBuy.Name}", events));
-
-                Map.Snapshot = new(Map.Dungeon, Map);
 
                 return true;
             }

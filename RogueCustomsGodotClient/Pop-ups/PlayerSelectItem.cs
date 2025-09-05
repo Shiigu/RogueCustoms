@@ -113,6 +113,7 @@ public partial class PlayerSelectItem : Control
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
                     _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -130,6 +131,7 @@ public partial class PlayerSelectItem : Control
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
                     _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -147,6 +149,7 @@ public partial class PlayerSelectItem : Control
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
                     _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -164,6 +167,7 @@ public partial class PlayerSelectItem : Control
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
                     _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -342,6 +346,7 @@ public partial class PlayerSelectItem : Control
         onCloseCallback?.Invoke();
         QueueFree();
         _globalState.MustUpdateGameScreen = true;
+        _globalState.DungeonManager.RefreshDisplay(true);
         return _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
     }
 
