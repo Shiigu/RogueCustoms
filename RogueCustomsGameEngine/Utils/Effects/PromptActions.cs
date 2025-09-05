@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var rolledYes = Rng.RollProbability() > 50;
                 var response = rolledYes ? paramsObject.YesButtonText : paramsObject.NoButtonText;
-                Map.AppendMessage($"PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nRESPONSE: {response}", paramsObject.Color);
+                Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nRESPONSE: {response}", paramsObject.Color);
                 return rolledYes;
             }
             else if(Args.Source is NonPlayableCharacter)
@@ -79,7 +79,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var randomChoice = options.TakeRandomElementWithWeights(i => 50, Rng);
                 chosenOption = randomChoice.Id;
                 if (Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nOPTION: {randomChoice.Id} => {randomChoice.Name}", paramsObject.Color);
+                    Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nOPTION: {randomChoice.Id} => {randomChoice.Name}", paramsObject.Color);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
                 chosenOption = randomChoice.ClassId;
                 if (Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
+                    Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
             }
             else
             {
@@ -205,7 +205,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
                 chosenOption = randomChoice.ClassId;
                 if (Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
+                    Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
             }
             else
             {
@@ -275,7 +275,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var randomChoice = optionDtos.Actions.TakeRandomElementWithWeights(i => 50, Rng);
                 chosenOption = randomChoice.SelectionId;
                 if (Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.SelectionId} => {randomChoice.Name}", Color.DarkRed);
+                    Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.SelectionId} => {randomChoice.Name}", Color.DarkRed);
             }
             else
             {
@@ -352,13 +352,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             int? chosenOption = null;
+            InventoryItemDto? randomChoice = null;
+
             if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
             {
-                var randomChoice = optionDtos.InventoryItems.Where(i => i.Value < c.CurrencyCarried).TakeRandomElementWithWeights(i => 50, Rng);
+                randomChoice = optionDtos.InventoryItems.Where(i => i.Value > 0).TakeRandomElementWithWeights(i => 50, Rng);
                 if(randomChoice != null)
                     chosenOption = randomChoice.ItemId;
-                if (chosenOption != null && Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
             }
             else
             {
@@ -387,6 +387,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 t.Inventory.Add(itemToSell);
 
                 Map.DisplayEvents = new();
+
+                if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+                {
+                    if (chosenOption != null)
+                        Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
+                }
 
                 var events = new List<DisplayEventDto>
                 {
@@ -436,13 +442,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
 
             int? chosenOption = null;
+            InventoryItemDto? randomChoice = null;
+
             if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
             {
-                var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
+                randomChoice = optionDtos.InventoryItems.Where(i => i.Value > 0 && i.Value < c.CurrencyCarried).TakeRandomElementWithWeights(i => 50, Rng);
                 if (randomChoice != null)
                     chosenOption = randomChoice.ItemId;
-                if (chosenOption != null && Map.IsDebugMode)
-                    Map.AppendMessage($"PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
             }
             else
             {
@@ -471,6 +477,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Inventory.Add(itemToBuy);
 
                 Map.DisplayEvents = new();
+
+                if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
+                {
+                    if (chosenOption != null)
+                        Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ItemId} => {randomChoice.ClassId}", Color.Yellow);
+                }
 
                 var events = new List<DisplayEventDto>
                 {

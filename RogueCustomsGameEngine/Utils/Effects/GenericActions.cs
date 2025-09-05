@@ -769,6 +769,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.SetFlagValue(paramsObject.Key, paramsObject.Value);
             else
                 Map.CreateFlag(paramsObject.Key, paramsObject.Value, paramsObject.RemoveOnFloorChange);
+
+            if (Map.IsDebugMode)
+            {
+                if(existingFlag != null)
+                    Map.AppendMessage($"DEBUG: Flag {paramsObject.Key} has been set to {paramsObject.Value}", Color.Yellow);
+                else
+                    Map.AppendMessage($"DEBUG: Flag {paramsObject.Key} has been created as {paramsObject.Value}", Color.Yellow);
+            }
+
             return true;
         }
 

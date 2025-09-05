@@ -139,7 +139,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             catch (Exception ex)
             {
                 MessageBox.Show($"Attempting to Validate this Dungeon threw an error:\n\n{ex.Message}\n\nPlease fix it.", "Dungeon Validator", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                PassedValidation = true;
+                PassedValidation = false;
                 OnError?.Invoke(null, EventArgs.Empty);
             }
         }

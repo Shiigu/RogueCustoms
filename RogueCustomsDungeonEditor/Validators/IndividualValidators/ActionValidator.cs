@@ -21,7 +21,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 #pragma warning disable CS8601 // Posible asignación de referencia nula
     public static class ActionValidator
     {
-        public static async Task<DungeonValidationMessages> Validate(ActionWithEffectsInfo action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
+        public static async Task<DungeonValidationMessages> Validate(ActionWithEffectsInfo action, DungeonInfo dungeonJson)
         {
             var messages = new DungeonValidationMessages();
             var name = action.Name;
@@ -32,6 +32,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             return messages;
         }
+
         public static async Task<DungeonValidationMessages> Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
@@ -134,6 +135,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 else if (action.MaximumUses > 0)
                     messages.AddWarning($"Action {name ?? id ?? "NULL"} has a MaximumUses above 0, which will be ignored by the game. Consider removing it.");
             }
+            
+            if (sampleDungeon == null) return messages;
 
             Entity source;
             var target = GetATestCharacter(sampleDungeon);

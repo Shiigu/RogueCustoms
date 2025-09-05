@@ -41,6 +41,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private string ClassId;
         private string ActionTypeText;
         private ActionWithEffectsInfo actionToTest;
+        private string LastLocaleUsed;
 
         public frmActionTest(ActionWithEffectsInfo actionToTest, DungeonInfo activeDungeon, string classId, string actionTypeText, UsageCriteria usageCriteria)
         {
@@ -77,9 +78,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 // Do nothing if the Font can't be found
             }
 
+            cmbTestLocale.Items.Clear();
+            foreach (var locale in activeDungeon.Locales)
+            {
+                cmbTestLocale.Items.Add(locale.Language);
+            }
+
+            var localeToUse = ActiveDungeon.DefaultLocale ?? ActiveDungeon.Locales[0].Language;
+            LastLocaleUsed = localeToUse;
+
+            cmbTestLocale.Text = LastLocaleUsed;
+
             if (TestDungeon == null)
             {
-                TestDungeon = new Dungeon(ActiveDungeon, ActiveDungeon.Locales[0].Language, false);
+                TestDungeon = new Dungeon(ActiveDungeon, localeToUse, false);
                 TestDungeon.PromptInvoker = new DummyPromptInvoker();
                 TestDungeon.PlayerClass = TestDungeon.Classes.First(c => c.EntityType == EntityType.Player);
             }
@@ -218,11 +230,22 @@ namespace RogueCustomsDungeonEditor.HelperForms
             txtMessageLog.Clear();
         }
 
+        private void cmbTestLocale_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnTestAction.Enabled = cmbTestLocale.Text.Length > 0;
+        }
+
+        private void cmbTestLocale_TextChanged(object sender, EventArgs e)
+        {
+            btnTestAction.Enabled = cmbTestLocale.Text.Length > 0;
+        }
+
         private async void btnTestAction_Click(object sender, EventArgs e)
         {
-            if (TestDungeon == null)
+            if (TestDungeon == null || !cmbTestLocale.Text.Equals(LastLocaleUsed, StringComparison.InvariantCultureIgnoreCase))
             {
-                TestDungeon = new Dungeon(ActiveDungeon, ActiveDungeon.Locales[0].Language, false);
+                var localeToUse = !string.IsNullOrWhiteSpace(cmbTestLocale.Text) ? cmbTestLocale.Text : ActiveDungeon.DefaultLocale ?? ActiveDungeon.Locales[0].Language;
+                TestDungeon = new Dungeon(ActiveDungeon, localeToUse, false);
                 TestDungeon.PromptInvoker = new DummyPromptInvoker();
                 TestDungeon.PlayerClass = TestDungeon.Classes.First(c => c.EntityType == EntityType.Player);
             }
@@ -373,13 +396,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnSpawn = new(),
                 OnTurnStart = new(),
                 StartingInventory = new(),
-                InventorySize = 5,
+                InventorySize = 25,
                 BaseSightRange = "full map",
                 AIType = "Default",
                 ExperiencePayoutFormula = "1",
                 ExperienceToLevelUpFormula = "9999",
                 CanGainExperience = true,
-                ConsoleRepresentation = crs.ConsoleRepresentation
+                ConsoleRepresentation = crs.ConsoleRepresentation,
             };
             issSource.TreatStatsAsAbsolute = true;
             foreach (var stat in iss.Stats)
@@ -409,10 +432,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
             npc.StartingArmor = new Item(equippableClass, TestDungeon.CurrentFloor);
             npc.StartingArmor.Power = "0";
             npc.Inventory.Add(new Item(inventoryClass, TestDungeon.CurrentFloor));
+            npc.Inventory[0].Id = new Random().Next(100000, 999999);
+            for (int i = 0; i < new Random().Next(1, 5); i++)
+            {
+                var newItem = new Item(TestDungeon.ItemClasses[new Random().Next(TestDungeon.ItemClasses.Count)], TestDungeon.CurrentFloor);
+                newItem.Id = new Random().Next(100000, 999999);
+                npc.Inventory.Add(newItem);
+            }
             npc.Faction = TestDungeon.Factions[new Random().Next(TestDungeon.Factions.Count)];
 
-            var mostExpensiveItemInTheDungeon = TestDungeon.CurrentFloor.Items.OrderByDescending(i => i.Value).FirstOrDefault();
-            npc.CurrencyCarried = new Random().Next(mostExpensiveItemInTheDungeon.Value * 2);
+            var mostExpensiveItemInTheDungeon = TestDungeon.ItemClasses.OrderByDescending(i => i.BaseValue).FirstOrDefault();
+            npc.CurrencyCarried = new Random().Next(mostExpensiveItemInTheDungeon.BaseValue * 2);
             TestDungeon.CurrentFloor.AICharacters.Add(npc);
 
             return npc;
@@ -490,8 +520,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor) => Task.FromResult(choices[new Random().Next(choices.Length)].Id);
             public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult(choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ClassId);
             public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton) => Task.FromResult(choices.Actions[new Random().Next(choices.Actions.Count)].SelectionId);
-            public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?) choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
-            public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?) choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
+            public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
+            public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
         }
     }
 }

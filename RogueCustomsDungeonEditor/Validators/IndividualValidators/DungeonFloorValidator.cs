@@ -327,43 +327,50 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     messages.AddError($"{floorLayoutGenerator.Name}: At least one possible Connection is missing one of its ends.");
             }
 
-            var mapSuccesses = 0;
-            var keySuccesses = 0;
-            var mapFailures = 0;
-            var keyFailures = 0;
-
-            var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-
-            for (int i = 0; i < 100; i++)
+            if (sampleDungeon != null)
             {
-                var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
-                if (MapGenerationSuccess)
+                var mapSuccesses = 0;
+                var keySuccesses = 0;
+                var mapFailures = 0;
+                var keyFailures = 0;
+
+                var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+
+                for (int i = 0; i < 100; i++)
                 {
-                    mapSuccesses++;
-                    if (KeyGenerationSuccess)
-                        keySuccesses++;
+                    var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                    var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
+                    if (MapGenerationSuccess)
+                    {
+                        mapSuccesses++;
+                        if (KeyGenerationSuccess)
+                            keySuccesses++;
+                        else
+                            keyFailures++;
+                    }
                     else
-                        keyFailures++;
+                        mapFailures++;
                 }
-                else
-                    mapFailures++;
+
+                if (mapSuccesses == 0)
+                    messages.AddError("After 100 attempts, not a single valid Map Generation was produced. Please check, or try again if you think this is an error.");
+                else if (keySuccesses == 0)
+                    messages.AddWarning("After 100 attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
+
+                await floorAsInstance.GenerateDebugMap();
+
+                if (floorJson.OnFloorStart != null)
+                {
+                    messages.AddRange(await ActionValidator.Validate(floorJson.OnFloorStart, dungeonJson));
+                    messages.AddRange(await ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
+                }
+
+                if (!messages.Any()) messages.AddSuccess("ALL OK!");
             }
-
-            if(mapSuccesses == 0)
-                messages.AddError("After 100 attempts, not a single valid Map Generation was produced. Please check, or try again if you think this is an error.");
-            else if(keySuccesses == 0)
-                messages.AddWarning("After 100 attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
-
-            await floorAsInstance.GenerateDebugMap();
-
-            if (floorJson.OnFloorStart != null)
+            else
             {
-                messages.AddRange(await ActionValidator.Validate(floorJson.OnFloorStart, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(floorAsInstance.FloorConfigurationToUse.OnFloorStart, dungeonJson, sampleDungeon));
+                messages.AddError("Map Generation could not be tested because there was an error creating the Dungeon.");
             }
-
-            if (!messages.Any()) messages.AddSuccess("ALL OK!");
 
             return messages;
         }

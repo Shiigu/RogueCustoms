@@ -30,10 +30,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         /// </summary>
         private void InitializeComponent()
         {
-            dgvLootTable = new System.Windows.Forms.DataGridView();
-            btnTestLootTable = new System.Windows.Forms.Button();
-            PickId = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            Weight = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dgvLootTable = new DataGridView();
+            PickId = new DataGridViewComboBoxColumn();
+            Weight = new DataGridViewTextBoxColumn();
+            btnTestLootTable = new Button();
+            label1 = new Label();
+            lblCategory = new Label();
+            lblLootTable = new Label();
+            lblCurrency = new Label();
+            lblItem = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvLootTable).BeginInit();
             SuspendLayout();
             // 
@@ -41,26 +46,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             // 
             dgvLootTable.AllowUserToResizeColumns = false;
             dgvLootTable.AllowUserToResizeRows = false;
-            dgvLootTable.AllowUserToDeleteRows = true;
-            dgvLootTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLootTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { PickId, Weight });
-            dgvLootTable.Dock = System.Windows.Forms.DockStyle.Top;
-            dgvLootTable.Location = new System.Drawing.Point(0, 0);
+            dgvLootTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvLootTable.Columns.AddRange(new DataGridViewColumn[] { PickId, Weight });
+            dgvLootTable.Location = new System.Drawing.Point(16, 0);
             dgvLootTable.MultiSelect = false;
             dgvLootTable.Name = "dgvLootTable";
             dgvLootTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLootTable.Size = new System.Drawing.Size(543, 315);
             dgvLootTable.TabIndex = 0;
-            // 
-            // btnTestLootTable
-            // 
-            btnTestLootTable.Location = new System.Drawing.Point(210, 321);
-            btnTestLootTable.Name = "btnTestLootTable";
-            btnTestLootTable.Size = new System.Drawing.Size(136, 28);
-            btnTestLootTable.TabIndex = 1;
-            btnTestLootTable.Text = "Test Loot Table";
-            btnTestLootTable.UseVisualStyleBackColor = true;
-            btnTestLootTable.Click += btnTestLootTable_Click;
             // 
             // PickId
             // 
@@ -76,16 +69,78 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             Weight.Name = "Weight";
             Weight.Width = 250;
             // 
+            // btnTestLootTable
+            // 
+            btnTestLootTable.Location = new System.Drawing.Point(290, 320);
+            btnTestLootTable.Name = "btnTestLootTable";
+            btnTestLootTable.Size = new System.Drawing.Size(136, 28);
+            btnTestLootTable.TabIndex = 1;
+            btnTestLootTable.Text = "Test Loot Table";
+            btnTestLootTable.UseVisualStyleBackColor = true;
+            btnTestLootTable.Click += btnTestLootTable_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(568, 90);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(69, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Color labels";
+            // 
+            // lblCategory
+            // 
+            lblCategory.BorderStyle = BorderStyle.FixedSingle;
+            lblCategory.Location = new System.Drawing.Point(568, 118);
+            lblCategory.Name = "lblCategory";
+            lblCategory.Size = new System.Drawing.Size(163, 17);
+            lblCategory.TabIndex = 3;
+            lblCategory.Text = "Category";
+            // 
+            // lblLootTable
+            // 
+            lblLootTable.BorderStyle = BorderStyle.FixedSingle;
+            lblLootTable.Location = new System.Drawing.Point(568, 134);
+            lblLootTable.Name = "lblLootTable";
+            lblLootTable.Size = new System.Drawing.Size(163, 17);
+            lblLootTable.TabIndex = 4;
+            lblLootTable.Text = "Loot Table";
+            lblLootTable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblCurrency
+            // 
+            lblCurrency.BorderStyle = BorderStyle.FixedSingle;
+            lblCurrency.Location = new System.Drawing.Point(568, 150);
+            lblCurrency.Name = "lblCurrency";
+            lblCurrency.Size = new System.Drawing.Size(163, 17);
+            lblCurrency.TabIndex = 5;
+            lblCurrency.Text = "Currency";
+            // 
+            // lblItem
+            // 
+            lblItem.BorderStyle = BorderStyle.FixedSingle;
+            lblItem.Location = new System.Drawing.Point(568, 166);
+            lblItem.Name = "lblItem";
+            lblItem.Size = new System.Drawing.Size(163, 17);
+            lblItem.TabIndex = 6;
+            lblItem.Text = "Specific Item";
+            // 
             // LootTableTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lblItem);
+            Controls.Add(lblCurrency);
+            Controls.Add(lblLootTable);
+            Controls.Add(lblCategory);
+            Controls.Add(label1);
             Controls.Add(btnTestLootTable);
             Controls.Add(dgvLootTable);
             Name = "LootTableTab";
-            Size = new System.Drawing.Size(543, 352);
+            Size = new System.Drawing.Size(734, 352);
             ((System.ComponentModel.ISupportInitialize)dgvLootTable).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -94,5 +149,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private System.Windows.Forms.Button btnTestLootTable;
         private System.Windows.Forms.DataGridViewComboBoxColumn PickId;
         private System.Windows.Forms.DataGridViewTextBoxColumn Weight;
+        private Label label1;
+        private Label lblCategory;
+        private Label lblLootTable;
+        private Label lblCurrency;
+        private Label lblItem;
     }
 }

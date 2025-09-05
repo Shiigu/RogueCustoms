@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(TrapInfo trapJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var trapAsInstance = new Trap(new EntityClass(trapJson, sampleDungeon.LocaleToUse, EntityType.Trap, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor);
+            var trapAsInstance = sampleDungeon != null ? new Trap(new EntityClass(trapJson, sampleDungeon.LocaleToUse, EntityType.Trap, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor) : null;
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(trapJson.Name, "Trap", "Name", true));
@@ -28,7 +28,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (trapJson.OnStepped != null)
             {
-                messages.AddRange(await ActionValidator.Validate(trapAsInstance.OnStepped, dungeonJson, sampleDungeon));
+                if(trapAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(trapAsInstance.OnStepped, dungeonJson, sampleDungeon));
             }
             else
             {
