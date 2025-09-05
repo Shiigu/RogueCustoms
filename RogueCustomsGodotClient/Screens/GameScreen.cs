@@ -256,6 +256,7 @@ public partial class GameScreen : Control
             {
                 _globalState.MustUpdateGameScreen = true;
                 _globalState.PlayerControlMode = ControlMode.Waiting;
+                _globalState.DungeonManager.RefreshDisplay(true);
                 await _globalState.DungeonManager.MovePlayer(coordsToSend);
             }
         }
@@ -549,6 +550,7 @@ public partial class GameScreen : Control
         {
             try
             {
+                _globalState.DungeonManager.RefreshDisplay(true);
                 _globalState.DungeonManager.MovePlayer(new CoordinateInput
                 {
                     X = 0,
@@ -599,6 +601,7 @@ public partial class GameScreen : Control
         {
             try
             {
+                _globalState.DungeonManager.RefreshDisplay(true);
                 _globalState.DungeonManager.MovePlayer(new CoordinateInput
                 {
                     X = 0,
@@ -649,6 +652,7 @@ public partial class GameScreen : Control
         {
             try
             {
+                _globalState.DungeonManager.RefreshDisplay(true);
                 _globalState.DungeonManager.MovePlayer(new CoordinateInput
                 {
                     X = 0,
@@ -809,6 +813,7 @@ public partial class GameScreen : Control
                                                     {
                                                         try
                                                         {
+                                                            _globalState.DungeonManager.RefreshDisplay(true);
                                                             await _globalState.DungeonManager.PlayerTakeStairs();
                                                             _globalState.MustUpdateGameScreen = true;
                                                         }

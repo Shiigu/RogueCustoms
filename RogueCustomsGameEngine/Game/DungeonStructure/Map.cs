@@ -1340,10 +1340,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             foreach (var character in GetCharacters().Where(e => e != null))
             {
-                await Player.PerformOnTurnStart();
-                if (Player.ContainingTile.OnStood != null)
-                    await Player.ContainingTile.OnStood.Do(Player, Player, true);
-                Player.RemainingMovement = (int)Player.Movement.Current;
                 character.RemainingMovement = (int)character.Movement.Current;
                 character.TookAction = false;
                 await character.PerformOnTurnStart();
@@ -1469,8 +1465,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (DungeonStatus != DungeonStatus.Running) return;
             if (Player.ExistenceStatus != EntityExistenceStatus.Alive) return;
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
             if (x == 0 && y == 0) // This is only possible if the player chooses to Skip Turn.
             {
                 Player.RemainingMovement = 0;
@@ -1648,8 +1642,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (Player.ContainingTile != StairsTile)
                 throw new ArgumentException($"Player is trying to use non-existent stairs at ({Player.ContainingTile.Position.X}, {Player.ContainingTile.Position.Y})");
             await Dungeon.TakeStairs();
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
         }
         public Task PlayerUseItemFromInventory(int itemId)
         {
@@ -1685,9 +1677,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 return;
             }
-
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
             await PlayerUseItem(usableItem);
         }
         public async Task PlayerPickUpItemInFloor()
@@ -1698,8 +1687,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (itemThatCanBePickedUp == null)
                 return;
 
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
             if (Player.ItemCount == Player.InventorySize)
             {
                 AppendMessage(Locale["InventoryIsFull"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBePickedUp.Name }));
@@ -1717,8 +1704,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemThatCanBeDropped = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
             if (Player.ContainingTile.GetItems().Any())
             {
                 AppendMessage(Locale["TileIsOccupied"].Format(new { CharacterName = Player.Name, ItemName = itemThatCanBeDropped.Name }), Color.Yellow);
@@ -1736,7 +1721,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var itemInInventory = Items.Find(i => i.Id == itemId)
                 ?? throw new ArgumentException("Player attempted to swap with an item that does not exist!");
-            Snapshot = new(Dungeon, this);
             var itemInTile = Items.Find(i => i.Position?.Equals(Player.Position) == true && i.ExistenceStatus != EntityExistenceStatus.Gone);
             if (itemInTile != null)
             {
@@ -1782,9 +1766,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var characterInTile = tile.LivingCharacter;
 
             var selectionIdParts = selectionId.Split('_');
-
-            DisplayEvents = new();
-            Snapshot = new(Dungeon, this);
 
             var correspondingEntity = sourceType == ActionSourceType.Player ? Player : characterInTile ?? throw new ArgumentException("Player attempted an Action belonging to a non-existent Entity.");
 
@@ -2757,6 +2738,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public Map Clone()
         {
             return JsonSerializer.Deserialize<Map>(JsonSerializer.Serialize(this));
+        }
+
+        public void RefreshDisplay(bool refreshWholeMap)
+        {
+            DisplayEvents = new();
+            if (refreshWholeMap)
+                Snapshot = new(Dungeon, this);
         }
 
         #endregion
