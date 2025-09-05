@@ -22,6 +22,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             {
                 var tileType = dungeonJson.TileTypeInfos.Find(tti => tti.Id.Equals(tileTypeSet.TileTypeId));
 
+                if(tileType == null)
+                {
+                    messages.AddError($"{tileTypeSet.TileTypeId ?? "NULL"} is not a valid Tile Type.");
+                    continue;
+                }
+
                 foreach (var errorMessage in tileTypeSet.Central.Validate($"{tileTypeSet.TileTypeId ?? "NULL"}'s Central/Default"))
                 {
                     messages.AddError(errorMessage);

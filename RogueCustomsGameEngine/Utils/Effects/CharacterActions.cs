@@ -368,6 +368,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var newItem = await Map.AddEntity(pick, 1, null, false) as Item;
                 newItem.Owner = c;
                 c.Inventory.Add(newItem);
+                if(Map.IsDebugMode)
+                    Map.AppendMessage($"DEBUG: Item {newItem.Name} has been added to {c.Name}'s inventory", Color.LightGreen);
             }
 
             return true;

@@ -65,6 +65,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
+            ClassId = pickableAsEntity.ClassId;
             var saleValuePercentage = character is PlayerCharacter pc ? pc.SaleValuePercentage : 1.0f;
             Value = forBuy || pickableAsItem.Value == 0 ? pickableAsItem.Value : (int) Math.Max(1, (pickableAsItem.Value * saleValuePercentage));
             StatModifications = new();

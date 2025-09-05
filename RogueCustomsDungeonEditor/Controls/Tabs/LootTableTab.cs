@@ -52,15 +52,26 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             var pickIdColumn = (DataGridViewComboBoxColumn)dgvLootTable.Columns["PickId"];
             pickIdColumn.DataSource = ValidPickIds;
+
             dgvLootTable.Rows.Clear();
+            dgvLootTable.EditingControlShowing += dgvLootTable_EditingControlShowing;
+            dgvLootTable.CellPainting += dgvLootTable_CellPainting;
+            dgvLootTable.DataError += dgvLootTable_DataError;
             foreach (var entry in lootTableToLoad.Entries)
             {
                 dgvLootTable.Rows.Add(entry.PickId, entry.Weight);
             }
             dgvLootTable.CellValueChanged += (sender, e) => TabInfoChanged(sender, e);
 
-            dgvLootTable.EditingControlShowing += dgvLootTable_EditingControlShowing;
-            dgvLootTable.CellPainting += dgvLootTable_CellPainting;
+            lblCategory.BackColor = CategoryColor;
+            lblLootTable.BackColor = LootTableColor;
+            lblCurrency.BackColor = CurrencyColor;
+            lblItem.BackColor = ItemColor;
+        }
+
+        private void dgvLootTable_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            e.ThrowException = false;
         }
 
         private void dgvLootTable_EditingControlShowing(object? sender, DataGridViewEditingControlShowingEventArgs e)

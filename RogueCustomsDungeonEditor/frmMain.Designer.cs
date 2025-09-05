@@ -67,6 +67,7 @@ namespace RogueCustomsDungeonEditor
             tpLootTableInfos = new TabPage();
             LootTableTab = new Controls.Tabs.LootTableTab();
             tpCurrencyInfo = new TabPage();
+            CurrencyTab = new Controls.Tabs.CurrencyTab();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tpPlayerClass = new TabPage();
@@ -85,7 +86,6 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            CurrencyTab = new Controls.Tabs.CurrencyTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -466,9 +466,9 @@ namespace RogueCustomsDungeonEditor
             // LootTableTab
             // 
             LootTableTab.Anchor = AnchorStyles.Top;
-            LootTableTab.Location = new System.Drawing.Point(82, 3);
+            LootTableTab.Location = new System.Drawing.Point(3, 3);
             LootTableTab.Name = "LootTableTab";
-            LootTableTab.Size = new System.Drawing.Size(543, 352);
+            LootTableTab.Size = new System.Drawing.Size(734, 352);
             LootTableTab.TabIndex = 0;
             // 
             // tpCurrencyInfo
@@ -480,6 +480,13 @@ namespace RogueCustomsDungeonEditor
             tpCurrencyInfo.TabIndex = 17;
             tpCurrencyInfo.Text = "Currency";
             tpCurrencyInfo.UseVisualStyleBackColor = true;
+            // 
+            // CurrencyTab
+            // 
+            CurrencyTab.Location = new System.Drawing.Point(3, 3);
+            CurrencyTab.Name = "CurrencyTab";
+            CurrencyTab.Size = new System.Drawing.Size(711, 302);
+            CurrencyTab.TabIndex = 0;
             // 
             // tbStatInfos
             // 
@@ -644,13 +651,6 @@ namespace RogueCustomsDungeonEditor
             // 
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
-            // 
-            // CurrencyTab
-            // 
-            CurrencyTab.Location = new System.Drawing.Point(3, 3);
-            CurrencyTab.Name = "CurrencyTab";
-            CurrencyTab.Size = new System.Drawing.Size(711, 302);
-            CurrencyTab.TabIndex = 0;
             // 
             // frmMain
             // 

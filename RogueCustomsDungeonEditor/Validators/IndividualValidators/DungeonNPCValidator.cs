@@ -22,7 +22,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             messages.AddRange(await DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
-            var npcAsInstance = new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
+            var npcAsInstance = sampleDungeon != null ? new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor) : null;
 
             if((npcJson.LootTableId == "None" || string.IsNullOrWhiteSpace(npcJson.LootTableId)) && npcJson.DropPicks > 0)
                 messages.AddError("This NPC is set to drop items as loot, but has no Loot Table.");
@@ -31,11 +31,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (npcJson.OnSpawn != null)
             {
-                messages.AddRange(await ActionValidator.Validate(npcJson.OnSpawn, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(npcJson.OnSpawn, dungeonJson));
+                if(npcAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
             }
 
-            if (npcAsInstance.OnInteracted.Any())
+            if (npcAsInstance != null && npcAsInstance.OnInteracted.Any())
             {
                 if (npcAsInstance.OnInteracted.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
                 {
@@ -44,21 +45,24 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                 foreach (var onInteractedAction in npcJson.OnInteracted)
                 {
-                    messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson));
                 }
-                foreach (var onInteractedAction in npcAsInstance.OnInteracted)
+                if (npcAsInstance != null)
                 {
-                    foreach (var playerClass in dungeonJson.PlayerClasses)
+                    foreach (var onInteractedAction in npcAsInstance.OnInteracted)
                     {
-                        if(playerClass.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
-                            messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Player Class {playerClass.Id}'s Attack actions.");
+                        foreach (var playerClass in dungeonJson.PlayerClasses)
+                        {
+                            if (playerClass.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Player Class {playerClass.Id}'s Attack actions.");
+                        }
+                        foreach (var item in dungeonJson.Items)
+                        {
+                            if (item.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Item {item.Id}'s Attack actions.");
+                        }
+                        messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
                     }
-                    foreach (var item in dungeonJson.Items)
-                    {
-                        if (item.OnAttack.Any(oa => oa.Id.Equals(onInteractedAction.Id, StringComparison.InvariantCultureIgnoreCase)))
-                            messages.AddError($"NPC's Interacted action, {onInteractedAction.Id}, has the same Id as one of Item {item.Id}'s Attack actions.");
-                    }
-                    messages.AddRange(await ActionValidator.Validate(onInteractedAction, dungeonJson, sampleDungeon));
                 }
             }
 

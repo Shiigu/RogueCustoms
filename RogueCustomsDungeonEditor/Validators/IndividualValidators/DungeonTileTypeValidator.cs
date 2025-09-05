@@ -31,7 +31,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if(!tileType.CanVisiblyConnectWithOtherTiles && tileType.CanHaveMultilineConnections)
                 messages.AddWarning($"{tileType.Id} is set to connect multiple rows of Tiles but is not set to visibly connect Tiles.");
 
-            if (tileType.OnStood != null)
+            if (tileType.OnStood != null && sampleDungeon != null)
             {
                 var actionInstance = ActionWithEffects.Create(tileType.OnStood, sampleDungeon.ActionSchools);
                 messages.AddRange(await ActionValidator.Validate(actionInstance, dungeonJson, sampleDungeon));

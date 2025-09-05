@@ -17,9 +17,10 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            Character characterAsInstance = isPlayerCharacter
+            Character characterAsInstance = sampleDungeon != null ? (isPlayerCharacter
                                         ? new PlayerCharacter(new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.Player, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor)
-                                        : new NonPlayableCharacter(new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor);
+                                        : new NonPlayableCharacter(new EntityClass(characterJson, sampleDungeon.LocaleToUse, EntityType.NPC, dungeonJson.CharacterStats, sampleDungeon.ActionSchools, []), 1, sampleDungeon.CurrentFloor))
+                                        : null;
 
             var messages = new DungeonValidationMessages();
 
@@ -39,8 +40,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnTurnStart != null)
             {
-                messages.AddRange(await ActionValidator.Validate(characterJson.OnTurnStart, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnTurnStart, dungeonJson));
+                if (characterAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnTurnStart, dungeonJson, sampleDungeon));
             }
 
             var missingMandatoryStats = FormConstants.MandatoryStats.Except(FormConstants.MandatoryStats.Intersect(characterJson.Stats.Select(s => s.StatId)));
@@ -55,15 +57,20 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if(string.IsNullOrWhiteSpace(stat.StatId))
                     messages.AddError("At least one Stat is missing an Id.");
                 var correspondingStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(stat.StatId, StringComparison.InvariantCultureIgnoreCase));
-                var correspondingRegenerationTargetStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
-                if(correspondingStatInfo == null)
+                if (correspondingStatInfo == null)
+                {
                     messages.AddError($"A Stat uses the Id {stat.StatId}, which is missing in the Stats table.");
-                if(correspondingRegenerationTargetStatInfo != null && !characterJson.Stats.Any(s => s.StatId.Equals(correspondingRegenerationTargetStatInfo.Id, StringComparison.InvariantCultureIgnoreCase)))
-                    messages.AddError($"The Character has access to {stat.StatId} but not of {correspondingRegenerationTargetStatInfo.Id}, which it regenerates/degenerates.");
-                if (stat.Base < correspondingStatInfo.MinCap)
-                    messages.AddError($"The Base value for {stat.StatId} is lower than its accepted Minimum.");
-                if(stat.Base > correspondingStatInfo.MaxCap)
-                    messages.AddError($"The Base value for {stat.StatId} is higher than its accepted Maximum.");
+                }
+                else
+                {
+                    var correspondingRegenerationTargetStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingRegenerationTargetStatInfo != null && !characterJson.Stats.Any(s => s.StatId.Equals(correspondingRegenerationTargetStatInfo.Id, StringComparison.InvariantCultureIgnoreCase)))
+                        messages.AddError($"The Character has access to {stat.StatId} but not of {correspondingRegenerationTargetStatInfo.Id}, which it regenerates/degenerates.");
+                    if (stat.Base < correspondingStatInfo.MinCap)
+                        messages.AddError($"The Base value for {stat.StatId} is lower than its accepted Minimum.");
+                    if (stat.Base > correspondingStatInfo.MaxCap)
+                        messages.AddError($"The Base value for {stat.StatId} is higher than its accepted Maximum.");
+                }
                 if(stat.IncreasePerLevel < 0)
                     messages.AddError($"{stat.StatId} is set to decrease by level-up. This is not allowed.");
                 else if(stat.IncreasePerLevel == 0)
@@ -137,7 +144,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
-            if (characterAsInstance.OwnOnAttack.Any())
+            if (characterAsInstance != null && characterAsInstance.OwnOnAttack.Any())
             {
                 if(characterAsInstance.OwnOnAttack.HasMinimumMatches(ooa => ooa.Id.ToLower(), 2))
                 {
@@ -145,11 +152,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
                 foreach (var onAttackAction in characterJson.OnAttack)
                 {
-                    messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson));
                 }
-                foreach (var onAttackAction in characterAsInstance.OwnOnAttack)
+                if (characterAsInstance != null)
                 {
-                    messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
+                    foreach (var onAttackAction in characterAsInstance.OwnOnAttack)
+                    {
+                        messages.AddRange(await ActionValidator.Validate(onAttackAction, dungeonJson, sampleDungeon));
+                    }
                 }
             }
             else
@@ -159,14 +169,16 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnAttacked != null)
             {
-                messages.AddRange(await ActionValidator.Validate(characterJson.OnAttacked, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnAttacked, dungeonJson));
+                if(characterAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnAttacked, dungeonJson, sampleDungeon));
             }
 
             if (characterJson.OnDeath != null)
             {
-                messages.AddRange(await ActionValidator.Validate(characterJson.OnDeath, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnDeath, dungeonJson));
+                if (characterAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(characterAsInstance.OwnOnDeath, dungeonJson, sampleDungeon));
             }
             else
             {
@@ -175,8 +187,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (characterJson.OnLevelUp != null)
             {
-                messages.AddRange(await ActionValidator.Validate(characterJson.OnLevelUp, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(characterAsInstance.OnLevelUp, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(characterJson.OnLevelUp, dungeonJson));
+                if (characterAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(characterAsInstance.OnLevelUp, dungeonJson, sampleDungeon));
             }
 
             return messages;

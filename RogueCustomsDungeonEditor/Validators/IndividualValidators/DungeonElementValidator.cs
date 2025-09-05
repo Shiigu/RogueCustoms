@@ -16,11 +16,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(ElementInfo element, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var elementAsInstance = new Element(element, sampleDungeon.LocaleToUse, sampleDungeon.ActionSchools);
+            var elementAsInstance = sampleDungeon != null ? new Element(element, sampleDungeon.LocaleToUse, sampleDungeon.ActionSchools) : null;
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(element.Name, $"Element {element.Id}", "Name", true));
-            if(!string.IsNullOrWhiteSpace(element.ResistanceStatId))
+            if (!string.IsNullOrWhiteSpace(element.ResistanceStatId))
             {
                 var resistanceStat = dungeonJson.CharacterStats.Find(s => s.Id.Equals(element.ResistanceStatId, StringComparison.InvariantCultureIgnoreCase));
 
@@ -29,13 +29,16 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 else if (!resistanceStat.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase))
                     messages.AddError($"The Element's Resistance Stat, {element.ResistanceStatId}, is not of the Percentage type.");
             }
-            else if(element.ExcessResistanceCausesHealDamage)
+            else if (element.ExcessResistanceCausesHealDamage)
+            {
                 messages.AddWarning($"The Element does not have a Resistance Stat, but ExcessResistanceCausesHealDamage is set to true. It will be ignored.");
+            }
 
             if (element.OnAfterAttack != null)
             {
-                messages.AddRange(await ActionValidator.Validate(element.OnAfterAttack, dungeonJson, sampleDungeon));
-                messages.AddRange(await ActionValidator.Validate(elementAsInstance.OnAfterAttack, dungeonJson, sampleDungeon));
+                messages.AddRange(await ActionValidator.Validate(element.OnAfterAttack, dungeonJson));
+                if(elementAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(elementAsInstance.OnAfterAttack, dungeonJson, sampleDungeon));
             }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

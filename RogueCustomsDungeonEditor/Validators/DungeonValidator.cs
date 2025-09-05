@@ -90,10 +90,19 @@ namespace RogueCustomsDungeonEditor.Validators
             ProgressBar.Value = 0;
             ProgressBar.Maximum = totalSteps;
 
-            var sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale, false);
-            sampleDungeon.IsDebugMode = true;
-            sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
-            await sampleDungeon.NewMap();
+            Dungeon sampleDungeon;
+
+            try
+            {
+                sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale, false);
+                sampleDungeon.IsDebugMode = true;
+                sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
+                await sampleDungeon.NewMap();
+            }
+            catch (Exception ex)
+            {
+                sampleDungeon = null;
+            }
 
             UpdateProgressLabel("Starting Validation...", false);
 

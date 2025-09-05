@@ -46,6 +46,8 @@
             btnClearLog = new System.Windows.Forms.Button();
             btnClose = new System.Windows.Forms.Button();
             txtMessageLog = new System.Windows.Forms.RichTextBox();
+            label1 = new System.Windows.Forms.Label();
+            cmbTestLocale = new System.Windows.Forms.ComboBox();
             SuspendLayout();
             // 
             // lblTitle
@@ -78,7 +80,7 @@
             // 
             // crsTarget
             // 
-            crsTarget.Location = new System.Drawing.Point(339, 78);
+            crsTarget.Location = new System.Drawing.Point(267, 78);
             crsTarget.Name = "crsTarget";
             crsTarget.Size = new System.Drawing.Size(210, 82);
             crsTarget.TabIndex = 5;
@@ -86,7 +88,7 @@
             // lblTargetTitle
             // 
             lblTargetTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblTargetTitle.Location = new System.Drawing.Point(339, 49);
+            lblTargetTitle.Location = new System.Drawing.Point(267, 49);
             lblTargetTitle.Name = "lblTargetTitle";
             lblTargetTitle.Size = new System.Drawing.Size(210, 26);
             lblTargetTitle.TabIndex = 4;
@@ -102,7 +104,7 @@
             // 
             // issTarget
             // 
-            issTarget.Location = new System.Drawing.Point(346, 169);
+            issTarget.Location = new System.Drawing.Point(274, 169);
             issTarget.Name = "issTarget";
             issTarget.Size = new System.Drawing.Size(203, 141);
             issTarget.TabIndex = 11;
@@ -128,7 +130,7 @@
             // clbTargetStatuses
             // 
             clbTargetStatuses.FormattingEnabled = true;
-            clbTargetStatuses.Location = new System.Drawing.Point(390, 391);
+            clbTargetStatuses.Location = new System.Drawing.Point(318, 391);
             clbTargetStatuses.Name = "clbTargetStatuses";
             clbTargetStatuses.Size = new System.Drawing.Size(120, 94);
             clbTargetStatuses.TabIndex = 16;
@@ -136,7 +138,7 @@
             // lblTargetStatuses
             // 
             lblTargetStatuses.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            lblTargetStatuses.Location = new System.Drawing.Point(346, 362);
+            lblTargetStatuses.Location = new System.Drawing.Point(274, 362);
             lblTargetStatuses.Name = "lblTargetStatuses";
             lblTargetStatuses.Size = new System.Drawing.Size(210, 26);
             lblTargetStatuses.TabIndex = 15;
@@ -168,7 +170,7 @@
             lblStatsInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             lblStatsInfo.Location = new System.Drawing.Point(19, 313);
             lblStatsInfo.Name = "lblStatsInfo";
-            lblStatsInfo.Size = new System.Drawing.Size(537, 49);
+            lblStatsInfo.Size = new System.Drawing.Size(458, 49);
             lblStatsInfo.TabIndex = 20;
             lblStatsInfo.Text = resources.GetString("lblStatsInfo.Text");
             lblStatsInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -204,11 +206,34 @@
             txtMessageLog.TabIndex = 23;
             txtMessageLog.Text = "";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            label1.Location = new System.Drawing.Point(509, 169);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(102, 15);
+            label1.TabIndex = 24;
+            label1.Text = "Locale for display";
+            // 
+            // cmbTestLocale
+            // 
+            cmbTestLocale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbTestLocale.FormattingEnabled = true;
+            cmbTestLocale.Location = new System.Drawing.Point(521, 187);
+            cmbTestLocale.Name = "cmbTestLocale";
+            cmbTestLocale.Size = new System.Drawing.Size(76, 23);
+            cmbTestLocale.TabIndex = 25;
+            cmbTestLocale.SelectedIndexChanged += cmbTestLocale_SelectedIndexChanged;
+            cmbTestLocale.TextChanged += cmbTestLocale_TextChanged;
+            // 
             // frmActionTest
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1076, 494);
+            Controls.Add(cmbTestLocale);
+            Controls.Add(label1);
             Controls.Add(txtMessageLog);
             Controls.Add(btnClose);
             Controls.Add(btnClearLog);
@@ -231,6 +256,7 @@
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Action Tester";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -252,5 +278,7 @@
         private System.Windows.Forms.Button btnClearLog;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.RichTextBox txtMessageLog;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cmbTestLocale;
     }
 }
