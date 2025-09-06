@@ -16,8 +16,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 using static RogueCustomsGameEngine.Game.Entities.Effect;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RogueCustomsDungeonEditor.HelperForms
@@ -48,6 +50,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private TreeNode SelectedNode;
         private bool HasThenChildNode;
         private bool HasOnSuccessFailureChildNodes;
+        private bool UsageCriteriaTabIsVisible;
         private readonly bool RequiresActionId;
         private readonly bool RequiresDescription;
         private readonly bool RequiresActionName;
@@ -95,6 +98,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblTarget.Text = targetDescription;
 
             cmbActionSchool.Items.Clear();
+            tcActionInfo.DrawMode = TabDrawMode.OwnerDrawFixed;
 
             foreach (var school in ActiveDungeon.ActionSchoolInfos)
             {
@@ -143,6 +147,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
             else
             {
+                tcActionInfo.TabPages.Remove(tpActionConditions);
                 txtActionCondition.Enabled = false;
                 txtActionCondition.Text = "";
                 fklblConditionWarning.Visible = false;
@@ -175,12 +180,16 @@ namespace RogueCustomsDungeonEditor.HelperForms
             SelectableEffects = selectableEffects;
             RefreshActionSequenceTree();
 
+            UsageCriteriaTabIsVisible = true;
+
             if (usageCriteria == UsageCriteria.AnyTargetAnyTime)
             {
                 rbEntity.Enabled = false;
                 rbEntity.Checked = true;
                 rbTile.Enabled = false;
-                gbSelectionCriteria.Enabled = false;
+                tpActionUsageCriteria.Enabled = false;
+                tcActionInfo.TabPages.Remove(tpActionUsageCriteria);
+                UsageCriteriaTabIsVisible = false;
             }
             else if (usageCriteria == UsageCriteria.AnyTarget)
             {
@@ -255,7 +264,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         foreach (var (DisplayName, Value) in parameter)
                         {
                             var splitRow = Value.Split('|');
-                            if(splitRow.Length == 3)
+                            if (splitRow.Length == 3)
                                 tooltipBuilder.Append("\t- ").Append(splitRow[0]).Append(" => ").Append(splitRow[1]).Append(": ").Append(splitRow[2]).Append('\n');
                             else if (splitRow.Length == 2)
                                 tooltipBuilder.Append("\t- ").Append(splitRow[0]).Append(" => ").Append(splitRow[1]).Append('\n');
@@ -613,7 +622,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     }
                     else
                     {
-                        if (gbSelectionCriteria.Enabled)
+                        if (UsageCriteriaTabIsVisible)
                         {
                             if (rbEntity.Checked)
                             {
@@ -691,7 +700,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                            : InputBox.Show("Please enter an Id for the Action.\nTo cancel Saving, leave the field empty.", "Give the Action an Id", string.Empty, true);
                     if (!string.IsNullOrWhiteSpace(idToUse))
                     {
-                        if (gbSelectionCriteria.Enabled)
+                        if (UsageCriteriaTabIsVisible)
                         {
                             if (rbEntity.Checked)
                             {
@@ -907,13 +916,17 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private void btnTestAction_Click(object sender, EventArgs e)
         {
             var actionToTest = ActionToSave != null ? ActionToSave.Clone() : new ActionWithEffectsInfo();
-            if (gbSelectionCriteria.Enabled)
+            if (UsageCriteriaTabIsVisible)
             {
                 if (rbEntity.Checked)
                 {
-                    if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                    actionToTest.TargetTypes = new List<string>();
+                    if (nudMaxRange.Value == 0)
                     {
-                        actionToTest.TargetTypes = new List<string>();
+                        actionToTest.TargetTypes.Add("Self");
+                    }
+                    else if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                    {
                         if (chkAllies.Checked)
                             actionToTest.TargetTypes.Add("Ally");
                         if (chkEnemies.Checked)
