@@ -4,6 +4,7 @@ using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,17 +23,21 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string TileName { get; set; }
         public string TileDescription { get; set; }
         public ConsoleRepresentation TileConsoleRepresentation { get; set; }
+        public GameColor NameColor { get; set; }
 
         public EntityDetailDto() { }
 
         public EntityDetailDto(Entity? entity, Tile tile, bool showTileDescription)
         {
             ShowEntityDescription = (entity != null);
+            NameColor = new(Color.White);
             if (entity != null)
             {
                 EntityName = entity.Name;
                 EntityDescription = entity.Description;
                 EntityConsoleRepresentation = entity.ConsoleRepresentation;
+                if (entity is Item i)
+                    NameColor = i.QualityLevel.ItemNameColor;
             }
 
             if (!showTileDescription) return;

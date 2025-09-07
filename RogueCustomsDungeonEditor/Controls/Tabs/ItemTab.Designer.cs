@@ -52,6 +52,10 @@
             label1 = new System.Windows.Forms.Label();
             nudItemBaseValue = new System.Windows.Forms.NumericUpDown();
             fklblWarningItemBaseValue = new System.Windows.Forms.Button();
+            label2 = new System.Windows.Forms.Label();
+            qlsItem = new QualityLevelSheet();
+            label3 = new System.Windows.Forms.Label();
+            cmbItemMaximumQualityLevel = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).BeginInit();
             SuspendLayout();
             // 
@@ -89,7 +93,7 @@
             // 
             // saeItemOnAttacked
             // 
-            saeItemOnAttacked.ActionDescription = "When the Item's owner gets interacted...   ";
+            saeItemOnAttacked.ActionDescription = "When the Item's owner gets attacked...      ";
             saeItemOnAttacked.ActionTypeText = "Interacted";
             saeItemOnAttacked.AutoSize = true;
             saeItemOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -97,7 +101,7 @@
             saeItemOnAttacked.Location = new System.Drawing.Point(341, 203);
             saeItemOnAttacked.Name = "saeItemOnAttacked";
             saeItemOnAttacked.PlaceholderActionId = "Interacted";
-            saeItemOnAttacked.Size = new System.Drawing.Size(362, 32);
+            saeItemOnAttacked.Size = new System.Drawing.Size(363, 32);
             saeItemOnAttacked.SourceDescription = "Whoever is equipping it";
             saeItemOnAttacked.TabIndex = 244;
             saeItemOnAttacked.TargetDescription = "The owner's interactor";
@@ -143,9 +147,9 @@
             // 
             // txtItemPower
             // 
-            txtItemPower.Location = new System.Drawing.Point(120, 241);
+            txtItemPower.Location = new System.Drawing.Point(132, 243);
             txtItemPower.Name = "txtItemPower";
-            txtItemPower.Size = new System.Drawing.Size(107, 23);
+            txtItemPower.Size = new System.Drawing.Size(95, 23);
             txtItemPower.TabIndex = 239;
             txtItemPower.Enter += txtItemPower_Enter;
             txtItemPower.Leave += txtItemPower_Leave;
@@ -306,7 +310,7 @@
             nudItemBaseValue.Location = new System.Drawing.Point(99, 278);
             nudItemBaseValue.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
             nudItemBaseValue.Name = "nudItemBaseValue";
-            nudItemBaseValue.Size = new System.Drawing.Size(93, 23);
+            nudItemBaseValue.Size = new System.Drawing.Size(73, 23);
             nudItemBaseValue.TabIndex = 251;
             nudItemBaseValue.ValueChanged += nudItemBaseValue_ValueChanged;
             // 
@@ -317,9 +321,9 @@
             fklblWarningItemBaseValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             fklblWarningItemBaseValue.Image = (System.Drawing.Image)resources.GetObject("fklblWarningItemBaseValue.Image");
             fklblWarningItemBaseValue.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            fklblWarningItemBaseValue.Location = new System.Drawing.Point(4, 307);
+            fklblWarningItemBaseValue.Location = new System.Drawing.Point(175, 265);
             fklblWarningItemBaseValue.Name = "fklblWarningItemBaseValue";
-            fklblWarningItemBaseValue.Size = new System.Drawing.Size(329, 42);
+            fklblWarningItemBaseValue.Size = new System.Drawing.Size(158, 53);
             fklblWarningItemBaseValue.TabIndex = 252;
             fklblWarningItemBaseValue.Text = "A Value of 0 means the Item can't be bought or sold!";
             fklblWarningItemBaseValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -327,12 +331,48 @@
             fklblWarningItemBaseValue.UseVisualStyleBackColor = true;
             fklblWarningItemBaseValue.Visible = false;
             // 
+            // label2
+            // 
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            label2.Location = new System.Drawing.Point(0, 304);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(361, 52);
+            label2.TabIndex = 253;
+            label2.Text = "Possible Quality Levels for the Item:";
+            label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // qlsItem
+            // 
+            qlsItem.Location = new System.Drawing.Point(68, 350);
+            qlsItem.Name = "qlsItem";
+            qlsItem.Size = new System.Drawing.Size(203, 175);
+            qlsItem.TabIndex = 254;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(4, 535);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(170, 15);
+            label3.TabIndex = 255;
+            label3.Text = "Maximum Item Quality Level is";
+            // 
+            // cmbItemMaximumQualityLevel
+            // 
+            cmbItemMaximumQualityLevel.FormattingEnabled = true;
+            cmbItemMaximumQualityLevel.Location = new System.Drawing.Point(175, 531);
+            cmbItemMaximumQualityLevel.Name = "cmbItemMaximumQualityLevel";
+            cmbItemMaximumQualityLevel.Size = new System.Drawing.Size(121, 23);
+            cmbItemMaximumQualityLevel.TabIndex = 256;
+            // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            Controls.Add(fklblWarningItemBaseValue);
+            Controls.Add(cmbItemMaximumQualityLevel);
+            Controls.Add(label3);
+            Controls.Add(qlsItem);
             Controls.Add(nudItemBaseValue);
             Controls.Add(label1);
             Controls.Add(label98);
@@ -355,8 +395,10 @@
             Controls.Add(fklblItemNameLocale);
             Controls.Add(txtItemName);
             Controls.Add(label106);
+            Controls.Add(fklblWarningItemBaseValue);
+            Controls.Add(label2);
             Name = "ItemTab";
-            Size = new System.Drawing.Size(714, 509);
+            Size = new System.Drawing.Size(711, 566);
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -387,5 +429,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown nudItemBaseValue;
         private System.Windows.Forms.Button fklblWarningItemBaseValue;
+        private System.Windows.Forms.Label label2;
+        private QualityLevelSheet qlsItem;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cmbItemMaximumQualityLevel;
     }
 }

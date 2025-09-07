@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Numerics;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -30,6 +31,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Description { get; set; }
         public string PowerName { get; set; }
         public string Power { get; set; }
+        public int ItemLevel { get; set; }
+        public string QualityLevel { get; set; }
+        public string ItemType { get; set; }
+        public GameColor QualityColor { get; set; }
         public string ClassId { get; set; }
         public List<StatModificationDto> StatModifications { get; set; }
         public List<string> OnAttackActions { get; set; }
@@ -41,6 +46,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsInFloor { get; set; }
         public int ItemId { get; set; }
         public int Value { get; set; }
+        public List<ExtraDamageDto> ExtraDamages { get; set; }
 
         public InventoryItemDto() { }
 
@@ -58,6 +64,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 _ => string.Empty
             };
             Power = pickableAsItem?.Power ?? string.Empty;
+            ItemLevel = pickableAsItem?.ItemLevel ?? 0;
+            ItemType = pickableAsEntity != null ? pickableAsEntity.EntityType.ToString() : "";
+            QualityLevel = pickableAsItem != null ? pickableAsItem.QualityLevel.Name : string.Empty;
+            QualityColor = pickableAsItem != null ? pickableAsItem.QualityLevel.ItemNameColor : new GameColor(Color.White);
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
             CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
             CanBeDropped = p is not Key;
@@ -67,7 +77,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ItemId = pickableAsEntity.Id;
             ClassId = pickableAsEntity.ClassId;
             var saleValuePercentage = character is PlayerCharacter pc ? pc.SaleValuePercentage : 1.0f;
-            Value = forBuy || pickableAsItem.Value == 0 ? pickableAsItem.Value : (int) Math.Max(1, (pickableAsItem.Value * saleValuePercentage));
+            if (pickableAsItem != null)
+                Value = forBuy || pickableAsItem.Value == 0 ? pickableAsItem.Value : (int)Math.Max(1, (pickableAsItem.Value * saleValuePercentage));
+            else
+                Value = 0;
             StatModifications = new();
             pickableAsItem?.StatModifiers.ForEach(m => {
                 var correspondingStat = character.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
@@ -76,6 +89,15 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             });
             OnAttackActions = new();
             pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
+            ExtraDamages = [];
+            if(pickableAsItem?.ExtraDamage != null)
+            {
+                foreach (var extraDamage in pickableAsItem.ExtraDamage)
+                {
+                    if (extraDamage.MaximumDamage == 0) continue;
+                    ExtraDamages.Add(new(extraDamage));
+                }
+            }
         }
 
         public InventoryItemDto(EntityClass e, Map map, bool forBuy)
@@ -89,6 +111,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 EntityType.Armor => map.Locale["CharacterMitigationStat"],
                 _ => string.Empty
             };
+            ItemType = e.EntityType.ToString();
             Power = e.Power ?? string.Empty;
             ConsoleRepresentation = e.ConsoleRepresentation;
             ClassId = e.Id;
@@ -101,6 +124,24 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             OnAttackActions = [];
             e.OnAttack.ForEach(ooa => OnAttackActions.Add(map.Locale[ooa.Name]));
             Value = forBuy || e.BaseValue == 0 ? e.BaseValue : (int) Math.Max(1,(e.BaseValue * map.Player.SaleValuePercentage));
+            ExtraDamages = [];
+            QualityColor = new(Color.White);
+        }
+    }
+
+    public class ExtraDamageDto()
+    {
+        public int MinDamage { get; set; }
+        public int MaxDamage { get; set; }
+        public string DamageString => MinDamage != MaxDamage ? $"{MinDamage}-{MaxDamage}" : MinDamage.ToString();
+        public string Element { get; set; }
+
+        public ExtraDamageDto(ExtraDamage extraDamage) : this()
+        {
+            if (extraDamage == null) return;
+            MinDamage = extraDamage.MinimumDamage;
+            MaxDamage = extraDamage.MaximumDamage;
+            Element = extraDamage.Element.Name;
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

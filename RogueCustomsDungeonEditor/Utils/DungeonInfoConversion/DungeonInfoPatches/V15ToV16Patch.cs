@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -21,6 +22,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateActionSchools(root);
             UpdateLootTables(root);
             UpdateCurrencyInfo(root);
+            UpdateAffixInfos(root);
+            UpdateQualityLevelInfos(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateItems(root);
@@ -82,6 +85,31 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onFloorStart);
                 }
+                floorGroup["MonsterHouseOdds"] = 0;
+                foreach (var npc in floorGroup["PossibleMonsters"]?.AsArray() ?? new JsonArray())
+                {
+                    if (npc is JsonObject npcObj)
+                    {
+                        npcObj["MinLevel"] = 1;
+                        npcObj["MaxLevel"] = 1;
+                    }
+                }
+                foreach (var item in floorGroup["PossibleItems"]?.AsArray() ?? new JsonArray())
+                {
+                    if (item is JsonObject itemObj)
+                    {
+                        itemObj["MinLevel"] = 1;
+                        itemObj["MaxLevel"] = 1;
+                    }
+                }
+                foreach (var trap in floorGroup["PossibleTraps"]?.AsArray() ?? new JsonArray())
+                {
+                    if (trap is JsonObject trapObj)
+                    {
+                        trapObj["MinLevel"] = 1;
+                        trapObj["MaxLevel"] = 1;
+                    }
+                }
             }
         }
 
@@ -127,6 +155,15 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                             ["Weight"] = 100
                         }
                     }
+                    ["OverridesQualityLevelOddsOfItems"] = false,
+                    ["QualityLevelOdds"] = new JsonArray()
+                    {
+                        new JsonObject
+                        {
+                            ["Id"] = "Normal",
+                            ["ChanceToPick"] = 100
+                        }
+                    }
                 }
             };
             root["LootTableInfos"] = lootTableInfos;
@@ -156,6 +193,30 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 }
             };
             root["CurrencyInfo"] = currencyInfo;
+        }
+
+        private static void UpdateAffixInfos(JsonObject root)
+        {
+            if (root["AffixInfos"] is JsonArray) return;
+            root["AffixInfos"] = new JsonArray();
+        }
+
+        private static void UpdateQualityLevelInfos(JsonObject root)
+        {
+            if (root["QualityLevelInfos"] is JsonArray) return;
+            var qualityLevelInfos = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["Id"] = "Normal",
+                    ["Name"] = "QualityLevelNormal",
+                    ["MinimumAffixes"] = 0,
+                    ["MaximumAffixes"] = 0,
+                    ["AttachesWhatToItemName"] = "None",
+                    ["ItemNameColor"] = JsonSerializer.SerializeToNode(new GameColor(Color.White))
+                }
+            };
+            root["QualityLevelInfos"] = qualityLevelInfos;
         }
 
         private static void UpdatePlayerClasses(JsonObject root)
@@ -195,7 +256,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     playerClass["InitialEquippedArmor"] = null;
                 }
-                if (playerClass["SaleValuePercentage"] is not JsonObject)
+                if (playerClass["SaleValuePercentage"] is null)
                     playerClass["SaleValuePercentage"] = 50;
             }
         }
@@ -242,9 +303,9 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onLevelUp);
                 }
-                if(npc["LootTableId"] is not JsonObject)
+                if(npc["LootTableId"] is null)
                     npc["LootTableId"] = "None";
-                if (npc["DropPicks"] is not JsonObject)
+                if(npc["DropPicks"] is null)
                     npc["DropPicks"] = 0;
             }
         }
@@ -277,8 +338,21 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onUse);
                 }
-                if (item["BaseValue"] is not JsonObject)
+                if (item["BaseValue"] is null)
                     item["BaseValue"] = 0;
+                if (item["MaximumQualityLevel"] is null)
+                    item["MaximumQualityLevel"] = "Normal";
+                if (item["QualityLevelOdds"] is null)
+                {
+                    item["QualityLevelOdds"] = new JsonArray()
+                    {
+                        new JsonObject
+                        {
+                            ["Id"] = "Normal",
+                            ["ChanceToPick"] = 100
+                        }
+                    };
+                }
             }
         }
 

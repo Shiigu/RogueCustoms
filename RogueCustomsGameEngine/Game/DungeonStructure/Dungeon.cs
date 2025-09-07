@@ -65,6 +65,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<ActionSchool> ActionSchools { get; set; }
         public List<LootTable> LootTables { get; set; }
         public List<CurrencyPile> CurrencyData { get; set; }
+        public List<QualityLevel> QualityLevels { get; set; }
+        public List<Affix> Affixes { get; set; }
         public float SaleValuePercentage { get; set; }
         public List<EntityClass> Classes { get; set; }
         [JsonIgnore]
@@ -101,6 +103,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TileTypes = new List<TileType>();
             TileSets = new List<TileSet>();
             CurrencyData = new List<CurrencyPile>();
+            Affixes = new List<Affix>();
+            QualityLevels = new List<QualityLevel>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
                 ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
@@ -108,21 +112,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Name = LocaleToUse[dungeonInfo.Name];
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
-            Classes.Add(dungeonInfo.CurrencyInfo.Parse(LocaleToUse));
+            Classes.Add(dungeonInfo.CurrencyInfo.Parse(this));
             dungeonInfo.CurrencyInfo.CurrencyPiles.ForEach(cp => CurrencyData.Add(new CurrencyPile(cp)));
             dungeonInfo.ActionSchoolInfos.ForEach(s => ActionSchools.Add(new ActionSchool(s, LocaleToUse)));
+            dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse, ActionSchools)));
+            dungeonInfo.AffixInfos.ForEach(a => Affixes.Add(new Affix(a, LocaleToUse, Elements, ActionSchools)));
+            dungeonInfo.QualityLevelInfos.ForEach(ql => QualityLevels.Add(new QualityLevel(ql, LocaleToUse)));
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
-            dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse, ActionSchools)));
             dungeonInfo.LootTableInfos.ForEach(lt => LootTables.Add(new LootTable(lt)));
-            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Player, dungeonInfo.CharacterStats, ActionSchools, [])));
-            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.NPC, dungeonInfo.CharacterStats, ActionSchools, LootTables)));
-            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, null, null, ActionSchools, [])));
-            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.Trap, null, ActionSchools, [])));
-            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, LocaleToUse, EntityType.AlteredStatus, null, ActionSchools, [])));
+            dungeonInfo.PlayerClasses.ForEach(ci => Classes.Add(new EntityClass(ci, EntityType.Player, this, dungeonInfo.CharacterStats)));
+            dungeonInfo.NPCs.ForEach(ci => Classes.Add(new EntityClass(ci, EntityType.NPC, this, dungeonInfo.CharacterStats)));
+            dungeonInfo.Items.ForEach(ci => Classes.Add(new EntityClass(ci, null, this, null)));
+            dungeonInfo.Traps.ForEach(ci => Classes.Add(new EntityClass(ci, EntityType.Trap, this, null)));
+            dungeonInfo.AlteredStatuses.ForEach(ci => Classes.Add(new EntityClass(ci, EntityType.AlteredStatus, this, null)));
             LootTables.ForEach(lt => lt.FillEntries(this));
             FloorTypes = new List<FloorType>();
-            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, LocaleToUse, TileTypes, ActionSchools)));
+            dungeonInfo.FloorInfos.ForEach(fi => FloorTypes.Add(new FloorType(fi, this)));
             FloorTypes.ForEach(ft => {
                 ft.TileSet = TileSets.Find(ts => ts.Id.Equals(ft.TileSetId))
                     ?? throw new FormatException($"No TileSet with id {ft.TileSetId} was found.");

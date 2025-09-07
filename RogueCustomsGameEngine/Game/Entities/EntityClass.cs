@@ -69,6 +69,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionWithEffects OnUse { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
         public int BaseValue { get; set; }
+        public QualityLevel MaximumQualityLevel { get; set; }
+        public List<QualityLevelOdds> QualityLevelOdds { get; set; }
        
         #endregion
 
@@ -94,11 +96,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnRemove { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, Locale Locale, EntityType? entityType, List<StatInfo> statInfos, List<ActionSchool> actionSchools, List<LootTable> lootTables)
+        public EntityClass(ClassInfo classInfo, EntityType? entityType, Dungeon dungeon, List<StatInfo> statInfos)
         {
             Id = classInfo.Id;
-            Name = Locale[classInfo.Name];
-            Description = (classInfo.Description != null) ? Locale[classInfo.Description] : null;
+            Name = dungeon.LocaleToUse[classInfo.Name];
+            Description = (classInfo.Description != null) ? dungeon.LocaleToUse[classInfo.Description] : null;
             ConsoleRepresentation = classInfo.ConsoleRepresentation;
 
             if (classInfo is ItemInfo itemInfo)
@@ -119,13 +121,19 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 StartsVisible = itemInfo.StartsVisible;
                 Passable = true;
-                OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart, actionSchools);
+                OnTurnStart = ActionWithEffects.Create(itemInfo.OnTurnStart, dungeon.ActionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, itemInfo.OnAttack, actionSchools);
-                OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked, actionSchools);
-                OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, actionSchools);
-                OnUse = ActionWithEffects.Create(itemInfo.OnUse, actionSchools);
+                MapActions(OnAttack, itemInfo.OnAttack, dungeon.ActionSchools);
+                OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked, dungeon.ActionSchools);
+                OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, dungeon.ActionSchools);
+                OnUse = ActionWithEffects.Create(itemInfo.OnUse, dungeon.ActionSchools);
                 BaseValue = itemInfo.BaseValue;
+                MaximumQualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(itemInfo.MaximumQualityLevel, StringComparison.InvariantCultureIgnoreCase));
+                QualityLevelOdds = [];
+                foreach (var odds in itemInfo.QualityLevelOdds ?? [])
+                {
+                    QualityLevelOdds.Add(new(odds, dungeon));
+                }
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
@@ -151,9 +159,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 foreach (var stat in Stats)
                 {
-                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase))
-                        ?? throw new InvalidDataException($"EntityClass {playerClassInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
-                    stat.Name = Locale[correspondingStat.Name];
+                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if(correspondingStat == null)
+                        throw new InvalidDataException($"EntityClass {playerClassInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
+                    stat.Name = dungeon.LocaleToUse[correspondingStat.Name];
                     stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
                     stat.HasMax = correspondingStat.HasMax;
                     stat.MinCap = correspondingStat.MinCap;
@@ -185,12 +194,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = playerClassInfo.InventorySize;
-                OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart, actionSchools);
+                OnTurnStart = ActionWithEffects.Create(playerClassInfo.OnTurnStart, dungeon.ActionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, playerClassInfo.OnAttack, actionSchools);
-                OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked, actionSchools);
-                OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath, actionSchools);
-                OnLevelUp = ActionWithEffects.Create(playerClassInfo.OnLevelUp, actionSchools);
+                MapActions(OnAttack, playerClassInfo.OnAttack, dungeon.ActionSchools);
+                OnAttacked = ActionWithEffects.Create(playerClassInfo.OnAttacked, dungeon.ActionSchools);
+                OnDeath = ActionWithEffects.Create(playerClassInfo.OnDeath, dungeon.ActionSchools);
+                OnLevelUp = ActionWithEffects.Create(playerClassInfo.OnLevelUp, dungeon.ActionSchools);
                 EntityType = EntityType.Player;
                 StartsVisible = playerClassInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
@@ -218,9 +227,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 foreach (var stat in Stats)
                 {
-                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase))
-                        ?? throw new InvalidDataException($"EntityClass {npcInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
-                    stat.Name = Locale[correspondingStat.Name];
+                    var correspondingStat = statInfos.Find(s => s.Id.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingStat == null)
+                        throw new InvalidDataException($"EntityClass {npcInfo.Id} has a Stat of Id {stat.Id}, which isn't found in the Dungeon Data.");
+                    stat.Name = dungeon.LocaleToUse[correspondingStat.Name];
                     stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
                     stat.HasMax = correspondingStat.HasMax;
                     stat.MinCap = correspondingStat.MinCap;
@@ -258,26 +268,26 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 InventorySize = npcInfo.InventorySize;
-                OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart, actionSchools);
+                OnTurnStart = ActionWithEffects.Create(npcInfo.OnTurnStart, dungeon.ActionSchools);
                 OnAttack = new List<ActionWithEffects>();
-                MapActions(OnAttack, npcInfo.OnAttack, actionSchools);
-                OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked, actionSchools);
-                OnDeath = ActionWithEffects.Create(npcInfo.OnDeath, actionSchools);
-                OnLevelUp = ActionWithEffects.Create(npcInfo.OnLevelUp, actionSchools);
+                MapActions(OnAttack, npcInfo.OnAttack, dungeon.ActionSchools);
+                OnAttacked = ActionWithEffects.Create(npcInfo.OnAttacked, dungeon.ActionSchools);
+                OnDeath = ActionWithEffects.Create(npcInfo.OnDeath, dungeon.ActionSchools);
+                OnLevelUp = ActionWithEffects.Create(npcInfo.OnLevelUp, dungeon.ActionSchools);
 
                 EntityType = EntityType.NPC;
                 StartsVisible = npcInfo.StartsVisible;
                 StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
                 AIType = Enum.Parse<AIType>(npcInfo.AIType);
-                LootTable = (npcInfo.LootTableId != null && npcInfo.LootTableId != "None") ? lootTables.Find(lt => lt.Id.Equals(npcInfo.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
+                LootTable = (npcInfo.LootTableId != null && npcInfo.LootTableId != "None") ? dungeon.LootTables.Find(lt => lt.Id.Equals(npcInfo.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
                 DropPicks = npcInfo.DropPicks;
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
                 WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;
-                OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn, actionSchools);
+                OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn, dungeon.ActionSchools);
                 OnInteracted = new List<ActionWithEffects>();
-                MapActions(OnInteracted, npcInfo.OnInteracted, actionSchools);
+                MapActions(OnInteracted, npcInfo.OnInteracted, dungeon.ActionSchools);
             }
             else if (classInfo is TrapInfo trapInfo)
             {
@@ -285,7 +295,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Power = trapInfo.Power;
                 StartsVisible = trapInfo.StartsVisible;
                 Passable = true;
-                OnStepped = ActionWithEffects.Create(trapInfo.OnStepped, actionSchools);
+                OnStepped = ActionWithEffects.Create(trapInfo.OnStepped, dungeon.ActionSchools);
             }
             else if (classInfo is AlteredStatusInfo alteredStatusInfo)
             {
@@ -295,11 +305,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CanOverwrite = alteredStatusInfo.CanOverwrite;
                 CleanseOnFloorChange = alteredStatusInfo.CleanseOnFloorChange;
                 CleansedByCleanseActions = alteredStatusInfo.CleansedByCleanseActions;
-                OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart, actionSchools);
-                OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply, actionSchools);
-                OnAttacked = ActionWithEffects.Create(alteredStatusInfo.OnAttacked, actionSchools);
-                BeforeAttack = ActionWithEffects.Create(alteredStatusInfo.BeforeAttack, actionSchools);
-                OnRemove = ActionWithEffects.Create(alteredStatusInfo.OnRemove, actionSchools);
+                OnTurnStart = ActionWithEffects.Create(alteredStatusInfo.OnTurnStart, dungeon.ActionSchools);
+                OnApply = ActionWithEffects.Create(alteredStatusInfo.OnApply, dungeon.ActionSchools);
+                OnAttacked = ActionWithEffects.Create(alteredStatusInfo.OnAttacked, dungeon.ActionSchools);
+                BeforeAttack = ActionWithEffects.Create(alteredStatusInfo.BeforeAttack, dungeon.ActionSchools);
+                OnRemove = ActionWithEffects.Create(alteredStatusInfo.OnRemove, dungeon.ActionSchools);
             }
         }
 

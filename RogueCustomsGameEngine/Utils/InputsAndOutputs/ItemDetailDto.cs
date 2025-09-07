@@ -3,6 +3,7 @@ using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Description { get; set; }
         public string PowerName { get; set; }
         public string Power { get; set; }
+        public int ItemLevel { get; set; }
+        public string QualityLevel { get; set; }
+        public string ItemType { get; set; }
+        public GameColor NameColor { get; set; }
         public List<StatModificationDto> StatModifications { get; set; }
         public List<string> OnAttackActions { get; set; }
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
@@ -35,6 +40,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             };
             Power = i.Power ?? string.Empty;
             StatModifications = new();
+            ItemLevel = i.ItemLevel;
+            ItemType = i.EntityType.ToString();
+            QualityLevel = i.QualityLevel.Name;
+            NameColor = i.QualityLevel.ItemNameColor;
             i.StatModifiers.ForEach(m => {
                 var correspondingStat = i.Owner.UsedStats.FirstOrDefault(s => s.Id.Equals(m.Id));
                 if (correspondingStat != null)

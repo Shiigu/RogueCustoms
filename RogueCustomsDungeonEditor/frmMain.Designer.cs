@@ -70,6 +70,10 @@ namespace RogueCustomsDungeonEditor
             CurrencyTab = new Controls.Tabs.CurrencyTab();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
+            tpAffixes = new TabPage();
+            AffixTab = new Controls.Tabs.AffixTab();
+            tpQualityLevels = new TabPage();
+            QualityLevelsTab = new Controls.Tabs.QualityLevelsTab();
             tpPlayerClass = new TabPage();
             PlayerClassTab = new Controls.Tabs.PlayerClassTab();
             tpNPC = new TabPage();
@@ -100,6 +104,8 @@ namespace RogueCustomsDungeonEditor
             tpLootTableInfos.SuspendLayout();
             tpCurrencyInfo.SuspendLayout();
             tbStatInfos.SuspendLayout();
+            tpAffixes.SuspendLayout();
+            tpQualityLevels.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
             tpItem.SuspendLayout();
@@ -282,6 +288,8 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpLootTableInfos);
             tbTabs.Controls.Add(tpCurrencyInfo);
             tbTabs.Controls.Add(tbStatInfos);
+            tbTabs.Controls.Add(tpAffixes);
+            tbTabs.Controls.Add(tpQualityLevels);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
             tbTabs.Controls.Add(tpItem);
@@ -508,6 +516,41 @@ namespace RogueCustomsDungeonEditor
             StatTab.Size = new System.Drawing.Size(656, 166);
             StatTab.TabIndex = 0;
             // 
+            // tpAffixes
+            // 
+            tpAffixes.Controls.Add(AffixTab);
+            tpAffixes.Location = new System.Drawing.Point(4, 24);
+            tpAffixes.Name = "tpAffixes";
+            tpAffixes.Size = new System.Drawing.Size(740, 356);
+            tpAffixes.TabIndex = 18;
+            tpAffixes.Text = "Affixes";
+            tpAffixes.UseVisualStyleBackColor = true;
+            // 
+            // AffixTab
+            // 
+            AffixTab.Location = new System.Drawing.Point(0, 0);
+            AffixTab.Name = "AffixTab";
+            AffixTab.Size = new System.Drawing.Size(740, 356);
+            AffixTab.TabIndex = 0;
+            // 
+            // tpQualityLevels
+            // 
+            tpQualityLevels.Controls.Add(QualityLevelsTab);
+            tpQualityLevels.Location = new System.Drawing.Point(4, 24);
+            tpQualityLevels.Name = "tpQualityLevels";
+            tpQualityLevels.Size = new System.Drawing.Size(740, 356);
+            tpQualityLevels.TabIndex = 19;
+            tpQualityLevels.Text = "Quality Levels";
+            tpQualityLevels.UseVisualStyleBackColor = true;
+            // 
+            // QualityLevelsTab
+            // 
+            QualityLevelsTab.Dock = DockStyle.Fill;
+            QualityLevelsTab.Location = new System.Drawing.Point(0, 0);
+            QualityLevelsTab.Name = "QualityLevelsTab";
+            QualityLevelsTab.Size = new System.Drawing.Size(740, 356);
+            QualityLevelsTab.TabIndex = 0;
+            // 
             // tpPlayerClass
             // 
             tpPlayerClass.AutoScroll = true;
@@ -565,7 +608,7 @@ namespace RogueCustomsDungeonEditor
             ItemTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ItemTab.Location = new System.Drawing.Point(-5, 1);
             ItemTab.Name = "ItemTab";
-            ItemTab.Size = new System.Drawing.Size(712, 508);
+            ItemTab.Size = new System.Drawing.Size(712, 557);
             ItemTab.TabIndex = 0;
             // 
             // tpTrap
@@ -692,6 +735,8 @@ namespace RogueCustomsDungeonEditor
             tpCurrencyInfo.ResumeLayout(false);
             tbStatInfos.ResumeLayout(false);
             tbStatInfos.PerformLayout();
+            tpAffixes.ResumeLayout(false);
+            tpQualityLevels.ResumeLayout(false);
             tpPlayerClass.ResumeLayout(false);
             tpPlayerClass.PerformLayout();
             tpNPC.ResumeLayout(false);
@@ -765,5 +810,9 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.LootTableTab LootTableTab;
         private TabPage tpCurrencyInfo;
         private Controls.Tabs.CurrencyTab CurrencyTab;
+        private TabPage tpAffixes;
+        private TabPage tpQualityLevels;
+        private Controls.Tabs.AffixTab AffixTab;
+        private Controls.Tabs.QualityLevelsTab QualityLevelsTab;
     }
 }

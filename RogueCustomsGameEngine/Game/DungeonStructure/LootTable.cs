@@ -19,12 +19,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private LootTableInfo _baseInfo;
 
         public string Id { get; set; }
+        public List<QualityLevelOdds> QualityLevelOdds { get; set; }
+        public bool OverridesQualityLevelOddsOfItems { get; set; }
         public List<LootTableEntry> Entries { get; set; }
 
         public LootTable(LootTableInfo info)
         {
             Id = info.Id;
             _baseInfo = info;
+            OverridesQualityLevelOddsOfItems = info.OverridesQualityLevelOddsOfItems;
         }
 
         public void FillEntries(Dungeon dungeon)
@@ -33,6 +36,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             foreach (var entry in _baseInfo.Entries)
             {
                 Entries.Add(new(entry, dungeon));
+            }
+            QualityLevelOdds = [];
+            foreach (var odds in _baseInfo.QualityLevelOdds ?? [])
+            {
+                QualityLevelOdds.Add(new(odds, dungeon));
             }
         }
     }

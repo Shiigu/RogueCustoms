@@ -50,11 +50,14 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string ClassId { get; set; }
 
         #region Monster-only
-        public int MinLevel { get; set; }
-        public int MaxLevel { get; set; }
         public int OverallMaxForKindInFloor { get; set; }
         public bool CanSpawnOnFirstTurn { get; set; }
         public bool CanSpawnAfterFirstTurn { get; set; }
+        #endregion
+
+        #region Not for Traps        
+        public int MinLevel { get; set; }
+        public int MaxLevel { get; set; }
         #endregion
 
         public int MinimumInFirstTurn { get; set; }

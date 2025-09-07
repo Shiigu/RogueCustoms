@@ -61,6 +61,27 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         messages.AddError($"This Loot Table has an Entry {entry.PickId} but it is not a known Item, Item Type or Loot Table.");
                     }
                 }
+
+                if(lootTableJson.QualityLevelOdds == null)
+                {
+                    messages.AddError("This Loot Table has not set a Quality Level Odds table, not even a default, empty one.");
+                }
+                else
+                {
+                    foreach (var odd in lootTableJson.QualityLevelOdds)
+                    {
+                        var correspondingQualityLevel = dungeonJson.QualityLevelInfos.Find(qli => qli.Id.Equals(odd.Id));
+                        if (correspondingQualityLevel == null)
+                        {
+                            messages.AddError("This Loot Table has odds for an Maximum Quality Level.");
+                        }
+                        else
+                        {
+                            if (odd.ChanceToPick < 0)
+                                messages.AddError($"This Loot Table has an invalid Weight for Quality Level {odd.Id}. It must be a non-negative integer.");
+                        }
+                    }
+                }
             }
 
             if (!messages.Any()) messages.AddSuccess("ALL OK!");

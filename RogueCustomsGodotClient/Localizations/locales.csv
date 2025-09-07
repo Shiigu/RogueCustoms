@@ -64,6 +64,8 @@ InventoryWindowBuyValueText,Costo: {Symbol}{Amount},Cost: {Symbol}{Amount}
 InventoryWindowSaleValueText,Valor de venta: {Symbol}{Amount},Sale Value: {Symbol}{Amount}
 InventoryWindowCannotBeSoldText,No se puede intercambiar por {Symbol},Cannot be traded for {Symbol}
 InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE ENOUGH {Symbol}
+InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
+InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
 LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English

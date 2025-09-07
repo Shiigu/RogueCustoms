@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,11 +15,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public class DungeonItemValidator
     {
-        private static List<string> ValidStatIds = new() { "HP", "MP", "Hunger", "Attack", "Defense", "Movement", "Accuracy", "Evasion", "HPRegeneration", "MPRegeneration" };
-
         public static async Task<DungeonValidationMessages> Validate(ItemInfo itemJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var itemAsInstance = sampleDungeon != null ? new Item(new EntityClass(itemJson, sampleDungeon.LocaleToUse, null, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor) : null;
+            var itemAsInstance = sampleDungeon != null ? new Item(new EntityClass(itemJson, null, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor) : null;
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(itemJson.Name, "Item", "Name", true));
@@ -63,11 +62,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     }
                 }
 
+                var validStatIds = dungeonJson.CharacterStats.ConvertAll(s => s.Id);
+
                 if (itemJson.StatModifiers != null && itemJson.StatModifiers.Any())
                 {
                     foreach (var stat in itemJson.StatModifiers)
                     {
-                        if(!ValidStatIds.Select(id => id.ToLowerInvariant()).Contains(stat.Id.ToLowerInvariant()))
+                        if(!validStatIds.Contains(stat.Id.ToLowerInvariant()))
                         {
                             messages.AddWarning($"Item's modification is invalid as there is no stat with Id {stat.Id}.");
                             continue;
@@ -117,6 +118,27 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 else if (itemJson.EntityType == "Weapon")
                 {
                     messages.AddWarning("Weapon does not have OnAttackActions. Weapon cannot do anything in this current state.");
+                }
+
+                var maximumQualityLevel = dungeonJson.QualityLevelInfos.Find(qli => qli.Id.Equals(itemJson.MaximumQualityLevel));
+                if(maximumQualityLevel == null)
+                {
+                    messages.AddError($"Item has an invalid Maximum Quality Level.");
+                    foreach (var odd in itemJson.QualityLevelOdds)
+                    {
+                        var correspondingQualityLevel = dungeonJson.QualityLevelInfos.Find(qli => qli.Id.Equals(odd.Id));
+                        if (correspondingQualityLevel == null)
+                        {
+                            messages.AddError("Item has odds for an Maximum Quality Level.");
+                        }
+                        else
+                        {
+                            if (odd.ChanceToPick < 0)
+                                messages.AddError($"Item has an invalid Weight for Quality Level {odd.Id}. It must be a non-negative integer.");
+                            if (odd.ChanceToPick > 0 && correspondingQualityLevel.MaximumAffixes > maximumQualityLevel.MaximumAffixes)
+                                messages.AddError($"Item has odds for Quality Level {odd.Id}, which has more affixes than the item's Maximum Quality Level and is thus superior.");
+                        }
+                    }
                 }
 
                 if (itemJson.OnAttacked != null)

@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Linq;
 
 using Godot;
+
+using RogueCustomsGodotClient.Helpers;
+
+using static System.Net.Mime.MediaTypeNames;
 
 public partial class ScalableLabel : Label
 {
@@ -11,6 +16,20 @@ public partial class ScalableLabel : Label
     {
     }
 
+    public override Vector2 _GetMinimumSize()
+    {
+        var font = GetThemeFont("font");
+        var fontSize = GetThemeFontSize("normal_font_size");
+
+        if (font == null || string.IsNullOrEmpty(Text))
+            return new Vector2(0, 0);
+
+        var textWidth = font.GetStringSize(Text, HorizontalAlignment.Left, -1, fontSize).X;
+        var textHeight = font.GetHeight(fontSize);
+
+        return new Vector2(textWidth, textHeight);
+    }
+
     public new void SetText(string text)
     {
         Text = text;
@@ -19,20 +38,25 @@ public partial class ScalableLabel : Label
 
     private void UpdateFontSize()
     {
-        AddThemeFontSizeOverride("normal_font_size", DefaultFontSize);
+        var font = GetThemeFont("font");
+        if (font == null)
+            return;
 
-        var currentFontSize = 16;
-        var maxWidth = Size.X - 16;
-        var textWidth = currentFontSize * Text.Length;
+        var textLines = Text.Split(new string[] { "[p]", "[/p]" }, StringSplitOptions.RemoveEmptyEntries);
+
+        var longestLine = textLines.MaxBy(t => t.Length);
+
+        var currentFontSize = DefaultFontSize;
+        var maxWidth = Size.X - DefaultFontSize;
+        var textWidth = font.GetStringSize(longestLine, HorizontalAlignment.Left, -1, currentFontSize).X;
 
         // Loop until the text fits or reaches the minimum font size
         while (textWidth > maxWidth && currentFontSize > MinFontSize)
         {
-            currentFontSize -= 1;
-            textWidth = currentFontSize * Text.Length;
+            currentFontSize--;
+            textWidth = font.GetStringSize(longestLine, HorizontalAlignment.Left, -1, currentFontSize).X;
         }
 
-        Size = new(Math.Min(maxWidth, textWidth), 16);
-        AddThemeFontSizeOverride("normal_font_size", currentFontSize);
+        AddThemeFontSizeOverride("font_size", currentFontSize);
     }
 }

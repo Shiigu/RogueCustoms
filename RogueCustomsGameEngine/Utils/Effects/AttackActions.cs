@@ -13,6 +13,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Xml.Linq;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -44,19 +45,28 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var resistanceStat = c.UsedStats.Find(s => s.Id.Equals(attackElement.ResistanceStatId, StringComparison.InvariantCultureIgnoreCase));
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
             var canCallElementEffect = !paramsObject.BypassesElementEffect;
+
+            var isExtraDamage = false;
+            if (paramsObject.ContainsKey("IsExtraDamage"))
+            {
+                isExtraDamage = paramsObject.IsExtraDamage;
+            }
             if (Rng.RollProbability() > accuracyCheck)
             {
-                if (c == Map.Player || Map.Player.CanSee(c))
+                if (!isExtraDamage)
                 {
-                    events.Add(new()
+                    if (c == Map.Player || Map.Player.CanSee(c))
                     {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.Miss }
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Miss }
+                        }
+                        );
+                        Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White, events);
                     }
-                    );
-                    Map.AppendMessage(Map.Locale["AttackMissedText"], Color.White, events);
+                    Map.DisplayEvents.Add(($"{c.Name}'s attack missed", events));
                 }
-                Map.DisplayEvents.Add(($"{c.Name}'s attack missed", events));
                 return false;
             }
             if (canCallElementEffect && attackElement.OnAfterAttack != null && !string.IsNullOrWhiteSpace(attackElement.OnAfterAttack.UseCondition))
@@ -83,9 +93,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 
                 var healDamageParams = new List<EffectParam>
                 {
-                    new EffectParam { ParamName = "Source", Value = "source" },
-                    new EffectParam { ParamName = "Target", Value = targetParam.Value },
-                    new EffectParam { ParamName = "Power", Value = (damageResistance - paramsObject.Damage).ToString() },
+                    new() { ParamName = "Source", Value = "source" },
+                    new() { ParamName = "Target", Value = targetParam.Value },
+                    new() { ParamName = "Power", Value = (damageResistance - paramsObject.Damage).ToString(CultureInfo.CurrentCulture) },
                 };
 
                 var healResult = GenericActions.HealDamage(new EffectCallerParams
@@ -118,19 +128,23 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.CreateFlag($"DamageTaken_{c.Id}", damageDealt, true);
             if (damageDealt <= 0)
             {
-                if (c == Map.Player || Map.Player.CanSee(c))
+                if (!isExtraDamage)
                 {
-                    events.Add(new()
+                    if (c == Map.Player || Map.Player.CanSee(c))
                     {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.Miss }
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Miss }
+                        }
+                        );
+                        Map.AppendMessage(Map.Locale["AttackDealtNoDamageText"], Color.White, events);
                     }
-                    );
-                    Map.AppendMessage(Map.Locale["AttackDealtNoDamageText"], Color.White, events);
+                    Map.DisplayEvents.Add(($"{c.Name}'s attack failed to deal damage", events));
                 }
-                Map.DisplayEvents.Add(($"{c.Name}'s attack failed to deal damage", events));
                 return false;
             }
+            c.Visible = true;
             if (Rng.RollProbability() <= paramsObject.CriticalHitChance)
             {
                 if (c == Map.Player || Map.Player.CanSee(c))
@@ -172,12 +186,49 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             Map.DisplayEvents.Add(($"{c.Name} took damage", events));
             if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
+            {
                 c.Die(paramsObject.Attacker);
+            }
             else if (canCallElementEffect && attackElement.OnAfterAttack != null)
             {
                 await attackElement.OnAfterAttack.Do(Args.Source, c, false, false);
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
+            }
+            if (!isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
+            {
+                if(Args.Source is Character s && s.ExtraDamage.Count > 0)
+                {
+                    foreach (var extraDamage in s.ExtraDamage)
+                    {
+                        if (c.HP.Current == 0 || c.ExistenceStatus != EntityExistenceStatus.Alive)
+                            break;
+                        var extraDamageAdded = Rng.NextInclusive(extraDamage.MinimumDamage, extraDamage.MaximumDamage);
+                        if (extraDamageAdded <= 0) continue;
+                        var effectParams = new List<EffectParam>();
+                        effectParams = [new() { ParamName = "Attacker", Value = "source" },
+                                new() { ParamName = "Target", Value = "target" },
+                                new() { ParamName = "Attack", Value = extraDamageAdded.ToString() },
+                                new() { ParamName = "Defense", Value = "0" },
+                                new() { ParamName = "Element", Value = extraDamage.Element.Id },
+                                new() { ParamName = "BypassesResistances", Value = "false" },
+                                new() { ParamName = "BypassesElementEffect", Value = paramsObject.BypassesElementEffect.ToString() },
+                                new() { ParamName = "Accuracy", Value = "100"},
+                                new() { ParamName = "CriticalHitChance", Value = paramsObject.CriticalHitChance.ToString() },
+                                new() { ParamName = "CriticalHitFormula", Value = paramsObject.CriticalHitFormula },
+                                new() { ParamName = "BypassesAccuracyCheck", Value = "true" },
+                                new() { ParamName = "IsExtraDamage", Value = "true" } // Internal Flag
+                                ];
+                        await DealDamage(new EffectCallerParams
+                        {
+                            This = Args.This,
+                            Source = Args.Source,
+                            OriginalTarget = c,
+                            Target = c,
+                            Params = effectParams
+                        });
+                    }
+                }
             }
             return true;
         }

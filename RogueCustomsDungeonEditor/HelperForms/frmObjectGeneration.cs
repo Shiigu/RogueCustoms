@@ -1,4 +1,6 @@
 ﻿using RogueCustomsDungeonEditor.Utils;
+
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -90,11 +93,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
             foreach (var @object in objectGenerationParams.ObjectList)
             {
-                objectTable.Add(@object);
+                if(ValidObjectClasses.Contains(@object.ClassId))
+                    objectTable.Add(@object);
             }
             dgvObjectTable.DataSource = objectTable;
-            dgvObjectTable.Columns["MinLevel"].Visible = false;
-            dgvObjectTable.Columns["MaxLevel"].Visible = false;
+            dgvObjectTable.Columns["MinLevel"].Visible = typeToUse == EntityTypeForForm.Item;
+            dgvObjectTable.Columns["MaxLevel"].Visible = typeToUse == EntityTypeForForm.Item;
             dgvObjectTable.Columns["CanSpawnOnFirstTurn"].Visible = false;
             dgvObjectTable.Columns["CanSpawnAfterFirstTurn"].Visible = false;
             dgvObjectTable.Columns["OverallMaxForKindInFloor"].Visible = false;
@@ -116,9 +120,23 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     if (!row.IsNewRow)
                     {
+                        var classId = row.Cells["ClassId"].Value?.ToString();
+                        var minimumLevel = 1;
+                        var maximumLevel = 1;
+                        if(TypeToUse == EntityTypeForForm.Item)
+                        {
+                            var match = Regex.Match(classId, EngineConstants.CurrencyRegexPattern);
+                            if(!match.Success)
+                            {
+                                minimumLevel = int.Parse(row.Cells["MinLevel"].Value?.ToString());
+                                maximumLevel = int.Parse(row.Cells["MaxLevel"].Value?.ToString());
+                            }
+                        }
                         var objectRow = new ClassInFloorInfo
                         {
-                            ClassId = row.Cells["ClassId"].Value?.ToString(),
+                            ClassId = classId,
+                            MinLevel = minimumLevel, // Always 1 for currency and traps
+                            MaxLevel = maximumLevel, // Always 1 for currency and traps
                             MinimumInFirstTurn = int.Parse(row.Cells["MinimumInFirstTurn"].Value?.ToString()),
                             SimultaneousMaxForKindInFloor = int.Parse(row.Cells["SimultaneousMaxForKindInFloor"].Value?.ToString()),
                             ChanceToPick = int.Parse(row.Cells["ChanceToPick"].Value?.ToString()),
@@ -133,7 +151,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     var nameToDisplay = (TypeToUse == EntityTypeForForm.Item) ? "Item" : "Trap";
                     foreach (var @object in objectList)
                     {
-                        if (objectList.Count(o => o.ClassId.Equals(@object.ClassId) && ((o.SpawnCondition == null && string.IsNullOrWhiteSpace(@object.SpawnCondition)) || !string.IsNullOrWhiteSpace(o.SpawnCondition) && o.SpawnCondition.Equals(@object.SpawnCondition))) > 1)
+                        if (objectList.Count(o => o.ClassId.Equals(@object.ClassId) && o.MinLevel == @object.MinLevel && o.MaxLevel == @object.MaxLevel && ((o.SpawnCondition == null && string.IsNullOrWhiteSpace(@object.SpawnCondition)) || !string.IsNullOrWhiteSpace(o.SpawnCondition) && o.SpawnCondition.Equals(@object.SpawnCondition))) > 1)
                             errorMessages.Add($"There is more than one entry (with the same Spawn Condition) for {@object.ClassId}. Remove one of them.");
 
                         if (string.IsNullOrWhiteSpace(@object.ClassId))
@@ -146,6 +164,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                         else
                         {
+                            if(TypeToUse == EntityTypeForForm.Item)
+                            {
+                                var match = Regex.Match(@object.ClassId, EngineConstants.CurrencyRegexPattern);
+                                if (!match.Success)
+                                {
+                                    if (@object.MinLevel <= 0)
+                                        errorMessages.Add($"{@object.ClassId}'s Minimum Level must be an integer number higher than 0.");
+                                    if (@object.MaxLevel <= 0)
+                                        errorMessages.Add($"{@object.ClassId}'s Maximum Level must be an integer number higher than 0.");
+                                    if (@object.MinLevel > @object.MaxLevel)
+                                        errorMessages.Add($"{@object.ClassId}'s Minimum Level is higher than its Maximum Level.");
+                                }
+                            }
                             if (@object.ChanceToPick <= 0)
                                 errorMessages.Add($"{@object.ClassId}'s Chance to Pick must be an integer number higher than 0.");
                             if (@object.MinimumInFirstTurn < 0)

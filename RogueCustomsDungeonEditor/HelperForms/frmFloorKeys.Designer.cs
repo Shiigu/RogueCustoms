@@ -57,7 +57,7 @@
             // lblFloorGroupTitle
             // 
             lblFloorGroupTitle.AutoSize = true;
-            lblFloorGroupTitle.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            lblFloorGroupTitle.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             lblFloorGroupTitle.Location = new System.Drawing.Point(12, 9);
             lblFloorGroupTitle.Name = "lblFloorGroupTitle";
             lblFloorGroupTitle.Size = new System.Drawing.Size(243, 25);
@@ -101,17 +101,17 @@
             // 
             // label12
             // 
-            label12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             label12.Location = new System.Drawing.Point(3, 105);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(780, 45);
             label12.TabIndex = 4;
-            label12.Text = "The order of the Key Types does not indicate priority. They will be chosen at random where applicable.\r\n\r\nAll of a Room's exits will be locked with the same Door Type.";
+            label12.Text = "The order of the Key Types does not indicate priority. They will be chosen at random where applicable.\r\n\r\nAll of a Room's exits will be locked with the same Key/Door Type.";
             label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label11
             // 
-            label11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label11.Font = new System.Drawing.Font("Segoe UI", 9F);
             label11.Location = new System.Drawing.Point(3, 49);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(310, 54);
@@ -121,7 +121,7 @@
             // 
             // label10
             // 
-            label10.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label10.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             label10.Location = new System.Drawing.Point(3, 30);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(267, 19);
@@ -131,7 +131,7 @@
             // 
             // label9
             // 
-            label9.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label9.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label9.Location = new System.Drawing.Point(32, 3);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(461, 24);

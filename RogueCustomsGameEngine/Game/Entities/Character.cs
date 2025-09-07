@@ -118,14 +118,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnTurnStart != null)
                     actionList.Add(OwnOnTurnStart);
-                if (Weapon?.OwnOnTurnStart != null)
-                    actionList.Add(Weapon.OwnOnTurnStart);
-                if (Armor?.OwnOnTurnStart != null)
-                    actionList.Add(Armor.OwnOnTurnStart);
+                actionList.AddRange(Weapon?.OnTurnStart ?? []);
+                actionList.AddRange(Armor?.OnTurnStart ?? []);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnTurnStart != null && !i.IsEquippable)
-                        actionList.Add(i.OwnOnTurnStart);
+                    if (!i.IsEquippable)
+                        actionList.AddRange(i?.OnTurnStart);
                 });
                 return actionList;
             }
@@ -137,14 +135,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnAttack != null)
                     actionList.AddRange(OwnOnAttack);
-                if (Weapon?.OwnOnAttack != null)
-                    actionList.AddRange(Weapon.OwnOnAttack);
-                if (Armor?.OwnOnAttack != null)
-                    actionList.AddRange(Armor.OwnOnAttack);
+                actionList.AddRange(Weapon?.OnAttack ?? []);
+                actionList.AddRange(Armor?.OnAttack ?? []);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttack != null && !i.IsEquippable)
-                        actionList.AddRange(i.OwnOnAttack);
+                    if (!i.IsEquippable)
+                        actionList.AddRange(i?.OnAttack);
                 });
                 KeySet?.ForEach(k =>
                 {
@@ -162,14 +158,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnAttacked != null)
                     actionList.Add(OwnOnAttacked);
-                if (Weapon?.OwnOnAttacked != null)
-                    actionList.Add(Weapon.OwnOnAttacked);
-                if (Armor?.OwnOnAttacked != null)
-                    actionList.Add(Armor.OwnOnAttacked);
+                actionList.AddRange(Weapon?.OnAttacked ?? []);
+                actionList.AddRange(Armor?.OnAttacked ?? []);
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnAttacked != null && !i.IsEquippable)
-                        actionList.Add(i.OwnOnAttacked);
+                    if (!i.IsEquippable)
+                        actionList.AddRange(i?.OnAttacked ?? []);
                 });
                 AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
                 {
@@ -231,6 +225,58 @@ namespace RogueCustomsGameEngine.Game.Entities
         [JsonIgnore]
         public bool PickedForSwap { get; set; } = false;
         public int CurrencyCarried { get; set; }
+
+        public List<ExtraDamage> ExtraDamage
+        {
+            get
+            {
+                var list = new List<ExtraDamage>();
+                foreach (var extraDamage in Weapon?.ExtraDamage ?? [])
+                {
+                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingExtraDamage == null)
+                    {
+                        list.Add(extraDamage);
+                    }
+                    else
+                    {
+                        correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                        correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                    }
+                }
+                foreach (var extraDamage in Armor?.ExtraDamage ?? [])
+                {
+                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingExtraDamage == null)
+                    {
+                        list.Add(extraDamage);
+                    }
+                    else
+                    {
+                        correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                        correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                    }
+                }
+                foreach (var item in Inventory)
+                {
+                    if (item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
+                    {
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
+                    }
+                }
+                return list;
+            }
+        }
 
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {

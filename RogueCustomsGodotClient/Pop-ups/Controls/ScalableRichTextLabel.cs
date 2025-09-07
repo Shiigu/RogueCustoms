@@ -14,6 +14,11 @@ public partial class ScalableRichTextLabel : RichTextLabel
     {
     }
 
+    public override Vector2 _GetMinimumSize()
+    {
+        return new Vector2(Size.X, Size.Y);
+    }
+
     public new void SetText(string text)
     {
         Text = text;
@@ -24,19 +29,23 @@ public partial class ScalableRichTextLabel : RichTextLabel
     {
         AddThemeFontSizeOverride("normal_font_size", DefaultFontSize);
 
+        var font = GetThemeFont("font");
+        if (font == null)
+            return;
+
         var textLines = Text.ToStringWithoutBbcode().Split(new string[] { "[p]", "[/p]" }, StringSplitOptions.RemoveEmptyEntries);
 
         var longestLine = textLines.MaxBy(t => t.Length);
 
         var currentFontSize = DefaultFontSize;
         var maxWidth = Size.X - DefaultFontSize;
-        var textWidth = currentFontSize * longestLine.Length;
+        var textWidth = font.GetStringSize(longestLine, HorizontalAlignment.Left, -1, currentFontSize).X;
 
         // Loop until the text fits or reaches the minimum font size
         while (textWidth > maxWidth && currentFontSize > MinFontSize)
         {
-            currentFontSize -= 1;
-            textWidth = currentFontSize * longestLine.Length;
+            currentFontSize--;
+            textWidth = font.GetStringSize(longestLine, HorizontalAlignment.Left, -1, currentFontSize).X;
         }
 
         Size = new(Math.Min(maxWidth, textWidth), DefaultFontSize);

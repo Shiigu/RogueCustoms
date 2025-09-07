@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 public partial class PlayerSelectItem : Control
 {
     private GlobalState _globalState;
@@ -407,18 +409,18 @@ public partial class PlayerSelectItem : Control
                                 DefaultFontSize = 16,
                                 Size = new() { X = _selectionList.Size.X, Y = 16 }
             };
+            _selectionList.AddChild(itemLabel);
+            itemLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
+            if(item.CanBeUsed || _selectionMode == SelectionMode.SelectItem)
+                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            else
+                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
             if (item.IsEquipped)
                 itemLabel.SetText($"{TranslationServer.Translate("EquippedItemNamePrefix")} {item.Name}");
             else if (item.IsInFloor)
                 itemLabel.SetText($"{TranslationServer.Translate("FloorItemNamePrefix")} {item.Name}");
             else
                 itemLabel.SetText(item.Name);
-            itemLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
-            if(item.CanBeUsed || _selectionMode == SelectionMode.SelectItem)
-                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
-            else
-                itemLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
-            _selectionList.AddChild(itemLabel);
         }
 
         SelectInventoryRow(0);
@@ -431,7 +433,7 @@ public partial class PlayerSelectItem : Control
             : null;
         if (_selectedIndex != -1)
         {
-            var selectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
+            var selectedLabel = (ScalableLabel)_selectionList.GetChildren()[_selectedIndex];
             selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
             if (selectedItem?.CanBeUsed == false && _selectionMode != SelectionMode.SelectItem)
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
@@ -439,7 +441,7 @@ public partial class PlayerSelectItem : Control
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
         }
         _selectedIndex = index;
-        var newSelectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
+        var newSelectedLabel = (ScalableLabel)_selectionList.GetChildren()[_selectedIndex];
         selectedItem = _itemListInfo.InventoryItems[_selectedIndex];
 
         if (selectedItem?.CanBeUsed == false && _selectionMode != SelectionMode.SelectItem)
@@ -452,8 +454,18 @@ public partial class PlayerSelectItem : Control
 
         if (selectedItem != null)
         {
-            _itemDescriptionLabel.AppendText($"{selectedItem.Name}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
-            _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
+            _itemDescriptionLabel.AppendText($"{selectedItem.Name.ToColoredString(selectedItem.QualityColor)}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
+           
+            if(selectedItem.ItemLevel > 0)
+                _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("InventoryWindowItemLevelText").ToString().Format(new { Level = selectedItem.ItemLevel.ToString() })}");
+
+            if (!string.IsNullOrWhiteSpace(selectedItem.QualityLevel))
+            {
+                var qualityDescription = selectedItem.QualityLevel.Replace("{basename}", selectedItem.ItemType, StringComparison.InvariantCultureIgnoreCase);
+
+                _itemDescriptionLabel.AppendText($"[p]{qualityDescription.ToColoredString(selectedItem.QualityColor)}[p] [p]");
+                _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
+            }
 
             if (!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
             {
@@ -477,6 +489,14 @@ public partial class PlayerSelectItem : Control
                 foreach (var action in selectedItem.OnAttackActions)
                 {
                     _itemDescriptionLabel.AppendText($"[p][color=#8B83D9]   {action}[/color]");
+                }
+            }
+
+            if (selectedItem.ExtraDamages.Any())
+            {
+                foreach (var extraDamage in selectedItem.ExtraDamages)
+                {
+                    _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowExtraDamageText").ToString().Format(new {Damage = extraDamage.DamageString, Element = extraDamage.Element})}[/color]");
                 }
             }
 
@@ -611,7 +631,7 @@ public partial class PlayerSelectItem : Control
             : null;
         if (_selectedIndex != -1)
         {
-            var selectedLabel = (Label) _selectionList.GetChildren()[_selectedIndex];
+            var selectedLabel = (ScalableLabel) _selectionList.GetChildren()[_selectedIndex];
             selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
             if(selectedAction?.CanBeUsed == false && _selectionMode != SelectionMode.SelectAction)
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 64, G8 = 64, B8 = 64, A = 1 });
@@ -619,7 +639,7 @@ public partial class PlayerSelectItem : Control
                 selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
         }
         _selectedIndex = index;
-        var newSelectedLabel = (Label)_selectionList.GetChildren()[_selectedIndex];
+        var newSelectedLabel = (ScalableLabel)_selectionList.GetChildren()[_selectedIndex];
         selectedAction = _actionListInfo.Actions[_selectedIndex];
         if (selectedAction?.CanBeUsed == false && _selectionMode != SelectionMode.SelectAction)
             newSelectedLabel.AddThemeStyleboxOverride("normal", unusableSelectItemStyleBox);

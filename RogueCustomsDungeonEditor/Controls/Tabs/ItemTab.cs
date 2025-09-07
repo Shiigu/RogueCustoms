@@ -56,6 +56,19 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             PreviousItemType = "";
             var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
 
+            var qualityLevelInfos = new List<QualityLevelOddsInfo>();
+            foreach (var qualityLevel in ActiveDungeon.QualityLevelInfos)
+            {
+                var correspondingOdds = item.QualityLevelOdds.Find(qlo => qlo.Id.Equals(qualityLevel.Id, StringComparison.InvariantCultureIgnoreCase));
+                qualityLevelInfos.Add(new QualityLevelOddsInfo()
+                {
+                    Id = qualityLevel.Id,
+                    ChanceToPick = correspondingOdds?.ChanceToPick ?? 0
+                });
+            }
+
+            qlsItem.QualityLevels = qualityLevelInfos;
+
             ItemStatsSheet.StatData = ActiveDungeon.CharacterStats;
             ItemStatsSheet.Stats = item.StatModifiers;
             if (itemType != null)
@@ -73,10 +86,20 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
             nudItemBaseValue.Value = item.BaseValue;
             fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
+
+            cmbItemMaximumQualityLevel.Items.Clear();
+            foreach (var qualityLevel in dungeon.QualityLevelInfos.ConvertAll(ql => ql.Id))
+            {
+                cmbItemMaximumQualityLevel.Items.Add(qualityLevel);
+                if (qualityLevel.Equals(item.MaximumQualityLevel))
+                    cmbItemMaximumQualityLevel.Text = qualityLevel;
+            }
         }
 
         public List<string> SaveData(string id)
         {
+            qlsItem.EndEdit();
+            ItemStatsSheet.EndEdit();
             var validationErrors = new List<string>();
 
             if (string.IsNullOrWhiteSpace(txtItemName.Text))
@@ -89,6 +112,29 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This Item does not have an Item Type.");
             if (string.IsNullOrWhiteSpace(txtItemPower.Text))
                 validationErrors.Add("This Item does not have a Power.");
+
+            var qualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMaximumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
+
+            if (qualityLevel == null)
+            {
+                validationErrors.Add("This Item does not have a valid Quality Level.");
+            }
+            else
+            {
+                for (int i = 0; i < qlsItem.QualityLevels.Count; i++)
+                {
+                    var correspondingQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(qlsItem.QualityLevels[i].Id, StringComparison.InvariantCultureIgnoreCase));
+
+                    if (correspondingQualityLevel.MaximumAffixes > qualityLevel.MaximumAffixes && qlsItem.QualityLevels[i].ChanceToPick > 0)
+                    {
+                        validationErrors.Add($"This Item has a Maximum Quality Level of {qualityLevel.Id}, but has odds to spawn at {qlsItem.QualityLevels[i].Id} Quality, which has more maximum affixes and is thus superior.");
+                    }
+                    else if (qlsItem.QualityLevels[i].ChanceToPick < 0)
+                    {
+                        validationErrors.Add("At least one Quality Level Odds Entry has an invalid Weight value.\n\nIt must be an integer number equal to or higher than 0.");
+                    }
+                }
+            }
 
             if (!validationErrors.Any())
             {
@@ -131,6 +177,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     LoadedItem.OnDeath.IsScript = false;
 
                 LoadedItem.BaseValue = (int) nudItemBaseValue.Value;
+                LoadedItem.MaximumQualityLevel = cmbItemMaximumQualityLevel.Text;
+                LoadedItem.QualityLevelOdds = qlsItem.QualityLevels.FindAll(ql => ql.ChanceToPick > 0);
             }
 
             return validationErrors;

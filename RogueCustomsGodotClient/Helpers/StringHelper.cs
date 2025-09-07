@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Godot;
 
+using RogueCustomsGameEngine.Utils.Representation;
+
 namespace RogueCustomsGodotClient.Helpers
 {
     public static class StringHelper
@@ -99,6 +101,11 @@ namespace RogueCustomsGodotClient.Helpers
             }
             return bbCodeString.ToString();
         }
+        public static string ToColoredString(this string text, GameColor gameColor)
+        {
+            return $"[color=#{gameColor.R:X2}{gameColor.G:X2}{gameColor.B:X2}{gameColor.A:X2}]{text}[/color]";
+        }
+
         public static string ToBase64(this string plainText)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));

@@ -87,7 +87,7 @@
             // 
             label3.AutoSize = true;
             label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            label3.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label3.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label3.Location = new System.Drawing.Point(345, 1);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(351, 29);
@@ -99,7 +99,7 @@
             // 
             label1.AutoSize = true;
             label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(4, 1);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(334, 29);
@@ -134,7 +134,7 @@
             // 
             // btnAddScript
             // 
-            btnAddScript.Location = new System.Drawing.Point(224, 318);
+            btnAddScript.Location = new System.Drawing.Point(224, 319);
             btnAddScript.Name = "btnAddScript";
             btnAddScript.Size = new System.Drawing.Size(115, 23);
             btnAddScript.TabIndex = 2;
@@ -148,7 +148,7 @@
             btnRemoveScript.Name = "btnRemoveScript";
             btnRemoveScript.Size = new System.Drawing.Size(115, 23);
             btnRemoveScript.TabIndex = 3;
-            btnRemoveScript.Text = "Remove a Script";
+            btnRemoveScript.Text = "Remove Script";
             btnRemoveScript.UseVisualStyleBackColor = true;
             btnRemoveScript.Click += btnRemoveScript_Click;
             // 

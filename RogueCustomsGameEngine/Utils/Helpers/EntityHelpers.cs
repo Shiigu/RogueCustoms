@@ -13,7 +13,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 {
     public static class EntityHelpers
     {
-        public static KeyType Parse(this KeyTypeInfo keyType, Locale locale)
+        public static KeyType Parse(this KeyTypeInfo keyType, Dungeon dungeon)
         {
             var keyClassTemplate = new ItemInfo()
             {
@@ -36,17 +36,17 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 CanLockItems = keyType.CanLockItems,
                 CanLockStairs = keyType.CanLockStairs,
                 DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                KeyClass = new EntityClass(keyClassTemplate, locale, EntityType.Key, null, [], [])
+                KeyClass = new EntityClass(keyClassTemplate, EntityType.Key, dungeon, [])
             };
         }
 
-        public static EntityClass Parse(this CurrencyInfo currency, Locale locale)
+        public static EntityClass Parse(this CurrencyInfo currency, Dungeon dungeon)
         {
             var currencyClassTemplate = new ItemInfo()
             {
                 Id = $"Currency",
-                Name = locale[currency.Name],
-                Description = locale[currency.Description],
+                Name = dungeon.LocaleToUse[currency.Name],
+                Description = dungeon.LocaleToUse[currency.Description],
                 ConsoleRepresentation = currency.ConsoleRepresentation,
                 EntityType = "Currency",
                 StartsVisible = true,
@@ -57,7 +57,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 OnUse = new(),
                 OnAttack = [],
             };
-            return new EntityClass(currencyClassTemplate, locale, EntityType.Currency, null, [], []);
+            return new EntityClass(currencyClassTemplate, EntityType.Currency, dungeon, []);
         }
     }
 }

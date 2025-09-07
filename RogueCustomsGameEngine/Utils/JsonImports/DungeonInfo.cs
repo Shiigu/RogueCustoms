@@ -26,6 +26,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<StatInfo> CharacterStats { get; set; }
         public List<LootTableInfo> LootTableInfos { get; set; }
         public CurrencyInfo CurrencyInfo { get; set; }
+        public List<AffixInfo> AffixInfos { get; set; }
+        public List<QualityLevelInfo> QualityLevelInfos { get; set; }
         public List<PlayerClassInfo> PlayerClasses { get; set; }
         public List<NPCInfo> NPCs { get; set; }
         public List<ItemInfo> Items { get; set; }

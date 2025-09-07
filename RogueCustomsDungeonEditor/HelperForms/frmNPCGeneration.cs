@@ -64,7 +64,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
             foreach (var npc in NPCGenerationParams.NPCList)
             {
-                npcTable.Add(npc);
+                if (ValidNPCClasses.Contains(npc.ClassId))
+                    npcTable.Add(npc);
             }
             dgvNPCTable.DataSource = npcTable;
             nudMinNPCSpawnsAtStart.Value = npcGenerationParams.MinNPCSpawnsAtStart;
