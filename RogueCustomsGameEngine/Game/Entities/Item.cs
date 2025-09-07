@@ -204,12 +204,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             for (int i = 0; i < prefixesToApply; i++)
             {
-                var aPrefix = Map.Prefixes.Except(Affixes).Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                var validPrefixes = Map.Prefixes.Where(p => !Affixes.Any(a => a.Id.Equals(p.Id, StringComparison.InvariantCultureIgnoreCase)));
+                if (!validPrefixes.Any()) break;
+                var aPrefix = validPrefixes.Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                if (aPrefix == null) continue;
                 aPrefix.ApplyTo(this);
             }
             for (int i = 0; i < suffixesToApply; i++)
             {
-                var aSuffix = Map.Suffixes.Except(Affixes).Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                var validSuffixes = Map.Suffixes.Where(p => !Affixes.Any(a => a.Id.Equals(p.Id, StringComparison.InvariantCultureIgnoreCase)));
+                if (!validSuffixes.Any()) break;
+                var aSuffix = validSuffixes.Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                if (aSuffix == null) continue;
                 aSuffix.ApplyTo(this);
             }
         }

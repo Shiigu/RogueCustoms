@@ -55,7 +55,22 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (Level > oldLevel)
             {
                 foreach (var stat in UsedStats)
+                {
                     statsAfterExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                    });
+                    if (stat.HasMax)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.BaseAfterModifications }
+                        });
+                    }
+                }
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.UpdatePlayerData,

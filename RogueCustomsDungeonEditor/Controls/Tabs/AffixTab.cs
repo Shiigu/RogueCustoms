@@ -34,6 +34,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ActiveDungeon = activeDungeon;
             LoadedAffixes = activeDungeon.AffixInfos ?? new();
             EffectParamData = effectParamData;
+            tlpAffixes.SuspendLayout();
             tlpAffixes.Controls.Clear();
             tlpAffixes.RowCount = 0;
             foreach (var affix in LoadedAffixes)
@@ -51,6 +52,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 tlpAffixes.RowStyles.Add(new RowStyle(SizeType.AutoSize));
                 tlpAffixes.Controls.Add(affixEditor, 0, tlpAffixes.RowCount - 1);
             }
+            tlpAffixes.ResumeLayout(true);
             _selectedIndex = -1;
         }
 
@@ -100,6 +102,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void btnAddAffix_Click(object sender, EventArgs e)
         {
+            tlpAffixes.SuspendLayout();
             var affixEditor = new AffixEditor()
             {
                 Dock = DockStyle.Fill,
@@ -120,6 +123,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             tlpAffixes.RowCount++;
             tlpAffixes.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpAffixes.Controls.Add(affixEditor, 0, tlpAffixes.RowCount - 1);
+            tlpAffixes.ResumeLayout(true);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 

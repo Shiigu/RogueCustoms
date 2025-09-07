@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.Expressions;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
@@ -312,16 +313,18 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     break;
             }
 
-            if (effect.Then != null)
+            try
             {
-                weight += GetEffectWeight(effect.Then, map, args);
-            }
-            else
-            {
+                if (effect.Then != null)
+                    weight += GetEffectWeight(effect.Then, map, args);
                 if (effect.OnSuccess != null)
                     weight += GetEffectWeight(effect.OnSuccess, map, args);
                 if (effect.OnFailure != null)
                     weight += GetEffectWeight(effect.OnFailure, map, args);
+            }
+            catch (FlagNotFoundException ex)
+            {
+                // Don't calculate sub-step's weight if there's a non-existent flag.
             }
 
             return weight;

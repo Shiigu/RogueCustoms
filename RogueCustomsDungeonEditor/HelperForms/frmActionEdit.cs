@@ -98,7 +98,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             lblTarget.Text = targetDescription;
 
             cmbActionSchool.Items.Clear();
-            tcActionInfo.DrawMode = TabDrawMode.OwnerDrawFixed;
 
             foreach (var school in ActiveDungeon.ActionSchoolInfos)
             {
