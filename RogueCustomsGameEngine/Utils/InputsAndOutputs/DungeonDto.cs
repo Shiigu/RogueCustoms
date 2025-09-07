@@ -221,12 +221,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     {
         public string Name { get; private set; }
         public ConsoleRepresentation ConsoleRepresentation { get; private set; }
+        public GameColor NameColor { get; private set; }
 
         public SimpleEntityDto(Entity? e)
         {
             if (e == null) return;
-            Name = e.Name;
+            Name = e is Item i ? i.BaseName : e.Name;
             ConsoleRepresentation = e.ConsoleRepresentation;
+            NameColor = e is Item it && it.QualityLevel != null ? it.QualityLevel.ItemNameColor : new GameColor(System.Drawing.Color.White);
         }
         public SimpleEntityDto(EntityClass? ec)
         {

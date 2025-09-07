@@ -50,7 +50,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         protected Entity(EntityClass entityClass, Map map)
         {
-            if (entityClass == null) throw new ArgumentException("Cannot create an Entity from a null EntityClass");
+            if (entityClass == null) return;
             Map = map;
             Name = entityClass.Name;
             ClassId = entityClass.Id;

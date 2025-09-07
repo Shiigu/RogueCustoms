@@ -250,17 +250,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             var sampleWeaponClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon);
             if(sampleWeaponClass != null)
             {
-                target.Inventory.Add(new Item(sampleWeaponClass, sampleDungeon.CurrentFloor));
+                target.Inventory.Add(new Item(sampleWeaponClass, 1, sampleDungeon.CurrentFloor));
             }
             var sampleArmorClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor);
             if (sampleArmorClass != null)
             {
-                target.Inventory.Add(new Item(sampleArmorClass, sampleDungeon.CurrentFloor));
+                target.Inventory.Add(new Item(sampleArmorClass, 1, sampleDungeon.CurrentFloor));
             }
             var sampleConsumableClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Consumable);
             if (sampleConsumableClass != null)
             {
-                target.Inventory.Add(new Item(sampleConsumableClass, sampleDungeon.CurrentFloor));
+                target.Inventory.Add(new Item(sampleConsumableClass, 1, sampleDungeon.CurrentFloor));
             }
 
             sampleDungeon.CurrentFloor.SetActionParams();
@@ -553,7 +553,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         private static Item GetASpecificItem(Dungeon sampleDungeon, string classId)
         {
-            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), sampleDungeon.CurrentFloor);
+            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.Id.Equals(classId)), 1, sampleDungeon.CurrentFloor);
 
             resultItem.Id = new Random().Next(1, int.MaxValue);
 
@@ -562,7 +562,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         private static Item GetATestItem(Dungeon sampleDungeon, EntityType entityType)
         {
-            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), sampleDungeon.CurrentFloor);
+            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), 1, sampleDungeon.CurrentFloor);
 
             resultItem.Id = new Random().Next(1, int.MaxValue);
 

@@ -1,5 +1,8 @@
 using Godot;
 
+using MathNet.Numerics.Statistics.Mcmc;
+
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -182,11 +185,11 @@ public partial class InfoPanel : GamePanel
         }
 
         _weaponHeaderLabel.Text = TranslationServer.Translate("PlayerInfoWeaponHeader");
-        _weaponNameLabel.SetText($"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name}[/center]");
+        _weaponNameLabel.SetText($"[center]{playerEntity.Weapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Weapon.Name.ToColoredString(playerEntity.Weapon.NameColor)}[/center]");
         SetCombatStatText(_damageNumberLabel, playerEntity.DamageStatName, playerEntity.WeaponDamage, playerEntity.Attack);
 
         _armorHeaderLabel.Text = TranslationServer.Translate("PlayerInfoArmorHeader");
-        _armorNameLabel.SetText($"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name}[/center]");
+        _armorNameLabel.SetText($"[center]{playerEntity.Armor.ConsoleRepresentation.ToBbCodeRepresentation()} - {playerEntity.Armor.Name.ToColoredString(playerEntity.Armor.NameColor)}[/center]");
         SetCombatStatText(_mitigationNumberLabel, playerEntity.MitigationStatName, playerEntity.ArmorMitigation, playerEntity.Defense);
                 
         SetNumericStat(_movementLabel, playerEntity.MovementStatName, playerEntity.Movement, playerEntity.BaseMovement);
@@ -361,12 +364,12 @@ public partial class InfoPanel : GamePanel
 
                 if (itemType.Equals("Weapon"))
                 {
-                    _weaponNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]");
+                    _weaponNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name.ToColoredString(entity.NameColor)}[/center]");
                     _damageNumberLabel.Text = $"[center]{playerEntity.DamageStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Attack)}[/center]";
                 }
                 else if (itemType.Equals("Armor"))
                 {
-                    _armorNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name}[/center]");
+                    _armorNameLabel.SetText($"[center]{entity.ConsoleRepresentation.ToBbCodeRepresentation()} - {entity.Name.ToColoredString(entity.NameColor)}[/center]");
                     _mitigationNumberLabel.Text = $"[center]{playerEntity.MitigationStatName}: {GetColorizedItemInfluencedStat(power, playerEntity.Defense)}[/center]";
                 }
 
@@ -547,7 +550,13 @@ public partial class InfoPanel : GamePanel
         innerText.Append("[p] [p]");
         innerText.Append($"[center]{itemTypeHeader}[/center]");
         innerText.Append("[p] [p]");
-        innerText.Append($"[center]{item.Name} - {item.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]");
+        innerText.Append($"[center]{item.Name.ToColoredString(item.NameColor)} - {item.ConsoleRepresentation.ToBbCodeRepresentation()}[/center]");
+        innerText.Append("[p] [p]");
+        innerText.Append($"[p]{TranslationServer.Translate("InventoryWindowItemLevelText").ToString().Format(new { Level = item.ItemLevel.ToString() })}");
+
+        var qualityDescription = item.QualityLevel.Replace("{basename}", item.ItemType, StringComparison.InvariantCultureIgnoreCase);
+
+        innerText.Append($"[p]{qualityDescription.ToColoredString(item.NameColor)}");
         innerText.Append("[p] [p]");
         innerText.Append(item.Description.ToBbCodeAppropriateString());
     }
@@ -560,7 +569,7 @@ public partial class InfoPanel : GamePanel
         innerText.Append("[p]");
         foreach (var item in items)
         {
-            innerText.Append($"[p]{item.ConsoleRepresentation.ToBbCodeRepresentation()} - {item.Name}");
+            innerText.Append($"[p]{item.ConsoleRepresentation.ToBbCodeRepresentation()} - {item.Name.ToColoredString(item.QualityLevelColor)}");
         }
     }
 

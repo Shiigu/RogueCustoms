@@ -715,7 +715,7 @@ public partial class GameScreen : Control
                     var entityWindowText = new StringBuilder();
                     if (entityDetails.ShowEntityDescription)
                     {
-                        entityWindowText.Append($"[center]{entityDetails.EntityName}[/center]\n\n");
+                        entityWindowText.Append($"[center]{entityDetails.EntityName.ToColoredString(entityDetails.NameColor)}[/center]\n\n");
                         entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
                         entityWindowText.Append($"{entityDetails.EntityDescription}");
                     }

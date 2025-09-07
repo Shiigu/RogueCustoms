@@ -12,6 +12,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public string Id { get; set; }
         public List<LootTableEntryInfo> Entries { get; set; }
+        public bool OverridesQualityLevelOddsOfItems { get; set; }
+        public List<QualityLevelOddsInfo> QualityLevelOdds { get; set; }
     }
 
     [Serializable]

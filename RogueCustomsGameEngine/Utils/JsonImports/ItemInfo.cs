@@ -17,6 +17,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public ActionWithEffectsInfo OnAttacked { get; set; }
         public ActionWithEffectsInfo OnDeath { get; set; }
         public ActionWithEffectsInfo OnUse { get; set; }
+        public string MaximumQualityLevel { get; set; }
+        public List<QualityLevelOddsInfo> QualityLevelOdds { get; set; }
         public int BaseValue { get; set; }
     }
 
@@ -26,5 +28,5 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string Id { get; set; }
         public decimal Amount { get; set; }
     }
-    #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

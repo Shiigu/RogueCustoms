@@ -5,6 +5,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Drawing;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -118,16 +119,19 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     {
         public string Name { get; set; }
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
+        public GameColor QualityLevelColor { get; set; }
 
         public SimpleInventoryDto(Key k)
         {
             Name = k.Name;
             ConsoleRepresentation = k.ConsoleRepresentation;
+            QualityLevelColor = new(Color.White);
         }
         public SimpleInventoryDto(Item i)
         {
             Name = i.Name;
             ConsoleRepresentation = i.ConsoleRepresentation;
+            QualityLevelColor = i.QualityLevel.ItemNameColor;
         }
     }
 

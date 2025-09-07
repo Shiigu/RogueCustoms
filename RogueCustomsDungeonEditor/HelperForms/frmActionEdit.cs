@@ -626,9 +626,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             if (rbEntity.Checked)
                             {
-                                if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                                if (nudMaxRange.Value == 0)
                                 {
-                                    ActionToSave.TargetTypes = new List<string>();
+                                    ActionToSave.TargetTypes.Add("Self");
+                                }
+                                else if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                                {
                                     if (chkAllies.Checked)
                                         ActionToSave.TargetTypes.Add("Ally");
                                     if (chkEnemies.Checked)
@@ -706,13 +709,19 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             {
                                 if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
                                 {
-                                    ActionToSave.TargetTypes = new List<string>();
-                                    if (chkAllies.Checked)
-                                        ActionToSave.TargetTypes.Add("Ally");
-                                    if (chkEnemies.Checked)
-                                        ActionToSave.TargetTypes.Add("Enemy");
-                                    if (chkSelf.Checked)
+                                    if (nudMaxRange.Value == 0)
+                                    {
                                         ActionToSave.TargetTypes.Add("Self");
+                                    }
+                                    else if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
+                                    {
+                                        if (chkAllies.Checked)
+                                            ActionToSave.TargetTypes.Add("Ally");
+                                        if (chkEnemies.Checked)
+                                            ActionToSave.TargetTypes.Add("Enemy");
+                                        if (chkSelf.Checked)
+                                            ActionToSave.TargetTypes.Add("Self");
+                                    }
                                 }
                             }
                             else if (rbTile.Checked)

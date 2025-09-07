@@ -12,6 +12,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -21,15 +22,145 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class Item : Entity, IHasActions, IPickable
     {
         public bool IsEquippable => EntityType == EntityType.Weapon || EntityType == EntityType.Armor;
+        public bool SpawnedInTheFloor { get; set; }
         public string Power { get; set; }
-        public List<PassiveStatModifier> StatModifiers { get; set; }
+        private List<PassiveStatModifier> OwnStatModifiers { get; set; }
+        public List<PassiveStatModifier> StatModifiers
+        {
+            get
+            {
+                var list = new List<PassiveStatModifier>();
+                list.AddRange(OwnStatModifiers);
+                foreach (var affix in Affixes)
+                {
+                    foreach (var statModifier in affix.StatModifiers)
+                    {
+                        var correspondingStatModifier = list.Find(sm => sm.Id.Equals(statModifier.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingStatModifier == null)
+                        {
+                            list.Add(new()
+                            {
+                                Id = statModifier.Id,
+                                Amount = statModifier.Amount
+                            });
+                        }
+                        else
+                        {
+                            correspondingStatModifier.Amount += statModifier.Amount;
+                        }
+                    }
+                }
+                return list;
+            }
+        }
 
         public Character Owner { get; set; }
         public ActionWithEffects OnUse { get; set; }
-        public int Value { get; set; }
-
-        public Item(EntityClass entityClass, Map map) : base(entityClass, map)
+        public string BaseName { get; set; }
+        public int BaseValue { get; set; }
+        public int Value
         {
+            get
+            {
+                float totalValue = BaseValue;
+                foreach (var affix in Affixes)
+                {
+                    var valueToAdd = (int) Math.Ceiling(BaseValue * (100 + affix.ItemValueModifierPercentage) / 100f);
+                    totalValue += valueToAdd;
+                }
+                return (int) totalValue;
+            }
+        }
+        public int ItemLevel { get; set; }
+        public QualityLevel MaximumQualityLevel { get; set; }
+        public List<QualityLevelOdds> QualityLevelOdds { get; set; }
+        public QualityLevel QualityLevel { get; set; }
+        public List<Affix> Affixes { get; set; }
+        public List<ExtraDamage> ExtraDamage
+        {
+            get
+            {
+                var list = new List<ExtraDamage>();
+                foreach (var affix in Affixes)
+                {
+                    if (affix.ExtraDamage == null || affix.ExtraDamage.MaximumDamage == 0 || affix.ExtraDamage.Element == null) continue;
+                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(affix.ExtraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingExtraDamage == null)
+                    {
+                        list.Add(new()
+                        {
+                            Element = affix.ExtraDamage.Element,
+                            MinimumDamage = affix.ExtraDamage.MinimumDamage,
+                            MaximumDamage = affix.ExtraDamage.MaximumDamage
+                        });
+                    }
+                    else
+                    {
+                        correspondingExtraDamage.MinimumDamage += affix.ExtraDamage.MinimumDamage;
+                        correspondingExtraDamage.MaximumDamage += affix.ExtraDamage.MaximumDamage;
+                    }
+                }
+                return list;
+            }
+        }
+
+        public List<ActionWithEffects> OnTurnStart
+        {
+            get
+            {
+                var list = new List<ActionWithEffects>();
+                if (OwnOnTurnStart != null)
+                    list.AddRange(OwnOnTurnStart);
+
+                foreach (var affix in Affixes)
+                {
+                    if (affix.OwnOnTurnStart != null)
+                        list.Add(affix.OwnOnTurnStart);
+                }
+
+                return list;
+            }
+        }
+
+        public List<ActionWithEffects> OnAttack
+        {
+            get
+            {
+                var list = new List<ActionWithEffects>();
+                if (OwnOnAttack != null)
+                    list.AddRange(OwnOnAttack);
+
+                foreach (var affix in Affixes)
+                {
+                    if(affix.OwnOnAttack != null)
+                        list.Add(affix.OwnOnAttack);
+                }
+
+                return list;
+            }
+        }
+
+        public List<ActionWithEffects> OnAttacked
+        {
+            get
+            {
+                var list = new List<ActionWithEffects>();
+                if(OwnOnAttacked != null)
+                    list.AddRange(OwnOnAttacked);
+
+                foreach (var affix in Affixes)
+                {
+                    if (affix.OwnOnAttacked != null)
+                        list.Add(affix.OwnOnAttacked);
+                }
+
+                return list;
+            }
+        }
+
+        public Item(EntityClass entityClass, int level, Map map) : base(entityClass, map)
+        {
+            BaseName = entityClass.Name;
             Power = entityClass.Power;
             Owner = null;
             OnUse = MapClassAction(entityClass.OnUse);
@@ -37,14 +168,82 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
             MapClassActions(entityClass.OnAttack, OwnOnAttack);
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
-            StatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
-            Value = entityClass.BaseValue;
+            OwnStatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
+            BaseValue = entityClass.BaseValue;
+            ItemLevel = level;
+            MaximumQualityLevel = entityClass.MaximumQualityLevel;
+            QualityLevelOdds = entityClass.QualityLevelOdds;
+            Affixes = [];
         }
+
+        public void SetQualityLevel(QualityLevel qualityLevel = null)
+        {
+            var qualityLevelToPick = qualityLevel ?? QualityLevelOdds.TakeRandomElementWithWeights(ql => ql.ChanceToPick, Rng).QualityLevel;
+            if (qualityLevelToPick.MaximumAffixes > MaximumQualityLevel.MaximumAffixes)
+                QualityLevel = MaximumQualityLevel;
+            else
+                QualityLevel = qualityLevelToPick;
+            SetAffixes();
+            SetItemName();
+        }
+
+        private void SetAffixes()
+        {
+            Affixes = [];
+            if (QualityLevel == null || QualityLevel.MaximumAffixes == 0) return;
+            var affixesToApply = Rng.NextInclusive(QualityLevel.MinimumAffixes, QualityLevel.MaximumAffixes);
+            if (affixesToApply == 0) return;
+            var prefixesToApply = affixesToApply / 2;
+            var suffixesToApply = affixesToApply / 2;
+            if(prefixesToApply + suffixesToApply < affixesToApply)
+            {
+                if(Rng.RollProbability() <= 50)
+                    prefixesToApply++;
+                else
+                    suffixesToApply++;
+            }
+            for (int i = 0; i < prefixesToApply; i++)
+            {
+                var aPrefix = Map.Prefixes.Except(Affixes).Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                aPrefix.ApplyTo(this);
+            }
+            for (int i = 0; i < suffixesToApply; i++)
+            {
+                var aSuffix = Map.Suffixes.Except(Affixes).Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                aSuffix.ApplyTo(this);
+            }
+        }
+
+        private void SetItemName()
+        {
+            if (QualityLevel.AttachesWhatToItemName == QualityLevelNameAttachment.QualityLevel)
+            {
+                Name = QualityLevel.Name.Replace("{BaseName}", BaseName, StringComparison.InvariantCultureIgnoreCase);
+            }
+            else if (QualityLevel.AttachesWhatToItemName == QualityLevelNameAttachment.Affixes && Affixes.Count > 0)
+            {
+                var baseAffixedName = string.Empty;
+                foreach (var affix in Affixes)
+                {
+                    if (baseAffixedName?.Length == 0)
+                        baseAffixedName = affix.Name;
+                    else
+                        baseAffixedName = baseAffixedName.Replace("{BaseName}", affix.Name, StringComparison.InvariantCultureIgnoreCase);
+                }
+                Name = !string.IsNullOrWhiteSpace(baseAffixedName) ? baseAffixedName.Replace("{BaseName}", BaseName, StringComparison.InvariantCultureIgnoreCase) : BaseName;
+            }
+            else
+            {
+                Name = BaseName;
+            }
+        }
+
         public async Task Used(Entity user)
         {
             if (OnUse == null) return;
 
             if (user == Map.Player)
+            {
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
                 {
                     new() {
@@ -53,7 +252,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
+            }
             else if (user.EntityType == EntityType.NPC && Map.Player.CanSee(user))
+            {
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
                 {
                     new() {
@@ -62,6 +263,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 ));
+            }
 
             await OnUse.Do(this, user, true);
         }

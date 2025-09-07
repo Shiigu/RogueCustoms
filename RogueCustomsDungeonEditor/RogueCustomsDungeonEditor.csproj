@@ -32,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\QualityLevelSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\Tabs\ElementTab.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -86,6 +86,8 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.ActionSchoolsInfo] = tbActionSchoolInfos;
             TabsForNodeTypes[RogueTabTypes.LootTableInfo] = tpLootTableInfos;
             TabsForNodeTypes[RogueTabTypes.CurrencyInfo] = tpCurrencyInfo;
+            TabsForNodeTypes[RogueTabTypes.AffixInfo] = tpAffixes;
+            TabsForNodeTypes[RogueTabTypes.QualityLevelInfo] = tpQualityLevels;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -144,6 +146,8 @@ namespace RogueCustomsDungeonEditor
             AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;
+            AffixTab.TabInfoChanged += AffixTab_TabInfoChanged;
+            QualityLevelsTab.TabInfoChanged += QualityLevelsTab_TabInfoChanged;
             LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
@@ -244,7 +248,7 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewObject = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.AffixInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.QualityLevelInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
             }
             else
@@ -289,6 +293,20 @@ namespace RogueCustomsDungeonEditor
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
                         break;
                     case "Action Schools":
+                        tssDungeonElement.Visible = false;
+                        tsbAddElement.Visible = false;
+                        tsbSaveElement.Visible = true;
+                        tsbSaveElementAs.Visible = false;
+                        tsbDeleteElement.Visible = false;
+                        break;
+                    case "Affixes":
+                        tssDungeonElement.Visible = false;
+                        tsbAddElement.Visible = false;
+                        tsbSaveElement.Visible = true;
+                        tsbSaveElementAs.Visible = false;
+                        tsbDeleteElement.Visible = false;
+                        break;
+                    case "Quality Levels":
                         tssDungeonElement.Visible = false;
                         tsbAddElement.Visible = false;
                         tsbSaveElement.Visible = true;
@@ -467,6 +485,20 @@ namespace RogueCustomsDungeonEditor
                 Name = "Currency"
             };
             tvDungeonInfo.Nodes.Add(currencyInfoNode);
+
+            var affixInfoNode = new TreeNode("Affixes")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.AffixInfo, DungeonElement = null },
+                Name = "Affixes"
+            };
+            tvDungeonInfo.Nodes.Add(affixInfoNode);
+
+            var qualityLevelInfoNode = new TreeNode("Quality Levels")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.QualityLevelInfo, DungeonElement = null },
+                Name = "Quality Levels"
+            };
+            tvDungeonInfo.Nodes.Add(qualityLevelInfoNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -850,6 +882,8 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.ActionSchoolsInfo => SaveActionSchools(),
                     RogueTabTypes.LootTableInfo => SaveLootTable(),
                     RogueTabTypes.CurrencyInfo => SaveCurrency(),
+                    RogueTabTypes.AffixInfo => SaveAffixes(),
+                    RogueTabTypes.QualityLevelInfo => SaveQualityLevels(),
                     RogueTabTypes.PlayerClass => SavePlayerClass(),
                     RogueTabTypes.NPC => SaveNPC(),
                     RogueTabTypes.Item => SaveItem(),
@@ -1051,6 +1085,12 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.CurrencyInfo:
                     LoadCurrencyInfo();
+                    break;
+                case RogueTabTypes.AffixInfo:
+                    LoadAffixes();
+                    break;
+                case RogueTabTypes.QualityLevelInfo:
+                    LoadQualityLevels();
                     break;
                 case RogueTabTypes.LootTableInfo:
                     var tagLootTable = (LootTableInfo)tag.DungeonElement;
@@ -3141,6 +3181,94 @@ namespace RogueCustomsDungeonEditor
         }
         #endregion
 
+        #region Affixes
+
+        private void LoadAffixes()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            AffixTab.LoadData(ActiveDungeon, EffectParamData);
+        }
+
+        private bool SaveAffixes()
+        {
+            var validationErrors = AffixTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Affixes cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Affixes",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Affixes have been successfully saved!",
+                "Save Affixes",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            ActiveDungeon.AffixInfos = AffixTab.LoadedAffixes;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void AffixTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
+        #region Quality Levels
+
+        private void LoadQualityLevels()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            QualityLevelsTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveQualityLevels()
+        {
+            var validationErrors = QualityLevelsTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Quality Levels cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Quality Levels",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Quality Levels have been successfully saved!",
+                "Save Quality Levels",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            ActiveDungeon.QualityLevelInfos = QualityLevelsTab.LoadedQualityInfos;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void QualityLevelsTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
         #region Validator
 
         private void ValidatorTab_OnValidationComplete(object? sender, EventArgs e)
@@ -3177,6 +3305,8 @@ namespace RogueCustomsDungeonEditor
         ActionSchoolsInfo,
         LootTableInfo,
         CurrencyInfo,
+        AffixInfo,
+        QualityLevelInfo,
         PlayerClass,
         NPC,
         Item,

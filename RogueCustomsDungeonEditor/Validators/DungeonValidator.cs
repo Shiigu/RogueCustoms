@@ -35,6 +35,8 @@ namespace RogueCustomsDungeonEditor.Validators
         public DungeonValidationMessages ActionSchoolValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> LootTableValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages CurrencyValidationMessages { get; private set; }
+        public DungeonValidationMessages AffixValidationMessages { get; private set; }
+        public DungeonValidationMessages QualityLevelValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -78,6 +80,8 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.ElementInfos.Count
                 + DungeonJson.ActionSchoolInfos.Count
                 + DungeonJson.CurrencyInfo.CurrencyPiles.Count
+                + DungeonJson.AffixInfos.Count
+                + DungeonJson.QualityLevelInfos.Count
                 + DungeonJson.LootTableInfos.Count
                 + DungeonJson.PlayerClasses.Count
                 + DungeonJson.NPCs.Count
@@ -186,7 +190,7 @@ namespace RogueCustomsDungeonEditor.Validators
 
             UpdateProgressLabel($"Running Action School Validation...", false);
             ActionSchoolValidationMessages = DungeonActionSchoolValidator.Validate(DungeonJson);
-            UpdateProgressLabel($"Action School Validation complete!", true);
+            UpdateProgressLabel($"Action School Validation complete!", true, DungeonJson.ActionSchoolInfos.Count);
 
             foreach (var lootTable in DungeonJson.LootTableInfos)
             {
@@ -197,7 +201,15 @@ namespace RogueCustomsDungeonEditor.Validators
 
             UpdateProgressLabel($"Running Currency Validation...", false);
             CurrencyValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
-            UpdateProgressLabel($"Currency Validation complete!", true);
+            UpdateProgressLabel($"Currency Validation complete!", true, DungeonJson.CurrencyInfo.CurrencyPiles.Count);
+
+            UpdateProgressLabel($"Running Affix Validation...", false);
+            AffixValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
+            UpdateProgressLabel($"Affix Validation complete!", true, DungeonJson.AffixInfos.Count);
+
+            UpdateProgressLabel($"Running Quality Level Validation...", false);
+            QualityLevelValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
+            UpdateProgressLabel($"Quality Level Validation complete!", true, DungeonJson.QualityLevelInfos.Count);
 
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {
@@ -248,6 +260,11 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !FloorGroupValidationMessages.Exists(ftvm => ftvm.ValidationMessages.HasErrors)
                 && !FactionValidationMessages.Exists(fvm => fvm.ValidationMessages.HasErrors)
                 && !NPCValidationMessages.Exists(cvm => cvm.ValidationMessages.HasErrors)
+                && !ElementValidationMessages.Exists(em => em.ValidationMessages.HasErrors)
+                && !ActionSchoolValidationMessages.HasErrors
+                && !CurrencyValidationMessages.HasErrors
+                && !QualityLevelValidationMessages.HasErrors
+                && !AffixValidationMessages.HasErrors
                 && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
                 && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
                 && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)
@@ -256,7 +273,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !LocaleStringValidationMessages.Exists(lsvm => lsvm.ValidationMessages.HasErrors);
         }
 
-        private void UpdateProgressLabel(string text, bool updateProgress)
+        private void UpdateProgressLabel(string text, bool updateProgress, int count = 1)
         {
             try
             {
@@ -268,7 +285,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 ProgressLabel.Width = Math.Max(preferredWidth, currentWidth);
                 
                 if (updateProgress)
-                    ProgressBar.Value++;
+                    ProgressBar.Value += count;
 
                 ProgressBar.Width -= (ProgressLabel.Width - currentWidth);
 

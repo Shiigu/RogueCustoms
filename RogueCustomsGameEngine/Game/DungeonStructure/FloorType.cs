@@ -7,6 +7,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -54,7 +55,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly ActionWithEffects OnFloorStart;
 
-        public FloorType(FloorInfo floorInfo, Locale locale, List<TileType> tileTypes, List<ActionSchool> actionSchools)
+        public FloorType(FloorInfo floorInfo, Dungeon dungeon)
         {
             MinFloorLevel = floorInfo.MinFloorLevel;
             MaxFloorLevel = floorInfo.MaxFloorLevel;
@@ -99,7 +100,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     MaxRoomSize = layout.MaxRoomSize,
                 });
             }
-            OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart, actionSchools);
+            OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart, dungeon.ActionSchools);
             PossibleKeys = new();
             if(floorInfo.PossibleKeys != null)
             {
@@ -109,7 +110,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PossibleKeys.KeyTypes = new();
                 foreach (var keyType in floorInfo.PossibleKeys.KeyTypes)
                 {
-                    PossibleKeys.KeyTypes.Add(keyType.Parse(locale));
+                    PossibleKeys.KeyTypes.Add(keyType.Parse(dungeon));
                 }
             }
 
@@ -118,7 +119,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 foreach (var specialTileGenerator in floorInfo.PossibleSpecialTiles)
                 {
-                    var tileType = tileTypes.Find(tt => tt.Id.Equals(specialTileGenerator.TileTypeId))
+                    var tileType = dungeon.TileTypes.Find(tt => tt.Id.Equals(specialTileGenerator.TileTypeId))
                         ?? throw new InvalidDataException($"There's a Special Tile generator algorithm with invalid Tile Type {specialTileGenerator.TileTypeId}");
                     if(specialTileGenerator.GeneratorType == null)
                         throw new InvalidDataException($"There's no Special Tile generator algorithm without a Generator Type");
@@ -164,7 +165,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     MinimumInFirstTurn = pii.MinimumInFirstTurn,
                     SimultaneousMaxForKindInFloor = pii.SimultaneousMaxForKindInFloor,
                     ChanceToPick = pii.ChanceToPick,
-                    SpawnCondition = pii.SpawnCondition
+                    SpawnCondition = pii.SpawnCondition,
+                    MinLevel = pii.MinLevel,
+                    MaxLevel = pii.MaxLevel
                 });
             });
             PossibleTraps = new List<ClassInFloor>();

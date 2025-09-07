@@ -388,6 +388,22 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = [SpecialEffect.Currency]
                     }
                 };
+
+                if(c == Map.Player)
+                {
+                    events.Add(
+                    new DisplayEventDto()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateCurrency, c.CurrencyCarried }
+                    });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                    });
+                }
+
                 Map.AppendMessage(Map.Locale["CharacterSoldItem"].Format(new { CharacterName = c.Name, ItemName = itemToSell.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (c.CurrencyCarried - currencyBeforeSale).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
 
                 Map.DisplayEvents.Add(($"{c.Name} sells {itemToSell.Name}", events));
@@ -474,6 +490,22 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = [SpecialEffect.Currency]
                     }
                 };
+
+                if (c == Map.Player)
+                {
+                    events.Add(
+                    new DisplayEventDto()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateCurrency, c.CurrencyCarried }
+                    });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                    });
+                }
+
                 Map.AppendMessage(Map.Locale["CharacterBoughtItem"].Format(new { CharacterName = c.Name, ItemName = itemToBuy.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (currencyBeforePurchase - c.CurrencyCarried).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);
 
                 Map.DisplayEvents.Add(($"{c.Name} buys {itemToBuy.Name}", events));

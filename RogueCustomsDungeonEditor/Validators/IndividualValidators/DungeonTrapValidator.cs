@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(TrapInfo trapJson, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var trapAsInstance = sampleDungeon != null ? new Trap(new EntityClass(trapJson, sampleDungeon.LocaleToUse, EntityType.Trap, null, sampleDungeon.ActionSchools, []), sampleDungeon.CurrentFloor) : null;
+            var trapAsInstance = sampleDungeon != null ? new Trap(new EntityClass(trapJson, EntityType.Trap, sampleDungeon, dungeonJson.CharacterStats), sampleDungeon.CurrentFloor) : null;
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(trapJson.Name, "Trap", "Name", true));
@@ -24,7 +24,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             messages.AddRange(trapJson.ConsoleRepresentation.Validate(trapJson.Id, false, dungeonJson));
 
             if (string.IsNullOrWhiteSpace(trapJson.Power))
-                messages.AddWarning("Trap does not have a set Power. Remember to hardcode Action Power parameters, or the game may crash.");
+                messages.AddError("Trap does not have a set Power.");
 
             if (trapJson.OnStepped != null)
             {

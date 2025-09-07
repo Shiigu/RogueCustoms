@@ -67,6 +67,115 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             lblLootTable.BackColor = LootTableColor;
             lblCurrency.BackColor = CurrencyColor;
             lblItem.BackColor = ItemColor;
+
+            chkLootTableOverridesQualityLevelOdds.Checked = lootTableToLoad.OverridesQualityLevelOddsOfItems;
+
+            if (lootTableToLoad.QualityLevelOdds == null)
+                lootTableToLoad.QualityLevelOdds = [];
+
+            var qualityLevelsTable = new List<QualityLevelOddsInfo>();
+
+            foreach (var qualityLevel in activeDungeon.QualityLevelInfos)
+            {
+                var lootTableQualityLevelEntry = lootTableToLoad.QualityLevelOdds.Find(ql => ql.Id.Equals(qualityLevel.Id, StringComparison.InvariantCultureIgnoreCase));
+                if (lootTableQualityLevelEntry != null)
+                {
+                    qualityLevelsTable.Add(lootTableQualityLevelEntry);
+                }
+                else
+                {
+                    qualityLevelsTable.Add(new QualityLevelOddsInfo()
+                    {
+                        Id = qualityLevel.Id,
+                        ChanceToPick = 0
+                    });
+                }
+            }
+
+            qlsLootTableQualityLevelOdds.QualityLevels = qualityLevelsTable;
+        }
+
+        public List<string> SaveData(string id)
+        {
+            dgvLootTable.EndEdit();
+            var validationErrors = new List<string>();
+            var lootTableToSave = new LootTableInfo()
+            {
+                Id = id,
+                Entries = new(),
+                OverridesQualityLevelOddsOfItems = chkLootTableOverridesQualityLevelOdds.Checked,
+                QualityLevelOdds = new()
+            };
+
+            var alreadyPickedIds = new List<string>();
+
+            foreach (DataGridViewRow row in dgvLootTable.Rows)
+            {
+                if (row.IsNewRow) continue;
+                try
+                {
+                    var isValidEntry = true;
+                    var pickId = row.Cells[0].Value.ToString();
+                    if (string.IsNullOrWhiteSpace(pickId))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add("At least one Loot Table Entry lacks an Id.");
+                    }
+                    else if (alreadyPickedIds.Contains(pickId, StringComparer.InvariantCultureIgnoreCase))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add("At least one Loot Table Entry is a duplicate.");
+                    }
+                    else
+                    {
+                        alreadyPickedIds.Add(pickId);
+                    }
+                    if (!int.TryParse(row.Cells[1].Value.ToString(), out int weight) || weight <= 0)
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add("At least one Loot Table Entry has an invalid Weight value.\n\nIt must be an integer number higher than 0.");
+                    }
+                    if (isValidEntry)
+                    {
+                        lootTableToSave.Entries.Add(new()
+                        {
+                            PickId = pickId,
+                            Weight = weight
+                        });
+                    }
+                }
+                catch
+                {
+                    validationErrors.Add("At least one Loot Table Entry is invalid.");
+                }
+            }
+
+            if (!validationErrors.Any() && chkLootTableOverridesQualityLevelOdds.Checked)
+            {
+                foreach (var qualityLevel in qlsLootTableQualityLevelOdds.QualityLevels)
+                {
+                    if (qualityLevel.ChanceToPick < 0)
+                    {
+                        validationErrors.Add("At least one Quality Level Odds Entry has an invalid Weight value.\n\nIt must be an integer number equal to or higher than 0.");
+                    }
+                    else
+                    {
+                        lootTableToSave.QualityLevelOdds.Add(qualityLevel);
+                    }
+                }
+            }
+
+            if (!validationErrors.Any())
+            {
+                LoadedLootTable = lootTableToSave;
+            }
+
+            return validationErrors.Distinct().ToList();
+        }
+
+        private void chkLootTableOverridesQualityLevelOdds_CheckedChanged(object sender, EventArgs e)
+        {
+            qlsLootTableQualityLevelOdds.Visible = chkLootTableOverridesQualityLevelOdds.Checked;
         }
 
         private void dgvLootTable_DataError(object? sender, DataGridViewDataErrorEventArgs e)
@@ -121,8 +230,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && !dgvLootTable.Rows[e.RowIndex].IsNewRow && dgvLootTable.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewComboBoxCell)
             {
                 var cell = dgvLootTable.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-                var itemText = cell.Value != null 
-                    ? cell.Value.ToString() 
+                var itemText = cell.Value != null
+                    ? cell.Value.ToString()
                     : cell.FormattedValue != null ? cell.FormattedValue.ToString() : string.Empty;
                 Color? backColor = GetColorForEntry(itemText);
 
@@ -172,67 +281,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
         }
 
-        public List<string> SaveData(string id)
-        {
-            dgvLootTable.EndEdit();
-            var validationErrors = new List<string>();
-            var lootTableToSave = new LootTableInfo()
-            {
-                Id = id,
-                Entries = new()
-            };
-
-            var alreadyPickedIds = new List<string>();
-
-            foreach (DataGridViewRow row in dgvLootTable.Rows)
-            {
-                if (row.IsNewRow) continue;
-                try
-                {
-                    var isValidEntry = true;
-                    var pickId = row.Cells[0].Value.ToString();
-                    if (string.IsNullOrWhiteSpace(pickId))
-                    {
-                        isValidEntry = false;
-                        validationErrors.Add("At least one Loot Table Entry lacks an Id.");
-                    }
-                    else if (alreadyPickedIds.Contains(pickId, StringComparer.InvariantCultureIgnoreCase))
-                    {
-                        isValidEntry = false;
-                        validationErrors.Add("At least one Loot Table Entry is a duplicate.");
-                    }
-                    else
-                    {
-                        alreadyPickedIds.Add(pickId);
-                    }
-                    if (!int.TryParse(row.Cells[1].Value.ToString(), out int weight) || weight <= 0)
-                    {
-                        isValidEntry = false;
-                        validationErrors.Add("At least one Loot Table Entry has an invalid Weight value.\n\nIt must be an integer number higher than 0.");
-                    }
-                    if (isValidEntry)
-                    {
-                        lootTableToSave.Entries.Add(new()
-                        {
-                            PickId = pickId,
-                            Weight = weight
-                        });
-                    }
-                }
-                catch
-                {
-                    validationErrors.Add("At least one Loot Table Entry is invalid.");
-                }
-            }
-
-            if (!validationErrors.Any())
-            {
-                LoadedLootTable = lootTableToSave;
-            }
-
-            return validationErrors.Distinct().ToList();
-        }
-
         private void btnTestLootTable_Click(object sender, EventArgs e)
         {
             var validationErrors = SaveData(LoadedLootTable.Id);
@@ -254,7 +302,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var pickedId = string.Empty;
                 var visitedLootTables = new List<string>();
                 var currentLootTable = LoadedLootTable;
-                if(!string.IsNullOrEmpty(LoadedLootTable.Id)) visitedLootTables.Add(LoadedLootTable.Id);
+                if (!string.IsNullOrEmpty(LoadedLootTable.Id)) visitedLootTables.Add(LoadedLootTable.Id);
                 while (pickedId?.Length == 0 || lootTableIds.Contains(pickedId))
                 {
                     if (currentLootTable.Entries.Any(e => visitedLootTables.Contains(e.PickId)))

@@ -46,6 +46,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<ActionWithEffects> OnInteracted { get; set; }
         public bool SpawnedViaMonsterHouse { get; set; }
         public bool CanSeeTraps { get; set; }
+        public LootTable LootTable { get; set; }
         public List<(EntityClass Class, int Amount)> Drops { get; set; }
 
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
@@ -64,6 +65,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             OnInteracted = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnInteracted, OnInteracted);
 
+            LootTable = entityClass.LootTable;
             CreateDrops(entityClass.LootTable, entityClass.DropPicks);
         }
 
@@ -552,26 +554,28 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
                 var droppedCurrency = false;
-                if(CurrencyCarried > 0)
-                {
-                    droppedCurrency = true;
-                    var currencyForDrop = Map.CreateCurrency(CurrencyCarried, null, false);
-                    DropItem(currencyForDrop);
-                }
                 foreach (var dropEntry in Drops)
                 {
                     var entryClass = dropEntry.Class;
                     if (entryClass != Map.CurrencyClass)
                     {
                         var itemForDrop = await Map.AddEntity(entryClass, 1, null, false) as Item;
+                        if (LootTable.OverridesQualityLevelOddsOfItems)
+                        {
+                            itemForDrop.SetQualityLevel(LootTable.QualityLevelOdds.TakeRandomElementWithWeights(qlo => qlo.ChanceToPick, Rng).QualityLevel);
+                        }
                         DropItem(itemForDrop);
                     }
                     else
                     {
-                        droppedCurrency = true;
-                        var currencyForDrop = Map.CreateCurrency(dropEntry.Amount, null, false);
-                        DropItem(currencyForDrop);
+                        CurrencyCarried += dropEntry.Amount;
                     }
+                }
+                if (CurrencyCarried > 0)
+                {
+                    droppedCurrency = true;
+                    var currencyForDrop = Map.CreateCurrency(CurrencyCarried, null, false);
+                    DropItem(currencyForDrop);
                 }
                 if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
@@ -661,8 +665,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             if(pickedEmptyTile == null)
             {
                 var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.AllowsDrops).ToList();
-                if(ContainingTile.AllowsDrops)
-                    closeEmptyTiles.Add(ContainingTile);
+                if(centralTile?.AllowsDrops == true)
+                    closeEmptyTiles.Add(centralTile);
                 closeEmptyTiles = closeEmptyTiles.Where(t => t.LivingCharacter == null || t.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive || t.LivingCharacter == this).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => (int) GamePoint.Distance(t.Position, centralPosition)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => (int) GamePoint.Distance(t.Position, centralPosition) <= closestDistance);

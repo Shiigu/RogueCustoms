@@ -79,6 +79,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "clearsdebuffs", "ClearsDebuffs" },
             { "clearsfromstatuses", "ClearsFromStatuses" },
             { "informofsource", "InformOfSource" },
+            { "isextradamage", "IsExtraDamage" },
         };
 
         private static readonly Dictionary<string, string> ColorParams = new(StringComparer.InvariantCultureIgnoreCase)

@@ -121,6 +121,10 @@ namespace RogueCustomsDungeonEditor.Controls
         {
             InitializeComponent();
         }
+        public void EndEdit()
+        {
+            dgvStatsModifiers.EndEdit();
+        }
 
         private void ResetStatsTable()
         {

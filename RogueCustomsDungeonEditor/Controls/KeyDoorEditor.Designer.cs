@@ -61,9 +61,9 @@
             fklblKeyDoorNameLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             fklblKeyDoorNameLocale.Location = new System.Drawing.Point(3, 52);
             fklblKeyDoorNameLocale.Name = "fklblKeyDoorNameLocale";
-            fklblKeyDoorNameLocale.Size = new System.Drawing.Size(303, 55);
+            fklblKeyDoorNameLocale.Size = new System.Drawing.Size(315, 55);
             fklblKeyDoorNameLocale.TabIndex = 139;
-            fklblKeyDoorNameLocale.Text = "These value have been found as Locale Entry keys.\r\nIn-game, they will be replaced by the Locale Entries' values.";
+            fklblKeyDoorNameLocale.Text = "These values have been found as Locale Entry keys.\r\nIn-game, they will be replaced by the Locale Entries' values.";
             fklblKeyDoorNameLocale.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             fklblKeyDoorNameLocale.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             fklblKeyDoorNameLocale.UseVisualStyleBackColor = false;
@@ -81,7 +81,7 @@
             // 
             label27.AutoSize = true;
             label27.BackColor = System.Drawing.Color.Transparent;
-            label27.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label27.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             label27.Location = new System.Drawing.Point(28, 5);
             label27.Name = "label27";
             label27.Size = new System.Drawing.Size(239, 15);
@@ -102,7 +102,7 @@
             // label30
             // 
             label30.BackColor = System.Drawing.Color.Transparent;
-            label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label30.Location = new System.Drawing.Point(324, 9);
             label30.Name = "label30";
             label30.Size = new System.Drawing.Size(211, 52);
@@ -112,9 +112,6 @@
             // 
             // crsKey
             // 
-            crsKey.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsKey.BackgroundColor");
-            crsKey.Character = '\0';
-            crsKey.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsKey.ForegroundColor");
             crsKey.Location = new System.Drawing.Point(324, 70);
             crsKey.Name = "crsKey";
             crsKey.Size = new System.Drawing.Size(211, 83);
@@ -123,7 +120,7 @@
             // label1
             // 
             label1.BackColor = System.Drawing.Color.Transparent;
-            label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(576, 9);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(211, 52);
@@ -133,9 +130,6 @@
             // 
             // crsDoor
             // 
-            crsDoor.BackgroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsDoor.BackgroundColor");
-            crsDoor.Character = '\0';
-            crsDoor.ForegroundColor = (RogueCustomsGameEngine.Utils.Representation.GameColor)resources.GetObject("crsDoor.ForegroundColor");
             crsDoor.Location = new System.Drawing.Point(576, 70);
             crsDoor.Name = "crsDoor";
             crsDoor.Size = new System.Drawing.Size(211, 83);

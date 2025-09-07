@@ -107,7 +107,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int Height { get; private set; }
 
         private int TotalMonstersInFloor => AICharacters.Count(e => !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
-        private int TotalItemsInFloor => Items.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
+        private int TotalItemsInFloor => Items.Where(i => i.SpawnedInTheFloor).Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int TotalTrapsInFloor => Traps.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int MinRoomWidth { get; set; }
         private int MaxRoomWidth { get; set; }
@@ -116,6 +116,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public bool StairsAreSet { get; set; } = false;
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Element> Elements => Dungeon.Elements;
+        public List<Affix> Affixes => Dungeon.Affixes;
+        public List<Affix> Prefixes => Affixes.Where(a => a.Type == AffixType.Prefix).ToList();
+        public List<Affix> Suffixes => Affixes.Where(a => a.Type == AffixType.Suffix).ToList();
+        public List<QualityLevel> QualityLevels => Dungeon.QualityLevels;
         public List<Currency> CurrencyPiles { get; set; }
         public List<Item> Items { get; set; }
         public List<Key> Keys { get; set; }
@@ -1024,11 +1028,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.Weapon:
                 case EntityType.Armor:
                 case EntityType.Consumable:
-                    entity = new Item(entityClass, this)
+                    entity = new Item(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
                         Position = PositionToUse
                     };
+                    (entity as Item).SpawnedInTheFloor = PositionToUse != null;
+                    (entity as Item).SetQualityLevel();
                     break;
                 case EntityType.Trap:
                     entity = new Trap(entityClass, this)
@@ -1062,31 +1068,35 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             else if (entity is Character c)
             {
+                var mostBasicQualityLevel = QualityLevels.MinBy(q => q.MaximumAffixes);
                 var weaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingWeaponId))
                     ?? throw new InvalidDataException("Class does not have a valid starting weapon!");
-                c.StartingWeapon = new Item(weaponEntityClass, this)
+                c.StartingWeapon = new Item(weaponEntityClass, 1, this)
                 {
                     Id = CurrentEntityId,
                     Owner = c
                 };
+                c.StartingWeapon.SetQualityLevel(mostBasicQualityLevel);
                 CurrentEntityId++;
                 var armorEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(c.StartingArmorId))
                     ?? throw new InvalidDataException("Class does not have a valid starting armor!");
-                c.StartingArmor = new Item(armorEntityClass, this)
+                c.StartingArmor = new Item(armorEntityClass, 1, this)
                 {
                     Id = CurrentEntityId,
                     Owner = c
                 };
+                c.StartingWeapon.SetQualityLevel(mostBasicQualityLevel);
                 CurrentEntityId++;
                 foreach (var itemId in entityClass.StartingInventoryIds)
                 {
                     var itemEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(itemId))
                         ?? throw new InvalidDataException("Class does has an invalid starting inventory item!");
-                    var inventoryItem = new Item(itemEntityClass, this)
+                    var inventoryItem = new Item(itemEntityClass, 1, this)
                     {
                         Id = CurrentEntityId,
                         Owner = c
                     };
+                    inventoryItem.SetQualityLevel(mostBasicQualityLevel);
                     Items.Add(inventoryItem);
                     c.Inventory.Add(inventoryItem);
                     CurrentEntityId++;
@@ -1098,11 +1108,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         var initialEquippedWeaponEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(p.InitialEquippedWeaponId))
                         ?? throw new InvalidDataException("Player Class does has an invalid starting equipped Weapon!");
-                        var initialWeapon = new Item(initialEquippedWeaponEntityClass, this)
+                        var initialWeapon = new Item(initialEquippedWeaponEntityClass, 1, this)
                         {
                             Id = CurrentEntityId,
                             Owner = c
                         };
+                        initialWeapon.SetQualityLevel(mostBasicQualityLevel);
                         Items.Add(initialWeapon);
                         c.EquippedWeapon = initialWeapon;
                         CurrentEntityId++;
@@ -1111,11 +1122,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     {
                         var initialEquippedArmorEntityClass = Dungeon.Classes.Find(cl => cl.Id.Equals(p.InitialEquippedArmorId))
                         ?? throw new InvalidDataException("Player Class does has an invalid starting equipped Armpr!");
-                        var initialArmor = new Item(initialEquippedArmorEntityClass, this)
+                        var initialArmor = new Item(initialEquippedArmorEntityClass, 1, this)
                         {
                             Id = CurrentEntityId,
                             Owner = c
                         };
+                        initialArmor.SetQualityLevel(mostBasicQualityLevel);
                         Items.Add(initialArmor);
                         c.EquippedArmor = initialArmor;
                         CurrentEntityId++;
@@ -1408,7 +1420,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             });
             var pickedGenerator = usableItemGenerators.TakeRandomElementWithWeights(g => g.ChanceToPick, Rng);
             if (pickedGenerator == null) return;
-            await AddEntity(pickedGenerator.ClassId);
+            var itemLevel = Rng.NextInclusive(pickedGenerator.MinLevel, pickedGenerator.MaxLevel);
+            await AddEntity(pickedGenerator.ClassId, itemLevel);
             pickedGenerator.TotalGeneratedInFloor++;
         }
 
