@@ -27,8 +27,6 @@ public partial class ScalableRichTextLabel : RichTextLabel
 
     private void UpdateFontSize()
     {
-        AddThemeFontSizeOverride("normal_font_size", DefaultFontSize);
-
         var font = GetThemeFont("font");
         if (font == null)
             return;
@@ -48,7 +46,6 @@ public partial class ScalableRichTextLabel : RichTextLabel
             textWidth = font.GetStringSize(longestLine, HorizontalAlignment.Left, -1, currentFontSize).X;
         }
 
-        Size = new(Math.Min(maxWidth, textWidth), DefaultFontSize);
         AddThemeFontSizeOverride("normal_font_size", currentFontSize);
     }
 }

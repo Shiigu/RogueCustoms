@@ -365,10 +365,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             foreach (var pick in itemPicks)
             {
-                var newItem = await Map.AddEntity(pick, 1, null, false) as Item;
+                var newItem = await Map.AddEntity(pick, c.Level, null, false) as Item;
                 newItem.Owner = c;
                 c.Inventory.Add(newItem);
-                if(Map.IsDebugMode)
+                if (lootTable.OverridesQualityLevelOddsOfItems)
+                {
+                    newItem.SetQualityLevel(lootTable.QualityLevelOdds.TakeRandomElementWithWeights(qlo => qlo.ChanceToPick, Rng).QualityLevel);
+                }
+                if (Map.IsDebugMode)
                     Map.AppendMessage($"DEBUG: Item {newItem.Name} has been added to {c.Name}'s inventory", Color.LightGreen);
             }
 

@@ -559,7 +559,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     var entryClass = dropEntry.Class;
                     if (entryClass != Map.CurrencyClass)
                     {
-                        var itemForDrop = await Map.AddEntity(entryClass, 1, null, false) as Item;
+                        var itemForDrop = await Map.AddEntity(entryClass, Level, null, false) as Item;
                         if (LootTable.OverridesQualityLevelOddsOfItems)
                         {
                             itemForDrop.SetQualityLevel(LootTable.QualityLevelOdds.TakeRandomElementWithWeights(qlo => qlo.ChanceToPick, Rng).QualityLevel);

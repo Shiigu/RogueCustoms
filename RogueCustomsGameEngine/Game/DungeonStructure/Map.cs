@@ -424,7 +424,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     Keys.Clear();
                     GetEntities().RemoveAll(e => e.EntityType == EntityType.Key);
-                    Tiles.Where(t => t.Type == TileType.Door).ForEach(t =>
+                    Tiles.Where(t => t.DoorId != "").ForEach(t =>
                     {
                         t.Type = TileType.Hallway;
                         t.DoorId = string.Empty;
@@ -682,6 +682,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 && ((room.HasStairs && kt.CanLockStairs) || (room.HasItems && kt.CanLockItems)));
                 if (!usableKeyTypes.Any()) continue;
                 var keyTypeToUse = usableKeyTypes.TakeRandomElement(Rng);
+                if (keyTypeToUse.KeyTypeName == "") continue;
                 foreach (var tile in exitTiles)
                 {
                     tile.Type = TileType.Door;
@@ -1499,7 +1500,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         bumps = true;
                     if(bumps)
                     {
-                        if (targetTile.Type == TileType.Door)
+                        if (targetTile.DoorId != "")
                         {
                             var events = new List<DisplayEventDto>();
                             events.Add(new()
