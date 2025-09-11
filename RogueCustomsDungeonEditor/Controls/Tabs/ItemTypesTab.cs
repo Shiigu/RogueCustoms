@@ -105,7 +105,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     isValidEntry = false;
                     validationErrors.Add($"Row {id}: Enter the Primary Slot first.");
                 }
-                if (!string.IsNullOrWhiteSpace(slot1) && !string.IsNullOrWhiteSpace(slot2) && slot1.Equals(slot2,StringComparison.CurrentCultureIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(slot1) && !string.IsNullOrWhiteSpace(slot2) && slot1.Equals(slot2, StringComparison.CurrentCultureIgnoreCase))
                 {
                     isValidEntry = false;
                     validationErrors.Add($"Row {id}: Primary and Secondary Slots are Identical. If you want the Item Type to occupy only one slot, leave the Secondary Slot blank.");
@@ -136,6 +136,17 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItemTypeInfos = itemTypes;
 
             return validationErrors;
+        }
+
+        private void dgvItemTypes_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            // Let's leave the ComboBox empty if it holds an invalid (likely outdated) value
+            if (dgvItemTypes.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
+            {
+                dgvItemTypes.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+
+                e.ThrowException = false;
+            }
         }
     }
 }

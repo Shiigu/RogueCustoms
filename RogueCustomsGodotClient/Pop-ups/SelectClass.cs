@@ -102,6 +102,10 @@ public partial class SelectClass : Control
         }
 
         _classDescriptionLabel.AppendText($"[p] [p]{currentClass.SightRangeName}: {currentClass.SightRangeStat}[p] ");
+
+        if(currentClass.AvailableSlots.Count > 0)
+            _classDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("PlayerClassAvailableItemSlots").ToString().Format(new { Slots = string.Join(", ", currentClass.AvailableSlots) })}[p] ");
+
         _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassInitialEquipmentHeader")}[/center][p] ");
         if (currentClass.StartingEquipment.Count != 0)
         {

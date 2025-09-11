@@ -31,6 +31,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void InitializeComponent()
         {
             dgvLootTable = new DataGridView();
+            PickId = new DataGridViewComboBoxColumn();
+            Weight = new DataGridViewTextBoxColumn();
             btnTestLootTable = new Button();
             label1 = new Label();
             lblItemType = new Label();
@@ -39,8 +41,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             lblItem = new Label();
             chkLootTableOverridesQualityLevelOdds = new CheckBox();
             qlsLootTableQualityLevelOdds = new QualityLevelSheet();
-            PickId = new DataGridViewComboBoxColumn();
-            Weight = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvLootTable).BeginInit();
             SuspendLayout();
             // 
@@ -54,83 +54,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             dgvLootTable.MultiSelect = false;
             dgvLootTable.Name = "dgvLootTable";
             dgvLootTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLootTable.Size = new System.Drawing.Size(451, 315);
+            dgvLootTable.Size = new System.Drawing.Size(465, 315);
             dgvLootTable.TabIndex = 0;
-            // 
-            // btnTestLootTable
-            // 
-            btnTestLootTable.Location = new System.Drawing.Point(172, 321);
-            btnTestLootTable.Name = "btnTestLootTable";
-            btnTestLootTable.Size = new System.Drawing.Size(136, 28);
-            btnTestLootTable.TabIndex = 1;
-            btnTestLootTable.Text = "Test Loot Table";
-            btnTestLootTable.UseVisualStyleBackColor = true;
-            btnTestLootTable.Click += btnTestLootTable_Click;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(457, 0);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(69, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Color labels";
-            // 
-            // lblCategory
-            // 
-            lblItemType.BorderStyle = BorderStyle.FixedSingle;
-            lblItemType.Location = new System.Drawing.Point(457, 28);
-            lblItemType.Name = "lblCategory";
-            lblItemType.Size = new System.Drawing.Size(163, 17);
-            lblItemType.TabIndex = 3;
-            lblItemType.Text = "Item Type";
-            // 
-            // lblLootTable
-            // 
-            lblLootTable.BorderStyle = BorderStyle.FixedSingle;
-            lblLootTable.Location = new System.Drawing.Point(457, 44);
-            lblLootTable.Name = "lblLootTable";
-            lblLootTable.Size = new System.Drawing.Size(163, 17);
-            lblLootTable.TabIndex = 4;
-            lblLootTable.Text = "Loot Table";
-            lblLootTable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblCurrency
-            // 
-            lblCurrency.BorderStyle = BorderStyle.FixedSingle;
-            lblCurrency.Location = new System.Drawing.Point(457, 60);
-            lblCurrency.Name = "lblCurrency";
-            lblCurrency.Size = new System.Drawing.Size(163, 17);
-            lblCurrency.TabIndex = 5;
-            lblCurrency.Text = "Currency";
-            // 
-            // lblItem
-            // 
-            lblItem.BorderStyle = BorderStyle.FixedSingle;
-            lblItem.Location = new System.Drawing.Point(457, 76);
-            lblItem.Name = "lblItem";
-            lblItem.Size = new System.Drawing.Size(163, 17);
-            lblItem.TabIndex = 6;
-            lblItem.Text = "Specific Item";
-            // 
-            // chkLootTableOverridesQualityLevelOdds
-            // 
-            chkLootTableOverridesQualityLevelOdds.AutoSize = true;
-            chkLootTableOverridesQualityLevelOdds.Location = new System.Drawing.Point(457, 109);
-            chkLootTableOverridesQualityLevelOdds.Name = "chkLootTableOverridesQualityLevelOdds";
-            chkLootTableOverridesQualityLevelOdds.Size = new System.Drawing.Size(257, 19);
-            chkLootTableOverridesQualityLevelOdds.TabIndex = 7;
-            chkLootTableOverridesQualityLevelOdds.Text = "All drops have the same Quality Level Odds:";
-            chkLootTableOverridesQualityLevelOdds.UseVisualStyleBackColor = true;
-            chkLootTableOverridesQualityLevelOdds.CheckedChanged += chkLootTableOverridesQualityLevelOdds_CheckedChanged;
-            // 
-            // qlsLootTableQualityLevelOdds
-            // 
-            qlsLootTableQualityLevelOdds.Location = new System.Drawing.Point(478, 140);
-            qlsLootTableQualityLevelOdds.Name = "qlsLootTableQualityLevelOdds";
-            qlsLootTableQualityLevelOdds.Size = new System.Drawing.Size(203, 175);
-            qlsLootTableQualityLevelOdds.TabIndex = 8;
-            qlsLootTableQualityLevelOdds.Visible = false;
             // 
             // PickId
             // 
@@ -146,6 +71,81 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             Weight.Name = "Weight";
             Weight.Width = 202;
             // 
+            // btnTestLootTable
+            // 
+            btnTestLootTable.Location = new System.Drawing.Point(172, 321);
+            btnTestLootTable.Name = "btnTestLootTable";
+            btnTestLootTable.Size = new System.Drawing.Size(136, 28);
+            btnTestLootTable.TabIndex = 1;
+            btnTestLootTable.Text = "Test Loot Table";
+            btnTestLootTable.UseVisualStyleBackColor = true;
+            btnTestLootTable.Click += btnTestLootTable_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(471, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(69, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Color labels";
+            // 
+            // lblItemType
+            // 
+            lblItemType.BorderStyle = BorderStyle.FixedSingle;
+            lblItemType.Location = new System.Drawing.Point(471, 28);
+            lblItemType.Name = "lblItemType";
+            lblItemType.Size = new System.Drawing.Size(163, 17);
+            lblItemType.TabIndex = 3;
+            lblItemType.Text = "Item Type";
+            // 
+            // lblLootTable
+            // 
+            lblLootTable.BorderStyle = BorderStyle.FixedSingle;
+            lblLootTable.Location = new System.Drawing.Point(471, 44);
+            lblLootTable.Name = "lblLootTable";
+            lblLootTable.Size = new System.Drawing.Size(163, 17);
+            lblLootTable.TabIndex = 4;
+            lblLootTable.Text = "Loot Table";
+            lblLootTable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblCurrency
+            // 
+            lblCurrency.BorderStyle = BorderStyle.FixedSingle;
+            lblCurrency.Location = new System.Drawing.Point(471, 60);
+            lblCurrency.Name = "lblCurrency";
+            lblCurrency.Size = new System.Drawing.Size(163, 17);
+            lblCurrency.TabIndex = 5;
+            lblCurrency.Text = "Currency";
+            // 
+            // lblItem
+            // 
+            lblItem.BorderStyle = BorderStyle.FixedSingle;
+            lblItem.Location = new System.Drawing.Point(471, 76);
+            lblItem.Name = "lblItem";
+            lblItem.Size = new System.Drawing.Size(163, 17);
+            lblItem.TabIndex = 6;
+            lblItem.Text = "Specific Item";
+            // 
+            // chkLootTableOverridesQualityLevelOdds
+            // 
+            chkLootTableOverridesQualityLevelOdds.AutoSize = true;
+            chkLootTableOverridesQualityLevelOdds.Location = new System.Drawing.Point(471, 109);
+            chkLootTableOverridesQualityLevelOdds.Name = "chkLootTableOverridesQualityLevelOdds";
+            chkLootTableOverridesQualityLevelOdds.Size = new System.Drawing.Size(257, 19);
+            chkLootTableOverridesQualityLevelOdds.TabIndex = 7;
+            chkLootTableOverridesQualityLevelOdds.Text = "All drops have the same Quality Level Odds:";
+            chkLootTableOverridesQualityLevelOdds.UseVisualStyleBackColor = true;
+            chkLootTableOverridesQualityLevelOdds.CheckedChanged += chkLootTableOverridesQualityLevelOdds_CheckedChanged;
+            // 
+            // qlsLootTableQualityLevelOdds
+            // 
+            qlsLootTableQualityLevelOdds.Location = new System.Drawing.Point(492, 140);
+            qlsLootTableQualityLevelOdds.Name = "qlsLootTableQualityLevelOdds";
+            qlsLootTableQualityLevelOdds.Size = new System.Drawing.Size(203, 175);
+            qlsLootTableQualityLevelOdds.TabIndex = 8;
+            qlsLootTableQualityLevelOdds.Visible = false;
+            // 
             // LootTableTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -160,7 +160,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             Controls.Add(btnTestLootTable);
             Controls.Add(dgvLootTable);
             Name = "LootTableTab";
-            Size = new System.Drawing.Size(712, 352);
+            Size = new System.Drawing.Size(722, 352);
             ((System.ComponentModel.ISupportInitialize)dgvLootTable).EndInit();
             ResumeLayout(false);
             PerformLayout();

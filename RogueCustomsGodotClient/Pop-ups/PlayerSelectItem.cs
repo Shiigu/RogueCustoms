@@ -455,8 +455,8 @@ public partial class PlayerSelectItem : Control
         if (selectedItem != null)
         {
             _itemDescriptionLabel.AppendText($"{selectedItem.Name.ToColoredString(selectedItem.QualityColor)}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
-           
-            if(selectedItem.ItemLevel > 0)
+
+            if (selectedItem.ItemLevel > 0)
                 _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("InventoryWindowItemLevelText").ToString().Format(new { Level = selectedItem.ItemLevel.ToString() })}");
 
             if (!string.IsNullOrWhiteSpace(selectedItem.QualityLevel))
@@ -506,7 +506,7 @@ public partial class PlayerSelectItem : Control
             {
                 foreach (var extraDamage in selectedItem.ExtraDamages)
                 {
-                    _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowExtraDamageText").ToString().Format(new {Damage = extraDamage.DamageString, Element = extraDamage.Element})}[/color]");
+                    _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowExtraDamageText").ToString().Format(new { Damage = extraDamage.DamageString, Element = extraDamage.Element })}[/color]");
                 }
             }
 
@@ -519,6 +519,11 @@ public partial class PlayerSelectItem : Control
                 _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("EquippedItemDescriptionText")}");
                 if (_itemListInfo.TileIsOccupied)
                     _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("OccupiedTileDescriptionText")}");
+            }
+
+            if (selectedItem.IsEquippable && !selectedItem.CanBeEquipped)
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowCannotEquipText")}");
             }
 
             if (selectedItem.Value > 0)
@@ -540,7 +545,6 @@ public partial class PlayerSelectItem : Control
             {
                 _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("InventoryWindowCannotBeSoldText").ToString().Format(new { Symbol = _itemListInfo.CurrencyConsoleRepresentation.ToBbCodeRepresentation() })}");
             }
-
         }
 
         if (_selectionMode == SelectionMode.Inventory)
@@ -552,7 +556,7 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = !selectedItem.IsEquippable;
             _useButton.Disabled = _isReadOnly || !selectedItem.CanBeUsed;
             _equipButton.Visible = selectedItem.IsEquippable;
-            _equipButton.Disabled = _isReadOnly || selectedItem.IsEquipped;
+            _equipButton.Disabled = _isReadOnly || selectedItem.IsEquipped || !selectedItem.CanBeEquipped;
             _selectButton.Visible = false;
             _selectButton.Disabled = true;
         }

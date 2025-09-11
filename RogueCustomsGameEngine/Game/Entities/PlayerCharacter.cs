@@ -174,7 +174,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!itemToEquip.IsEquippable)
                 throw new InvalidOperationException("Attempted to equip an unequippable item!");
 
-            if (itemToEquip.ItemType.SlotsItOccupies.Any(s => !AvailableSlots.Contains(s)))
+            if (!itemToEquip.ItemType.SlotsItOccupies.All(s => AvailableSlots.Contains(s)))
             {
                 Map.AppendMessage(Map.Locale["CharacterCannotEquipItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow);
             }

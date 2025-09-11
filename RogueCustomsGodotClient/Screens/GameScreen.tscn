@@ -164,7 +164,7 @@ theme_override_constants/separation = 0
 
 [node name="PlayerNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
 texture_filter = 1
-custom_minimum_size = Vector2(224, 16)
+custom_minimum_size = Vector2(224, 32)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/normal = ExtResource("4_vn8qa")
