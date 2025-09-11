@@ -73,7 +73,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var usability = (row.Cells[2].Value ?? string.Empty).ToString().Trim();
                 var powerType = (row.Cells[3].Value ?? string.Empty).ToString().Trim();
                 var slot1 = (row.Cells[4].Value ?? string.Empty).ToString().Trim();
-                var slot2 = (row.Cells[4].Value ?? string.Empty).ToString().Trim();
+                var slot2 = (row.Cells[5].Value ?? string.Empty).ToString().Trim();
 
                 if (string.IsNullOrWhiteSpace(id))
                 {
@@ -100,7 +100,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     isValidEntry = false;
                     validationErrors.Add($"Row {id}: The item is set to not be Equippable but it has assigned Slots.");
                 }
-                if (string.IsNullOrWhiteSpace(slot1))
+                if (string.IsNullOrWhiteSpace(slot1) && usability == "Equipping")
                 {
                     isValidEntry = false;
                     validationErrors.Add($"Row {id}: Enter the Primary Slot first.");

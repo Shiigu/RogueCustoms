@@ -153,13 +153,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             get
             {
+                var hasNativeEquipmentAttacks = false;
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnAttack != null)
                     actionList.AddRange(OwnOnAttack);
                 Equipment?.ForEach(i =>
                 {
                     if (i.IsEquippable && i?.OnAttack != null)
+                    {
                         actionList.AddRange(i?.OnAttack);
+                        if (i.OwnOnAttack.Count > 0)
+                            hasNativeEquipmentAttacks = true;
+                    }
                 });
                 Inventory?.ForEach(i =>
                 {
@@ -172,7 +177,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                         actionList.AddRange(k.OwnOnAttack);
                 });
 
-                return actionList.Count > 0 ? actionList : [DefaultOnAttack];
+                if(!hasNativeEquipmentAttacks)
+                {
+                    if (DefaultOnAttack != null)
+                        actionList.Insert(0, DefaultOnAttack);
+                }
+
+                return actionList;
             }
         }
         public List<ActionWithEffects> OnAttacked
@@ -780,6 +791,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void SetActionIds()
         {
+            if(DefaultOnAttack != null)
+            {
+                DefaultOnAttack.SelectionId = $"{Id}_{ClassId}_DA_{DefaultOnAttack.Id}";
+                if (DefaultOnAttack.IsScript)
+                    DefaultOnAttack.SelectionId += "_S";
+            }
             for (int i = 0; i < OwnOnAttack.Count; i++)
             {
                 OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";

@@ -1503,7 +1503,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (characterInTargetTile != null)
             {
                 if (character != Player) return false;
-                if (characterInTargetTile.Movement.Current <= 0) return false;
+                if (characterInTargetTile.Movement.Current <= 0 || (characterInTargetTile is NonPlayableCharacter npc && npc.AIType == AIType.Null)) return false;
                 if (!characterInTargetTile.CanTakeAction) return false;
                 if (!character.Visible && characterInTargetTile.Visible) return false;
                 if (characterInTargetTile.Visible && characterInTargetTile.Faction.IsEnemyWith(character.Faction)) return false;
@@ -1702,9 +1702,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var itemInTile = Items.Find(i => i.Position?.Equals(Player.Position) == true && i.ExistenceStatus != EntityExistenceStatus.Gone);
             if (itemInTile != null)
             {
+                Player.PickItem(itemInTile, true);
                 Player.DropItem(itemInInventory);
                 Player.TookAction = true;
-                Player.TryToPickItem(itemInTile);
                 Player.RemainingMovement = 0;
                 await ProcessTurn();
             }
@@ -1718,7 +1718,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var inventory = new InventoryDto();
             var itemsOnTile = Items.Where(i => i.Position?.Equals(Player.Position) == true).ToList();
             inventory.TileIsOccupied = itemsOnTile.Any();
-            foreach (var item in Player.Equipment)
+            foreach (var item in Player.Equipment.OrderBy(item => Player.AvailableSlots.IndexOf(item.SlotsItOccupies[0])))
             {
                 inventory.InventoryItems.Add(new InventoryItemDto(item, Player, this, false));
             }

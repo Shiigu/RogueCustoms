@@ -195,7 +195,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     LoadedItem.OnDeath.IsScript = false;
 
                 LoadedItem.BaseValue = (int)nudItemBaseValue.Value;
-                LoadedItem.MinimumQualityLevel = cmbItemMaximumQualityLevel.Text;
+                LoadedItem.MinimumQualityLevel = cmbItemMinimumQualityLevel.Text;
                 LoadedItem.MaximumQualityLevel = cmbItemMaximumQualityLevel.Text;
                 LoadedItem.QualityLevelOdds = qlsItem.QualityLevels.FindAll(ql => ql.ChanceToPick > 0);
             }

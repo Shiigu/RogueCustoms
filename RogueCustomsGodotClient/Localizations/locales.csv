@@ -57,6 +57,7 @@ InputBoxTitleText,Nombre,Name
 InventoryWindowTitleText,Inventario,Inventory
 InventoryWindowStatModifiersHeaderText,Aplica {Situation}:,Applies {Situation}:
 InventoryWindowStatModifierText,{Number} de {StatName},{Number} to {StatName}
+InventoryWindowOccupiesSlotsText,Espacios: {SlotsList},Slots: {SlotsList}
 InventoryWindowOnEquipText,al Equipar,on Equip
 InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventory
 InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
@@ -119,7 +120,6 @@ PlayerClassInitialEquippedArmorHeader,ARMADURA INICIAL,STARTING ARMOR
 PlayerClassInitialEquippedWeaponHeader,ARMA INICIAL,STARTING WEAPON
 PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
 PlayerClassStartingArmorHeader,ARMADURA DE EMERGENCIA,EMERGENCY ARMOR
-PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
 PlayerClassStartingWeaponHeader,ARMA DE EMERGENCIA,EMERGENCY WEAPON
 PlayerClassStatsHeader,ESTADÍSTICAS,STATS
 PlayerClassWindowTitleText,Elija una Clase,Select a Class

@@ -102,16 +102,18 @@ public partial class SelectClass : Control
         }
 
         _classDescriptionLabel.AppendText($"[p] [p]{currentClass.SightRangeName}: {currentClass.SightRangeStat}[p] ");
-
-        if(currentClass.StartingEquipment.Count != 0)
+        _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassInitialEquipmentHeader")}[/center][p] ");
+        if (currentClass.StartingEquipment.Count != 0)
         {
-            _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassStartingInventoryHeader")}[/center][p] ");
-
             _classDescriptionLabel.AppendText("[p]");
             foreach (var item in currentClass.StartingEquipment)
             {
                 _classDescriptionLabel.AppendText($"{item.ConsoleRepresentation.ToBbCodeRepresentation()} - {item.Name}[p]");
             }
+        }
+        else
+        {
+            _classDescriptionLabel.AppendText($"[p][center]{TranslationServer.Translate("PlayerClassNoStartingInventoryText")}[/center]");
         }
 
         _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassStartingInventoryHeader")}[/center][p] ");

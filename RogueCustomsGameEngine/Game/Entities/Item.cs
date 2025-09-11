@@ -33,7 +33,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 var list = new List<PassiveStatModifier>();
-                list.AddRange(OwnStatModifiers);
+                foreach (var statModifier in OwnStatModifiers)
+                {
+                    list.Add(new()
+                    {
+                        Id = statModifier.Id,
+                        Amount = statModifier.Amount
+                    });
+                }
                 foreach (var affix in Affixes)
                 {
                     foreach (var statModifier in affix.StatModifiers)

@@ -55,7 +55,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Tiles = GetTiles();
             PlayerEntity = new EntityDto(map.Player, map);
             var playerEntity = map.Player;
-            playerEntity.Equipment.ForEach(i => PlayerEntity.Equipment.Add(new SimpleEntityDto(i)));
+            playerEntity.Equipment.OrderBy(item => map.Player.AvailableSlots.IndexOf(item.SlotsItOccupies[0])).ForEach(i => PlayerEntity.Equipment.Add(new SimpleEntityDto(i)));
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
             playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));

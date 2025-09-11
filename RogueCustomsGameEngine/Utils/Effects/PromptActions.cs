@@ -323,7 +323,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (c.Inventory.Count == 0)
             {
-                // Need items to sell something
+                Map.AppendMessage(Map.Locale["CannotSellItems"].Format(new { SellerName = c.Name, BuyerName = t.Name }), Color.LightGreen);
+                return false;
+            }
+            if (t.Inventory.Count >= t.InventorySize)
+            {
+                Map.AppendMessage(Map.Locale["CannotBuyItems"].Format(new { SellerName = c.Name, BuyerName = t.Name }), Color.LightGreen);
                 return false;
             }
 
@@ -423,9 +428,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} sell Items when it's not a Character.");
 
-            if(c.Inventory.Count >= c.InventorySize)
+            if (t.Inventory.Count == 0)
             {
-                // Cannot buy items if the inventory is full
+                Map.AppendMessage(Map.Locale["CannotSellItems"].Format(new { SellerName = t.Name, BuyerName = c.Name }), Color.LightGreen);
+                return false;
+            }
+            if (c.Inventory.Count >= c.InventorySize)
+            {
+                Map.AppendMessage(Map.Locale["CannotBuyItems"].Format(new { SellerName = t.Name, BuyerName = c.Name }), Color.LightGreen);
                 return false;
             }
 
@@ -493,48 +503,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 if (c == Map.Player)
                 {
-                    events.Add(
-                    new DisplayEventDto()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateCurrency, c.CurrencyCarried }
-                    });
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                    });
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.UpdateEquipment, c.Equipment.ConvertAll(i => new SimpleEntityDto(i)) }
-                    });
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, c.DamageFromEquipment }
-                    });
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, c.MitigationFromEquipment }
-                    });
-                    foreach (var stat in c.UsedStats)
-                    {
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
-                        });
-                        if (stat.HasMax)
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
-                            });
-                        }
-                    }
+                    (c as PlayerCharacter).InformRefreshedPlayerData(events);
                 }
 
                 Map.AppendMessage(Map.Locale["CharacterBoughtItem"].Format(new { CharacterName = c.Name, ItemName = itemToBuy.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (currencyBeforePurchase - c.CurrencyCarried).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);

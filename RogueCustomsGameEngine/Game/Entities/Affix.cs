@@ -37,7 +37,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (info.StatModifiers != null)
             {
                 foreach (var statModifier in info.StatModifiers)
-                {
+                {                    
                     StatModifiers.Add(new PassiveStatModifier
                     {
                         Id = statModifier.Id,

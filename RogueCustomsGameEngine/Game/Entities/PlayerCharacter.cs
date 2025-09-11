@@ -175,7 +175,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 throw new InvalidOperationException("Attempted to equip an unequippable item!");
 
             if (itemToEquip.ItemType.SlotsItOccupies.Any(s => !AvailableSlots.Contains(s)))
-                return; // Can't equip, at least one item slot does not exist on the Character
+            {
+                Map.AppendMessage(Map.Locale["CharacterCannotEquipItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow);
+            }
 
             var events = new List<DisplayEventDto>();
 
@@ -222,42 +224,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                 Params = new() { SpecialEffect.ItemEquip }
             });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.UpdateEquipment, Equipment.ConvertAll(i => new SimpleEntityDto(i))}
-            });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, DamageFromEquipment }
-            });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, MitigationFromEquipment }
-            });
+            InformRefreshedPlayerData(events);
+            
             Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow, events);
-
-            foreach (var stat in UsedStats)
-            {
-                events.Add(new()
-                {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
-                });
-                if (stat.HasMax)
-                {
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
-                    });
-                }
-            }
 
             Map.DisplayEvents.Add(($"{Name} equips {itemToEquip.Name}", events));
         }
+
         public override void DropItem(IPickable pickable)
         {
             var pickableAsEntity = pickable as Entity;
@@ -316,47 +289,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (Equipment.Contains(item))
                     Equipment.Remove(item);
             }
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-            });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.UpdateEquipment, Equipment.ConvertAll(i => new SimpleEntityDto(i)) }
-            });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, DamageFromEquipment }
-            });
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, MitigationFromEquipment }
-            });
-            foreach (var stat in UsedStats)
-            {
-                events.Add(new()
-                {
-                    DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
-                });
-                if (stat.HasMax)
-                {
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
-                    });
-                }
-            }
+            InformRefreshedPlayerData(events);
             Map.DisplayEvents.Add(($"Player {Name} put item on floor", events));
         }
 
         public override void PickItem(IPickable pickable, bool informToPlayer)
         {
+            var events = new List<DisplayEventDto>();
             var pickableAsEntity = pickable as Entity;
             pickable.Owner = this;
             var isCurrency = false;
@@ -392,20 +331,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 else
                 {
-                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
-                    Map.DisplayEvents.Add(($"Player {Name} picked item on floor", new()
+                    events.Add(new()
                     {
-                        new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                        },
-                        new() {
-                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                            Params = new() { SpecialEffect.ItemGet }
-                        }
-                    }
-                    ));
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.ItemGet }
+                    });
+                    InformRefreshedPlayerData(events);
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
+                    Map.DisplayEvents.Add(($"Player {Name} picked item on floor", events));
                 }
             }
         }
@@ -427,6 +360,46 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 ));
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = key.Name }));
+            }
+        }
+
+        public void InformRefreshedPlayerData(List<DisplayEventDto> events)
+        {
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateEquipment, Equipment.OrderBy(item => AvailableSlots.IndexOf(item.SlotsItOccupies[0])).ToList().ConvertAll(i => new SimpleEntityDto(i)) }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, DamageFromEquipment }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, MitigationFromEquipment }
+            });
+            foreach (var stat in UsedStats)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                });
+                if (stat.HasMax)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.BaseAfterModifications }
+                    });
+                }
             }
         }
 

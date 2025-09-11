@@ -35,6 +35,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int ItemLevel { get; set; }
         public string QualityLevel { get; set; }
         public string ItemType { get; set; }
+        public List<string> SlotsItOccupies { get; set; }
         public GameColor QualityColor { get; set; }
         public string ClassId { get; set; }
         public List<StatModificationDto> StatModifications { get; set; }
@@ -67,11 +68,12 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Power = pickableAsItem?.Power ?? string.Empty;
             ItemLevel = pickableAsItem?.ItemLevel ?? 0;
             ItemType = pickableAsItem != null ? pickableAsItem.ItemType.Name : "";
+            SlotsItOccupies = pickableAsItem != null ? pickableAsItem.SlotsItOccupies.Select(s => s.Name).ToList() : new();
             QualityLevel = pickableAsItem != null ? pickableAsItem.QualityLevel.Name : string.Empty;
             QualityColor = pickableAsItem != null ? pickableAsItem.QualityLevel.ItemNameColor : new GameColor(Color.White);
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
             CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
-            CanBeDropped = p is not Key;
+            CanBeDropped = p is not Key && character.ContainingTile.Type != TileType.Stairs && character.ContainingTile.Type.AcceptsItems;
             IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
@@ -113,6 +115,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 _ => string.Empty
             };
             ItemType = e.ItemType.Name;
+            SlotsItOccupies = e.ItemType.SlotsItOccupies.Select(s => s.Name).ToList();
             Power = e.Power ?? string.Empty;
             ConsoleRepresentation = e.ConsoleRepresentation;
             ClassId = e.Id;

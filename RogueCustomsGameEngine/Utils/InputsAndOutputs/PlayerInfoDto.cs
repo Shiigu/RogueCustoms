@@ -69,7 +69,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Stats.Add(statInfo);
             }
             Equipment = new List<SimpleInventoryDto>();
-            character.Equipment.ForEach(i => Equipment.Add(new SimpleInventoryDto(i)));
+            character.Equipment.OrderBy(item => map.Player.AvailableSlots.IndexOf(item.SlotsItOccupies[0])).ForEach(i => Equipment.Add(new SimpleInventoryDto(i)));
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
             Inventory = new List<SimpleInventoryDto>();

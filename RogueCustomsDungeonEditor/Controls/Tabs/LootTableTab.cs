@@ -98,6 +98,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         public List<string> SaveData(string id)
         {
+            qlsLootTableQualityLevelOdds.EndEdit();
             dgvLootTable.EndEdit();
             var validationErrors = new List<string>();
             var lootTableToSave = new LootTableInfo()
