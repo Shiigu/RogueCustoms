@@ -492,6 +492,18 @@
     {
       "Key": "CharacterBoughtItem",
       "Value": "{CharacterName} bought {ItemName} for {CurrencyDisplayName}."
+    },
+    {
+      "Key": "CharacterCannotEquipItem",
+      "Value": "{CharacterName} cannot equip {ItemName}..."
+    },
+    {
+      "Key": "CannotBuyItems",
+      "Value": "{BuyerName}'s inventory is full, cannot trade with {SellerName}..."
+    },
+    {
+      "Key": "CannotSellItems",
+      "Value": "{SellerName}'s inventory is empty, cannot trade with {BuyerName}..."
     }
   ]
 }

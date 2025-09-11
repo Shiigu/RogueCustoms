@@ -78,27 +78,25 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
             ssNPC.MaxLevel = npc.MaxLevel;
-            cmbNPCStartingWeapon.Items.Clear();
-            cmbNPCStartingWeapon.Text = "";
-            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
+
+            clbNPCAvailableSlots.Items.Clear();
+            foreach (var slot in ActiveDungeon.ItemSlotInfos)
             {
-                cmbNPCStartingWeapon.Items.Add(weaponId);
-                if (weaponId.Equals(npc.StartingWeapon))
-                    cmbNPCStartingWeapon.Text = weaponId;
+                clbNPCAvailableSlots.Items.Add(slot.Id, npc.AvailableSlots.Contains(slot.Id));
             }
-            cmbNPCStartingArmor.Items.Clear();
-            cmbNPCStartingArmor.Text = "";
-            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
-            {
-                cmbNPCStartingArmor.Items.Add(armorId);
-                if (armorId.Equals(npc.StartingArmor))
-                    cmbNPCStartingArmor.Text = armorId;
-            }
+            clbNPCAvailableSlots.ItemCheck -= clbNPCAvailableSlots_ItemCheck;
+            clbNPCAvailableSlots.ItemCheck += clbNPCAvailableSlots_ItemCheck;
+            esNPC.Dungeon = ActiveDungeon;
+            esNPC.AvailableSlots = npc.AvailableSlots;
+            esNPC.Equipment = npc.InitialEquipment;
+            chkNPCDropsEquipmentOnDeath.Checked = npc.DropsEquipmentOnDeath;
+
             nudNPCInventorySize.Value = npc.InventorySize;
             sisNPCStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
             sisNPCStartingInventory.InventorySize = npc.InventorySize;
             sisNPCStartingInventory.Inventory = npc.StartingInventory;
             sisNPCStartingInventory.InventoryContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            SetSingleActionEditorParams(saeNPCDefaultOnAttack, npc.Id, npc.DefaultOnAttack);
             SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
             SetSingleActionEditorParams(saeNPCOnSpawn, npc.Id, npc.OnSpawn);
             SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
@@ -128,8 +126,30 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             nudNPCDropPicks.Value = cmbNPCLootTable.Text != "None" ? npc.DropPicks : 0;
         }
 
+        private void clbNPCAvailableSlots_ItemCheck(object? sender, ItemCheckEventArgs e)
+        {
+            var checkedItems = clbNPCAvailableSlots.CheckedItems.Cast<string>().ToList();
+            string currentItem = clbNPCAvailableSlots.Items[e.Index].ToString();
+
+            // For some reason, ItemCheck fires BEFORE updating CheckedItems, so we need to make a manual observation
+            if (e.NewValue == CheckState.Checked)
+            {
+                if (!checkedItems.Contains(currentItem))
+                    checkedItems.Add(currentItem);
+            }
+            else
+            {
+                if (checkedItems.Contains(currentItem))
+                    checkedItems.Remove(currentItem);
+            }
+
+            esNPC.AvailableSlots = checkedItems;
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
         public List<string> SaveData(string id)
         {
+            esNPC.EndEdit();
             var validationErrors = new List<string>();
 
             if (string.IsNullOrWhiteSpace(txtNPCName.Text))
@@ -142,10 +162,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This NPC does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbNPCFaction.Text))
                 validationErrors.Add("This NPC does not have a Faction.");
-            if (string.IsNullOrWhiteSpace(cmbNPCStartingWeapon.Text))
-                validationErrors.Add("This NPC does not have an Emergency Weapon.");
-            if (string.IsNullOrWhiteSpace(cmbNPCStartingArmor.Text))
-                validationErrors.Add("This NPC does not have an Emergency Armor.");
             if (string.IsNullOrWhiteSpace(txtNPCExperiencePayout.Text))
                 validationErrors.Add("This NPC does not have an Experience Payout Formula.");
             if (ssNPC.CanGainExperience && string.IsNullOrWhiteSpace(ssNPC.ExperienceToLevelUpFormula))
@@ -158,6 +174,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This NPC is set to drop items as loot, but has no Loot Table.");
             if (cmbNPCLootTable.Text != "None" && !string.IsNullOrWhiteSpace(cmbNPCLootTable.Text) && nudNPCDropPicks.Value <= 0)
                 validationErrors.Add("This NPC has a Loot Table set, but is set to drop no items as loot.");
+            if (clbNPCAvailableSlots.CheckedItems.Count == 0)
+                validationErrors.Add("This NPC does not have any Available Equipment Slots.");
+            if (esNPC.EquipmentList.Count == 0 && chkNPCDropsEquipmentOnDeath.Checked)
+                validationErrors.Add("This NPC is set to drop Equipment on death, but is not set to have any Equipment.");
 
             if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
                 validationErrors.Add("This NPC does not have a set AI strategy.");
@@ -181,12 +201,24 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
                 LoadedNPC.MaxLevel = ssNPC.MaxLevel;
 
-                LoadedNPC.StartingWeapon = cmbNPCStartingWeapon.Text;
-                LoadedNPC.StartingArmor = cmbNPCStartingArmor.Text;
+                LoadedNPC.DropsEquipmentOnDeath = chkNPCDropsEquipmentOnDeath.Checked;
+
+                LoadedNPC.AvailableSlots = clbNPCAvailableSlots.CheckedItems.Cast<string>().ToList();
+
+                LoadedNPC.InitialEquipment = [];
+
+                foreach (var equipment in esNPC.EquipmentList)
+                {
+                    if (LoadedNPC.AvailableSlots.Contains(equipment.Key))
+                        LoadedNPC.InitialEquipment.Add(equipment.Value);
+                }
 
                 LoadedNPC.InventorySize = (int)nudNPCInventorySize.Value;
                 LoadedNPC.StartingInventory = sisNPCStartingInventory.Inventory;
 
+                LoadedNPC.DefaultOnAttack = saeNPCDefaultOnAttack.Action;
+                if (LoadedNPC.DefaultOnAttack != null)
+                    LoadedNPC.DefaultOnAttack.IsScript = false;
                 LoadedNPC.OnSpawn = saeNPCOnSpawn.Action;
                 if (LoadedNPC.OnSpawn != null)
                     LoadedNPC.OnSpawn.IsScript = false;

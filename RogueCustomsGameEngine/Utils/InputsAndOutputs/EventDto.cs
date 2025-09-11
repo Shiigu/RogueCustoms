@@ -38,7 +38,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         UpdateConsoleRepresentation,
         ModifyStat,
         ModifyMaxStat,
-        ModifyEquippedItem,
+        UpdateEquipment,
+        ModifyDamageFromEquipment,
+        ModifyMitigationFromEquipment,
         UpdateAlteredStatuses,
         UpdateInventory,
         UpdateCurrency

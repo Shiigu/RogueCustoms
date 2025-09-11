@@ -370,9 +370,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
 
-            if (target != null && (target is Character t && sourceAsCharacter.CanSee(t)))
+            if (target != null && (target is Character tc && sourceAsCharacter.CanSee(tc)))
             {
-                if (target is NonPlayableCharacter && (User != target || target == source)) // If it's not an OnInteract
+                if (User != target || target == source) // If it's not an OnInteract
                 {
                     if (distance < MinimumRange)
                     {
@@ -387,7 +387,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                         descriptionWithUsageNotes.AppendLine(Locale["TargetIsTooFarAway"]);
                     }
 
-                    if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
+                    if (!TargetTypes.Contains(TargetType.Tile))
                     {
                         var targetType = sourceAsCharacter.CalculateTargetTypeFor(tc);
                         if (!TargetTypes.Contains(targetType))

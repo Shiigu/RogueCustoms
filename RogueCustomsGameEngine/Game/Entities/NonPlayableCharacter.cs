@@ -38,6 +38,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         private readonly bool KnowsAllCharacterPositions;
         private readonly bool PursuesOutOfSightCharacters;
         private readonly bool WandersIfWithoutTarget;
+        private readonly bool DropsEquipmentOnDeath;
 
         private List<Room> VisitedRooms = new();
 
@@ -58,6 +59,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             KnowsAllCharacterPositions = entityClass.KnowsAllCharacterPositions;
             PursuesOutOfSightCharacters = entityClass.PursuesOutOfSightCharacters;
             WandersIfWithoutTarget = entityClass.WandersIfWithoutTarget;
+            DropsEquipmentOnDeath = entityClass.DropsEquipmentOnDeath;
             CanSeeTraps = false;
             AIType = entityClass.AIType;
 
@@ -99,6 +101,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                         Drops.Add((Map.CurrencyClass, Map.Rng.NextInclusive(cp.Minimum, cp.Maximum)));
                         foundAPick = true;
                     }
+                    else if (pickedObject is ItemType it)
+                    {
+                        var appropriateItemClasses = validItemClasses.Where(ic => ic.ItemType == it).ToList();
+                        if (appropriateItemClasses.Count == 0) continue;
+                        var chosenItemOfType = appropriateItemClasses.TakeRandomElement(Rng);
+                        Drops.Add((chosenItemOfType, 0));
+                        foundAPick = true;
+                    }
                     else if (pickedObject is string s && EngineConstants.SPECIAL_LOOT_ENTRIES.Contains(s))
                     {
                         if (s == EngineConstants.LOOT_NO_DROP)
@@ -106,28 +116,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                             // Do nothing
                             foundAPick = true;
                         }
-                        else if (s == EngineConstants.LOOT_WEAPON)
-                        {
-                            var chosenWeapon = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList().TakeRandomElement(Rng);
-                            Drops.Add((chosenWeapon, 0));
-                            foundAPick = true;
-                        }
-                        else if (s == EngineConstants.LOOT_ARMOR)
-                        {
-                            var chosenArmor = validItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
-                            Drops.Add((chosenArmor, 0));
-                            foundAPick = true;
-                        }
                         else if (s == EngineConstants.LOOT_EQUIPPABLE)
                         {
-                            var chosenEquippable = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            var appropriateItemClasses = validItemClasses.Where(ic => ic.ItemType.Usability == ItemUsability.Equip).ToList();
+                            if (appropriateItemClasses.Count == 0) continue;
+                            var chosenEquippable = appropriateItemClasses.TakeRandomElement(Rng);
                             Drops.Add((chosenEquippable, 0));
-                            foundAPick = true;
-                        }
-                        else if (s == EngineConstants.LOOT_CONSUMABLE)
-                        {
-                            var chosenConsumable = validItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList().TakeRandomElement(Rng);
-                            Drops.Add((chosenConsumable, 0));
                             foundAPick = true;
                         }
                     }
@@ -551,6 +545,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
+                if(DropsEquipmentOnDeath)
+                {
+                    Equipment?.ForEach(i => DropItem(i));
+                    Equipment?.Clear();
+                }
                 Inventory?.ForEach(i => DropItem(i));
                 Inventory?.Clear();
                 var droppedCurrency = false;
@@ -651,6 +650,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                     ));
                 }
             }
+        }
+
+        public override void EquipItem(Item item)
+        {
+            // Do nothing. NPCs are not meant to equip items.
         }
 
         public override void DropItem(IPickable pickable)

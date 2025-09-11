@@ -11,6 +11,7 @@ using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.Representation;
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
@@ -172,32 +173,37 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return false.ToString();
         }
 
-        public static string CURRENTWEAPON(EffectCallerParams args, string[] parameters)
+        public static string CURRENTITEM(EffectCallerParams args, string[] parameters)
         {
-            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentWeapon.");
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for CurrentItem.");
 
             var entityName = parameters[0].ToLower();
 
-            var entityToCheck = GetEntityByName(entityName, "CurrentWeapon", args);
+            var entityToCheck = GetEntityByName(entityName, "CurrentItem", args);
 
             if (entityToCheck is not Character c)
-                throw new ArgumentException("Invalid entity in CurrentWeapon.");
+                throw new ArgumentException("Invalid entity in CurrentItem.");
 
-            return $"\"{c.Weapon.ClassId}\"";
+            var slotToCheck = parameters[1].ToLower();
+
+            if (!c.AvailableSlots.Any(s => s.Id.Equals(slotToCheck, StringComparison.InvariantCultureIgnoreCase)))
+                throw new ArgumentException("Invalid entity in CurrentItem.");
+
+            return $"\"{c.ItemInSlot(slotToCheck).ClassId}\"";
+        }
+
+        public static string CURRENTWEAPON(EffectCallerParams args, string[] parameters)
+        {
+            if(Map.IsDebugMode)
+                Map.AppendMessage("DEBUG: WARNING, CurrentWeapon is deprecated. Use CurrentItem with 'Weapon' as the second parameter instead.");
+            return CURRENTITEM(args, [parameters[0], "Weapon"]);
         }
 
         public static string CURRENTARMOR(EffectCallerParams args, string[] parameters)
         {
-            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for CurrentArmor.");
-
-            var entityName = parameters[0].ToLower();
-
-            var entityToCheck = GetEntityByName(entityName, "CurrentArmor", args);
-
-            if (entityToCheck is not Character c)
-                throw new ArgumentException("Invalid entity in CurrentArmor.");
-
-            return $"\"{c.Armor.ClassId}\"";
+            if (Map.IsDebugMode)
+                Map.AppendMessage("DEBUG: WARNING, CurrentArmor is deprecated. Use CurrentItem with 'Armor' as the second parameter instead.");
+            return CURRENTITEM(args, [parameters[0], "Armor"]);
         }
 
         public static string DISTANCEBETWEEN(EffectCallerParams args, string[] parameters)
@@ -276,10 +282,10 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 var specificItemType = parameters[0];
                 acceptableItemClasses = specificItemType.ToLowerInvariant() switch
                 {
-                    "weapon" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList(),
-                    "armor" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList(),
-                    "equippable" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList(),
-                    "consumable" => acceptableItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList(),
+                    "weapon" => acceptableItemClasses.Where(ic => ic.ItemType.PowerType == ItemPowerType.Damage).ToList(),
+                    "armor" => acceptableItemClasses.Where(ic => ic.ItemType.PowerType == ItemPowerType.Mitigation).ToList(),
+                    "equippable" => acceptableItemClasses.Where(ic => ic.ItemType.Usability == ItemUsability.Equip).ToList(),
+                    "consumable" => acceptableItemClasses.Where(ic => ic.ItemType.Usability == ItemUsability.Use).ToList(),
                     _ => throw new ArgumentException("Invalid parameters for RollAnItem."),
                 };
             }
@@ -319,7 +325,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in RollAnAction.");
 
-            var actionsNotFromConsumables = c.OnAttack.Where(oa => oa.User is not Item i || i.EntityType != EntityType.Consumable).ToList();
+            var actionsNotFromConsumables = c.OnAttack.Where(oa => oa.User is not Item i || !i.IsConsumable).ToList();
 
             return actionsNotFromConsumables.Count > 0 ? actionsNotFromConsumables.TakeRandomElement(Rng).SelectionId : "<<NULL>>";
         }

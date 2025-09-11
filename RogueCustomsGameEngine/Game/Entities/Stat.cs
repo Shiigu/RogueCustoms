@@ -63,18 +63,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var passiveModifications = new List<(string Source, decimal Amount)>();
 
-                if (Character.Weapon != null)
+                Character.Equipment?.ForEach(i =>
                 {
-                    var weaponModification = Character.Weapon.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
-                    if (weaponModification != null)
-                        passiveModifications.Add((Character.Weapon.Name, weaponModification.Amount));
-                }
-                if(Character.Armor != null)
-                {
-                    var armorModification = Character.Armor.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
-                    if (armorModification != null)
-                        passiveModifications.Add((Character.Armor.Name, armorModification.Amount));
-                }
+                    if (i.IsEquippable)
+                    {
+                        var itemModification = i.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
+                        if (itemModification != null)
+                            passiveModifications.Add((i.Name, itemModification.Amount));
+                    }
+                });
                 Character.Inventory?.ForEach(i =>
                 {
                     if (!i.IsEquippable)

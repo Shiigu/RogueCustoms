@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
-    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
-    #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
-    #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
+#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
+#pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
     public static class DungeonInfoHelpers
     {
         public static DungeonInfo CreateEmptyDungeonTemplate(LocaleInfo localeTemplate, List<string> baseLocaleLanguages)
@@ -772,8 +772,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StartsVisible = true,
                 Stats = new(),
                 BaseSightRange = "FullRoom",
-                StartingWeapon = "",
-                StartingArmor = "",
                 InventorySize = 0,
                 StartingInventory = new(),
                 CanGainExperience = true,
@@ -818,8 +816,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 ExperiencePayoutFormula = "level",
                 Stats = new(),
                 BaseSightRange = "FullRoom",
-                StartingWeapon = "",
-                StartingArmor = "",
                 InventorySize = 0,
                 StartingInventory = new(),
                 CanGainExperience = true,
@@ -859,7 +855,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 },
                 StartsVisible = true,
                 Power = "0",
-                EntityType = "",
                 OnTurnStart = new(),
                 OnAttack = new(),
                 OnAttacked = new(),
@@ -1285,6 +1280,55 @@ namespace RogueCustomsDungeonEditor.Utils
             if (typeToExclude != typeof(AlteredStatusInfo))
                 ids.AddRange(dungeonInfo.AlteredStatuses.Select(a => a.Id));
             return ids;
+        }
+
+        public static ActionWithEffectsInfo CreateDefaultAttackTemplate()
+        {
+            return new ActionWithEffectsInfo
+            {
+                Id = "MeleeWeaponAttackName",
+                Name = "MeleeWeaponAttackName",
+                Description = "DefaultAttackDescription",
+                CooldownBetweenUses = 0,
+                StartingCooldown = 0,
+                MinimumRange = 1,
+                MaximumRange = 1,
+                MaximumUses = 0,
+                MPCost = 0,
+                TargetTypes = ["Enemy"],
+                School = "Default",
+                Effect = new EffectInfo
+                {
+                    EffectName = "PrintText",
+                    Params =
+                    [
+                        new Parameter { ParamName = "Text", Value = "DefaultMeleeAttackText" },
+                        new Parameter { ParamName = "BypassesVisibilityCheck", Value = "False" },
+                    ],
+                    Then = new EffectInfo
+                    {
+                        EffectName = "DealDamage",
+                        Params =
+                        [
+                            new Parameter { ParamName = "Accuracy", Value = "95" },
+                            new Parameter { ParamName = "Attacker", Value = "source" },
+                            new Parameter { ParamName = "Target", Value = "target" },
+                            new Parameter { ParamName = "Attack", Value = "{source.Damage}" },
+                            new Parameter { ParamName = "Defense", Value = "{target.Mitigation}" },
+                            new Parameter { ParamName = "BypassesAccuracyCheck", Value = "False" },
+                            new Parameter { ParamName = "CriticalHitChance", Value = "10" },
+                            new Parameter { ParamName = "CriticalHitFormula", Value = "{CalculatedDamage} * 2" },
+                            new Parameter { ParamName = "Element", Value = "Normal" },
+                            new Parameter { ParamName = "BypassesResistances", Value = "True" },
+                            new Parameter { ParamName = "BypassesElementEffect", Value = "True" }
+                        ]
+                    }
+                },
+                UseCondition = null,
+                AIUseCondition = null,
+                FinishesTurnWhenUsed = true,
+                IsScript = false
+            };
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

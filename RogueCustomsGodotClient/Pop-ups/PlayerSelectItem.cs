@@ -466,10 +466,20 @@ public partial class PlayerSelectItem : Control
                 _itemDescriptionLabel.AppendText($"[p]{qualityDescription.ToColoredString(selectedItem.QualityColor)}[p] [p]");
                 _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
             }
+            else
+            {
+                _itemDescriptionLabel.AppendText($"[p]{selectedItem.Description.ToBbCodeAppropriateString()}");
+            }
 
             if (!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
             {
                 _itemDescriptionLabel.AppendText($"[p] [p]{selectedItem.PowerName}: {selectedItem.Power}");
+            }
+
+            if (selectedItem.SlotsItOccupies.Any())
+            {
+                var slotsList = string.Join(", ", selectedItem.SlotsItOccupies);
+                _itemDescriptionLabel.AppendText($"[p] [p][color=#8B83D9]{TranslationServer.Translate("InventoryWindowOccupiesSlotsText").ToString().Format(new { SlotsList = slotsList })}[/color]");
             }
 
             if (selectedItem.StatModifications.Any())

@@ -21,30 +21,29 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly string FactionId;
         public Faction Faction { get; set; }
         public readonly ConsoleRepresentation ConsoleRepresentation;
-        public readonly EntityType EntityType;
+        public EntityType EntityType { get; set; }
         public readonly bool Passable;
         public readonly bool StartsVisible;
 
         #region Character-only data
 
+        public readonly List<ItemSlot> AvailableSlots;
         public readonly List<Stat> Stats;
         public readonly int BaseSightRange;
         public readonly int InventorySize;
-        public readonly string StartingWeaponId;
-        public readonly string StartingArmorId;
+        public List<string> InitialEquipmentIds { get; private set; }
         public List<string> StartingInventoryIds { get; private set; }
         public readonly int MaxLevel;
         public readonly bool CanGainExperience;
         public readonly string ExperiencePayoutFormula;
         public readonly string ExperienceToLevelUpFormula;
+        public ActionWithEffects DefaultOnAttack { get; set; }
 
         #endregion
 
         #region Player Character-only data
 
         public readonly bool RequiresNamePrompt;
-        public readonly string InitialEquippedWeaponId;
-        public readonly string InitialEquippedArmorId;
         public readonly float SaleValuePercentage;
 
         #endregion
@@ -57,6 +56,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool KnowsAllCharacterPositions;
         public readonly bool PursuesOutOfSightCharacters;
         public readonly bool WandersIfWithoutTarget;
+        public readonly bool DropsEquipmentOnDeath;
         public readonly AIType AIType;
 
         public readonly LootTable LootTable;
@@ -66,11 +66,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly string Power;
 
         #region Item-only data
+        public ItemType ItemType { get; set; }
         public ActionWithEffects OnUse { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
         public int BaseValue { get; set; }
+        public QualityLevel MinimumQualityLevel { get; set; }
         public QualityLevel MaximumQualityLevel { get; set; }
         public List<QualityLevelOdds> QualityLevelOdds { get; set; }
+        public bool CanDrop { get; set; }
        
         #endregion
 
@@ -96,7 +99,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public ActionWithEffects OnRemove { get; set; }
         #endregion
-        public EntityClass(ClassInfo classInfo, EntityType? entityType, Dungeon dungeon, List<StatInfo> statInfos)
+        public EntityClass(ClassInfo classInfo, Dungeon dungeon, List<StatInfo> statInfos)
         {
             Id = classInfo.Id;
             Name = dungeon.LocaleToUse[classInfo.Name];
@@ -105,7 +108,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (classInfo is ItemInfo itemInfo)
             {
-                EntityType = entityType ?? (EntityType)Enum.Parse(typeof(EntityType), itemInfo.EntityType);
+                EntityType = EntityType.Item;
+                ItemType = dungeon.ItemTypes.Find(it => it.Id.Equals(itemInfo.ItemType, StringComparison.InvariantCultureIgnoreCase));
                 Power = itemInfo.Power;
                 StatModifiers = new();
                 if(itemInfo.StatModifiers != null)
@@ -128,18 +132,18 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, dungeon.ActionSchools);
                 OnUse = ActionWithEffects.Create(itemInfo.OnUse, dungeon.ActionSchools);
                 BaseValue = itemInfo.BaseValue;
+                MinimumQualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(itemInfo.MinimumQualityLevel, StringComparison.InvariantCultureIgnoreCase));
                 MaximumQualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(itemInfo.MaximumQualityLevel, StringComparison.InvariantCultureIgnoreCase));
                 QualityLevelOdds = [];
                 foreach (var odds in itemInfo.QualityLevelOdds ?? [])
                 {
                     QualityLevelOdds.Add(new(odds, dungeon));
                 }
+                CanDrop = itemInfo.CanDrop;
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {
                 FactionId = playerClassInfo.Faction;
-                StartingWeaponId = playerClassInfo.StartingWeapon;
-                StartingArmorId = playerClassInfo.StartingArmor;
                 CanGainExperience = playerClassInfo.CanGainExperience;
                 MaxLevel = playerClassInfo.MaxLevel;
                 ExperiencePayoutFormula = playerClassInfo.ExperiencePayoutFormula;
@@ -205,9 +209,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingInventoryIds = new List<string>(playerClassInfo.StartingInventory);
                 Passable = false;
                 RequiresNamePrompt = playerClassInfo.RequiresNamePrompt;
-                InitialEquippedWeaponId = playerClassInfo.InitialEquippedWeapon;
-                InitialEquippedArmorId = playerClassInfo.InitialEquippedArmor;
+                InitialEquipmentIds = new List<string>(playerClassInfo.InitialEquipment);
                 SaleValuePercentage = playerClassInfo.SaleValuePercentage / 100f;
+                DefaultOnAttack = ActionWithEffects.Create(playerClassInfo.DefaultOnAttack, dungeon.ActionSchools);
+                AvailableSlots = dungeon.ItemSlots.FindAll(islot => playerClassInfo.AvailableSlots.Contains(islot.Id));
             }
             else if (classInfo is NPCInfo npcInfo)
             {
@@ -237,8 +242,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     stat.MaxCap = correspondingStat.MaxCap;
                     stat.RegenerationTargetId = correspondingStat.RegeneratesStatId;
                 }
-                StartingWeaponId = npcInfo.StartingWeapon;
-                StartingArmorId = npcInfo.StartingArmor;
                 CanGainExperience = npcInfo.CanGainExperience;
                 MaxLevel = npcInfo.MaxLevel;
                 ExperiencePayoutFormula = npcInfo.ExperiencePayoutFormula;
@@ -285,9 +288,13 @@ namespace RogueCustomsGameEngine.Game.Entities
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
                 WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;
+                DropsEquipmentOnDeath = npcInfo.DropsEquipmentOnDeath;
                 OnSpawn = ActionWithEffects.Create(npcInfo.OnSpawn, dungeon.ActionSchools);
                 OnInteracted = new List<ActionWithEffects>();
                 MapActions(OnInteracted, npcInfo.OnInteracted, dungeon.ActionSchools);
+                InitialEquipmentIds = new List<string>(npcInfo.InitialEquipment);
+                DefaultOnAttack = ActionWithEffects.Create(npcInfo.DefaultOnAttack, dungeon.ActionSchools);
+                AvailableSlots = dungeon.ItemSlots.FindAll(islot => npcInfo.AvailableSlots.Contains(islot.Id));
             }
             else if (classInfo is TrapInfo trapInfo)
             {

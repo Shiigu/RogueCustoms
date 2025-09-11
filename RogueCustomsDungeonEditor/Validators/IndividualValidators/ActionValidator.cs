@@ -141,8 +141,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             Entity source;
             var target = GetATestCharacter(sampleDungeon);
 
-            target.EquippedWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-            target.EquippedArmor = GetATestItem(sampleDungeon, EntityType.Armor);
+            target.Equipment = [];
+
+            foreach (var slot in target.AvailableSlots)
+            {
+                if(!target.Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                    target.Equipment.Add(GetATestItem(sampleDungeon, slot));
+            }
 
             foreach (var als in sampleDungeon.Classes.Where(ec => ec.EntityType == EntityType.AlteredStatus && (owner == null || ec.Id != owner.ClassId)))
             {
@@ -159,75 +164,53 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 source = c;
                 if (source.OwnOnAttack.Contains(action))
                 {
-                    (source as Character).Faction = sampleDungeon.Factions[0];
-                    var fillerWeapon = GetASpecificItem(sampleDungeon, c.StartingWeaponId);
-                    fillerWeapon.Owner = source as Character;
-                    (source as Character).EquippedWeapon = fillerWeapon;
-                    var fillerArmor = GetASpecificItem(sampleDungeon, c.StartingArmorId);
-                    fillerArmor.Owner = source as Character;
-                    (source as Character).EquippedArmor = fillerArmor;
+                    c.Equipment = [];
+                    foreach (var itemId in c.InitialEquipmentIds)
+                        c.Equipment.Add(GetASpecificItem(sampleDungeon, itemId));
                 }
             }
             else if (owner is Item item)
             {
                 source = GetATestCharacter(sampleDungeon);
                 item.Owner = source as NonPlayableCharacter;
-                if (item.IsEquippable && action != item.OwnOnDeath)
+                item.Owner.Equipment = [];
+
+                if(item.IsEquippable)
+                    item.Owner.Equipment.Add(item);
+
+                foreach (var slot in item.Owner.AvailableSlots)
                 {
-                    if (owner.EntityType == EntityType.Weapon)
-                    {
-                        (source as Character).EquippedWeapon = item;
-                        var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
-                        fillerArmor.Owner = source as Character;
-                        (source as Character).EquippedArmor = fillerArmor;
-                    }
-                    else if (owner.EntityType == EntityType.Armor)
-                    {
-                        var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-                        fillerWeapon.Owner = source as Character;
-                        (source as Character).EquippedWeapon = fillerWeapon;
-                        (source as Character).EquippedArmor = item;
-                    }
+                    if (!item.Owner.Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                        item.Owner.Equipment.Add(GetATestItem(sampleDungeon, slot));
                 }
             }
             else if (owner is AlteredStatus alteredStatus)
             {
                 source = GetATestCharacter(sampleDungeon);
-                var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-                fillerWeapon.Owner = source as Character;
-                (source as Character).EquippedWeapon = fillerWeapon;
-                (source as Character).EquippedArmor = owner as Item;
-                var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
-                fillerArmor.Owner = source as Character;
-                (source as Character).EquippedArmor = fillerArmor;
+
+                (source as Character).Equipment = [];
+
+                foreach (var slot in (source as Character).AvailableSlots)
+                {
+                    if (!(source as Character).Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                        (source as Character).Equipment.Add(GetATestItem(sampleDungeon, slot));
+                }
                 (source as Character).AlteredStatuses.Add(alteredStatus);
             }
             else if (owner is Item i && action == i.OwnOnDeath)
             {
                 source = GetATestCharacter(sampleDungeon);
                 i.Owner = source as NonPlayableCharacter;
-                if (owner.EntityType == EntityType.Weapon)
+
+                i.Owner.Equipment = [];
+
+                if (i.IsEquippable)
+                    i.Owner.Equipment.Add(i);
+
+                foreach (var slot in i.Owner.AvailableSlots)
                 {
-                    (source as Character).EquippedWeapon = i;
-                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
-                    fillerArmor.Owner = source as Character;
-                    (source as Character).EquippedArmor = fillerArmor;
-                }
-                else if (owner.EntityType == EntityType.Armor)
-                {
-                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-                    fillerWeapon.Owner = source as Character;
-                    (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = i;
-                }
-                else if (owner.EntityType == EntityType.Consumable)
-                {
-                    var fillerWeapon = GetATestItem(sampleDungeon, EntityType.Weapon);
-                    fillerWeapon.Owner = source as Character;
-                    var fillerArmor = GetATestItem(sampleDungeon, EntityType.Armor);
-                    fillerArmor.Owner = source as Character;
-                    (source as Character).EquippedWeapon = fillerWeapon;
-                    (source as Character).EquippedArmor = fillerArmor;
+                    if (!i.Owner.Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                        i.Owner.Equipment.Add(GetATestItem(sampleDungeon, slot));
                 }
             }
             else if (owner == null)
@@ -247,17 +230,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             target.CanTakeAction = true;
 
-            var sampleWeaponClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Weapon);
-            if(sampleWeaponClass != null)
+            target.Inventory = [];
+
+            foreach (var slot in target.AvailableSlots)
             {
-                target.Inventory.Add(new Item(sampleWeaponClass, 1, sampleDungeon.CurrentFloor));
+                var sampleItemClass = sampleDungeon.ItemClasses.Find(ec => ec.ItemType.SlotsItOccupies.Contains(slot));
+                target.Inventory.Add(GetASpecificItem(sampleDungeon, sampleItemClass.Id));
             }
-            var sampleArmorClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Armor);
-            if (sampleArmorClass != null)
-            {
-                target.Inventory.Add(new Item(sampleArmorClass, 1, sampleDungeon.CurrentFloor));
-            }
-            var sampleConsumableClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.Consumable);
+
+            var sampleConsumableClass = sampleDungeon.ItemClasses.Find(ec => ec.ItemType.Usability == ItemUsability.Use);
             if (sampleConsumableClass != null)
             {
                 target.Inventory.Add(new Item(sampleConsumableClass, 1, sampleDungeon.CurrentFloor));
@@ -560,9 +541,9 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             return resultItem;
         }
 
-        private static Item GetATestItem(Dungeon sampleDungeon, EntityType entityType)
+        private static Item GetATestItem(Dungeon sampleDungeon, ItemSlot slot)
         {
-            var resultItem = new Item(sampleDungeon.Classes.Find(ec => ec.EntityType == entityType), 1, sampleDungeon.CurrentFloor);
+            var resultItem = new Item(sampleDungeon.ItemClasses.Find(ec => ec.ItemType.SlotsItOccupies.Contains(slot)), 1, sampleDungeon.CurrentFloor);
 
             resultItem.Id = new Random().Next(1, int.MaxValue);
 

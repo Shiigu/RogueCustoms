@@ -122,3 +122,6 @@ SellItemWindowText
 BuyItemWindowText
 CharacterSoldItem
 CharacterBoughtItem
+CharacterCannotEquipItem
+CannotBuyItems
+CannotSellItems

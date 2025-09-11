@@ -25,9 +25,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public List<AlteredStatusDetailDto> AlteredStatuses { get; set; }
 
-        public ItemDetailDto WeaponInfo { get; set; }
-        public ItemDetailDto ArmorInfo { get; set; }
-
+        public List<SimpleInventoryDto> Equipment { get; set; }
         public List<SimpleInventoryDto> Inventory { get; set; }
 
         public PlayerInfoDto() { }
@@ -70,10 +68,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 stat.PassiveModifications.ForEach(pm => statInfo.Modifications.Add(new StatModificationDto(pm.Source, pm.Amount, statInfo, map)));
                 Stats.Add(statInfo);
             }
+            Equipment = new List<SimpleInventoryDto>();
+            character.Equipment.OrderBy(item => map.Player.AvailableSlots.IndexOf(item.SlotsItOccupies[0])).ForEach(i => Equipment.Add(new SimpleInventoryDto(i)));
             AlteredStatuses = new List<AlteredStatusDetailDto>();
             character.AlteredStatuses.ForEach(als => AlteredStatuses.Add(new AlteredStatusDetailDto(als)));
-            WeaponInfo = new ItemDetailDto(character.Weapon);
-            ArmorInfo = new ItemDetailDto(character.Armor);
             Inventory = new List<SimpleInventoryDto>();
             character.Inventory.ForEach(i => Inventory.Add(new SimpleInventoryDto(i)));
             character.KeySet.ForEach(i => Inventory.Add(new SimpleInventoryDto(i)));

@@ -102,7 +102,7 @@ namespace RogueCustomsGameEngine.Game.Entities.NPCAIStrategies
                     if (paramsObject.CanStealEquippables)
                         stealableItems.AddRange(targetAsCharacter.Inventory.Where(i => i.IsEquippable));
                     if (paramsObject.CanStealConsumables)
-                        stealableItems.AddRange(targetAsCharacter.Inventory.Where(i => i.EntityType == EntityType.Consumable));
+                        stealableItems.AddRange(targetAsCharacter.Inventory.Where(i => i.IsConsumable));
                     if (stealableItems.Any())
                     {
                         weight = (int)(1 * accuracyFactor);

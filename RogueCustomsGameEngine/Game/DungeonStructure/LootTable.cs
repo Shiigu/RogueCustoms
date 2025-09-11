@@ -60,6 +60,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (Pick == null)
             {
+                var pickAsItemType = dungeon.ItemTypes.FirstOrDefault(i => i.Id.Equals(info.PickId, StringComparison.InvariantCultureIgnoreCase));
+                if (pickAsItemType != null) Pick = pickAsItemType;
+            }
+
+            if (Pick == null)
+            {
                 var pickAsItem = dungeon.ItemClasses.FirstOrDefault(i => i.Id.Equals(info.PickId, StringComparison.InvariantCultureIgnoreCase));
                 if (pickAsItem != null) Pick = pickAsItem;
             }

@@ -26,6 +26,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static T? TakeRandomElement<T>(this IEnumerable<T> elementList, RngHandler rng)
         {
+            if (!elementList.Any()) return default;
             return elementList.ToList()[rng.NextInclusive(elementList.Count() - 1)];
         }
 

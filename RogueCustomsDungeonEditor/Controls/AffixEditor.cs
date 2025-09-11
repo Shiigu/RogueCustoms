@@ -34,6 +34,8 @@ namespace RogueCustomsDungeonEditor.Controls
             {
                 _activeDungeon = value;
                 AffixStatsSheet.StatData = value.CharacterStats;
+                clbAffixAffects.Items.Clear();
+                clbAffixAffects.Items.AddRange(value.ItemTypeInfos.Select(it => it.Id).ToArray());
                 cmbAffixElementDamage.Items.Clear();
                 cmbAffixElementDamage.Items.AddRange(value.ElementInfos.Select(et => et.Id).ToArray());
             }

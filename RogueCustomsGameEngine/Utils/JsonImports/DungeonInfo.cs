@@ -30,6 +30,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<QualityLevelInfo> QualityLevelInfos { get; set; }
         public List<PlayerClassInfo> PlayerClasses { get; set; }
         public List<NPCInfo> NPCs { get; set; }
+        public List<ItemSlotInfo> ItemSlotInfos { get; set; }
+        public List<ItemTypeInfo> ItemTypeInfos { get; set; }
         public List<ItemInfo> Items { get; set; }
         public List<TrapInfo> Traps { get; set; }
         public List<AlteredStatusInfo> AlteredStatuses { get; set; }

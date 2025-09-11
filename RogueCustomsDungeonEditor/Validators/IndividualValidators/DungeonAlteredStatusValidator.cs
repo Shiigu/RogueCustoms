@@ -15,7 +15,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(AlteredStatusInfo alteredStatus, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
-            var alteredStatusAsInstance = sampleDungeon != null ? new AlteredStatus(new EntityClass(alteredStatus, EntityType.AlteredStatus, sampleDungeon, dungeonJson.CharacterStats), sampleDungeon.CurrentFloor) : null;
+            var alteredStatusAsInstance = sampleDungeon != null ? new AlteredStatus(new EntityClass(alteredStatus, sampleDungeon, dungeonJson.CharacterStats), sampleDungeon.CurrentFloor) : null;
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(alteredStatus.Name, "Trap", "Name", true));

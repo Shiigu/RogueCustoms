@@ -102,26 +102,18 @@ public partial class SelectClass : Control
         }
 
         _classDescriptionLabel.AppendText($"[p] [p]{currentClass.SightRangeName}: {currentClass.SightRangeStat}[p] ");
-        if (currentClass.InitialEquippedWeapon != null || currentClass.InitialEquippedArmor != null)
+        _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassInitialEquipmentHeader")}[/center][p] ");
+        if (currentClass.StartingEquipment.Count != 0)
         {
-            _classDescriptionLabel.AppendText("[p] [p]");
-            if (currentClass.InitialEquippedWeapon != null)
-                PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassInitialEquippedWeaponHeader"), currentClass.InitialEquippedWeapon);
-            if (currentClass.InitialEquippedWeapon != null && currentClass.InitialEquippedArmor != null)
-                _classDescriptionLabel.AppendText("[p] ");
-            if (currentClass.InitialEquippedArmor != null)
-                PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassInitialEquippedArmorHeader"), currentClass.StartingArmor);
-
-            _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassEmergencyEquipmentHeader")}[/center][p] [p]");
-
-            _classDescriptionLabel.AppendText($"{TranslationServer.Translate("PlayerInfoWeaponHeader")}: {currentClass.StartingWeapon.ConsoleRepresentation.ToBbCodeRepresentation()} - {currentClass.StartingWeapon.Name}[p]");
-            _classDescriptionLabel.AppendText($"{TranslationServer.Translate("PlayerInfoArmorHeader")}: {currentClass.StartingArmor.ConsoleRepresentation.ToBbCodeRepresentation()} - {currentClass.StartingArmor.Name}[p]");
+            _classDescriptionLabel.AppendText("[p]");
+            foreach (var item in currentClass.StartingEquipment)
+            {
+                _classDescriptionLabel.AppendText($"{item.ConsoleRepresentation.ToBbCodeRepresentation()} - {item.Name}[p]");
+            }
         }
         else
         {
-            PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassStartingWeaponHeader"), currentClass.StartingWeapon);
-            _classDescriptionLabel.AppendText("[p] ");
-            PrintPlayerEquipmentInfo(TranslationServer.Translate("PlayerClassStartingArmorHeader"), currentClass.StartingArmor);
+            _classDescriptionLabel.AppendText($"[p][center]{TranslationServer.Translate("PlayerClassNoStartingInventoryText")}[/center]");
         }
 
         _classDescriptionLabel.AppendText($"[p] [p][center]{TranslationServer.Translate("PlayerClassStartingInventoryHeader")}[/center][p] ");

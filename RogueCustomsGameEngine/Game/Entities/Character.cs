@@ -17,6 +17,7 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Text;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -27,17 +28,9 @@ namespace RogueCustomsGameEngine.Game.Entities
     public abstract class Character : Entity, IHasActions, IKillable
     {
         public Faction Faction { get; set; }
-
-        public readonly string StartingWeaponId;
-        public readonly string StartingArmorId;
-        public Item StartingWeapon { get; set; }
-        public Item StartingArmor { get; set; }
-        public Item EquippedWeapon { get; set; }
-        public Item EquippedArmor { get; set; }
-
-        public Item Weapon => EquippedWeapon ?? StartingWeapon;
-        public Item Armor => EquippedArmor ?? StartingArmor;
-
+        public List<ItemSlot> AvailableSlots { get; set; }
+        public readonly List<string> InitialEquipmentIds;
+        public List<Item> Equipment { get; set; }
         public List<Item> Inventory { get; set; }
         public List<Key> KeySet { get; set; }
         public List<IPickable> FullInventory => Inventory.Cast<IPickable>().Union(KeySet.Cast<IPickable>()).ToList();
@@ -74,8 +67,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 if (Attack.BaseAfterModifications >= 0)
-                    return $"{Weapon.Power}+{Attack.BaseAfterModifications}";
-                return $"{Weapon.Power}-{Math.Abs((int)Attack.BaseAfterModifications)}";
+                    return $"{DamageFromEquipment}+{Attack.BaseAfterModifications}";
+                return $"{DamageFromEquipment}-{Math.Abs((int)Attack.BaseAfterModifications)}";
+            }
+        }
+        public string DamageFromEquipment
+        {
+            get
+            {
+                var damageParts = Equipment.Where(i => i.ItemType.PowerType == ItemPowerType.Damage).Select(i => i.Power);
+                var damageFormula = string.Join("+", damageParts);
+
+                var reducedFormula = damageFormula.Replace("+-", "-").ReduceDiceNotation();
+
+                return string.IsNullOrWhiteSpace(reducedFormula) ? "0" : reducedFormula;
             }
         }
 
@@ -85,8 +90,20 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 if (Defense.BaseAfterModifications >= 0)
-                    return $"{Armor.Power}+{Defense.BaseAfterModifications}";
-                return $"{Armor.Power}-{Math.Abs((int)Defense.BaseAfterModifications)}";
+                    return $"{MitigationFromEquipment}+{Defense.BaseAfterModifications}";
+                return $"{MitigationFromEquipment}-{Math.Abs((int)Defense.BaseAfterModifications)}";
+            }
+        }
+        public string MitigationFromEquipment
+        {
+            get
+            {
+                var mitigationParts = Equipment.Where(i => i.ItemType.PowerType == ItemPowerType.Mitigation).Select(i => i.Power);
+                var mitigationFormula = string.Join("+", mitigationParts);
+
+                var reducedFormula = mitigationFormula.Replace("+-", "-").ReduceDiceNotation();
+
+                return string.IsNullOrWhiteSpace(reducedFormula) ? "0" : reducedFormula;
             }
         }
 
@@ -118,28 +135,40 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnTurnStart != null)
                     actionList.Add(OwnOnTurnStart);
-                actionList.AddRange(Weapon?.OnTurnStart ?? []);
-                actionList.AddRange(Armor?.OnTurnStart ?? []);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnTurnStart != null)
+                        actionList.AddRange(i?.OnTurnStart);
+                });
                 Inventory?.ForEach(i =>
                 {
-                    if (!i.IsEquippable)
+                    if (!i.IsEquippable && i?.OnTurnStart != null)
                         actionList.AddRange(i?.OnTurnStart);
                 });
                 return actionList;
             }
         }
+        public ActionWithEffects DefaultOnAttack { get; private set; }
         public List<ActionWithEffects> OnAttack
         {
             get
             {
+                var hasNativeEquipmentAttacks = false;
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnAttack != null)
                     actionList.AddRange(OwnOnAttack);
-                actionList.AddRange(Weapon?.OnAttack ?? []);
-                actionList.AddRange(Armor?.OnAttack ?? []);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttack != null)
+                    {
+                        actionList.AddRange(i?.OnAttack);
+                        if (i.OwnOnAttack.Count > 0)
+                            hasNativeEquipmentAttacks = true;
+                    }
+                });
                 Inventory?.ForEach(i =>
                 {
-                    if (!i.IsEquippable)
+                    if (!i.IsEquippable && i?.OnAttack != null)
                         actionList.AddRange(i?.OnAttack);
                 });
                 KeySet?.ForEach(k =>
@@ -147,6 +176,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (k?.OwnOnAttack != null)
                         actionList.AddRange(k.OwnOnAttack);
                 });
+
+                if(!hasNativeEquipmentAttacks)
+                {
+                    if (DefaultOnAttack != null)
+                        actionList.Insert(0, DefaultOnAttack);
+                }
 
                 return actionList;
             }
@@ -158,12 +193,15 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnAttacked != null)
                     actionList.Add(OwnOnAttacked);
-                actionList.AddRange(Weapon?.OnAttacked ?? []);
-                actionList.AddRange(Armor?.OnAttacked ?? []);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
+                });
                 Inventory?.ForEach(i =>
                 {
-                    if (!i.IsEquippable)
-                        actionList.AddRange(i?.OnAttacked ?? []);
+                    if (!i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
                 });
                 AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
                 {
@@ -180,10 +218,11 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var actionList = new List<ActionWithEffects>();
                 if (OwnOnDeath != null)
                     actionList.Add(OwnOnDeath);
-                if (Weapon?.OwnOnDeath != null)
-                    actionList.Add(Weapon.OwnOnDeath);
-                if (Armor?.OwnOnDeath != null)
-                    actionList.Add(Armor.OwnOnDeath);
+                Equipment?.ForEach(i =>
+                {
+                    if (i?.OwnOnDeath != null && i.IsEquippable)
+                        actionList.Add(i.OwnOnDeath);
+                });
                 Inventory?.ForEach(i =>
                 {
                     if (i?.OwnOnDeath != null && !i.IsEquippable)
@@ -231,30 +270,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 var list = new List<ExtraDamage>();
-                foreach (var extraDamage in Weapon?.ExtraDamage ?? [])
+                foreach (var item in Equipment)
                 {
-                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
-                    if (correspondingExtraDamage == null)
+                    if (!item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
                     {
-                        list.Add(extraDamage);
-                    }
-                    else
-                    {
-                        correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
-                        correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
-                    }
-                }
-                foreach (var extraDamage in Armor?.ExtraDamage ?? [])
-                {
-                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
-                    if (correspondingExtraDamage == null)
-                    {
-                        list.Add(extraDamage);
-                    }
-                    else
-                    {
-                        correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
-                        correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
                     }
                 }
                 foreach (var item in Inventory)
@@ -281,8 +311,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
             Faction = entityClass.Faction;
-            StartingWeaponId = entityClass.StartingWeaponId;
-            StartingArmorId = entityClass.StartingArmorId;
             Stats = new();
             foreach (var stat in entityClass.Stats)
             {
@@ -345,6 +373,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnOnAttacked = MapClassAction(entityClass.OnAttacked);
             OwnOnDeath = MapClassAction(entityClass.OnDeath);
             OnLevelUp = MapClassAction(entityClass.OnLevelUp);
+            AvailableSlots = entityClass.AvailableSlots;
+            DefaultOnAttack = MapClassAction(entityClass.DefaultOnAttack);
+            InitialEquipmentIds = new(entityClass.InitialEquipmentIds);
+            Equipment = [];
             CurrencyCarried = 0;
         }
 
@@ -631,134 +663,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         }
 
         public abstract void DropItem(IPickable pickable);
-
         public abstract void PickItem(IPickable pickable, bool informToPlayer);
         public abstract void PickKey(Key key, bool informToPlayer);
-
-        public void EquipItem(Item item)
-        {
-            if (!item.IsEquippable)
-                throw new InvalidOperationException("Attempted to equip an unequippable item!");
-
-            var currentlyEquippedItemInSlot = item.EntityType == EntityType.Weapon ? EquippedWeapon : EquippedArmor;
-            SwapWithEquippedItem(currentlyEquippedItemInSlot, item);
-        }
-
-        private void SwapWithEquippedItem(Item equippedItem, Item itemToEquip)
-        {
-            var events = new List<DisplayEventDto>();
-            var statsPreEquip = new List<(string Id, decimal Current, decimal Base, bool HasMax)>();
-            foreach (var stat in UsedStats)
-            {
-                statsPreEquip.Add((stat.Id, stat.Current, stat.BaseAfterModifications, stat.HasMax));
-            }
-            if (itemToEquip.EntityType == EntityType.Weapon)
-            {
-                if (this == Map.Player)
-                {
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyEquippedItem, "Weapon", new SimpleEntityDto(itemToEquip), itemToEquip.Power }
-                    });
-                }
-                EquippedWeapon = itemToEquip;
-            }
-            else if (itemToEquip.EntityType == EntityType.Armor)
-            {
-                if (this == Map.Player)
-                {
-                    events.Add(new()
-                    {
-                        DisplayEventType = DisplayEventType.UpdatePlayerData,
-                        Params = new() { UpdatePlayerDataType.ModifyEquippedItem, "Armor", new SimpleEntityDto(itemToEquip), itemToEquip.Power }
-                    });
-                }
-                EquippedArmor = itemToEquip;
-            }
-            var itemToEquipWasInTheBag = itemToEquip.Position == null;
-            if (itemToEquipWasInTheBag)
-                Inventory.Remove(itemToEquip);
-            if (this == Map.Player || Map.Player.CanSee(this))
-            {
-                events.Add(new()
-                {
-                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                    Params = new() { SpecialEffect.ItemEquip }
-                });
-                if (this == Map.Player)
-                {
-                    var statsAfterEquip = new List<(string Id, decimal Current, decimal Base, bool HasMax)>();
-                    foreach (var stat in UsedStats)
-                    {
-                        statsAfterEquip.Add((stat.Id, stat.Current, stat.BaseAfterModifications, stat.HasMax));
-                    }
-                    foreach (var stat in statsAfterEquip)
-                    {
-                        var equivalentPreEquip = statsPreEquip.Find(s => s.Id.Equals(stat.Id));
-                        if (equivalentPreEquip == default) continue;
-                        if (stat.Current != equivalentPreEquip.Current)
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
-                            });
-                        }
-                        if (stat.HasMax && stat.Base != equivalentPreEquip.Base)
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
-                            });
-                        }
-                    }
-                }
-                Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow, events);
-            }
-            if (equippedItem != null)
-            {
-                if (!itemToEquipWasInTheBag)
-                {
-                    equippedItem.Position = itemToEquip.Position;
-                    equippedItem.Owner = null!;
-                    equippedItem.ExistenceStatus = EntityExistenceStatus.Alive;
-
-                    if (!Map.IsDebugMode)
-                    {
-                        events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                Params = new() { ContainingTile.Position, Map.GetConsoleRepresentationForCoordinates(ContainingTile.Position.X, ContainingTile.Position.Y) }
-                            }
-                        );
-                    }
-
-                    Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }), events);
-                }
-                else
-                {
-                    if (this == Map.Player || Map.Player.CanSee(this))
-                    {
-                        Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }), events);
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                        });
-                    }
-                    Inventory.Add(equippedItem);
-                }
-            }
-            if (!itemToEquipWasInTheBag)
-            {
-                itemToEquip.Position = null;
-                itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
-                itemToEquip.Owner = this;
-            }
-            Map.DisplayEvents.Add(($"{Name} equips {itemToEquip.Name}", events));
-        }
+        public abstract void EquipItem(Item item);
 
         public void TryToPickItem(IPickable p)
         {
@@ -884,12 +791,25 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void SetActionIds()
         {
+            if(DefaultOnAttack != null)
+            {
+                DefaultOnAttack.SelectionId = $"{Id}_{ClassId}_DA_{DefaultOnAttack.Id}";
+                if (DefaultOnAttack.IsScript)
+                    DefaultOnAttack.SelectionId += "_S";
+            }
             for (int i = 0; i < OwnOnAttack.Count; i++)
             {
                 OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
                 if (OwnOnAttack[i].IsScript)
                     OwnOnAttack[i].SelectionId += "_S";
             }
+        }
+
+        public Item ItemInSlot(string slotId)
+        {
+            var slot = AvailableSlots.Find(s => s.Id.Equals(slotId, StringComparison.InvariantCultureIgnoreCase));
+            if (slot == null) return null;
+            return Equipment.Find(i => i.ItemType != null && i.ItemType.SlotsItOccupies.Contains(slot));
         }
     }
 }

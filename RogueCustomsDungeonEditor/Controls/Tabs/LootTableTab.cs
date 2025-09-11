@@ -29,7 +29,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         public LootTableInfo LoadedLootTable { get; private set; }
         public event EventHandler TabInfoChanged;
 
-        private readonly Color CategoryColor = Color.Violet;
+        private readonly Color ItemTypeColor = Color.Violet;
         private readonly Color ItemColor = Color.LightBlue;
         private readonly Color LootTableColor = Color.FromArgb(0, 255, 0);
         private readonly Color CurrencyColor = Color.Gold;
@@ -43,7 +43,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             ActiveDungeon = activeDungeon;
             LoadedLootTable = lootTableToLoad;
-            ValidPickIds = ["No Drop", "Weapon", "Armor", "Equippable", "Consumable"];
+            ValidPickIds = ["No Drop", "Equippable"];
+            ValidPickIds.AddRange(activeDungeon.ItemTypeInfos.Select(i => i.Id));
             ValidPickIds.AddRange(activeDungeon.LootTableInfos.Where(lt => lootTableToLoad.Id == null || !lt.Id.Equals(lootTableToLoad.Id)).Select(lt => lt.Id));
             ValidPickIds.AddRange(activeDungeon.Items.Select(i => i.Id));
             foreach (var currencyPile in activeDungeon.CurrencyInfo.CurrencyPiles)
@@ -63,7 +64,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             dgvLootTable.CellValueChanged += (sender, e) => TabInfoChanged(sender, e);
 
-            lblCategory.BackColor = CategoryColor;
+            lblItemType.BackColor = ItemTypeColor;
             lblLootTable.BackColor = LootTableColor;
             lblCurrency.BackColor = CurrencyColor;
             lblItem.BackColor = ItemColor;
@@ -97,6 +98,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         public List<string> SaveData(string id)
         {
+            qlsLootTableQualityLevelOdds.EndEdit();
             dgvLootTable.EndEdit();
             var validationErrors = new List<string>();
             var lootTableToSave = new LootTableInfo()
@@ -259,17 +261,17 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             var match = Regex.Match(entryText, EngineConstants.CurrencyRegexPattern);
 
-            if (entryText.Equals("No Drop", StringComparison.InvariantCultureIgnoreCase) ||
-                entryText.Equals("Weapon", StringComparison.InvariantCultureIgnoreCase) ||
-                entryText.Equals("Armor", StringComparison.InvariantCultureIgnoreCase) ||
-                entryText.Equals("Equippable", StringComparison.InvariantCultureIgnoreCase) ||
-                entryText.Equals("Consumable", StringComparison.InvariantCultureIgnoreCase))
+            if (ActiveDungeon.ItemTypeInfos.Any(it => it.Id.Equals(entryText, StringComparison.InvariantCultureIgnoreCase)))
             {
-                return CategoryColor;
+                return ItemTypeColor;
             }
             else if (ActiveDungeon.LootTableInfos.Any(lt => lt.Id.Equals(entryText, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return LootTableColor;
+            }
+            else if (ActiveDungeon.Items.Any(i => i.Id.Equals(entryText, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return CurrencyColor;
             }
             else if (match.Success)
             {
@@ -277,7 +279,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             else
             {
-                return ItemColor;
+                return Color.White;
             }
         }
 

@@ -9,8 +9,6 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     public class PlayerClassInfo : CharacterInfo
     {
         public bool RequiresNamePrompt { get; set; }
-        public string InitialEquippedWeapon { get; set; }
-        public string InitialEquippedArmor { get; set; }
         public int SaleValuePercentage { get; set; }
     }
 }

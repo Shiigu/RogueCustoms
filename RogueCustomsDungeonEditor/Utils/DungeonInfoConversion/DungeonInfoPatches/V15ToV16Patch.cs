@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches.Interfaces;
 
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches
@@ -24,9 +25,11 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateCurrencyInfo(root);
             UpdateAffixInfos(root);
             UpdateQualityLevelInfos(root);
+            UpdateItemSlotInfos(root);
+            UpdateItemTypeInfos(root);
+            UpdateItems(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
-            UpdateItems(root);
             UpdateTraps(root);
             UpdateAlteredStatuses(root);
             UpdateScripts(root);
@@ -60,6 +63,51 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("CurrencyDescription", StringComparison.OrdinalIgnoreCase) == true))
             {
                 localeStrings.Add(new JsonObject { ["Key"] = "CurrencyDescription", ["Value"] = "Sparkling coins used as trade money" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemSlotWeaponName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemSlotWeaponName", ["Value"] = "Weapon" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemSlotArmorName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemSlotArmorName", ["Value"] = "Armor" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemTypeWeaponName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemTypeWeaponName", ["Value"] = "Weapon" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemTypeArmorName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemTypeArmorName", ["Value"] = "Armor" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemTypeConsumableName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemTypeConsumableName", ["Value"] = "Consumable" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("ItemTypeCharmName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "ItemTypeCharmName", ["Value"] = "Charm" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("MeleeWeaponAttackName", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "MeleeWeaponAttackName", ["Value"] = "Melee Attack" });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("DefaultAttackDescription", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "DefaultAttackDescription", ["Value"] = "Deals damage with no secondary effect." });
+            }
+
+            if (!localeStrings.OfType<JsonObject>().Any(p => p["Key"]?.ToString().Equals("DefaultMeleeAttackText", StringComparison.OrdinalIgnoreCase) == true))
+            {
+                localeStrings.Add(new JsonObject { ["Key"] = "DefaultMeleeAttackText", ["Value"] = "{source} tries to hit {target}." });
             }
         }
 
@@ -248,14 +296,26 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onLevelUp);
                 }
-                if (!playerClass.ContainsKey("InitialEquippedWeapon"))
+                if (playerClass["DefaultOnAttack"] is null)
                 {
-                    playerClass["InitialEquippedWeapon"] = null;
+                    playerClass["DefaultOnAttack"] = JsonSerializer.SerializeToNode(DungeonInfoHelpers.CreateDefaultAttackTemplate());
                 }
-                if (!playerClass.ContainsKey("InitialEquippedArmor"))
+                if (playerClass["AvailableSlots"] is null)
                 {
-                    playerClass["InitialEquippedArmor"] = null;
+                    playerClass["AvailableSlots"] = new JsonArray("Weapon", "Armor");
                 }
+                if (playerClass["InitialEquipment"] is null)
+                {
+                    playerClass["InitialEquipment"] = new JsonArray();
+                    if (playerClass["InitialEquippedWeapon"] != null)
+                        playerClass["InitialEquipment"].AsArray().Add(playerClass["InitialEquippedWeapon"].DeepClone());
+                    if (playerClass["InitialEquippedArmor"] != null)
+                        playerClass["InitialEquipment"].AsArray().Add(playerClass["InitialEquippedArmor"].DeepClone());
+                }
+                playerClass["StartingWeapon"] = null;
+                playerClass["StartingArmor"] = null;
+                playerClass["InitialEquippedWeapon"] = null;
+                playerClass["InitialEquippedArmor"] = null;
                 if (playerClass["SaleValuePercentage"] is null)
                     playerClass["SaleValuePercentage"] = 50;
             }
@@ -303,11 +363,91 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onLevelUp);
                 }
-                if(npc["LootTableId"] is null)
+                if (npc["DefaultOnAttack"] is null)
+                {
+                    npc["DefaultOnAttack"] = JsonSerializer.SerializeToNode(DungeonInfoHelpers.CreateDefaultAttackTemplate());
+                }
+                if (npc["AvailableSlots"] is null)
+                {
+                    npc["AvailableSlots"] = new JsonArray("Weapon", "Armor");
+                }
+                if (npc["InitialEquipment"] is null)
+                {
+                    npc["InitialEquipment"] = new JsonArray(npc["StartingWeapon"].DeepClone(), npc["StartingArmor"].DeepClone());
+                }
+                npc["StartingWeapon"] = null;
+                npc["StartingArmor"] = null;
+                if (npc["DropsEquipmentOnDeath"] is null)
+                    npc["DropsEquipmentOnDeath"] = false;
+                if (npc["LootTableId"] is null)
                     npc["LootTableId"] = "None";
-                if(npc["DropPicks"] is null)
+                if (npc["DropPicks"] is null)
                     npc["DropPicks"] = 0;
             }
+        }
+
+        private static void UpdateItemTypeInfos(JsonObject root)
+        {
+            if (root["ItemTypeInfos"] is JsonArray) return;
+            var itemTypeInfos = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["Id"] = "Weapon",
+                    ["Name"] = "ItemTypeWeaponName",
+                    ["Usability"] = (int) ItemUsability.Equip,
+                    ["PowerType"] = (int) ItemPowerType.Damage,
+                    ["Slot1"] = "Weapon",
+                    ["Slot2"] = ""
+                },
+                new JsonObject
+                {
+                    ["Id"] = "Armor",
+                    ["Name"] = "ItemTypeArmorName",
+                    ["Usability"] = (int) ItemUsability.Equip,
+                    ["PowerType"] = (int) ItemPowerType.Mitigation,
+                    ["Slot1"] = "Armor",
+                    ["Slot2"] = ""
+                },
+                new JsonObject
+                {
+                    ["Id"] = "Consumable",
+                    ["Name"] = "ItemTypeConsumableName",
+                    ["Usability"] = (int) ItemUsability.Use,
+                    ["PowerType"] = (int) ItemPowerType.UsePower,
+                    ["Slot1"] = "",
+                    ["Slot2"] = ""
+                },
+                new JsonObject
+                {
+                    ["Id"] = "Charm",
+                    ["Name"] = "ItemTypeCharmName",
+                    ["Usability"] = (int) ItemUsability.Nothing,
+                    ["PowerType"] = (int) ItemPowerType.UsePower,
+                    ["Slot1"] = "",
+                    ["Slot2"] = ""
+                }
+            };
+            root["ItemTypeInfos"] = itemTypeInfos;
+        }
+
+        private static void UpdateItemSlotInfos(JsonObject root)
+        {
+            if (root["ItemSlotInfos"] is JsonArray) return;
+            var itemSlotInfos = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["Id"] = "Weapon",
+                    ["Name"] = "ItemSlotWeaponName"
+                },
+                new JsonObject
+                {
+                    ["Id"] = "Armor",
+                    ["Name"] = "ItemSlotArmorName"
+                }
+            };
+            root["ItemSlotInfos"] = itemSlotInfos;
         }
 
         private static void UpdateItems(JsonObject root)
@@ -315,6 +455,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["Items"] is not JsonArray items) return;
             foreach (var item in items.OfType<JsonObject>())
             {
+                item["ItemType"] = item["EntityType"]?.GetValue<string>();
+                item.Remove("EntityType");
                 foreach (var action in item["OnAttack"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
@@ -340,6 +482,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 }
                 if (item["BaseValue"] is null)
                     item["BaseValue"] = 0;
+                if (item["MinimumQualityLevel"] is null)
+                    item["MinimumQualityLevel"] = "Normal";
                 if (item["MaximumQualityLevel"] is null)
                     item["MaximumQualityLevel"] = "Normal";
                 if (item["QualityLevelOdds"] is null)

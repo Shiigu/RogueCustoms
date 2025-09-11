@@ -57,6 +57,7 @@ InputBoxTitleText,Nombre,Name
 InventoryWindowTitleText,Inventario,Inventory
 InventoryWindowStatModifiersHeaderText,Aplica {Situation}:,Applies {Situation}:
 InventoryWindowStatModifierText,{Number} de {StatName},{Number} to {StatName}
+InventoryWindowOccupiesSlotsText,Espacios: {SlotsList},Slots: {SlotsList}
 InventoryWindowOnEquipText,al Equipar,on Equip
 InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventory
 InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
@@ -101,6 +102,7 @@ PlayerCharacterDetailAlteredStatusesHeaderText,ESTADOS ALTERADOS,ALTERED STATUSE
 PlayerCharacterDetailAtMaxLevelText,¡AL MÁXIMO NIVEL!,AT MAX LEVEL!
 PlayerCharacterDetailBaseText,Base,Base
 PlayerCharacterDetailCurrentExperienceText,Experiencia Actual: {CurrentExperience},Current Experience: {CurrentExperience}
+PlayerCharacterDetailEquipmentHeader,OBJETOS EQUIPADOS,EQUIPPED ITEMS
 PlayerCharacterDetailEquippedArmorHeader,ARMADURA ACTUAL,CURRENT ARMOR
 PlayerCharacterDetailEquippedWeaponHeader,ARMA ACTUAL,CURRENT WEAPON
 PlayerCharacterDetailExperienceToLevelUpText,Experiencia para llegar al Nivel {NextLevel}: {RequiredExperience},Experience to Level {NextLevel}: {RequiredExperience}
@@ -113,17 +115,18 @@ PlayerCharacterDetailCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName
 PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
 PlayerClassNoStartingInventoryText,NADA,NONE
 PlayerClassEmergencyEquipmentHeader,EQUIPAMIENTO DE EMERGENCIA,EMERGENCY EQUIPMENT
+PlayerClassInitialEquipmentHeader,EQUIPAMIENTO INICIAL,STARTING EQUIPMENT
 PlayerClassInitialEquippedArmorHeader,ARMADURA INICIAL,STARTING ARMOR
 PlayerClassInitialEquippedWeaponHeader,ARMA INICIAL,STARTING WEAPON
 PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
 PlayerClassStartingArmorHeader,ARMADURA DE EMERGENCIA,EMERGENCY ARMOR
-PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
 PlayerClassStartingWeaponHeader,ARMA DE EMERGENCIA,EMERGENCY WEAPON
 PlayerClassStatsHeader,ESTADÍSTICAS,STATS
 PlayerClassWindowTitleText,Elija una Clase,Select a Class
 PlayerHasNothingText,¡NADA!,NONE!
 PlayerInfoArmorHeader,ARMADURA,ARMOR
 PlayerInfoConsoleTitle,TÚ,YOU
+PlayerInfoEquipmentHeader,EQUIPAMIENTO,EQUIPMENT
 PlayerInfoInventoryHeader,INVENTARIO,INVENTORY
 PlayerInfoStatusesHeader,ESTADOS,STATUSES
 PlayerInfoTooManyText,¡CLICK DEBAJO!,CLICK BELOW!

@@ -112,9 +112,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         Player,
         NPC,
-        Consumable,
-        Weapon,
-        Armor,
+        Item,
         Trap,
         Key,
         Currency,

@@ -32,7 +32,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     {
                         messages.AddError($"Affix {affixJson.Id} has a duplicate Id.");
                     }
-                    var affixAsInstance = sampleDungeon != null ? new Affix(affixJson, sampleDungeon.LocaleToUse, sampleDungeon.Elements, sampleDungeon.ActionSchools) : null;
+                    var affixAsInstance = sampleDungeon != null ? new Affix(affixJson, sampleDungeon.LocaleToUse, sampleDungeon.ItemTypes, sampleDungeon.Elements, sampleDungeon.ActionSchools) : null;
                     messages.AddRange(dungeonJson.ValidateString(affixJson.Name, "Affix", "Name", true));
                     if (!ValidAffixTypes.Any(vit => vit.Equals(affixJson.AffixType, StringComparison.InvariantCultureIgnoreCase)))
                     {

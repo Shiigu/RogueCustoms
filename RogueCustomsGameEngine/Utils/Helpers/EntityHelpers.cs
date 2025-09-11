@@ -21,7 +21,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 Name = $"KeyType{keyType.KeyTypeName}",
                 ConsoleRepresentation = keyType.KeyConsoleRepresentation,
                 Description = "KeyDescription",
-                EntityType = "Key",
                 StartsVisible = true,
                 Power = "0",
                 OnAttacked = new(),
@@ -36,7 +35,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 CanLockItems = keyType.CanLockItems,
                 CanLockStairs = keyType.CanLockStairs,
                 DoorConsoleRepresentation = keyType.DoorConsoleRepresentation,
-                KeyClass = new EntityClass(keyClassTemplate, EntityType.Key, dungeon, [])
+                KeyClass = new EntityClass(keyClassTemplate, dungeon, [])
+                {
+                    EntityType = EntityType.Key
+                }
             };
         }
 
@@ -48,7 +50,6 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 Name = dungeon.LocaleToUse[currency.Name],
                 Description = dungeon.LocaleToUse[currency.Description],
                 ConsoleRepresentation = currency.ConsoleRepresentation,
-                EntityType = "Currency",
                 StartsVisible = true,
                 Power = "0",
                 OnAttacked = new(),
@@ -57,7 +58,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 OnUse = new(),
                 OnAttack = [],
             };
-            return new EntityClass(currencyClassTemplate, EntityType.Currency, dungeon, []);
+            return new EntityClass(currencyClassTemplate, dungeon, [])
+            {
+                EntityType = EntityType.Currency
+            };
         }
     }
 }

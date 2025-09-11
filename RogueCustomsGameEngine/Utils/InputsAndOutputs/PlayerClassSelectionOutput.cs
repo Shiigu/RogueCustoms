@@ -39,11 +39,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string SightRangeStat { get; set; }
         public string InventorySizeName { get; set; }
         public string InventorySizeStat { get; set; }
-
-        public ItemDetailDto InitialEquippedWeapon { get; set; }
-        public ItemDetailDto InitialEquippedArmor { get; set; }
-        public ItemDetailDto StartingWeapon { get; set; }
-        public ItemDetailDto StartingArmor { get; set; }
+        public List<ItemDetailDto> StartingEquipment { get; set; } = new List<ItemDetailDto>();
         public List<ItemDetailDto> StartingInventory { get; set; } = new List<ItemDetailDto>();
 
         public CharacterClassDto(EntityClass characterClass, Dungeon dungeon)
@@ -80,28 +76,22 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             InventorySizeName = dungeon.LocaleToUse["CharacterInventorySizeStat"];
             InventorySizeStat = dungeon.LocaleToUse["InventorySizeStatFlatNumber"].Format(new { InventorySize = characterClass.InventorySize.ToString() });
 
-            if (!string.IsNullOrWhiteSpace(characterClass.InitialEquippedWeaponId))
-            {
-                var initialEquippedWeaponClass = dungeon.Classes.Find(c => c.EntityType == EntityType.Weapon && c.Id.Equals(characterClass.InitialEquippedWeaponId));
-                InitialEquippedWeapon = new ItemDetailDto(initialEquippedWeaponClass, dungeon);
-            }
+            StartingEquipment = new List<ItemDetailDto>();
 
-            if (!string.IsNullOrWhiteSpace(characterClass.InitialEquippedArmorId))
+            foreach (var itemId in characterClass.InitialEquipmentIds)
             {
-                var initialEquippedArmorClass = dungeon.Classes.Find(c => c.EntityType == EntityType.Armor && c.Id.Equals(characterClass.InitialEquippedArmorId));
-                InitialEquippedArmor = new ItemDetailDto(initialEquippedArmorClass, dungeon);
+                var equipmentItemClass = dungeon.ItemClasses.Find(c => c.ItemType.Usability == Enums.ItemUsability.Equip && c.Id.Equals(itemId));
+                if(equipmentItemClass != null)
+                    StartingEquipment.Add(new ItemDetailDto(equipmentItemClass, dungeon));
             }
-            var startingWeaponClass = dungeon.Classes.Find(c => c.EntityType == EntityType.Weapon && c.Id.Equals(characterClass.StartingWeaponId));
-            StartingWeapon = new ItemDetailDto(startingWeaponClass, dungeon);
-            var startingArmorClass = dungeon.Classes.Find(c => c.EntityType == EntityType.Armor && c.Id.Equals(characterClass.StartingArmorId));
-            StartingArmor = new ItemDetailDto(startingArmorClass, dungeon);
 
             StartingInventory = new List<ItemDetailDto>();
 
             foreach (var itemId in characterClass.StartingInventoryIds)
             {
-                var inventoryItemClass = dungeon.Classes.Find(c => (c.EntityType == EntityType.Weapon || c.EntityType == EntityType.Armor || c.EntityType == EntityType.Consumable) && c.Id.Equals(itemId));
-                StartingInventory.Add(new ItemDetailDto(inventoryItemClass, dungeon));
+                var inventoryItemClass = dungeon.ItemClasses.Find(c => c.Id.Equals(itemId));
+                if (inventoryItemClass != null)
+                    StartingInventory.Add(new ItemDetailDto(inventoryItemClass, dungeon));
             }
         }
 

@@ -67,43 +67,22 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
             ssPlayer.MaxLevel = playerClass.MaxLevel;
-            cmbPlayerInitialEquippedWeapon.Items.Clear();
-            cmbPlayerInitialEquippedWeapon.Text = "";
-            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
+            clbPlayerAvailableSlots.Items.Clear();
+            foreach (var slot in ActiveDungeon.ItemSlotInfos)
             {
-                cmbPlayerInitialEquippedWeapon.Items.Add(weaponId);
-                if (weaponId.Equals(playerClass.InitialEquippedWeapon))
-                    cmbPlayerInitialEquippedWeapon.Text = weaponId;
+                clbPlayerAvailableSlots.Items.Add(slot.Id, playerClass.AvailableSlots.Contains(slot.Id));
             }
-            cmbPlayerInitialEquippedArmor.Items.Clear();
-            cmbPlayerInitialEquippedArmor.Text = "";
-            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
-            {
-                cmbPlayerInitialEquippedArmor.Items.Add(armorId);
-                if (armorId.Equals(playerClass.InitialEquippedArmor))
-                    cmbPlayerInitialEquippedArmor.Text = armorId;
-            }
-            cmbPlayerStartingWeapon.Items.Clear();
-            cmbPlayerStartingWeapon.Text = "";
-            foreach (var weaponId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Weapon")).Select(i => i.Id))
-            {
-                cmbPlayerStartingWeapon.Items.Add(weaponId);
-                if (weaponId.Equals(playerClass.StartingWeapon))
-                    cmbPlayerStartingWeapon.Text = weaponId;
-            }
-            cmbPlayerStartingArmor.Items.Clear();
-            cmbPlayerStartingArmor.Text = "";
-            foreach (var armorId in ActiveDungeon.Items.Where(i => i.EntityType.Equals("Armor")).Select(i => i.Id))
-            {
-                cmbPlayerStartingArmor.Items.Add(armorId);
-                if (armorId.Equals(playerClass.StartingArmor))
-                    cmbPlayerStartingArmor.Text = armorId;
-            }
+            clbPlayerAvailableSlots.ItemCheck -= clbPlayerAvailableSlots_ItemCheck;
+            clbPlayerAvailableSlots.ItemCheck += clbPlayerAvailableSlots_ItemCheck;
+            esPlayer.Dungeon = ActiveDungeon;
+            esPlayer.AvailableSlots = playerClass.AvailableSlots;
+            esPlayer.Equipment = playerClass.InitialEquipment;
             nudPlayerInventorySize.Value = playerClass.InventorySize;
             sisPlayerStartingInventory.SelectableItems = ActiveDungeon.Items.ConvertAll(i => i.Id);
             sisPlayerStartingInventory.InventorySize = playerClass.InventorySize;
             sisPlayerStartingInventory.Inventory = playerClass.StartingInventory;
             sisPlayerStartingInventory.InventoryContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            SetSingleActionEditorParams(saePlayerDefaultOnAttack, playerClass.Id, playerClass.DefaultOnAttack);
             SetSingleActionEditorParams(saePlayerOnTurnStart, playerClass.Id, playerClass.OnTurnStart);
             SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
             SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
@@ -112,8 +91,30 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             nudPlayerSaleValuePercentage.Value = playerClass.SaleValuePercentage;
         }
 
+        private void clbPlayerAvailableSlots_ItemCheck(object? sender, ItemCheckEventArgs e)
+        {
+            var checkedItems = clbPlayerAvailableSlots.CheckedItems.Cast<string>().ToList();
+            string currentItem = clbPlayerAvailableSlots.Items[e.Index].ToString();
+
+            // For some reason, ItemCheck fires BEFORE updating CheckedItems, so we need to make a manual observation
+            if (e.NewValue == CheckState.Checked)
+            {
+                if (!checkedItems.Contains(currentItem))
+                    checkedItems.Add(currentItem);
+            }
+            else
+            {
+                if (checkedItems.Contains(currentItem))
+                    checkedItems.Remove(currentItem);
+            }
+
+            esPlayer.AvailableSlots = checkedItems;
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
         public List<string> SaveData(string id)
         {
+            esPlayer.EndEdit();
             var validationErrors = new List<string>();
 
             if (string.IsNullOrWhiteSpace(txtPlayerClassName.Text))
@@ -126,18 +127,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This Player Class does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbPlayerFaction.Text))
                 validationErrors.Add("This Player Class does not have a Faction.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerStartingWeapon.Text))
-                validationErrors.Add("This Player Class does not have an Emergency Weapon.");
-            else if (cmbPlayerInitialEquippedWeapon.Text.Equals(cmbPlayerStartingWeapon.Text))
-                validationErrors.Add("This Player Class's Initial Weapon is the same as the Emergency Weapon.");
-            if (string.IsNullOrWhiteSpace(cmbPlayerStartingArmor.Text))
-                validationErrors.Add("This Player Class does not have an Emergency Armor.");
-            else if (cmbPlayerInitialEquippedArmor.Text.Equals(cmbPlayerStartingArmor.Text))
-                validationErrors.Add("This Player Class's Initial Armor is the same as the Emergency Armor.");
             if (ssPlayer.CanGainExperience && string.IsNullOrWhiteSpace(ssPlayer.ExperienceToLevelUpFormula))
                 validationErrors.Add("This Player Class can gain experience, but does not have a Level Up Formula.");
             if (ssPlayer.CanGainExperience && ssPlayer.MaxLevel == 1)
                 validationErrors.Add("This Player Class can gain experience, but cannot level up.");
+            if (clbPlayerAvailableSlots.CheckedItems.Count == 0)
+                validationErrors.Add("This Player Class does not have any Available Equipment Slots.");
 
             if (!validationErrors.Any())
             {
@@ -155,15 +150,22 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
                 LoadedPlayerClass.MaxLevel = ssPlayer.MaxLevel;
 
-                LoadedPlayerClass.InitialEquippedWeapon = cmbPlayerInitialEquippedWeapon.Text;
-                LoadedPlayerClass.InitialEquippedArmor = cmbPlayerInitialEquippedArmor.Text;
+                LoadedPlayerClass.AvailableSlots = clbPlayerAvailableSlots.CheckedItems.Cast<string>().ToList();
 
-                LoadedPlayerClass.StartingWeapon = cmbPlayerStartingWeapon.Text;
-                LoadedPlayerClass.StartingArmor = cmbPlayerStartingArmor.Text;
+                LoadedPlayerClass.InitialEquipment = [];
+
+                foreach (var equipment in esPlayer.EquipmentList)
+                {
+                    if(LoadedPlayerClass.AvailableSlots.Contains(equipment.Key))
+                        LoadedPlayerClass.InitialEquipment.Add(equipment.Value);
+                }
 
                 LoadedPlayerClass.InventorySize = (int)nudPlayerInventorySize.Value;
                 LoadedPlayerClass.StartingInventory = sisPlayerStartingInventory.Inventory;
 
+                LoadedPlayerClass.DefaultOnAttack = saePlayerDefaultOnAttack.Action;
+                if (LoadedPlayerClass.DefaultOnAttack != null)
+                    LoadedPlayerClass.DefaultOnAttack.IsScript = false;
                 LoadedPlayerClass.OnTurnStart = saePlayerOnTurnStart.Action;
                 if (LoadedPlayerClass.OnTurnStart != null)
                     LoadedPlayerClass.OnTurnStart.IsScript = false;
