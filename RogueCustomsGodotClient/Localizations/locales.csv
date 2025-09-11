@@ -63,7 +63,8 @@ InventoryWindowOnCarryText,mientras está en el Inventario,while in the Inventor
 InventoryWindowActionsHeaderText,Provee las siguientes Acciones:,Provides the following Actions:
 InventoryWindowBuyValueText,Costo: {Symbol}{Amount},Cost: {Symbol}{Amount}
 InventoryWindowSaleValueText,Valor de venta: {Symbol}{Amount},Sale Value: {Symbol}{Amount}
-InventoryWindowCannotBeSoldText,No se puede intercambiar por {Symbol},Cannot be traded for {Symbol}
+InventoryWindowCannotEquipText,NO PUEDES EQUIPAR ESTE OBJETO,YOU CANNOT EQUIP THIS ITEM
+InventoryWindowCannotBeSoldText,NO SE PUEDE INTERCAMBIAR POR {Symbol},CANNOT BE TRADED FOR {Symbol}
 InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE ENOUGH {Symbol}
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
@@ -114,10 +115,8 @@ PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO
 PlayerCharacterDetailCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName}: {Symbol}{Amount}
 PlayerClassIncreasePerLevelText,{Increase} por nivel,{Increase} per level
 PlayerClassNoStartingInventoryText,NADA,NONE
-PlayerClassEmergencyEquipmentHeader,EQUIPAMIENTO DE EMERGENCIA,EMERGENCY EQUIPMENT
+PlayerClassAvailableItemSlots,Puede Equipar: {Slots},Can equip: {Slots}
 PlayerClassInitialEquipmentHeader,EQUIPAMIENTO INICIAL,STARTING EQUIPMENT
-PlayerClassInitialEquippedArmorHeader,ARMADURA INICIAL,STARTING ARMOR
-PlayerClassInitialEquippedWeaponHeader,ARMA INICIAL,STARTING WEAPON
 PlayerClassStartingInventoryHeader,INVENTARIO INICIAL,STARTING INVENTORY
 PlayerClassStartingArmorHeader,ARMADURA DE EMERGENCIA,EMERGENCY ARMOR
 PlayerClassStartingWeaponHeader,ARMA DE EMERGENCIA,EMERGENCY WEAPON

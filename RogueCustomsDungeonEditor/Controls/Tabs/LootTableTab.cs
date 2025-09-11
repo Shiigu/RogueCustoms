@@ -182,7 +182,13 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void dgvLootTable_DataError(object? sender, DataGridViewDataErrorEventArgs e)
         {
-            e.ThrowException = false;
+            // Let's leave the ComboBox empty if it holds an invalid (likely outdated) value
+            if (dgvLootTable.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
+            {
+                dgvLootTable.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+
+                e.ThrowException = false;
+            }
         }
 
         private void dgvLootTable_EditingControlShowing(object? sender, DataGridViewEditingControlShowingEventArgs e)

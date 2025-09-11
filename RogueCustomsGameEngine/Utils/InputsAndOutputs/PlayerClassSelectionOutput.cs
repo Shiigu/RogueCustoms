@@ -39,6 +39,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string SightRangeStat { get; set; }
         public string InventorySizeName { get; set; }
         public string InventorySizeStat { get; set; }
+        public List<string> AvailableSlots { get; set; }
         public List<ItemDetailDto> StartingEquipment { get; set; } = new List<ItemDetailDto>();
         public List<ItemDetailDto> StartingInventory { get; set; } = new List<ItemDetailDto>();
 
@@ -75,6 +76,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                         
             InventorySizeName = dungeon.LocaleToUse["CharacterInventorySizeStat"];
             InventorySizeStat = dungeon.LocaleToUse["InventorySizeStatFlatNumber"].Format(new { InventorySize = characterClass.InventorySize.ToString() });
+
+            AvailableSlots = characterClass.AvailableSlots.ConvertAll(slot => slot.Name);
 
             StartingEquipment = new List<ItemDetailDto>();
 

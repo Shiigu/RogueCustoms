@@ -47,6 +47,7 @@
             dgvItemTypes.Name = "dgvItemTypes";
             dgvItemTypes.Size = new System.Drawing.Size(694, 241);
             dgvItemTypes.TabIndex = 2;
+            dgvItemTypes.DataError += dgvItemTypes_DataError;
             // 
             // Id
             // 

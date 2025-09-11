@@ -43,6 +43,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ConsoleRepresentation ConsoleRepresentation { get; set; }
         public bool IsEquippable { get; set; }
         public bool IsEquipped { get; set; }
+        public bool CanBeEquipped { get; set; }
         public bool CanBeUsed { get; set; }
         public bool CanBeDropped { get; set; }
         public bool IsInFloor { get; set; }
@@ -72,8 +73,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             QualityLevel = pickableAsItem != null ? pickableAsItem.QualityLevel.Name : string.Empty;
             QualityColor = pickableAsItem != null ? pickableAsItem.QualityLevel.ItemNameColor : new GameColor(Color.White);
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
-            CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
             CanBeDropped = p is not Key && character.ContainingTile.Type != TileType.Stairs && character.ContainingTile.Type.AcceptsItems;
+            CanBeEquipped = pickableAsItem?.SlotsItOccupies.All(character.AvailableSlots.Contains) == true;
+            CanBeUsed = (pickableAsItem?.IsEquippable == true && CanBeEquipped) || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
             IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
