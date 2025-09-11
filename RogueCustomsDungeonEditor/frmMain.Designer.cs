@@ -68,6 +68,8 @@ namespace RogueCustomsDungeonEditor
             LootTableTab = new Controls.Tabs.LootTableTab();
             tpCurrencyInfo = new TabPage();
             CurrencyTab = new Controls.Tabs.CurrencyTab();
+            tpItemSlotInfos = new TabPage();
+            tpItemTypeInfos = new TabPage();
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tpAffixes = new TabPage();
@@ -90,6 +92,8 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
+            ItemSlotsTab = new Controls.Tabs.ItemSlotsTab();
+            ItemTypesTab = new Controls.Tabs.ItemTypesTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -103,6 +107,8 @@ namespace RogueCustomsDungeonEditor
             tpFactionInfos.SuspendLayout();
             tpLootTableInfos.SuspendLayout();
             tpCurrencyInfo.SuspendLayout();
+            tpItemSlotInfos.SuspendLayout();
+            tpItemTypeInfos.SuspendLayout();
             tbStatInfos.SuspendLayout();
             tpAffixes.SuspendLayout();
             tpQualityLevels.SuspendLayout();
@@ -287,6 +293,8 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpFactionInfos);
             tbTabs.Controls.Add(tpLootTableInfos);
             tbTabs.Controls.Add(tpCurrencyInfo);
+            tbTabs.Controls.Add(tpItemSlotInfos);
+            tbTabs.Controls.Add(tpItemTypeInfos);
             tbTabs.Controls.Add(tbStatInfos);
             tbTabs.Controls.Add(tpAffixes);
             tbTabs.Controls.Add(tpQualityLevels);
@@ -496,6 +504,28 @@ namespace RogueCustomsDungeonEditor
             CurrencyTab.Size = new System.Drawing.Size(711, 302);
             CurrencyTab.TabIndex = 0;
             // 
+            // tpItemSlotInfos
+            // 
+            tpItemSlotInfos.Controls.Add(ItemSlotsTab);
+            tpItemSlotInfos.Location = new System.Drawing.Point(4, 24);
+            tpItemSlotInfos.Name = "tpItemSlotInfos";
+            tpItemSlotInfos.Padding = new Padding(3);
+            tpItemSlotInfos.Size = new System.Drawing.Size(740, 356);
+            tpItemSlotInfos.TabIndex = 20;
+            tpItemSlotInfos.Text = "Item Slots";
+            tpItemSlotInfos.UseVisualStyleBackColor = true;
+            // 
+            // tpItemTypeInfos
+            // 
+            tpItemTypeInfos.Controls.Add(ItemTypesTab);
+            tpItemTypeInfos.Location = new System.Drawing.Point(4, 24);
+            tpItemTypeInfos.Name = "tpItemTypeInfos";
+            tpItemTypeInfos.Padding = new Padding(3);
+            tpItemTypeInfos.Size = new System.Drawing.Size(740, 356);
+            tpItemTypeInfos.TabIndex = 21;
+            tpItemTypeInfos.Text = "Item Types";
+            tpItemTypeInfos.UseVisualStyleBackColor = true;
+            // 
             // tbStatInfos
             // 
             tbStatInfos.Controls.Add(StatTab);
@@ -695,6 +725,22 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
+            // ItemSlotsTab
+            // 
+            ItemSlotsTab.Dock = DockStyle.Fill;
+            ItemSlotsTab.Location = new System.Drawing.Point(3, 3);
+            ItemSlotsTab.Name = "ItemSlotsTab";
+            ItemSlotsTab.Size = new System.Drawing.Size(734, 350);
+            ItemSlotsTab.TabIndex = 0;
+            // 
+            // ItemTypesTab
+            // 
+            ItemTypesTab.Dock = DockStyle.Fill;
+            ItemTypesTab.Location = new System.Drawing.Point(3, 3);
+            ItemTypesTab.Name = "ItemTypesTab";
+            ItemTypesTab.Size = new System.Drawing.Size(734, 350);
+            ItemTypesTab.TabIndex = 0;
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -733,6 +779,8 @@ namespace RogueCustomsDungeonEditor
             tpFactionInfos.PerformLayout();
             tpLootTableInfos.ResumeLayout(false);
             tpCurrencyInfo.ResumeLayout(false);
+            tpItemSlotInfos.ResumeLayout(false);
+            tpItemTypeInfos.ResumeLayout(false);
             tbStatInfos.ResumeLayout(false);
             tbStatInfos.PerformLayout();
             tpAffixes.ResumeLayout(false);
@@ -814,5 +862,9 @@ namespace RogueCustomsDungeonEditor
         private TabPage tpQualityLevels;
         private Controls.Tabs.AffixTab AffixTab;
         private Controls.Tabs.QualityLevelsTab QualityLevelsTab;
+        private TabPage tpItemSlotInfos;
+        private TabPage tpItemTypeInfos;
+        private Controls.Tabs.ItemSlotsTab ItemSlotsTab;
+        private Controls.Tabs.ItemTypesTab ItemTypesTab;
     }
 }

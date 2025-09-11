@@ -110,10 +110,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             if (activeDungeon.PlayerClasses.Any(pc => pc.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase)) || activeDungeon.NPCs.Any(npc => npc.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase)))
                 SourceObjectType = ElementType.Character;
-            else if (activeDungeon.Items.Any(i => i.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase) && !i.EntityType.Equals("Consumable", StringComparison.InvariantCultureIgnoreCase)))
-                SourceObjectType = ElementType.Equippable;
-            else if (activeDungeon.Items.Any(i => i.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase) && i.EntityType.Equals("Consumable", StringComparison.InvariantCultureIgnoreCase)))
-                SourceObjectType = ElementType.Consumable;
+            else if (activeDungeon.Items.Any(i => i.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                var correspondingItem = activeDungeon.Items.FirstOrDefault(i => i.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase));
+                var correspondingItemType = activeDungeon.ItemTypeInfos.FirstOrDefault(iti => iti.Id.Equals(correspondingItem.ItemType, StringComparison.InvariantCultureIgnoreCase));
+                SourceObjectType = correspondingItemType.Usability == ItemUsability.Equip ? ElementType.Equippable : ElementType.Consumable;
+            }
             else if (activeDungeon.Traps.Any(t => t.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase)))
                 SourceObjectType = ElementType.Trap;
             else if (activeDungeon.AlteredStatuses.Any(als => als.Id.Equals(classId, StringComparison.InvariantCultureIgnoreCase)))
@@ -275,7 +277,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
 
-            var equippableClass = new EntityClass(equippableClassInfo, EntityType.Weapon, TestDungeon, ActiveDungeon.CharacterStats);
+            var equippableClass = new EntityClass(equippableClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
 
             var inventoryClassInfo = new ItemInfo()
             {
@@ -289,7 +291,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnUse = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var heldItemClass = new EntityClass(inventoryClassInfo, EntityType.Consumable, TestDungeon, ActiveDungeon.CharacterStats);
+            var heldItemClass = new EntityClass(inventoryClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
 
             if (SourceObjectType == ElementType.Character || SourceObjectType == ElementType.Tile || SourceObjectType == ElementType.Equippable)
             {
@@ -415,7 +417,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     IncreasePerLevel = 0
                 });
             }
-            var npcClass = new EntityClass(npcClassInfo, EntityType.NPC, TestDungeon, ActiveDungeon.CharacterStats);
+            var npcClass = new EntityClass(npcClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
             var npc = new NonPlayableCharacter(npcClass, 1, TestDungeon.CurrentFloor);
             foreach (var item in clb.CheckedItems)
             {
@@ -428,10 +430,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             npc.HP.Current -= npc.HP.Current / 5;
             npc.MP.Current -= npc.MP.Current / 5;
             npc.Hunger.Current -= npc.Hunger.Current / 5;
-            npc.StartingWeapon = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
-            npc.StartingWeapon.Power = "1d3";
-            npc.StartingArmor = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
-            npc.StartingArmor.Power = "0";
+            var weapon = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
+            weapon.Power = "1d3";
+            var armor = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
+            armor.Power = "0";
+            npc.Equipment = [weapon, armor];
             npc.Inventory.Add(new Item(inventoryClass, 1, TestDungeon.CurrentFloor));
             npc.Inventory[0].Id = new Random().Next(100000, 999999);
             for (int i = 0; i < new Random().Next(1, 5); i++)
@@ -463,7 +466,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnUse = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var consumableClass = new EntityClass(consumableClassInfo, EntityType.Consumable, TestDungeon, ActiveDungeon.CharacterStats);
+            var consumableClass = new EntityClass(consumableClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
             return new Item(consumableClass, 1, TestDungeon.CurrentFloor);
         }
 
@@ -477,7 +480,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnStepped = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var trapClass = new EntityClass(trapClassInfo, EntityType.Trap, TestDungeon, ActiveDungeon.CharacterStats);
+            var trapClass = new EntityClass(trapClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
             var trap = new Trap(trapClass, TestDungeon.CurrentFloor);
             trap.Position = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable)[0].Position;
             return trap;
@@ -495,7 +498,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnTurnStart = new(),
                 ConsoleRepresentation = crsSource.ConsoleRepresentation
             };
-            var alteredStatusClass = new EntityClass(alteredStatusClassInfo, EntityType.AlteredStatus, TestDungeon, ActiveDungeon.CharacterStats);
+            var alteredStatusClass = new EntityClass(alteredStatusClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
             var alteredStatus = new AlteredStatus(alteredStatusClass, TestDungeon.CurrentFloor);
             do
             {

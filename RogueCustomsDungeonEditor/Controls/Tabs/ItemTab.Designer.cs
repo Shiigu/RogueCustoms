@@ -56,6 +56,9 @@
             qlsItem = new QualityLevelSheet();
             label3 = new System.Windows.Forms.Label();
             cmbItemMaximumQualityLevel = new System.Windows.Forms.ComboBox();
+            cmbItemMinimumQualityLevel = new System.Windows.Forms.ComboBox();
+            label4 = new System.Windows.Forms.Label();
+            chkCanDrop = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).BeginInit();
             SuspendLayout();
             // 
@@ -147,7 +150,7 @@
             // 
             // txtItemPower
             // 
-            txtItemPower.Location = new System.Drawing.Point(132, 243);
+            txtItemPower.Location = new System.Drawing.Point(99, 243);
             txtItemPower.Name = "txtItemPower";
             txtItemPower.Size = new System.Drawing.Size(95, 23);
             txtItemPower.TabIndex = 239;
@@ -195,9 +198,9 @@
             // lblStatsModifier
             // 
             lblStatsModifier.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblStatsModifier.Location = new System.Drawing.Point(342, 315);
+            lblStatsModifier.Location = new System.Drawing.Point(339, 310);
             lblStatsModifier.Name = "lblStatsModifier";
-            lblStatsModifier.Size = new System.Drawing.Size(361, 52);
+            lblStatsModifier.Size = new System.Drawing.Size(361, 41);
             lblStatsModifier.TabIndex = 233;
             lblStatsModifier.Text = "When in the Inventory, it modifies:";
             lblStatsModifier.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -281,7 +284,7 @@
             // ItemStatsSheet
             // 
             ItemStatsSheet.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            ItemStatsSheet.Location = new System.Drawing.Point(406, 368);
+            ItemStatsSheet.Location = new System.Drawing.Point(408, 350);
             ItemStatsSheet.Name = "ItemStatsSheet";
             ItemStatsSheet.Size = new System.Drawing.Size(234, 137);
             ItemStatsSheet.TabIndex = 248;
@@ -351,7 +354,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(4, 535);
+            label3.Location = new System.Drawing.Point(4, 564);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(170, 15);
             label3.TabIndex = 255;
@@ -359,17 +362,52 @@
             // 
             // cmbItemMaximumQualityLevel
             // 
+            cmbItemMaximumQualityLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbItemMaximumQualityLevel.FormattingEnabled = true;
-            cmbItemMaximumQualityLevel.Location = new System.Drawing.Point(175, 531);
+            cmbItemMaximumQualityLevel.Location = new System.Drawing.Point(175, 560);
             cmbItemMaximumQualityLevel.Name = "cmbItemMaximumQualityLevel";
             cmbItemMaximumQualityLevel.Size = new System.Drawing.Size(121, 23);
             cmbItemMaximumQualityLevel.TabIndex = 256;
+            cmbItemMaximumQualityLevel.SelectedIndexChanged += cmbItemMaximumQualityLevel_SelectedIndexChanged;
+            // 
+            // cmbItemMinimumQualityLevel
+            // 
+            cmbItemMinimumQualityLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbItemMinimumQualityLevel.FormattingEnabled = true;
+            cmbItemMinimumQualityLevel.Location = new System.Drawing.Point(175, 531);
+            cmbItemMinimumQualityLevel.Name = "cmbItemMinimumQualityLevel";
+            cmbItemMinimumQualityLevel.Size = new System.Drawing.Size(121, 23);
+            cmbItemMinimumQualityLevel.TabIndex = 258;
+            cmbItemMinimumQualityLevel.SelectedIndexChanged += cmbItemMinimumQualityLevel_SelectedIndexChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(4, 535);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(169, 15);
+            label4.TabIndex = 257;
+            label4.Text = "Minimum Item Quality Level is";
+            // 
+            // chkCanDrop
+            // 
+            chkCanDrop.AutoSize = true;
+            chkCanDrop.Location = new System.Drawing.Point(233, 240);
+            chkCanDrop.Name = "chkCanDrop";
+            chkCanDrop.Size = new System.Drawing.Size(75, 19);
+            chkCanDrop.TabIndex = 259;
+            chkCanDrop.Text = "Can drop";
+            chkCanDrop.UseVisualStyleBackColor = true;
+            chkCanDrop.CheckedChanged += chkCanDrop_CheckedChanged;
             // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(chkCanDrop);
+            Controls.Add(cmbItemMinimumQualityLevel);
+            Controls.Add(label4);
             Controls.Add(cmbItemMaximumQualityLevel);
             Controls.Add(label3);
             Controls.Add(qlsItem);
@@ -398,7 +436,7 @@
             Controls.Add(fklblWarningItemBaseValue);
             Controls.Add(label2);
             Name = "ItemTab";
-            Size = new System.Drawing.Size(711, 566);
+            Size = new System.Drawing.Size(711, 593);
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -433,5 +471,8 @@
         private QualityLevelSheet qlsItem;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cmbItemMaximumQualityLevel;
+        private System.Windows.Forms.ComboBox cmbItemMinimumQualityLevel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox chkCanDrop;
     }
 }

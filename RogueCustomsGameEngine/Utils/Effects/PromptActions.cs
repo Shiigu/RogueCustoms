@@ -242,7 +242,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 throw new ArgumentException($"Attempted to choose one of {paramsObject.Target.Name}'s Interactions when it's not a Character.");
 
-            var actionsNotFromConsumables = t.OnAttack.Where(oa => oa.User.EntityType != EntityType.Consumable).ToList();
+            var actionsNotFromConsumables = t.OnAttack.Where(oa => oa.User is not Item i || !i.IsConsumable).ToList();
 
             // Can't choose Interactions not from Consumables if there aren't any
             if (actionsNotFromConsumables.Count == 0)
@@ -504,6 +504,37 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         DisplayEventType = DisplayEventType.UpdatePlayerData,
                         Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
                     });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.UpdateEquipment, c.Equipment.ConvertAll(i => new SimpleEntityDto(i)) }
+                    });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, c.DamageFromEquipment }
+                    });
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, c.MitigationFromEquipment }
+                    });
+                    foreach (var stat in c.UsedStats)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                        });
+                        if (stat.HasMax)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
+                            });
+                        }
+                    }
                 }
 
                 Map.AppendMessage(Map.Locale["CharacterBoughtItem"].Format(new { CharacterName = c.Name, ItemName = itemToBuy.Name, CurrencyDisplayName = Map.Locale["CurrencyDisplayName"].Format(new { Amount = (currencyBeforePurchase - c.CurrencyCarried).ToString(), CurrencyName = Map.CurrencyClass.Name }) }), Color.LightGreen);

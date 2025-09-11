@@ -21,9 +21,12 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class Item : Entity, IHasActions, IPickable
     {
-        public bool IsEquippable => EntityType == EntityType.Weapon || EntityType == EntityType.Armor;
+        public bool IsEquippable => ItemType.Usability == ItemUsability.Equip;
+        public bool IsConsumable => ItemType.Usability == ItemUsability.Use;
+        public List<ItemSlot> SlotsItOccupies => ItemType.SlotsItOccupies;
         public bool SpawnedInTheFloor { get; set; }
         public string Power { get; set; }
+        public ItemType ItemType { get; set; }
         private List<PassiveStatModifier> OwnStatModifiers { get; set; }
         public List<PassiveStatModifier> StatModifiers
         {
@@ -57,6 +60,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Character Owner { get; set; }
         public ActionWithEffects OnUse { get; set; }
         public string BaseName { get; set; }
+        public bool CanDrop { get; set; }
         public int BaseValue { get; set; }
         public int Value
         {
@@ -72,6 +76,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
         public int ItemLevel { get; set; }
+        public QualityLevel MinimumQualityLevel { get; set; }
         public QualityLevel MaximumQualityLevel { get; set; }
         public List<QualityLevelOdds> QualityLevelOdds { get; set; }
         public QualityLevel QualityLevel { get; set; }
@@ -171,18 +176,30 @@ namespace RogueCustomsGameEngine.Game.Entities
             OwnStatModifiers = new List<PassiveStatModifier>(entityClass.StatModifiers);
             BaseValue = entityClass.BaseValue;
             ItemLevel = level;
+            MinimumQualityLevel = entityClass.MinimumQualityLevel;
             MaximumQualityLevel = entityClass.MaximumQualityLevel;
             QualityLevelOdds = entityClass.QualityLevelOdds;
             Affixes = [];
+            ItemType = entityClass.ItemType;
+            CanDrop = entityClass.CanDrop;
         }
 
         public void SetQualityLevel(QualityLevel qualityLevel = null)
         {
-            var qualityLevelToPick = qualityLevel ?? QualityLevelOdds.TakeRandomElementWithWeights(ql => ql.ChanceToPick, Rng).QualityLevel;
-            if (qualityLevelToPick.MaximumAffixes > MaximumQualityLevel.MaximumAffixes)
-                QualityLevel = MaximumQualityLevel;
+            if (MinimumQualityLevel != MaximumQualityLevel)
+            {
+                var qualityLevelToPick = qualityLevel ?? QualityLevelOdds.TakeRandomElementWithWeights(ql => ql.ChanceToPick, Rng).QualityLevel;
+                if (qualityLevelToPick.MaximumAffixes > MaximumQualityLevel.MaximumAffixes)
+                    QualityLevel = MaximumQualityLevel;
+                else if (qualityLevelToPick.MaximumAffixes < MinimumQualityLevel.MaximumAffixes)
+                    QualityLevel = MinimumQualityLevel;
+                else
+                    QualityLevel = qualityLevelToPick;
+            }
             else
-                QualityLevel = qualityLevelToPick;
+            {
+                QualityLevel = MinimumQualityLevel;
+            }
             SetAffixes();
             SetItemName();
         }
@@ -206,7 +223,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var validPrefixes = Map.Prefixes.Where(p => !Affixes.Any(a => a.Id.Equals(p.Id, StringComparison.InvariantCultureIgnoreCase)));
                 if (!validPrefixes.Any()) break;
-                var aPrefix = validPrefixes.Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                var aPrefix = validPrefixes.Where(p => p.AffectedItemTypes.Contains(ItemType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
                 if (aPrefix == null) continue;
                 aPrefix.ApplyTo(this);
             }
@@ -214,7 +231,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var validSuffixes = Map.Suffixes.Where(p => !Affixes.Any(a => a.Id.Equals(p.Id, StringComparison.InvariantCultureIgnoreCase)));
                 if (!validSuffixes.Any()) break;
-                var aSuffix = validSuffixes.Where(p => p.AffectedItemTypes.Contains(EntityType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
+                var aSuffix = validSuffixes.Where(p => p.AffectedItemTypes.Contains(ItemType) && p.MinimumItemLevel <= ItemLevel).TakeRandomElement(Rng);
                 if (aSuffix == null) continue;
                 aSuffix.ApplyTo(this);
             }

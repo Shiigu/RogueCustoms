@@ -106,7 +106,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.CanStealEquippables)
                     stealableItems.AddRange(t.Inventory.Where(i => i.IsEquippable));
                 if (paramsObject.CanStealConsumables)
-                    stealableItems.AddRange(t.Inventory.Where(i => i.EntityType == EntityType.Consumable));
+                    stealableItems.AddRange(t.Inventory.Where(i => i.IsConsumable));
                 if(stealableItems.Any())
                 {
                     var itemToSteal = stealableItems.TakeRandomElement(Rng);
@@ -327,6 +327,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         itemPicks.Add(ec);
                         foundAPick = true;
                     }
+                    else if (pickedObject is ItemType it)
+                    {
+                        var appropriateItemClasses = validItemClasses.Where(ic => ic.ItemType == it).ToList();
+                        if (appropriateItemClasses.Count == 0) continue;
+                        var chosenItemOfType = appropriateItemClasses.TakeRandomElement(Rng);
+                        itemPicks.Add(chosenItemOfType);
+                        foundAPick = true;
+                    }
                     else if (pickedObject is string s && EngineConstants.SPECIAL_LOOT_ENTRIES.Contains(s))
                     {
                         if (s == EngineConstants.LOOT_NO_DROP || pickedObject is CurrencyPile)
@@ -334,28 +342,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             // Do nothing
                             foundAPick = true;
                         }
-                        else if (s == EngineConstants.LOOT_WEAPON)
-                        {
-                            var chosenWeapon = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon).ToList().TakeRandomElement(Rng);
-                            itemPicks.Add(chosenWeapon);
-                            foundAPick = true;
-                        }
-                        else if (s == EngineConstants.LOOT_ARMOR)
-                        {
-                            var chosenArmor = validItemClasses.Where(ic => ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
-                            itemPicks.Add(chosenArmor);
-                            foundAPick = true;
-                        }
                         else if (s == EngineConstants.LOOT_EQUIPPABLE)
                         {
-                            var chosenEquippable = validItemClasses.Where(ic => ic.EntityType == EntityType.Weapon || ic.EntityType == EntityType.Armor).ToList().TakeRandomElement(Rng);
+                            var appropriateItemClasses = validItemClasses.Where(ic => ic.ItemType.Usability == ItemUsability.Equip).ToList();
+                            if (appropriateItemClasses.Count == 0) continue;
+                            var chosenEquippable = appropriateItemClasses.TakeRandomElement(Rng);
                             itemPicks.Add(chosenEquippable);
-                            foundAPick = true;
-                        }
-                        else if (s == EngineConstants.LOOT_CONSUMABLE)
-                        {
-                            var chosenConsumable = validItemClasses.Where(ic => ic.EntityType == EntityType.Consumable).ToList().TakeRandomElement(Rng);
-                            itemPicks.Add(chosenConsumable);
                             foundAPick = true;
                         }
                     }

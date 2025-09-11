@@ -13,13 +13,14 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<CharacterStatInfo> Stats { get; set; }
         public string BaseSightRange { get; set; }
         public int InventorySize { get; set; }
-        public string StartingWeapon { get; set; }
-        public string StartingArmor { get; set; }
+        public List<string> AvailableSlots { get; set; }
+        public List<string> InitialEquipment { get; set; }
         public List<string> StartingInventory { get; set; }
         public int MaxLevel { get; set; }
         public bool CanGainExperience { get; set; }
         public string ExperiencePayoutFormula { get; set; }
         public string ExperienceToLevelUpFormula { get; set; }
+        public ActionWithEffectsInfo DefaultOnAttack { get; set; }
         public ActionWithEffectsInfo OnTurnStart { get; set; }
         public List<ActionWithEffectsInfo> OnAttack { get; set; }
         public ActionWithEffectsInfo OnAttacked { get; set; }

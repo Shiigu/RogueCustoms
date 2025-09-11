@@ -1,5 +1,6 @@
 ﻿using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
 using System.Collections.Generic;
@@ -32,10 +33,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = i.Name;
             Description = i.Description;
             ConsoleRepresentation = i.ConsoleRepresentation;
-            PowerName = i.EntityType switch
+            PowerName = i.ItemType?.PowerType switch
             {
-                EntityType.Weapon => i.Map.Locale["CharacterDamageStat"],
-                EntityType.Armor => i.Map.Locale["CharacterMitigationStat"],
+                ItemPowerType.Damage => i.Map.Locale["CharacterDamageStat"],
+                ItemPowerType.Mitigation => i.Map.Locale["CharacterMitigationStat"],
                 _ => string.Empty
             };
             Power = i.Power ?? string.Empty;
@@ -57,10 +58,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Name = dungeon.LocaleToUse[itemClass.Name];
             Description = dungeon.LocaleToUse[itemClass.Description];
             ConsoleRepresentation = itemClass.ConsoleRepresentation;
-            PowerName = itemClass.EntityType switch
+            PowerName = itemClass.ItemType?.PowerType switch
             {
-                EntityType.Weapon => dungeon.LocaleToUse["CharacterDamageStat"],
-                EntityType.Armor => dungeon.LocaleToUse["CharacterMitigationStat"],
+                ItemPowerType.Damage => dungeon.LocaleToUse["CharacterDamageStat"],
+                ItemPowerType.Mitigation => dungeon.LocaleToUse["CharacterMitigationStat"],
                 _ => string.Empty
             };
             Power = itemClass.Power ?? string.Empty;

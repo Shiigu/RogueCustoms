@@ -2,6 +2,7 @@
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         public static async Task<DungeonValidationMessages> Validate(CharacterInfo characterJson, bool isPlayerCharacter, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             Character characterAsInstance = sampleDungeon != null ? (isPlayerCharacter
-                                        ? new PlayerCharacter(new EntityClass(characterJson, EntityType.Player, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor)
-                                        : new NonPlayableCharacter(new EntityClass(characterJson, EntityType.NPC, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor))
+                                        ? new PlayerCharacter(new EntityClass(characterJson, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor)
+                                        : new NonPlayableCharacter(new EntityClass(characterJson, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor))
                                         : null;
 
             var messages = new DungeonValidationMessages();
@@ -107,10 +108,44 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)
                 messages.AddWarning("Inventory Size is 0. It won't be able to carry any items.");
-            if (string.IsNullOrWhiteSpace(characterJson.StartingWeapon) || !dungeonJson.Items.Exists(c => c.EntityType == "Weapon" && c.Id.Equals(characterJson.StartingWeapon)))
-                messages.AddError($"Starting Weapon, {characterJson.StartingWeapon}, is not valid.");
-            if (string.IsNullOrWhiteSpace(characterJson.StartingArmor) || !dungeonJson.Items.Exists(c => c.EntityType == "Armor" && c.Id.Equals(characterJson.StartingArmor)))
-                messages.AddError($"Starting Armor, {characterJson.StartingArmor}, is not valid.");
+
+            List<string> usedSlots = [];
+
+            foreach (var equipmentId in characterJson.InitialEquipment)
+            {
+                var itemData = dungeonJson.Items.Find(c => c.Id.Equals(equipmentId));
+                if (string.IsNullOrWhiteSpace(equipmentId) || itemData == null)
+                {
+                    messages.AddError($"One of the Starting Equipment, {equipmentId}, is not valid.");
+                }
+                else
+                {
+                    var itemType = dungeonJson.ItemTypeInfos.Find(c => c.Id.Equals(itemData.ItemType));
+                    if (itemType != null)
+                    {
+                        if (itemType.Usability != ItemUsability.Equip)
+                        {
+                            messages.AddError($"One of the Starting Equipment, {equipmentId}, is not equippable.");
+                        }
+                        if (!string.IsNullOrWhiteSpace(itemType.Slot1) && usedSlots.Contains(itemType.Slot1))
+                        {
+                            messages.AddError($"One of the Starting Equipment, {equipmentId}, uses the Primary Slot {itemType.Slot1}, which is already used by another piece of equipment.");
+                        }
+                        else
+                        {
+                            usedSlots.Add(itemType.Slot1);
+                        }
+                        if (!string.IsNullOrWhiteSpace(itemType.Slot2) && usedSlots.Contains(itemType.Slot2))
+                        {
+                            messages.AddError($"One of the Starting Equipment, {equipmentId}, uses the Secondary Slot {itemType.Slot2}, which is already used by another piece of equipment.");
+                        }
+                        else
+                        {
+                            usedSlots.Add(itemType.Slot2);
+                        }
+                    }
+                }
+            }
             if (characterJson.MaxLevel < 1)
                 messages.AddError("Max Level must be 1 or higher.");
             else if (characterJson.MaxLevel == 1 && characterJson.CanGainExperience)
@@ -164,7 +199,18 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else
             {
-                messages.AddWarning("Character does not have OnAttackActions. Make sure they have items, otherwise they cannot attack.");
+                messages.AddWarning("Character does not have OnAttack Actions. Make sure they have items or a DefaultOnAttack, otherwise they cannot attack.");
+            }
+
+            if (characterJson.DefaultOnAttack != null)
+            {
+                messages.AddRange(await ActionValidator.Validate(characterJson.DefaultOnAttack, dungeonJson));
+                if (characterAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(characterAsInstance.DefaultOnAttack, dungeonJson, sampleDungeon));
+            }
+            else
+            {
+                messages.AddWarning("Character does not have a Default On Attack Actions. Make sure they have items or other OnAttack Actions, otherwise they cannot attack.");
             }
 
             if (characterJson.OnAttacked != null)

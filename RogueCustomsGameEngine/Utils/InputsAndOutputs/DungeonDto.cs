@@ -55,6 +55,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             Tiles = GetTiles();
             PlayerEntity = new EntityDto(map.Player, map);
             var playerEntity = map.Player;
+            playerEntity.Equipment.ForEach(i => PlayerEntity.Equipment.Add(new SimpleEntityDto(i)));
             playerEntity.AlteredStatuses.ForEach(als => PlayerEntity.AlteredStatuses.Add(new SimpleEntityDto(als)));
             playerEntity.Inventory.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
@@ -130,15 +131,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string MPStatName { get; private set; }
         public int MP { get; set; }
         public int MaxMP { get; set; }
-        public SimpleEntityDto Weapon { get; private set; }
         public string DamageStatName { get; private set; }
         public string Damage { get; private set; }
-        public string WeaponDamage { get; private set; }
+        public string WeaponDamage { get; set; }
         public int Attack { get; set; }
-        public SimpleEntityDto Armor { get; private set; }
         public string MitigationStatName { get; private set; }
         public string Mitigation { get; private set; }
-        public string ArmorMitigation { get; private set; }
+        public string ArmorMitigation { get; set; }
         public int Defense { get; set; }
         public string MovementStatName { get; private set; }
         public int Movement { get; set; }
@@ -153,6 +152,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string HungerStatName { get; private set; }
         public int Hunger { get; set; }
         public int MaxHunger { get; set; }
+        public List<SimpleEntityDto> Equipment { get; set; }
         public List<SimpleEntityDto> AlteredStatuses { get; set; }
         public List<SimpleEntityDto> Inventory { get; set; }
         public CurrencyDto Currency { get; private set; }
@@ -183,15 +183,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     MP = (int)pc.MP.Current;
                     MaxMP = (int)pc.MaxMP;
                 }
-                Weapon = new SimpleEntityDto(pc.Weapon);
                 DamageStatName = map.Locale["CharacterDamageStat"];
                 Damage = pc.Damage;
-                WeaponDamage = pc.Weapon.Power;
+                WeaponDamage = pc.DamageFromEquipment;
                 Attack = (int)pc.Attack.BaseAfterModifications;
-                Armor = new SimpleEntityDto(pc.Armor);
                 MitigationStatName = map.Locale["CharacterMitigationStat"];
                 Mitigation = pc.Mitigation;
-                ArmorMitigation = pc.Armor.Power;
+                ArmorMitigation = pc.MitigationFromEquipment;
                 Defense = (int)pc.Defense.BaseAfterModifications;
                 MovementStatName = map.Locale["CharacterMovementStat"];
                 BaseMovement = (int) pc.Movement.Base;
@@ -209,6 +207,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     Hunger = (int)pc.Hunger.Current;
                     MaxHunger = (int)pc.Hunger.Base;
                 }
+                Equipment = new List<SimpleEntityDto>();
                 AlteredStatuses = new List<SimpleEntityDto>();
                 Inventory = new List<SimpleEntityDto>();
                 Currency = new(map.CurrencyClass, pc.CurrencyCarried);

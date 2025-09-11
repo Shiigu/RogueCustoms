@@ -7,6 +7,7 @@ using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using System.Numerics;
 using System.Drawing;
+using RogueCustomsGameEngine.Utils.Enums;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -57,21 +58,21 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             var pickableAsItem = p as Item;
             Name = map.Locale[pickableAsEntity.Name];
             Description = pickableAsEntity.Description;
-            PowerName = pickableAsItem?.EntityType switch
+            PowerName = pickableAsItem?.ItemType?.PowerType switch
             {
-                EntityType.Weapon => map.Locale["CharacterDamageStat"],
-                EntityType.Armor => map.Locale["CharacterMitigationStat"],
+                ItemPowerType.Damage => map.Locale["CharacterDamageStat"],
+                ItemPowerType.Mitigation => map.Locale["CharacterMitigationStat"],
                 _ => string.Empty
             };
             Power = pickableAsItem?.Power ?? string.Empty;
             ItemLevel = pickableAsItem?.ItemLevel ?? 0;
-            ItemType = pickableAsEntity != null ? pickableAsEntity.EntityType.ToString() : "";
+            ItemType = pickableAsItem != null ? pickableAsItem.ItemType.Name : "";
             QualityLevel = pickableAsItem != null ? pickableAsItem.QualityLevel.Name : string.Empty;
             QualityColor = pickableAsItem != null ? pickableAsItem.QualityLevel.ItemNameColor : new GameColor(Color.White);
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
             CanBeUsed = pickableAsItem?.IsEquippable == true || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
             CanBeDropped = p is not Key;
-            IsEquipped = character.EquippedWeapon == pickableAsItem || character.EquippedArmor == pickableAsItem;
+            IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
@@ -105,13 +106,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             if (e == null) return;
             Name = map.Locale[e.Name];
             Description = e.Description;
-            PowerName = e.EntityType switch
+            PowerName = e.ItemType?.PowerType switch
             {
-                EntityType.Weapon => map.Locale["CharacterDamageStat"],
-                EntityType.Armor => map.Locale["CharacterMitigationStat"],
+                ItemPowerType.Damage => map.Locale["CharacterDamageStat"],
+                ItemPowerType.Mitigation => map.Locale["CharacterMitigationStat"],
                 _ => string.Empty
             };
-            ItemType = e.EntityType.ToString();
+            ItemType = e.ItemType.Name;
             Power = e.Power ?? string.Empty;
             ConsoleRepresentation = e.ConsoleRepresentation;
             ClassId = e.Id;

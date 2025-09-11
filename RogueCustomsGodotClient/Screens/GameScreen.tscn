@@ -319,12 +319,12 @@ text = "77/100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WeaponContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
+[node name="EquipmentContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="WeaponHeaderLabel" type="Label" parent="InfoPanel/VBoxContainerContainer/WeaponContainer"]
+[node name="EquipmentHeaderLabel" type="Label" parent="InfoPanel/VBoxContainerContainer/EquipmentContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
@@ -332,10 +332,10 @@ size_flags_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = ExtResource("4_vn8qa")
-text = "WEAPON"
+text = "EQUIPMENT"
 horizontal_alignment = 1
 
-[node name="WeaponNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/WeaponContainer"]
+[node name="EquipmentIconsLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/EquipmentContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
@@ -345,10 +345,13 @@ theme_override_constants/text_highlight_h_padding = 0
 theme_override_font_sizes/normal_font_size = 14
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
-text = "[center][color=#FF00FFFF]¶[/color] - Staff[/center]"
-script = ExtResource("14_hf6xy")
+text = "[center][color=#FF00FFFF]¶[/color][color=#FF00FFFF]♦[/color][/center]"
 
-[node name="DamageNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/WeaponContainer"]
+[node name="StatsContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="DamageNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
@@ -361,36 +364,7 @@ bbcode_enabled = true
 text = "[center]Damage: [color=#FF00FFFF]1d2[/color][color=#00FF00FF]+1[/color][/center]"
 script = ExtResource("14_hf6xy")
 
-[node name="ArmorContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="ArmorHeaderLabel" type="Label" parent="InfoPanel/VBoxContainerContainer/ArmorContainer"]
-texture_filter = 1
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = ExtResource("4_vn8qa")
-text = "ARMOR"
-horizontal_alignment = 1
-
-[node name="ArmorNameLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/ArmorContainer"]
-texture_filter = 1
-custom_minimum_size = Vector2(224, 16)
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
-theme_override_constants/text_highlight_h_padding = 0
-theme_override_font_sizes/normal_font_size = 14
-theme_override_styles/normal = ExtResource("4_vn8qa")
-bbcode_enabled = true
-text = "[center][color=#FF00FFFF]♦[/color] - Plate[/center]"
-script = ExtResource("14_hf6xy")
-
-[node name="MitigationNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/ArmorContainer"]
+[node name="MitigationNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
@@ -403,11 +377,7 @@ bbcode_enabled = true
 text = "[center]Mitigation: [color=#FF00FFFF]2[/color][color=#00FF00FF]+0[/color][/center]"
 script = ExtResource("14_hf6xy")
 
-[node name="OtherStatsContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="MovementLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
+[node name="MovementLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
@@ -420,7 +390,7 @@ bbcode_enabled = true
 text = "[center]Movement: 1[/center]"
 script = ExtResource("14_hf6xy")
 
-[node name="AccuracyLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
+[node name="AccuracyLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
@@ -433,7 +403,7 @@ bbcode_enabled = true
 text = "[center]Accuracy: 100%[/center]"
 script = ExtResource("14_hf6xy")
 
-[node name="EvasionLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/OtherStatsContainer"]
+[node name="EvasionLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2

@@ -44,6 +44,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int NextInclusive(int maxValue)
         {
+            if (maxValue < 0)
+            {
+                throw new ArgumentException("maxValue must be a non-negative number");
+            }
             return Math.Abs(Next()) % (maxValue + 1);
         }
 

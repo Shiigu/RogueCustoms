@@ -10,13 +10,15 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public bool StartsVisible { get; set; }
         public string Power { get; set; }
-        public string EntityType { get; set; }
+        public string ItemType { get; set; }
         public List<PassiveStatModifierInfo> StatModifiers { get; set; } = new List<PassiveStatModifierInfo>();
         public ActionWithEffectsInfo OnTurnStart { get; set; }
         public List<ActionWithEffectsInfo> OnAttack { get; set; }
         public ActionWithEffectsInfo OnAttacked { get; set; }
         public ActionWithEffectsInfo OnDeath { get; set; }
         public ActionWithEffectsInfo OnUse { get; set; }
+        public bool CanDrop { get; set; }
+        public string MinimumQualityLevel { get; set; }
         public string MaximumQualityLevel { get; set; }
         public List<QualityLevelOddsInfo> QualityLevelOdds { get; set; }
         public int BaseValue { get; set; }

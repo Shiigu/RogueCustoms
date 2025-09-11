@@ -3,6 +3,7 @@
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -87,6 +88,32 @@ namespace RogueCustomsGameEngine.Utils.Helpers
         public static string TrimSurroundingQuotes(this string input)
         {
             return input.TrimSurrounding('\"').TrimSurrounding('\'');
+        }
+
+        public static string ReduceDiceNotation(this string diceExpression)
+        {
+            var dicePattern = new Regex(@"(?<count>\d+)d(?<sides>\d+)(?<mod>[a-z]\d+)?", RegexOptions.IgnoreCase);
+            var matches = dicePattern.Matches(diceExpression);
+
+            var diceGroups = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Match match in matches)
+            {
+                var count = int.Parse(match.Groups["count"].Value);
+                var sides = match.Groups["sides"].Value;
+                var mod = match.Groups["mod"].Success ? match.Groups["mod"].Value : string.Empty;
+                var key = $"d{sides}{mod}";
+
+                if (diceGroups.ContainsKey(key))
+                    diceGroups[key] += count;
+                else
+                    diceGroups[key] = count;
+            }
+
+            if (diceGroups.Count == 0) return diceExpression;
+
+            var simplified = string.Join("+", diceGroups.Select(kvp => $"{kvp.Value}{kvp.Key}"));
+            return simplified;
         }
     }
 }

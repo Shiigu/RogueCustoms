@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 #pragma warning disable CS8625 // No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL.
@@ -52,9 +53,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
             cmbItemType.Text = "";
             cmbItemType.Items.Clear();
-            cmbItemType.Items.AddRange(new string[] { "Weapon", "Armor", "Consumable" });
+            cmbItemType.Items.AddRange(ActiveDungeon.ItemTypeInfos.ConvertAll(it => it.Id).ToArray());
             PreviousItemType = "";
-            var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.EntityType));
+            var itemType = cmbItemType.Items.Cast<string>().FirstOrDefault(itemType => itemType.Equals(item.ItemType));
 
             var qualityLevelInfos = new List<QualityLevelOddsInfo>();
             foreach (var qualityLevel in ActiveDungeon.QualityLevelInfos)
@@ -86,11 +87,16 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
             nudItemBaseValue.Value = item.BaseValue;
             fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
+            chkCanDrop.Checked = item.CanDrop;
 
+            cmbItemMinimumQualityLevel.Items.Clear();
             cmbItemMaximumQualityLevel.Items.Clear();
             foreach (var qualityLevel in dungeon.QualityLevelInfos.ConvertAll(ql => ql.Id))
             {
+                cmbItemMinimumQualityLevel.Items.Add(qualityLevel);
                 cmbItemMaximumQualityLevel.Items.Add(qualityLevel);
+                if (qualityLevel.Equals(item.MinimumQualityLevel))
+                    cmbItemMinimumQualityLevel.Text = qualityLevel;
                 if (qualityLevel.Equals(item.MaximumQualityLevel))
                     cmbItemMaximumQualityLevel.Text = qualityLevel;
             }
@@ -113,11 +119,16 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (string.IsNullOrWhiteSpace(txtItemPower.Text))
                 validationErrors.Add("This Item does not have a Power.");
 
-            var qualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMaximumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
+            var minimumQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMinimumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
+            var maximumQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMaximumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
 
-            if (qualityLevel == null)
+            if (minimumQualityLevel == null)
             {
-                validationErrors.Add("This Item does not have a valid Quality Level.");
+                validationErrors.Add("This Item does not have a valid Mainimum Quality Level.");
+            }
+            else if (maximumQualityLevel == null)
+            {
+                validationErrors.Add("This Item does not have a valid Maximum Quality Level.");
             }
             else
             {
@@ -125,9 +136,13 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 {
                     var correspondingQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(qlsItem.QualityLevels[i].Id, StringComparison.InvariantCultureIgnoreCase));
 
-                    if (correspondingQualityLevel.MaximumAffixes > qualityLevel.MaximumAffixes && qlsItem.QualityLevels[i].ChanceToPick > 0)
+                    if (correspondingQualityLevel.MaximumAffixes < minimumQualityLevel.MaximumAffixes && qlsItem.QualityLevels[i].ChanceToPick > 0)
                     {
-                        validationErrors.Add($"This Item has a Maximum Quality Level of {qualityLevel.Id}, but has odds to spawn at {qlsItem.QualityLevels[i].Id} Quality, which has more maximum affixes and is thus superior.");
+                        validationErrors.Add($"This Item has a Minimum Quality Level of {minimumQualityLevel.Id}, but has odds to spawn at {qlsItem.QualityLevels[i].Id} Quality, which has less maximum affixes and is thus inferior.");
+                    }
+                    else if (correspondingQualityLevel.MaximumAffixes > maximumQualityLevel.MaximumAffixes && qlsItem.QualityLevels[i].ChanceToPick > 0)
+                    {
+                        validationErrors.Add("At least one Quality Level Odds Entry has an invalid Weight value.\n\nIt must be an integer number equal to or higher than 0.");
                     }
                     else if (qlsItem.QualityLevels[i].ChanceToPick < 0)
                     {
@@ -144,14 +159,17 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItem.Description = txtItemDescription.Text;
                 LoadedItem.ConsoleRepresentation = crsItem.ConsoleRepresentation;
                 LoadedItem.StartsVisible = chkItemStartsVisible.Checked;
-                LoadedItem.EntityType = cmbItemType.Text;
+                LoadedItem.ItemType = cmbItemType.Text;
                 LoadedItem.Power = txtItemPower.Text;
                 LoadedItem.StatModifiers = ItemStatsSheet.Stats;
                 LoadedItem.OnTurnStart = null;
                 LoadedItem.OnAttacked = null;
                 LoadedItem.OnUse = null;
+                LoadedItem.CanDrop = chkCanDrop.Checked;
 
-                if (LoadedItem.EntityType == "Weapon" || LoadedItem.EntityType == "Armor")
+                var correspondingItemType = ActiveDungeon.ItemTypeInfos.Find(it => it.Id.Equals(LoadedItem.ItemType, StringComparison.InvariantCultureIgnoreCase));
+
+                if (correspondingItemType.Usability == ItemUsability.Equip)
                 {
                     LoadedItem.OnTurnStart = saeItemOnTurnStart.Action;
                     if (LoadedItem.OnTurnStart != null)
@@ -160,7 +178,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     if (LoadedItem.OnAttacked != null)
                         LoadedItem.OnAttacked.IsScript = false;
                 }
-                else if (LoadedItem.EntityType == "Consumable")
+                else if (correspondingItemType.Usability == ItemUsability.Use)
                 {
                     LoadedItem.OnUse = saeItemOnUse.Action;
                     if (LoadedItem.OnUse != null)
@@ -176,7 +194,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 if (LoadedItem.OnDeath != null)
                     LoadedItem.OnDeath.IsScript = false;
 
-                LoadedItem.BaseValue = (int) nudItemBaseValue.Value;
+                LoadedItem.BaseValue = (int)nudItemBaseValue.Value;
+                LoadedItem.MinimumQualityLevel = cmbItemMaximumQualityLevel.Text;
                 LoadedItem.MaximumQualityLevel = cmbItemMaximumQualityLevel.Text;
                 LoadedItem.QualityLevelOdds = qlsItem.QualityLevels.FindAll(ql => ql.ChanceToPick > 0);
             }
@@ -215,21 +234,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void ToggleItemTypeControlsVisibility()
         {
-            lblPower.Text = cmbItemType.Text switch
+            var correspondingItemType = ActiveDungeon.ItemTypeInfos.Find(it => it.Id.Equals(cmbItemType.Text, StringComparison.InvariantCultureIgnoreCase));
+            if (correspondingItemType == null) return;
+            lblPower.Text = correspondingItemType.PowerType switch
             {
-                "Weapon" => "Weapon Damage",
-                "Armor" => "Armor Mitigation",
-                "Consumable" => "Consumable Power",
-                _ => "Item Power"
+                ItemPowerType.Damage => "Damage",
+                ItemPowerType.Mitigation => "Mitigation",
+                ItemPowerType.UsePower => "Use Power"
             };
-            lblStatsModifier.Text = cmbItemType.Text switch
-            {
-                "Weapon" => "When Equipped, it modifies:",
-                "Armor" => "When Equipped, it modifies:",
-                "Consumable" => "When in Inventory, it modifies:",
-                _ => string.Empty
-            };
-            if (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
+            if (correspondingItemType.Usability == ItemUsability.Equip)
             {
                 saeItemOnUse.Visible = false;
                 saeItemOnUse.Action = null;
@@ -242,8 +255,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnDeath.SourceDescription = "Whoever is equipping This";
                 saeItemOnAttacked.Visible = true;
                 ItemStatsSheet.Visible = true;
+                lblStatsModifier.Text = "When Equipped, it modifies:";
             }
-            else if (cmbItemType.Text == "Consumable")
+            else if (correspondingItemType.Usability == ItemUsability.Use)
             {
                 saeItemOnUse.Visible = true;
                 saeItemOnTurnStart.Visible = false;
@@ -257,6 +271,22 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnAttacked.Visible = false;
                 saeItemOnAttacked.Action = null;
                 ItemStatsSheet.Visible = true;
+                lblStatsModifier.Text = "When in the Inventory, it modifies:";
+            }
+            else if (correspondingItemType.Usability == ItemUsability.Nothing)
+            {
+                saeItemOnUse.Visible = false;
+                saeItemOnUse.Action = null;
+                saeItemOnTurnStart.Visible = false;
+                saeItemOnTurnStart.Action = null;
+                maeItemOnAttack.Visible = false;
+                maeItemOnAttack.Actions = null;
+                saeItemOnDeath.Visible = false;
+                saeItemOnDeath.Action = null;
+                saeItemOnAttacked.Visible = false;
+                saeItemOnAttacked.Action = null;
+                ItemStatsSheet.Visible = true;
+                lblStatsModifier.Text = "When in the Inventory, it modifies:";
             }
             else
             {
@@ -271,19 +301,20 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 saeItemOnDeath.Visible = false;
                 saeItemOnDeath.Action = null;
                 ItemStatsSheet.Visible = false;
+                lblStatsModifier.Text = "";
             }
         }
 
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((PreviousItemType.Equals("Consumable") && (cmbItemType.Text.Equals("Weapon") || cmbItemType.Text.Equals("Armor")))
-                || ((PreviousItemType.Equals("Weapon") || PreviousItemType.Equals("Armor")) && cmbItemType.Text.Equals("Consumable")))
+            var correspondingItemType = ActiveDungeon.ItemTypeInfos.Find(it => it.Id.Equals(cmbItemType.Text, StringComparison.InvariantCultureIgnoreCase));
+            if (correspondingItemType == null) return;
+            var correspondingPreviousItemType = ActiveDungeon.ItemTypeInfos.Find(it => it.Id.Equals(PreviousItemType, StringComparison.InvariantCultureIgnoreCase));
+            if (correspondingPreviousItemType == null) return;
+            if (correspondingItemType != correspondingPreviousItemType)
             {
-                var changeItemTypePrompt = (cmbItemType.Text == "Weapon" || cmbItemType.Text == "Armor")
-                    ? "Changing an Item Type from Consumable to Equippable will delete some saved Actions.\n\nNOTE: This is NOT reversible."
-                    : "Changing an Item Type from Equippable to Consumable will delete some saved Actions.\n\nNOTE: This is NOT reversible.";
                 var messageBoxResult = MessageBox.Show(
-                    $"{changeItemTypePrompt}\n\nDo you wish to continue?",
+                    $"Changing an Item Type will delete some saved Actions.\n\nNOTE: This is NOT reversible.\n\nDo you wish to continue?",
                     "Change Item Type",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -349,6 +380,21 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
             fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
+        }
+
+        private void chkCanDrop_CheckedChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void cmbItemMinimumQualityLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void cmbItemMaximumQualityLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

@@ -18,21 +18,21 @@ namespace RogueCustomsGameEngine.Game.Entities
         public AffixType Type { get; set; }
         public int MinimumItemLevel { get; set; }
         public int ItemValueModifierPercentage { get; set; }
-        public List<EntityType> AffectedItemTypes { get; set; }
+        public List<ItemType> AffectedItemTypes { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
         public ExtraDamage ExtraDamage { get; set; }
         public ActionWithEffects OwnOnTurnStart { get; set; }
         public ActionWithEffects OwnOnAttack { get; set; }
         public ActionWithEffects OwnOnAttacked { get; set; }
 
-        public Affix(AffixInfo info, Locale locale, List<Element> elements, List<ActionSchool> actionSchools)
+        public Affix(AffixInfo info, Locale locale, List<ItemType> itemTypes, List<Element> elements, List<ActionSchool> actionSchools)
         {
             Id = info.Id;
             Name = locale[info.Name];
             Type = Enum.Parse<AffixType>(info.AffixType);
             MinimumItemLevel = info.MinimumItemLevel;
             ItemValueModifierPercentage = info.ItemValueModifierPercentage;
-            AffectedItemTypes = info.AffectedItemTypes.ConvertAll(Enum.Parse<EntityType>);
+            AffectedItemTypes = itemTypes.Where(it => info.AffectedItemTypes.Contains(it.Id, StringComparer.InvariantCultureIgnoreCase)).ToList();
             StatModifiers = [];
             if (info.StatModifiers != null)
             {
@@ -73,7 +73,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Type = Type,
                 MinimumItemLevel = MinimumItemLevel,
                 ItemValueModifierPercentage = ItemValueModifierPercentage,
-                AffectedItemTypes = new List<EntityType>(AffectedItemTypes),
+                AffectedItemTypes = AffectedItemTypes,
                 StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Amount = sm.Amount }),
                 ExtraDamage = ExtraDamage == null ? null : new ExtraDamage
                 {

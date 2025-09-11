@@ -177,13 +177,13 @@
             label4.AutoSize = true;
             label4.Location = new System.Drawing.Point(3, 286);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(224, 15);
+            label4.Size = new System.Drawing.Size(180, 15);
             label4.TabIndex = 251;
-            label4.Text = "Increases the Item's Value by                   %";
+            label4.Text = "Raises Item Value by                   %";
             // 
             // nudAffixItemValuePercentageModifier
             // 
-            nudAffixItemValuePercentageModifier.Location = new System.Drawing.Point(159, 283);
+            nudAffixItemValuePercentageModifier.Location = new System.Drawing.Point(115, 283);
             nudAffixItemValuePercentageModifier.Name = "nudAffixItemValuePercentageModifier";
             nudAffixItemValuePercentageModifier.Size = new System.Drawing.Size(52, 23);
             nudAffixItemValuePercentageModifier.TabIndex = 252;
@@ -214,10 +214,9 @@
             // clbAffixAffects
             // 
             clbAffixAffects.FormattingEnabled = true;
-            clbAffixAffects.Items.AddRange(new object[] { "Weapon", "Armor" });
             clbAffixAffects.Location = new System.Drawing.Point(206, 217);
             clbAffixAffects.Name = "clbAffixAffects";
-            clbAffixAffects.Size = new System.Drawing.Size(106, 58);
+            clbAffixAffects.Size = new System.Drawing.Size(106, 76);
             clbAffixAffects.TabIndex = 255;
             // 
             // saeAffixOnTurnStart

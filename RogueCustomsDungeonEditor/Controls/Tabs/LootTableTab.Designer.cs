@@ -33,7 +33,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             dgvLootTable = new DataGridView();
             btnTestLootTable = new Button();
             label1 = new Label();
-            lblCategory = new Label();
+            lblItemType = new Label();
             lblLootTable = new Label();
             lblCurrency = new Label();
             lblItem = new Label();
@@ -78,12 +78,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             // 
             // lblCategory
             // 
-            lblCategory.BorderStyle = BorderStyle.FixedSingle;
-            lblCategory.Location = new System.Drawing.Point(457, 28);
-            lblCategory.Name = "lblCategory";
-            lblCategory.Size = new System.Drawing.Size(163, 17);
-            lblCategory.TabIndex = 3;
-            lblCategory.Text = "Category";
+            lblItemType.BorderStyle = BorderStyle.FixedSingle;
+            lblItemType.Location = new System.Drawing.Point(457, 28);
+            lblItemType.Name = "lblCategory";
+            lblItemType.Size = new System.Drawing.Size(163, 17);
+            lblItemType.TabIndex = 3;
+            lblItemType.Text = "Item Type";
             // 
             // lblLootTable
             // 
@@ -155,7 +155,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             Controls.Add(lblItem);
             Controls.Add(lblCurrency);
             Controls.Add(lblLootTable);
-            Controls.Add(lblCategory);
+            Controls.Add(lblItemType);
             Controls.Add(label1);
             Controls.Add(btnTestLootTable);
             Controls.Add(dgvLootTable);
@@ -171,7 +171,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private System.Windows.Forms.DataGridView dgvLootTable;
         private System.Windows.Forms.Button btnTestLootTable;
         private Label label1;
-        private Label lblCategory;
+        private Label lblItemType;
         private Label lblLootTable;
         private Label lblCurrency;
         private Label lblItem;

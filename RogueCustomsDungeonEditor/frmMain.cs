@@ -88,6 +88,8 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.CurrencyInfo] = tpCurrencyInfo;
             TabsForNodeTypes[RogueTabTypes.AffixInfo] = tpAffixes;
             TabsForNodeTypes[RogueTabTypes.QualityLevelInfo] = tpQualityLevels;
+            TabsForNodeTypes[RogueTabTypes.ItemSlotInfo] = tpItemSlotInfos;
+            TabsForNodeTypes[RogueTabTypes.ItemTypeInfo] = tpItemTypeInfos;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -149,6 +151,8 @@ namespace RogueCustomsDungeonEditor
             AffixTab.TabInfoChanged += AffixTab_TabInfoChanged;
             QualityLevelsTab.TabInfoChanged += QualityLevelsTab_TabInfoChanged;
             LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
+            ItemTypesTab.TabInfoChanged += ItemTypesTab_TabInfoChanged;
+            ItemSlotsTab.TabInfoChanged += ItemSlotsTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -248,7 +252,14 @@ namespace RogueCustomsDungeonEditor
                 ActiveNode = e.Node;
                 IsNewObject = false;
                 LoadTabDataForTag(tag);
-                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.AffixInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.QualityLevelInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
+                tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.AffixInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.QualityLevelInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.ItemTypeInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.ItemSlotInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.Scripts;
                 DirtyTab = false;
             }
             else
@@ -499,6 +510,20 @@ namespace RogueCustomsDungeonEditor
                 Name = "Quality Levels"
             };
             tvDungeonInfo.Nodes.Add(qualityLevelInfoNode);
+
+            var itemSlotsInfoNode = new TreeNode("Item Slots")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.ItemSlotInfo, DungeonElement = null },
+                Name = "Item Slots"
+            };
+            tvDungeonInfo.Nodes.Add(itemSlotsInfoNode);
+
+            var itemTypeInfoNode = new TreeNode("Item Types")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.ItemTypeInfo, DungeonElement = null },
+                Name = "Item Types"
+            };
+            tvDungeonInfo.Nodes.Add(itemTypeInfoNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -884,6 +909,8 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.CurrencyInfo => SaveCurrency(),
                     RogueTabTypes.AffixInfo => SaveAffixes(),
                     RogueTabTypes.QualityLevelInfo => SaveQualityLevels(),
+                    RogueTabTypes.ItemSlotInfo => SaveItemSlots(),
+                    RogueTabTypes.ItemTypeInfo => SaveItemTypes(),
                     RogueTabTypes.PlayerClass => SavePlayerClass(),
                     RogueTabTypes.NPC => SaveNPC(),
                     RogueTabTypes.Item => SaveItem(),
@@ -1091,6 +1118,12 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.QualityLevelInfo:
                     LoadQualityLevels();
+                    break;
+                case RogueTabTypes.ItemSlotInfo:
+                    LoadItemSlots();
+                    break;
+                case RogueTabTypes.ItemTypeInfo:
+                    LoadItemTypes();
                     break;
                 case RogueTabTypes.LootTableInfo:
                     var tagLootTable = (LootTableInfo)tag.DungeonElement;
@@ -3269,6 +3302,94 @@ namespace RogueCustomsDungeonEditor
         }
         #endregion
 
+        #region Item Slots
+
+        private void LoadItemSlots()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            ItemSlotsTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveItemSlots()
+        {
+            var validationErrors = ItemSlotsTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Item Slots cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Item Slots",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Item Slots have been successfully saved!",
+                "Save Item Slots",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            ActiveDungeon.ItemSlotInfos = ItemSlotsTab.LoadedItemSlotInfos;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void ItemSlotsTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
+        #region Item Types
+
+        private void LoadItemTypes()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            ItemTypesTab.LoadData(ActiveDungeon);
+        }
+
+        private bool SaveItemTypes()
+        {
+            var validationErrors = ItemTypesTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's Item Types cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Item Types",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's Item Types have been successfully saved!",
+                "Save Item Types",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            ActiveDungeon.ItemTypeInfos = ItemTypesTab.LoadedItemTypeInfos;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void ItemTypesTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
         #region Validator
 
         private void ValidatorTab_OnValidationComplete(object? sender, EventArgs e)
@@ -3307,6 +3428,8 @@ namespace RogueCustomsDungeonEditor
         CurrencyInfo,
         AffixInfo,
         QualityLevelInfo,
+        ItemSlotInfo,
+        ItemTypeInfo,
         PlayerClass,
         NPC,
         Item,

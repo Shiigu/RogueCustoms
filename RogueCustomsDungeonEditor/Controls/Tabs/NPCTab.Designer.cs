@@ -43,10 +43,6 @@
             label103 = new System.Windows.Forms.Label();
             chkNPCKnowsAllCharacterPositions = new System.Windows.Forms.CheckBox();
             label67 = new System.Windows.Forms.Label();
-            cmbNPCStartingArmor = new System.Windows.Forms.ComboBox();
-            label70 = new System.Windows.Forms.Label();
-            cmbNPCStartingWeapon = new System.Windows.Forms.ComboBox();
-            label71 = new System.Windows.Forms.Label();
             label73 = new System.Windows.Forms.Label();
             nudNPCInventorySize = new System.Windows.Forms.NumericUpDown();
             label74 = new System.Windows.Forms.Label();
@@ -72,6 +68,12 @@
             label5 = new System.Windows.Forms.Label();
             nudNPCDropPicks = new System.Windows.Forms.NumericUpDown();
             label6 = new System.Windows.Forms.Label();
+            saeNPCDefaultOnAttack = new SingleActionEditor();
+            chkNPCDropsEquipmentOnDeath = new System.Windows.Forms.CheckBox();
+            label7 = new System.Windows.Forms.Label();
+            esNPC = new EquipmentSheet();
+            clbNPCAvailableSlots = new System.Windows.Forms.CheckedListBox();
+            label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).BeginInit();
             SuspendLayout();
@@ -99,7 +101,7 @@
             maeNPCOnInteracted.ActionDescription = "Someone can interact with\r\nthem with the following:";
             maeNPCOnInteracted.ActionTypeText = "Interact";
             maeNPCOnInteracted.ClassId = null;
-            maeNPCOnInteracted.Location = new System.Drawing.Point(6, 644);
+            maeNPCOnInteracted.Location = new System.Drawing.Point(6, 680);
             maeNPCOnInteracted.Name = "maeNPCOnInteracted";
             maeNPCOnInteracted.PlaceholderActionName = null;
             maeNPCOnInteracted.RequiresActionId = true;
@@ -116,7 +118,7 @@
             // 
             // saeNPCOnSpawn
             // 
-            saeNPCOnSpawn.ActionDescription = "When spawning...                ";
+            saeNPCOnSpawn.ActionDescription = "When spawning...                       ";
             saeNPCOnSpawn.ActionTypeText = "Turn Start";
             saeNPCOnSpawn.AutoSize = true;
             saeNPCOnSpawn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -125,7 +127,7 @@
             saeNPCOnSpawn.Name = "saeNPCOnSpawn";
             saeNPCOnSpawn.PlaceholderActionId = "Spawn";
             saeNPCOnSpawn.RequiresCondition = true;
-            saeNPCOnSpawn.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnSpawn.Size = new System.Drawing.Size(304, 32);
             saeNPCOnSpawn.SourceDescription = "The NPC (won't become visible)";
             saeNPCOnSpawn.TabIndex = 248;
             saeNPCOnSpawn.TargetDescription = "The NPC (won't become visible)";
@@ -149,15 +151,15 @@
             // 
             // saeNPCOnDeath
             // 
-            saeNPCOnDeath.ActionDescription = "When they die...                   ";
+            saeNPCOnDeath.ActionDescription = "When they die...                          ";
             saeNPCOnDeath.ActionTypeText = "On Death";
             saeNPCOnDeath.AutoSize = true;
             saeNPCOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnDeath.ClassId = null;
-            saeNPCOnDeath.Location = new System.Drawing.Point(6, 784);
+            saeNPCOnDeath.Location = new System.Drawing.Point(6, 820);
             saeNPCOnDeath.Name = "saeNPCOnDeath";
             saeNPCOnDeath.PlaceholderActionId = "Death";
-            saeNPCOnDeath.Size = new System.Drawing.Size(283, 32);
+            saeNPCOnDeath.Size = new System.Drawing.Size(304, 32);
             saeNPCOnDeath.SourceDescription = "The NPC";
             saeNPCOnDeath.TabIndex = 246;
             saeNPCOnDeath.TargetDescription = "Whoever killed them (if any)";
@@ -165,15 +167,15 @@
             // 
             // saeNPCOnAttacked
             // 
-            saeNPCOnAttacked.ActionDescription = "When they get attacked...  ";
+            saeNPCOnAttacked.ActionDescription = "When they get attacked...         ";
             saeNPCOnAttacked.ActionTypeText = "Attacked";
             saeNPCOnAttacked.AutoSize = true;
             saeNPCOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnAttacked.ClassId = null;
-            saeNPCOnAttacked.Location = new System.Drawing.Point(6, 744);
+            saeNPCOnAttacked.Location = new System.Drawing.Point(6, 780);
             saeNPCOnAttacked.Name = "saeNPCOnAttacked";
             saeNPCOnAttacked.PlaceholderActionId = "Interacted";
-            saeNPCOnAttacked.Size = new System.Drawing.Size(281, 32);
+            saeNPCOnAttacked.Size = new System.Drawing.Size(302, 32);
             saeNPCOnAttacked.SourceDescription = "The NPC";
             saeNPCOnAttacked.TabIndex = 245;
             saeNPCOnAttacked.TargetDescription = "Whoever interacted with them";
@@ -181,7 +183,7 @@
             // 
             // saeNPCOnTurnStart
             // 
-            saeNPCOnTurnStart.ActionDescription = "When the next turn starts...";
+            saeNPCOnTurnStart.ActionDescription = "When the next turn starts...       ";
             saeNPCOnTurnStart.ActionTypeText = "Turn Start";
             saeNPCOnTurnStart.AutoSize = true;
             saeNPCOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -189,7 +191,7 @@
             saeNPCOnTurnStart.Location = new System.Drawing.Point(6, 506);
             saeNPCOnTurnStart.Name = "saeNPCOnTurnStart";
             saeNPCOnTurnStart.PlaceholderActionId = "TurnStart";
-            saeNPCOnTurnStart.Size = new System.Drawing.Size(282, 32);
+            saeNPCOnTurnStart.Size = new System.Drawing.Size(303, 32);
             saeNPCOnTurnStart.SourceDescription = "The NPC";
             saeNPCOnTurnStart.TabIndex = 244;
             saeNPCOnTurnStart.TargetDescription = "The NPC";
@@ -200,7 +202,7 @@
             maeNPCOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
             maeNPCOnAttack.ActionTypeText = "Interact";
             maeNPCOnAttack.ClassId = null;
-            maeNPCOnAttack.Location = new System.Drawing.Point(6, 544);
+            maeNPCOnAttack.Location = new System.Drawing.Point(6, 580);
             maeNPCOnAttack.Name = "maeNPCOnAttack";
             maeNPCOnAttack.PlaceholderActionName = null;
             maeNPCOnAttack.RequiresActionId = true;
@@ -252,44 +254,6 @@
             label67.Size = new System.Drawing.Size(67, 21);
             label67.TabIndex = 236;
             label67.Text = "Actions";
-            // 
-            // cmbNPCStartingArmor
-            // 
-            cmbNPCStartingArmor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbNPCStartingArmor.FormattingEnabled = true;
-            cmbNPCStartingArmor.Location = new System.Drawing.Point(520, 708);
-            cmbNPCStartingArmor.Name = "cmbNPCStartingArmor";
-            cmbNPCStartingArmor.Size = new System.Drawing.Size(158, 23);
-            cmbNPCStartingArmor.TabIndex = 235;
-            cmbNPCStartingArmor.SelectedIndexChanged += cmbNPCStartingArmor_SelectedIndexChanged;
-            // 
-            // label70
-            // 
-            label70.AutoSize = true;
-            label70.Location = new System.Drawing.Point(387, 711);
-            label70.Name = "label70";
-            label70.Size = new System.Drawing.Size(131, 15);
-            label70.TabIndex = 234;
-            label70.Text = "When unarmored, wear";
-            // 
-            // cmbNPCStartingWeapon
-            // 
-            cmbNPCStartingWeapon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbNPCStartingWeapon.FormattingEnabled = true;
-            cmbNPCStartingWeapon.Location = new System.Drawing.Point(513, 677);
-            cmbNPCStartingWeapon.Name = "cmbNPCStartingWeapon";
-            cmbNPCStartingWeapon.Size = new System.Drawing.Size(165, 23);
-            cmbNPCStartingWeapon.TabIndex = 233;
-            cmbNPCStartingWeapon.SelectedIndexChanged += cmbNPCStartingWeapon_SelectedIndexChanged;
-            // 
-            // label71
-            // 
-            label71.AutoSize = true;
-            label71.Location = new System.Drawing.Point(387, 680);
-            label71.Name = "label71";
-            label71.Size = new System.Drawing.Size(123, 15);
-            label71.TabIndex = 232;
-            label71.Text = "When unarmed, wield";
             // 
             // label73
             // 
@@ -478,15 +442,15 @@
             // 
             // saeNPCOnLevelUp
             // 
-            saeNPCOnLevelUp.ActionDescription = "When they level up...           ";
+            saeNPCOnLevelUp.ActionDescription = "When they level up...                  ";
             saeNPCOnLevelUp.ActionTypeText = "On Level Up";
             saeNPCOnLevelUp.AutoSize = true;
             saeNPCOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeNPCOnLevelUp.ClassId = null;
-            saeNPCOnLevelUp.Location = new System.Drawing.Point(4, 818);
+            saeNPCOnLevelUp.Location = new System.Drawing.Point(4, 854);
             saeNPCOnLevelUp.Name = "saeNPCOnLevelUp";
             saeNPCOnLevelUp.PlaceholderActionId = "LevelUp";
-            saeNPCOnLevelUp.Size = new System.Drawing.Size(284, 32);
+            saeNPCOnLevelUp.Size = new System.Drawing.Size(305, 32);
             saeNPCOnLevelUp.SourceDescription = "The NPC";
             saeNPCOnLevelUp.TabIndex = 256;
             saeNPCOnLevelUp.TargetDescription = "The NPC";
@@ -496,7 +460,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label3.Location = new System.Drawing.Point(500, 746);
+            label3.Location = new System.Drawing.Point(500, 725);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(44, 21);
             label3.TabIndex = 257;
@@ -506,7 +470,7 @@
             // 
             cmbNPCLootTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCLootTable.FormattingEnabled = true;
-            cmbNPCLootTable.Location = new System.Drawing.Point(550, 777);
+            cmbNPCLootTable.Location = new System.Drawing.Point(550, 756);
             cmbNPCLootTable.Name = "cmbNPCLootTable";
             cmbNPCLootTable.Size = new System.Drawing.Size(128, 23);
             cmbNPCLootTable.TabIndex = 259;
@@ -515,7 +479,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(387, 780);
+            label4.Location = new System.Drawing.Point(387, 759);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(157, 15);
             label4.TabIndex = 258;
@@ -524,7 +488,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(513, 814);
+            label5.Location = new System.Drawing.Point(513, 793);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(36, 15);
             label5.TabIndex = 262;
@@ -532,7 +496,7 @@
             // 
             // nudNPCDropPicks
             // 
-            nudNPCDropPicks.Location = new System.Drawing.Point(462, 809);
+            nudNPCDropPicks.Location = new System.Drawing.Point(462, 788);
             nudNPCDropPicks.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
             nudNPCDropPicks.Name = "nudNPCDropPicks";
             nudNPCDropPicks.Size = new System.Drawing.Size(45, 23);
@@ -542,17 +506,89 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(387, 811);
+            label6.Location = new System.Drawing.Point(387, 790);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(69, 15);
             label6.TabIndex = 260;
             label6.Text = "Drops up to";
+            // 
+            // saeNPCDefaultOnAttack
+            // 
+            saeNPCDefaultOnAttack.ActionDescription = "When without Attack options...";
+            saeNPCDefaultOnAttack.ActionTypeText = "Attack";
+            saeNPCDefaultOnAttack.AutoSize = true;
+            saeNPCDefaultOnAttack.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            saeNPCDefaultOnAttack.ClassId = null;
+            saeNPCDefaultOnAttack.Location = new System.Drawing.Point(5, 544);
+            saeNPCDefaultOnAttack.Name = "saeNPCDefaultOnAttack";
+            saeNPCDefaultOnAttack.PlaceholderActionId = "Attack";
+            saeNPCDefaultOnAttack.RequiresCondition = true;
+            saeNPCDefaultOnAttack.RequiresDescription = true;
+            saeNPCDefaultOnAttack.RequiresName = true;
+            saeNPCDefaultOnAttack.Size = new System.Drawing.Size(305, 32);
+            saeNPCDefaultOnAttack.SourceDescription = "The NPC";
+            saeNPCDefaultOnAttack.TabIndex = 263;
+            saeNPCDefaultOnAttack.TargetDescription = "Whoever they are targeting";
+            saeNPCDefaultOnAttack.ThisDescription = "The NPC";
+            saeNPCDefaultOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MayNotEndTurn;
+            saeNPCDefaultOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
+            // 
+            // chkNPCDropsEquipmentOnDeath
+            // 
+            chkNPCDropsEquipmentOnDeath.AutoSize = true;
+            chkNPCDropsEquipmentOnDeath.Location = new System.Drawing.Point(387, 820);
+            chkNPCDropsEquipmentOnDeath.Name = "chkNPCDropsEquipmentOnDeath";
+            chkNPCDropsEquipmentOnDeath.Size = new System.Drawing.Size(169, 19);
+            chkNPCDropsEquipmentOnDeath.TabIndex = 264;
+            chkNPCDropsEquipmentOnDeath.Text = "Drops Equipment on Death";
+            chkNPCDropsEquipmentOnDeath.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label7.Location = new System.Drawing.Point(421, 893);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(212, 15);
+            label7.TabIndex = 266;
+            label7.Text = "Starts with the following equipment:";
+            // 
+            // esNPC
+            // 
+            esNPC.Location = new System.Drawing.Point(429, 911);
+            esNPC.Name = "esNPC";
+            esNPC.Size = new System.Drawing.Size(204, 142);
+            esNPC.TabIndex = 265;
+            // 
+            // clbNPCAvailableSlots
+            // 
+            clbNPCAvailableSlots.FormattingEnabled = true;
+            clbNPCAvailableSlots.Location = new System.Drawing.Point(60, 919);
+            clbNPCAvailableSlots.Name = "clbNPCAvailableSlots";
+            clbNPCAvailableSlots.Size = new System.Drawing.Size(175, 130);
+            clbNPCAvailableSlots.TabIndex = 268;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label8.Location = new System.Drawing.Point(48, 893);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(206, 15);
+            label8.TabIndex = 267;
+            label8.Text = "Uses the following Equipment Slots:";
             // 
             // NPCTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(clbNPCAvailableSlots);
+            Controls.Add(label8);
+            Controls.Add(label7);
+            Controls.Add(esNPC);
+            Controls.Add(chkNPCDropsEquipmentOnDeath);
+            Controls.Add(saeNPCDefaultOnAttack);
             Controls.Add(label5);
             Controls.Add(nudNPCDropPicks);
             Controls.Add(label6);
@@ -578,10 +614,6 @@
             Controls.Add(label103);
             Controls.Add(chkNPCKnowsAllCharacterPositions);
             Controls.Add(label67);
-            Controls.Add(cmbNPCStartingArmor);
-            Controls.Add(label70);
-            Controls.Add(cmbNPCStartingWeapon);
-            Controls.Add(label71);
             Controls.Add(label73);
             Controls.Add(nudNPCInventorySize);
             Controls.Add(label74);
@@ -597,7 +629,7 @@
             Controls.Add(label101);
             Controls.Add(crsNPC);
             Name = "NPCTab";
-            Size = new System.Drawing.Size(714, 853);
+            Size = new System.Drawing.Size(714, 1068);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).EndInit();
             ResumeLayout(false);
@@ -619,10 +651,6 @@
         private System.Windows.Forms.Label label103;
         private System.Windows.Forms.CheckBox chkNPCKnowsAllCharacterPositions;
         private System.Windows.Forms.Label label67;
-        private System.Windows.Forms.ComboBox cmbNPCStartingArmor;
-        private System.Windows.Forms.Label label70;
-        private System.Windows.Forms.ComboBox cmbNPCStartingWeapon;
-        private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.NumericUpDown nudNPCInventorySize;
         private System.Windows.Forms.Label label74;
@@ -648,5 +676,11 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown nudNPCDropPicks;
         private System.Windows.Forms.Label label6;
+        private SingleActionEditor saeNPCDefaultOnAttack;
+        private System.Windows.Forms.CheckBox chkNPCDropsEquipmentOnDeath;
+        private System.Windows.Forms.Label label7;
+        private EquipmentSheet esNPC;
+        private System.Windows.Forms.CheckedListBox clbNPCAvailableSlots;
+        private System.Windows.Forms.Label label8;
     }
 }

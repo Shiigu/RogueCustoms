@@ -20,14 +20,10 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class PlayerCharacter : Character
     {
-        public readonly string InitialEquippedWeaponId;
-        public readonly string InitialEquippedArmorId;
         public readonly float SaleValuePercentage;
 
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
-            InitialEquippedWeaponId = entityClass.InitialEquippedWeaponId;
-            InitialEquippedArmorId = entityClass.InitialEquippedArmorId;
             SaleValuePercentage = entityClass.SaleValuePercentage;
         }
 
@@ -164,7 +160,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Map.DisplayEvents.Add(($"Player {Name} is really dead", events));
             }
         }
-
         public void DropItem(int slot)
         {
             var item = Inventory.ElementAtOrDefault(slot);
@@ -174,30 +169,190 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
+        public override void EquipItem(Item itemToEquip)
+        {
+            if (!itemToEquip.IsEquippable)
+                throw new InvalidOperationException("Attempted to equip an unequippable item!");
+
+            if (itemToEquip.ItemType.SlotsItOccupies.Any(s => !AvailableSlots.Contains(s)))
+                return; // Can't equip, at least one item slot does not exist on the Character
+
+            var events = new List<DisplayEventDto>();
+
+            var itemsToUnequip = new List<Item>();
+
+            foreach (var equippedItem in Equipment)
+            {
+                if (equippedItem.ItemType.SlotsItOccupies.Intersect(itemToEquip.ItemType.SlotsItOccupies).Any())
+                    itemsToUnequip.Add(equippedItem);
+            }
+            var itemToEquipWasInTheBag = itemToEquip.Position == null;
+            if (itemToEquipWasInTheBag)
+            {
+                Inventory.Remove(itemToEquip);
+            }
+            else
+            {
+                itemToEquip.Position = null;
+                itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
+                itemToEquip.Owner = this;
+            }
+            foreach (var equippedItem in itemsToUnequip)
+            {
+                Equipment.Remove(equippedItem);
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                });
+                if (Inventory.Count < InventorySize)
+                {
+                    Inventory.Add(equippedItem);
+                    Map.AppendMessage(Map.Locale["PlayerPutItemOnBag"].Format(new { CharacterName = Name, ItemName = equippedItem.Name }), events);
+                }
+                else
+                {
+                    Inventory.Remove(equippedItem);
+                    DropItem(equippedItem);
+                }
+            }
+            Equipment.Add(itemToEquip);
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                Params = new() { SpecialEffect.ItemEquip }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateEquipment, Equipment.ConvertAll(i => new SimpleEntityDto(i))}
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, DamageFromEquipment }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, MitigationFromEquipment }
+            });
+            Map.AppendMessage(Map.Locale["PlayerEquippedItem"].Format(new { CharacterName = Name, ItemName = itemToEquip.Name }), Color.Yellow, events);
+
+            foreach (var stat in UsedStats)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                });
+                if (stat.HasMax)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
+                    });
+                }
+            }
+
+            Map.DisplayEvents.Add(($"{Name} equips {itemToEquip.Name}", events));
+        }
         public override void DropItem(IPickable pickable)
         {
             var pickableAsEntity = pickable as Entity;
-            if (pickable is Item i)
+            var events = new List<DisplayEventDto>();
+            var centralTile = Map.GetTileFromCoordinates(Position);
+            Tile pickedEmptyTile = null;
+            if (!centralTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (centralTile.Trap == null || centralTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+                pickedEmptyTile = centralTile;
+            if (pickedEmptyTile == null)
             {
-                if (i == EquippedWeapon)
-                    EquippedWeapon = null;
-                else if (i == EquippedArmor)
-                    EquippedArmor = null;
-                else
-                    Inventory.Remove(i);
-            }
-            pickableAsEntity.Position = Position;
-            pickable.Owner = null!;
-            pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
-            Map.DisplayEvents.Add(($"Player {Name} put item on floor", new()
+                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(Position.Y, Position.X, 5, true, t => t.AllowsDrops).ToList();
+                if (centralTile?.AllowsDrops == true)
+                    closeEmptyTiles.Add(centralTile);
+                closeEmptyTiles = closeEmptyTiles.Where(t => t.LivingCharacter == null || t.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive || t.LivingCharacter == this).ToList();
+                var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => (int)GamePoint.Distance(t.Position, Position)) : -1;
+                var closestEmptyTiles = closeEmptyTiles.Where(t => (int)GamePoint.Distance(t.Position, Position) <= closestDistance);
+                if (closestEmptyTiles.Any())
                 {
-                    new() {
-                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
-                        Params = new() { SpecialEffect.ItemDrop }
-                    }
+                    pickedEmptyTile = closestEmptyTiles.TakeRandomElement(Rng);
                 }
-            ));
-            Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
+                else
+                {
+                    pickableAsEntity.Position = null;
+                    pickable.Owner = null!;
+                    pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
+                    Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }), events);
+                    if (pickableAsEntity is Item i)
+                        Map.Items.Remove(i);
+                }
+            }
+            if (pickedEmptyTile != null)
+            {
+                pickableAsEntity.Position = pickedEmptyTile.Position;
+                pickable.Owner = null!;
+                pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
+                Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }), events);
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                    Params = new() { SpecialEffect.ItemDrop }
+                });
+                if (!Map.IsDebugMode)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                        Params = new() { pickableAsEntity.Position, Map.GetConsoleRepresentationForCoordinates(pickableAsEntity.Position.X, pickableAsEntity.Position.Y) }
+                    }
+                    );
+                }
+            }
+            if (pickable is Item item)
+            {
+                if (Inventory.Contains(item))
+                    Inventory.Remove(item);
+                if (Equipment.Contains(item))
+                    Equipment.Remove(item);
+            }
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateEquipment, Equipment.ConvertAll(i => new SimpleEntityDto(i)) }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyDamageFromEquipment, DamageFromEquipment }
+            });
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.ModifyMitigationFromEquipment, MitigationFromEquipment }
+            });
+            foreach (var stat in UsedStats)
+            {
+                events.Add(new()
+                {
+                    DisplayEventType = DisplayEventType.UpdatePlayerData,
+                    Params = new() { UpdatePlayerDataType.ModifyStat, stat.Id, stat.Current }
+                });
+                if (stat.HasMax)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyMaxStat, stat.Id, stat.Base }
+                    });
+                }
+            }
+            Map.DisplayEvents.Add(($"Player {Name} put item on floor", events));
         }
 
         public override void PickItem(IPickable pickable, bool informToPlayer)

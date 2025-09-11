@@ -104,14 +104,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     isValidEntry = false;
                     validationErrors.Add($"Row {id}: The Name Attachment option is invalid.");
                 }
-                if (qualityLevelIds.Contains(id))
+                if (!qualityLevelIds.Add(id))
                 {
                     isValidEntry = false;
                     validationErrors.Add($"Row {row.Index + 1}: The Quality Level Id '{id}' is duplicated.");
-                }
-                else
-                {
-                    qualityLevelIds.Add(id);
                 }
                 if (isValidEntry)
                 {

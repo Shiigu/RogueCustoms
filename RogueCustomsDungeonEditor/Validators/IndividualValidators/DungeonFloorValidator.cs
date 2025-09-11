@@ -133,7 +133,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     }
                     else
                     {
-                        if (!dungeonJson.Items.Exists(c => (c.EntityType == "Weapon" || c.EntityType == "Armor" || c.EntityType == "Consumable") && c.Id.Equals(possibleItem.ClassId)))
+                        if (!dungeonJson.Items.Exists(c => c.Id.Equals(possibleItem.ClassId)))
                             messages.AddError($"{possibleItem.ClassId} is in the PossibleItems list but it's not an Item.");
                     }
                     if (floorJson.PossibleItems.Count(pm => pm.ClassId.Equals(possibleItem.ClassId) && ((pm.SpawnCondition == null && possibleItem.SpawnCondition == null) || pm.SpawnCondition.Equals(possibleItem.SpawnCondition, StringComparison.InvariantCultureIgnoreCase))) > 1)
