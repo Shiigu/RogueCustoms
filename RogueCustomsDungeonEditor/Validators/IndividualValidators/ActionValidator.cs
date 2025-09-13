@@ -172,16 +172,15 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             else if (owner is Item item)
             {
                 source = GetATestCharacter(sampleDungeon);
-                item.Owner = source as NonPlayableCharacter;
-                item.Owner.Equipment = [];
+                (source as Character).Equipment = [];
 
                 if(item.IsEquippable)
-                    item.Owner.Equipment.Add(item);
+                    (source as Character).Equipment.Add(item);
 
-                foreach (var slot in item.Owner.AvailableSlots)
+                foreach (var slot in (source as Character).AvailableSlots)
                 {
-                    if (!item.Owner.Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
-                        item.Owner.Equipment.Add(GetATestItem(sampleDungeon, slot));
+                    if (!(source as Character).Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                        (source as Character).Equipment.Add(GetATestItem(sampleDungeon, slot));
                 }
             }
             else if (owner is AlteredStatus alteredStatus)
@@ -200,17 +199,16 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             else if (owner is Item i && action == i.OwnOnDeath)
             {
                 source = GetATestCharacter(sampleDungeon);
-                i.Owner = source as NonPlayableCharacter;
 
-                i.Owner.Equipment = [];
+                (source as Character).Equipment = [];
 
                 if (i.IsEquippable)
-                    i.Owner.Equipment.Add(i);
+                    (source as Character).Equipment.Add(i);
 
-                foreach (var slot in i.Owner.AvailableSlots)
+                foreach (var slot in (source as Character).AvailableSlots)
                 {
-                    if (!i.Owner.Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
-                        i.Owner.Equipment.Add(GetATestItem(sampleDungeon, slot));
+                    if (!(source as Character).Equipment.Exists(e => e.SlotsItOccupies.Contains(slot)))
+                        (source as Character).Equipment.Add(GetATestItem(sampleDungeon, slot));
                 }
             }
             else if (owner == null)

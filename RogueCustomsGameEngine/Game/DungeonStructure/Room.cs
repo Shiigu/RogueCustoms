@@ -9,43 +9,59 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class Room
     {
-        public readonly GamePoint Position;
         public readonly Map Map;
-        public readonly int RoomRow;
-        public readonly int RoomColumn;
-        public readonly int Width;
-        public readonly int Height;
-
+        public HashSet<Tile> Tiles { get; }
         public bool WasVisited { get; set; }
         public bool MustSpawnMonsterHouse { get; set; }
 
-        public GamePoint TopLeft => new(Position.X, Position.Y);
-        public GamePoint TopRight => new(Position.X + Width - 1, Position.Y);
-        public GamePoint BottomLeft => new(Position.X, Position.Y + Height - 1);
-        public GamePoint BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
+        private GamePoint _topLeft, _topRight, _bottomLeft, _bottomRight;
+        public GamePoint TopLeft 
+        { 
+            get
+            {
+                _topLeft ??= new(Tiles.Min(t => t.Position.X), Tiles.Min(t => t.Position.Y));
+                return _topLeft;
+            }
+        }
+        public GamePoint TopRight
+        {
+            get
+            {
+                _topRight ??= new(Tiles.Max(t => t.Position.X), Tiles.Min(t => t.Position.Y));
+                return _topRight;
+            }
+        }
+        public GamePoint BottomLeft
+        {
+            get
+            {
+                _bottomLeft ??= new(Tiles.Min(t => t.Position.X), Tiles.Max(t => t.Position.Y));
+                return _bottomLeft;
+            }
+        }
+        public GamePoint BottomRight
+        {
+            get
+            {
+                _bottomRight ??= new(Tiles.Max(t => t.Position.X), Tiles.Max(t => t.Position.Y));
+                return _bottomRight;
+            }
+        }
 
-        public bool IsDummy => Width == 1 && Height == 1;
-        public bool IsFused { get; set; }
-        public bool HasStairs => GetTiles().Any(t => t == Map.StairsTile);
-        public bool HasItems => GetTiles().Any(t => t.GetPickableObjects().Any());
+        public int EffectiveWidth => BottomRight.X - TopLeft.X + 1;
+        public int EffectiveHeight => BottomRight.Y - TopLeft.Y + 1;
+        public bool HasStairs => Tiles.Any(t => t == Map.StairsTile);
+        public bool HasItems => Tiles.Any(t => t.GetPickableObjects().Any());
 
-        public List<Tile> GetTiles() => Map.Tiles.Where(t => t.Position.X.Between(TopLeft.X, TopRight.X) && t.Position.Y.Between(TopLeft.Y, BottomRight.Y)).ToList();
-
-        public Room(Map map, GamePoint position, int roomRow, int roomColumn, int width, int height)
+        public Room(Map map, IEnumerable<Tile> tiles)
         {
             Map = map;
-            Position = position;
-            RoomRow = roomRow;
-            RoomColumn = roomColumn;
-            Width = width;
-            Height = height;
+            Tiles = new HashSet<Tile>(tiles);
         }
 
-        public Room Clone()
-        {
-            return new Room(Map, Position, RoomRow, RoomColumn, Width, Height);
-        }
+        public Room Clone() => new Room(Map, Tiles);
 
-        public override string ToString() => $"Index: [{RoomRow}, {RoomColumn}]; Top left: {Position}; Bottom right: {BottomRight}; Width: {Width}; Height: {Height}";
+        public override string ToString()
+            => $"Room with {Tiles.Count} tiles; Bounds: {TopLeft} -> {BottomRight}; Width={EffectiveWidth}, Height={EffectiveHeight}";
     }
 }

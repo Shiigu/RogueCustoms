@@ -272,7 +272,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     pickableRooms = Map.Rooms.Except(VisitedRooms).Where(r => r != ContainingRoom).ToList();
 
                 var anotherRoom = (pickableRooms.Count > 0) ? pickableRooms.TakeRandomElement(Rng) : ContainingRoom;
-                var aTileInThatRoom = anotherRoom.GetTiles().Where(t => t.IsWalkable && !t.IsHarmfulFor(this)).TakeRandomElement(Rng);
+                var aTileInThatRoom = anotherRoom.Tiles.Where(t => t.IsWalkable && !t.IsHarmfulFor(this)).TakeRandomElement(Rng);
 
                 CurrentTarget = aTileInThatRoom;
                 PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
@@ -416,8 +416,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = pickedTile.Tile;
                 return false;
             }
+            try
+            {
+                await pickedAction.Action.Do(this, CurrentTarget, true);
+            }
+            catch (Exception ex)
+            {
 
-            await pickedAction.Action.Do(this, CurrentTarget, true);
+            }
             if (pickedAction.Action.FinishesTurnWhenUsed)
                 TookAction = true;
 
@@ -611,7 +617,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             var pickableAsEntity = pickable as Entity;
             var isCurrency = false;
-            pickable.Owner = this;
             if (pickable is Item i)
             {
                 Inventory.Add(i);
@@ -681,7 +686,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 else
                 {
                     pickableAsEntity.Position = null;
-                    pickable.Owner = null!;
                     pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
                     Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }));
                     if(pickableAsEntity is Item i)
@@ -691,7 +695,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (pickedEmptyTile != null)
             {
                 pickableAsEntity.Position = pickedEmptyTile.Position;
-                pickable.Owner = null!;
                 pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
                 Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
                 if (!Map.IsDebugMode)

@@ -35,10 +35,10 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             }
             else if (searchArea == "Whole Room")
             {
-                if (currentTile.Type == TileType.Hallway || currentTile.IsConnectorTile)
+                if (currentTile.Type == TileType.Hallway)
                     candidateTiles = map.GetTilesWithinCenteredSquare(center, 1, true);
                 else
-                    candidateTiles = currentTile.Room.GetTiles();
+                    candidateTiles = [.. currentTile.Room.Tiles];
             }
             else if (searchArea == "Whole Map")
             {

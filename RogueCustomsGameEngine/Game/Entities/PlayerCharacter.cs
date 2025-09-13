@@ -160,14 +160,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Map.DisplayEvents.Add(($"Player {Name} is really dead", events));
             }
         }
-        public void DropItem(int slot)
-        {
-            var item = Inventory.ElementAtOrDefault(slot);
-            if (item != null)
-            {
-                DropItem(item);
-            }
-        }
 
         public override void EquipItem(Item itemToEquip)
         {
@@ -197,7 +189,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 itemToEquip.Position = null;
                 itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
-                itemToEquip.Owner = this;
             }
             foreach (var equippedItem in itemsToUnequip)
             {
@@ -254,7 +245,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 else
                 {
                     pickableAsEntity.Position = null;
-                    pickable.Owner = null!;
                     pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
                     Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }), events);
                     if (pickableAsEntity is Item i)
@@ -264,7 +254,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (pickedEmptyTile != null)
             {
                 pickableAsEntity.Position = pickedEmptyTile.Position;
-                pickable.Owner = null!;
                 pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
                 Map.AppendMessage(Map.Locale["PlayerPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }), events);
                 events.Add(new()
@@ -297,7 +286,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             var events = new List<DisplayEventDto>();
             var pickableAsEntity = pickable as Entity;
-            pickable.Owner = this;
             var isCurrency = false;
             if (pickable is Item i)
             {
@@ -365,6 +353,11 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public void InformRefreshedPlayerData(List<DisplayEventDto> events)
         {
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                Params = new() { UpdatePlayerDataType.UpdateCurrency, CurrencyCarried }
+            });
             events.Add(new()
             {
                 DisplayEventType = DisplayEventType.UpdatePlayerData,

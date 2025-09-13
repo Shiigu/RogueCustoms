@@ -44,17 +44,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public string TypeName => Map.Locale[Type.Name];
         public string TypeDescription => Map.Locale[Type.Description];
-
-        private bool _isConnectorTile = false;
-        public bool IsConnectorTile
-        {
-            get { return _isConnectorTile; }
-            set
-            {
-                _isConnectorTile = value;
-                _consoleRepresentation = null;
-            }
-        }
         private string _doorId;
         public string DoorId
         {
@@ -117,31 +106,36 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                         else if (Type == TileType.Wall)
                         {
-                            if (Room != null)
-                            {
-                                if (Position.Equals(Room.TopLeft))
-                                    _consoleRepresentation = Type.TileTypeSet.TopLeft;
-                                else if (Position.Equals(Room.TopRight))
-                                    _consoleRepresentation = Type.TileTypeSet.TopRight;
-                                else if (Position.Equals(Room.BottomLeft))
-                                    _consoleRepresentation = Type.TileTypeSet.BottomLeft;
-                                else if (Position.Equals(Room.BottomRight))
-                                    _consoleRepresentation = Type.TileTypeSet.BottomRight;
-                                else if (Position.X.Equals(Room.BottomLeft.X) || Position.X.Equals(Room.BottomRight.X))
-                                    _consoleRepresentation = Type.TileTypeSet.Vertical;
-                                else if (Position.Y.Equals(Room.TopLeft.Y) || Position.Y.Equals(Room.BottomRight.Y))
-                                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
-                                else // This should only trigger when it's a Wall that was created by a Character
-                                    _consoleRepresentation = Type.TileTypeSet.Horizontal;
-                            }
-                            else // This should only trigger when it's a Wall that was created by a Character on a Hallway
-                            {
+                            var leftTile = Map.GetTileFromCoordinates(Position.X - 1, Position.Y);
+                            var rightTile = Map.GetTileFromCoordinates(Position.X + 1, Position.Y);
+                            var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
+                            var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
+
+                            bool leftIsWall = (leftTile?.Type == TileType.Wall || leftTile?.Type == TileType.Hallway || leftTile?.Type == TileType.Door) && leftTile?.Room == Room;
+                            bool rightIsWall = (rightTile?.Type == TileType.Wall || rightTile?.Type == TileType.Hallway || rightTile?.Type == TileType.Door) && rightTile?.Room == Room;
+                            bool topIsWall = (topTile?.Type == TileType.Wall || topTile?.Type == TileType.Hallway || topTile?.Type == TileType.Door) && topTile?.Room == Room;
+                            bool bottomIsWall = (bottomTile?.Type == TileType.Wall || bottomTile?.Type == TileType.Hallway || bottomTile?.Type == TileType.Door) && bottomTile?.Room == Room;
+
+                            // Logic for Hallway representation based on adjacent Hallway tiles
+                            if (!leftIsWall && rightIsWall && !topIsWall && bottomIsWall)
+                                _consoleRepresentation = Type.TileTypeSet.TopLeft;
+                            else if (leftIsWall && !rightIsWall && !topIsWall && bottomIsWall)
+                                _consoleRepresentation = Type.TileTypeSet.TopRight;
+                            else if (!leftIsWall && rightIsWall && topIsWall && !bottomIsWall)
+                                _consoleRepresentation = Type.TileTypeSet.BottomLeft;
+                            else if (leftIsWall && !rightIsWall && topIsWall && !bottomIsWall)
+                                _consoleRepresentation = Type.TileTypeSet.BottomRight;
+                            else if (leftIsWall && rightIsWall && !topIsWall && !bottomIsWall)
                                 _consoleRepresentation = Type.TileTypeSet.Horizontal;
-                            }
+                            else if (!leftIsWall && !rightIsWall && topIsWall && bottomIsWall)
+                                _consoleRepresentation = Type.TileTypeSet.Vertical;
+
+                            else // This should only trigger when it's a Wall that was created by a Character
+                                _consoleRepresentation = Type.TileTypeSet.Horizontal;
                         }
                         else if (Type == TileType.Hallway)
                         {
-                            if (_isConnectorTile && !Room.IsDummy)
+                            if (Room != null)
                             {
                                 _consoleRepresentation = Type.TileTypeSet.Connector;
                             }
@@ -153,38 +147,40 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 var topTile = Map.GetTileFromCoordinates(Position.X, Position.Y - 1);
                                 var bottomTile = Map.GetTileFromCoordinates(Position.X, Position.Y + 1);
 
-                                bool leftIsHallway = leftTile?.Type == Type;
-                                bool rightIsHallway = rightTile?.Type == Type;
-                                bool topIsHallway = topTile?.Type == Type;
-                                bool bottomIsHallway = bottomTile?.Type == Type;
+                                bool leftIsHallway = leftTile?.Type == TileType.Hallway;
+                                bool rightIsHallway = rightTile?.Type == TileType.Hallway;
+                                bool topIsHallway = topTile?.Type == TileType.Hallway;
+                                bool bottomIsHallway = bottomTile?.Type == TileType.Hallway;
 
                                 // Logic for Hallway representation based on adjacent Hallway tiles
                                 if (!leftIsHallway && rightIsHallway && !topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.TopLeft;
-                                if (leftIsHallway && !rightIsHallway && !topIsHallway && bottomIsHallway)
+                                else if (leftIsHallway && !rightIsHallway && !topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.TopRight;
-                                if (!leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
+                                else if (!leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.BottomLeft;
-                                if (leftIsHallway && !rightIsHallway && topIsHallway && !bottomIsHallway)
+                                else if (leftIsHallway && !rightIsHallway && topIsHallway && !bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.BottomRight;
-                                if (leftIsHallway && rightIsHallway && !topIsHallway && !bottomIsHallway)
+                                else if (leftIsHallway && rightIsHallway && !topIsHallway && !bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.Horizontal;
-                                if (!leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
+                                else if (!leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.Vertical;
 
                                 // Top or bottom connectors
-                                if (leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
+                                else if (leftIsHallway && rightIsHallway && topIsHallway && !bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.HorizontalTop;
-                                if (leftIsHallway && rightIsHallway && !topIsHallway && bottomIsHallway)
+                                else if (leftIsHallway && rightIsHallway && !topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.HorizontalBottom;
 
                                 // Left or right connectors
-                                if (leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
+                                else if (leftIsHallway && !rightIsHallway && topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.VerticalLeft;
-                                if (!leftIsHallway && rightIsHallway && topIsHallway && bottomIsHallway)
+                                else if (!leftIsHallway && rightIsHallway && topIsHallway && bottomIsHallway)
                                     _consoleRepresentation = Type.TileTypeSet.VerticalRight;
 
-                                _consoleRepresentation = Type.TileTypeSet.Central; // Default if no clear adjacency pattern
+                                // Default if no clear adjacency pattern
+                                else
+                                    _consoleRepresentation = Type.TileTypeSet.Central;
                             }
                         }
                     }      
@@ -261,15 +257,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                    EqualityComparer<GamePoint>.Default.Equals(Position, other.Position) &&
                    _type == other._type &&
                    Type == other.Type &&
-                   _isConnectorTile == other._isConnectorTile &&
                    IsWalkable == other.IsWalkable &&
                    IsOccupied == other.IsOccupied &&
-                   EqualityComparer<ConsoleRepresentation>.Default.Equals(_consoleRepresentation, other._consoleRepresentation) &&
-                   EqualityComparer<ConsoleRepresentation>.Default.Equals(ConsoleRepresentation, other.ConsoleRepresentation) &&
                    Discovered == other.Discovered &&
                    Visible == other.Visible &&
-                   EqualityComparer<Map>.Default.Equals(Map, other.Map) &&
-                   EqualityComparer<Room>.Default.Equals(Room, other.Room) &&
                    EqualityComparer<Character>.Default.Equals(LivingCharacter, other.LivingCharacter) &&
                    EqualityComparer<Trap>.Default.Equals(Trap, other.Trap);
         }
@@ -279,10 +270,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var hash = new HashCode();
             hash.Add(Position);
             hash.Add(Type);
-            hash.Add(_isConnectorTile);
             hash.Add(IsWalkable);
             hash.Add(IsOccupied);
-            hash.Add(ConsoleRepresentation);
             hash.Add(Discovered);
             hash.Add(Visible);
             return hash.ToHashCode();

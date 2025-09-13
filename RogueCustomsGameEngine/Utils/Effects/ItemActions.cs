@@ -77,7 +77,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.FromInventory)
                     s.Inventory.Remove(itemToGive);
                 t.Inventory.Add(itemToGive);
-                itemToGive.Owner = t;
                 itemToGive.Position = null;
                 if (t == Map.Player || Map.Player.CanSee(t))
                 {

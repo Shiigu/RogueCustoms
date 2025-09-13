@@ -12,36 +12,40 @@ using RogueCustomsGameEngine.Utils.Representation;
 using System.IO;
 using RogueCustomsGameEngine.Game.Entities;
 using System.Numerics;
+using static RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.ProceduralFloorGenerator;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
 {
     public class ProceduralFloorGenerator : IFloorGenerator
     {
         private Map _map;
-
         private int GenerationTries => _map.GenerationTries;
         private RngHandler Rng => _map.Rng;
-
         private FloorLayoutGenerator _generatorToUse;
         private FloorType FloorConfigurationToUse => _map.FloorConfigurationToUse;
         private int Width => _map.Width;
         private int Height => _map.Height;
         private int FloorLevel => _map.FloorLevel;
-
         private RoomDispositionType[,] RoomDispositionToUse;
-
         private int RoomCountRows => _generatorToUse.Rows;
         private int RoomCountColumns => _generatorToUse.Columns;
         private int MaxConnectionsBetweenRooms => FloorConfigurationToUse.MaxConnectionsBetweenRooms;
         private int OddsForExtraConnections => FloorConfigurationToUse.OddsForExtraConnections;
         private int RoomFusionOdds => FloorConfigurationToUse.RoomFusionOdds;
-
-
         private (GamePoint TopLeftCorner, GamePoint BottomRightCorner)[,] RoomLimitsTable;
         private int MinRoomWidth;
         private int MaxRoomWidth;
         private int MinRoomHeight;
         private int MaxRoomHeight;
+
+        private List<ProceduralRoom> RoomDefinitions;
+        public bool ReadyToFloodFill => RoomDefinitions != null && RoomDefinitions.Count > 0 && RoomLookupTable != null;
+
+        private ProceduralRoom[,] RoomLookupTable;
+        private List<(ProceduralRoom RoomA, ProceduralRoom RoomB, Tile ConnectorA, Tile ConnectorB, List<Tile> Tiles)> Hallways;
+        private List<(ProceduralRoom RoomA, ProceduralRoom RoomB, ProceduralRoom FusedRoom)> Fusions;
+        private List<Tile> ConnectorTiles;
+        private Dictionary<Room, HashSet<Room>> _roomNeighborMap;
 
         public ProceduralFloorGenerator(Map map, FloorLayoutGenerator generatorToUse)
         {
@@ -52,28 +56,34 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
         #region Normal Tiles
         public void CreateNormalTiles()
         {
-            _map.Hallways = new();
-            _map.Fusions = new();
+            Hallways = new();
+            Fusions = new();
+            ConnectorTiles = new();
             _map.Rooms = new();
+            RoomDefinitions = new();
 
             if (RoomDispositionToUse == null || GenerationTries % 100 == 0)
             {
                 var possibleRoomDisposition = RollRoomDistributionToUse();
 
-                if (!possibleRoomDisposition.IsFullyConnected(d => d != RoomDispositionType.NoRoom && d != RoomDispositionType.NoConnection && d != RoomDispositionType.ConnectionImpossible)) return;
+                if (!possibleRoomDisposition.IsFullyConnected(d => d != RoomDispositionType.NoRoom && d != RoomDispositionType.NoConnection && d != RoomDispositionType.ConnectionImpossible))
+                {
+                    return;
+                }
 
                 RoomDispositionToUse = possibleRoomDisposition;
             }
 
-            _map.ResetAndCreateTiles();
+            _map.ResetAndCreateTilesIfNeeded();
             CreateRooms();
-            foreach (var room in _map.Rooms)
+            foreach (var room in RoomDefinitions)
             {
                 CreateTilesForRoom(room);
             }
+            BuildRoomLookupTable();
             FuseRooms();
-            _map.Rooms = _map.Rooms.Distinct().ToList();
-            if (_map.Rooms.Count(r => !r.IsDummy) > 1)
+            RoomDefinitions = RoomDefinitions.Distinct().ToList();
+            if (RoomDefinitions.Count(r => !r.IsDummy) > 1)
                 ConnectRooms();
         }
 
@@ -129,7 +139,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             var validRoomTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedRoom, RoomDispositionType.GuaranteedDummyRoom, RoomDispositionType.RandomRoom };
 
             GetPossibleRoomData();
-            _map.Rooms = new List<Room>();
+            RoomDefinitions = new List<ProceduralRoom>();
 
             for (var row = 0; row < RoomDispositionToUse.GetLength(0); row++)
             {
@@ -156,20 +166,20 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                         var rngY2 = Rng.NextInclusive(rngY1 + _generatorToUse.MinRoomSize.Height, MaxY);
                         var roomHeight = Math.Min(_generatorToUse.MaxRoomSize.Height, rngY2 - rngY1 + 1);
 
-                        _map.Rooms.Add(new Room(_map, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
+                        RoomDefinitions.Add(new ProceduralRoom(_map, new GamePoint(rngX1, rngY1), roomRow, roomColumn, roomWidth, roomHeight));
                     }
                     else if (roomTile == RoomDispositionType.GuaranteedDummyRoom)
                     {
                         // Dummy rooms are 1x1
                         var rngX = Rng.NextInclusive(MinX + 1, MaxX - 1);
                         var rngY = Rng.NextInclusive(MinY + 1, MaxY - 1);
-                        _map.Rooms.Add(new Room(_map, new GamePoint(rngX, rngY), roomRow, roomColumn, 1, 1));
+                        RoomDefinitions.Add(new ProceduralRoom(_map, new GamePoint(rngX, rngY), roomRow, roomColumn, 1, 1));
                     }
                 }
             }
         }
 
-        private void CreateTilesForRoom(Room room)
+        private void CreateTilesForRoom(ProceduralRoom room)
         {
             if (room.Height > 1 && room.Width > 1)
             {
@@ -177,28 +187,28 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 for (var i = 0; i < room.Width; i++)
                 {
                     var tile = _map.GetTileFromCoordinates(room.Position.X + i, room.Position.Y);
-                    if (tile.IsConnectorTile) continue;
+                    if (ConnectorTiles.Contains(tile)) continue;
                     tile.Type = TileType.Wall;
                 }
                 // Lower wall
                 for (var i = 0; i < room.Width; i++)
                 {
                     var tile = _map.GetTileFromCoordinates(room.Position.X + i, room.Position.Y + room.Height - 1);
-                    if (tile.IsConnectorTile) continue;
+                    if (ConnectorTiles.Contains(tile)) continue;
                     tile.Type = TileType.Wall;
                 }
                 // Left wall
                 for (var i = 0; i < room.Height; i++)
                 {
                     var tile = _map.GetTileFromCoordinates(room.Position.X, room.Position.Y + i);
-                    if (tile.IsConnectorTile) continue;
+                    if (ConnectorTiles.Contains(tile)) continue;
                     tile.Type = TileType.Wall;
                 }
                 // Right wall
                 for (var i = 0; i < room.Height; i++)
                 {
                     var tile = _map.GetTileFromCoordinates(room.Position.X + room.Width - 1, room.Position.Y + i);
-                    if (tile.IsConnectorTile) continue;
+                    if (ConnectorTiles.Contains(tile)) continue;
                     tile.Type = TileType.Wall;
                 }
                 // Floor
@@ -219,6 +229,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             }
         }
 
+        private void BuildRoomLookupTable()
+        {
+            RoomLookupTable = new ProceduralRoom[RoomCountRows, RoomCountColumns];
+            foreach (var room in RoomDefinitions)
+                RoomLookupTable[room.RoomRow, room.RoomColumn] = room;
+        }
+
         private void FuseRooms()
         {
             var validFusionTileTypes = new List<RoomDispositionType>() { RoomDispositionType.GuaranteedFusion, RoomDispositionType.RandomConnection };
@@ -231,9 +248,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                     if (!validFusionTileTypes.Contains(connectionTile)) continue;
                     var (RoomRoow, RoomColumn) = (row / 2, column / 2);
                     var leftRoom = GetRoomByRowAndColumn(row / 2, (column - 1) / 2);
+                    var leftRoomIndex = leftRoom != null ? RoomDefinitions.IndexOf(leftRoom) : -1;
                     var rightRoom = GetRoomByRowAndColumn(row / 2, (column + 1) / 2);
+                    var rightRoomIndex = rightRoom != null ? RoomDefinitions.IndexOf(rightRoom) : -1;
                     var upRoom = GetRoomByRowAndColumn((row - 1) / 2, column / 2);
+                    var upRoomIndex = upRoom != null ? RoomDefinitions.IndexOf(upRoom) : -1;
                     var downRoom = GetRoomByRowAndColumn((row + 1) / 2, column / 2);
+                    var downRoomIndex = downRoom != null ? RoomDefinitions.IndexOf(downRoom) : -1;
                     var isVerticalConnection = column % 2 == 0 && row % 2 != 0;
                     var isHorizontalConnection = column % 2 != 0 && row % 2 == 0;
                     var isHorizontalConnectionValid = isHorizontalConnection && leftRoom != null && !leftRoom.IsDummy && !leftRoom.IsFused && rightRoom != null && !rightRoom.IsDummy && !rightRoom.IsFused;
@@ -247,14 +268,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                     }
                     if (connectionTile == RoomDispositionType.GuaranteedFusion)
                     {
-                        Room? fusedRoom;
+                        ProceduralRoom? fusedRoom;
                         if (isHorizontalConnectionValid)
                         {
                             fusedRoom = CombineRooms(leftRoom, rightRoom);
                             if (fusedRoom != null)
                             {
-                                _map.Fusions.Add((leftRoom, rightRoom, fusedRoom));
-                                _map.Rooms[_map.Rooms.IndexOf(leftRoom)] = _map.Rooms[_map.Rooms.IndexOf(rightRoom)] = fusedRoom;
+                                Fusions.Add((leftRoom, rightRoom, fusedRoom));
+                                RoomDefinitions[leftRoomIndex] = RoomDefinitions[rightRoomIndex] = fusedRoom;
+                                RoomLookupTable[row / 2, (column - 1) / 2] = fusedRoom;
+                                RoomLookupTable[row / 2, (column + 1) / 2] = fusedRoom;
                                 leftRoom = rightRoom = fusedRoom;
                             }
                         }
@@ -263,19 +286,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                             fusedRoom = CombineRooms(downRoom, upRoom);
                             if (fusedRoom != null)
                             {
-                                _map.Fusions.Add((upRoom, downRoom, fusedRoom));
-                                _map.Rooms[_map.Rooms.IndexOf(upRoom)] = _map.Rooms[_map.Rooms.IndexOf(downRoom)] = fusedRoom;
+                                Fusions.Add((upRoom, downRoom, fusedRoom));
+                                RoomDefinitions[upRoomIndex] = RoomDefinitions[downRoomIndex] = fusedRoom;
+                                RoomLookupTable[(row - 1) / 2, column / 2] = fusedRoom;
+                                RoomLookupTable[(row + 1) / 2, column / 2] = fusedRoom;
                                 downRoom = upRoom = fusedRoom;
                             }
                         }
                         else
+                        {
                             connectionTile = validFusionTileTypes.TakeRandomElement(Rng);
+                        }
                     }
                 }
             }
         }
 
-        private Room CombineRooms(Room thisRoom, Room adjacentRoom)
+        private ProceduralRoom CombineRooms(ProceduralRoom thisRoom, ProceduralRoom adjacentRoom)
         {
             if (adjacentRoom.Width <= 1 || adjacentRoom.Height <= 1) return null;
 
@@ -291,7 +318,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             var maxY = Math.Max(thisRoom.Position.Y + thisRoom.Height, adjacentRoom.Position.Y + adjacentRoom.Height);
             var width = Math.Max(maxX - minX, MinRoomWidth);
             var height = Math.Max(maxY - minY, MinRoomHeight);
-            return new Room(_map, new GamePoint(minX, minY), thisRoom.RoomRow, thisRoom.RoomColumn, width, height)
+            return new ProceduralRoom(_map, new GamePoint(minX, minY), thisRoom.RoomRow, thisRoom.RoomColumn, width, height)
             {
                 IsFused = true
             };
@@ -377,7 +404,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 }
             }
         }
-        private void CreateHallway((Room Source, Room Target, RoomConnectionType Tag) edge)
+        private void CreateHallway((ProceduralRoom Source, ProceduralRoom Target, RoomConnectionType Tag) edge)
         {
             var roomA = edge.Source;
             var roomB = edge.Target;
@@ -409,7 +436,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             }
         }
 
-        private void CreateHorizontalHallway(Room leftRoom, Room rightRoom)
+        private void CreateHorizontalHallway(ProceduralRoom leftRoom, ProceduralRoom rightRoom)
         {
             Tile? leftConnector = null, rightConnector = null, connectorA = null, connectorB = null;
 
@@ -501,11 +528,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             if (isValidHallway)
             {
                 BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
-                _map.Hallways.Add((leftRoom, rightRoom, connectorA, connectorB, tilesToConvert));
+                Hallways.Add((leftRoom, rightRoom, connectorA, connectorB, tilesToConvert));
             }
         }
 
-        private void CreateVerticalHallway(Room topRoom, Room downRoom)
+        private void CreateVerticalHallway(ProceduralRoom topRoom, ProceduralRoom downRoom)
         {
             Tile? topConnector = null, downConnector = null, connectorA = null, connectorB = null;
 
@@ -596,7 +623,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             if (isValidHallway)
             {
                 BuildHallwayTiles(tilesToConvert, connectorA, connectorB);
-                _map.Hallways.Add((topRoom, downRoom, connectorA, connectorB, tilesToConvert));
+                Hallways.Add((topRoom, downRoom, connectorA, connectorB, tilesToConvert));
             }
         }
 
@@ -617,8 +644,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 {
                     if (connectorA.Position.Y == connectorB.Position.Y)
                         return (null, connectorA.Position, connectorB.Position);
-                    var leftYs = Enumerable.Range(connectorA.Room.Position.Y + 1, Math.Max(1, connectorA.Room.Height - 2)).ToList();
-                    var rightYs = Enumerable.Range(connectorB.Room.Position.Y + 1, Math.Max(1, connectorB.Room.Height - 2)).ToList();
+                    var leftYs = Enumerable.Range(GetRoomForTile(connectorA).Position.Y + 1, Math.Max(1, GetRoomForTile(connectorA).Height - 2)).ToList();
+                    var rightYs = Enumerable.Range(GetRoomForTile(connectorB).Position.Y + 1, Math.Max(1, GetRoomForTile(connectorB).Height - 2)).ToList();
                     var sharedYs = leftYs.Intersect(rightYs);
                     if (!sharedYs.Any()) return (null, null, null);
                     var pickedY = sharedYs.TakeRandomElement(Rng);
@@ -644,8 +671,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 {
                     if (connectorA.Position.X == connectorB.Position.X)
                         return (null, connectorA.Position, connectorB.Position);
-                    var topXs = Enumerable.Range(connectorA.Room.Position.X + 1, Math.Max(1, connectorA.Room.Width - 2)).ToList();
-                    var downXs = Enumerable.Range(connectorB.Room.Position.X + 1, Math.Max(1, connectorB.Room.Width - 2)).ToList();
+                    var topXs = Enumerable.Range(GetRoomForTile(connectorA).Position.X + 1, Math.Max(1, GetRoomForTile(connectorA).Width - 2)).ToList();
+                    var downXs = Enumerable.Range(GetRoomForTile(connectorB).Position.X + 1, Math.Max(1, GetRoomForTile(connectorB).Width - 2)).ToList();
                     var sharedXs = topXs.Intersect(downXs);
                     if (!sharedXs.Any()) return (null, null, null);
                     var pickedX = sharedXs.TakeRandomElement(Rng);
@@ -676,26 +703,26 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             }
         }
 
-        private static bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
+        private bool IsHallwayTileGroupValid(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             if (!tilesToConvert.Any()) return false;
 
             foreach (var tile in tilesToConvert)
             {
                 if (tile == connectorA || tile == connectorB) continue;
-                if (tile.Room != null)
+                if (GetRoomForTile(tile) != null)
                     return false;
             }
             return true;
         }
 
-        private static void BuildHallwayTiles(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
+        private void BuildHallwayTiles(List<Tile> tilesToConvert, Tile connectorA, Tile connectorB)
         {
             foreach (var tile in tilesToConvert)
             {
                 tile.Type = TileType.Hallway;
-                if (tile.Room != null)
-                    tile.IsConnectorTile = true;
+                if (GetRoomForTile(tile)?.IsDummy == false)
+                    ConnectorTiles.Add(tile);
             }
         }
 
@@ -704,15 +731,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             var (TopLeftCorner, BottomRightCorner) = RoomLimitsTable[row, column];
             return (TopLeftCorner.X, TopLeftCorner.Y, BottomRightCorner.X, BottomRightCorner.Y);
         }
+        
+        private ProceduralRoom? GetRoomByRowAndColumn(int row, int column) =>
+            (row >= 0 && column >= 0 && row < RoomCountRows && column < RoomCountColumns)
+                ? RoomLookupTable[row, column]
+                : null;
 
-        private Room? GetRoomByRowAndColumn(int row, int column) => _map.Rooms.Find(r => r.RoomRow == row && r.RoomColumn == column);
-
-        private Room? GetRoomOrFusionByRowAndColumn(int row, int column)
+        private ProceduralRoom? GetRoomOrFusionByRowAndColumn(int row, int column)
         {
             var room = GetRoomByRowAndColumn(row, column);
             if (room == null)
             {
-                var fusionWithRoom = _map.Fusions.FirstOrDefault(f => (f.RoomA.RoomColumn == column && f.RoomA.RoomRow == row)
+                var fusionWithRoom = Fusions.FirstOrDefault(f => (f.RoomA.RoomColumn == column && f.RoomA.RoomRow == row)
                                                         || f.RoomB.RoomColumn == column && f.RoomB.RoomRow == row);
                 if (fusionWithRoom != default)
                     room = fusionWithRoom.FusedRoom;
@@ -725,6 +755,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             Vertical = 2,
             None = 0
         }
+
+        private ProceduralRoom GetRoomForTile(Tile t) => RoomDefinitions.FirstOrDefault(r => r.Tiles.Contains(t));
 
         #endregion
 
@@ -878,13 +910,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             }
         }
 
-        private static bool IsSpecialTileGroupValid(List<Tile> tilesToConvert)
+        private bool IsSpecialTileGroupValid(List<Tile> tilesToConvert)
         {
             if (!tilesToConvert.Any()) return false;
 
             foreach (var tile in tilesToConvert)
             {
-                if (tile.Type == TileType.Stairs || (tile.Room != null && tile.Room.IsDummy))
+                if (tile.Type == TileType.Stairs || (GetRoomForTile(tile)?.IsDummy == false))
                     return false;
             }
             return true;
@@ -915,12 +947,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
         {
             var keyGenerationData = FloorConfigurationToUse.PossibleKeys;
             if (!keyGenerationData.KeyTypes.Any() || keyGenerationData.MaxPercentageOfLockedCandidateRooms < 1) return;
+            if(_roomNeighborMap == null)
+                BuildRoomNeighborMap();
             foreach (var doorTile in _map.Tiles.Where(t => t.Type == TileType.Door))
             {
                 doorTile.Type = TileType.Hallway;
                 doorTile.DoorId = string.Empty;
             }
-            var nonDummyRooms = _map.Rooms.Where(r => !r.IsDummy).ToList().Shuffle(Rng);
+            var nonDummyRooms = _map.Rooms.Where(r => r.Tiles.Count > 1).ToList().Shuffle(Rng);
             if (nonDummyRooms.Count == 1) return;
             var maximumLockableRooms = (int)Math.Round(nonDummyRooms.Count * ((decimal)keyGenerationData.MaxPercentageOfLockedCandidateRooms / 100), 0, MidpointRounding.AwayFromZero);
             var lockedRooms = 0;
@@ -933,7 +967,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 foreach (var key in keysInInventory)
                 {
                     key.ExistenceStatus = EntityExistenceStatus.Gone;
-                    key.Owner = null;
                     key.Position = null;
                 }
             }
@@ -943,7 +976,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 if (lockedRooms >= maximumLockableRooms) break;
                 if (!IsCandidateRoom(room)) continue;
                 if (Rng.RollProbability() > keyGenerationData.LockedRoomOdds) continue;
-                var exitTiles = room.GetTiles().Where(t => t.IsConnectorTile);
+                var exitTiles = room.Tiles.Where(t => t.Type == TileType.Hallway).ToList();
                 var usableKeyTypes = keyGenerationData.KeyTypes.Where(kt => !usedKeyTypes.Contains(kt)
                 && ((room.HasStairs && kt.CanLockStairs) || (room.HasItems && kt.CanLockItems)));
                 if (!usableKeyTypes.Any()) continue;
@@ -972,23 +1005,43 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
 
         private bool IsCandidateRoom(Room room)
         {
-            if (room.IsDummy) return false;
+            if (room.Tiles.Count == 1) return false;
             if (room.HasStairs)
                 return true;
             if (room.HasItems)
                 return true;
 
-            foreach (var (RoomA, RoomB, _, _, _) in _map.Hallways.Where(h => h.RoomA == room || h.RoomB == room))
+            foreach (var neighborRoom in GetNeighboringRooms(room))
             {
-                if (RoomA == room)
-                    if (RoomB.GetTiles().Any(t => t.Type == TileType.Door))
-                        return true;
-                if (RoomB == room)
-                    if (RoomA.GetTiles().Any(t => t.Type == TileType.Door))
-                        return true;
+                if (neighborRoom.Tiles.Any(t => t.Type == TileType.Door))
+                    return true;
             }
 
             return false;
+        }
+        private void BuildRoomNeighborMap()
+        {
+            _roomNeighborMap = new Dictionary<Room, HashSet<Room>>();
+
+            foreach (var (roomAProc, roomBProc, _, _, _) in Hallways)
+            {
+                var roomA = _map.Rooms.Find(roomAProc.IsEquivalentTo);
+                var roomB = _map.Rooms.Find(roomBProc.IsEquivalentTo);
+                if (roomA == null || roomB == null) continue;
+
+                if (!_roomNeighborMap.TryGetValue(roomA, out var neighborsA))
+                    _roomNeighborMap[roomA] = neighborsA = new HashSet<Room>();
+                neighborsA.Add(roomB);
+
+                if (!_roomNeighborMap.TryGetValue(roomB, out var neighborsB))
+                    _roomNeighborMap[roomB] = neighborsB = new HashSet<Room>();
+                neighborsB.Add(roomA);
+            }
+        }
+
+        private IEnumerable<Room> GetNeighboringRooms(Room room)
+        {
+            return _roomNeighborMap.TryGetValue(room, out var neighbors) ? neighbors : Enumerable.Empty<Room>();
         }
         #endregion
 
@@ -998,6 +1051,61 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
 
         #region Stairs
         public void PlaceStairs() => _map.SetStairs();
+        #endregion
+
+        #region Room Definition
+
+        [Serializable]
+        public class ProceduralRoom
+        {
+            public readonly GamePoint Position;
+            public readonly Map Map;
+            public readonly int RoomRow;
+            public readonly int RoomColumn;
+            public readonly int Width;
+            public readonly int Height;
+            public readonly List<Tile> Tiles;
+
+            public bool WasVisited { get; set; }
+            public bool MustSpawnMonsterHouse { get; set; }
+
+            public GamePoint TopLeft => new(Position.X, Position.Y);
+            public GamePoint TopRight => new(Position.X + Width - 1, Position.Y);
+            public GamePoint BottomLeft => new(Position.X, Position.Y + Height - 1);
+            public GamePoint BottomRight => new(Position.X + Width - 1, Position.Y + Height - 1);
+
+            public bool IsDummy => Width == 1 && Height == 1;
+            public bool IsFused { get; set; }
+            public ProceduralRoom(Map map, GamePoint position, int roomRow, int roomColumn, int width, int height)
+            {
+                Map = map;
+                Position = position;
+                RoomRow = roomRow;
+                RoomColumn = roomColumn;
+                Width = width;
+                Height = height;
+
+                Tiles = new();
+                for (int x = Position.X; x < Position.X + Width; x++)
+                    for (int y = Position.Y; y < Position.Y + Height; y++)
+                        Tiles.Add(Map.GetTileFromCoordinates(x, y));
+            }
+
+            public bool IsEquivalentTo(Room room)
+            {
+                return TopLeft.X == room.TopLeft.X
+                    && TopRight.X == room.TopRight.X
+                    && BottomLeft.X == room.BottomLeft.X
+                    && BottomRight.X == room.BottomRight.X;
+            }
+
+            public ProceduralRoom Clone()
+            {
+                return new ProceduralRoom(Map, Position, RoomRow, RoomColumn, Width, Height);
+            }
+            public override string ToString() => $"Index: [{RoomRow}, {RoomColumn}]; Top left: {Position}; Bottom right: {BottomRight}; Width: {Width}; Height: {Height}";
+        }
+
         #endregion
     }
 }

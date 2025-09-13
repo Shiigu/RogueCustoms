@@ -113,7 +113,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if (itemToSteal == null) return false;
                     t.Inventory.Remove(itemToSteal);
                     s.Inventory.Add(itemToSteal);
-                    itemToSteal.Owner = s;
                     if ((s == Map.Player || Map.Player.CanSee(s))
                         || (t == Map.Player || Map.Player.CanSee(t)))
                     {
@@ -358,7 +357,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             foreach (var pick in itemPicks)
             {
                 var newItem = await Map.AddEntity(pick, c.Level, null, false) as Item;
-                newItem.Owner = c;
                 c.Inventory.Add(newItem);
                 if (lootTable.OverridesQualityLevelOddsOfItems)
                 {

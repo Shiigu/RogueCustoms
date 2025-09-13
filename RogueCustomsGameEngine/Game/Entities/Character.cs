@@ -390,9 +390,9 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 if (SightRange == EngineConstants.FullRoomSightRange)
                 {
-                    if (ContainingTile.Type == TileType.Hallway || ContainingRoom == null || ContainingTile.IsConnectorTile)
+                    if (ContainingTile.Type == TileType.Hallway || ContainingRoom == null)
                         return new HashSet<Tile>(Map.GetFOVTilesWithinDistance(Position, EngineConstants.FullRoomSightRangeForHallways));
-                    return new HashSet<Tile>(Map.GetTilesInRoom(ContainingRoom));
+                    return ContainingRoom.Tiles;
                 }
                 else
                 {
@@ -602,7 +602,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return this == entity
                 || (entity.Visible
                 && entity.Position != null
-                && ComputeFOVTiles().Contains(entity.ContainingTile))
+                && ComputeFOVTiles().Any(t => t.Position.X == entity.ContainingTile.Position.X && t.Position.Y == entity.ContainingTile.Position.Y))
                 && (!entity.ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type))
                 && (!ContainingTile.Type.CausesPartialInvisibility || (entity.ContainingTile.Type == ContainingTile.Type));
         }

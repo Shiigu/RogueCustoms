@@ -10,7 +10,7 @@ namespace RogueCustomsGameEngine.Utils
                                         .GetCustomAttribute<AssemblyFileVersionAttribute>()
                                         .Version;
 
-        public const int MaxGenerationTries = 1000;
+        public const int MaxGenerationTries = 100;
         public const int MaxGenerationTriesForHallway = 50;
         public const int MaxGenerationTriesForRiver = 50;
         public const int MaxGenerationTriesForLake = 50;
