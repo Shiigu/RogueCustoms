@@ -41,20 +41,22 @@ namespace RogueCustomsGodotClient
 
         public void LogMessage(Exception ex)
         {
-            if (!_globalState.CanWriteLogs) return;
-            using var file = FileAccess.Open(_globalState.LogFilePath, FileAccess.ModeFlags.ReadWrite);
-            file.StoreLine($"AT {DateTime.Now:s}:");
-            file.StoreLine("");
-            file.StoreLine(ex.GetType().Name);
-            file.StoreLine(ex.Message);
-            file.StoreLine("-------------");
-            file.StoreLine("Inner exception:");
-            file.StoreLine(ex.InnerException?.Message);
-            file.StoreLine(ex.InnerException?.StackTrace);
-            file.StoreLine("-------------");
-            file.StoreLine(ex.StackTrace);
-            file.StoreLine("");
-            file.StoreLine("------------------------------------");
+            if (_globalState.CanWriteLogs)
+            {
+                using var file = FileAccess.Open(_globalState.LogFilePath, FileAccess.ModeFlags.ReadWrite);
+                file.StoreLine($"AT {DateTime.Now:s}:");
+                file.StoreLine("");
+                file.StoreLine(ex.GetType().Name);
+                file.StoreLine(ex.Message);
+                file.StoreLine("-------------");
+                file.StoreLine("Inner exception:");
+                file.StoreLine(ex.InnerException?.Message);
+                file.StoreLine(ex.InnerException?.StackTrace);
+                file.StoreLine("-------------");
+                file.StoreLine(ex.StackTrace);
+                file.StoreLine("");
+                file.StoreLine("------------------------------------");
+            }
             _globalState.MessageScreenType = MessageScreenType.Error;
             GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
         }

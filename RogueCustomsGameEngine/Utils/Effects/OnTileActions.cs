@@ -108,7 +108,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return success;
         }
 
-        public static bool PlaceTrap(EffectCallerParams Args)
+        public static async Task<bool> PlaceTrap(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
 
@@ -141,7 +141,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 // Must have a valid Trap class to spawn
                 return false;
 
-            var trap = Map.AddEntity(paramsObject.Id, 1, Args.Target.Position) as Trap;
+            var trap = (await Map.AddEntity(paramsObject.Id, 1, Args.Target.Position)) as Trap;
 
             if (trap == null || trap.Position == null)
                 return false;
@@ -165,7 +165,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.TrapSet }
                 }
-                ); 
+                );
                 Map.AppendMessage(Map.Locale["CharacterCreatedATrap"].Format(new { CharacterName = c.Name, TrapName = trap.Name }), Color.DeepSkyBlue, events);
             }
 

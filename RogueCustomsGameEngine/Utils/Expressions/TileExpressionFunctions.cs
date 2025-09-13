@@ -105,8 +105,8 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 t2Tile = e2.ContainingTile;
             t2Room = t2Tile.Room;
 
-            var t1TileIsHallway = t1Tile.Type == TileType.Hallway || t1Tile.Room == null || t1Tile.IsConnectorTile;
-            var t2TileIsHallway = t2Tile.Type == TileType.Hallway || t2Tile.Room == null || t2Tile.IsConnectorTile;
+            var t1TileIsHallway = t1Tile.Type == TileType.Hallway || t1Tile.Room == null;
+            var t2TileIsHallway = t2Tile.Type == TileType.Hallway || t2Tile.Room == null;
 
             if (!t1TileIsHallway && !t2TileIsHallway)
                 return (t1Room == t2Room).ToString();

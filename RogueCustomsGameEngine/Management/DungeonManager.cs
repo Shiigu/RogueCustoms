@@ -185,6 +185,14 @@ namespace RogueCustomsGameEngine.Management
                     Params = new() { DungeonStatus.GameOver }
                     }]));
             }
+            else
+            {
+                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName} may be on stairs", [new()
+                    {
+                        DisplayEventType = DisplayEventType.SetOnStairs,
+                    Params = new() { restoredDungeon.CurrentFloor.Player.ContainingTile.Type == TileType.Stairs }
+                    }]));
+            }
             restoredDungeon.CurrentFloor.Snapshot.Read = false;
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
             ActiveDungeon = restoredDungeon;

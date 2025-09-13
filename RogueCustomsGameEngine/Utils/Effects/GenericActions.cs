@@ -918,7 +918,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     {
                         var events = new List<DisplayEventDto>();
                         targetItem.Owner?.Inventory?.Remove(targetItem);
-                        targetItem.Owner = null;
                         if (c == Map.Player)
                         {
                             events.Add(new()

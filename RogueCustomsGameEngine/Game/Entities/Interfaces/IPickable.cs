@@ -10,6 +10,6 @@ namespace RogueCustomsGameEngine.Game.Entities.Interfaces
 {
     public interface IPickable
     {
-        Character Owner { get; set; }
+        Character Owner { get; }
     }
 }

@@ -248,8 +248,8 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (entity2ToCheck is not Character c2 || c2.Position == null)
                 throw new ArgumentException("Invalid entity in AreInSameRoom.");
 
-            var c1IsInHallwayTile = c1.ContainingTile.Type == TileType.Hallway || c1.ContainingRoom == null || c1.ContainingTile.IsConnectorTile;
-            var c2IsInHallwayTile = c2.ContainingTile.Type == TileType.Hallway || c2.ContainingRoom == null || c2.ContainingTile.IsConnectorTile;
+            var c1IsInHallwayTile = c1.ContainingTile.Type == TileType.Hallway || c1.ContainingRoom == null;
+            var c2IsInHallwayTile = c2.ContainingTile.Type == TileType.Hallway || c2.ContainingRoom == null;
 
             if (!c1IsInHallwayTile && !c2IsInHallwayTile)
                 return (c1.ContainingRoom == c2.ContainingRoom).ToString();

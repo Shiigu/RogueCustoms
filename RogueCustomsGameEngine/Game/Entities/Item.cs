@@ -64,7 +64,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public Character Owner { get; set; }
+        public Character Owner => Map.GetCharacters().Find(c => c.ExistenceStatus == EntityExistenceStatus.Alive && (c.Equipment.Contains(this) || c.Inventory.Contains(this)));
         public ActionWithEffects OnUse { get; set; }
         public string BaseName { get; set; }
         public bool CanDrop { get; set; }
@@ -174,7 +174,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             BaseName = entityClass.Name;
             Power = entityClass.Power;
-            Owner = null;
             OnUse = MapClassAction(entityClass.OnUse);
             OwnOnDeath = MapClassAction(entityClass.OnDeath);
             OwnOnTurnStart = MapClassAction(entityClass.OnTurnStart);
