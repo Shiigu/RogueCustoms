@@ -44,7 +44,7 @@
             label5 = new System.Windows.Forms.Label();
             btnRemoveAlgorithm = new System.Windows.Forms.Button();
             btnEditAlgorithm = new System.Windows.Forms.Button();
-            btnAddAlgorithm = new System.Windows.Forms.Button();
+            btnAddProceduralLayout = new System.Windows.Forms.Button();
             lvFloorAlgorithms = new System.Windows.Forms.ListView();
             label17 = new System.Windows.Forms.Label();
             label16 = new System.Windows.Forms.Label();
@@ -70,6 +70,7 @@
             label2 = new System.Windows.Forms.Label();
             nudFloorGroupMonsterHouseOdds = new System.Windows.Forms.NumericUpDown();
             label3 = new System.Windows.Forms.Label();
+            btnAddStaticLayout = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)nudHungerLostPerTurn).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRoomFusionOdds).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudExtraRoomConnectionOdds).BeginInit();
@@ -84,7 +85,7 @@
             // btnPasteAlgorithm
             // 
             btnPasteAlgorithm.Enabled = false;
-            btnPasteAlgorithm.Location = new System.Drawing.Point(572, 167);
+            btnPasteAlgorithm.Location = new System.Drawing.Point(534, 196);
             btnPasteAlgorithm.Name = "btnPasteAlgorithm";
             btnPasteAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnPasteAlgorithm.TabIndex = 79;
@@ -95,7 +96,7 @@
             // btnCopyAlgorithm
             // 
             btnCopyAlgorithm.Enabled = false;
-            btnCopyAlgorithm.Location = new System.Drawing.Point(506, 167);
+            btnCopyAlgorithm.Location = new System.Drawing.Point(468, 196);
             btnCopyAlgorithm.Name = "btnCopyAlgorithm";
             btnCopyAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnCopyAlgorithm.TabIndex = 78;
@@ -126,28 +127,19 @@
             // 
             // saeOnFloorStart
             // 
-            saeOnFloorStart.Action = null;
             saeOnFloorStart.ActionDescription = "When the floor starts...";
             saeOnFloorStart.ActionTypeText = "Floor Start";
             saeOnFloorStart.AutoSize = true;
             saeOnFloorStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeOnFloorStart.ClassId = null;
-            saeOnFloorStart.Dungeon = null;
-            saeOnFloorStart.EffectParamData = null;
-            saeOnFloorStart.Location = new System.Drawing.Point(355, 343);
+            saeOnFloorStart.Location = new System.Drawing.Point(356, 365);
             saeOnFloorStart.Name = "saeOnFloorStart";
             saeOnFloorStart.PlaceholderActionId = "FloorStart";
-            saeOnFloorStart.RequiresActionId = false;
-            saeOnFloorStart.RequiresCondition = false;
-            saeOnFloorStart.RequiresDescription = false;
-            saeOnFloorStart.RequiresName = false;
             saeOnFloorStart.Size = new System.Drawing.Size(260, 32);
             saeOnFloorStart.SourceDescription = "The player (Don't use)";
             saeOnFloorStart.TabIndex = 75;
             saeOnFloorStart.TargetDescription = "The player";
             saeOnFloorStart.ThisDescription = "None (Don't use)";
-            saeOnFloorStart.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeOnFloorStart.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             saeOnFloorStart.ActionContentsChanged += saeOnFloorStart_ActionContentsChanged;
             // 
             // cmbTilesets
@@ -165,13 +157,13 @@
             label155.AutoSize = true;
             label155.Location = new System.Drawing.Point(116, 57);
             label155.Name = "label155";
-            label155.Size = new System.Drawing.Size(40, 15);
+            label155.Size = new System.Drawing.Size(41, 15);
             label155.TabIndex = 73;
             label155.Text = "Tileset";
             // 
             // nudRoomFusionOdds
             // 
-            nudRoomFusionOdds.Location = new System.Drawing.Point(504, 262);
+            nudRoomFusionOdds.Location = new System.Drawing.Point(505, 284);
             nudRoomFusionOdds.Name = "nudRoomFusionOdds";
             nudRoomFusionOdds.Size = new System.Drawing.Size(40, 23);
             nudRoomFusionOdds.TabIndex = 72;
@@ -180,15 +172,15 @@
             // label19
             // 
             label19.AutoSize = true;
-            label19.Location = new System.Drawing.Point(355, 264);
+            label19.Location = new System.Drawing.Point(356, 286);
             label19.Name = "label19";
-            label19.Size = new System.Drawing.Size(285, 15);
+            label19.Size = new System.Drawing.Size(286, 15);
             label19.TabIndex = 71;
             label19.Text = "Two adjacent rooms have a               % chance to fuse";
             // 
             // nudExtraRoomConnectionOdds
             // 
-            nudExtraRoomConnectionOdds.Location = new System.Drawing.Point(456, 232);
+            nudExtraRoomConnectionOdds.Location = new System.Drawing.Point(457, 254);
             nudExtraRoomConnectionOdds.Name = "nudExtraRoomConnectionOdds";
             nudExtraRoomConnectionOdds.Size = new System.Drawing.Size(40, 23);
             nudExtraRoomConnectionOdds.TabIndex = 70;
@@ -197,7 +189,7 @@
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new System.Drawing.Point(356, 235);
+            label18.Location = new System.Drawing.Point(357, 257);
             label18.Name = "label18";
             label18.Size = new System.Drawing.Size(323, 15);
             label18.TabIndex = 69;
@@ -205,7 +197,7 @@
             // 
             // nudMaxRoomConnections
             // 
-            nudMaxRoomConnections.Location = new System.Drawing.Point(605, 204);
+            nudMaxRoomConnections.Location = new System.Drawing.Point(606, 226);
             nudMaxRoomConnections.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
             nudMaxRoomConnections.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudMaxRoomConnections.Name = "nudMaxRoomConnections";
@@ -217,7 +209,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(356, 206);
+            label5.Location = new System.Drawing.Point(357, 228);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(326, 15);
             label5.TabIndex = 67;
@@ -226,7 +218,7 @@
             // btnRemoveAlgorithm
             // 
             btnRemoveAlgorithm.Enabled = false;
-            btnRemoveAlgorithm.Location = new System.Drawing.Point(638, 167);
+            btnRemoveAlgorithm.Location = new System.Drawing.Point(600, 196);
             btnRemoveAlgorithm.Name = "btnRemoveAlgorithm";
             btnRemoveAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnRemoveAlgorithm.TabIndex = 66;
@@ -237,7 +229,7 @@
             // btnEditAlgorithm
             // 
             btnEditAlgorithm.Enabled = false;
-            btnEditAlgorithm.Location = new System.Drawing.Point(440, 167);
+            btnEditAlgorithm.Location = new System.Drawing.Point(403, 196);
             btnEditAlgorithm.Name = "btnEditAlgorithm";
             btnEditAlgorithm.Size = new System.Drawing.Size(60, 23);
             btnEditAlgorithm.TabIndex = 65;
@@ -245,15 +237,15 @@
             btnEditAlgorithm.UseVisualStyleBackColor = true;
             btnEditAlgorithm.Click += btnEditAlgorithm_Click;
             // 
-            // btnAddAlgorithm
+            // btnAddProceduralLayout
             // 
-            btnAddAlgorithm.Location = new System.Drawing.Point(374, 167);
-            btnAddAlgorithm.Name = "btnAddAlgorithm";
-            btnAddAlgorithm.Size = new System.Drawing.Size(60, 23);
-            btnAddAlgorithm.TabIndex = 64;
-            btnAddAlgorithm.Text = "New...";
-            btnAddAlgorithm.UseVisualStyleBackColor = true;
-            btnAddAlgorithm.Click += btnAddAlgorithm_Click;
+            btnAddProceduralLayout.Location = new System.Drawing.Point(374, 167);
+            btnAddProceduralLayout.Name = "btnAddProceduralLayout";
+            btnAddProceduralLayout.Size = new System.Drawing.Size(151, 23);
+            btnAddProceduralLayout.TabIndex = 64;
+            btnAddProceduralLayout.Text = "New Procedural Layout...";
+            btnAddProceduralLayout.UseVisualStyleBackColor = true;
+            btnAddProceduralLayout.Click += btnAddProceduralLayout_Click;
             // 
             // lvFloorAlgorithms
             // 
@@ -277,7 +269,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label16.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label16.Location = new System.Drawing.Point(463, 3);
             label16.Name = "label16";
             label16.Size = new System.Drawing.Size(138, 21);
@@ -297,7 +289,7 @@
             // label15
             // 
             label15.AutoSize = true;
-            label15.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label15.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label15.Location = new System.Drawing.Point(186, 271);
             label15.Name = "label15";
             label15.Size = new System.Drawing.Size(126, 21);
@@ -317,7 +309,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label14.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label14.Location = new System.Drawing.Point(19, 271);
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(128, 21);
@@ -337,7 +329,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label13.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label13.Location = new System.Drawing.Point(21, 206);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(126, 21);
@@ -461,7 +453,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(187, 206);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(121, 21);
@@ -481,7 +473,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             label2.Location = new System.Drawing.Point(103, 343);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(137, 21);
@@ -490,7 +482,7 @@
             // 
             // nudFloorGroupMonsterHouseOdds
             // 
-            nudFloorGroupMonsterHouseOdds.Location = new System.Drawing.Point(407, 303);
+            nudFloorGroupMonsterHouseOdds.Location = new System.Drawing.Point(408, 325);
             nudFloorGroupMonsterHouseOdds.Name = "nudFloorGroupMonsterHouseOdds";
             nudFloorGroupMonsterHouseOdds.Size = new System.Drawing.Size(40, 23);
             nudFloorGroupMonsterHouseOdds.TabIndex = 85;
@@ -499,17 +491,28 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(355, 305);
+            label3.Location = new System.Drawing.Point(356, 327);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(340, 15);
+            label3.Size = new System.Drawing.Size(341, 15);
             label3.TabIndex = 84;
             label3.Text = "There's a               % chance of a Room to host a Monster House";
+            // 
+            // btnAddStaticLayout
+            // 
+            btnAddStaticLayout.Location = new System.Drawing.Point(531, 167);
+            btnAddStaticLayout.Name = "btnAddStaticLayout";
+            btnAddStaticLayout.Size = new System.Drawing.Size(151, 23);
+            btnAddStaticLayout.TabIndex = 86;
+            btnAddStaticLayout.Text = "New Static Layout...";
+            btnAddStaticLayout.UseVisualStyleBackColor = true;
+            btnAddStaticLayout.Click += btnAddStaticLayout_Click;
             // 
             // FloorGroupTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(btnAddStaticLayout);
             Controls.Add(nudFloorGroupMonsterHouseOdds);
             Controls.Add(label3);
             Controls.Add(btnSpecialTileGenerator);
@@ -531,7 +534,7 @@
             Controls.Add(label5);
             Controls.Add(btnRemoveAlgorithm);
             Controls.Add(btnEditAlgorithm);
-            Controls.Add(btnAddAlgorithm);
+            Controls.Add(btnAddProceduralLayout);
             Controls.Add(lvFloorAlgorithms);
             Controls.Add(label17);
             Controls.Add(label16);
@@ -583,7 +586,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnRemoveAlgorithm;
         private System.Windows.Forms.Button btnEditAlgorithm;
-        private System.Windows.Forms.Button btnAddAlgorithm;
+        private System.Windows.Forms.Button btnAddProceduralLayout;
         private System.Windows.Forms.ListView lvFloorAlgorithms;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
@@ -609,5 +612,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudFloorGroupMonsterHouseOdds;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnAddStaticLayout;
     }
 }

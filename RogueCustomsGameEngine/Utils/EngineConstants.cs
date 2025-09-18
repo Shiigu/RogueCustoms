@@ -10,10 +10,10 @@ namespace RogueCustomsGameEngine.Utils
                                         .GetCustomAttribute<AssemblyFileVersionAttribute>()
                                         .Version;
 
-        public const int MaxGenerationTries = 100;
-        public const int MaxGenerationTriesForHallway = 50;
-        public const int MaxGenerationTriesForRiver = 50;
-        public const int MaxGenerationTriesForLake = 50;
+        public const int MaxGenerationTries = 25;
+        public const int MaxGenerationTriesForHallway = 15;
+        public const int MaxGenerationTriesForRiver = 15;
+        public const int MaxGenerationTriesForLake = 15;
         public const int LogMessagesToSend = 200;
         public const int MinRoomWidthOrHeight = 5;
 
@@ -54,5 +54,14 @@ namespace RogueCustomsGameEngine.Utils
         public static readonly string LOOT_EQUIPPABLE = "Equippable";
 
         public static readonly string[] SPECIAL_LOOT_ENTRIES = [ LOOT_NO_DROP, LOOT_EQUIPPABLE ];
+
+        public static readonly string SPAWN_ANY_CHARACTER = "AnyCharacter";
+        public static readonly string SPAWN_PLAYER_CHARACTER = "PlayerCharacter";
+        public static readonly string SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER = "AnyAllyIncludingPlayer";
+        public static readonly string SPAWN_ANY_ALLIED_CHARACTER = "AnyAlly";
+        public static readonly string SPAWN_ANY_NEUTRAL_CHARACTER = "AnyNeutral";
+        public static readonly string SPAWN_ANY_ENEMY_CHARACTER = "AnyEnemy";
+        public static readonly string SPAWN_ANY_ITEM = "AnyItem";
+        public static readonly string SPAWN_ANY_TRAP = "AnyTrap";
     }
 }

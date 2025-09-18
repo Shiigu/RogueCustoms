@@ -66,12 +66,8 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void dgvQualityLevels_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (e.ColumnIndex != 1) return;
-            var cellValue = dgvQualityLevels[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? "0";
-
+            var cellValue = dgvQualityLevels[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
             PreviousCellValue = cellValue;
-
-            dgvQualityLevels[e.ColumnIndex, e.RowIndex].Value = cellValue.Replace("+", "").Replace("%", "");
         }
 
         private void dgvQualityLevels_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -92,7 +88,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
             if (!int.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out int result))
             {
-                MessageBox.Show("Only numeric values are allowed.", "Item Stat Modifiers", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Only numeric values are allowed.", "Item QualityLevels", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
         }

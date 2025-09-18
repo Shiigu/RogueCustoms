@@ -416,14 +416,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 CurrentTarget = pickedTile.Tile;
                 return false;
             }
-            try
-            {
-                await pickedAction.Action.Do(this, CurrentTarget, true);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            await pickedAction.Action.Do(this, CurrentTarget, true);
             if (pickedAction.Action.FinishesTurnWhenUsed)
                 TookAction = true;
 
@@ -578,9 +571,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 if (CurrencyCarried > 0)
                 {
-                    droppedCurrency = true;
                     var currencyForDrop = Map.CreateCurrency(CurrencyCarried, null, false);
                     DropItem(currencyForDrop);
+                    if(currencyForDrop.Position != null)
+                        droppedCurrency = true;
                 }
                 if (attacker == Map.Player || Map.Player.CanSee(this))
                 {
@@ -673,10 +667,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 pickedEmptyTile = centralTile;
             if(pickedEmptyTile == null)
             {
-                var closeEmptyTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.AllowsDrops).ToList();
+                var closeTiles = Map.Tiles.GetElementsWithinDistanceWhere(centralPosition.Y, centralPosition.X, 5, true, t => t.AllowsDrops).ToList();
+                var closeEmptyTiles = closeTiles.Where(t => !t.IsOccupied).ToList();
                 if(centralTile?.AllowsDrops == true)
                     closeEmptyTiles.Add(centralTile);
-                closeEmptyTiles = closeEmptyTiles.Where(t => t.LivingCharacter == null || t.LivingCharacter.ExistenceStatus != EntityExistenceStatus.Alive || t.LivingCharacter == this).ToList();
                 var closestDistance = closeEmptyTiles.Any() ? closeEmptyTiles.Min(t => (int) GamePoint.Distance(t.Position, centralPosition)) : -1;
                 var closestEmptyTiles = closeEmptyTiles.Where(t => (int) GamePoint.Distance(t.Position, centralPosition) <= closestDistance);
                 if (closestEmptyTiles.Any())

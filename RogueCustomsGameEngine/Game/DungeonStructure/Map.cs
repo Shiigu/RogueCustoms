@@ -28,6 +28,8 @@ using RogueCustomsGameEngine.Game.Interaction;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using System.Text.RegularExpressions;
 using RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators;
+using D20Tek.Common.Models;
+using RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.Interfaces;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -79,29 +81,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly FloorType FloorConfigurationToUse;
 
-        private FloorLayoutGenerator GeneratorToUse;
+        public Generator GeneratorToUse { get; set; }
 
-        private readonly FloorLayoutGenerator DefaultGeneratorToUse = new FloorLayoutGenerator
+        private readonly ProceduralGenerator DefaultGeneratorToUse = new ProceduralGenerator
         {
             Columns = 1,
             Rows = 1,
             MinRoomSize = new() { Height = 5, Width = 5 },
             RoomDisposition = new RoomDispositionType[1, 1]
         };
-
-        private RoomDispositionType[,] RoomDispositionToUse;
         public TileSet TileSet => FloorConfigurationToUse.TileSet;
 
         public string FloorName => Locale["FloorName"].Format(new {
                                                                 DungeonName = Dungeon.Name.ToUpperInvariant(),
                                                                 FloorLevel = FloorLevel.ToString()
                                                                 });
-
-        private int RoomCountRows => GeneratorToUse.Rows;
-        private int RoomCountColumns => GeneratorToUse.Columns;
-        public int MaxConnectionsBetweenRooms => FloorConfigurationToUse.MaxConnectionsBetweenRooms;
-        public int OddsForExtraConnections => FloorConfigurationToUse.OddsForExtraConnections;
-        public int RoomFusionOdds => FloorConfigurationToUse.RoomFusionOdds;
         public decimal HungerDegeneration => FloorConfigurationToUse.HungerDegeneration;
 
         public int Width { get; private set; }
@@ -117,6 +111,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<Affix> Prefixes => Affixes.Where(a => a.Type == AffixType.Prefix).ToList();
         public List<Affix> Suffixes => Affixes.Where(a => a.Type == AffixType.Suffix).ToList();
         public List<QualityLevel> QualityLevels => Dungeon.QualityLevels;
+        public List<CurrencyPile> CurrencyData => Dungeon.CurrencyData;
         public List<Currency> CurrencyPiles { get; set; }
         public List<ItemSlot> ItemSlots => Dungeon.ItemSlots;
         public List<Item> Items { get; set; }
@@ -128,6 +123,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public RngHandler Rng { get; private set; }
 
         public Tile[,] Tiles { get; set; }
+        public GamePoint StairsPosition { get; set; }
         public Tile StairsTile => Tiles.Find(t => t.Type == TileType.Stairs);
 
         public List<Room> Rooms { get; set; }
@@ -137,6 +133,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public EntityClass CurrencyClass => Dungeon.CurrencyClass;
         public float SaleValuePercentage => Player.SaleValuePercentage;
         public List<EntityClass> PossibleClasses => Dungeon.Classes;
+        public List<EntityClass> PossiblePlayerClasses => Dungeon.PlayerClasses;
         public List<EntityClass> PossibleNPCClasses => Dungeon.NPCClasses;
         public List<EntityClass> PossibleItemClasses => Dungeon.ItemClasses;
         public List<EntityClass> PossibleTrapClasses => Dungeon.TrapClasses;
@@ -275,7 +272,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var mapGenerationSuccess = false;
             var keyGenerationSuccess = true;    // Defaults to true just in case there were no keys to generate
             GenerationTries = 0;
-            var generator = new ProceduralFloorGenerator(this, GeneratorToUse);
+            IFloorGenerator generator = GeneratorToUse is ProceduralGenerator ?
+                            new ProceduralFloorGenerator(this, GeneratorToUse as ProceduralGenerator) :
+                            new StaticFloorGenerator(this, GeneratorToUse as StaticGenerator);
             bool success;
             do
             {
@@ -290,32 +289,35 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                 if ((Rooms.Count == 1 && !Rooms.Any(r => r.Tiles?.Count <= 1)) || Rooms.Count(r => r.Tiles.Count > 1) > 1)
                 {
-                    success = Tiles.IsFullyConnected(t => t.IsWalkable);
+                    success = generator.IsFloorSolvable();
                     if (success)
                     {
                         generator.CreateSpecialTiles();
-                        success = Tiles.IsFullyConnected(t => t.IsWalkable);
+                        success = generator.IsFloorSolvable();
                         if (success)
                         {
                             await generator.PlacePlayer();
                             success = Player.Position != null;
                             if (success)
                             {
-                                if (FloorConfigurationToUse.GenerateStairsOnStart)
-                                    SetStairs();
-                                Player.ContainingRoom.WasVisited = true;
-                                if (!isGeneratingForDebug)
+                                generator.PlaceStairs();
+                                success = generator.ArePlayerAndStairsPositionsCorrect();
+                                if (success)
                                 {
-                                    DisplayEvents = new();
-                                    DisplayEvents.Add(("ClearMessageLog", new()
+                                    Player.ContainingRoom.WasVisited = true;
+                                    if (!isGeneratingForDebug)
                                     {
-                                        new() {
-                                            DisplayEventType = DisplayEventType.ClearLogMessages,
-                                            Params = new() { }
+                                        DisplayEvents = new();
+                                        DisplayEvents.Add(("ClearMessageLog", new()
+                                        {
+                                            new() {
+                                                DisplayEventType = DisplayEventType.ClearLogMessages,
+                                                Params = new() { }
+                                            }
                                         }
+                                        ));
+                                        AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                     }
-                                    ));
-                                    AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                 }
                             }
                         }
@@ -332,26 +334,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             mapGenerationSuccess = success && !usingDefaultGenerator;
 
-            try
-            {
-                await generator.PlaceEntities();
-                await NewTurn();
-            }
-            catch (Exception ex)
-            {
-                if (!IsDebugMode)
-                    throw;
-                else
-                    mapGenerationSuccess = false;
-            }
-
-            if (Rooms.Count(r => r.Tiles.Count > 1) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
+            if (success && Rooms.Count(r => r.Tiles.Count > 1) > 1 && FloorConfigurationToUse.PossibleKeys?.KeyTypes != null && FloorConfigurationToUse.PossibleKeys.KeyTypes.Any())
             {
                 do
                 {
                     GenerationTries++;
                     await generator.PlaceKeysAndDoors();
-                    success = IsFullyConnectedWithKeys();
+                    success = generator.IsFloorSolvableWithKeys();
                     if (success)
                     {
                         var events = new List<DisplayEventDto>();
@@ -407,7 +396,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 keyGenerationSuccess = success;
             }
-            if(!isGeneratingForDebug)
+
+            try
+            {
+                await generator.PlaceEntities();
+                await NewTurn();
+            }
+            catch (Exception ex)
+            {
+                if (!IsDebugMode)
+                    throw;
+                else
+                    mapGenerationSuccess = false;
+            }
+
+            if (!isGeneratingForDebug)
                 Snapshot = new(Dungeon, this);
             return (mapGenerationSuccess, keyGenerationSuccess);
         }
@@ -419,6 +422,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (tile.Type == TileType.Wall) return false;
             if (tile.Type == TileType.Hallway) return false;
             return true;
+        }
+
+        private bool IsStrictFloor(Tile tile)
+        {
+            if (tile == null) return false;
+            return tile.Type == TileType.Floor || tile.Type == TileType.Stairs;
         }
 
         public List<Room> ExtractRooms()
@@ -435,15 +444,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     Tile startTile = Tiles[y, x];
 
-                    if (!visited[y, x] && IsTileValidForVisiting(startTile))
+                    if (!visited[y, x] && IsTileValidForVisiting(startTile) && IsStrictFloor(startTile))
                     {
                         var roomTiles = FloodFillRoom(visited, startTile);
 
                         if (roomTiles.Count > 0)
                         {
-                            roomTiles.AddRange(AddAdjacentWalls(roomTiles));
-                            Room room = new Room(this, roomTiles);
-                            rooms.Add(room);
+                            var boundaries = AddAdjacentWalls(roomTiles);
+                            if (boundaries.Count > 0)
+                            {
+                                roomTiles = boundaries.ToList();
+                                Room room = new Room(this, roomTiles);
+                                rooms.Add(room);
+                            }
                         }
                     }
                 }
@@ -460,6 +473,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             List<Tile> roomTiles = new();
             Queue<Tile> queue = new();
             queue.Enqueue(start);
+            bool isFailedRoom = false;
 
             while (queue.Count > 0)
             {
@@ -468,33 +482,60 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 int y = current.Position.Y;
 
                 if (visited[y, x]) continue;
-                visited[y, x] = true;
 
                 if (!IsTileValidForVisiting(current)) continue;
 
+                visited[y, x] = true;
                 roomTiles.Add(current);
 
-                var neighbors = new (int dx, int dy)[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
+                var neighbors = new (int dx, int dy)[]
+                {
+                    (-1, 0), (1, 0), (0, -1), (0, 1),
+                    (1, 1), (1, -1), (-1, -1), (-1, 1)
+                };
+
+                bool hasValidNeighbours = true;
+
                 foreach (var (dx, dy) in neighbors)
                 {
                     int nx = x + dx, ny = y + dy;
                     if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && !visited[ny, nx])
                     {
-                        if (IsTileValidForVisiting(Tiles[ny, nx]))
-                            queue.Enqueue(Tiles[ny, nx]);
+                        var neighbor = Tiles[ny, nx];
+                        if (IsTileValidForVisiting(neighbor))
+                        {
+                            queue.Enqueue(neighbor);
+                        }
+                        else if (neighbor.Type == TileType.Empty)
+                        {
+                            //if (IsStrictFloor(current))
+                            //    isFailedRoom = true;
+
+                            hasValidNeighbours = false;
+                            break;
+                        }
                     }
                 }
+
+                if (!hasValidNeighbours)
+                    roomTiles.Remove(current);
             }
 
-            return roomTiles;
+            return isFailedRoom ? new() : roomTiles;
         }
+
         private HashSet<Tile> AddAdjacentWalls(List<Tile> roomTiles)
         {
             HashSet<Tile> extendedTiles = new(roomTiles);
 
             foreach (var tile in roomTiles)
             {
-                var neighbors = new (int dx, int dy)[] { (-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1) };
+                var neighbors = new (int dx, int dy)[]
+                {
+            (-1, 0), (1, 0), (0, -1), (0, 1),
+            (-1, -1), (-1, 1), (1, -1), (1, 1)
+                };
+
                 foreach (var (dx, dy) in neighbors)
                 {
                     int nx = tile.Position.X + dx;
@@ -502,36 +543,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     if (nx >= 0 && nx < Tiles.GetLength(1) && ny >= 0 && ny < Tiles.GetLength(0))
                     {
                         var neighborTile = Tiles[ny, nx];
-                        if (neighborTile.Type == TileType.Wall || neighborTile.Type == TileType.Hallway)
+                        if (neighborTile.Type != TileType.Empty)
                             extendedTiles.Add(neighborTile);
                     }
                 }
             }
 
             return extendedTiles;
-        }
-
-
-        private bool IsFullyConnectedWithKeys()
-        {
-            var availableKeyTypes = Keys.Select(k => k.Name).ToList();
-            var usedKeyTypes = new List<string>();
-            var foundNewKeys = false;
-            var islandCount = -1;
-            do
-            {
-                var islands = Tiles.GetIslands(t => t.IsWalkable || usedKeyTypes.Contains(t.DoorId));
-                islandCount = islands.Count;
-                if (islandCount == 1) break;
-                var islandWithPlayer = islands.FirstOrDefault(i => i.Contains(Player.ContainingTile));
-                if (islandWithPlayer == null) return false;
-                var newKeys = Keys.Where(k => (k.Position != null && islandWithPlayer.Contains(k.ContainingTile)) || (k.Owner != null && islandWithPlayer.Contains(k.Owner.ContainingTile))).ToList();
-                foundNewKeys = newKeys.Any(k => !usedKeyTypes.Contains(k.ClassId.Replace("KeyType", "")));
-                usedKeyTypes.AddRange(newKeys.Select(k => k.ClassId.Replace("KeyType", "")));
-                usedKeyTypes = usedKeyTypes.Distinct().ToList();
-            }
-            while (foundNewKeys && islandCount != 1);
-            return islandCount == 1;
         }
 
         public void AppendMessage(string message) => AppendMessage(message, new GameColor(Color.White), new GameColor(Color.Transparent), null);
@@ -894,7 +912,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return entity;
         }
 
-        public async Task PlacePlayer()
+        public async Task PlacePlayer(GamePoint position = null)
         {
             if (Player == null)
             {
@@ -911,7 +929,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 Player.Inventory?.ForEach(RegisterItemFromInventory);
             }
-            Player.Position = PickEmptyPosition(false, false);
+            Player.Position = position ?? PickEmptyPosition(false, false);
             Player.UpdateVisibility();
             if(Player.Hunger != null && Player.HungerDegeneration != null)
                 Player.HungerDegeneration.Base = HungerDegeneration * -1;
@@ -926,82 +944,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     CreateFlag("TurnCount", TurnCount, false);
                 else
                     SetFlagValue("TurnCount", TurnCount);
-                #region Generate Monsters
-                if(FloorConfigurationToUse.PossibleMonsters.Any())
-                {
-                    var totalGuaranteedNPCs = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.MinimumInFirstTurn);
-                    foreach (var possibleNPC in FloorConfigurationToUse.PossibleMonsters)
-                    {
-                        for (int i = 0; i < possibleNPC.MinimumInFirstTurn; i++)
-                        {
-                            var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
-                            var npc = await AddEntity(possibleNPC.ClassId, level) as NonPlayableCharacter;
-                            npc.SpawnedViaMonsterHouse = false;
-                            possibleNPC.TotalGeneratedInFloor++;
-                            LastMonsterGenerationTurn = TurnCount;
-                        }
-                    }
-                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMinMonstersAtStart - totalGuaranteedNPCs);
-                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor - totalGuaranteedNPCs);
-                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
-                    for (int i = 0; i < generationsToDo; i++)
-                    {
-                        await AddNPC();
-                    }
-                }
 
-                #endregion
-                
-                #region Generate Items
-                if (FloorConfigurationToUse.PossibleItems.Any())
-                {
-                    var totalGuaranteedItems = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.MinimumInFirstTurn);
-                    foreach (var possibleItem in FloorConfigurationToUse.PossibleItems)
-                    {
-                        for (int i = 0; i < possibleItem.MinimumInFirstTurn; i++)
-                        {
-                            await AddEntity(possibleItem.ClassId);
-                            possibleItem.TotalGeneratedInFloor++;
-                        }
-                    }
-                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinItemsInFloor - totalGuaranteedItems);
-                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxItemsInFloor - totalGuaranteedItems);
-                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
-                    for (int i = 0; i < generationsToDo; i++)
-                    {
-                        await AddItem();
-                    }
-                }
+                var mustRollNPCs = GeneratorToUse is ProceduralGenerator;
+                var mustRollItems = GeneratorToUse is ProceduralGenerator || (GeneratorToUse is StaticGenerator sg && sg.GenerateItemsOnFirstTurn);
+                var mustRollTraps = GeneratorToUse is ProceduralGenerator || (GeneratorToUse is StaticGenerator sg2 && sg2.GenerateTrapsOnFirstTurn);
 
-                #endregion
+                if(mustRollNPCs)
+                    await RollTurn0NPCs();
 
-                #region Generate Traps
+                if (mustRollItems)
+                    await RollTurn0Items();
 
-                if(FloorConfigurationToUse.PossibleTraps.Any())
-                {
-                    var totalGuaranteedTraps = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.MinimumInFirstTurn);
-                    foreach (var possibleTrap in FloorConfigurationToUse.PossibleTraps)
-                    {
-                        for (int i = 0; i < possibleTrap.MinimumInFirstTurn; i++)
-                        {
-                            await AddEntity(possibleTrap.ClassId);
-                            possibleTrap.TotalGeneratedInFloor++;
-                        }
-                    }
-                    var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinTrapsInFloor - totalGuaranteedTraps);
-                    var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxTrapsInFloor - totalGuaranteedTraps);
-                    var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
-                    for (int i = 0; i < generationsToDo; i++)
-                    {
-                        await AddTrap();
-                    }
-                }
-
-                #endregion
+                if (mustRollTraps)
+                    await RollTurn0Traps();
 
                 #region Flag Monster House
 
-                if(Rooms.Count(r => r.Tiles.Count > 1) > 1 && Rng.RollProbability() <= FloorConfigurationToUse.MonsterHouseOdds)
+                if(GeneratorToUse is ProceduralGenerator && Rooms.Count(r => r.Tiles.Count > 1) > 1 && Rng.RollProbability() <= FloorConfigurationToUse.MonsterHouseOdds)
                 {
                     var roomPickList = new List<Room>();
                     var smallestRoom = Rooms.Where(r => r.Tiles.Count > 1).Min(r => r.Tiles.Count);
@@ -1111,6 +1070,72 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 while (Snapshot != null && !Snapshot.Read)
                     await Task.Delay(10);
                 Snapshot = new(Dungeon, this) { Read = true };
+            }
+        }
+
+        public async Task RollTurn0NPCs()
+        {
+            if (!FloorConfigurationToUse.PossibleMonsters.Any()) return;
+            var totalGuaranteedNPCs = FloorConfigurationToUse.PossibleMonsters.Sum(mg => mg.MinimumInFirstTurn);
+            foreach (var possibleNPC in FloorConfigurationToUse.PossibleMonsters)
+            {
+                for (int i = 0; i < possibleNPC.MinimumInFirstTurn; i++)
+                {
+                    var level = Rng.NextInclusive(possibleNPC.MinLevel, possibleNPC.MaxLevel);
+                    var npc = await AddEntity(possibleNPC.ClassId, level) as NonPlayableCharacter;
+                    npc.SpawnedViaMonsterHouse = false;
+                    possibleNPC.TotalGeneratedInFloor++;
+                    LastMonsterGenerationTurn = TurnCount;
+                }
+            }
+            var minimumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMinMonstersAtStart - totalGuaranteedNPCs);
+            var maximumGenerations = Math.Max(0, FloorConfigurationToUse.SimultaneousMaxMonstersInFloor - totalGuaranteedNPCs);
+            var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+            for (int i = 0; i < generationsToDo; i++)
+            {
+                await AddNPC();
+            }
+        }
+
+        public async Task RollTurn0Items()
+        {
+            if (!FloorConfigurationToUse.PossibleItems.Any()) return;
+            var totalGuaranteedItems = FloorConfigurationToUse.PossibleItems.Sum(ig => ig.MinimumInFirstTurn);
+            foreach (var possibleItem in FloorConfigurationToUse.PossibleItems)
+            {
+                for (int i = 0; i < possibleItem.MinimumInFirstTurn; i++)
+                {
+                    await AddEntity(possibleItem.ClassId);
+                    possibleItem.TotalGeneratedInFloor++;
+                }
+            }
+            var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinItemsInFloor - totalGuaranteedItems);
+            var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxItemsInFloor - totalGuaranteedItems);
+            var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+            for (int i = 0; i < generationsToDo; i++)
+            {
+                await AddItem();
+            }
+        }
+
+        public async Task RollTurn0Traps()
+        {
+            if (!FloorConfigurationToUse.PossibleTraps.Any()) return;
+            var totalGuaranteedTraps = FloorConfigurationToUse.PossibleTraps.Sum(tg => tg.MinimumInFirstTurn);
+            foreach (var possibleTrap in FloorConfigurationToUse.PossibleTraps)
+            {
+                for (int i = 0; i < possibleTrap.MinimumInFirstTurn; i++)
+                {
+                    await AddEntity(possibleTrap.ClassId);
+                    possibleTrap.TotalGeneratedInFloor++;
+                }
+            }
+            var minimumGenerations = Math.Max(0, FloorConfigurationToUse.MinTrapsInFloor - totalGuaranteedTraps);
+            var maximumGenerations = Math.Max(0, FloorConfigurationToUse.MaxTrapsInFloor - totalGuaranteedTraps);
+            var generationsToDo = Rng.NextInclusive(minimumGenerations, maximumGenerations);
+            for (int i = 0; i < generationsToDo; i++)
+            {
+                await AddTrap();
             }
         }
 
@@ -1613,7 +1638,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if(StairsTile != null)
                 StairsTile.Type = TileType.Floor;
-            SetStairs(PickEmptyPosition(true, false));
+            SetStairs(StairsPosition ?? PickEmptyPosition(true, false));
         }
 
         public GamePoint PickEmptyPosition(bool allowPlayerRoom, bool isItem)

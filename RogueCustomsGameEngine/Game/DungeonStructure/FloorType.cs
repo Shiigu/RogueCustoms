@@ -1,4 +1,7 @@
-﻿using RogueCustomsGameEngine.Game.Entities;
+﻿using org.matheval.Node;
+
+using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
@@ -10,6 +13,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -49,7 +53,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public readonly decimal HungerDegeneration;
 
-        public List<FloorLayoutGenerator> PossibleLayouts { get; private set; }
+        public List<Generator> PossibleLayouts { get; private set; }
         public List<SpecialTileInFloor> PossibleSpecialTiles { get; private set; }
         public KeyDoorGenerator PossibleKeys { get; private set; }
 
@@ -78,28 +82,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             RoomFusionOdds = floorInfo.RoomFusionOdds;
             MonsterHouseOdds = floorInfo.MonsterHouseOdds;
             HungerDegeneration = floorInfo.HungerDegeneration;
-            PossibleLayouts = new List<FloorLayoutGenerator>();
-            foreach (var layout in floorInfo.PossibleLayouts)
-            {
-                var matrixColumns = layout.Columns * 2 - 1;
-                var matrixRows = layout.Rows * 2 - 1;
-                var dispositionMatrix = new RoomDispositionType[matrixRows, matrixColumns];
-                for (int i = 0; i < layout.RoomDisposition.Length; i++)
-                {
-                    var roomTile = layout.RoomDisposition[i];
-                    (int X, int Y) = (i / matrixColumns, i % matrixColumns);
-                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
-                    dispositionMatrix[X, Y] = roomTile.ToRoomDispositionIndicator(isHallwayTile);
-                }
-                PossibleLayouts.Add(new FloorLayoutGenerator
-                {
-                    Rows = layout.Rows,
-                    Columns = layout.Columns,
-                    RoomDisposition = dispositionMatrix,
-                    MinRoomSize = layout.MinRoomSize,
-                    MaxRoomSize = layout.MaxRoomSize,
-                });
-            }
             OnFloorStart = ActionWithEffects.Create(floorInfo.OnFloorStart, dungeon.ActionSchools);
             PossibleKeys = new();
             if(floorInfo.PossibleKeys != null)
@@ -129,6 +111,190 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         MinSpecialTileGenerations = specialTileGenerator.MinSpecialTileGenerations,
                         MaxSpecialTileGenerations = specialTileGenerator.MaxSpecialTileGenerations,
                         GeneratorType = specialTileGenerator.GeneratorType.Value
+                    });
+                }
+            }
+
+
+            PossibleLayouts = new List<Generator>();
+            foreach (var layout in floorInfo.PossibleLayouts)
+            {
+                if (layout.ProceduralGenerator != null)
+                {
+                    var matrixColumns = layout.ProceduralGenerator.Columns * 2 - 1;
+                    var matrixRows = layout.ProceduralGenerator.Rows * 2 - 1;
+                    var dispositionMatrix = new RoomDispositionType[matrixRows, matrixColumns];
+                    for (int i = 0; i < layout.ProceduralGenerator.RoomDisposition.Length; i++)
+                    {
+                        var roomTile = layout.ProceduralGenerator.RoomDisposition[i];
+                        (int X, int Y) = (i / matrixColumns, i % matrixColumns);
+                        var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
+                        dispositionMatrix[X, Y] = roomTile.ToRoomDispositionIndicator(isHallwayTile);
+                    }
+                    PossibleLayouts.Add(new ProceduralGenerator
+                    {
+                        Name = layout.Name,
+                        Rows = layout.ProceduralGenerator.Rows,
+                        Columns = layout.ProceduralGenerator.Columns,
+                        RoomDisposition = dispositionMatrix,
+                        MinRoomSize = layout.ProceduralGenerator.MinRoomSize,
+                        MaxRoomSize = layout.ProceduralGenerator.MaxRoomSize,
+                    });
+                }
+                else if (layout.StaticGenerator != null)
+                {
+                    var floorGeometry = new TileType[floorInfo.Height, floorInfo.Width];
+                    var specialSpawns = new List<SpecialSpawn>();
+                    for (int i = 0; i < layout.StaticGenerator.FloorGeometry.Length; i++)
+                    {
+                        var tile = layout.StaticGenerator.FloorGeometry[i];
+                        var tileTypeId = tile switch
+                        {
+                            '-' => "Empty",
+                            '#' => "Wall",
+                            '.' => "Floor",
+                            '+' => "Hallway",
+                            _ => "Empty"
+                        };
+                        var tileType = dungeon.TileTypes.First(tt => tt.Id.Equals(tileTypeId));
+                        (int X, int Y) = (i % floorInfo.Width, i / floorInfo.Width);
+                        floorGeometry[Y, X] = tileType;
+                        var specialSpawnForTile = layout.StaticGenerator.SpecialSpawns?.FirstOrDefault(ss => ss.X == X + 1 && ss.Y == Y + 1);
+                        if (specialSpawnForTile != null)
+                        {
+                            if (specialSpawnForTile.SpawnId == "Stairs")
+                            {
+                                specialSpawns.Add(new SpecialSpawn
+                                {
+                                    X = specialSpawnForTile.X - 1,
+                                    Y = specialSpawnForTile.Y - 1,
+                                    ObjectToSpawn = TileType.Stairs
+                                });
+                            }
+                            else
+                            {
+                                var specialTileType = dungeon.TileTypes.Find(tt => tt.Id.Equals(specialSpawnForTile.SpawnId));
+                                if (specialTileType != null)
+                                {
+                                    specialSpawns.Add(new SpecialSpawn
+                                    {
+                                        X = specialSpawnForTile.X - 1,
+                                        Y = specialSpawnForTile.Y - 1,
+                                        ObjectToSpawn = specialTileType
+                                    });
+                                }
+                                else
+                                {
+                                    if (specialSpawnForTile.SpawnId.Contains("Key"))
+                                    {
+                                        var keyTypeString = specialSpawnForTile.SpawnId.Replace("Key", "").Trim();
+                                        var keyType = PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
+                                        if (keyType != null)
+                                        {
+                                            specialSpawns.Add(new SpecialSpawn
+                                            {
+                                                X = specialSpawnForTile.X - 1,
+                                                Y = specialSpawnForTile.Y - 1,
+                                                ObjectToSpawn = keyType.KeyClass
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (specialSpawnForTile.SpawnId.Contains("Door"))
+                                        {
+                                            var keyTypeString = specialSpawnForTile.SpawnId.Replace("Door", "").Trim();
+                                            var keyType = PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
+                                            if (keyType != null)
+                                            {
+                                                specialSpawns.Add(new SpecialSpawn
+                                                {
+                                                    X = specialSpawnForTile.X - 1,
+                                                    Y = specialSpawnForTile.Y - 1,
+                                                    ObjectToSpawn = $"DoorType{keyType.KeyTypeName}",
+                                                });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var characterClass = dungeon.CharacterClasses.Find(cc => cc.Id.Equals(specialSpawnForTile.SpawnId));
+                                            if (characterClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_CHARACTER
+                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER
+                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER
+                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_NEUTRAL_CHARACTER
+                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ENEMY_CHARACTER
+                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_PLAYER_CHARACTER)
+                                            {
+                                                specialSpawns.Add(new SpecialSpawn
+                                                {
+                                                    X = specialSpawnForTile.X - 1,
+                                                    Y = specialSpawnForTile.Y - 1,
+                                                    ObjectToSpawn = characterClass ?? (object)specialSpawnForTile.SpawnId,
+                                                    Level = specialSpawnForTile.Level
+                                                });
+                                            }
+                                            else
+                                            {
+                                                var itemClass = dungeon.ItemClasses.Find(ic => ic.Id.Equals(specialSpawnForTile.SpawnId));
+                                                if (itemClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ITEM)
+                                                {
+                                                    var qualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(specialSpawnForTile.QualityLevel))
+                                                        ?? dungeon.QualityLevels.MinBy(ql => ql.MaximumAffixes);
+                                                    specialSpawns.Add(new SpecialSpawn
+                                                    {
+                                                        X = specialSpawnForTile.X - 1,
+                                                        Y = specialSpawnForTile.Y - 1,
+                                                        ObjectToSpawn = itemClass ?? (object)specialSpawnForTile.SpawnId,
+                                                        Level = specialSpawnForTile.Level,
+                                                        QualityLevel = qualityLevel
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    var trapClass = dungeon.TrapClasses.Find(tc => tc.Id.Equals(specialSpawnForTile.SpawnId));
+                                                    if (trapClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_TRAP)
+                                                    {
+                                                        specialSpawns.Add(new SpecialSpawn
+                                                        {
+                                                            X = specialSpawnForTile.X - 1,
+                                                            Y = specialSpawnForTile.Y - 1,
+                                                            ObjectToSpawn = trapClass ?? (object)specialSpawnForTile.SpawnId
+                                                        });
+                                                    }
+                                                    else
+                                                    {
+                                                        var match = Regex.Match(specialSpawnForTile.SpawnId, EngineConstants.CurrencyRegexPattern);
+                                                        if (match.Success)
+                                                        {
+                                                            var currencyPileId = match.Groups[1].Value;
+                                                            var currencyPile = dungeon.CurrencyData.Find(cp => cp.Id.Equals(currencyPileId));
+                                                            if (currencyPile != null)
+                                                            {
+                                                                specialSpawns.Add(new SpecialSpawn
+                                                                {
+                                                                    X = specialSpawnForTile.X - 1,
+                                                                    Y = specialSpawnForTile.Y - 1,
+                                                                    ObjectToSpawn = specialSpawnForTile.SpawnId,
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    PossibleLayouts.Add(new StaticGenerator
+                    {
+                        Name = layout.Name,
+                        FloorGeometry = floorGeometry,
+                        SpecialSpawns = specialSpawns,
+                        GenerateNPCsAfterFirstTurn = layout.StaticGenerator.GenerateNPCsAfterFirstTurn,
+                        GenerateItemsOnFirstTurn = layout.StaticGenerator.GenerateItemsOnFirstTurn,
+                        GenerateTrapsOnFirstTurn = layout.StaticGenerator.GenerateTrapsOnFirstTurn
                     });
                 }
             }
@@ -210,13 +376,39 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     }
 
     [Serializable]
-    public class FloorLayoutGenerator
+    public abstract class Generator
+    {
+        public string Name { get; set; }
+    }
+
+    [Serializable]
+    public class ProceduralGenerator : Generator
     {
         public int Rows { get; set; }
         public int Columns { get; set; }
         public RoomDispositionType[,] RoomDisposition { get; set; }
         public RoomDimensionsInfo MinRoomSize { get; set; }
         public RoomDimensionsInfo MaxRoomSize { get; set; }
+    }
+
+    [Serializable]
+    public class StaticGenerator : Generator
+    {
+        public TileType[,] FloorGeometry { get; set; }
+        public List<SpecialSpawn> SpecialSpawns { get; set; }
+        public bool GenerateNPCsAfterFirstTurn { get; set; }
+        public bool GenerateItemsOnFirstTurn { get; set; }
+        public bool GenerateTrapsOnFirstTurn { get; set; }
+    }
+
+    [Serializable]
+    public class SpecialSpawn
+    {
+        public object ObjectToSpawn { get; set; } // Can be TileType or EntityClass
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Level { get; set; } // Only for NPCs and Items
+        public QualityLevel QualityLevel { get; set; } // Only for Items
     }
 
     [Serializable]

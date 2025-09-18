@@ -14,5 +14,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.Interface
         void PlaceStairs();
         Task PlaceEntities();
         Task PlaceKeysAndDoors();
+        bool IsFloorSolvable();
+        bool IsFloorSolvableWithKeys();
+        bool ArePlayerAndStairsPositionsCorrect();
+
+        bool ReadyToFloodFill { get; }
     }
 }

@@ -130,5 +130,41 @@ namespace RogueCustomsDungeonEditor.Utils
             }
             return true;
         }
+
+        public static List<List<T>> GetIslands<T>(this T[,] grid, Func<T, bool> predicate)
+        {
+            var visited = new bool[grid.GetLength(0), grid.GetLength(1)];
+            var islands = new List<List<T>>();
+
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (predicate(grid[i, j]) && !visited[i, j])
+                    {
+                        var currentIsland = new List<T>();
+                        DepthFirstSearchForIsland(grid, visited, predicate, i, j, currentIsland);
+                        islands.Add(currentIsland);
+                    }
+                }
+            }
+
+            return islands;
+        }
+
+        public static void DepthFirstSearchForIsland<T>(this T[,] grid, bool[,] visited, Func<T, bool> predicate, int i, int j, List<T> currentIsland)
+        {
+            if (i < 0 || i >= grid.GetLength(0)) return;
+            if (j < 0 || j >= grid.GetLength(1)) return;
+            if (!predicate(grid[i, j]) || visited[i, j]) return;
+
+            visited[i, j] = true;
+            currentIsland.Add(grid[i, j]);
+
+            DepthFirstSearchForIsland(grid, visited, predicate, i + 1, j, currentIsland);
+            DepthFirstSearchForIsland(grid, visited, predicate, i - 1, j, currentIsland);
+            DepthFirstSearchForIsland(grid, visited, predicate, i, j + 1, currentIsland);
+            DepthFirstSearchForIsland(grid, visited, predicate, i, j - 1, currentIsland);
+        }
     }
 }

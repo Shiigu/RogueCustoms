@@ -27,6 +27,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FloorLayoutGenerationInfo GeneratorToSave { get; private set; }
+        private ProceduralGeneratorInfo GeneratorInfo => GeneratorToSave.ProceduralGenerator;
 
         private readonly List<FloorLayoutGenerationInfo> CurrentGenerators;
 
@@ -51,16 +52,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             MaxColumns = FloorWidth / 7;
             MaxRows = FloorHeight / 7;
             CurrentGenerators = currentGenerators;
-            GeneratorToSave = generatorToSave ?? new FloorLayoutGenerationInfo
-            {
-                Columns = MaxColumns,
-                Rows = MaxRows,
-                RoomDisposition = string.Empty
-            };
-            nudMinWidth.Value = GeneratorToSave.MinRoomSize != null ? GeneratorToSave.MinRoomSize.Width : 5;
-            nudMinHeight.Value = GeneratorToSave.MinRoomSize != null ? GeneratorToSave.MinRoomSize.Height : 5;
-            nudMaxWidth.Value = GeneratorToSave.MaxRoomSize != null ? GeneratorToSave.MaxRoomSize.Width : width / MaxColumns;
-            nudMaxHeight.Value = GeneratorToSave.MaxRoomSize != null ? GeneratorToSave.MaxRoomSize.Height : height / MaxRows;
+            GeneratorToSave = generatorToSave ?? new FloorLayoutGenerationInfo();
+            nudMinWidth.Value = GeneratorInfo?.MinRoomSize != null ? GeneratorInfo.MinRoomSize.Width : 5;
+            nudMinHeight.Value = GeneratorInfo?.MinRoomSize != null ? GeneratorInfo.MinRoomSize.Height : 5;
+            nudMaxWidth.Value = GeneratorInfo?.MaxRoomSize != null ? GeneratorInfo.MaxRoomSize.Width : width / MaxColumns;
+            nudMaxHeight.Value = GeneratorInfo?.MaxRoomSize != null ? GeneratorInfo.MaxRoomSize.Height : height / MaxRows;
             ConstructTable();
         }
 
@@ -70,8 +66,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tlpRoomDisposition.Controls.Clear();
             var rows = MaxRows + MaxRows - 1;
             var columns = MaxColumns + MaxColumns - 1;
-            var generatorRows = GeneratorToSave.Rows + GeneratorToSave.Rows - 1;
-            var generatorColumns = GeneratorToSave.Columns + GeneratorToSave.Columns - 1;
+            var generatorRows = GeneratorInfo.Rows + GeneratorInfo.Rows - 1;
+            var generatorColumns = GeneratorInfo.Columns + GeneratorInfo.Columns - 1;
             tlpRoomDisposition.Width = 24 * columns;
             tlpRoomDisposition.Height = 24 * rows;
             tlpRoomDisposition.ColumnCount = columns;
@@ -90,7 +86,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             for (int i = 0; i < rows * columns; i++)
             {
                 var isUnusedTile = false;
-                var tile = GeneratorToSave.RoomDisposition.ElementAtOrDefault(tileIndexToDraw);
+                var tile = GeneratorInfo.RoomDisposition.ElementAtOrDefault(tileIndexToDraw);
                 (int tableX, int tableY) = (i / columns, i % columns);
                 (int generatorX, int generatorY) = (tileIndexToDraw / generatorColumns, tileIndexToDraw % generatorColumns);
                 if (tableX > generatorX || tableY > generatorY)
@@ -311,11 +307,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (tile.X >= rowsPlusConnections || tile.Y >= columnsPlusConnections) continue;
                 roomDispositionSequence.Append(tile.RoomDispositionIndicatorChar);
             }
-            GeneratorToSave.Rows = Rows;
-            GeneratorToSave.Columns = Columns;
-            GeneratorToSave.MinRoomSize = new() { Width = (int)nudMinWidth.Value, Height = (int)nudMinHeight.Value };
-            GeneratorToSave.MaxRoomSize = new() { Width = (int)nudMaxWidth.Value, Height = (int)nudMaxHeight.Value };
-            GeneratorToSave.RoomDisposition = roomDispositionSequence.ToString();
+            GeneratorToSave.ProceduralGenerator = new ProceduralGeneratorInfo();
+            GeneratorInfo.Rows = Rows;
+            GeneratorInfo.Columns = Columns;
+            GeneratorInfo.MinRoomSize = new() { Width = (int)nudMinWidth.Value, Height = (int)nudMinHeight.Value };
+            GeneratorInfo.MaxRoomSize = new() { Width = (int)nudMaxWidth.Value, Height = (int)nudMaxHeight.Value };
+            GeneratorInfo.RoomDisposition = roomDispositionSequence.ToString();
             Saved = true;
             this.Close();
         }

@@ -1,4 +1,5 @@
 ﻿using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
@@ -271,92 +272,200 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             var roomTypesToNotCount = new List<RoomDispositionType> { RoomDispositionType.NoRoom, RoomDispositionType.NoConnection, RoomDispositionType.ConnectionImpossible };
 
-            foreach (var floorLayoutGenerator in floorJson.PossibleLayouts)
+            if (floorJson.PossibleLayouts.Count > 0)
             {
-                if (floorLayoutGenerator.Rows <= 0)
-                    messages.AddError($"{floorLayoutGenerator.Name}'s Rows must be an integer number higher than 0.");
-                if (floorLayoutGenerator.Columns <= 0)
-                    messages.AddError($"{floorLayoutGenerator.Name}'s Columns must be an integer number higher than 0.");
-                if (floorLayoutGenerator.Rows > 1 || floorLayoutGenerator.Columns > 1)
+                var debugGenerationAttempts = (int)Math.Max(8, EngineConstants.MaxGenerationTries / floorJson.PossibleLayouts.Count);
+                foreach (var floorLayoutGenerator in floorJson.PossibleLayouts)
                 {
-                    if (5 * floorLayoutGenerator.Rows > floorJson.Height)
-                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create {floorLayoutGenerator.Rows} non-Dummy rooms with the minimum 5 Height. Change Height or Rows.");
-                    if (5 * floorLayoutGenerator.Columns > floorJson.Width)
-                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create {floorLayoutGenerator.Columns} non-Dummy rooms with the minimum 5 Width. Change Width or Columns.");
+                    var proceduralGenerator = floorLayoutGenerator.ProceduralGenerator;
+                    var staticGenerator = floorLayoutGenerator.StaticGenerator;
+                    if (proceduralGenerator != null)
+                    {
+                        if (proceduralGenerator.Rows <= 0)
+                            messages.AddError($"{floorLayoutGenerator.Name}'s Rows must be an integer number higher than 0.");
+                        if (proceduralGenerator.Columns <= 0)
+                            messages.AddError($"{floorLayoutGenerator.Name}'s Columns must be an integer number higher than 0.");
+                        if (proceduralGenerator.Rows > 1 || proceduralGenerator.Columns > 1)
+                        {
+                            if (5 * proceduralGenerator.Rows > floorJson.Height)
+                                messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create {proceduralGenerator.Rows} non-Dummy rooms with the minimum 5 Height. Change Height or Rows.");
+                            if (5 * proceduralGenerator.Columns > floorJson.Width)
+                                messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create {proceduralGenerator.Columns} non-Dummy rooms with the minimum 5 Width. Change Width or Columns.");
+                        }
+                        else
+                        {
+                            if (floorJson.Height < 5)
+                                messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create a {floorLayoutGenerator.Name} floor. Height must be at least 5.");
+                            if (floorJson.Width < 5)
+                                messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create a {floorLayoutGenerator.Name} floor. Width must be at least 5.");
+                        }
+
+                        if (proceduralGenerator.MaxRoomSize.Width > floorJson.Width)
+                            messages.AddError($"{floorLayoutGenerator.Name}: A Max Width of {proceduralGenerator.MaxRoomSize.Width} is higher than the Floor Width, which is {floorJson.Width}.");
+                        if (proceduralGenerator.MaxRoomSize.Height > floorJson.Height)
+                            messages.AddError($"{floorLayoutGenerator.Name}: A Max Height of {proceduralGenerator.MaxRoomSize.Height} is higher than the Floor Height, which is {floorJson.Height}.");
+
+                        var expandedColumns = proceduralGenerator.Columns * 2 - 1;
+                        var expandedRows = proceduralGenerator.Rows * 2 - 1;
+                        var roomDispositionMatrix = new RoomDispositionType[expandedRows, expandedColumns];
+                        for (int i = 0; i < proceduralGenerator.RoomDisposition.Length; i++)
+                        {
+                            var tile = proceduralGenerator.RoomDisposition[i];
+                            (int X, int Y) = (i / expandedColumns, i % expandedColumns);
+                            var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
+                            roomDispositionMatrix[X, Y] = tile.ToRoomDispositionIndicator(isHallwayTile);
+                        }
+
+                        var roomTilesToCount = roomDispositionMatrix.Where(rdt => !roomTypesToNotCount.Contains(rdt));
+                        var guaranteedFuseTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedFusion);
+                        var normalRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom || rdt == RoomDispositionType.RandomRoom);
+                        var guaranteedRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom);
+
+                        var validationErrors = new List<string>();
+
+                        if (!guaranteedRoomTiles.Any() && normalRoomTiles.Count == 1)
+                            messages.AddError($"{floorLayoutGenerator.Name}: When making a Single-Room layout, the room must be guaranteed.");
+                        if ((normalRoomTiles.Count - guaranteedFuseTiles.Count) <= 1 && roomTilesToCount.Count > 1)
+                            messages.AddError($"{floorLayoutGenerator.Name}: When making a layout that is not Single-Room layout, at least two normal, non-fused rooms must be possible.");
+                        if (normalRoomTiles.Count < 1)
+                            messages.AddError($"{floorLayoutGenerator.Name}: At least one non-Guaranteed Dummy Room is required.");
+                        if (!RoomsHaveNoMoreThanOneFusion(roomDispositionMatrix))
+                            messages.AddError($"{floorLayoutGenerator.Name}: At least one Room is guaranteed more than one Fusion, which is not allowed.");
+                        if (!ConnectionsHaveBothEndsCovered(roomDispositionMatrix))
+                            messages.AddError($"{floorLayoutGenerator.Name}: At least one possible Connection is missing one of its ends.");
+                    }
+                    else if (staticGenerator != null)
+                    {
+                        var validTileChars = new List<char> { '-', '.', '#', '+' };
+
+                        for (int i = 0; i < staticGenerator.FloorGeometry.Length; i++)
+                        {
+                            if (!validTileChars.Contains(staticGenerator.FloorGeometry[i]))
+                            {
+                                messages.AddError($"{floorLayoutGenerator.Name}: The Static Floor Geometry contains an invalid tile.");
+                                break;
+                            }
+                        }
+
+                        var specialSpawnErrors = new List<string>();
+                        var doorTypes = new List<string>();
+                        var keyTypes = new List<string>();
+                        foreach (var specialSpawn in staticGenerator.SpecialSpawns)
+                        {
+                            if (specialSpawn.X < 1 || specialSpawn.Y < 1 || specialSpawn.X > floorJson.Width || specialSpawn.Y > floorJson.Height)
+                            {
+                                specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one spawn indicator has incorrect coordinates.");
+                                continue;
+                            }
+                            if (specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER
+                                || specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER
+                                || specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_CHARACTER
+                                || specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_ENEMY_CHARACTER
+                                || specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_NEUTRAL_CHARACTER
+                                || dungeonJson.NPCs.Any(npc => npc.Id.Equals(specialSpawn.SpawnId)))
+                            {
+                                if (specialSpawn.Level < 1)
+                                    specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one NPC spawn indicator has a Level that is not a positive integer number.");
+                            }
+                            else if (specialSpawn.SpawnId == EngineConstants.SPAWN_ANY_ITEM
+                                || dungeonJson.Items.Any(i => i.Id.Equals(specialSpawn.SpawnId)))
+                            {
+                                if (specialSpawn.Level < 1)
+                                    specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one Item spawn indicator has a Level that is not a positive integer number.");
+                                var correspondingQualityLevel = dungeonJson.QualityLevelInfos.Find(ql => ql.Id.Equals(specialSpawn.QualityLevel));
+                                if (string.IsNullOrWhiteSpace(specialSpawn.QualityLevel) || correspondingQualityLevel == null)
+                                    specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one Item spawn indicator has an invalid Quality Level.");
+                            }
+                            else if (specialSpawn.SpawnId.Contains(" Door"))
+                            {
+                                var keyTypeName = specialSpawn.SpawnId.Replace("Door", "").Trim();
+                                var correspondingKeyType = floorJson.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeName));
+                                if (correspondingKeyType == null)
+                                    specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one Door spawn indicator has an invalid Key Type.");
+                                else
+                                    doorTypes.Add(keyTypeName);
+                            }
+                            else if (specialSpawn.SpawnId.Contains(" Key"))
+                            {
+                                var keyTypeName = specialSpawn.SpawnId.Replace("Key", "").Trim();
+                                var correspondingKeyType = floorJson.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeName));
+                                if (correspondingKeyType == null)
+                                    specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one Key spawn indicator has an invalid Key Type.");
+                                else
+                                    keyTypes.Add(keyTypeName);
+                            }
+                            else if (specialSpawn.SpawnId != EngineConstants.SPAWN_PLAYER_CHARACTER
+                                && specialSpawn.SpawnId != EngineConstants.SPAWN_ANY_TRAP
+                                && !dungeonJson.Traps.Any(t => t.Id.Equals(specialSpawn.SpawnId))
+                                && !dungeonJson.TileTypeInfos.Any(tt => tt.Id.Equals(specialSpawn.SpawnId))
+                                && !Regex.Match(specialSpawn.SpawnId, EngineConstants.CurrencyRegexPattern).Success)
+                            {
+                                specialSpawnErrors.Add($"{floorLayoutGenerator.Name}: At least one spawn indicator can't be recognized as an entity or a tile type.");
+                            }
+                        }
+                        foreach (var error in specialSpawnErrors.Distinct())
+                        {
+                            messages.AddError(error);
+                        }
+                    }
+                    else
+                    {
+                        messages.AddError($"{floorLayoutGenerator.Name} does not have a valid Generator defined.");
+                    }
+
+                    if (sampleDungeon != null)
+                    {
+                        var mapSuccesses = 0;
+                        var keySuccesses = 0;
+                        var mapFailures = 0;
+                        var keyFailures = 0;
+                        var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                        var correspondingLayout = generationAttempt.FloorConfigurationToUse.PossibleLayouts.Find(pl => pl.Name.Equals(floorLayoutGenerator.Name));
+                        if (correspondingLayout != null)
+                        {
+                            generationAttempt.GeneratorToUse = correspondingLayout;
+
+                            for (int i = 0; i < debugGenerationAttempts; i++)
+                            {
+                                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
+                                if (MapGenerationSuccess)
+                                {
+                                    mapSuccesses++;
+                                    if (KeyGenerationSuccess)
+                                        keySuccesses++;
+                                    else
+                                        keyFailures++;
+                                }
+                                else
+                                {
+                                    mapFailures++;
+                                }
+                                generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                            }
+
+                            if (mapSuccesses == 0)
+                                messages.AddError($"{floorLayoutGenerator.Name}: After {debugGenerationAttempts} attempts, not a single valid Map Generation was produced. Please check, or try again if you think this is an error.");
+                            else if (keySuccesses == 0)
+                                messages.AddWarning($"{floorLayoutGenerator.Name}: After {debugGenerationAttempts} attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
+
+                            if (mapSuccesses < (debugGenerationAttempts / 2))
+                                messages.AddWarning($"{floorLayoutGenerator.Name}: After {debugGenerationAttempts} attempts, less than half of the Map Generations were produced as valid. Please check, or try again if you think this is an error.");
+                        }
+                    }
+                    else
+                    {
+                        messages.AddError("Specific Map Generation Layout could not be tested because there was an error creating the Dungeon.");
+                    }
                 }
-                else
-                {
-                    if (floorJson.Height < 5)
-                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Height of {floorJson.Height}, it's not possible to create a {floorLayoutGenerator.Name} floor. Height must be at least 5.");
-                    if (floorJson.Width < 5)
-                        messages.AddError($"{floorLayoutGenerator.Name}: With a Floor Width of {floorJson.Width}, it's not possible to create a {floorLayoutGenerator.Name} floor. Width must be at least 5.");
-                }
-
-                if(floorLayoutGenerator.MaxRoomSize.Width > floorJson.Width)
-                    messages.AddError($"{floorLayoutGenerator.Name}: A Max Width of {floorLayoutGenerator.MaxRoomSize.Width} is higher than the Floor Width, which is {floorJson.Width}.");
-                if (floorLayoutGenerator.MaxRoomSize.Height > floorJson.Height)
-                    messages.AddError($"{floorLayoutGenerator.Name}: A Max Height of {floorLayoutGenerator.MaxRoomSize.Height} is higher than the Floor Height, which is {floorJson.Height}.");
-
-                var expandedColumns = floorLayoutGenerator.Columns * 2 - 1;
-                var expandedRows = floorLayoutGenerator.Rows * 2 - 1;
-                var roomDispositionMatrix = new RoomDispositionType[expandedRows, expandedColumns];
-                for (int i = 0; i < floorLayoutGenerator.RoomDisposition.Length; i++)
-                {
-                    var tile = floorLayoutGenerator.RoomDisposition[i];
-                    (int X, int Y) = (i / expandedColumns, i % expandedColumns);
-                    var isHallwayTile = (X % 2 != 0 && Y % 2 == 0) || (X % 2 == 0 && Y % 2 != 0);
-                    roomDispositionMatrix[X, Y] = tile.ToRoomDispositionIndicator(isHallwayTile);
-                }
-
-                var roomTilesToCount = roomDispositionMatrix.Where(rdt => !roomTypesToNotCount.Contains(rdt));
-                var guaranteedFuseTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedFusion);
-                var normalRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom || rdt == RoomDispositionType.RandomRoom);
-                var guaranteedRoomTiles = roomDispositionMatrix.Where(rdt => rdt == RoomDispositionType.GuaranteedRoom);
-
-                var validationErrors = new List<string>();
-
-                if (!guaranteedRoomTiles.Any() && normalRoomTiles.Count == 1)
-                    messages.AddError($"{floorLayoutGenerator.Name}: When making a Single-Room layout, the room must be guaranteed.");
-                if ((normalRoomTiles.Count - guaranteedFuseTiles.Count) <= 1 && roomTilesToCount.Count > 1)
-                    messages.AddError($"{floorLayoutGenerator.Name}: When making a layout that is not Single-Room layout, at least two normal, non-fused rooms must be possible.");
-                if (normalRoomTiles.Count < 1)
-                    messages.AddError($"{floorLayoutGenerator.Name}: At least one non-Guaranteed Dummy Room is required.");
-                if (!RoomsHaveNoMoreThanOneFusion(roomDispositionMatrix))
-                    messages.AddError($"{floorLayoutGenerator.Name}: At least one Room is guaranteed more than one Fusion, which is not allowed.");
-                if (!ConnectionsHaveBothEndsCovered(roomDispositionMatrix))
-                    messages.AddError($"{floorLayoutGenerator.Name}: At least one possible Connection is missing one of its ends.");
+            }
+            else
+            {
+                messages.AddError("This Floor Type does not have any Layouts defined.");
             }
 
             if (sampleDungeon != null)
             {
-                var mapSuccesses = 0;
-                var keySuccesses = 0;
-                var mapFailures = 0;
-                var keyFailures = 0;
-
                 var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-
-                for (int i = 0; i < 100; i++)
-                {
-                    var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
-                    var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
-                    if (MapGenerationSuccess)
-                    {
-                        mapSuccesses++;
-                        if (KeyGenerationSuccess)
-                            keySuccesses++;
-                        else
-                            keyFailures++;
-                    }
-                    else
-                        mapFailures++;
-                }
-
-                if (mapSuccesses == 0)
-                    messages.AddError("After 100 attempts, not a single valid Map Generation was produced. Please check, or try again if you think this is an error.");
-                else if (keySuccesses == 0)
-                    messages.AddWarning("After 100 attempts, not a single valid Map Generation with keys was produced. Please check, or try again if you think this is an error.");
-
                 await floorAsInstance.GenerateDebugMap();
 
                 if (floorJson.OnFloorStart != null)

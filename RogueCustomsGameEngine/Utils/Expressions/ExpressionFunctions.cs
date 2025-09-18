@@ -187,14 +187,15 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             var slotToCheck = parameters[1].ToLower();
 
             if (!c.AvailableSlots.Any(s => s.Id.Equals(slotToCheck, StringComparison.InvariantCultureIgnoreCase)))
-                throw new ArgumentException("Invalid entity in CurrentItem.");
+                // Default to nothing if the slot doesn't exist
+                return "\"\"";
 
             var itemInSlot = c.ItemInSlot(slotToCheck);
 
             if(itemInSlot != null)
                 return $"\"{itemInSlot.ClassId}\"";
             else
-                return string.Empty;
+                return "\"\"";
         }
 
         public static string CURRENTWEAPON(EffectCallerParams args, string[] parameters)

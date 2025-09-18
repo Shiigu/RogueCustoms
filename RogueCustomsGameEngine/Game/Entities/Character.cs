@@ -624,7 +624,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (!CanGainExperience) return;
             Experience += GamePointsToAdd;
-            if (Experience >= ExperienceToLevelUp)
+            while (Experience >= ExperienceToLevelUp)
             {
                 LastLevelUpExperience = ExperienceToLevelUp;
                 Level++;
@@ -702,8 +702,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 await als.BeforeAttack.Do(this, target, true);
             }
-            if (MP != null)
+            if (MP != null && action.MPCost != 0)
+            {
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                if (this == Map.Player)
+                {
+                    Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, MP.Id, MP.Current }
+                    }]));
+                }
+            }
             var successfulEffects = await action.Do(this, target, true);
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 await target.AttackedBy(this);
@@ -717,8 +727,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task InteractWithCharacter(Character target, ActionWithEffects action)
         {
             if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (MP != null)
+            if (MP != null && action.MPCost != 0)
+            {
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                if (this == Map.Player)
+                {
+                    Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, MP.Id, MP.Current }
+                    }]));
+                }
+            }
             await action.Do(this, target, true);
             if (action.FinishesTurnWhenUsed)
             {
@@ -730,8 +750,18 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task InteractWithTile(Tile target, ActionWithEffects action)
         {
             if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (MP != null)
+            if (MP != null && action.MPCost != 0)
+            {
                 MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                if (this == Map.Player)
+                {
+                    Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
+                    {
+                        DisplayEventType = DisplayEventType.UpdatePlayerData,
+                        Params = new() { UpdatePlayerDataType.ModifyStat, MP.Id, MP.Current }
+                    }]));
+                }
+            }
             await action.Do(this, target, true);
             if (action.FinishesTurnWhenUsed)
             {
