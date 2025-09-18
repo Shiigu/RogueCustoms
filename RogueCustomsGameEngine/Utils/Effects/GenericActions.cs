@@ -642,7 +642,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var olderFOV = c == Map.Player ? c.FOVTiles : null;
                 var initialTile = c.ContainingTile;
-                var targetPosition = Map.PickEmptyPosition(true, false);
+                var islands = Map.Tiles.GetIslands(t => t.IsWalkable);
+                var playerIsland = islands.Find(i => i.Contains(Map.Player.ContainingTile));
+                var stairsIsland = islands.Find(i => i.Any(t => t.Position.Equals(Map.StairsPosition)));
+                GamePoint targetPosition;
+                do
+                {
+                    targetPosition = Map.PickEmptyPosition(true, false);
+                }
+                while (targetPosition == null || (!playerIsland.Any(t => t.Position.Equals(targetPosition)) && !stairsIsland.Any(t => t.Position.Equals(targetPosition))));
                 c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
 
@@ -722,6 +730,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 Map.DisplayEvents.Add(($"{c.Name} teleported", events));
                 c.ContainingTile?.StoodOn(c);
+                var pickables = c.ContainingTile?.GetPickableObjects();
+                if(pickables.Count > 0)
+                    c.TryToPickItem(pickables[0] as IPickable);
                 return true;
             }
             return false;

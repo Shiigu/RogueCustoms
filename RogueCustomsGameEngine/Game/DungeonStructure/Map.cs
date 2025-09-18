@@ -316,6 +316,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             }
                                         }
                                         ));
+                                        if (FloorLevel > 1)
+                                        {
+                                            DisplayEvents.Add(("NewFloor", new()
+                                            {
+                                                new() {
+                                                    DisplayEventType = DisplayEventType.RedrawMap,
+                                                    Params = new() { }
+                                                }
+                                            }));
+                                        }
                                         AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                     }
                                 }
