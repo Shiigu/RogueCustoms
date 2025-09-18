@@ -79,6 +79,13 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     public class FloorLayoutGenerationInfo
     {
         public string Name { get; set; }
+        public ProceduralGeneratorInfo ProceduralGenerator { get; set; }
+        public StaticGeneratorInfo StaticGenerator { get; set; }
+    }
+
+    [Serializable]
+    public class ProceduralGeneratorInfo
+    {
         public int Rows { get; set; }
         public int Columns { get; set; }
         public string RoomDisposition { get; set; }
@@ -91,6 +98,26 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public int Width { get; set; }
         public int Height { get; set; }
+    }
+
+    [Serializable]
+    public class StaticGeneratorInfo
+    {
+        public string FloorGeometry { get; set; }
+        public List<SpecialSpawnInfo> SpecialSpawns { get; set; }
+        public bool GenerateNPCsAfterFirstTurn { get; set; }
+        public bool GenerateItemsOnFirstTurn { get; set; }
+        public bool GenerateTrapsOnFirstTurn { get; set; }
+    }
+
+    [Serializable]
+    public class SpecialSpawnInfo
+    {
+        public string SpawnId { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Level { get; set; }
+        public string QualityLevel { get; set; }
     }
 
     [Serializable]

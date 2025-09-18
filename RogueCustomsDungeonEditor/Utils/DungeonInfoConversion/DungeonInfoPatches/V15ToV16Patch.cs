@@ -129,6 +129,27 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["FloorInfos"] is not JsonArray floorInfos) return;
             foreach (var floorGroup in floorInfos.OfType<JsonObject>())
             {
+                foreach (var possibleLayout in floorGroup["PossibleLayouts"]?.AsArray() ?? new JsonArray())
+                {
+                    if (possibleLayout is JsonObject layoutObj && possibleLayout["ProceduralGenerator"] is null)
+                    {
+                        layoutObj["ProceduralGenerator"] = new JsonObject();
+                        layoutObj["ProceduralGenerator"]["Rows"] = layoutObj["Rows"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["Columns"] = layoutObj["Columns"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["RoomDisposition"] = layoutObj["RoomDisposition"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["MinRoomSize"] = new JsonObject();
+                        layoutObj["ProceduralGenerator"]["MinRoomSize"]["Width"] = layoutObj["MinRoomSize"]?["Width"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["MinRoomSize"]["Height"] = layoutObj["MinRoomSize"]?["Height"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["MaxRoomSize"] = new JsonObject();
+                        layoutObj["ProceduralGenerator"]["MaxRoomSize"]["Width"] = layoutObj["MaxRoomSize"]?["Width"]?.DeepClone();
+                        layoutObj["ProceduralGenerator"]["MaxRoomSize"]["Height"] = layoutObj["MaxRoomSize"]?["Height"]?.DeepClone();
+                        layoutObj.Remove("Rows");
+                        layoutObj.Remove("Columns");
+                        layoutObj.Remove("RoomDisposition");
+                        layoutObj.Remove("MinRoomSize");
+                        layoutObj.Remove("MaxRoomSize");
+                    }
+                }
                 if (floorGroup["OnFloorStart"] is JsonObject onFloorStart)
                 {
                     UpdateAction(onFloorStart);

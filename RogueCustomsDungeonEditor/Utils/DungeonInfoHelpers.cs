@@ -562,11 +562,14 @@ namespace RogueCustomsDungeonEditor.Utils
             return new FloorLayoutGenerationInfo
             {
                 Name = "Default",
-                Rows = 4,
-                Columns = 4,
-                MinRoomSize = new() { Width = 5, Height = 5 },
-                MaxRoomSize = new() { Width = 5, Height = 5 },
-                RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
+                ProceduralGenerator = new ProceduralGeneratorInfo
+                {
+                    Rows = 4,
+                    Columns = 4,
+                    MinRoomSize = new() { Width = 5, Height = 5 },
+                    MaxRoomSize = new() { Width = 5, Height = 5 },
+                    RoomDisposition = "???????? ? ? ????????? ? ? ????????? ? ? ????????"
+                }
             };
         }
 
@@ -1005,14 +1008,19 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             if (info == null) return null;
 
+            var proceduralGenerator = info.ProceduralGenerator as ProceduralGeneratorInfo;
+
             var clonedLayout = new FloorLayoutGenerationInfo
             {
                 Name = info.Name,
-                MinRoomSize = new() { Width = info.MinRoomSize.Width, Height = info.MinRoomSize.Height },
-                MaxRoomSize = new() { Width = info.MaxRoomSize.Width, Height = info.MaxRoomSize.Height },
-                Columns = info.Columns,
-                Rows = info.Rows,
-                RoomDisposition = new string(info.RoomDisposition)
+                ProceduralGenerator = new ProceduralGeneratorInfo
+                {
+                    MinRoomSize = new() { Width = proceduralGenerator.MinRoomSize.Width, Height = proceduralGenerator.MinRoomSize.Height },
+                    MaxRoomSize = new() { Width = proceduralGenerator.MaxRoomSize.Width, Height = proceduralGenerator.MaxRoomSize.Height },
+                    Columns = proceduralGenerator.Columns,
+                    Rows = proceduralGenerator.Rows,
+                    RoomDisposition = new string(proceduralGenerator.RoomDisposition)
+                }
             };
 
             return clonedLayout;

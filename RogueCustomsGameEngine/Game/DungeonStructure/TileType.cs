@@ -35,9 +35,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public override string ToString() => Id;
 
+        public static List<TileType> NormalTypes => [Empty, Floor, Wall, Hallway, Stairs, Door];
+
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool IsSpecial => !NormalTypes.Contains(this);
         public bool IsWalkable { get; set; }
         public bool IsSolid { get; set; } // If true, it will end Line of Sight, Projectiles and Diagonal Attacks
         public bool IsVisible { get; set; }

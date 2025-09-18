@@ -16,12 +16,13 @@ using static RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.Proced
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
 {
+    [Serializable]
     public class ProceduralFloorGenerator : IFloorGenerator
     {
         private Map _map;
         private int GenerationTries => _map.GenerationTries;
         private RngHandler Rng => _map.Rng;
-        private FloorLayoutGenerator _generatorToUse;
+        private ProceduralGenerator _generatorToUse;
         private FloorType FloorConfigurationToUse => _map.FloorConfigurationToUse;
         private int Width => _map.Width;
         private int Height => _map.Height;
@@ -47,7 +48,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
         private List<Tile> ConnectorTiles;
         private Dictionary<Room, HashSet<Room>> _roomNeighborMap;
 
-        public ProceduralFloorGenerator(Map map, FloorLayoutGenerator generatorToUse)
+        public ProceduralFloorGenerator(Map map, ProceduralGenerator generatorToUse)
         {
             _map = map;
             _generatorToUse = generatorToUse;
@@ -62,7 +63,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             _map.Rooms = new();
             RoomDefinitions = new();
 
-            if (RoomDispositionToUse == null || GenerationTries % 100 == 0)
+            if (RoomDispositionToUse == null || GenerationTries % 4 == 0)
             {
                 var possibleRoomDisposition = RollRoomDistributionToUse();
 
@@ -992,7 +993,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 var islands = _map.Tiles.GetIslands(t => t.IsWalkable || usedKeyTypes.Select(ukt => ukt.KeyTypeName).Contains(t.DoorId));
                 var islandWithPlayer = islands.FirstOrDefault(i => i.Contains(_map.Player.ContainingTile));
 
-                if (await _map.AddEntity(keyTypeToUse.KeyClass) is Item keyEntity && Rng.RollProbability() <= keyGenerationData.KeySpawnInEnemyInventoryOdds)
+                if (await _map.AddEntity(keyTypeToUse.KeyClass) is Key keyEntity && Rng.RollProbability() <= keyGenerationData.KeySpawnInEnemyInventoryOdds)
                 {
                     var enemiesInPlayerIsland = _map.AICharacters.Where(c => !c.Inventory.Any(i => i.EntityType == EntityType.Key) && islandWithPlayer.Contains(c.ContainingTile) && c.Faction.IsEnemyWith(_map.Player.Faction) && c.Visible);
                     if (enemiesInPlayerIsland.Any())
@@ -1050,7 +1051,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
         #endregion
 
         #region Stairs
-        public void PlaceStairs() => _map.SetStairs();
+        public void PlaceStairs()
+        {
+            _map.StairsPosition = _map.PickEmptyPosition(true, false);
+            if (FloorConfigurationToUse.GenerateStairsOnStart)
+                _map.SetStairs();
+        }
         #endregion
 
         #region Room Definition
@@ -1106,6 +1112,41 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             public override string ToString() => $"Index: [{RoomRow}, {RoomColumn}]; Top left: {Position}; Bottom right: {BottomRight}; Width: {Width}; Height: {Height}";
         }
 
+        #endregion
+
+        #region Solvability
+
+        public bool IsFloorSolvable()
+        {
+            return _map.Tiles.IsFullyConnected(t => t.IsWalkable);
+        }
+
+        public bool IsFloorSolvableWithKeys()
+        {
+            var availableKeyTypes = _map.Keys.Select(k => k.Name).ToList();
+            var usedKeyTypes = new List<string>();
+            var foundNewKeys = false;
+            var islandCount = -1;
+            do
+            {
+                var islands = _map.Tiles.GetIslands(t => t.IsWalkable || usedKeyTypes.Contains(t.DoorId));
+                islandCount = islands.Count;
+                if (islandCount == 1) break;
+                var islandWithPlayer = islands.FirstOrDefault(i => i.Contains(_map.Player.ContainingTile));
+                if (islandWithPlayer == null) return false;
+                var newKeys = _map.Keys.Where(k => (k.Position != null && islandWithPlayer.Contains(k.ContainingTile)) || (k.Owner != null && islandWithPlayer.Contains(k.Owner.ContainingTile))).ToList();
+                foundNewKeys = newKeys.Any(k => !usedKeyTypes.Contains(k.ClassId.Replace("KeyType", "")));
+                usedKeyTypes.AddRange(newKeys.Select(k => k.ClassId.Replace("KeyType", "")));
+                usedKeyTypes = usedKeyTypes.Distinct().ToList();
+            }
+            while (foundNewKeys && islandCount != 1);
+            return islandCount == 1;
+        }
+
+        public bool ArePlayerAndStairsPositionsCorrect()
+        {
+            return _map.Player.Position != null;
+        }
         #endregion
     }
 }

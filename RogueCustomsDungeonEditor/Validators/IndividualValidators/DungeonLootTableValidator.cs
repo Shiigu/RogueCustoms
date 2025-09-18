@@ -56,6 +56,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     }
                     else if(!dungeonJson.Items.Any(i => i.Id.Equals(entry.PickId, StringComparison.InvariantCultureIgnoreCase))
                         && !dungeonJson.LootTableInfos.Any(lt => lt.Id.Equals(entry.PickId, StringComparison.InvariantCultureIgnoreCase))
+                        && !dungeonJson.ItemTypeInfos.Any(it => it.Id.Equals(entry.PickId, StringComparison.InvariantCultureIgnoreCase))
                         && !EngineConstants.SPECIAL_LOOT_ENTRIES.Any(lte => lte.Equals(entry.PickId, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         messages.AddError($"This Loot Table has an Entry {entry.PickId} but it is not a known Item, Item Type or Loot Table.");
