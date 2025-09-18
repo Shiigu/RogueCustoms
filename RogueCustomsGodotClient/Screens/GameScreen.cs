@@ -187,13 +187,13 @@ public partial class GameScreen : Control
                     _saveGameButton.Disabled = true;
                 }
 
+                if (!dungeonStatus.Read)
+                    await UpdateUIViaEvents();
+
                 foreach (var child in _children)
                 {
                     child.Update();
                 }
-
-                if (!dungeonStatus.Read)
-                    await UpdateUIViaEvents();
 
                 _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
                 _lastTurn = dungeonStatus.TurnCount;
@@ -400,8 +400,15 @@ public partial class GameScreen : Control
                         displayEvent.Params[0] = true;
                         break;
                     case DisplayEventType.RedrawMap:
-                        var tiles = displayEvent.Params[0] as List<TileDto>;
-                        _mapPanel.UpdateBuffer(tiles);
+                        if (displayEvent.Params.Count > 0)
+                        {
+                            var tiles = displayEvent.Params[0] as List<TileDto>;
+                            _mapPanel.UpdateBuffer(tiles);
+                        }
+                        else
+                        {
+                            _mapPanel.Update();
+                        }
                         break;
                 }
             }

@@ -224,7 +224,7 @@ public partial class MapPanel : GamePanel
 
     public void StopTargeting()
     {
-        if (_aimingSquare.Disabled) return;
+        if (_aimingSquare.Disabled || _tileBuffer == null) return;
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
         Render();
