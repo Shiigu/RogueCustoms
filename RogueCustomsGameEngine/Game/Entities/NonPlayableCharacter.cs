@@ -786,6 +786,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override async Task Die(Entity? attacker = null)
         {
+            var playerCanSeeMe = Map.Player.CanSee(this);
             var events = new List<DisplayEventDto>();
             foreach (var oda in OnDeath?.Where(oda => oda != null && (attacker == null || attacker is not Character || oda.ChecksCondition(this, attacker as Character) == true)))
             {
@@ -827,7 +828,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if(currencyForDrop.Position != null)
                         droppedCurrency = true;
                 }
-                if (attacker == Map.Player || Map.Player.CanSee(this))
+                if (attacker == Map.Player || playerCanSeeMe)
                 {
                     if (!Map.IsDebugMode && Position != null)
                     {
