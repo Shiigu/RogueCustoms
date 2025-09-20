@@ -21,6 +21,152 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class PlayerCharacter : Character
     {
         public readonly float SaleValuePercentage;
+        public override int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+
+        public override List<ActionWithEffects> OnTurnStart
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnTurnStart != null)
+                    actionList.Add(OwnOnTurnStart);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnTurnStart != null)
+                        actionList.AddRange(i?.OnTurnStart);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnTurnStart != null)
+                        actionList.AddRange(i?.OnTurnStart);
+                });
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnAttack
+        {
+            get
+            {
+                var hasNativeEquipmentAttacks = false;
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnAttack != null)
+                    actionList.AddRange(OwnOnAttack);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttack != null)
+                    {
+                        actionList.AddRange(i?.OnAttack);
+                        if (i.OwnOnAttack.Count > 0)
+                            hasNativeEquipmentAttacks = true;
+                    }
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnAttack != null)
+                        actionList.AddRange(i?.OnAttack);
+                });
+                KeySet?.ForEach(k =>
+                {
+                    if (k?.OwnOnAttack != null)
+                        actionList.AddRange(k.OwnOnAttack);
+                });
+
+                if (!hasNativeEquipmentAttacks)
+                {
+                    if (DefaultOnAttack != null)
+                        actionList.Insert(0, DefaultOnAttack);
+                }
+
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnAttacked
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnAttacked != null)
+                    actionList.Add(OwnOnAttacked);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
+                });
+                AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
+                {
+                    if (als?.OwnOnAttacked != null)
+                        actionList.Add(als.OwnOnAttacked);
+                });
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnDeath
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnDeath != null)
+                    actionList.Add(OwnOnDeath);
+                Equipment?.ForEach(i =>
+                {
+                    if (i?.OwnOnDeath != null && i.IsEquippable)
+                        actionList.Add(i.OwnOnDeath);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (i?.OwnOnDeath != null && !i.IsEquippable)
+                        actionList.Add(i.OwnOnDeath);
+                });
+                return actionList;
+            }
+        }
+        public override List<ExtraDamage> ExtraDamage
+        {
+            get
+            {
+                var list = new List<ExtraDamage>();
+                foreach (var item in Equipment)
+                {
+                    if (!item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
+                    {
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
+                    }
+                }
+                foreach (var item in Inventory)
+                {
+                    if (item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
+                    {
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
+                    }
+                }
+                return list;
+            }
+        }
 
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {

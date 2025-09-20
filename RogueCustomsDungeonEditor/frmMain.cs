@@ -87,6 +87,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.LootTableInfo] = tpLootTableInfos;
             TabsForNodeTypes[RogueTabTypes.CurrencyInfo] = tpCurrencyInfo;
             TabsForNodeTypes[RogueTabTypes.AffixInfo] = tpAffixes;
+            TabsForNodeTypes[RogueTabTypes.NPCModifierInfo] = tpNPCModifiers;
             TabsForNodeTypes[RogueTabTypes.QualityLevelInfo] = tpQualityLevels;
             TabsForNodeTypes[RogueTabTypes.ItemSlotInfo] = tpItemSlotInfos;
             TabsForNodeTypes[RogueTabTypes.ItemTypeInfo] = tpItemTypeInfos;
@@ -149,6 +150,7 @@ namespace RogueCustomsDungeonEditor
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;
             AffixTab.TabInfoChanged += AffixTab_TabInfoChanged;
+            NPCModifiersTab.TabInfoChanged += NPCModifiersTab_TabInfoChanged;
             QualityLevelsTab.TabInfoChanged += QualityLevelsTab_TabInfoChanged;
             LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
             ItemTypesTab.TabInfoChanged += ItemTypesTab_TabInfoChanged;
@@ -254,6 +256,7 @@ namespace RogueCustomsDungeonEditor
                 LoadTabDataForTag(tag);
                 tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.AffixInfo
+                    && ActiveNodeTag.TabToOpen != RogueTabTypes.NPCModifierInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.QualityLevelInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo
@@ -311,6 +314,13 @@ namespace RogueCustomsDungeonEditor
                         tsbDeleteElement.Visible = false;
                         break;
                     case "Affixes":
+                        tssDungeonElement.Visible = false;
+                        tsbAddElement.Visible = false;
+                        tsbSaveElement.Visible = true;
+                        tsbSaveElementAs.Visible = false;
+                        tsbDeleteElement.Visible = false;
+                        break;
+                    case "NPC Modifiers":
                         tssDungeonElement.Visible = false;
                         tsbAddElement.Visible = false;
                         tsbSaveElement.Visible = true;
@@ -496,6 +506,13 @@ namespace RogueCustomsDungeonEditor
                 Name = "Currency"
             };
             tvDungeonInfo.Nodes.Add(currencyInfoNode);
+
+            var npcModifierInfoNode = new TreeNode("NPC Modifiers")
+            {
+                Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = null },
+                Name = "NPC Modifiers"
+            };
+            tvDungeonInfo.Nodes.Add(npcModifierInfoNode);
 
             var affixInfoNode = new TreeNode("Affixes")
             {
@@ -907,6 +924,7 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.ActionSchoolsInfo => SaveActionSchools(),
                     RogueTabTypes.LootTableInfo => SaveLootTable(),
                     RogueTabTypes.CurrencyInfo => SaveCurrency(),
+                    RogueTabTypes.NPCModifierInfo => SaveNPCModifiers(),
                     RogueTabTypes.AffixInfo => SaveAffixes(),
                     RogueTabTypes.QualityLevelInfo => SaveQualityLevels(),
                     RogueTabTypes.ItemSlotInfo => SaveItemSlots(),
@@ -1115,6 +1133,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.AffixInfo:
                     LoadAffixes();
+                    break;
+                case RogueTabTypes.NPCModifierInfo:
+                    LoadNPCModifiers();
                     break;
                 case RogueTabTypes.QualityLevelInfo:
                     LoadQualityLevels();
@@ -3258,6 +3279,49 @@ namespace RogueCustomsDungeonEditor
         }
         #endregion
 
+        #region NPC Modifiers
+        private void LoadNPCModifiers()
+        {
+            tsbAddElement.Visible = false;
+            tsbSaveElement.Visible = true;
+            tsbSaveElementAs.Visible = false;
+            tsbDeleteElement.Visible = false;
+            tssElementValidate.Visible = true;
+            NPCModifiersTab.LoadData(ActiveDungeon, EffectParamData);
+        }
+
+        private bool SaveNPCModifiers()
+        {
+            var validationErrors = NPCModifiersTab.SaveData();
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"The Dungeon's NPC Modifiers cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
+                    "Save Affixes",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            MessageBox.Show(
+                "Dungeon's NPC Modifiers have been successfully saved!",
+                "Save NPC Modifiers",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            ActiveDungeon.NPCModifierInfos = NPCModifiersTab.LoadedNPCModifiers;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            PassedValidation = false;
+            return true;
+        }
+
+        private void NPCModifiersTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+        #endregion
+
         #region Quality Levels
 
         private void LoadQualityLevels()
@@ -3427,6 +3491,7 @@ namespace RogueCustomsDungeonEditor
         LootTableInfo,
         CurrencyInfo,
         AffixInfo,
+        NPCModifierInfo,
         QualityLevelInfo,
         ItemSlotInfo,
         ItemTypeInfo,

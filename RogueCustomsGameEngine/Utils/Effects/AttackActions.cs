@@ -212,10 +212,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 new() { ParamName = "Defense", Value = "0" },
                                 new() { ParamName = "Element", Value = extraDamage.Element.Id },
                                 new() { ParamName = "BypassesResistances", Value = "false" },
-                                new() { ParamName = "BypassesElementEffect", Value = paramsObject.BypassesElementEffect.ToString() },
+                                new() { ParamName = "BypassesElementEffect", Value = "false" },
                                 new() { ParamName = "Accuracy", Value = "100"},
-                                new() { ParamName = "CriticalHitChance", Value = paramsObject.CriticalHitChance.ToString() },
-                                new() { ParamName = "CriticalHitFormula", Value = paramsObject.CriticalHitFormula },
+                                new() { ParamName = "CriticalHitChance", Value = "0" },
+                                new() { ParamName = "CriticalHitFormula", Value = "0" },
                                 new() { ParamName = "BypassesAccuracyCheck", Value = "true" },
                                 new() { ParamName = "IsExtraDamage", Value = "true" } // Internal Flag
                                 ];

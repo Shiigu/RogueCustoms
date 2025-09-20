@@ -598,6 +598,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 _highlightingIsActive = false;
                 btnHighlightIslands.Visible = true;
                 btnHighlightRooms.Text = "Highlight Rooms";
+                btnSave.Enabled = btnCancel.Enabled = true;
                 pnlGrid.Invalidate();
             }
             else
@@ -605,6 +606,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 HighlightRooms();
                 btnHighlightIslands.Visible = false;
                 btnHighlightRooms.Text = "Disable Highlighting";
+                btnSave.Enabled = btnCancel.Enabled = false;
                 _highlightingIsActive = true;
             }
         }
@@ -626,6 +628,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 HighlightIslands();
                 btnHighlightIslands.Visible = false;
                 btnHighlightRooms.Text = "Disable Highlighting";
+                btnSave.Enabled = btnCancel.Enabled = false;
                 _highlightingIsActive = true;
             }
         }

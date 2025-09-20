@@ -25,6 +25,7 @@ DoButtonText,REALIZAR,DO
 DropButtonText,SOLTAR,DROP
 DungeonNameHeaderText,Nombre de Mazmorra,Dungeon Name
 EntityDetailTitleText,EXAMINAR,EXAMINE
+EntityDetailModifiersText,MODIFICADORES: {Modifiers},MODIFIERS: {Modifiers}
 EquipButtonText,EQUIPAR,EQUIP
 EquippedItemDescriptionText,(Este objeto está equipado),(This item is currently\nequipped)
 EquippedItemNamePrefix,(E),(E)

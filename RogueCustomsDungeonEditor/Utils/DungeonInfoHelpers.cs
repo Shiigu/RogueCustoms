@@ -679,7 +679,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterAttackStat",
                 HasMax = false,
-                MinCap = 0,
+                MinCap = -100,
                 MaxCap = EngineConstants.NORMAL_STAT_CAP
             };
 
@@ -689,7 +689,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterDefenseStat",
                 HasMax = false,
-                MinCap = 0,
+                MinCap = -100,
                 MaxCap = EngineConstants.NORMAL_STAT_CAP
             };
 

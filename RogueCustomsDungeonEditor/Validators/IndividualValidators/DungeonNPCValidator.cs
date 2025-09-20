@@ -24,16 +24,64 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             var npcAsInstance = sampleDungeon != null ? new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor) : null;
 
-            if((npcJson.LootTableId == "None" || string.IsNullOrWhiteSpace(npcJson.LootTableId)) && npcJson.DropPicks > 0)
-                messages.AddError("This NPC is set to drop items as loot, but has no Loot Table.");
-            else if (npcJson.LootTableId != "None" && !string.IsNullOrWhiteSpace(npcJson.LootTableId) && npcJson.DropPicks <= 0)
-                messages.AddError("This NPC has a Loot Table but is not set to drop items as loot.");
+            if(npcJson.RegularLootTable != null)
+            {
+                if ((npcJson.RegularLootTable.LootTableId == "None" || string.IsNullOrWhiteSpace(npcJson.RegularLootTable.LootTableId)) && npcJson.RegularLootTable.DropPicks > 0)
+                    messages.AddError("This NPC is set to drop items as loot, but has no Loot Table.");
+                else if (npcJson.RegularLootTable.LootTableId != "None" && !string.IsNullOrWhiteSpace(npcJson.RegularLootTable.LootTableId) && npcJson.RegularLootTable.DropPicks <= 0)
+                    messages.AddError("This NPC has a Loot Table but is not set to drop items as loot.");
+            }
+            else
+            {
+                messages.AddError("This NPC has no regular Loot Table data, not even an empty one.");
+            }
+            if (npcJson.LootTableWithModifiers != null)
+            {
+                if (npcJson.LootTableWithModifiers.LootTableId != "None" && !string.IsNullOrWhiteSpace(npcJson.LootTableWithModifiers.LootTableId) && npcJson.LootTableWithModifiers.DropPicks <= 0)
+                    messages.AddError("This NPC has a Loot Table when with modifiers but is not set to drop items as loot.");
+                if (npcJson.RegularLootTable != null)
+                {
+                    if(npcJson.LootTableWithModifiers.LootTableId == "None" && npcJson.LootTableWithModifiers.LootTableId != "None")
+                        messages.AddWarning("This NPC has a Loot Table except when with Modifiers.");
+                }
+            }
+            else
+            {
+                messages.AddError("This NPC has no modified Loot Table data, not even an empty one.");
+            }
 
             if (npcJson.OnSpawn != null)
             {
                 messages.AddRange(await ActionValidator.Validate(npcJson.OnSpawn, dungeonJson));
                 if(npcAsInstance != null)
-                    messages.AddRange(await ActionValidator.Validate(npcAsInstance.OnSpawn, dungeonJson, sampleDungeon));
+                    messages.AddRange(await ActionValidator.Validate(npcAsInstance.OwnOnSpawn, dungeonJson, sampleDungeon));
+            }
+
+            if (npcJson.BaseHPMultiplierIfWithModifiers < 1)
+            {
+                messages.AddError("NPC has a non-positive Base HP Multiplier when with Modifiers.");
+            }
+
+            if (npcJson.ExperienceYieldMultiplierIfWithModifiers < 0)
+            {
+                messages.AddError("NPC has a negative Experience Yield Multiplier when with Modifiers.");
+            }
+            else if (npcJson.ExperienceYieldMultiplierIfWithModifiers < 1)
+            {
+                messages.AddError("NPC has an Experience Yield Multiplier when with Modifiers that is lower than 1, meaning they will give less experience than normal.");
+            }
+
+            if (npcJson.RandomizesForecolorIfWithModifiers && !npcJson.ModifierData.Any(md => md.ModifierAmount > 0))
+            {
+                messages.AddWarning("This NPC is set to randomize their Foreground with Modifiers, but is not set to have any Modifiers. This property will be ignored.");
+            }
+
+            var playerFactions = dungeonJson.PlayerClasses.Select(pc => pc.Faction);
+            var npcFaction = dungeonJson.FactionInfos.Find(fi => fi.Id.Equals(npcJson.Faction));
+
+            if (npcFaction != null && npcJson.ReappearsOnTheNextFloorIfAlliedToThePlayer && npcFaction.EnemiesWith.Any(playerFactions.Contains))
+            {
+                messages.AddWarning("This NPC is set to tag with an Allied Player between Floors, but is set to be enemies with at least one Player. This property will be ignored unless modified through gameplay.");
             }
 
             if (npcAsInstance != null && npcAsInstance.OnInteracted.Any())

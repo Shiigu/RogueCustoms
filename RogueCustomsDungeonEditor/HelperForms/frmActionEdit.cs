@@ -706,6 +706,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             if (rbEntity.Checked)
                             {
+                                ActionToSave.TargetTypes = new();
                                 if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
                                 {
                                     if (nudMaxRange.Value == 0)

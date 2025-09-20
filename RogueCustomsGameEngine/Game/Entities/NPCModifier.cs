@@ -7,37 +7,34 @@ using System.Threading.Tasks;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
     [Serializable]
-    public class Affix
+    public class NPCModifier
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public AffixType Type { get; set; }
-        public int MinimumItemLevel { get; set; }
-        public int ItemValueModifierPercentage { get; set; }
-        public List<ItemType> AffectedItemTypes { get; set; }
+        public GameColor NameColor { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
         public ExtraDamage ExtraDamage { get; set; }
+        public ActionWithEffects OwnOnSpawn { get; set; }
         public ActionWithEffects OwnOnTurnStart { get; set; }
         public ActionWithEffects OwnOnAttack { get; set; }
         public ActionWithEffects OwnOnAttacked { get; set; }
+        public ActionWithEffects OwnOnDeath { get; set; }
 
-        public Affix(AffixInfo info, Locale locale, List<ItemType> itemTypes, List<Element> elements, List<ActionSchool> actionSchools)
+        public NPCModifier(NPCModifierInfo info, Locale locale, List<Element> elements, List<ActionSchool> actionSchools)
         {
             Id = info.Id;
             Name = locale[info.Name];
-            Type = Enum.Parse<AffixType>(info.AffixType);
-            MinimumItemLevel = info.MinimumItemLevel;
-            ItemValueModifierPercentage = info.ItemValueModifierPercentage;
-            AffectedItemTypes = itemTypes.Where(it => info.AffectedItemTypes.Contains(it.Id, StringComparer.InvariantCultureIgnoreCase)).ToList();
+            NameColor = info.NameColor;
             StatModifiers = [];
             if (info.StatModifiers != null)
             {
                 foreach (var statModifier in info.StatModifiers)
-                {                    
+                {
                     StatModifiers.Add(new PassiveStatModifier
                     {
                         Id = statModifier.Id,
@@ -45,7 +42,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     });
                 }
             }
-            if (info.ExtraDamage != null)
+            if (info.ExtraDamage != null && !string.IsNullOrWhiteSpace(info.ExtraDamage.Element))
             {
                 ExtraDamage = new ExtraDamage
                 {
@@ -54,26 +51,25 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Element = elements.Find(e => e.Id.Equals(info.ExtraDamage.Element, StringComparison.InvariantCultureIgnoreCase))
                 };
             }
+            OwnOnSpawn = ActionWithEffects.Create(info.OnSpawn, actionSchools);
             OwnOnTurnStart = ActionWithEffects.Create(info.OnTurnStart, actionSchools);
             OwnOnAttack = ActionWithEffects.Create(info.OnAttack, actionSchools);
             OwnOnAttacked = ActionWithEffects.Create(info.OnAttacked, actionSchools);
+            OwnOnDeath = ActionWithEffects.Create(info.OnDeath, actionSchools);
         }
 
-        private Affix() 
+        private NPCModifier()
         {
             // Do nothing, just here for Clone
         }
 
-        private Affix Clone()
+        private NPCModifier Clone()
         {
-            return new Affix()
+            return new NPCModifier()
             {
                 Id = Id,
                 Name = Name,
-                Type = Type,
-                MinimumItemLevel = MinimumItemLevel,
-                ItemValueModifierPercentage = ItemValueModifierPercentage,
-                AffectedItemTypes = AffectedItemTypes,
+                NameColor = NameColor.Clone(),
                 StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Amount = sm.Amount }),
                 ExtraDamage = ExtraDamage == null ? null : new ExtraDamage
                 {
@@ -81,31 +77,43 @@ namespace RogueCustomsGameEngine.Game.Entities
                     MaximumDamage = ExtraDamage.MaximumDamage,
                     Element = ExtraDamage.Element
                 },
+                OwnOnSpawn = OwnOnSpawn?.Clone(),
                 OwnOnTurnStart = OwnOnTurnStart?.Clone(),
                 OwnOnAttack = OwnOnAttack?.Clone(),
-                OwnOnAttacked = OwnOnAttacked?.Clone()
+                OwnOnAttacked = OwnOnAttacked?.Clone(),
+                OwnOnDeath = OwnOnDeath?.Clone(),
             };
         }
 
-        public void ApplyTo(Item item)
+        public void ApplyTo(NonPlayableCharacter npc)
         {
-            var clonedAffix = Clone();
-            if (clonedAffix.OwnOnTurnStart != null)
+            var clonedModifier = Clone();
+            if (clonedModifier.OwnOnSpawn != null)
             {
-                clonedAffix.OwnOnTurnStart.Map = item.Map;
-                clonedAffix.OwnOnTurnStart.User = item;
+                clonedModifier.OwnOnSpawn.Map = npc.Map;
+                clonedModifier.OwnOnSpawn.User = npc;
             }
-            if (clonedAffix.OwnOnAttack != null)
+            if (clonedModifier.OwnOnTurnStart != null)
+            {
+                clonedModifier.OwnOnTurnStart.Map = npc.Map;
+                clonedModifier.OwnOnTurnStart.User = npc;
+            }
+            if (clonedModifier.OwnOnAttack != null)
+            {
+                clonedModifier.OwnOnAttack.Map = npc.Map;
+                clonedModifier.OwnOnAttack.User = npc;
+            }
+            if (clonedModifier.OwnOnAttacked != null)
             { 
-                clonedAffix.OwnOnAttack.Map = item.Map;
-                clonedAffix.OwnOnAttack.User = item;
+                clonedModifier.OwnOnAttacked.Map = npc.Map;
+                clonedModifier.OwnOnAttacked.User = npc;
             }
-            if (clonedAffix.OwnOnAttacked != null)
+            if (clonedModifier.OwnOnDeath != null)
             {
-                clonedAffix.OwnOnAttacked.Map = item.Map;
-                clonedAffix.OwnOnAttacked.User = item;
+                clonedModifier.OwnOnDeath.Map = npc.Map;
+                clonedModifier.OwnOnDeath.User = npc;
             }
-            item.Affixes.Add(clonedAffix);
+            npc.Modifiers.Add(clonedModifier);
         }
     }
 }

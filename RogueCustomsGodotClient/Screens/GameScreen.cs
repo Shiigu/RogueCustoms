@@ -187,16 +187,19 @@ public partial class GameScreen : Control
                     _saveGameButton.Disabled = true;
                 }
 
-                if (!dungeonStatus.Read)
-                    await UpdateUIViaEvents();
-
                 foreach (var child in _children)
                 {
                     child.Update();
                 }
 
+                if (!dungeonStatus.Read)
+                    await UpdateUIViaEvents();
+
                 _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
+
                 _lastTurn = dungeonStatus.TurnCount;
+
+                dungeonStatus.JustLoaded = false;
             }
 
             if (_globalState.PlayerControlMode == ControlMode.Waiting)
@@ -277,6 +280,7 @@ public partial class GameScreen : Control
 
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
+            var redrawMap = false;
             if (_soundIsPlaying && displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
                 await _soundFinished.Task;
             foreach (var displayEvent in displayEventList.Events)
@@ -315,6 +319,7 @@ public partial class GameScreen : Control
                         var position = displayEvent.Params[0] as GamePoint;
                         var consoleRepresentation = displayEvent.Params[1] as ConsoleRepresentation;
                         _mapPanel.UpdateTileRepresentation(new Vector2I { X = position.X, Y = position.Y }, consoleRepresentation);
+                        redrawMap = true;
                         break;
                     case DisplayEventType.SetDungeonStatus:
                         var dungeonStatus = (DungeonStatus)displayEvent.Params[0];
@@ -407,11 +412,13 @@ public partial class GameScreen : Control
                         }
                         else
                         {
-                            _mapPanel.Update();
+                            _mapPanel.UpdateBuffer(_globalState.DungeonInfo.Tiles);
                         }
                         break;
                 }
             }
+            if (redrawMap)
+                _mapPanel.Render();
             while (_screenFlash.Visible)
                 await Task.Delay(50);
             if (displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
@@ -725,6 +732,15 @@ public partial class GameScreen : Control
                         entityWindowText.Append($"[center]{entityDetails.EntityName.ToColoredString(entityDetails.NameColor)}[/center]\n\n");
                         entityWindowText.Append($"[center]{entityDetails.EntityConsoleRepresentation.ToBbCodeRepresentation()}[/center]\n\n");
                         entityWindowText.Append($"{entityDetails.EntityDescription}");
+                        if(entityDetails.Modifiers.Count > 0)
+                        {
+                            var coloredModifiers = new List<string>();
+                            foreach (var modifier in entityDetails.Modifiers)
+                            {
+                                coloredModifiers.Add(modifier.Name.ToColoredString(modifier.Color));
+                            }
+                            entityWindowText.Append($"\n\n{TranslationServer.Translate("EntityDetailModifiersText").ToString().Format(new { Modifiers = string.Join(", ", coloredModifiers) })}");
+                        }
                     }
                     if (entityDetails.ShowTileDescription)
                     {

@@ -23,6 +23,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
     {
         public static async Task<DungeonValidationMessages> Validate(ActionWithEffectsInfo action, DungeonInfo dungeonJson)
         {
+            if (action == null) return new();
             var messages = new DungeonValidationMessages();
             var name = action.Name;
             var id = action.Id;
@@ -35,6 +36,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
         public static async Task<DungeonValidationMessages> Validate(ActionWithEffects action, DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
+            if (action == null) return new();
             var messages = new DungeonValidationMessages();
 
             var owner = action.User;
@@ -244,10 +246,35 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             sampleDungeon.CurrentFloor.SetActionParams();
 
-            if (!action.TargetTypes.Contains(TargetType.Tile))
-                await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+            if (owner == null)
+            {
+                // It should enter here only if it's an Affix or NPC Modifier
+                owner = source;
+                try
+                {
+                    if (!action.TargetTypes.Contains(TargetType.Tile))
+                        await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+                    else
+                        await TestOnATile(owner, source, sampleDungeon, action, messages);
+                }
+                catch (Exception)
+                {
+                    if (source is Character sc)
+                        owner = sc.Equipment[0];
+                    if (!action.TargetTypes.Contains(TargetType.Tile))
+                        await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+                    else
+                        await TestOnATile(owner, source, sampleDungeon, action, messages);
+                }
+            }
             else
-                await TestOnATile(owner, source, sampleDungeon, action, messages);
+            {
+
+                if (!action.TargetTypes.Contains(TargetType.Tile))
+                    await TestOnACharacter(owner, source, target, sampleDungeon, action, messages);
+                else
+                    await TestOnATile(owner, source, sampleDungeon, action, messages);
+            }
 
             return messages;
         }

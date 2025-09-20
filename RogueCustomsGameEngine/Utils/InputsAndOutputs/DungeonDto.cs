@@ -30,6 +30,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         [JsonIgnore]
         public bool Read { get; set; }
 
+        [JsonIgnore]
+        public bool JustLoaded { get; set; }
+
         public List<TileDto> Tiles { get; private set; }
         public ConsoleRepresentation EmptyTile { get; private set; }
 

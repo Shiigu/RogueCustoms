@@ -16,13 +16,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public static class DungeonAffixValidator
     {
-        private static readonly List<string> ValidItemTypes = ["Weapon", "Armor"];
         private static readonly List<string> ValidAffixTypes = ["Prefix", "Suffix"];
 
         public static async Task<DungeonValidationMessages> Validate(DungeonInfo dungeonJson, Dungeon sampleDungeon)
         {
             var messages = new DungeonValidationMessages();
-            var validStatIds = dungeonJson.CharacterStats.ConvertAll(s => s.Id);
+            var validStatIds = dungeonJson.CharacterStats.ConvertAll(s => s.Id.ToLowerInvariant());
 
             foreach (var affixJson in dungeonJson.AffixInfos)
             {
@@ -38,7 +37,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     {
                         messages.AddError($"Affix {affixJson.Id} has an invalid Affix Type.");
                     }
-                    if (affixJson.AffectedItemTypes.Any(ait => !ValidItemTypes.Any(vit => vit.Equals(ait, StringComparison.InvariantCultureIgnoreCase))))
+                    if (affixJson.AffectedItemTypes.Any(ait => !dungeonJson.ItemTypeInfos.Any(it => it.Id.Equals(ait, StringComparison.InvariantCultureIgnoreCase))))
                     {
                         messages.AddError($"Affix {affixJson.Id} has an invalid Affected Item Type.");
                     }
@@ -60,7 +59,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         {
                             if (!validStatIds.Contains(stat.Id.ToLowerInvariant()))
                             {
-                                messages.AddWarning($"Affix {affixJson.Id}'s modification is invalid as there is no stat with Id {stat.Id}.");
+                                messages.AddError($"Affix {affixJson.Id}'s modification is invalid as there is no stat with Id {stat.Id}.");
                                 continue;
                             }
                             if (stat.Amount == 0)

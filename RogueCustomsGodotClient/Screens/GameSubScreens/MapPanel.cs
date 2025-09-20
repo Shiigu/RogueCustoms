@@ -41,6 +41,7 @@ public partial class MapPanel : GamePanel
     private AimingSquare _aimingSquare;
     private int widthToDisplay, heightToDisplay;
     private string[,] _tileBuffer;
+    public bool BlockRefreshes { get; set; }
 
     public Vector2 MapPosition => _tileMap.Position;
 
@@ -125,19 +126,8 @@ public partial class MapPanel : GamePanel
                 heightToDisplay = dungeonStatus.Height;
             }
 
-            _tileMap.Clear();
-
-            // BBCode does not properly represent spaces
-            var emptyCharacter = new ConsoleRepresentation
-            {
-                BackgroundColor = dungeonStatus.EmptyTile.BackgroundColor,
-                ForegroundColor = new GameColor { R = 0, G = 0, B = 0, A = 0 },
-                Character = 'A'
-            };
-
-            _tileMap.Position = new Vector2(16 * (TopLeftCornerPosition.X + 1), 16 * (TopLeftCornerPosition.Y + 1));
-
-            UpdateBuffer(null);
+            //if (dungeonStatus.TurnCount <= 1 || dungeonStatus.JustLoaded)
+                UpdateBuffer(dungeonStatus.Tiles);
         }
     }
 
@@ -149,6 +139,9 @@ public partial class MapPanel : GamePanel
     public void UpdateBuffer(List<TileDto> newTiles)
     {
         var dungeonStatus = _globalState.DungeonInfo;
+
+        _tileMap.Position = new Vector2(16 * (TopLeftCornerPosition.X + 1), 16 * (TopLeftCornerPosition.Y + 1));
+
         _tileBuffer = new string[widthToDisplay, heightToDisplay];
 
         for (var y = 0; y < heightToDisplay; y++)
@@ -195,7 +188,6 @@ public partial class MapPanel : GamePanel
             return;
 
         _tileBuffer[position.X, position.Y] = newRep;
-        Render();
     }
 
     public void StartTargeting()

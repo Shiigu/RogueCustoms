@@ -57,10 +57,19 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool PursuesOutOfSightCharacters;
         public readonly bool WandersIfWithoutTarget;
         public readonly bool DropsEquipmentOnDeath;
+        public readonly bool ReappearsOnTheNextFloorIfAlliedToThePlayer;
         public readonly AIType AIType;
 
         public readonly LootTable LootTable;
         public readonly int DropPicks;
+
+        public readonly int OddsForModifier;
+        public readonly List<(int Level, int Amount)> ModifierTable;
+        public readonly bool RandomizesForecolorIfWithModifiers;
+        public readonly decimal ExperienceYieldMultiplierIfWithModifiers;
+        public readonly decimal BaseHPMultiplierIfWithModifiers;
+        public readonly LootTable LootTableModifier;
+        public readonly int DropPicksModifier;
 
         #endregion
         public readonly string Power;
@@ -283,8 +292,37 @@ namespace RogueCustomsGameEngine.Game.Entities
                 StartingInventoryIds = new List<string>(npcInfo.StartingInventory);
                 Passable = false;
                 AIType = Enum.Parse<AIType>(npcInfo.AIType);
-                LootTable = (npcInfo.LootTableId != null && npcInfo.LootTableId != "None") ? dungeon.LootTables.Find(lt => lt.Id.Equals(npcInfo.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
-                DropPicks = npcInfo.DropPicks;
+                if(npcInfo.RegularLootTable != null)
+                {
+                    LootTable = (npcInfo.RegularLootTable.LootTableId != null && npcInfo.RegularLootTable.LootTableId != "None") ? dungeon.LootTables.Find(lt => lt.Id.Equals(npcInfo.RegularLootTable.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
+                    DropPicks = LootTable != null ? npcInfo.RegularLootTable.DropPicks : 0;
+                }
+                else
+                {
+                    LootTable = null;
+                    DropPicks = 0;
+                }
+                if (npcInfo.LootTableWithModifiers != null)
+                {
+                    LootTableModifier = (npcInfo.LootTableWithModifiers.LootTableId != null && npcInfo.LootTableWithModifiers.LootTableId != "None") ? dungeon.LootTables.Find(lt => lt.Id.Equals(npcInfo.LootTableWithModifiers.LootTableId, StringComparison.InvariantCultureIgnoreCase)) : null;
+                    DropPicksModifier = LootTable != null ? npcInfo.LootTableWithModifiers.DropPicks : 0;
+                }
+                else
+                {
+                    LootTableModifier = null;
+                    DropPicksModifier = 0;
+                }
+                OddsForModifier = npcInfo.OddsForModifier;
+                ModifierTable = new();
+                foreach (var modifier in npcInfo.ModifierData)
+                {
+                    ModifierTable.Add((modifier.Level, modifier.ModifierAmount));
+                }
+                ReappearsOnTheNextFloorIfAlliedToThePlayer = npcInfo.ReappearsOnTheNextFloorIfAlliedToThePlayer;
+                ExperienceYieldMultiplierIfWithModifiers = npcInfo.ExperienceYieldMultiplierIfWithModifiers;
+                BaseHPMultiplierIfWithModifiers = npcInfo.BaseHPMultiplierIfWithModifiers;
+                RandomizesForecolorIfWithModifiers = npcInfo.RandomizesForecolorIfWithModifiers;
+
                 KnowsAllCharacterPositions = npcInfo.KnowsAllCharacterPositions;
                 PursuesOutOfSightCharacters = npcInfo.PursuesOutOfSightCharacters;
                 WandersIfWithoutTarget = npcInfo.WandersIfWithoutTarget;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -112,7 +113,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 {
                     var spawnPosition = new GamePoint(specialSpawn.X, specialSpawn.Y);
                     var possibleClasses = possibleNPCClasses;
-                    if (PlayerPosition.Equals(spawnPosition)) continue;
+                    if (PlayerPosition.Equals(spawnPosition) || _map.GetTileFromCoordinates(spawnPosition.X, spawnPosition.Y)?.LivingCharacter != null) continue;
                     if (sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER)
                     {
                         possibleClasses = possibleNPCClasses.Where(c => c.Faction != null && factionsAlliedToPlayers.Contains(c.Faction)).ToList();
@@ -189,7 +190,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                 }
             }
         }
-        public Task PlacePlayer()
+        public async Task PlacePlayerAndKeptNPCs()
         {
             var playerSpawns = _generatorToUse.SpecialSpawns.Where(ss => ss.ObjectToSpawn is string sid && (sid == EngineConstants.SPAWN_PLAYER_CHARACTER || sid == EngineConstants.SPAWN_ANY_CHARACTER || sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER));
             if (playerSpawns.Any())
@@ -201,7 +202,34 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             {
                 PlayerPosition = _map.PickEmptyPosition(false, false);
             }
-            return _map.PlacePlayer(PlayerPosition);
+            await _map.PlacePlayer(PlayerPosition);
+            foreach (var npcToKeep in _map.AICharacters)
+            {
+                var npcSpawns = _generatorToUse.SpecialSpawns.Where(ss => ss.ObjectToSpawn is string sid && (sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER || sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER));
+                npcSpawns = npcSpawns.Where(ns => !_map.GetTileFromCoordinates(ns.X, ns.Y).IsOccupied).ToList();
+                npcToKeep.Position = null;
+                if (npcSpawns.Any())
+                {
+                    var pickedSpawn = npcSpawns.TakeRandomElement(Rng);
+                    npcToKeep.Position = new(pickedSpawn.X, pickedSpawn.Y);
+                }
+                else
+                {
+                    var tilesAdjacentToPlayer = _map.GetTilesWithinCenteredSquare(PlayerPosition, 5, true);
+                    tilesAdjacentToPlayer = tilesAdjacentToPlayer.Where(t => t.IsWalkable && !t.IsOccupied).ToList();
+                    if (tilesAdjacentToPlayer.Any())
+                    {
+                        var minDistance = tilesAdjacentToPlayer.Min(t => GamePoint.Distance(t.Position, PlayerPosition));
+                        tilesAdjacentToPlayer = tilesAdjacentToPlayer.Where(t => GamePoint.Distance(t.Position, PlayerPosition) == minDistance).ToList();
+                        var pickedSpawn = tilesAdjacentToPlayer.TakeRandomElement(Rng);
+                        npcToKeep.Position = new(pickedSpawn.Position.X, pickedSpawn.Position.Y);
+                    }
+                }
+                if (npcToKeep.Position != null)
+                {
+                    _map.RegisterPreexistingCharacter(npcToKeep);
+                }
+            }
         }
         public void PlaceStairs()
         {

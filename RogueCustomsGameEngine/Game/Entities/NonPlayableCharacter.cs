@@ -28,7 +28,8 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class NonPlayableCharacter : Character, IAIControlled
     {
-        private List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
+        public List<NPCModifier> Modifiers { get; set; }
+        public List<(Character Character, TargetType TargetType)> KnownCharacters { get; } = new List<(Character Character, TargetType TargetType)>();
         public AIType AIType { get; set; }
 
         private ITargetable CurrentTarget;
@@ -39,17 +40,229 @@ namespace RogueCustomsGameEngine.Game.Entities
         private readonly bool PursuesOutOfSightCharacters;
         private readonly bool WandersIfWithoutTarget;
         private readonly bool DropsEquipmentOnDeath;
+        public readonly bool ReappearsOnTheNextFloorIfAlliedToThePlayer;
+        public readonly decimal ExperienceYieldMultiplierIfWithModifiers;
+
+        public override int ExperiencePayout
+        {
+            get
+            {
+                var basePayout = ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+                if (Modifiers.Count > 0)
+                    return (int)(basePayout * ExperienceYieldMultiplierIfWithModifiers);
+                return basePayout;
+            }
+        }
 
         private List<Room> VisitedRooms = new();
 
         private (GamePoint Destination, List<Tile> Route) PathToUse;
-        public ActionWithEffects OnSpawn { get; set; }
-        public List<ActionWithEffects> OnInteracted { get; set; }
+
+        public ActionWithEffects OwnOnSpawn { get; set; }
+        public List<ActionWithEffects> OnSpawn
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                actionList.Add(OwnOnSpawn);
+                foreach (var modifier in Modifiers)
+                {
+                    if(modifier?.OwnOnSpawn != null)
+                        actionList.Add(modifier.OwnOnSpawn);
+                }
+                return actionList;
+            }
+        }
+        private List<ActionWithEffects> OwnOnInteracted { get; set; }
+        public List<ActionWithEffects> OnInteracted
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                actionList.AddRange(OwnOnInteracted);
+                foreach (var modifier in Modifiers)
+                {
+                    if (modifier?.OwnOnAttacked != null)
+                        actionList.Add(modifier.OwnOnAttacked);
+                }
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnAttacked
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnAttacked != null)
+                    actionList.Add(OwnOnAttacked);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnAttacked != null)
+                        actionList.AddRange(i?.OnAttacked);
+                });
+                AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
+                {
+                    if (als?.OwnOnAttacked != null)
+                        actionList.Add(als.OwnOnAttacked);
+                });
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnAttack
+        {
+            get
+            {
+                var hasNativeEquipmentAttacks = false; var actionList = new List<ActionWithEffects>();
+                if (OwnOnAttack != null)
+                    actionList.AddRange(OwnOnAttack);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnAttack != null)
+                    {
+                        actionList.AddRange(i?.OnAttack);
+                        if (i.OwnOnAttack.Count > 0)
+                            hasNativeEquipmentAttacks = true;
+                    }
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnAttack != null)
+                        actionList.AddRange(i?.OnAttack);
+                });
+                KeySet?.ForEach(k =>
+                {
+                    if (k?.OwnOnAttack != null)
+                        actionList.AddRange(k.OwnOnAttack);
+                });
+                if (!hasNativeEquipmentAttacks)
+                {
+                    if (DefaultOnAttack != null)
+                        actionList.Insert(0, DefaultOnAttack);
+                }
+                foreach (var modifier in Modifiers)
+                {
+                    if (modifier?.OwnOnAttack != null)
+                        actionList.Add(modifier.OwnOnAttack);
+                }
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnTurnStart
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnTurnStart != null)
+                    actionList.Add(OwnOnTurnStart);
+                Equipment?.ForEach(i =>
+                {
+                    if (i.IsEquippable && i?.OnTurnStart != null)
+                        actionList.AddRange(i?.OnTurnStart);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (!i.IsEquippable && i?.OnTurnStart != null)
+                        actionList.AddRange(i?.OnTurnStart);
+                });
+                foreach (var modifier in Modifiers)
+                {
+                    if (modifier?.OwnOnTurnStart != null)
+                        actionList.Add(modifier.OwnOnTurnStart);
+                }
+                return actionList;
+            }
+        }
+        public override List<ActionWithEffects> OnDeath
+        {
+            get
+            {
+                var actionList = new List<ActionWithEffects>();
+                if (OwnOnDeath != null)
+                    actionList.Add(OwnOnDeath);
+                Equipment?.ForEach(i =>
+                {
+                    if (i?.OwnOnDeath != null && i.IsEquippable)
+                        actionList.Add(i.OwnOnDeath);
+                });
+                Inventory?.ForEach(i =>
+                {
+                    if (i?.OwnOnDeath != null && !i.IsEquippable)
+                        actionList.Add(i.OwnOnDeath);
+                });
+                foreach (var modifier in Modifiers)
+                {
+                    if (modifier?.OwnOnDeath != null)
+                        actionList.Add(modifier.OwnOnDeath);
+                }
+                return actionList;
+            }
+        }
         public bool SpawnedViaMonsterHouse { get; set; }
         public bool CanSeeTraps { get; set; }
         public LootTable LootTable { get; set; }
         public List<(EntityClass Class, int Amount)> Drops { get; set; }
-
+        public override List<ExtraDamage> ExtraDamage
+        {
+            get
+            {
+                var list = new List<ExtraDamage>();
+                foreach (var item in Equipment)
+                {
+                    if (!item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
+                    {
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
+                    }
+                }
+                foreach (var item in Inventory)
+                {
+                    if (item.IsEquippable) continue;
+                    foreach (var extraDamage in item?.ExtraDamage ?? [])
+                    {
+                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (correspondingExtraDamage == null)
+                        {
+                            list.Add(extraDamage);
+                        }
+                        else
+                        {
+                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                        }
+                    }
+                }
+                foreach (var modifier in Modifiers)
+                {
+                    var extraDamage = modifier.ExtraDamage;
+                    if (extraDamage == null || extraDamage.Element == null) continue;
+                    var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
+                    if (correspondingExtraDamage == null)
+                    {
+                        list.Add(extraDamage);
+                    }
+                    else
+                    {
+                        correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
+                        correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
+                    }
+                }
+                return list;
+            }
+        }
         public NonPlayableCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
             KnownCharacters.Add((this, TargetType.Self));
@@ -60,15 +273,53 @@ namespace RogueCustomsGameEngine.Game.Entities
             PursuesOutOfSightCharacters = entityClass.PursuesOutOfSightCharacters;
             WandersIfWithoutTarget = entityClass.WandersIfWithoutTarget;
             DropsEquipmentOnDeath = entityClass.DropsEquipmentOnDeath;
+            ExperienceYieldMultiplierIfWithModifiers = entityClass.ExperienceYieldMultiplierIfWithModifiers;
+            ReappearsOnTheNextFloorIfAlliedToThePlayer = entityClass.ReappearsOnTheNextFloorIfAlliedToThePlayer;
             CanSeeTraps = false;
             AIType = entityClass.AIType;
+            Modifiers = new();
 
-            OnSpawn = MapClassAction(entityClass.OnSpawn);
-            OnInteracted = new List<ActionWithEffects>();
-            MapClassActions(entityClass.OnInteracted, OnInteracted);
+            OwnOnSpawn = MapClassAction(entityClass.OnSpawn);
+            OwnOnInteracted = new List<ActionWithEffects>();
+            MapClassActions(entityClass.OnInteracted, OwnOnInteracted);
 
-            LootTable = entityClass.LootTable;
-            CreateDrops(entityClass.LootTable, entityClass.DropPicks);
+            if (Map.Rng.RollProbability() < entityClass.OddsForModifier && entityClass.ModifierTable.Count > 0)
+            {
+                var modifierEntry = entityClass.ModifierTable.First(mt => mt.Level >= level);
+                for (int i = 0; i < modifierEntry.Amount; i++)
+                {
+                    var availableModifiers = Map.NPCModifiers.Where(nm => !Modifiers.Any(m => m.Id.Equals(nm.Id))).ToList();
+                    if (availableModifiers.Count == 0) break;
+                    availableModifiers.TakeRandomElement(map.Rng).ApplyTo(this);
+                }
+            }
+            if(Modifiers.Count > 0)
+            {
+                HP.Base *= entityClass.BaseHPMultiplierIfWithModifiers;
+                HP.Current = HP.BaseAfterModifications;
+                LootTable = entityClass.LootTableModifier;
+                CreateDrops(entityClass.LootTableModifier, entityClass.DropPicksModifier);
+                if(entityClass.RandomizesForecolorIfWithModifiers)
+                {
+                    var randomColor = GameColor.GetRandomContrastingColor(ConsoleRepresentation.BackgroundColor, Map.Rng);
+                    BaseConsoleRepresentation.ForegroundColor = randomColor.Clone();
+                    ConsoleRepresentation.ForegroundColor = randomColor.Clone();
+                }
+            }
+            else
+            {
+                LootTable = entityClass.LootTable;
+                CreateDrops(entityClass.LootTable, entityClass.DropPicks);
+            }
+        }
+
+        public void ResetAIData()
+        {
+            KnownCharacters.Clear();
+            KnownCharacters.Add((this, TargetType.Self));
+            PathToUse = (null, null);
+            LastPositionBeforeRemove = null;
+            CurrentTarget = null;
         }
 
         private void CreateDrops(LootTable lootTable, int dropPicks)
@@ -650,7 +901,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
         }
-
         public override void EquipItem(Item item)
         {
             // Do nothing. NPCs are not meant to equip items.
@@ -681,7 +931,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     pickableAsEntity.Position = null;
                     pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
-                    Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }));
+                    if(Map.Player.FOVTiles.Contains(centralTile))
+                        Map.AppendMessage(Map.Locale["NPCItemCannotBePutOnFloor"].Format(new { ItemName = pickableAsEntity.Name }));
                     if(pickableAsEntity is Item i)
                         Map.Items.Remove(i);
                 }
@@ -690,15 +941,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 pickableAsEntity.Position = pickedEmptyTile.Position;
                 pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Alive;
-                Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
-                if (!Map.IsDebugMode)
+                if (Map.Player.FOVTiles.Any(t => t.Position.Equals(centralTile.Position)))
                 {
-                    events.Add(new()
+                    Map.AppendMessage(Map.Locale["NPCPutItemOnFloor"].Format(new { CharacterName = Name, ItemName = pickableAsEntity.Name }));
+                    if (!Map.IsDebugMode)
                     {
-                        DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                        Params = new() { pickableAsEntity.Position, Map.GetConsoleRepresentationForCoordinates(pickableAsEntity.Position.X, pickableAsEntity.Position.Y) }
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
+                            Params = new() { pickableAsEntity.Position, Map.GetConsoleRepresentationForCoordinates(pickableAsEntity.Position.X, pickableAsEntity.Position.Y) }
+                        }
+                        );
                     }
-                    );
                 }
             }
             Map.DisplayEvents.Add(($"NPC {Name} drops item", events));

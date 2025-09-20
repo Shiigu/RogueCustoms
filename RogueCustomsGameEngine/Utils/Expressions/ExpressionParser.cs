@@ -266,6 +266,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 throw new ArgumentException($"{value} is a boolean expression, but is being evaluated as a number.");
             var parsedValue = RollDiceNotations(value);
             parsedValue = RollRangeNotations(parsedValue);
+
+            // Let's get a static decimal separator to avoid potential language-related bugs (thank you, comma!)
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            var separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if (separator != ".")
+                parsedValue = parsedValue.Replace(separator, ".");
+
             return new Expression(parsedValue).Eval<decimal>();
         }
 

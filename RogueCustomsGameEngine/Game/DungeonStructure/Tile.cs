@@ -203,7 +203,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public Map Map { get; set; }
         public Room Room => Map.GetRoomInCoordinates(Position.X, Position.Y);
-        public Character LivingCharacter => Map.GetCharacters().Find(e => e != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Alive);
+        public Character LivingCharacter => Map.GetCharacters().Find(e => e != null && e.Position != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Alive);
         public List<Character> GetDeadCharacters() => Map.GetCharacters().Where(e => e != null && e.Position.Equals(Position) && e.ExistenceStatus == EntityExistenceStatus.Dead).ToList();
         public List<Item> GetItems() => Map.Items.Where(i => i != null && i.Position?.Equals(Position) == true && i.ExistenceStatus == EntityExistenceStatus.Alive).ToList();
         public Key Key => Map.Keys.Find(k => k?.Position?.Equals(Position) == true && k.ExistenceStatus == EntityExistenceStatus.Alive);
@@ -260,13 +260,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             return other is not null &&
                    EqualityComparer<GamePoint>.Default.Equals(Position, other.Position) &&
                    _type == other._type &&
-                   Type == other.Type &&
-                   IsWalkable == other.IsWalkable &&
-                   IsOccupied == other.IsOccupied &&
-                   Discovered == other.Discovered &&
-                   Visible == other.Visible &&
-                   EqualityComparer<Character>.Default.Equals(LivingCharacter, other.LivingCharacter) &&
-                   EqualityComparer<Trap>.Default.Equals(Trap, other.Trap);
+                   Type == other.Type;
         }
 
         public override int GetHashCode()
@@ -274,10 +268,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var hash = new HashCode();
             hash.Add(Position);
             hash.Add(Type);
-            hash.Add(IsWalkable);
-            hash.Add(IsOccupied);
-            hash.Add(Discovered);
-            hash.Add(Visible);
             return hash.ToHashCode();
         }
 

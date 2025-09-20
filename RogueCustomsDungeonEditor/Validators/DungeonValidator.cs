@@ -36,6 +36,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> LootTableValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages CurrencyValidationMessages { get; private set; }
         public DungeonValidationMessages AffixValidationMessages { get; private set; }
+        public DungeonValidationMessages NPCModifierValidationMessages { get; private set; }
         public DungeonValidationMessages QualityLevelValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -81,6 +82,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.ActionSchoolInfos.Count
                 + DungeonJson.CurrencyInfo.CurrencyPiles.Count
                 + DungeonJson.AffixInfos.Count
+                + DungeonJson.NPCModifierInfos.Count
                 + DungeonJson.QualityLevelInfos.Count
                 + DungeonJson.LootTableInfos.Count
                 + DungeonJson.PlayerClasses.Count
@@ -204,8 +206,12 @@ namespace RogueCustomsDungeonEditor.Validators
             UpdateProgressLabel($"Currency Validation complete!", true, DungeonJson.CurrencyInfo.CurrencyPiles.Count);
 
             UpdateProgressLabel($"Running Affix Validation...", false);
-            AffixValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
+            AffixValidationMessages = await DungeonAffixValidator.Validate(DungeonJson, sampleDungeon);
             UpdateProgressLabel($"Affix Validation complete!", true, DungeonJson.AffixInfos.Count);
+
+            UpdateProgressLabel($"Running NPC Modifier Validation...", false);
+            NPCModifierValidationMessages = await DungeonNPCModifierValidator.Validate(DungeonJson, sampleDungeon);
+            UpdateProgressLabel($"NPC Modifier Validation complete!", true, DungeonJson.NPCModifierInfos.Count);
 
             UpdateProgressLabel($"Running Quality Level Validation...", false);
             QualityLevelValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
@@ -265,6 +271,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !CurrencyValidationMessages.HasErrors
                 && !QualityLevelValidationMessages.HasErrors
                 && !AffixValidationMessages.HasErrors
+                && !NPCModifierValidationMessages.HasErrors
                 && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
                 && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
                 && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)
