@@ -419,7 +419,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                         var keySuccesses = 0;
                         var mapFailures = 0;
                         var keyFailures = 0;
-                        var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                        var generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new(), new());
                         var correspondingLayout = generationAttempt.FloorConfigurationToUse.PossibleLayouts.Find(pl => pl.Name.Equals(floorLayoutGenerator.Name));
                         if (correspondingLayout != null)
                         {
@@ -440,7 +440,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 {
                                     mapFailures++;
                                 }
-                                generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                                generationAttempt = new Map(sampleDungeon, floorJson.MinFloorLevel, new(), new());
                             }
 
                             if (mapSuccesses == 0)
@@ -465,7 +465,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (sampleDungeon != null)
             {
-                var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new());
+                var floorAsInstance = new Map(sampleDungeon, floorJson.MinFloorLevel, new(), new());
                 await floorAsInstance.GenerateDebugMap();
 
                 if (floorJson.OnFloorStart != null)

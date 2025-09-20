@@ -23,6 +23,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateActionSchools(root);
             UpdateLootTables(root);
             UpdateCurrencyInfo(root);
+            UpdateNPCModifierInfos(root);
             UpdateAffixInfos(root);
             UpdateQualityLevelInfos(root);
             UpdateItemSlotInfos(root);
@@ -131,7 +132,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 foreach (var possibleLayout in floorGroup["PossibleLayouts"]?.AsArray() ?? new JsonArray())
                 {
-                    if (possibleLayout is JsonObject layoutObj && possibleLayout["ProceduralGenerator"] is null)
+                    if (possibleLayout is JsonObject layoutObj && possibleLayout["ProceduralGenerator"] is null && possibleLayout["StaticGenerator"] is null)
                     {
                         layoutObj["ProceduralGenerator"] = new JsonObject();
                         layoutObj["ProceduralGenerator"]["Rows"] = layoutObj["Rows"]?.DeepClone();
@@ -264,12 +265,16 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             root["CurrencyInfo"] = currencyInfo;
         }
 
+        private static void UpdateNPCModifierInfos(JsonObject root)
+        {
+            if (root["NPCModifierInfos"] is JsonArray) return;
+            root["NPCModifierInfos"] = new JsonArray();
+        }
         private static void UpdateAffixInfos(JsonObject root)
         {
             if (root["AffixInfos"] is JsonArray) return;
             root["AffixInfos"] = new JsonArray();
         }
-
         private static void UpdateQualityLevelInfos(JsonObject root)
         {
             if (root["QualityLevelInfos"] is JsonArray) return;
@@ -400,10 +405,45 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 npc["StartingArmor"] = null;
                 if (npc["DropsEquipmentOnDeath"] is null)
                     npc["DropsEquipmentOnDeath"] = false;
-                if (npc["LootTableId"] is null)
-                    npc["LootTableId"] = "None";
-                if (npc["DropPicks"] is null)
-                    npc["DropPicks"] = 0;
+                if (npc["ReappearsOnTheNextFloorIfAlliedToThePlayer"] is null)
+                    npc["ReappearsOnTheNextFloorIfAlliedToThePlayer"] = false;
+                if (npc["RegularLootTable"] is null)
+                {
+                    npc["RegularLootTable"] = new JsonObject
+                    {
+                        ["LootTableId"] = npc["LootTableId"]?.DeepClone() ?? "None",
+                        ["DropPicks"] = npc["DropPicks"]?.DeepClone() ?? 0
+                    };
+                }
+                if (npc["LootTableWithModifiers"] is null)
+                {
+                    npc["LootTableWithModifiers"] = new JsonObject
+                    {
+                        ["LootTableId"] = npc["LootTableId"]?.DeepClone() ?? "None",
+                        ["DropPicks"] = npc["DropPicks"]?.DeepClone() ?? 0
+                    };
+                }
+                npc.Remove("LootTableId");
+                npc.Remove("DropPicks");
+
+                if (npc["ModifierData"] is null)
+                {
+                    npc["ModifierData"] = new JsonArray {
+                        new JsonObject
+                        {
+                            ["Level"] = 1,
+                            ["ModifierAmount"] = 0
+                        }
+                    };
+                }
+                if (npc["OddsForModifier"] is null)
+                    npc["OddsForModifier"] = 0;
+                if (npc["RandomizesForecolorIfWithModifiers"] is null)
+                    npc["RandomizesForecolorIfWithModifiers"] = false;
+                if (npc["ExperienceYieldMultiplierIfWithModifiers"] is null)
+                    npc["ExperienceYieldMultiplierIfWithModifiers"] = 1;
+                if (npc["BaseHPMultiplierIfWithModifiers"] is null)
+                    npc["BaseHPMultiplierIfWithModifiers"] = 1;
             }
         }
 
@@ -476,7 +516,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["Items"] is not JsonArray items) return;
             foreach (var item in items.OfType<JsonObject>())
             {
-                item["ItemType"] = item["EntityType"]?.GetValue<string>();
+                if (item["ItemType"] is null)
+                    item["ItemType"] = item["EntityType"]?.GetValue<string>();
                 item.Remove("EntityType");
                 foreach (var action in item["OnAttack"]?.AsArray() ?? [])
                 {

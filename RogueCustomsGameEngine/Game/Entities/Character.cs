@@ -39,7 +39,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public readonly string BaseExperiencePayoutFormula;
         public string ExperiencePayoutFormula { get; set; }
-        public int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+        public virtual int ExperiencePayout { get; }
         public int Experience { get; set; }
         public readonly string ExperienceToLevelUpFormula;
         public int ExperienceToLevelUp => LastLevelUpExperience + ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
@@ -128,108 +128,22 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<AlteredStatus> AlteredStatuses { get; set; }
 
         public readonly int InventorySize;
-        public List<ActionWithEffects> OnTurnStart
+        public virtual List<ActionWithEffects> OnTurnStart
         {
-            get
-            {
-                var actionList = new List<ActionWithEffects>();
-                if (OwnOnTurnStart != null)
-                    actionList.Add(OwnOnTurnStart);
-                Equipment?.ForEach(i =>
-                {
-                    if (i.IsEquippable && i?.OnTurnStart != null)
-                        actionList.AddRange(i?.OnTurnStart);
-                });
-                Inventory?.ForEach(i =>
-                {
-                    if (!i.IsEquippable && i?.OnTurnStart != null)
-                        actionList.AddRange(i?.OnTurnStart);
-                });
-                return actionList;
-            }
+            get;
         }
         public ActionWithEffects DefaultOnAttack { get; private set; }
-        public List<ActionWithEffects> OnAttack
+        public virtual List<ActionWithEffects> OnAttack
         {
-            get
-            {
-                var hasNativeEquipmentAttacks = false;
-                var actionList = new List<ActionWithEffects>();
-                if (OwnOnAttack != null)
-                    actionList.AddRange(OwnOnAttack);
-                Equipment?.ForEach(i =>
-                {
-                    if (i.IsEquippable && i?.OnAttack != null)
-                    {
-                        actionList.AddRange(i?.OnAttack);
-                        if (i.OwnOnAttack.Count > 0)
-                            hasNativeEquipmentAttacks = true;
-                    }
-                });
-                Inventory?.ForEach(i =>
-                {
-                    if (!i.IsEquippable && i?.OnAttack != null)
-                        actionList.AddRange(i?.OnAttack);
-                });
-                KeySet?.ForEach(k =>
-                {
-                    if (k?.OwnOnAttack != null)
-                        actionList.AddRange(k.OwnOnAttack);
-                });
-
-                if(!hasNativeEquipmentAttacks)
-                {
-                    if (DefaultOnAttack != null)
-                        actionList.Insert(0, DefaultOnAttack);
-                }
-
-                return actionList;
-            }
+            get;
         }
-        public List<ActionWithEffects> OnAttacked
+        public virtual List<ActionWithEffects> OnAttacked
         {
-            get
-            {
-                var actionList = new List<ActionWithEffects>();
-                if (OwnOnAttacked != null)
-                    actionList.Add(OwnOnAttacked);
-                Equipment?.ForEach(i =>
-                {
-                    if (i.IsEquippable && i?.OnAttacked != null)
-                        actionList.AddRange(i?.OnAttacked);
-                });
-                Inventory?.ForEach(i =>
-                {
-                    if (!i.IsEquippable && i?.OnAttacked != null)
-                        actionList.AddRange(i?.OnAttacked);
-                });
-                AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
-                {
-                    if (als?.OwnOnAttacked != null)
-                        actionList.Add(als.OwnOnAttacked);
-                });
-                return actionList;
-            }
+            get;
         }
-        public List<ActionWithEffects> OnDeath
+        public virtual List<ActionWithEffects> OnDeath
         {
-            get
-            {
-                var actionList = new List<ActionWithEffects>();
-                if (OwnOnDeath != null)
-                    actionList.Add(OwnOnDeath);
-                Equipment?.ForEach(i =>
-                {
-                    if (i?.OwnOnDeath != null && i.IsEquippable)
-                        actionList.Add(i.OwnOnDeath);
-                });
-                Inventory?.ForEach(i =>
-                {
-                    if (i?.OwnOnDeath != null && !i.IsEquippable)
-                        actionList.Add(i.OwnOnDeath);
-                });
-                return actionList;
-            }
+            get;
         }
 
         public ActionWithEffects OnLevelUp { get; private set; }
@@ -265,48 +179,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool PickedForSwap { get; set; } = false;
         public int CurrencyCarried { get; set; }
 
-        public List<ExtraDamage> ExtraDamage
-        {
-            get
-            {
-                var list = new List<ExtraDamage>();
-                foreach (var item in Equipment)
-                {
-                    if (!item.IsEquippable) continue;
-                    foreach (var extraDamage in item?.ExtraDamage ?? [])
-                    {
-                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
-                        if (correspondingExtraDamage == null)
-                        {
-                            list.Add(extraDamage);
-                        }
-                        else
-                        {
-                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
-                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
-                        }
-                    }
-                }
-                foreach (var item in Inventory)
-                {
-                    if (item.IsEquippable) continue;
-                    foreach (var extraDamage in item?.ExtraDamage ?? [])
-                    {
-                        var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
-                        if (correspondingExtraDamage == null)
-                        {
-                            list.Add(extraDamage);
-                        }
-                        else
-                        {
-                            correspondingExtraDamage.MinimumDamage += extraDamage.MinimumDamage;
-                            correspondingExtraDamage.MaximumDamage += extraDamage.MaximumDamage;
-                        }
-                    }
-                }
-                return list;
-            }
-        }
+        public virtual List<ExtraDamage> ExtraDamage { get; }
 
         protected Character(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
@@ -401,7 +274,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public async Task RefreshCooldownsAndUpdateTurnLength()
+        public virtual async Task RefreshCooldownsAndUpdateTurnLength()
         {
             if(SightRangeModification != null)
             {
@@ -495,7 +368,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             await RefreshCooldownsAndUpdateTurnLength();
             foreach (var otsa in OnTurnStart.Where(otsa => otsa != null && otsa.ChecksCondition(this, this)))
             {
-                await otsa.Do(otsa.User, this, true);
+                await otsa.Do(otsa.User, this, false);
             }
             await Task.WhenAll(AlteredStatuses?.Select(als => als.PerformOnTurnStart()));
             foreach (var (modificationList, statName, mightBeNeutralized) in modificationsThatMightBeNeutralized)
@@ -644,7 +517,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        private int ParseArgForFormulaAndCalculate(string arg, bool capIfLevelIsMax)
+        protected int ParseArgForFormulaAndCalculate(string arg, bool capIfLevelIsMax)
         {
             if (string.IsNullOrWhiteSpace(arg)) return 0;
             if (Level == MaxLevel && capIfLevelIsMax) return Experience;

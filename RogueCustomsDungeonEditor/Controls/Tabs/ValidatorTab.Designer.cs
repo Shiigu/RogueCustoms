@@ -37,15 +37,16 @@
             // 
             // tvValidationResults
             // 
-            tvValidationResults.Location = new System.Drawing.Point(1, 1);
+            tvValidationResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            tvValidationResults.Location = new System.Drawing.Point(0, 0);
             tvValidationResults.Name = "tvValidationResults";
-            tvValidationResults.Size = new System.Drawing.Size(738, 332);
+            tvValidationResults.Size = new System.Drawing.Size(740, 338);
             tvValidationResults.TabIndex = 1;
             // 
             // ssValidatorStatus
             // 
             ssValidatorStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tsslValidationProgress, tspbValidationProgress });
-            ssValidatorStatus.Location = new System.Drawing.Point(0, 334);
+            ssValidatorStatus.Location = new System.Drawing.Point(0, 338);
             ssValidatorStatus.Name = "ssValidatorStatus";
             ssValidatorStatus.Size = new System.Drawing.Size(740, 22);
             ssValidatorStatus.SizingGrip = false;
@@ -70,10 +71,10 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            Controls.Add(ssValidatorStatus);
             Controls.Add(tvValidationResults);
+            Controls.Add(ssValidatorStatus);
             Name = "ValidatorTab";
-            Size = new System.Drawing.Size(740, 356);
+            Size = new System.Drawing.Size(740, 360);
             ssValidatorStatus.ResumeLayout(false);
             ssValidatorStatus.PerformLayout();
             ResumeLayout(false);
@@ -81,10 +82,9 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView tvValidationResults;
         private System.Windows.Forms.StatusStrip ssValidatorStatus;
         private System.Windows.Forms.ToolStripStatusLabel tsslValidationProgress;
+        private System.Windows.Forms.TreeView tvValidationResults;
         private System.Windows.Forms.ToolStripProgressBar tspbValidationProgress;
     }
 }

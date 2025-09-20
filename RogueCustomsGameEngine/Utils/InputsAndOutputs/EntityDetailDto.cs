@@ -24,6 +24,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string TileDescription { get; set; }
         public ConsoleRepresentation TileConsoleRepresentation { get; set; }
         public GameColor NameColor { get; set; }
+        public List<NPCModifierDto> Modifiers { get; set; }
 
         public EntityDetailDto() { }
 
@@ -31,6 +32,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         {
             ShowEntityDescription = (entity != null);
             NameColor = new(Color.White);
+            Modifiers = new();
             if (entity != null)
             {
                 EntityName = entity.Name;
@@ -38,6 +40,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 EntityConsoleRepresentation = entity.ConsoleRepresentation;
                 if (entity is Item i)
                     NameColor = i.QualityLevel.ItemNameColor;
+                if (entity is NonPlayableCharacter npc)
+                {
+                    foreach (var modifier in npc.Modifiers)
+                    {
+                        Modifiers.Add(new(modifier));
+                    }
+                }
             }
 
             if (!showTileDescription) return;
@@ -45,6 +54,19 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             TileName = tile.TypeName;
             TileDescription = tile.TypeDescription;
             TileConsoleRepresentation = tile.ConsoleRepresentation;
+        }
+    }
+
+    [Serializable]
+    public class NPCModifierDto
+    {
+        public string Name { get; set; }
+        public GameColor Color { get; set; }
+
+        public NPCModifierDto(NPCModifier modifier)
+        {
+            Name = modifier.Name;
+            Color = modifier.NameColor;
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

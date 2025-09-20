@@ -10,7 +10,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.Interface
     {
         void CreateNormalTiles();
         void CreateSpecialTiles();
-        Task PlacePlayer();
+        Task PlacePlayerAndKeptNPCs();
         void PlaceStairs();
         Task PlaceEntities();
         Task PlaceKeysAndDoors();

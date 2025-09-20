@@ -104,6 +104,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (Result == DialogResult.OK)
             {
                 btnElementColor.BackColor = pickedColor;
+                TabInfoChanged?.Invoke(null, EventArgs.Empty);
             }
         }
 

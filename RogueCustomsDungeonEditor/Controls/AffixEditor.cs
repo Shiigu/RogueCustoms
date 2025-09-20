@@ -84,9 +84,9 @@ namespace RogueCustomsDungeonEditor.Controls
                 nudAffixMinDamage.Value = value.ExtraDamage?.MinDamage ?? 0;
                 nudAffixMaxDamage.Value = value.ExtraDamage?.MaxDamage ?? 0;
                 cmbAffixElementDamage.Text = value.ExtraDamage?.Element ?? string.Empty;
-                saeAffixOnTurnStart.Action = value.OnTurnStart;
-                saeAffixOnAttacked.Action = value.OnAttacked;
-                saeAffixOnAttack.Action = value.OnAttack;
+                SetSingleActionEditorParams(saeAffixOnTurnStart, value.Name, value.OnTurnStart);
+                SetSingleActionEditorParams(saeAffixOnAttacked, value.Name, value.OnAttacked);
+                SetSingleActionEditorParams(saeAffixOnAttack, value.Name, value.OnAttack);
                 for (int i = 0; i < clbAffixAffects.Items.Count; i++)
                 {
                     clbAffixAffects.SetItemChecked(i, value.AffectedItemTypes != null && value.AffectedItemTypes.Contains(clbAffixAffects.Items[i].ToString()));
@@ -170,6 +170,15 @@ namespace RogueCustomsDungeonEditor.Controls
         private void cmbAffixElementDamage_TextChanged(object sender, EventArgs e)
         {
             EditorInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
+        {
+            sae.Action = action;
+            sae.ClassId = classId;
+            sae.Dungeon = _activeDungeon;
+            sae.EffectParamData = EffectParamData;
+            sae.ActionContentsChanged += (_, _) => EditorInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

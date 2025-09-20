@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -67,6 +68,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkNPCKnowsAllCharacterPositions.Checked = npc.KnowsAllCharacterPositions;
             chkNPCPursuesOutOfSightCharacters.Checked = npc.PursuesOutOfSightCharacters;
             chkNPCWandersIfWithoutTarget.Checked = npc.WandersIfWithoutTarget;
+            chkNPCReappearsOnTheNextFloorIfAlliedToThePlayer.Checked = npc.ReappearsOnTheNextFloorIfAlliedToThePlayer;
 
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
 
@@ -114,16 +116,40 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     cmbNPCAIType.Text = aiType.Value;
             }
 
+            nudNPCOddsForModifier.Value = npc.OddsForModifier;
+            chkNPCRandomizesForecolorIfWithModifiers.Checked = npc.RandomizesForecolorIfWithModifiers;
+            nudNPCExperienceYieldMultiplierIfWithModifiers.Value = npc.ExperienceYieldMultiplierIfWithModifiers;
+            nudNPCBaseHPMultiplierIfWithModifiers.Value = npc.BaseHPMultiplierIfWithModifiers;
+
+            var regularLootTableId = npc.RegularLootTable?.LootTableId ?? "None";
+            var regularLootTableDropPicks = npc.RegularLootTable?.DropPicks ?? 0;
+            var modifierLootTableId = npc.LootTableWithModifiers?.LootTableId ?? "None";
+            var modifierLootTableDropPicks = npc.LootTableWithModifiers?.DropPicks ?? 0;
+
             cmbNPCLootTable.Items.Clear();
             cmbNPCLootTable.Items.Add("None");
             cmbNPCLootTable.Text = "None";
+            cmbNPCLootTableModifier.Items.Clear();
+            cmbNPCLootTableModifier.Items.Add("None");
+            cmbNPCLootTableModifier.Text = "None";
             foreach (var lootTable in dungeon.LootTableInfos.ConvertAll(lt => lt.Id))
             {
                 cmbNPCLootTable.Items.Add(lootTable);
-                if (lootTable.Equals(npc.LootTableId))
+                cmbNPCLootTableModifier.Items.Add(lootTable);
+                if (lootTable.Equals(regularLootTableId))
                     cmbNPCLootTable.Text = lootTable;
+                if (lootTable.Equals(modifierLootTableId))
+                    cmbNPCLootTableModifier.Text = lootTable;
             }
-            nudNPCDropPicks.Value = cmbNPCLootTable.Text != "None" ? npc.DropPicks : 0;
+            nudNPCDropPicks.Value = cmbNPCLootTable.Text != "None" ? regularLootTableDropPicks : 0;
+            nudNPCDropPicksModifier.Value = cmbNPCLootTableModifier.Text != "None" ? modifierLootTableDropPicks : 0;
+
+            dgvNPCModifiers.Rows.Clear();
+            foreach (var modifierData in npc.ModifierData ?? [])
+            {
+                dgvNPCModifiers.Rows.Add(modifierData.Level, modifierData.ModifierAmount);
+            }
+            dgvNPCModifiers.CellValueChanged += (sender, e) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void clbNPCAvailableSlots_ItemCheck(object? sender, ItemCheckEventArgs e)
@@ -149,6 +175,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         public List<string> SaveData(string id)
         {
+            dgvNPCModifiers.EndEdit();
             esNPC.EndEdit();
             var validationErrors = new List<string>();
 
@@ -252,8 +279,38 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     }
                 }
 
-                LoadedNPC.LootTableId = cmbNPCLootTable.Text != "None" ? cmbNPCLootTable.Text : "";
-                LoadedNPC.DropPicks = LoadedNPC.LootTableId != "" ? (int)nudNPCDropPicks.Value : 0;
+                var regularLootTableId = cmbNPCLootTable.Text != "None" ? cmbNPCLootTable.Text : "";
+                var modifierLootTableId = cmbNPCLootTableModifier.Text != "None" ? cmbNPCLootTableModifier.Text : "";
+
+                LoadedNPC.RegularLootTable = new()
+                {
+                    LootTableId = regularLootTableId,
+                    DropPicks = regularLootTableId != "" ? (int)nudNPCDropPicks.Value : 0
+                };
+                LoadedNPC.LootTableWithModifiers = new()
+                {
+                    LootTableId = modifierLootTableId,
+                    DropPicks = modifierLootTableId != "" ? (int)nudNPCDropPicksModifier.Value : 0
+                };
+
+                LoadedNPC.ReappearsOnTheNextFloorIfAlliedToThePlayer = chkNPCReappearsOnTheNextFloorIfAlliedToThePlayer.Checked;
+                LoadedNPC.OddsForModifier = (int)nudNPCOddsForModifier.Value;
+                LoadedNPC.RandomizesForecolorIfWithModifiers = chkNPCRandomizesForecolorIfWithModifiers.Checked;
+                LoadedNPC.ExperienceYieldMultiplierIfWithModifiers = nudNPCExperienceYieldMultiplierIfWithModifiers.Value;
+                LoadedNPC.BaseHPMultiplierIfWithModifiers = nudNPCBaseHPMultiplierIfWithModifiers.Value;
+
+                LoadedNPC.ModifierData = new();
+                foreach (DataGridViewRow row in dgvNPCModifiers.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    var level = int.Parse(row.Cells["Level"].Value.ToString());
+                    var amount = int.Parse(row.Cells["ModifierAmount"].Value.ToString());
+                    LoadedNPC.ModifierData.Add(new NPCModifierDataInfo()
+                    {
+                        Level = level,
+                        ModifierAmount = amount
+                    });
+                }
             }
 
             return validationErrors;
@@ -380,8 +437,67 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void nudNPCDropPicks_ValueChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            if(nudNPCDropPicks.Value == 0)
+            if (nudNPCDropPicks.Value == 0)
                 cmbNPCLootTable.Text = "None";
+        }
+
+        private void cmbNPCLootTableModifier_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            nudNPCDropPicksModifier.Enabled = !cmbNPCLootTableModifier.Text.Equals("None");
+            if (!nudNPCDropPicksModifier.Enabled)
+                nudNPCDropPicksModifier.Value = 0;
+        }
+
+        private void nudNPCDropPicksModifier_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            if (nudNPCDropPicksModifier.Value == 0)
+                cmbNPCLootTableModifier.Text = "None";
+        }
+
+        private void nudNPCOddsForModifier_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void chkNPCRandomizesForecolorIfWithModifiers_CheckedChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudNPCExperienceYieldMultiplierIfWithModifiers_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void dgvNPCModifiers_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (dgvNPCModifiers.Rows[e.RowIndex].IsNewRow) return;
+            var cellValue = dgvNPCModifiers.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            PreviousTextBoxValue = cellValue != null ? cellValue.ToString() : string.Empty;
+        }
+
+        private void dgvNPCModifiers_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvNPCModifiers.Rows[e.RowIndex].IsNewRow) return;
+            var cellValue = dgvNPCModifiers.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() ?? string.Empty;
+            var minValue = (dgvNPCModifiers.Columns[e.ColumnIndex].Name == "Level") ? 1 : 0;
+
+            if (!int.TryParse(cellValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int number) || number < minValue)
+            {
+                dgvNPCModifiers[e.ColumnIndex, e.RowIndex].Value = PreviousTextBoxValue;
+            }
+        }
+
+        private void chkNPCReappearsOnTheNextFloorIfAlliedToThePlayer_CheckedChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudNPCBaseHPMultiplierIfWithModifiers_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

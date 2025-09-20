@@ -1503,6 +1503,8 @@
     "TreeViewDisplayText": "Teleport ({Target}) to another Tile",
     "ComboBoxDisplayName": "Teleport the Target",
     "Description": "User will teleport the Target to a random unoccupied Floor tile.\nFails if Target is in a Hallway tile.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
     "CanHaveOnSuccessOnFailureChild": true,
     "IsControlBlock": false,

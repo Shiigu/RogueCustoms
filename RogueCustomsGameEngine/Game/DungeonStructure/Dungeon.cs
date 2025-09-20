@@ -67,6 +67,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<CurrencyPile> CurrencyData { get; set; }
         public List<QualityLevel> QualityLevels { get; set; }
         public List<Affix> Affixes { get; set; }
+        public List<NPCModifier> NPCModifiers { get; set; }
         public List<ItemSlot> ItemSlots { get; set; }
         public List<ItemType> ItemTypes { get; set; }
         public float SaleValuePercentage { get; set; }
@@ -107,6 +108,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             TileSets = new List<TileSet>();
             CurrencyData = new List<CurrencyPile>();
             Affixes = new List<Affix>();
+            NPCModifiers = new List<NPCModifier>();
             QualityLevels = new List<QualityLevel>();
             ItemSlots = new List<ItemSlot>();
             ItemTypes = new List<ItemType>();
@@ -124,6 +126,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.ActionSchoolInfos.ForEach(s => ActionSchools.Add(new ActionSchool(s, LocaleToUse)));
             dungeonInfo.ElementInfos.ForEach(e => Elements.Add(new Element(e, LocaleToUse, ActionSchools)));
             dungeonInfo.AffixInfos.ForEach(a => Affixes.Add(new Affix(a, LocaleToUse, ItemTypes, Elements, ActionSchools)));
+            
+            dungeonInfo.NPCModifierInfos.ForEach(nm => NPCModifiers.Add(new NPCModifier(nm, LocaleToUse, Elements, ActionSchools)));
             dungeonInfo.QualityLevelInfos.ForEach(ql => QualityLevels.Add(new QualityLevel(ql, LocaleToUse)));
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
@@ -185,8 +189,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public async Task NewMap()
         {
             var flagList = new List<Flag>();
+            var npcsToKeep = new List<NonPlayableCharacter>();
             if (CurrentFloorLevel > 1)
             {
+                npcsToKeep = CurrentFloor.AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && c.ReappearsOnTheNextFloorIfAlliedToThePlayer && (c.Faction.IsAlliedWith(PlayerCharacter.Faction) || c.KnownCharacters.Any(kc => kc.TargetType == TargetType.Ally && kc.Character == PlayerCharacter))).ToList();
                 var statusNamesToRemove = new List<string>();
                 foreach (var statusToRemove in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
                 {
@@ -203,14 +209,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PlayerCharacter.KeySet.Clear();
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
-            CurrentFloor = new Map(this, CurrentFloorLevel, flagList);
+            CurrentFloor = new Map(this, CurrentFloorLevel, flagList, npcsToKeep);
             await CurrentFloor.Generate(false);
         }
 
         public Task GenerateDebugMap()
         {
             IsDebugMode = true;
-            CurrentFloor = new Map(this, CurrentFloorLevel, []);
+            CurrentFloor = new Map(this, CurrentFloorLevel, [], []);
             return CurrentFloor.GenerateDebugMap();
         }
 

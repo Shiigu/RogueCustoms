@@ -192,7 +192,7 @@
             // saeAffixOnAttack
             // 
             saeAffixOnAttack.ActionDescription = "The item's owner can interact with this:     ";
-            saeAffixOnAttack.ActionTypeText = "After Attack";
+            saeAffixOnAttack.ActionTypeText = "Interact";
             saeAffixOnAttack.AutoSize = true;
             saeAffixOnAttack.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeAffixOnAttack.ClassId = null;
@@ -204,9 +204,9 @@
             saeAffixOnAttack.RequiresDescription = true;
             saeAffixOnAttack.RequiresName = true;
             saeAffixOnAttack.Size = new System.Drawing.Size(363, 32);
-            saeAffixOnAttack.SourceDescription = "The attacker";
+            saeAffixOnAttack.SourceDescription = "The Item's Owner";
             saeAffixOnAttack.TabIndex = 254;
-            saeAffixOnAttack.TargetDescription = "The attacked";
+            saeAffixOnAttack.TargetDescription = "Whoever the Item's Owner are targeting";
             saeAffixOnAttack.ThisDescription = "The Item with this Affix";
             saeAffixOnAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.MustEndTurn;
             saeAffixOnAttack.UsageCriteria = HelperForms.UsageCriteria.FullConditions;
@@ -222,7 +222,7 @@
             // saeAffixOnTurnStart
             // 
             saeAffixOnTurnStart.ActionDescription = "When the Item's Owner starts a new turn...";
-            saeAffixOnTurnStart.ActionTypeText = "After Attack";
+            saeAffixOnTurnStart.ActionTypeText = "Turn Start";
             saeAffixOnTurnStart.AutoSize = true;
             saeAffixOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeAffixOnTurnStart.ClassId = null;
@@ -244,7 +244,7 @@
             saeAffixOnAttacked.ClassId = null;
             saeAffixOnAttacked.Location = new System.Drawing.Point(335, 274);
             saeAffixOnAttacked.Name = "saeAffixOnAttacked";
-            saeAffixOnAttacked.PlaceholderActionId = "Interacted";
+            saeAffixOnAttacked.PlaceholderActionId = "AffixInteracted";
             saeAffixOnAttacked.Size = new System.Drawing.Size(362, 32);
             saeAffixOnAttacked.SourceDescription = "Whoever is equipping it";
             saeAffixOnAttacked.TabIndex = 257;

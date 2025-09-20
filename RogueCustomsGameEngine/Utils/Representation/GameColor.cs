@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text.Json.Serialization;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
+
 namespace RogueCustomsGameEngine.Utils.Representation
 {
     [Serializable]
@@ -80,6 +82,41 @@ namespace RogueCustomsGameEngine.Utils.Representation
         public static bool operator !=(GameColor? left, GameColor? right)
         {
             return !(left == right);
+        }
+
+        public static GameColor GetRandomContrastingColor(GameColor background, RngHandler Rng)
+        {
+            while (true)
+            {
+                var candidate = new GameColor(Color.FromArgb(255, Rng.Next(256), Rng.Next(256), Rng.Next(256)));
+
+                if (HasSufficientContrast(background, candidate))
+                    return candidate;
+            }
+        }
+
+        private static bool HasSufficientContrast(GameColor c1, GameColor c2)
+        {
+            double b1 = GetBrightness(c1);
+            double b2 = GetBrightness(c2);
+
+            if (Math.Abs(b1 - b2) < 125)
+                return false;
+
+            double distance = Math.Sqrt(
+                Math.Pow(c1.R - c2.R, 2) +
+                Math.Pow(c1.G - c2.G, 2) +
+                Math.Pow(c1.B - c2.B, 2));
+
+            return distance > 100;
+        }
+
+        private static double GetBrightness(GameColor c)
+        {
+            return Math.Sqrt(
+                c.R * c.R * 0.299 +
+                c.G * c.G * 0.587 +
+                c.B * c.B * 0.114);
         }
     }
 }

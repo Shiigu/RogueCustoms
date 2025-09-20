@@ -650,7 +650,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     targetPosition = Map.PickEmptyPosition(true, false);
                 }
-                while (targetPosition == null || (!playerIsland.Any(t => t.Position.Equals(targetPosition)) && !stairsIsland.Any(t => t.Position.Equals(targetPosition))));
+                while (targetPosition == null || (playerIsland?.Any(t => t.Position.Equals(targetPosition)) != true && stairsIsland?.Any(t => t.Position.Equals(targetPosition)) != true));
                 c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
 
@@ -658,18 +658,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     if (!Map.IsDebugMode)
                     {
-                        events.Add(new()
+                        if (c.EntityType == EntityType.Player)
                         {
-                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                            Params = new() { initialTile.Position, Map.GetConsoleRepresentationForCoordinates(initialTile.Position.X, initialTile.Position.Y) }
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.RedrawMap,
+                                Params = new() { Map.Snapshot.GetTiles() }
+                            });
                         }
-                        );
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                            Params = new() { targetTile.Position, Map.GetConsoleRepresentationForCoordinates(targetTile.Position.X, targetTile.Position.Y) }
-                        }
-                        );
                     }
                 }
 
@@ -684,37 +680,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                     Map.Player.UpdateVisibility();
 
-                    if (!Map.IsDebugMode && c == Map.Player && olderFOV != null && olderFOV.Count > 0)
-                    {
-                        foreach (var tile in olderFOV.Where(t => !t.Visible))
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdateTileRepresentation,
-                                Params = new() { tile.Position, Map.GetConsoleRepresentationForCoordinates(tile.Position.X, tile.Position.Y) }
-                            }
-                            );
-                        }
-                    }
-
                     events.Add(new()
                     {
                         DisplayEventType = DisplayEventType.SetOnStairs,
                         Params = new() { c.ContainingTile.Type == TileType.Stairs }
                     }
                     );
-                }
-
-                if (olderFOV != null)
-                {
-                    if (c.EntityType == EntityType.Player)
-                    {
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.RedrawMap,
-                            Params = new() { Map.Snapshot.GetTiles() }
-                        });
-                    }
                 }
 
                 if (c == Map.Player || Map.Player.CanSee(c))

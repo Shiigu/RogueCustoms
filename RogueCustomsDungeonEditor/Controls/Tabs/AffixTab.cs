@@ -42,9 +42,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var affixEditor = new AffixEditor()
                 {
                     ActiveDungeon = ActiveDungeon,
+                    EffectParamData = EffectParamData,
                     Affix = affix,
                     Dock = DockStyle.Fill,
-                    EffectParamData = EffectParamData,
                 };
                 affixEditor.Click += AffixEditor_Click;
                 affixEditor.EditorInfoChanged += (sender, args) => TabInfoChanged?.Invoke(null, EventArgs.Empty);

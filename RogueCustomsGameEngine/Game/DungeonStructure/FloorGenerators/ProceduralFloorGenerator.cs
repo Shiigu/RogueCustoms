@@ -1047,7 +1047,23 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
         #endregion
 
         #region Player
-        public Task PlacePlayer() => _map.PlacePlayer();
+        public async Task PlacePlayerAndKeptNPCs()
+        {
+            await _map.PlacePlayer();
+            foreach (var npcToKeep in _map.AICharacters)
+            {
+                var tilesAdjacentToPlayer = _map.GetTilesWithinCenteredSquare(_map.Player.Position, 5, true);
+                tilesAdjacentToPlayer = tilesAdjacentToPlayer.Where(t => t.IsWalkable && !t.IsOccupied).ToList();
+                if (tilesAdjacentToPlayer.Any())
+                {
+                    var minDistance = tilesAdjacentToPlayer.Min(t => GamePoint.Distance(t.Position, _map.Player.Position));
+                    tilesAdjacentToPlayer = tilesAdjacentToPlayer.Where(t => GamePoint.Distance(t.Position, _map.Player.Position) == minDistance).ToList();
+                    var pickedSpawn = tilesAdjacentToPlayer.TakeRandomElement(Rng);
+                    npcToKeep.Position = new(pickedSpawn.Position.X, pickedSpawn.Position.Y);
+                    _map.RegisterPreexistingCharacter(npcToKeep);
+                }
+            }
+        }
         #endregion
 
         #region Stairs

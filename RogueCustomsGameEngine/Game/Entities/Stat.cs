@@ -72,6 +72,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                             passiveModifications.Add((i.Name, itemModification.Amount));
                     }
                 });
+
                 Character.Inventory?.ForEach(i =>
                 {
                     if (!i.IsEquippable)
@@ -81,6 +82,16 @@ namespace RogueCustomsGameEngine.Game.Entities
                             passiveModifications.Add((i.Name, itemModification.Amount));
                     }
                 });
+
+                if(Character is NonPlayableCharacter npc && npc.Modifiers.Count > 0)
+                {
+                    foreach (var modifier in npc.Modifiers)
+                    {
+                        var modifierModification = modifier.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
+                        if (modifierModification != null)
+                            passiveModifications.Add((modifier.Id, modifierModification.Amount));
+                    }
+                }
 
                 return passiveModifications;
             }
