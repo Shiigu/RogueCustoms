@@ -17,6 +17,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public ItemUsability Usability { get; set; }
         public ItemPowerType PowerType { get; set; }
         public List<ItemSlot> SlotsItOccupies { get; set; }
+        public QualityLevel MinimumQualityLevelForUnidentified { get; set; }
+        public string UnidentifiedItemName { get; set; }
+        public string UnidentifiedItemDescription { get; set; }
+        public string UnidentifiedItemActionName { get; set; }
+        public string UnidentifiedItemActionDescription { get; set; }
 
         public ItemType(ItemTypeInfo info, Dungeon dungeon)
         {
@@ -25,7 +30,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Usability = info.Usability;
             PowerType = info.PowerType;
             SlotsItOccupies = [];
-            if (!string.IsNullOrEmpty(info.Slot1))
+            if (!string.IsNullOrWhiteSpace(info.Slot1))
             {
                 var slot1 = dungeon.ItemSlots.Find(x => x.Id == info.Slot1);
                 if (slot1 != null)
@@ -38,6 +43,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     SlotsItOccupies.Add(slot2);
                 }
             }
+            MinimumQualityLevelForUnidentified = null;
+            if (!string.IsNullOrWhiteSpace(info.MinimumQualityLevelForUnidentified))
+            {
+                var qualityLevel = dungeon.QualityLevels.Find(x => x.Id == info.MinimumQualityLevelForUnidentified);
+                if (qualityLevel != null)
+                {
+                    MinimumQualityLevelForUnidentified = qualityLevel;
+                }
+            }
+            UnidentifiedItemName = dungeon.LocaleToUse[info.UnidentifiedItemName];
+            UnidentifiedItemDescription = dungeon.LocaleToUse[info.UnidentifiedItemDescription];
+            UnidentifiedItemActionName = dungeon.LocaleToUse[info.UnidentifiedItemActionName];
+            UnidentifiedItemActionDescription = dungeon.LocaleToUse[info.UnidentifiedItemActionDescription];
         }
     }
 }

@@ -48,7 +48,7 @@ namespace RogueCustomsGodotClient.Invokers
             return result;
         }
 
-        public async Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
+        public async Task<ItemInput> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
         {
             var result = await Parent.CreateSelectItemWindow(choices, title, showCancelButton);
             _globalState.DungeonManager.RefreshDisplay(true);

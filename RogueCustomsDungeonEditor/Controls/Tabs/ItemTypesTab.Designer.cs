@@ -29,25 +29,80 @@
         private void InitializeComponent()
         {
             dgvItemTypes = new System.Windows.Forms.DataGridView();
-            Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ItemSlotName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Usability = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            PowerType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            Slot1 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            UnidentifiedActionDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            UnidentifiedActionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            UnidentifiedItemDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            UnidentifiedItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            MinimumQualityLevelForUnidentified = new System.Windows.Forms.DataGridViewComboBoxColumn();
             Slot2 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            Slot1 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            PowerType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            Usability = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            ItemSlotName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvItemTypes).BeginInit();
             SuspendLayout();
             // 
             // dgvItemTypes
             // 
             dgvItemTypes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvItemTypes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Id, ItemSlotName, Usability, PowerType, Slot1, Slot2 });
+            dgvItemTypes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Id, ItemSlotName, Usability, PowerType, Slot1, Slot2, MinimumQualityLevelForUnidentified, UnidentifiedItemName, UnidentifiedItemDescription, UnidentifiedActionName, UnidentifiedActionDescription });
             dgvItemTypes.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvItemTypes.Location = new System.Drawing.Point(0, 0);
             dgvItemTypes.Name = "dgvItemTypes";
-            dgvItemTypes.Size = new System.Drawing.Size(694, 241);
+            dgvItemTypes.Size = new System.Drawing.Size(1143, 241);
             dgvItemTypes.TabIndex = 2;
             dgvItemTypes.DataError += dgvItemTypes_DataError;
+            // 
+            // UnidentifiedActionDescription
+            // 
+            UnidentifiedActionDescription.HeaderText = "Action Description when Unidentified";
+            UnidentifiedActionDescription.Name = "UnidentifiedActionDescription";
+            // 
+            // UnidentifiedActionName
+            // 
+            UnidentifiedActionName.HeaderText = "Action Name when Unidentified";
+            UnidentifiedActionName.Name = "UnidentifiedActionName";
+            // 
+            // UnidentifiedItemDescription
+            // 
+            UnidentifiedItemDescription.HeaderText = "Description when Unidentified";
+            UnidentifiedItemDescription.Name = "UnidentifiedItemDescription";
+            // 
+            // UnidentifiedItemName
+            // 
+            UnidentifiedItemName.HeaderText = "Name when Unidentified";
+            UnidentifiedItemName.Name = "UnidentifiedItemName";
+            // 
+            // MinimumQualityLevelForUnidentified
+            // 
+            MinimumQualityLevelForUnidentified.HeaderText = "Is Unidentified Starting at...";
+            MinimumQualityLevelForUnidentified.Name = "MinimumQualityLevelForUnidentified";
+            // 
+            // Slot2
+            // 
+            Slot2.HeaderText = "Secondary Slot";
+            Slot2.Name = "Slot2";
+            // 
+            // Slot1
+            // 
+            Slot1.HeaderText = "Primary Slot";
+            Slot1.Name = "Slot1";
+            // 
+            // PowerType
+            // 
+            PowerType.HeaderText = "Power Is...";
+            PowerType.Name = "PowerType";
+            // 
+            // Usability
+            // 
+            Usability.HeaderText = "Used Via...";
+            Usability.Name = "Usability";
+            // 
+            // ItemSlotName
+            // 
+            ItemSlotName.HeaderText = "Name";
+            ItemSlotName.Name = "ItemSlotName";
             // 
             // Id
             // 
@@ -55,43 +110,13 @@
             Id.Name = "Id";
             Id.Width = 75;
             // 
-            // ItemSlotName
-            // 
-            ItemSlotName.HeaderText = "Name";
-            ItemSlotName.Name = "ItemSlotName";
-            ItemSlotName.Width = 115;
-            // 
-            // Usability
-            // 
-            Usability.HeaderText = "Used Via...";
-            Usability.Name = "Usability";
-            Usability.Width = 115;
-            // 
-            // PowerType
-            // 
-            PowerType.HeaderText = "Power Is...";
-            PowerType.Name = "PowerType";
-            PowerType.Width = 115;
-            // 
-            // Slot1
-            // 
-            Slot1.HeaderText = "Primary Slot";
-            Slot1.Name = "Slot1";
-            Slot1.Width = 115;
-            // 
-            // Slot2
-            // 
-            Slot2.HeaderText = "Secondary Slot";
-            Slot2.Name = "Slot2";
-            Slot2.Width = 115;
-            // 
             // ItemTypesTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(dgvItemTypes);
             Name = "ItemTypesTab";
-            Size = new System.Drawing.Size(694, 241);
+            Size = new System.Drawing.Size(1143, 241);
             ((System.ComponentModel.ISupportInitialize)dgvItemTypes).EndInit();
             ResumeLayout(false);
         }
@@ -105,5 +130,10 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn PowerType;
         private System.Windows.Forms.DataGridViewComboBoxColumn Slot1;
         private System.Windows.Forms.DataGridViewComboBoxColumn Slot2;
+        private System.Windows.Forms.DataGridViewComboBoxColumn MinimumQualityLevelForUnidentified;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UnidentifiedItemName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UnidentifiedItemDescription;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UnidentifiedActionName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UnidentifiedActionDescription;
     }
 }

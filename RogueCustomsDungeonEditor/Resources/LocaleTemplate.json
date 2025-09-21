@@ -504,6 +504,14 @@
     {
       "Key": "CannotSellItems",
       "Value": "{SellerName}'s inventory is empty, cannot trade with {BuyerName}..."
+    },
+    {
+      "Key": "ItemWasIdentified",
+      "Value": "{FakeName}'s true nature was revealed, it's {TrueName}!"
+    },
+    {
+      "Key": "CharacterItemsWereIdentified",
+      "Value": "{CharacterName} now knows the true nature of their items!"
     }
   ]
 }

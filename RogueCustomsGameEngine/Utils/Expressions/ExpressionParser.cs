@@ -47,7 +47,8 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "amount", "Amount" },
             { "turnlength", "TurnLength" },
             { "level", "Level" },
-            { "criticalhitchance", "CriticalHitChance" }
+            { "criticalhitchance", "CriticalHitChance" },
+            { "itemid", "ItemId" }
         };
 
         private static readonly Dictionary<string, string> BooleanParams = new(StringComparer.InvariantCultureIgnoreCase)

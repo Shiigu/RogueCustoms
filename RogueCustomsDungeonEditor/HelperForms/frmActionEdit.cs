@@ -625,18 +625,25 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         {
                             if (rbEntity.Checked)
                             {
-                                if (nudMaxRange.Value == 0)
+                                ActionToSave.TargetTypes = new();
+                                if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
                                 {
-                                    ActionToSave.TargetTypes.Add("Self");
-                                }
-                                else if (chkAllies.Checked || chkEnemies.Checked || chkSelf.Checked)
-                                {
-                                    if (chkAllies.Checked)
-                                        ActionToSave.TargetTypes.Add("Ally");
-                                    if (chkEnemies.Checked)
-                                        ActionToSave.TargetTypes.Add("Enemy");
-                                    if (chkSelf.Checked)
+                                    if (nudMaxRange.Value == 0)
+                                    {
                                         ActionToSave.TargetTypes.Add("Self");
+                                    }
+                                    else if (chkAllies.Checked)
+                                    {
+                                        ActionToSave.TargetTypes.Add("Ally");
+                                    }
+                                    else if (chkEnemies.Checked)
+                                    {
+                                        ActionToSave.TargetTypes.Add("Enemy");
+                                    }
+                                    else if (chkSelf.Checked)
+                                    {
+                                        ActionToSave.TargetTypes.Add("Self");
+                                    }
                                 }
                             }
                             else if (rbTile.Checked)
@@ -892,7 +899,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             if (!ClipboardManager.ContainsData(FormConstants.StepClipboardKey)) return;
             var currentEffect = (EffectInfo)SelectedNode.Tag;
             var parentEffect = SelectedNode.Parent != null ? (EffectInfo)SelectedNode.Parent.Tag : null;
-            if (!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty())
+            if (currentEffect != null && (!currentEffect.Then.IsNullOrEmpty() || !currentEffect.OnSuccess.IsNullOrEmpty() || !currentEffect.OnFailure.IsNullOrEmpty()))
             {
                 var messageBoxResult = MessageBox.Show(
                     "This Function has child steps. Pasting this Function will make the child steps be completely erased!\n\nAre you sure you want to continue?",
@@ -906,11 +913,11 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var effect = ClipboardManager.Paste<EffectInfo>(FormConstants.StepClipboardKey);
             if (!parentEffect.IsNullOrEmpty())
             {
-                if (parentEffect.Then == currentEffect)
+                if (SelectedNode.Text.Contains("THEN") && parentEffect.Then == currentEffect)
                     parentEffect.Then = effect;
-                else if (parentEffect.OnSuccess == currentEffect)
+                else if ((SelectedNode.Text.Contains("ON SUCCESS") || SelectedNode.Text.Contains("ON ENTER LOOP")) && parentEffect.OnSuccess == currentEffect)
                     parentEffect.OnSuccess = effect;
-                else if (parentEffect.OnFailure == currentEffect)
+                else if ((SelectedNode.Text.Contains("ON FAILURE") || SelectedNode.Text.Contains("ON LEAVE LOOP")) &&parentEffect.OnFailure == currentEffect)
                     parentEffect.OnFailure = effect;
             }
             else

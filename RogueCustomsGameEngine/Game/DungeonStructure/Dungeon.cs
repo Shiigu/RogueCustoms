@@ -120,6 +120,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
             Classes.Add(dungeonInfo.CurrencyInfo.Parse(this));
+            dungeonInfo.QualityLevelInfos.ForEach(ql => QualityLevels.Add(new QualityLevel(ql, LocaleToUse)));
             dungeonInfo.ItemSlotInfos.ForEach(isi => ItemSlots.Add(new ItemSlot(isi, this)));
             dungeonInfo.ItemTypeInfos.ForEach(iti => ItemTypes.Add(new ItemType(iti, this)));
             dungeonInfo.CurrencyInfo.CurrencyPiles.ForEach(cp => CurrencyData.Add(new CurrencyPile(cp)));
@@ -128,7 +129,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.AffixInfos.ForEach(a => Affixes.Add(new Affix(a, LocaleToUse, ItemTypes, Elements, ActionSchools)));
             
             dungeonInfo.NPCModifierInfos.ForEach(nm => NPCModifiers.Add(new NPCModifier(nm, LocaleToUse, Elements, ActionSchools)));
-            dungeonInfo.QualityLevelInfos.ForEach(ql => QualityLevels.Add(new QualityLevel(ql, LocaleToUse)));
             dungeonInfo.TileTypeInfos.ForEach(tl => TileTypes.Add(new TileType(tl, ActionSchools)));
             dungeonInfo.TileSetInfos.ForEach(ts => TileSets.Add(new TileSet(ts, this)));
             dungeonInfo.LootTableInfos.ForEach(lt => LootTables.Add(new LootTable(lt)));

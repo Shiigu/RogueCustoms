@@ -44,7 +44,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         #region Player Character-only data
 
         public readonly bool RequiresNamePrompt;
-        public readonly float SaleValuePercentage;
+        public readonly float SaleValuePercentage; 
+        public readonly bool NeedsToIdentifyItems;
 
         #endregion
 
@@ -222,6 +223,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 SaleValuePercentage = playerClassInfo.SaleValuePercentage / 100f;
                 DefaultOnAttack = ActionWithEffects.Create(playerClassInfo.DefaultOnAttack, dungeon.ActionSchools);
                 AvailableSlots = dungeon.ItemSlots.FindAll(islot => playerClassInfo.AvailableSlots.Contains(islot.Id));
+                NeedsToIdentifyItems = playerClassInfo.NeedsToIdentifyItems;
             }
             else if (classInfo is NPCInfo npcInfo)
             {

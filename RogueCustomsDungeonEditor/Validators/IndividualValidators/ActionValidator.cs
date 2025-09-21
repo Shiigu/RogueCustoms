@@ -235,13 +235,23 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             foreach (var slot in target.AvailableSlots)
             {
                 var sampleItemClass = sampleDungeon.ItemClasses.Find(ec => ec.ItemType.SlotsItOccupies.Contains(slot));
-                target.Inventory.Add(GetASpecificItem(sampleDungeon, sampleItemClass.Id));
+                var sampleItem = GetASpecificItem(sampleDungeon, sampleItemClass.Id);
+                if(sampleItem.QualityLevelOdds.Count > 0)
+                    sampleItem.SetQualityLevel(sampleItem.QualityLevelOdds[0].QualityLevel);
+                else
+                    sampleItem.SetQualityLevel(sampleDungeon.QualityLevels[0]);
+                target.Inventory.Add(sampleItem);
             }
 
             var sampleConsumableClass = sampleDungeon.ItemClasses.Find(ec => ec.ItemType.Usability == ItemUsability.Use);
             if (sampleConsumableClass != null)
             {
-                target.Inventory.Add(new Item(sampleConsumableClass, 1, sampleDungeon.CurrentFloor));
+                var sampleItem = new Item(sampleConsumableClass, 1, sampleDungeon.CurrentFloor);
+                if (sampleItem.QualityLevelOdds.Count > 0)
+                    sampleItem.SetQualityLevel(sampleItem.QualityLevelOdds[0].QualityLevel);
+                else
+                    sampleItem.SetQualityLevel(sampleDungeon.QualityLevels[0]);
+                target.Inventory.Add(sampleItem);
             }
 
             sampleDungeon.CurrentFloor.SetActionParams();
@@ -569,6 +579,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
         private static Item GetATestItem(Dungeon sampleDungeon, ItemSlot slot)
         {
             var resultItem = new Item(sampleDungeon.ItemClasses.Find(ec => ec.ItemType.SlotsItOccupies.Contains(slot)), 1, sampleDungeon.CurrentFloor);
+
+            if (resultItem.QualityLevelOdds.Count > 0)
+                resultItem.SetQualityLevel(resultItem.QualityLevelOdds[0].QualityLevel);
+            else
+                resultItem.SetQualityLevel(sampleDungeon.QualityLevels[0]);
 
             resultItem.Id = new Random().Next(1, int.MaxValue);
 

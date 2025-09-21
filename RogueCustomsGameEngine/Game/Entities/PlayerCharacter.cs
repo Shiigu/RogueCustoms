@@ -22,6 +22,8 @@ namespace RogueCustomsGameEngine.Game.Entities
     {
         public readonly float SaleValuePercentage;
         public override int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+        public readonly bool NeedsToIdentifyItems;
+        public readonly List<string> IdentifiedItemClasses = [];
 
         public override List<ActionWithEffects> OnTurnStart
         {
@@ -32,12 +34,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(OwnOnTurnStart);
                 Equipment?.ForEach(i =>
                 {
-                    if (i.IsEquippable && i?.OnTurnStart != null)
+                    if (i.IsIdentified && i.IsEquippable && i?.OnTurnStart != null)
                         actionList.AddRange(i?.OnTurnStart);
                 });
                 Inventory?.ForEach(i =>
                 {
-                    if (!i.IsEquippable && i?.OnTurnStart != null)
+                    if (i.IsIdentified && !i.IsEquippable && i?.OnTurnStart != null)
                         actionList.AddRange(i?.OnTurnStart);
                 });
                 return actionList;
@@ -53,7 +55,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.AddRange(OwnOnAttack);
                 Equipment?.ForEach(i =>
                 {
-                    if (i.IsEquippable && i?.OnAttack != null)
+                    if (i.IsIdentified && i.IsEquippable && i?.OnAttack != null)
                     {
                         actionList.AddRange(i?.OnAttack);
                         if (i.OwnOnAttack.Count > 0)
@@ -64,6 +66,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 {
                     if (!i.IsEquippable && i?.OnAttack != null)
                         actionList.AddRange(i?.OnAttack);
+                    if (!i.IsIdentified && i.ItemType.Usability == ItemUsability.Use && i?.OnUse != null)
+                        actionList.Add(i?.OnUse);
                 });
                 KeySet?.ForEach(k =>
                 {
@@ -89,12 +93,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(OwnOnAttacked);
                 Equipment?.ForEach(i =>
                 {
-                    if (i.IsEquippable && i?.OnAttacked != null)
+                    if (i.IsIdentified && i.IsEquippable && i?.OnAttacked != null)
                         actionList.AddRange(i?.OnAttacked);
                 });
                 Inventory?.ForEach(i =>
                 {
-                    if (!i.IsEquippable && i?.OnAttacked != null)
+                    if (i.IsIdentified && !i.IsEquippable && i?.OnAttacked != null)
                         actionList.AddRange(i?.OnAttacked);
                 });
                 AlteredStatuses?.Where(als => als.RemainingTurns != 0).ForEach(als =>
@@ -114,12 +118,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     actionList.Add(OwnOnDeath);
                 Equipment?.ForEach(i =>
                 {
-                    if (i?.OwnOnDeath != null && i.IsEquippable)
+                    if (i.IsIdentified && i?.OwnOnDeath != null && i.IsEquippable)
                         actionList.Add(i.OwnOnDeath);
                 });
                 Inventory?.ForEach(i =>
                 {
-                    if (i?.OwnOnDeath != null && !i.IsEquippable)
+                    if (i.IsIdentified && i?.OwnOnDeath != null && !i.IsEquippable)
                         actionList.Add(i.OwnOnDeath);
                 });
                 return actionList;
@@ -132,7 +136,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var list = new List<ExtraDamage>();
                 foreach (var item in Equipment)
                 {
-                    if (!item.IsEquippable) continue;
+                    if (item.IsIdentified && !item.IsEquippable) continue;
                     foreach (var extraDamage in item?.ExtraDamage ?? [])
                     {
                         var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
@@ -149,7 +153,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
                 foreach (var item in Inventory)
                 {
-                    if (item.IsEquippable) continue;
+                    if (item.IsIdentified && item.IsEquippable) continue;
                     foreach (var extraDamage in item?.ExtraDamage ?? [])
                     {
                         var correspondingExtraDamage = list.Find(ed => ed.Element.Id.Equals(extraDamage.Element.Id, StringComparison.InvariantCultureIgnoreCase));
@@ -171,6 +175,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public PlayerCharacter(EntityClass entityClass, int level, Map map) : base(entityClass, level, map)
         {
             SaleValuePercentage = entityClass.SaleValuePercentage;
+            NeedsToIdentifyItems = entityClass.NeedsToIdentifyItems;
+            IdentifiedItemClasses = [];
         }
 
         public int CalculateExperienceBarPercentage()

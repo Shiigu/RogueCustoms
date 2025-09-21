@@ -274,7 +274,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
             if (floorJson.PossibleLayouts.Count > 0)
             {
-                var debugGenerationAttempts = (int)Math.Max(8, EngineConstants.MaxGenerationTries / floorJson.PossibleLayouts.Count);
+                var debugGenerationAttempts = 8;
                 foreach (var floorLayoutGenerator in floorJson.PossibleLayouts)
                 {
                     var proceduralGenerator = floorLayoutGenerator.ProceduralGenerator;

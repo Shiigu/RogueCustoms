@@ -128,11 +128,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var optionFlag = paramsObject.OptionFlag;
 
-            string? chosenOption;
+            ItemInput? chosenOption;
             if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
             {
                 var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
-                chosenOption = randomChoice.ClassId;
+                chosenOption = new ItemInput
+                {
+                    Id = randomChoice.ItemId,
+                    ClassId = randomChoice.ClassId
+                };
                 if (Map.IsDebugMode)
                     Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
             }
@@ -152,15 +156,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
             }
 
-            if (!string.IsNullOrWhiteSpace(chosenOption))
+            if (chosenOption != null)
             {
                 if (!Map.HasFlag(optionFlag))
                 {
-                    Map.CreateFlag(optionFlag, chosenOption, true);
+                    Map.CreateFlag(optionFlag, chosenOption.ClassId, true);
                 }
                 else
                 {
-                    Map.SetFlagValue(optionFlag, chosenOption);
+                    Map.SetFlagValue(optionFlag, chosenOption.ClassId);
                 }
 
                 return true;
@@ -183,20 +187,44 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 CurrencyConsoleRepresentation = Map.CurrencyClass.ConsoleRepresentation.Clone()
             };
 
-            foreach (var item in t.Inventory)
+            if (c == t)
             {
-                var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == item.ClassId);
-                if (itemEntityClass == null) continue; // Invalid IDs are just ignored
-                optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map, false));
+                foreach (var item in t.Equipment)
+                {
+                    optionDtos.InventoryItems.Add(new InventoryItemDto(item, c, Map, false)
+                    {
+                        CanBeUsed = true
+                    });
+                }
+                foreach (var item in t.Inventory)
+                {
+                    optionDtos.InventoryItems.Add(new InventoryItemDto(item, c, Map, false)
+                    {
+                        CanBeUsed = true
+                    });
+                }
+            }
+            else
+            {
+                foreach (var item in t.Inventory)
+                {
+                    var itemEntityClass = Map.PossibleItemClasses.Find(ic => ic.Id == item.ClassId);
+                    if (itemEntityClass == null) continue; // Invalid IDs are just ignored
+                    optionDtos.InventoryItems.Add(new InventoryItemDto(itemEntityClass, Map, false));
+                }
             }
 
             var optionFlag = paramsObject.OptionFlag;
 
-            string? chosenOption;
+            ItemInput? chosenOption;
             if (Map.IsDebugMode || Args.Source is NonPlayableCharacter)
             {
                 var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, Rng);
-                chosenOption = randomChoice.ClassId;
+                chosenOption = new ItemInput
+                {
+                    Id = randomChoice.ItemId,
+                    ClassId = randomChoice.ClassId
+                };
                 if (Map.IsDebugMode)
                     Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}\n\nOPTION: {randomChoice.ClassId}", Color.Yellow);
             }
@@ -216,15 +244,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
             }
 
-            if (!string.IsNullOrWhiteSpace(chosenOption))
+            if (chosenOption != null)
             {
                 if (!Map.HasFlag(optionFlag))
                 {
-                    Map.CreateFlag(optionFlag, chosenOption, true);
+                    Map.CreateFlag(optionFlag, chosenOption.Id, true);
                 }
                 else
                 {
-                    Map.SetFlagValue(optionFlag, chosenOption);
+                    Map.SetFlagValue(optionFlag, chosenOption.Id);
                 }
 
                 return true;
@@ -252,7 +280,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             foreach (var interaction in actionsNotFromConsumables)
             {
-                optionDtos.Actions.Add(new ActionItemDto(interaction, Map));
+                optionDtos.AddAction(interaction, Map);
             }
 
             var optionFlag = paramsObject.OptionFlag;

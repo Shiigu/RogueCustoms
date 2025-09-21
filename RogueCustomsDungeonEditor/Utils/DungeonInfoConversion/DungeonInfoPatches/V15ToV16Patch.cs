@@ -344,6 +344,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 playerClass["InitialEquippedArmor"] = null;
                 if (playerClass["SaleValuePercentage"] is null)
                     playerClass["SaleValuePercentage"] = 50;
+                if (playerClass["NeedsToIdentifyItems"] is null)
+                    playerClass["NeedsToIdentifyItems"] = false;
             }
         }
 
@@ -459,7 +461,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     ["Usability"] = (int) ItemUsability.Equip,
                     ["PowerType"] = (int) ItemPowerType.Damage,
                     ["Slot1"] = "Weapon",
-                    ["Slot2"] = ""
+                    ["Slot2"] = "",
+                    ["MinimumQualityLevelForUnidentified"] = "",
+                    ["UnidentifiedItemName"] = "???",
+                    ["UnidentifiedItemDescription"] = "???",
+                    ["UnidentifiedItemActionName"] = "???",
+                    ["UnidentifiedItemActionDescription"] = "???"
                 },
                 new JsonObject
                 {
@@ -468,7 +475,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     ["Usability"] = (int) ItemUsability.Equip,
                     ["PowerType"] = (int) ItemPowerType.Mitigation,
                     ["Slot1"] = "Armor",
-                    ["Slot2"] = ""
+                    ["Slot2"] = "",
+                    ["MinimumQualityLevelForUnidentified"] = "",
+                    ["UnidentifiedItemName"] = "???",
+                    ["UnidentifiedItemDescription"] = "???",
+                    ["UnidentifiedItemActionName"] = "???",
+                    ["UnidentifiedItemActionDescription"] = "???"
                 },
                 new JsonObject
                 {
@@ -477,7 +489,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     ["Usability"] = (int) ItemUsability.Use,
                     ["PowerType"] = (int) ItemPowerType.UsePower,
                     ["Slot1"] = "",
-                    ["Slot2"] = ""
+                    ["Slot2"] = "",
+                    ["MinimumQualityLevelForUnidentified"] = "",
+                    ["UnidentifiedItemName"] = "???",
+                    ["UnidentifiedItemDescription"] = "???",
+                    ["UnidentifiedItemActionName"] = "???",
+                    ["UnidentifiedItemActionDescription"] = "???"
                 },
                 new JsonObject
                 {
@@ -486,7 +503,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     ["Usability"] = (int) ItemUsability.Nothing,
                     ["PowerType"] = (int) ItemPowerType.UsePower,
                     ["Slot1"] = "",
-                    ["Slot2"] = ""
+                    ["Slot2"] = "",
+                    ["MinimumQualityLevelForUnidentified"] = "",
+                    ["UnidentifiedItemName"] = "???",
+                    ["UnidentifiedItemDescription"] = "???",
+                    ["UnidentifiedItemActionName"] = "???",
+                    ["UnidentifiedItemActionDescription"] = "???"
                 }
             };
             root["ItemTypeInfos"] = itemTypeInfos;
