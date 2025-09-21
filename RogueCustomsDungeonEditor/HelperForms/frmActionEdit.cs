@@ -910,7 +910,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (messageBoxResult == DialogResult.No)
                     return;
             }
-            var effect = ClipboardManager.Paste<EffectInfo>(FormConstants.StepClipboardKey);
+            var effect = ClipboardManager.Paste<EffectInfo>(FormConstants.StepClipboardKey).Clone();
             if (!parentEffect.IsNullOrEmpty())
             {
                 if (SelectedNode.Text.Contains("THEN") && parentEffect.Then == currentEffect)

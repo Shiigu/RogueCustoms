@@ -1199,6 +1199,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private async Task AddNPC()
         {
             if (!FloorConfigurationToUse.PossibleMonsters.Any() || TotalMonstersInFloor >= FloorConfigurationToUse.SimultaneousMaxMonstersInFloor) return;
+            if (GeneratorToUse is StaticGenerator sg && !sg.GenerateNPCsAfterFirstTurn) return;
             List<ClassInFloor> usableNPCGenerators = new();
             FloorConfigurationToUse.PossibleMonsters.ForEach(pm =>
             {

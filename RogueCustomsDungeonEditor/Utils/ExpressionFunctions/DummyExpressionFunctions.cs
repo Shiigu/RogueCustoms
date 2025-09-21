@@ -133,5 +133,15 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         {
             return "false";
         }
+
+        public static string HASAWAYPOINT(EffectCallerParams args, string[] parameters)
+        {
+            return "false";
+        }
+
+        public static string ISONWAYPOINT(EffectCallerParams args, string[] parameters)
+        {
+            return "false";
+        }
     }
 }

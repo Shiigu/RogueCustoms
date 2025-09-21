@@ -46,6 +46,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
                     _map.Tiles[y, x].Type = _generatorToUse.FloorGeometry[y, x];
                 }
             }
+
+            foreach (var specialSpawn in _generatorToUse.SpecialSpawns)
+            {
+                if (specialSpawn.ObjectToSpawn is string sid && sid == EngineConstants.CREATE_WAYPOINT)
+                {
+                    var tile = _map.Tiles[specialSpawn.Y, specialSpawn.X];
+                    tile.WaypointId = specialSpawn.WaypointId;
+                }
+            }
         }
 
         #endregion

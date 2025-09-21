@@ -3497,5 +3497,41 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "FollowWaypoint",
+    "TreeViewDisplayText": "Pursue Waypoint ({Id})",
+    "ComboBoxDisplayName": "Make NPC follow a Waypoint",
+    "Description": "Used to force this NPC to target a Waypoint with the Specified Id.\n\nIf there are multiple Waypoints with the same Id, they will pursue one at random.\n\nThe NPC will not target anyone in the process.\n\nThe NPC will keep pursuing the Waypoint until it's reached or told to stop.\n\nDoes nothing if executed on a Player Character.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "The Id of the Waypoint to pursue.",
+        "ParameterType": "Text",
+        "Default": "W1",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "StopFollowingWaypoint",
+    "TreeViewDisplayText": "Stop pursuing Waypoints",
+    "ComboBoxDisplayName": "Make NPC stop following a Waypoint",
+    "Description": "Used to force this NPC to no longer target whatever Waypoint they are targeting.\n\nDoes nothing if executed on a Player Character.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": []
   }
 ]
