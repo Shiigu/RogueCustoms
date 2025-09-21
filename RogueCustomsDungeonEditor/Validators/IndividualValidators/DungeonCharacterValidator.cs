@@ -210,7 +210,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             }
             else
             {
-                messages.AddWarning("Character does not have a Default On Attack Actions. Make sure they have items or other OnAttack Actions, otherwise they cannot attack.");
+                messages.AddWarning("Character does not have a DefaultOnAttack Action. Make sure they have items or other OnAttack Actions, otherwise they cannot attack.");
             }
 
             if (characterJson.OnAttacked != null)

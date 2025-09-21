@@ -20,7 +20,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             messages.AddRange(dungeonJson.ValidateString(faction.Name, $"Faction {faction.Id}", "Name", true));
             messages.AddRange(dungeonJson.ValidateString(faction.Description, $"Faction {faction.Id}", "Description", false));
 
-            if (!faction.AlliedWith.Any() && !faction.NeutralWith.Any() && !faction.EnemiesWith.Any())
+            if (dungeonJson.FactionInfos.Count > 1 && !faction.AlliedWith.Any() && !faction.NeutralWith.Any() && !faction.EnemiesWith.Any())
                 messages.AddError($"Faction {faction.Id} does not have any interactions with any faction.");
             foreach (var alliedFaction in faction.AlliedWith.ConvertAll(aw => dungeonJson.FactionInfos.Find(fi => fi.Id.Equals(aw))))
             {
