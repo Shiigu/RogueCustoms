@@ -52,6 +52,12 @@
             ItemY = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ItemLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ItemQualityLevel = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            tpWaypoints = new System.Windows.Forms.TabPage();
+            fklblWaypoints = new System.Windows.Forms.Button();
+            dgvWaypoints = new System.Windows.Forms.DataGridView();
+            WaypointX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            WaypointY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            WaypointId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             tlpEditor = new System.Windows.Forms.TableLayoutPanel();
             tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             flpButtons = new System.Windows.Forms.FlowLayoutPanel();
@@ -64,6 +70,7 @@
             chkUseNPCGenerator = new System.Windows.Forms.CheckBox();
             chkUseItemGenerator = new System.Windows.Forms.CheckBox();
             chkUseTrapGenerator = new System.Windows.Forms.CheckBox();
+            lblCurrentlyOn = new System.Windows.Forms.Label();
             pnlToolbox.SuspendLayout();
             flpEditor.SuspendLayout();
             pnlToolboxSection.SuspendLayout();
@@ -73,6 +80,8 @@
             ((System.ComponentModel.ISupportInitialize)dgvCharacters).BeginInit();
             tcItems.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
+            tpWaypoints.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvWaypoints).BeginInit();
             tlpEditor.SuspendLayout();
             tlpButtons.SuspendLayout();
             flpButtons.SuspendLayout();
@@ -189,6 +198,7 @@
             // 
             tcEntitySpawns.Controls.Add(tcCharacters);
             tcEntitySpawns.Controls.Add(tcItems);
+            tcEntitySpawns.Controls.Add(tpWaypoints);
             tcEntitySpawns.Location = new System.Drawing.Point(903, 3);
             tcEntitySpawns.Name = "tcEntitySpawns";
             tcEntitySpawns.SelectedIndex = 0;
@@ -298,6 +308,67 @@
             ItemQualityLevel.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             ItemQualityLevel.HeaderText = "Quality";
             ItemQualityLevel.Name = "ItemQualityLevel";
+            // 
+            // tpWaypoints
+            // 
+            tpWaypoints.Controls.Add(fklblWaypoints);
+            tpWaypoints.Controls.Add(dgvWaypoints);
+            tpWaypoints.Location = new System.Drawing.Point(4, 24);
+            tpWaypoints.Name = "tpWaypoints";
+            tpWaypoints.Padding = new System.Windows.Forms.Padding(3);
+            tpWaypoints.Size = new System.Drawing.Size(401, 356);
+            tpWaypoints.TabIndex = 2;
+            tpWaypoints.Text = "Waypoints";
+            tpWaypoints.UseVisualStyleBackColor = true;
+            // 
+            // fklblWaypoints
+            // 
+            fklblWaypoints.Dock = System.Windows.Forms.DockStyle.Bottom;
+            fklblWaypoints.Enabled = false;
+            fklblWaypoints.FlatAppearance.BorderSize = 0;
+            fklblWaypoints.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            fklblWaypoints.Image = (System.Drawing.Image)resources.GetObject("fklblWaypoints.Image");
+            fklblWaypoints.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblWaypoints.Location = new System.Drawing.Point(3, 279);
+            fklblWaypoints.Name = "fklblWaypoints";
+            fklblWaypoints.Size = new System.Drawing.Size(395, 74);
+            fklblWaypoints.TabIndex = 235;
+            fklblWaypoints.Text = "Waypoints aren't actual Tiles. They are regular Floor Tiles\r\nthat can be used to force NPCs through a path.\r\n\r\nMultiple Waypoints can have the same Id.";
+            fklblWaypoints.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblWaypoints.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            fklblWaypoints.UseVisualStyleBackColor = true;
+            // 
+            // dgvWaypoints
+            // 
+            dgvWaypoints.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvWaypoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { WaypointX, WaypointY, WaypointId });
+            dgvWaypoints.Dock = System.Windows.Forms.DockStyle.Top;
+            dgvWaypoints.Location = new System.Drawing.Point(3, 3);
+            dgvWaypoints.Name = "dgvWaypoints";
+            dgvWaypoints.Size = new System.Drawing.Size(395, 270);
+            dgvWaypoints.TabIndex = 1;
+            dgvWaypoints.CellBeginEdit += dgvWaypoints_CellBeginEdit;
+            dgvWaypoints.CellEndEdit += dgvWaypoints_CellEndEdit;
+            // 
+            // WaypointX
+            // 
+            WaypointX.HeaderText = "X";
+            WaypointX.Name = "WaypointX";
+            WaypointX.ReadOnly = true;
+            WaypointX.Width = 50;
+            // 
+            // WaypointY
+            // 
+            WaypointY.HeaderText = "Y";
+            WaypointY.Name = "WaypointY";
+            WaypointY.ReadOnly = true;
+            WaypointY.Width = 50;
+            // 
+            // WaypointId
+            // 
+            WaypointId.HeaderText = "Id";
+            WaypointId.Name = "WaypointId";
+            WaypointId.Width = 150;
             // 
             // tlpEditor
             // 
@@ -450,12 +521,21 @@
             chkUseTrapGenerator.Text = "Generate Traps on the first turn";
             chkUseTrapGenerator.UseVisualStyleBackColor = true;
             // 
+            // lblCurrentlyOn
+            // 
+            lblCurrentlyOn.AutoSize = true;
+            lblCurrentlyOn.Location = new System.Drawing.Point(4, 8);
+            lblCurrentlyOn.Name = "lblCurrentlyOn";
+            lblCurrentlyOn.Size = new System.Drawing.Size(0, 15);
+            lblCurrentlyOn.TabIndex = 238;
+            // 
             // frmStaticFloorEditor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new System.Drawing.Size(1329, 586);
+            Controls.Add(lblCurrentlyOn);
             Controls.Add(tlpEditor);
             Controls.Add(lblFloorGroupTitle);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -475,6 +555,8 @@
             ((System.ComponentModel.ISupportInitialize)dgvCharacters).EndInit();
             tcItems.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
+            tpWaypoints.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvWaypoints).EndInit();
             tlpEditor.ResumeLayout(false);
             tlpEditor.PerformLayout();
             tlpButtons.ResumeLayout(false);
@@ -483,6 +565,7 @@
             flpCheckboxes.ResumeLayout(false);
             flpCheckboxes.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -522,5 +605,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CharacterX;
         private System.Windows.Forms.DataGridViewTextBoxColumn CharacterY;
         private System.Windows.Forms.DataGridViewTextBoxColumn CharacterLevel;
+        private System.Windows.Forms.TabPage tpWaypoints;
+        private System.Windows.Forms.Button fklblWaypoints;
+        private System.Windows.Forms.DataGridView dgvWaypoints;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WaypointX;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WaypointY;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WaypointId;
+        private System.Windows.Forms.Label lblCurrentlyOn;
     }
 }

@@ -396,6 +396,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                             }
                             else if (specialSpawn.SpawnId != EngineConstants.SPAWN_PLAYER_CHARACTER
                                 && specialSpawn.SpawnId != EngineConstants.SPAWN_ANY_TRAP
+                                && specialSpawn.SpawnId != EngineConstants.CREATE_WAYPOINT
                                 && !dungeonJson.Traps.Any(t => t.Id.Equals(specialSpawn.SpawnId))
                                 && !dungeonJson.TileTypeInfos.Any(tt => tt.Id.Equals(specialSpawn.SpawnId))
                                 && !Regex.Match(specialSpawn.SpawnId, EngineConstants.CurrencyRegexPattern).Success)

@@ -43,6 +43,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool ReappearsOnTheNextFloorIfAlliedToThePlayer;
         public readonly decimal ExperienceYieldMultiplierIfWithModifiers;
 
+        public string? WaypointToFollow { get; set; }
+
         public override int ExperiencePayout
         {
             get
@@ -412,6 +414,30 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             if (ContainingRoom != null && !VisitedRooms.Contains(ContainingRoom))
                 VisitedRooms.Add(ContainingRoom);
+
+            if(!string.IsNullOrWhiteSpace(WaypointToFollow))
+            {
+                var targetAsTile = CurrentTarget as Tile;
+                if(targetAsTile != null && !string.IsNullOrWhiteSpace(targetAsTile.WaypointId) && targetAsTile.WaypointId.Equals(WaypointToFollow))
+                {
+                    if (ContainingTile != targetAsTile)
+                    {
+                        if (ContainingTile.WaypointId != null && ContainingTile.WaypointId.Equals(WaypointToFollow))
+                        {
+                            UnsetWaypoint();
+                        }
+                        else
+                        {   
+                            // If I have a waypoint and I have yet to reach it, keep going
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        UnsetWaypoint();
+                    }
+                }
+            }
 
             var formerTarget = CurrentTarget;
             var distanceToCurrentTarget = (CurrentTarget is Character c && c.ExistenceStatus == EntityExistenceStatus.Alive) ? (int) GamePoint.Distance(c.Position, Position) : int.MaxValue;
@@ -977,6 +1003,22 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (OnInteracted[i].IsScript)
                     OnInteracted[i].SelectionId += "_S";
             }
+        }
+
+        public void SetWaypoint(Tile t)
+        {
+            if (string.IsNullOrWhiteSpace(t.WaypointId)) return;
+            WaypointToFollow = t.WaypointId;
+            CurrentTarget = t;
+            PathToUse = (Destination: CurrentTarget.Position, Route: Map.GetPathBetweenTiles(Position, CurrentTarget.Position).Skip(1).ToList());
+        }
+
+        public void UnsetWaypoint()
+        {
+            if (string.IsNullOrWhiteSpace(WaypointToFollow)) return;
+            WaypointToFollow = null;
+            CurrentTarget = null;
+            PathToUse = (null, null);
         }
     }
     #pragma warning restore S2259 // Null Pointers should not be dereferenced

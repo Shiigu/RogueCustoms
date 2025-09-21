@@ -118,6 +118,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public int Y { get; set; }
         public int Level { get; set; }
         public string QualityLevel { get; set; }
+        public string WaypointId { get; set; }
     }
 
     [Serializable]

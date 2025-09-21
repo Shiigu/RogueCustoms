@@ -369,6 +369,41 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             return true;
         }
+
+        public static bool FollowWaypoint(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.Source is not NonPlayableCharacter npc)
+                // Do nothing if it's not an NPC
+                return true;
+
+            var possibleWaypoints = Map.Tiles.Where(t => t.WaypointId?.Equals(paramsObject.Id) == true);
+
+            if(possibleWaypoints.Any(t => !t.IsOccupied))
+                // Prioritize unoccupied Waypoint tiles
+                possibleWaypoints = possibleWaypoints.Where(t => !t.IsOccupied).ToList();
+
+            if(possibleWaypoints.Count > 0)
+            {
+                npc.SetWaypoint(possibleWaypoints.TakeRandomElement(Rng));
+            }
+
+            return true;
+        }
+
+        public static bool StopFollowingWaypoint(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.Source is not NonPlayableCharacter npc)
+                // Do nothing if it's not an NPC
+                return true;
+
+            npc.UnsetWaypoint();
+
+            return true;
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

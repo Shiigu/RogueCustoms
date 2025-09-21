@@ -162,128 +162,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         var specialSpawnForTile = layout.StaticGenerator.SpecialSpawns?.FirstOrDefault(ss => ss.X == X + 1 && ss.Y == Y + 1);
                         if (specialSpawnForTile != null)
                         {
-                            if (specialSpawnForTile.SpawnId == "Stairs")
+                            var adjustedX = specialSpawnForTile.X - 1;
+                            var adjustedY = specialSpawnForTile.Y - 1;
+                            var spawn = CreateSpecialSpawn(specialSpawnForTile, this, dungeon, adjustedX, adjustedY);
+                            if (spawn != null)
                             {
-                                specialSpawns.Add(new SpecialSpawn
-                                {
-                                    X = specialSpawnForTile.X - 1,
-                                    Y = specialSpawnForTile.Y - 1,
-                                    ObjectToSpawn = TileType.Stairs
-                                });
-                            }
-                            else
-                            {
-                                var specialTileType = dungeon.TileTypes.Find(tt => tt.Id.Equals(specialSpawnForTile.SpawnId));
-                                if (specialTileType != null)
-                                {
-                                    specialSpawns.Add(new SpecialSpawn
-                                    {
-                                        X = specialSpawnForTile.X - 1,
-                                        Y = specialSpawnForTile.Y - 1,
-                                        ObjectToSpawn = specialTileType
-                                    });
-                                }
-                                else
-                                {
-                                    if (specialSpawnForTile.SpawnId.Contains("Key"))
-                                    {
-                                        var keyTypeString = specialSpawnForTile.SpawnId.Replace("Key", "").Trim();
-                                        var keyType = PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
-                                        if (keyType != null)
-                                        {
-                                            specialSpawns.Add(new SpecialSpawn
-                                            {
-                                                X = specialSpawnForTile.X - 1,
-                                                Y = specialSpawnForTile.Y - 1,
-                                                ObjectToSpawn = keyType.KeyClass
-                                            });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (specialSpawnForTile.SpawnId.Contains("Door"))
-                                        {
-                                            var keyTypeString = specialSpawnForTile.SpawnId.Replace("Door", "").Trim();
-                                            var keyType = PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
-                                            if (keyType != null)
-                                            {
-                                                specialSpawns.Add(new SpecialSpawn
-                                                {
-                                                    X = specialSpawnForTile.X - 1,
-                                                    Y = specialSpawnForTile.Y - 1,
-                                                    ObjectToSpawn = $"DoorType{keyType.KeyTypeName}",
-                                                });
-                                            }
-                                        }
-                                        else
-                                        {
-                                            var characterClass = dungeon.CharacterClasses.Find(cc => cc.Id.Equals(specialSpawnForTile.SpawnId));
-                                            if (characterClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_CHARACTER
-                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER
-                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER
-                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_NEUTRAL_CHARACTER
-                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ENEMY_CHARACTER
-                                                || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_PLAYER_CHARACTER)
-                                            {
-                                                specialSpawns.Add(new SpecialSpawn
-                                                {
-                                                    X = specialSpawnForTile.X - 1,
-                                                    Y = specialSpawnForTile.Y - 1,
-                                                    ObjectToSpawn = characterClass ?? (object)specialSpawnForTile.SpawnId,
-                                                    Level = specialSpawnForTile.Level
-                                                });
-                                            }
-                                            else
-                                            {
-                                                var itemClass = dungeon.ItemClasses.Find(ic => ic.Id.Equals(specialSpawnForTile.SpawnId));
-                                                if (itemClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_ITEM)
-                                                {
-                                                    var qualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(specialSpawnForTile.QualityLevel))
-                                                        ?? dungeon.QualityLevels.MinBy(ql => ql.MaximumAffixes);
-                                                    specialSpawns.Add(new SpecialSpawn
-                                                    {
-                                                        X = specialSpawnForTile.X - 1,
-                                                        Y = specialSpawnForTile.Y - 1,
-                                                        ObjectToSpawn = itemClass ?? (object)specialSpawnForTile.SpawnId,
-                                                        Level = specialSpawnForTile.Level,
-                                                        QualityLevel = qualityLevel
-                                                    });
-                                                }
-                                                else
-                                                {
-                                                    var trapClass = dungeon.TrapClasses.Find(tc => tc.Id.Equals(specialSpawnForTile.SpawnId));
-                                                    if (trapClass != null || specialSpawnForTile.SpawnId == EngineConstants.SPAWN_ANY_TRAP)
-                                                    {
-                                                        specialSpawns.Add(new SpecialSpawn
-                                                        {
-                                                            X = specialSpawnForTile.X - 1,
-                                                            Y = specialSpawnForTile.Y - 1,
-                                                            ObjectToSpawn = trapClass ?? (object)specialSpawnForTile.SpawnId
-                                                        });
-                                                    }
-                                                    else
-                                                    {
-                                                        var match = Regex.Match(specialSpawnForTile.SpawnId, EngineConstants.CurrencyRegexPattern);
-                                                        if (match.Success)
-                                                        {
-                                                            var currencyPileId = match.Groups[1].Value;
-                                                            var currencyPile = dungeon.CurrencyData.Find(cp => cp.Id.Equals(currencyPileId));
-                                                            if (currencyPile != null)
-                                                            {
-                                                                specialSpawns.Add(new SpecialSpawn
-                                                                {
-                                                                    X = specialSpawnForTile.X - 1,
-                                                                    Y = specialSpawnForTile.Y - 1,
-                                                                    ObjectToSpawn = specialSpawnForTile.SpawnId,
-                                                                });
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                specialSpawns.Add(spawn);
                             }
                         }
                     }
@@ -354,6 +238,154 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa, actionSchools)));
         }
+
+        private static SpecialSpawn? CreateSpecialSpawn(SpecialSpawnInfo spawnTileInfo, FloorType floorType, Dungeon dungeon, int x, int y)
+        {
+            if (spawnTileInfo.SpawnId == "Stairs")
+            {
+                return new SpecialSpawn { X = x, Y = y, ObjectToSpawn = TileType.Stairs };
+            }
+
+            if (TryHandleTileType(spawnTileInfo, dungeon, x, y, out var special)) return special;
+            if (TryHandleKey(spawnTileInfo, floorType, x, y, out special)) return special;
+            if (TryHandleDoor(spawnTileInfo, floorType, x, y, out special)) return special;
+            if (TryHandleCharacter(spawnTileInfo, dungeon, x, y, out special)) return special;
+            if (TryHandleItem(spawnTileInfo, dungeon, x, y, out special)) return special;
+            if (TryHandleTrap(spawnTileInfo, dungeon, x, y, out special)) return special;
+            if (TryHandleCurrency(spawnTileInfo, dungeon, x, y, out special)) return special;
+            if (TryHandleWaypoint(spawnTileInfo, x, y, out special)) return special;
+
+            return null;
+        }
+
+        private static bool TryHandleTileType(SpecialSpawnInfo spawnTileInfo, Dungeon dungeon, int x, int y, out SpecialSpawn? result)
+        {
+            var specialTileType = dungeon.TileTypes.Find(tt => tt.Id.Equals(spawnTileInfo.SpawnId));
+            if (specialTileType != null)
+            {
+                result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = specialTileType };
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleKey(SpecialSpawnInfo spawnTileInfo, FloorType floorType, int x, int y, out SpecialSpawn? result)
+        {
+            if (spawnTileInfo.SpawnId.Contains("Key"))
+            {
+                var keyTypeString = spawnTileInfo.SpawnId.Replace("Key", "").Trim();
+                var keyType = floorType.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
+                if (keyType != null)
+                {
+                    result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = keyType.KeyClass };
+                    return true;
+                }
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleDoor(SpecialSpawnInfo spawnTileInfo, FloorType floorType, int x, int y, out SpecialSpawn? result)
+        {
+            if (spawnTileInfo.SpawnId.Contains("Door"))
+            {
+                var keyTypeString = spawnTileInfo.SpawnId.Replace("Door", "").Trim();
+                var keyType = floorType.PossibleKeys.KeyTypes.Find(kt => kt.KeyTypeName.Equals(keyTypeString));
+                if (keyType != null)
+                {
+                    result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = $"DoorType{keyType.KeyTypeName}" };
+                    return true;
+                }
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleCharacter(SpecialSpawnInfo spawnTileInfo, Dungeon dungeon, int x, int y, out SpecialSpawn? result)
+        {
+            var characterClass = dungeon.CharacterClasses.Find(cc => cc.Id.Equals(spawnTileInfo.SpawnId));
+            if (characterClass != null || spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_CHARACTER ||
+                spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER ||
+                spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER ||
+                spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_NEUTRAL_CHARACTER ||
+                spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_ENEMY_CHARACTER ||
+                spawnTileInfo.SpawnId == EngineConstants.SPAWN_PLAYER_CHARACTER)
+            {
+                result = new SpecialSpawn
+                {
+                    X = x,
+                    Y = y,
+                    ObjectToSpawn = characterClass ?? (object)spawnTileInfo.SpawnId,
+                    Level = spawnTileInfo.Level
+                };
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleItem(SpecialSpawnInfo spawnTileInfo, Dungeon dungeon, int x, int y, out SpecialSpawn? result)
+        {
+            var itemClass = dungeon.ItemClasses.Find(ic => ic.Id.Equals(spawnTileInfo.SpawnId));
+            if (itemClass != null || spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_ITEM)
+            {
+                var qualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(spawnTileInfo.QualityLevel))
+                    ?? dungeon.QualityLevels.MinBy(ql => ql.MaximumAffixes);
+
+                result = new SpecialSpawn
+                {
+                    X = x,
+                    Y = y,
+                    ObjectToSpawn = itemClass ?? (object)spawnTileInfo.SpawnId,
+                    Level = spawnTileInfo.Level,
+                    QualityLevel = qualityLevel
+                };
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleTrap(SpecialSpawnInfo spawnTileInfo, Dungeon dungeon, int x, int y, out SpecialSpawn? result)
+        {
+            var trapClass = dungeon.TrapClasses.Find(tc => tc.Id.Equals(spawnTileInfo.SpawnId));
+            if (trapClass != null || spawnTileInfo.SpawnId == EngineConstants.SPAWN_ANY_TRAP)
+            {
+                result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = trapClass ?? (object)spawnTileInfo.SpawnId };
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleCurrency(SpecialSpawnInfo spawnTileInfo, Dungeon dungeon, int x, int y, out SpecialSpawn? result)
+        {
+            var match = Regex.Match(spawnTileInfo.SpawnId, EngineConstants.CurrencyRegexPattern);
+            if (match.Success)
+            {
+                var currencyPileId = match.Groups[1].Value;
+                var currencyPile = dungeon.CurrencyData.Find(cp => cp.Id.Equals(currencyPileId));
+                if (currencyPile != null)
+                {
+                    result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = spawnTileInfo.SpawnId };
+                    return true;
+                }
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool TryHandleWaypoint(SpecialSpawnInfo spawnTileInfo, int x, int y, out SpecialSpawn? result)
+        {
+            if (spawnTileInfo.SpawnId == EngineConstants.CREATE_WAYPOINT)
+            {
+                result = new SpecialSpawn { X = x, Y = y, ObjectToSpawn = EngineConstants.CREATE_WAYPOINT, WaypointId = spawnTileInfo.WaypointId };
+                return true;
+            }
+            result = null;
+            return false;
+        }
     }
 
     [Serializable]
@@ -409,6 +441,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public int Y { get; set; }
         public int Level { get; set; } // Only for NPCs and Items
         public QualityLevel QualityLevel { get; set; } // Only for Items
+        public string WaypointId { get; set; } // Only for Waypoints
     }
 
     [Serializable]

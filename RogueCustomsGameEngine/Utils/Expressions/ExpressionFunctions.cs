@@ -336,6 +336,39 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return actionsNotFromConsumables.Count > 0 ? actionsNotFromConsumables.TakeRandomElement(Rng).SelectionId : "<<NULL>>";
         }
 
+        public static string HASAWAYPOINT(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length != 1) throw new ArgumentException("Invalid parameters for HasAWaypoint.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = GetEntityByName(entityName, "HasAWaypoint", args);
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in HasAWaypoint.");
+
+            if (entityToCheck is not NonPlayableCharacter npc)
+                return false.ToString();
+
+            return (!string.IsNullOrEmpty(npc.WaypointToFollow)).ToString();
+        }
+
+        public static string ISONWAYPOINT(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for IsOnWaypoint.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = GetEntityByName(entityName, "IsOnWaypoint", args);
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in IsOnWaypoint.");
+
+            var waypointId = parameters[1].ToLower();
+
+            return (c.ContainingTile.WaypointId != null && c.ContainingTile.WaypointId.Equals(waypointId)).ToString();
+        }
+
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch

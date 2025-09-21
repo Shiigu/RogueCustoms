@@ -63,5 +63,6 @@ namespace RogueCustomsGameEngine.Utils
         public static readonly string SPAWN_ANY_ENEMY_CHARACTER = "AnyEnemy";
         public static readonly string SPAWN_ANY_ITEM = "AnyItem";
         public static readonly string SPAWN_ANY_TRAP = "AnyTrap";
+        public static readonly string CREATE_WAYPOINT = "Waypoint";
     }
 }

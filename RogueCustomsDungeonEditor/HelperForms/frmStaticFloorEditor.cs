@@ -105,7 +105,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             pnlGrid.MouseDown += pnlGrid_MouseDown;
             pnlGrid.MouseMove += pnlGrid_MouseMove;
             pnlGrid.MouseUp += pnlGrid_MouseUp;
-            pnlGrid.MouseLeave += (s, e) => { _isDrawing = false; };
+            pnlGrid.MouseLeave += (s, e) => { _isDrawing = false; lblCurrentlyOn.Text = ""; };
 
             tlpToolbox.Controls.Clear();
 
@@ -211,6 +211,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             _tiles = new RoomTile[width, height];
             dgvCharacters.Rows.Clear();
             dgvItems.Rows.Clear();
+            dgvWaypoints.Rows.Clear();
 
             for (int x = 0; x < width; x++)
             {
@@ -260,11 +261,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         if (toolboxItem.Type == RoomTileType.CharacterIncludingPlayer || toolboxItem.Type == RoomTileType.NPC)
                         {
                             _tiles[x, y].Level = specialSpawn.Level;
+                            _tiles[x, y].TileType = toolboxItem.Type;
                         }
                         else if (toolboxItem.Type == RoomTileType.Item)
                         {
                             _tiles[x, y].Level = specialSpawn.Level;
                             _tiles[x, y].QualityLevel = specialSpawn.QualityLevel;
+                            _tiles[x, y].TileType = toolboxItem.Type;
+                        }
+                        else if (toolboxItem.Type == RoomTileType.Waypoint)
+                        {
+                            _tiles[x, y].WaypointId = specialSpawn.WaypointId;
+                            _tiles[x, y].TileType = toolboxItem.Type;
                         }
                     }
                     _selectedToolboxIndex = ToolBoxList.IndexOf(toolboxItem);
@@ -321,6 +329,18 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void pnlGrid_MouseMove(object sender, MouseEventArgs e)
         {
+            int tileSize = 12;
+
+            int x = e.Location.X / tileSize;
+            int y = e.Location.Y / tileSize;
+
+
+            if (x >= 0 && y >= 0 && x < _tiles.GetLength(0) && y < _tiles.GetLength(1))
+            {
+                var tile = _tiles[x, y];
+                lblCurrentlyOn.Text = $"Currently on ({tile.X}, {tile.Y})";
+            }
+
             if (_isDrawing && !_highlightingIsActive)
                 PaintTileAtMouse(e.Location);
         }
@@ -332,6 +352,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
         private void PaintTileAtMouse(Point mouseLocation)
         {
+            dgvCharacters.EndEdit();
+            dgvItems.EndEdit();
+            dgvWaypoints.EndEdit();
             int tileSize = 12;
 
             int x = mouseLocation.X / tileSize;
@@ -350,6 +373,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var previousType = tile.TileType;
             var wasACharacterTableEntry = previousType == RoomTileType.CharacterIncludingPlayer || tile.TileType == RoomTileType.NPC;
             var wasAnItemTableEntry = previousType == RoomTileType.Item;
+            var wasAWaypointTableEntry = previousType == RoomTileType.Waypoint;
             var toolboxItem = ToolBoxList[_selectedToolboxIndex];
             tile.TileType = toolboxItem.Type;
             tile.ConsoleRepresentation = toolboxItem.Icon;
@@ -360,13 +384,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
             var currentType = tile.TileType;
             var isACharacterTableEntry = currentType == RoomTileType.CharacterIncludingPlayer || tile.TileType == RoomTileType.NPC;
             var isAnItemTableEntry = currentType == RoomTileType.Item;
+            var isAWaypointTableEntry = currentType == RoomTileType.Waypoint;
 
             if (!wasACharacterTableEntry && isACharacterTableEntry)
+            {
                 tile.Level = 1;
+            }
             if (!wasAnItemTableEntry && isAnItemTableEntry)
             {
                 tile.Level = 1;
                 tile.QualityLevel = _qualityLevels[0];
+            }
+            if (!wasAWaypointTableEntry && isAWaypointTableEntry)
+            {
+                tile.WaypointId = "W1";
             }
 
             if (wasACharacterTableEntry || isACharacterTableEntry)
@@ -386,6 +417,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     var qualityLevel = entry.QualityLevel ?? _qualityLevels[0];
                     dgvItems.Rows.Add(entry.Description, entry.X, entry.Y, entry.Level, qualityLevel);
+                }
+            }
+            if (wasAWaypointTableEntry || isAWaypointTableEntry)
+            {
+                dgvWaypoints.Rows.Clear();
+                var tableEntries = _tiles.Where(t => t.TileType == RoomTileType.Waypoint);
+                foreach (var entry in tableEntries)
+                {
+                    dgvWaypoints.Rows.Add(entry.X, entry.Y, entry.WaypointId);
                 }
             }
         }
@@ -418,6 +458,14 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             var stairsTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Stairs");
             toolboxList.Add((stairsTileTypeSet.Central, "Stairs", RoomTileType.Stairs, "Stairs"));
+
+            var waypointIcon = new ConsoleRepresentation
+            {
+                Character = '↔',
+                BackgroundColor = new GameColor(Color.White),
+                ForegroundColor = new GameColor(Color.Red)
+            };
+            toolboxList.Add((waypointIcon, "Waypoint", RoomTileType.Waypoint, "Floor"));
 
             foreach (var tileTypeSet in firstTileSet.TileTypes.Where(tt => tt.TileTypeId != "Empty" && tt.TileTypeId != "Floor" && tt.TileTypeId != "Wall" && tt.TileTypeId != "Hallway" && tt.TileTypeId != "Stairs"))
             {
@@ -583,6 +631,34 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     correspondingTile.QualityLevel = cellValue;
                 }
+            }
+        }
+
+        private void dgvWaypoints_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (dgvWaypoints.Columns[e.ColumnIndex].Name != "WaypointId") return;
+            var cellValue = dgvWaypoints.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            PreviousCellValue = cellValue != null ? cellValue.ToString() : string.Empty;
+        }
+
+        private void dgvWaypoints_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvWaypoints.Rows[e.RowIndex].IsNewRow) return;
+            if (dgvWaypoints.Columns[e.ColumnIndex].Name != "WaypointId") return;
+
+            var cellValue = dgvWaypoints.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() ?? string.Empty;
+
+            var rowX = (int)dgvWaypoints.Rows[e.RowIndex].Cells["WaypointX"].Value;
+            var rowY = (int)dgvWaypoints.Rows[e.RowIndex].Cells["WaypointY"].Value;
+            var correspondingTile = _tiles[rowX - 1, rowY - 1];
+
+            if (string.IsNullOrWhiteSpace(cellValue))
+            {
+                dgvItems[e.ColumnIndex, e.RowIndex].Value = PreviousCellValue;
+            }
+            else
+            {
+                correspondingTile.WaypointId = cellValue;
             }
         }
 
@@ -919,11 +995,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             dgvCharacters.EndEdit();
             dgvItems.EndEdit();
+            dgvWaypoints.EndEdit();
             (bool SolvableWithoutKeys, bool SolvableWithKeys) = IsFloorSolvable();
 
-            if(!SolvableWithoutKeys)
+            if (!SolvableWithoutKeys)
             {
-                MessageBox.Show("The current floor layout is not unsolvable with at least one Player/Stairs combination, even without considering keys and doors.\n\nPlease fix it and try to save again.", "Save Static Floor Geometry", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                MessageBox.Show("The current floor layout is not unsolvable with at least one Player/Stairs combination, even without considering keys and doors.\n\nPlease fix it and try to save again.", "Save Static Floor Geometry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (!SolvableWithKeys)
@@ -962,13 +1039,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     var tile = _tiles[x, y];
                     var tileChar = '-';
-                    if(tile.TileTypeId == "Empty")
+                    if (tile.TileTypeId == "Empty")
                         tileChar = '-';
-                    if(tile.TileTypeId == "Floor" || tile.TileTypeId == "Stairs")
+                    if (tile.TileTypeId == "Floor" || tile.TileTypeId == "Stairs")
                         tileChar = '.';
-                    if(tile.TileTypeId == "Wall")
+                    if (tile.TileTypeId == "Wall")
                         tileChar = '#';
-                    if(tile.TileTypeId == "Hallway")
+                    if (tile.TileTypeId == "Hallway")
                         tileChar = '+';
                     tileGeometryString.Append(tileChar);
                     if (tile.TileType == RoomTileType.SpecialTileType)
@@ -998,10 +1075,20 @@ namespace RogueCustomsDungeonEditor.HelperForms
                             SpawnId = tile.Description.Replace(ActiveDungeon.CurrencyInfo.Name, "Currency")
                         });
                     }
+                    else if (tile.TileType == RoomTileType.Waypoint)
+                    {
+                        specialSpawns.Add(new SpecialSpawnInfo
+                        {
+                            X = x + 1,
+                            Y = y + 1,
+                            SpawnId = EngineConstants.CREATE_WAYPOINT,
+                            WaypointId = tile.WaypointId
+                        });
+                    }
                     else if (tile.TileType == RoomTileType.CharacterIncludingPlayer || tile.TileType == RoomTileType.NPC)
                     {
                         var spawnId = tile.Description;
-                        if(RandomCharacterSpawnIds.Any(rcsi => rcsi.Value.Equals(spawnId)))
+                        if (RandomCharacterSpawnIds.Any(rcsi => rcsi.Value.Equals(spawnId)))
                         {
                             spawnId = RandomCharacterSpawnIds.First(kvp => kvp.Value == tile.Description).Key;
                         }
@@ -1078,6 +1165,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         public string Description { get; set; }
         public int Level { get; set; }
         public string QualityLevel { get; set; }
+        public string WaypointId { get; set; }
     }
 
     public enum RoomTileType
@@ -1091,6 +1179,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
         Item,
         Trap,
         Currency,
-        Stairs
+        Stairs,
+        Waypoint
     }
 }

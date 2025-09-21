@@ -304,7 +304,60 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (!value.IsBooleanExpression())
                 throw new ArgumentException($"{value} is not a boolean expression but is being evaluated as one.");
 
-            return new Expression(value).Eval<bool>();
+            return EvaluateExpressionViaShortCircuiting(value);
+        }
+
+        private static bool EvaluateExpressionViaShortCircuiting(string expression)
+        {
+            expression = expression.Trim();
+
+            var orParts = SplitByLogicalOperator(expression, "||");
+            if (orParts.Count > 1)
+            {
+                foreach (var part in orParts)
+                {
+                    if (EvaluateExpressionViaShortCircuiting(part))
+                        return true;
+                }
+                return false;
+            }
+
+            var andParts = SplitByLogicalOperator(expression, "&&");
+            if (andParts.Count > 1)
+            {
+                foreach (var part in andParts)
+                {
+                    if (!EvaluateExpressionViaShortCircuiting(part))
+                        return false;
+                }
+                return true;
+            }
+
+            return new Expression(expression).Eval<bool>();
+        }
+
+        private static List<string> SplitByLogicalOperator(string expression, string op)
+        {
+            var parts = new List<string>();
+            int depth = 0, lastIndex = 0;
+
+            for (int i = 0; i < expression.Length; i++)
+            {
+                char c = expression[i];
+                if (c == '(') depth++;
+                else if (c == ')') depth--;
+
+                if (depth == 0 && i <= expression.Length - op.Length &&
+                    expression.Substring(i, op.Length) == op)
+                {
+                    parts.Add(expression.Substring(lastIndex, i - lastIndex).Trim());
+                    lastIndex = i + op.Length;
+                    i += op.Length - 1;
+                }
+            }
+
+            parts.Add(expression.Substring(lastIndex).Trim());
+            return parts;
         }
 
         public static List<string> SplitExpression(string expression)

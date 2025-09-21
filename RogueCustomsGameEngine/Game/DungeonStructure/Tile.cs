@@ -40,6 +40,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
+        public string? WaypointId { get;set; }
+
         public int RemainingTransformationTurns { get; set; }
 
         public string TypeName => Map.Locale[Type.Name];
