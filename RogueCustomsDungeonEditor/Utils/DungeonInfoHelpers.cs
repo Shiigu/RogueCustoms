@@ -1,4 +1,5 @@
 ﻿using RogueCustomsGameEngine.Utils;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 using System;
@@ -26,6 +27,13 @@ namespace RogueCustomsDungeonEditor.Utils
                 TileTypeInfos = new(),
                 FloorInfos = new(),
                 FactionInfos = new(),
+                AffixInfos = new(),
+                NPCModifierInfos = new(),
+                LootTableInfos = new(),
+                CurrencyInfo = new(),
+                QualityLevelInfos = new(),
+                ItemSlotInfos = new(),
+                ItemTypeInfos = new(),
                 CharacterStats = new(),
                 ElementInfos = new(),
                 ActionSchoolInfos = new(),
@@ -33,7 +41,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 NPCs = new(),
                 Items = new(),
                 Traps = new(),
-                AlteredStatuses = new()
+                AlteredStatuses = new(),
+                Scripts = new(),
             };
 
             foreach (var localeLanguage in baseLocaleLanguages)
@@ -48,6 +57,7 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.Author = "Author";
             templateDungeon.WelcomeMessage = "WelcomeMessage";
             templateDungeon.EndingMessage = "EndingMessage";
+            templateDungeon.AmountOfFloors = 1;
 
             templateDungeon.TileTypeInfos = CreateDefaultTileTypes();
 
@@ -63,6 +73,16 @@ namespace RogueCustomsDungeonEditor.Utils
             templateDungeon.ElementInfos = new() { CreateElementTemplate() };
 
             templateDungeon.ActionSchoolInfos = new() { CreateActionSchoolTemplate() };
+
+            templateDungeon.LootTableInfos = new() { CreateLootTableTemplate() };
+
+            templateDungeon.QualityLevelInfos = new() { CreateQualityLevelTemplate() };
+
+            templateDungeon.ItemSlotInfos = new(CreateItemSlotTemplates());
+
+            templateDungeon.ItemTypeInfos = new(CreateItemTypeTemplates());
+
+            templateDungeon.CurrencyInfo = CreateCurrencyTemplate();
 
             templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate(templateDungeon.CharacterStats));
 
@@ -548,12 +568,16 @@ namespace RogueCustomsDungeonEditor.Utils
                 SimultaneousMinMonstersAtStart = 0,
                 Width = 64,
                 Height = 32,
-                PossibleKeys = new(),
+                PossibleKeys = new()
+                {
+                    KeyTypes = new()
+                },
                 PossibleMonsters = new(),
                 PossibleItems = new(),
                 PossibleTraps = new(),
                 PossibleLayouts = new() { CreateFloorLayoutGenerationInfoTemplate() },
-                OnFloorStart = new(),
+                TileSetId = "Default",
+                PossibleSpecialTiles = new()
             };
         }
 
@@ -730,8 +754,8 @@ namespace RogueCustomsDungeonEditor.Utils
         {
             return new ElementInfo()
             {
-                Id = "Element",
-                Name = "ElementName",
+                Id = "Normal",
+                Name = "ElementNameNormal",
                 Color = new GameColor(Color.White),
                 ResistanceStatId = "",
                 ExcessResistanceCausesHealDamage = false,
@@ -753,8 +777,122 @@ namespace RogueCustomsDungeonEditor.Utils
             return new LootTableInfo()
             {
                 Id = "Okay",
-                Entries = []
+                Entries = [new LootTableEntryInfo {
+                    PickId = "No Drop",
+                    Weight = 100
+                }],
+                OverridesQualityLevelOddsOfItems = false,
+                QualityLevelOdds = [new QualityLevelOddsInfo {
+                    Id = "Normal",
+                    ChanceToPick = 100
+                }]
             };
+        }
+
+        public static CurrencyInfo CreateCurrencyTemplate()
+        {
+            return new CurrencyInfo()
+            {
+                Name = "CurrencyName",
+                Description = "CurrencyDescription",
+                ConsoleRepresentation = new()
+                {
+                    Character = '$',
+                    BackgroundColor = new GameColor(Color.Black),
+                    ForegroundColor = new GameColor(Color.Yellow)
+                },
+                CurrencyPiles = [
+                        new CurrencyPileInfo {
+                            Id = "Normal",
+                            Minimum = 1,
+                            Maximum = 1
+                        }
+                    ]
+            };
+        }
+
+        public static QualityLevelInfo CreateQualityLevelTemplate()
+        {
+            return new QualityLevelInfo()
+            {
+                Id = "Normal",
+                Name = "QualityLevelNormal",
+                MinimumAffixes = 0,
+                MaximumAffixes = 0,
+                AttachesWhatToItemName = "None",
+                ItemNameColor = new GameColor(Color.White)
+            };
+        }
+
+        public static List<ItemSlotInfo> CreateItemSlotTemplates()
+        {
+            return [
+                new ItemSlotInfo {
+                    Id = "Weapon",
+                    Name = "ItemSlotWeaponName"
+                },
+                new ItemSlotInfo {
+                    Id = "Armor",
+                    Name = "ItemSlotArmorName"
+                }
+                ];
+        }
+        public static List<ItemTypeInfo> CreateItemTypeTemplates()
+        {
+            return [
+                new ItemTypeInfo {
+                    Id = "Weapon",
+                    Name = "ItemTypeWeaponName",
+                    Usability = ItemUsability.Equip,
+                    PowerType = ItemPowerType.Damage,
+                    Slot1 = "Weapon",
+                    Slot2 = "",
+                    MinimumQualityLevelForUnidentified = "",
+                    UnidentifiedItemName = "???",
+                    UnidentifiedItemDescription = "???",
+                    UnidentifiedItemActionName = "???",
+                    UnidentifiedItemActionDescription = "???"
+                },
+                new ItemTypeInfo {
+                    Id = "Armor",
+                    Name = "ItemTypeArmorName",
+                    Usability = ItemUsability.Equip,
+                    PowerType = ItemPowerType.Mitigation,
+                    Slot1 = "Armor",
+                    Slot2 = "",
+                    MinimumQualityLevelForUnidentified = "",
+                    UnidentifiedItemName = "???",
+                    UnidentifiedItemDescription = "???",
+                    UnidentifiedItemActionName = "???",
+                    UnidentifiedItemActionDescription = "???"
+                },
+                new ItemTypeInfo {
+                    Id = "Consumable",
+                    Name = "ItemTypeConsumableName",
+                    Usability = ItemUsability.Use,
+                    PowerType = ItemPowerType.UsePower,
+                    Slot1 = "",
+                    Slot2 = "",
+                    MinimumQualityLevelForUnidentified = "",
+                    UnidentifiedItemName = "???",
+                    UnidentifiedItemDescription = "???",
+                    UnidentifiedItemActionName = "???",
+                    UnidentifiedItemActionDescription = "???"
+                },
+                new ItemTypeInfo {
+                    Id = "Charm",
+                    Name = "ItemTypeCharmName",
+                    Usability = ItemUsability.Use,
+                    PowerType = ItemPowerType.UsePower,
+                    Slot1 = "",
+                    Slot2 = "",
+                    MinimumQualityLevelForUnidentified = "",
+                    UnidentifiedItemName = "???",
+                    UnidentifiedItemDescription = "???",
+                    UnidentifiedItemActionName = "???",
+                    UnidentifiedItemActionDescription = "???"
+                }
+                ];
         }
 
         public static PlayerClassInfo CreatePlayerClassTemplate(List<StatInfo> stats)
@@ -778,12 +916,13 @@ namespace RogueCustomsDungeonEditor.Utils
                 InventorySize = 0,
                 StartingInventory = new(),
                 CanGainExperience = true,
-                ExperienceToLevelUpFormula = "",
+                ExperienceToLevelUpFormula = "10",
                 MaxLevel = 2,
-                OnTurnStart = new(),
-                OnAttack = new(),
-                OnAttacked = new(),
-                OnDeath = new()
+                AvailableSlots = ["Weapon", "Armor"],
+                NeedsToIdentifyItems = false,
+                InitialEquipment = new(),
+                SaleValuePercentage = 50,
+                ExperiencePayoutFormula = ""
             };
 
             foreach (var stat in stats)
@@ -822,13 +961,28 @@ namespace RogueCustomsDungeonEditor.Utils
                 InventorySize = 0,
                 StartingInventory = new(),
                 CanGainExperience = true,
-                ExperienceToLevelUpFormula = "",
+                ExperienceToLevelUpFormula = "10",
                 MaxLevel = 2,
-                OnTurnStart = new(),
-                OnAttack = new(),
-                OnAttacked = new(),
-                OnDeath = new(),
-                AIType = "Default"
+                AIType = "Default",
+                AvailableSlots = ["Weapon", "Armor"],
+                InitialEquipment = new(),
+                ReappearsOnTheNextFloorIfAlliedToThePlayer = false,
+                BaseHPMultiplierIfWithModifiers = 1,
+                DropsEquipmentOnDeath = false,
+                ExperienceYieldMultiplierIfWithModifiers = 1,
+                LootTableWithModifiers = new()
+                {
+                    LootTableId = "None",
+                    DropPicks = 0
+                },
+                RegularLootTable = new()
+                {
+                    LootTableId = "None",
+                    DropPicks = 0
+                },
+                ModifierData = new(),
+                OddsForModifier = 0,
+                RandomizesForecolorIfWithModifiers = false
             };
 
             foreach (var stat in stats)
@@ -857,11 +1011,17 @@ namespace RogueCustomsDungeonEditor.Utils
                     ForegroundColor = new GameColor(Color.MediumPurple)
                 },
                 StartsVisible = true,
+                ItemType = "Weapon",
                 Power = "0",
-                OnTurnStart = new(),
-                OnAttack = new(),
-                OnAttacked = new(),
-                OnUse = new(),
+                BaseValue = 0,
+                CanDrop = true,
+                MinimumQualityLevel = "Normal",
+                MaximumQualityLevel = "Normal",
+                StatModifiers = new(),
+                QualityLevelOdds = [new QualityLevelOddsInfo {
+                    Id = "Normal",
+                    ChanceToPick = 100
+                }]
             };
         }
 
@@ -880,7 +1040,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 },
                 StartsVisible = false,
                 Power = "0",
-                OnStepped = new(),
             };
         }
 
@@ -901,8 +1060,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 CanOverwrite = false,
                 CleansedByCleanseActions = true,
                 CleanseOnFloorChange = true,
-                OnApply = new(),
-                OnTurnStart = new(),
             };
         }
 
@@ -1058,7 +1215,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 MaxPercentageOfLockedCandidateRooms = info.MaxPercentageOfLockedCandidateRooms,
                 KeyTypes = new()
             };
-            info.KeyTypes.ForEach(pk => clonedKeyGenerationInfo.KeyTypes.Add(pk.Clone()));
+
+            if(info.KeyTypes.Count > 0)
+                info.KeyTypes.ForEach(pk => clonedKeyGenerationInfo.KeyTypes.Add(pk.Clone()));
 
             return clonedKeyGenerationInfo;
         }
@@ -1099,7 +1258,8 @@ namespace RogueCustomsDungeonEditor.Utils
                 UseCondition = info.UseCondition,
                 AIUseCondition = info.AIUseCondition,
                 FinishesTurnWhenUsed = info.FinishesTurnWhenUsed,
-                IsScript = info.IsScript
+                IsScript = info.IsScript,
+                School = info.School
             };
 
             return clonedAction;
@@ -1149,6 +1309,32 @@ namespace RogueCustomsDungeonEditor.Utils
             foreach (var element in dungeonInfo.ElementInfos.Where(e => e.OnAfterAttack.IsNullOrEmpty()))
             {
                 element.OnAfterAttack = null;
+            }
+
+            foreach (var affix in dungeonInfo.AffixInfos)
+            {
+                if (affix == null) continue;
+                if (affix.OnAttack.IsNullOrEmpty())
+                    affix.OnAttack = null;
+                if (affix.OnAttacked.IsNullOrEmpty())
+                    affix.OnAttacked = null;
+                if (affix.OnTurnStart.IsNullOrEmpty())
+                    affix.OnTurnStart = null;
+            }
+
+            foreach (var npcModifier in dungeonInfo.NPCModifierInfos)
+            {
+                if (npcModifier == null) continue;
+                if (npcModifier.OnAttack.IsNullOrEmpty())
+                    npcModifier.OnAttack = null;
+                if (npcModifier.OnAttacked.IsNullOrEmpty())
+                    npcModifier.OnAttacked = null;
+                if (npcModifier.OnTurnStart.IsNullOrEmpty())
+                    npcModifier.OnTurnStart = null;
+                if (npcModifier.OnSpawn.IsNullOrEmpty())
+                    npcModifier.OnSpawn = null;
+                if (npcModifier.OnDeath.IsNullOrEmpty())
+                    npcModifier.OnDeath = null;
             }
 
             foreach (var playerClass in dungeonInfo.PlayerClasses)

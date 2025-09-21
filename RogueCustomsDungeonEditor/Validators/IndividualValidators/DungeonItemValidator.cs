@@ -84,7 +84,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     }
                 }
 
-                if (itemJson.OnAttack.Any())
+                if (itemJson.OnAttack != null && itemJson.OnAttack.Any())
                 {
                     if (itemTypeData.PowerType == ItemPowerType.Mitigation)
                     {
@@ -180,7 +180,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     if (itemAsInstance != null)
                         messages.AddRange(await ActionValidator.Validate(itemAsInstance.OnUse, dungeonJson, sampleDungeon));
                 }
-                else if (itemTypeData.Usability == ItemUsability.Use && !itemJson.OnAttack.Any())
+                else if (itemTypeData.Usability == ItemUsability.Use && (itemJson.OnAttack == null || !itemJson.OnAttack.Any()))
                 {
                     messages.AddWarning("A consumable Item doesn't have any OnUse or OnAttack Actions. Item lacks selectable Actions in this current state.");
                 }

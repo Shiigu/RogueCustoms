@@ -362,7 +362,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         protected static void MapActions(List<ActionWithEffects> actionList, List<ActionWithEffectsInfo> actionInfoList, List<ActionSchool> actionSchools)
         {
-            actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa, actionSchools)));
+            if(actionInfoList != null && actionInfoList.Count > 0)
+                actionInfoList.ForEach(aa => actionList.Add(ActionWithEffects.Create(aa, actionSchools)));
         }
     }
     #pragma warning restore CS8601 // Posible asignación de referencia nula
