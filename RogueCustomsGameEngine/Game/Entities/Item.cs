@@ -21,6 +21,18 @@ namespace RogueCustomsGameEngine.Game.Entities
     [Serializable]
     public class Item : Entity, IHasActions, IPickable
     {
+        private string _unidentifiedName => ItemType.UnidentifiedItemName;
+        private string _unidentifiedDescription => ItemType.UnidentifiedItemDescription;
+        private string _trueName;
+        private string _trueDescription;
+        public string UnidentifiedActionName => ItemType.UnidentifiedItemActionName;
+        public string UnidentifiedActionDescription => ItemType.UnidentifiedItemActionDescription;
+        public bool GotSpecificallyIdentified { get; set; }
+        public bool IsIdentified => GotSpecificallyIdentified || !Map.Player.NeedsToIdentifyItems || IsHeldByAnNPC || DoesNotReachMinimumUnidentifiedMaximumAffixes || HasNoAffixesAndPlayerPreviouslyIdentifiedThisClass;
+        public bool IsHeldByThePlayer => Owner != null && Owner == Map.Player;
+        public bool IsHeldByAnNPC => Owner != null && Owner != Map.Player;
+        public bool DoesNotReachMinimumUnidentifiedMaximumAffixes => ItemType.MinimumQualityLevelForUnidentified == null || (QualityLevel != null && ItemType.MinimumQualityLevelForUnidentified.MaximumAffixes > QualityLevel.MaximumAffixes);
+        public bool HasNoAffixesAndPlayerPreviouslyIdentifiedThisClass => QualityLevel != null && QualityLevel.MaximumAffixes == 0 && Map.Player.IdentifiedItemClasses.Contains(ClassId);
         public bool IsEquippable => ItemType.Usability == ItemUsability.Equip;
         public bool IsConsumable => ItemType.Usability == ItemUsability.Use;
         public List<ItemSlot> SlotsItOccupies => ItemType.SlotsItOccupies;
@@ -41,6 +53,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                         Amount = statModifier.Amount
                     });
                 }
+                if (!IsIdentified) return list;
                 foreach (var affix in Affixes)
                 {
                     foreach (var statModifier in affix.StatModifiers)
@@ -73,6 +86,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             get
             {
+                if (!IsIdentified) return Math.Max(1, BaseValue / 2);
                 float totalValue = BaseValue;
                 foreach (var affix in Affixes)
                 {
@@ -93,6 +107,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 var list = new List<ExtraDamage>();
+                if (!IsIdentified) return list;
                 foreach (var affix in Affixes)
                 {
                     if (affix.ExtraDamage == null || affix.ExtraDamage.MaximumDamage == 0 || affix.ExtraDamage.Element == null) continue;
@@ -123,6 +138,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var list = new List<ActionWithEffects>();
                 if (OwnOnTurnStart != null)
                     list.AddRange(OwnOnTurnStart);
+                if (!IsIdentified) return list;
 
                 foreach (var affix in Affixes)
                 {
@@ -141,6 +157,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var list = new List<ActionWithEffects>();
                 if (OwnOnAttack != null)
                     list.AddRange(OwnOnAttack);
+                if (!IsIdentified) return list;
 
                 foreach (var affix in Affixes)
                 {
@@ -159,6 +176,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var list = new List<ActionWithEffects>();
                 if(OwnOnAttacked != null)
                     list.AddRange(OwnOnAttacked);
+                if (!IsIdentified) return list;
 
                 foreach (var affix in Affixes)
                 {
@@ -172,7 +190,8 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public Item(EntityClass entityClass, int level, Map map) : base(entityClass, map)
         {
-            BaseName = entityClass.Name;
+            BaseName = _trueName = entityClass.Name;
+            _trueDescription = entityClass.Description;
             Power = entityClass.Power;
             OnUse = MapClassAction(entityClass.OnUse);
             OwnOnDeath = MapClassAction(entityClass.OnDeath);
@@ -265,14 +284,40 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 Name = BaseName;
             }
+            _trueName = Name;
         }
 
         public async Task Used(Entity user)
         {
-            if (OnUse == null) return;
+            if (ItemType.Usability == ItemUsability.Use && (IsIdentified && OnUse == null) || (!IsIdentified && OnUse == null && OnAttack.Count == 0)) return;
+
+            var isOnAttack = false;
+            var actionToPerform = OnUse;
+
+            if (!IsIdentified)
+            {
+                if (OnUse == null && OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) > 0)
+                {
+                    isOnAttack = true;
+                    actionToPerform = OnAttack.Where(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)).TakeRandomElement(Rng);
+                }
+                GotSpecificallyIdentified = true;
+                UpdateNameIfNeeded();
+                if (user == Map.Player)
+                {
+                    Map.DisplayEvents.Add(($"{_trueName} was identified", [new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Identify }
+                        }]));
+                }
+                Map.AppendMessage(Map.Locale["ItemWasIdentified"].Format(new { FakeName = _unidentifiedName, TrueName = _trueName }), Color.Yellow);
+            }
 
             if (user == Map.Player)
             {
+                if(!Map.Player.IdentifiedItemClasses.Contains(ClassId))
+                    Map.Player.IdentifiedItemClasses.Add(ClassId);
                 Map.DisplayEvents.Add(($"{user.Name} used item", new()
                 {
                     new() {
@@ -294,7 +339,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                 ));
             }
 
-            await OnUse.Do(this, user, true);
+            if(isOnAttack)
+                await actionToPerform.Do(user, user, true);
+            else
+                await actionToPerform.Do(this, user, false);
         }
 
         public Task RefreshCooldownsAndUpdateTurnLength()
@@ -307,6 +355,21 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (OnUse?.CurrentCooldown > 0)
                 OnUse.CurrentCooldown--;
             return Task.CompletedTask;
+        }
+
+        public void UpdateNameIfNeeded()
+        {
+            if (!Map.Player.NeedsToIdentifyItems) return;
+            if (!IsIdentified && !Name.Equals(_unidentifiedName))
+            {
+                Name = _unidentifiedName;
+                Description = _unidentifiedDescription;
+            }
+            if (IsIdentified && Name.Equals(_unidentifiedName))
+            {
+                Name = _trueName;
+                Description = _trueDescription;
+            }
         }
 
         public async Task PerformOnTurnStart()
@@ -323,6 +386,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (OwnOnAttack[i].IsScript)
                     OwnOnAttack[i].SelectionId += "_S";
             }
+            if(OnUse != null)
+                OnUse.SelectionId = $"{Id}_CA_UNIDENTIFIED";
         }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

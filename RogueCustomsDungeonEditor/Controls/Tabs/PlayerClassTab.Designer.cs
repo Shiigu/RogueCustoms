@@ -60,6 +60,7 @@
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             clbPlayerAvailableSlots = new System.Windows.Forms.CheckedListBox();
+            chkPlayerNeedsToIdentifyItems = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPlayerSaleValuePercentage).BeginInit();
             SuspendLayout();
@@ -87,7 +88,7 @@
             saePlayerOnDeath.AutoSize = true;
             saePlayerOnDeath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnDeath.ClassId = null;
-            saePlayerOnDeath.Location = new System.Drawing.Point(8, 574);
+            saePlayerOnDeath.Location = new System.Drawing.Point(8, 604);
             saePlayerOnDeath.Name = "saePlayerOnDeath";
             saePlayerOnDeath.PlaceholderActionId = "Death";
             saePlayerOnDeath.Size = new System.Drawing.Size(301, 32);
@@ -103,7 +104,7 @@
             saePlayerOnAttacked.AutoSize = true;
             saePlayerOnAttacked.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnAttacked.ClassId = null;
-            saePlayerOnAttacked.Location = new System.Drawing.Point(8, 536);
+            saePlayerOnAttacked.Location = new System.Drawing.Point(8, 566);
             saePlayerOnAttacked.Name = "saePlayerOnAttacked";
             saePlayerOnAttacked.PlaceholderActionId = "Interacted";
             saePlayerOnAttacked.Size = new System.Drawing.Size(299, 32);
@@ -119,7 +120,7 @@
             saePlayerOnTurnStart.AutoSize = true;
             saePlayerOnTurnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnTurnStart.ClassId = null;
-            saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 354);
+            saePlayerOnTurnStart.Location = new System.Drawing.Point(2, 384);
             saePlayerOnTurnStart.Name = "saePlayerOnTurnStart";
             saePlayerOnTurnStart.PlaceholderActionId = "TurnStart";
             saePlayerOnTurnStart.Size = new System.Drawing.Size(303, 32);
@@ -133,7 +134,7 @@
             maePlayerOnAttack.ActionDescription = "Can do the following to\r\ninteract with someone:";
             maePlayerOnAttack.ActionTypeText = "Interact";
             maePlayerOnAttack.ClassId = null;
-            maePlayerOnAttack.Location = new System.Drawing.Point(8, 436);
+            maePlayerOnAttack.Location = new System.Drawing.Point(8, 466);
             maePlayerOnAttack.Name = "maePlayerOnAttack";
             maePlayerOnAttack.PlaceholderActionName = null;
             maePlayerOnAttack.RequiresActionId = true;
@@ -188,7 +189,7 @@
             // chkPlayerStartsVisible
             // 
             chkPlayerStartsVisible.AutoSize = true;
-            chkPlayerStartsVisible.Location = new System.Drawing.Point(8, 269);
+            chkPlayerStartsVisible.Location = new System.Drawing.Point(8, 271);
             chkPlayerStartsVisible.Name = "chkPlayerStartsVisible";
             chkPlayerStartsVisible.Size = new System.Drawing.Size(102, 19);
             chkPlayerStartsVisible.TabIndex = 139;
@@ -306,7 +307,7 @@
             // 
             label67.AutoSize = true;
             label67.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label67.Location = new System.Drawing.Point(128, 330);
+            label67.Location = new System.Drawing.Point(128, 360);
             label67.Name = "label67";
             label67.Size = new System.Drawing.Size(67, 21);
             label67.TabIndex = 237;
@@ -329,7 +330,7 @@
             saePlayerOnLevelUp.AutoSize = true;
             saePlayerOnLevelUp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerOnLevelUp.ClassId = null;
-            saePlayerOnLevelUp.Location = new System.Drawing.Point(8, 612);
+            saePlayerOnLevelUp.Location = new System.Drawing.Point(8, 642);
             saePlayerOnLevelUp.Name = "saePlayerOnLevelUp";
             saePlayerOnLevelUp.PlaceholderActionId = "LevelUp";
             saePlayerOnLevelUp.Size = new System.Drawing.Size(302, 32);
@@ -341,7 +342,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(8, 301);
+            label4.Location = new System.Drawing.Point(8, 331);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(291, 15);
             label4.TabIndex = 244;
@@ -349,7 +350,7 @@
             // 
             // nudPlayerSaleValuePercentage
             // 
-            nudPlayerSaleValuePercentage.Location = new System.Drawing.Point(165, 299);
+            nudPlayerSaleValuePercentage.Location = new System.Drawing.Point(165, 329);
             nudPlayerSaleValuePercentage.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudPlayerSaleValuePercentage.Name = "nudPlayerSaleValuePercentage";
             nudPlayerSaleValuePercentage.Size = new System.Drawing.Size(52, 23);
@@ -364,7 +365,7 @@
             saePlayerDefaultOnAttack.AutoSize = true;
             saePlayerDefaultOnAttack.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saePlayerDefaultOnAttack.ClassId = null;
-            saePlayerDefaultOnAttack.Location = new System.Drawing.Point(2, 392);
+            saePlayerDefaultOnAttack.Location = new System.Drawing.Point(2, 422);
             saePlayerDefaultOnAttack.Name = "saePlayerDefaultOnAttack";
             saePlayerDefaultOnAttack.PlaceholderActionId = "Attack";
             saePlayerDefaultOnAttack.RequiresCondition = true;
@@ -413,11 +414,23 @@
             clbPlayerAvailableSlots.Size = new System.Drawing.Size(175, 130);
             clbPlayerAvailableSlots.TabIndex = 250;
             // 
+            // chkPlayerNeedsToIdentifyItems
+            // 
+            chkPlayerNeedsToIdentifyItems.AutoSize = true;
+            chkPlayerNeedsToIdentifyItems.Location = new System.Drawing.Point(8, 301);
+            chkPlayerNeedsToIdentifyItems.Name = "chkPlayerNeedsToIdentifyItems";
+            chkPlayerNeedsToIdentifyItems.Size = new System.Drawing.Size(148, 19);
+            chkPlayerNeedsToIdentifyItems.TabIndex = 251;
+            chkPlayerNeedsToIdentifyItems.Text = "Needs to Identify Items";
+            chkPlayerNeedsToIdentifyItems.UseVisualStyleBackColor = true;
+            chkPlayerNeedsToIdentifyItems.CheckedChanged += chkPlayerNeedsToIdentifyItems_CheckedChanged;
+            // 
             // PlayerClassTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(chkPlayerNeedsToIdentifyItems);
             Controls.Add(clbPlayerAvailableSlots);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -490,5 +503,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox clbPlayerAvailableSlots;
+        private System.Windows.Forms.CheckBox chkPlayerNeedsToIdentifyItems;
     }
 }

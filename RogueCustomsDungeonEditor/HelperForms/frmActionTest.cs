@@ -274,7 +274,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnDeath = new(),
                 OnTurnStart = new(),
                 OnUse = new(),
-                ConsoleRepresentation = crsSource.ConsoleRepresentation
+                ConsoleRepresentation = crsSource.ConsoleRepresentation,
+                ItemType = ActiveDungeon.ItemTypeInfos[0].Id,
+                MinimumQualityLevel = ActiveDungeon.QualityLevelInfos[0].Id,
+                MaximumQualityLevel = ActiveDungeon.QualityLevelInfos[0].Id
             };
 
             var equippableClass = new EntityClass(equippableClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
@@ -405,6 +408,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ExperienceToLevelUpFormula = "9999",
                 CanGainExperience = true,
                 ConsoleRepresentation = crs.ConsoleRepresentation,
+                ModifierData = new (),
+                RegularLootTable = new NPCLootTableDataInfo { LootTableId = "None", DropPicks = 0 },
+                InitialEquipment = new(),
+                AvailableSlots = new(),
             };
             iss.TreatStatsAsAbsolute = true;
             iss.EndEdit();
@@ -432,16 +439,37 @@ namespace RogueCustomsDungeonEditor.HelperForms
             npc.Hunger.Current -= npc.Hunger.Current / 5;
             var weapon = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
             weapon.Power = "1d3";
+            weapon.ItemType = TestDungeon.ItemTypes[0];
+            weapon.MinimumQualityLevel = TestDungeon.QualityLevels[0];
+            weapon.MaximumQualityLevel = TestDungeon.QualityLevels[0];
+            weapon.SetQualityLevel(TestDungeon.QualityLevels[0]);
+            weapon.GotSpecificallyIdentified = true;
             var armor = new Item(equippableClass, 1, TestDungeon.CurrentFloor);
             armor.Power = "0";
+            armor.ItemType = TestDungeon.ItemTypes[0];
+            armor.MinimumQualityLevel = TestDungeon.QualityLevels[0];
+            armor.MaximumQualityLevel = TestDungeon.QualityLevels[0];
+            armor.SetQualityLevel(TestDungeon.QualityLevels[0]);
+            armor.GotSpecificallyIdentified = true;
             npc.Equipment = [weapon, armor];
-            npc.Inventory.Add(new Item(inventoryClass, 1, TestDungeon.CurrentFloor));
-            npc.Inventory[0].Id = new Random().Next(100000, 999999);
+            var firstItem = new Item(inventoryClass, 1, TestDungeon.CurrentFloor);
+            firstItem.Id = new Random().Next(100000, 999999);
+            npc.Inventory.Add(firstItem);
+            firstItem.ItemType = TestDungeon.ItemTypes[0];
+            firstItem.MinimumQualityLevel = TestDungeon.QualityLevels[0];
+            firstItem.MaximumQualityLevel = TestDungeon.QualityLevels[0];
+            firstItem.SetQualityLevel(TestDungeon.QualityLevels[0]);
+            firstItem.GotSpecificallyIdentified = true;
             for (int i = 0; i < new Random().Next(1, 5); i++)
             {
                 var newItem = new Item(TestDungeon.ItemClasses[new Random().Next(TestDungeon.ItemClasses.Count)], 1, TestDungeon.CurrentFloor);
                 newItem.Id = new Random().Next(100000, 999999);
                 npc.Inventory.Add(newItem);
+                newItem.ItemType = TestDungeon.ItemTypes[0];
+                newItem.MinimumQualityLevel = TestDungeon.QualityLevels[0];
+                newItem.MaximumQualityLevel = TestDungeon.QualityLevels[0];
+                newItem.SetQualityLevel(TestDungeon.QualityLevels[0]);
+                newItem.GotSpecificallyIdentified = true;
             }
             npc.Faction = TestDungeon.Factions[new Random().Next(TestDungeon.Factions.Count)];
 
@@ -464,7 +492,10 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 OnDeath = new(),
                 OnTurnStart = new(),
                 OnUse = new(),
-                ConsoleRepresentation = crsSource.ConsoleRepresentation
+                ConsoleRepresentation = crsSource.ConsoleRepresentation,
+                ItemType = ActiveDungeon.ItemTypeInfos[0].Id,
+                MinimumQualityLevel = ActiveDungeon.QualityLevelInfos[0].Id,
+                MaximumQualityLevel = ActiveDungeon.QualityLevelInfos[0].Id
             };
             var consumableClass = new EntityClass(consumableClassInfo, TestDungeon, ActiveDungeon.CharacterStats);
             return new Item(consumableClass, 1, TestDungeon.CurrentFloor);
@@ -522,7 +553,15 @@ namespace RogueCustomsDungeonEditor.HelperForms
         {
             public Task<bool> OpenYesNoPrompt(string title, string message, string yesButtonText, string noButtonText, GameColor color) => Task.FromResult(new Random().NextDouble() >= 0.5);
             public Task<string> OpenSelectOption(string title, string message, SelectionItem[] choices, bool showCancelButton, GameColor borderColor) => Task.FromResult(choices[new Random().Next(choices.Length)].Id);
-            public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult(choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ClassId);
+            public Task<ItemInput> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
+            {
+                var choice = choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)];
+                return Task.FromResult(new ItemInput
+                {
+                    Id = choice.ItemId,
+                    ClassId = choice.ClassId
+                });
+            }
             public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton) => Task.FromResult(choices.Actions[new Random().Next(choices.Actions.Count)].SelectionId);
             public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
             public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);

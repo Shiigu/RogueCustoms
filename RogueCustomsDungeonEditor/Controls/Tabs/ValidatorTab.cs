@@ -97,6 +97,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddValidationResultNode("Currency", dungeonValidator.CurrencyValidationMessages);
 
+                AddValidationResultNode("Item Slots", dungeonValidator.ItemSlotValidationMessages);
+
+                AddValidationResultNode("Item Types", dungeonValidator.ItemTypeValidationMessages);
+
                 AddValidationResultNode("Affixes", dungeonValidator.AffixValidationMessages);
 
                 AddValidationResultNode("NPC Modifiers", dungeonValidator.NPCModifierValidationMessages);

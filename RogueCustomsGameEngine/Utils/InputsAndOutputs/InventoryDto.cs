@@ -75,7 +75,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
             CanBeDropped = p is not Key && character.ContainingTile.Type != TileType.Stairs && character.ContainingTile.Type.AcceptsItems;
             CanBeEquipped = pickableAsItem?.SlotsItOccupies.All(character.AvailableSlots.Contains) == true;
-            CanBeUsed = (pickableAsItem?.IsEquippable == true && CanBeEquipped) || pickableAsItem?.OnUse?.CanBeUsedOn(character) == true;
+            if (pickableAsItem?.IsIdentified == true)
+                CanBeUsed = (pickableAsItem?.IsEquippable == true && CanBeEquipped) || ((pickableAsItem?.ItemType.Usability == ItemUsability.Use) && pickableAsItem?.OnUse?.CanBeUsedOn(character) == true);
+            else if (pickableAsItem?.ItemType.Usability == ItemUsability.Use)
+                CanBeUsed = pickableAsItem?.OnUse != null || pickableAsItem?.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) != 0;
+            else if (pickableAsItem?.ItemType.Usability == ItemUsability.Equip)
+                CanBeUsed = pickableAsItem?.IsEquippable == true && CanBeEquipped;
+            else
+                CanBeUsed = false;
             IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
@@ -93,7 +100,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     StatModifications.Add(new StatModificationDto(m, correspondingStat, map));
             });
             OnAttackActions = new();
-            pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
+            if(pickableAsItem.IsIdentified)
+                pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
             ExtraDamages = [];
             if(pickableAsItem?.ExtraDamage != null)
             {

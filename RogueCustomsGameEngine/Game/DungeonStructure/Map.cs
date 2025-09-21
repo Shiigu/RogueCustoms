@@ -332,11 +332,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         }
                     }
                 }
-                if (GenerationTries == EngineConstants.MaxGenerationTries)
+                if (!success && GenerationTries == EngineConstants.MaxGenerationTries)
                 {
                     usingDefaultGenerator = true;
-                    if(!success)
-                        generator = new ProceduralFloorGenerator(this, DefaultGeneratorToUse);
+                    generator = new ProceduralFloorGenerator(this, DefaultGeneratorToUse);
                 }
             }
             while (!success);
@@ -903,7 +902,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         ?? throw new InvalidDataException("Class {c.ClassId} has an invalid starting inventory item!");
                     var inventoryItem = new Item(itemEntityClass, 1, this)
                     {
-                        Id = CurrentEntityId
+                        Id = CurrentEntityId,
+                        GotSpecificallyIdentified = true
                     };
                     inventoryItem.SetQualityLevel(mostBasicQualityLevel);
                     Items.Add(inventoryItem);
@@ -920,7 +920,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         ?? throw new InvalidDataException($"Class {c.ClassId} has invalid Initial Equipment {initialEquipmentId}!");
                     var equippedItem = new Item(itemClass, 1, this)
                     {
-                        Id = CurrentEntityId
+                        Id = CurrentEntityId,
+                        GotSpecificallyIdentified = true
                     };
                     equippedItem.SetQualityLevel(mostBasicQualityLevel);
                     do
@@ -1100,6 +1101,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     tile.ResetType();
                 }
+            }
+
+            foreach (var item in Items)
+            {
+                item.UpdateNameIfNeeded();
             }
 
             var livingCharacters = GetCharacters().Where(e => e != null && e.ExistenceStatus == EntityExistenceStatus.Alive);
@@ -1665,7 +1671,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else
                 targetName = Locale[tile.Type.Name];
             var actionList = new ActionListDto(targetName);
-                        
+
             Player.OnAttack.ForEach(oaa => actionList.AddAction(oaa, Player, characterInTile, tile, this, true));
 
             if(characterInTile is NonPlayableCharacter npc)
@@ -1973,7 +1979,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return PromptInvoker.OpenSelectOption(title, message, choices, showCancelButton, borderColor);
         }
-        public Task<string> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
+        public Task<ItemInput> OpenSelectItem(string title, InventoryDto choices, bool showCancelButton)
         {
             return PromptInvoker.OpenSelectItem(title, choices, showCancelButton);
         }

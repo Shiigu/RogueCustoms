@@ -10,6 +10,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
     {
         public bool RequiresNamePrompt { get; set; }
         public int SaleValuePercentage { get; set; }
+        public bool NeedsToIdentifyItems { get; set; }
     }
 }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required" o declararlo como un valor que acepta valores NULL.

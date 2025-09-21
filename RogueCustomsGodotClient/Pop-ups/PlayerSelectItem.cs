@@ -186,7 +186,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
-                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ClassId);
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId, _itemListInfo.InventoryItems[_selectedIndex].ClassId);
                     onCloseCallback?.Invoke();
                     QueueFree();
                 }

@@ -59,6 +59,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     cmbPlayerFaction.Text = factionId;
             }
             chkPlayerStartsVisible.Checked = playerClass.StartsVisible;
+            chkPlayerNeedsToIdentifyItems.Checked = playerClass.NeedsToIdentifyItems;
             ssPlayer.StatsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
             ssPlayer.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
             ssPlayer.StatInfos = ActiveDungeon.CharacterStats;
@@ -144,6 +145,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.ConsoleRepresentation = crsPlayer.ConsoleRepresentation;
                 LoadedPlayerClass.Faction = cmbPlayerFaction.Text;
                 LoadedPlayerClass.StartsVisible = chkPlayerStartsVisible.Checked;
+                LoadedPlayerClass.NeedsToIdentifyItems = chkPlayerNeedsToIdentifyItems.Checked;
                 LoadedPlayerClass.Stats = ssPlayer.Stats;
                 LoadedPlayerClass.BaseSightRange = ssPlayer.BaseSightRange;
                 LoadedPlayerClass.CanGainExperience = ssPlayer.CanGainExperience;
@@ -156,7 +158,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 foreach (var equipment in esPlayer.EquipmentList)
                 {
-                    if(LoadedPlayerClass.AvailableSlots.Contains(equipment.Key))
+                    if (LoadedPlayerClass.AvailableSlots.Contains(equipment.Key))
                         LoadedPlayerClass.InitialEquipment.Add(equipment.Value);
                 }
 
@@ -255,6 +257,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void nudPlayerSaleValuePercentage_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void chkPlayerNeedsToIdentifyItems_CheckedChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }

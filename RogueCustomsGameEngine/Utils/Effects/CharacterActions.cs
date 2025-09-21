@@ -357,6 +357,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             foreach (var pick in itemPicks)
             {
                 var newItem = await Map.AddEntity(pick, c.Level, null, false) as Item;
+                newItem.GotSpecificallyIdentified = true;
                 c.Inventory.Add(newItem);
                 if (lootTable.OverridesQualityLevelOddsOfItems)
                 {

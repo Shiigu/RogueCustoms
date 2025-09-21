@@ -42,6 +42,7 @@ namespace RogueCustomsGameEngine.Utils.Enums
         DoorOpen,
         KeyGet,
         MonsterHouseAlarm,
-        Reveal
+        Reveal,
+        Identify
     }
 }

@@ -31,6 +31,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<ItemTypeInfo> LoadedItemTypeInfos { get; private set; }
         private List<string> ItemSlots;
+        private List<string> QualityLevels;
         public event EventHandler TabInfoChanged;
         public ItemTypesTab()
         {
@@ -41,6 +42,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             ActiveDungeon = activeDungeon;
             LoadedItemTypeInfos = activeDungeon.ItemTypeInfos;
+            QualityLevels = activeDungeon.QualityLevelInfos.ConvertAll(x => x.Id);
             ItemSlots = activeDungeon.ItemSlotInfos.ConvertAll(x => x.Id);
             var usabilityColumn = (DataGridViewComboBoxColumn)dgvItemTypes.Columns["Usability"];
             usabilityColumn.DataSource = ItemUsabilityOptions.Select(qlnao => qlnao.Value).ToList();
@@ -50,10 +52,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             slot1Column.DataSource = ItemSlots;
             var slot2Column = (DataGridViewComboBoxColumn)dgvItemTypes.Columns["Slot2"];
             slot2Column.DataSource = ItemSlots.Union([""]).ToList();
+            var unidentifiedQualityLevelColumn = (DataGridViewComboBoxColumn)dgvItemTypes.Columns["MinimumQualityLevelForUnidentified"];
+            unidentifiedQualityLevelColumn.DataSource = QualityLevels.Union([""]).ToList();
             dgvItemTypes.Rows.Clear();
             foreach (var itemType in LoadedItemTypeInfos)
             {
-                dgvItemTypes.Rows.Add(itemType.Id, itemType.Name, ItemUsabilityOptions[itemType.Usability.ToString()], ItemPowerTypeOptions[itemType.PowerType.ToString()], itemType.Slot1, itemType.Slot2);
+                dgvItemTypes.Rows.Add(itemType.Id, itemType.Name, ItemUsabilityOptions[itemType.Usability.ToString()], ItemPowerTypeOptions[itemType.PowerType.ToString()], itemType.Slot1, itemType.Slot2, itemType.MinimumQualityLevelForUnidentified, itemType.UnidentifiedItemName, itemType.UnidentifiedItemDescription, itemType.UnidentifiedItemActionName, itemType.UnidentifiedItemActionDescription);
             }
             dgvItemTypes.CellValueChanged += (sender, e) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
@@ -74,6 +78,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 var powerType = (row.Cells[3].Value ?? string.Empty).ToString().Trim();
                 var slot1 = (row.Cells[4].Value ?? string.Empty).ToString().Trim();
                 var slot2 = (row.Cells[5].Value ?? string.Empty).ToString().Trim();
+                var unidentifiedQualityLevel = (row.Cells[6].Value ?? string.Empty).ToString().Trim();
+                var unidentifiedName = (row.Cells[7].Value ?? string.Empty).ToString().Trim();
+                var unidentifiedDescription = (row.Cells[8].Value ?? string.Empty).ToString().Trim();
+                var unidentifiedActionName = (row.Cells[9].Value ?? string.Empty).ToString().Trim();
+                var unidentifiedActionDescription = (row.Cells[10].Value ?? string.Empty).ToString().Trim();
 
                 if (string.IsNullOrWhiteSpace(id))
                 {
@@ -115,6 +124,29 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     isValidEntry = false;
                     validationErrors.Add($"Row {row.Index + 1}: The Item Type Id '{id}' is duplicated.");
                 }
+                if (!string.IsNullOrWhiteSpace(unidentifiedQualityLevel))
+                {
+                    if (string.IsNullOrWhiteSpace(unidentifiedName))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add($"Row {id}: Enter the Unidentified Item Name first.");
+                    }
+                    if (string.IsNullOrWhiteSpace(unidentifiedDescription))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add($"Row {id}: Enter the Unidentified Item Description first.");
+                    }
+                    if (string.IsNullOrWhiteSpace(unidentifiedActionName))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add($"Row {id}: Enter the Unidentified Item Action Name first.");
+                    }
+                    if (string.IsNullOrWhiteSpace(unidentifiedActionDescription))
+                    {
+                        isValidEntry = false;
+                        validationErrors.Add($"Row {id}: Enter the Unidentified Item Action Name first.");
+                    }
+                }
                 if (isValidEntry)
                 {
                     var usabilityKey = ItemUsabilityOptions.First(iuo => iuo.Value.Equals(usability, StringComparison.InvariantCultureIgnoreCase)).Key;
@@ -127,7 +159,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                         Usability = Enum.Parse<ItemUsability>(usabilityKey),
                         PowerType = Enum.Parse<ItemPowerType>(powerTypeKey),
                         Slot1 = slot1,
-                        Slot2 = slot2
+                        Slot2 = slot2,
+                        MinimumQualityLevelForUnidentified = unidentifiedQualityLevel,
+                        UnidentifiedItemName = unidentifiedName,
+                        UnidentifiedItemDescription = unidentifiedDescription,
+                        UnidentifiedItemActionName = unidentifiedActionName,
+                        UnidentifiedItemActionDescription = unidentifiedActionDescription
                     });
                 }
             }

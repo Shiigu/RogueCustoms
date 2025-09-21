@@ -571,13 +571,44 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task AttackCharacter(Character target, ActionWithEffects action)
         {
             if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
-            foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
+
+            var actionToPerform = action;
+
+            if(this == Map.Player)
             {
-                await als.BeforeAttack.Do(this, target, true);
+                var ownerAsItem = action.User as Item;
+
+                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
+
+                foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
+                {
+                    await als.BeforeAttack.Do(this, target, true);
+                }
+
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                {
+                    var previousName = ownerAsItem.Name;
+                    if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
+                        actionToPerform = ownerAsItem.OnUse;
+                    ownerAsItem.GotSpecificallyIdentified = true;
+                    ownerAsItem.UpdateNameIfNeeded();
+                    if(!Map.Player.IdentifiedItemClasses.Contains(ownerAsItem.ClassId))
+                        Map.Player.IdentifiedItemClasses.Add(ownerAsItem.ClassId);
+                    if (this == Map.Player)
+                    {
+                        Map.DisplayEvents.Add(($"{ownerAsItem.Name} was identified", [new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Identify }
+                        }]));
+                    }
+                    Map.AppendMessage(Map.Locale["ItemWasIdentified"].Format(new { FakeName = previousName, TrueName = ownerAsItem.Name }), Color.Yellow);
+                }
             }
-            if (MP != null && action.MPCost != 0)
+
+            if (MP != null && actionToPerform.MPCost != 0)
             {
-                MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                MP.Current = Math.Max(0, MP.Current - actionToPerform.MPCost);
                 if (this == Map.Player)
                 {
                     Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
@@ -587,10 +618,10 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }]));
                 }
             }
-            var successfulEffects = await action.Do(this, target, true);
+            var successfulEffects = await actionToPerform.Do(this, target, true);
             if (successfulEffects != null && EngineConstants.EffectsThatTriggerOnAttacked.Intersect(successfulEffects).Any())
                 await target.AttackedBy(this);
-            if (action.FinishesTurnWhenUsed)
+            if (actionToPerform.FinishesTurnWhenUsed)
             {
                 TookAction = true;
                 RemainingMovement = 0;
@@ -600,9 +631,44 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task InteractWithCharacter(Character target, ActionWithEffects action)
         {
             if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (MP != null && action.MPCost != 0)
+
+            var actionToPerform = action;
+
+            if (this == Map.Player)
             {
-                MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                var ownerAsItem = action.User as Item;
+
+                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
+
+                foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
+                {
+                    await als.BeforeAttack.Do(this, target, true);
+                }
+
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                {
+                    var previousName = ownerAsItem.Name;
+                    if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
+                        actionToPerform = ownerAsItem.OnUse;
+                    ownerAsItem.GotSpecificallyIdentified = true;
+                    ownerAsItem.UpdateNameIfNeeded();
+                    if (!Map.Player.IdentifiedItemClasses.Contains(ownerAsItem.ClassId))
+                        Map.Player.IdentifiedItemClasses.Add(ownerAsItem.ClassId);
+                    if (this == Map.Player)
+                    {
+                        Map.DisplayEvents.Add(($"{ownerAsItem.Name} was identified", [new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Identify }
+                        }]));
+                    }
+                    Map.AppendMessage(Map.Locale["ItemWasIdentified"].Format(new { FakeName = previousName, TrueName = ownerAsItem.Name }), Color.Yellow);
+                }
+            }
+
+            if (MP != null && actionToPerform.MPCost != 0)
+            {
+                MP.Current = Math.Max(0, MP.Current - actionToPerform.MPCost);
                 if (this == Map.Player)
                 {
                     Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
@@ -612,8 +678,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }]));
                 }
             }
-            await action.Do(this, target, true);
-            if (action.FinishesTurnWhenUsed)
+            await actionToPerform.Do(this, target, true);
+            if (actionToPerform.FinishesTurnWhenUsed)
             {
                 TookAction = true;
                 RemainingMovement = 0;
@@ -623,9 +689,44 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task InteractWithTile(Tile target, ActionWithEffects action)
         {
             if (action == null || ExistenceStatus != EntityExistenceStatus.Alive) return;
-            if (MP != null && action.MPCost != 0)
+
+            var actionToPerform = action;
+
+            if (this == Map.Player)
             {
-                MP.Current = Math.Max(0, MP.Current - action.MPCost);
+                var ownerAsItem = action.User as Item;
+
+                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
+
+                foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
+                {
+                    await als.BeforeAttack.Do(this, target, true);
+                }
+
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                {
+                    var previousName = ownerAsItem.Name;
+                    if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
+                        actionToPerform = ownerAsItem.OnUse;
+                    ownerAsItem.GotSpecificallyIdentified = true;
+                    ownerAsItem.UpdateNameIfNeeded();
+                    if (!Map.Player.IdentifiedItemClasses.Contains(ownerAsItem.ClassId))
+                        Map.Player.IdentifiedItemClasses.Add(ownerAsItem.ClassId);
+                    if (this == Map.Player)
+                    {
+                        Map.DisplayEvents.Add(($"{ownerAsItem.Name} was identified", [new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Identify }
+                        }]));
+                    }
+                    Map.AppendMessage(Map.Locale["ItemWasIdentified"].Format(new { FakeName = previousName, TrueName = ownerAsItem.Name }), Color.Yellow);
+                }
+            }
+
+            if (MP != null && actionToPerform.MPCost != 0)
+            {
+                MP.Current = Math.Max(0, MP.Current - actionToPerform.MPCost);
                 if (this == Map.Player)
                 {
                     Map.DisplayEvents.Add(($"Update player {MP.Name} after action", [new()
@@ -635,8 +736,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }]));
                 }
             }
-            await action.Do(this, target, true);
-            if (action.FinishesTurnWhenUsed)
+            await actionToPerform.Do(this, target, true);
+            if (actionToPerform.FinishesTurnWhenUsed)
             {
                 TookAction = true;
                 RemainingMovement = 0;

@@ -6,6 +6,7 @@ using RogueCustomsGameEngine.Utils.JsonImports;
 using System;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
 using RogueCustomsGameEngine.Utils.Enums;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -26,17 +27,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         {
             Actions.Add(new ActionItemDto(action, source, action.TargetTypes.Contains(TargetType.Tile) ? tile : targetCharacter, map)
             {
-                SelectionId = action.SelectionId,
                 SourceType = isPlayerAction ? ActionSourceType.Player : ActionSourceType.NPC
             });
         }
 
         public void AddAction(ActionWithEffects action, Map map)
         {
-            Actions.Add(new ActionItemDto(action, map)
-            {
-                SelectionId = action.SelectionId
-            });
+            Actions.Add(new ActionItemDto(action, map));
         }
     }
 
@@ -52,9 +49,21 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
         public ActionItemDto(ActionWithEffects action, Character source, ITargetable target, Map map)
         {
-            Name = map.Locale[action.Name];
-            Description = action.GetDescriptionWithUsageNotes(target, source);
-            CanBeUsed = action.CanBeUsedOn(target, source);
+            SelectionId = action.SelectionId;
+            var ownerAsItem = action.User as Item;
+            if (ownerAsItem == null || ownerAsItem.IsIdentified)
+            {
+                Name = map.Locale[action.Name];
+                Description = action.GetDescriptionWithUsageNotes(target, source);
+                CanBeUsed = action.CanBeUsedOn(target, source);
+            }
+            else
+            {
+                Name = ownerAsItem.UnidentifiedActionName;
+                Description = ownerAsItem.UnidentifiedActionDescription;
+                CanBeUsed = GamePoint.Distance(source.Position, target.Position) < 3 && ((target is Tile && action.TargetTypes.Contains(TargetType.Tile))
+                    || (target is not Tile && !action.TargetTypes.Contains(TargetType.Tile)));
+            }
         }
 
         public ActionItemDto(ActionWithEffects action, Map map)

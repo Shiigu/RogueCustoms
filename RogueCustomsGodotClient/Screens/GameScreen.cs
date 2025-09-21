@@ -98,6 +98,7 @@ public partial class GameScreen : Control
             (SpecialEffect.DoorOpen, "res://Sounds/dooropen.wav"),
             (SpecialEffect.MonsterHouseAlarm, "res://Sounds/monsterhousealarm.wav"),
             (SpecialEffect.Reveal, "res://Sounds/reveal.wav"),
+            (SpecialEffect.Identify, "res://Sounds/identify.wav"),
         };
 
 

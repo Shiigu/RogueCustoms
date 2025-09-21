@@ -285,12 +285,15 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             if (Map.Rng.RollProbability() < entityClass.OddsForModifier && entityClass.ModifierTable.Count > 0)
             {
-                var modifierEntry = entityClass.ModifierTable.First(mt => mt.Level >= level);
-                for (int i = 0; i < modifierEntry.Amount; i++)
+                var modifierEntry = entityClass.ModifierTable.FirstOrDefault(mt => mt.Level >= level);
+                if (modifierEntry != default)
                 {
-                    var availableModifiers = Map.NPCModifiers.Where(nm => !Modifiers.Any(m => m.Id.Equals(nm.Id))).ToList();
-                    if (availableModifiers.Count == 0) break;
-                    availableModifiers.TakeRandomElement(map.Rng).ApplyTo(this);
+                    for (int i = 0; i < modifierEntry.Amount; i++)
+                    {
+                        var availableModifiers = Map.NPCModifiers.Where(nm => !Modifiers.Any(m => m.Id.Equals(nm.Id))).ToList();
+                        if (availableModifiers.Count == 0) break;
+                        availableModifiers.TakeRandomElement(map.Rng).ApplyTo(this);
+                    }
                 }
             }
             if(Modifiers.Count > 0)
@@ -810,6 +813,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if (entryClass != Map.CurrencyClass)
                     {
                         var itemForDrop = await Map.AddEntity(entryClass, Level, null, false) as Item;
+                        itemForDrop.UpdateNameIfNeeded();
                         if (LootTable.OverridesQualityLevelOddsOfItems)
                         {
                             itemForDrop.SetQualityLevel(LootTable.QualityLevelOdds.TakeRandomElementWithWeights(qlo => qlo.ChanceToPick, Rng).QualityLevel);

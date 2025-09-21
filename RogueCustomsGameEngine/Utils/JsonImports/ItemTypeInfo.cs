@@ -17,5 +17,10 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public ItemPowerType PowerType { get; set; }
         public string Slot1 { get; set; }
         public string Slot2 { get; set; }
+        public string MinimumQualityLevelForUnidentified { get; set; }
+        public string UnidentifiedItemName { get; set; }
+        public string UnidentifiedItemDescription { get; set; }
+        public string UnidentifiedItemActionName { get; set; }
+        public string UnidentifiedItemActionDescription { get; set; }
     }
 }

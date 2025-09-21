@@ -125,3 +125,5 @@ CharacterBoughtItem
 CharacterCannotEquipItem
 CannotBuyItems
 CannotSellItems
+ItemWasIdentified
+CharacterItemsWereIdentified

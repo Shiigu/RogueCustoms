@@ -137,7 +137,7 @@ namespace RogueCustomsGodotClient.Helpers
             return result.Length > 0 ? (string) result[0] : null;
         }
 
-        public static async Task<string> CreateSelectItemWindow(this Control control, InventoryDto itemInfo, string title, bool showCancelButton)
+        public static async Task<ItemInput> CreateSelectItemWindow(this Control control, InventoryDto itemInfo, string title, bool showCancelButton)
         {
             var overlay = new ColorRect
             {
@@ -154,7 +154,11 @@ namespace RogueCustomsGodotClient.Helpers
 
             var result = await popupClosedSignal;
 
-            return result.Length > 0 ? (string)result[0] : null;
+            return result.Length > 0 ? new ItemInput
+            {
+                Id = (int)result[0],
+                ClassId = (string)result[1]
+            } : null;
         }
 
         public static async Task<string> CreateSelectActionWindow(this Control control, ActionListDto actionInfo, string title, bool showCancelButton)
