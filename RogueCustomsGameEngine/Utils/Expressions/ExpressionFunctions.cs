@@ -369,6 +369,36 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return (c.ContainingTile.WaypointId != null && c.ContainingTile.WaypointId.Equals(waypointId)).ToString();
         }
 
+        public static string HASACTIVEAFFIX(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length != 2) throw new ArgumentException("Invalid parameters for HasActiveAffix.");
+
+            var entityName = parameters[0].ToLower();
+
+            var entityToCheck = GetEntityByName(entityName, "HasActiveAffix", args);
+
+            if (entityToCheck is not Character c)
+                throw new ArgumentException("Invalid entity in HasActiveAffix.");
+
+            var allAffixes = new List<string>();
+
+            foreach (var item in c.Equipment ?? [])
+            {
+                if(item.IsEquippable && item.IsIdentified)
+                    allAffixes.AddRange(item.Affixes.Select(a => a.Id));
+            }
+
+            foreach (var item in c.Inventory ?? [])
+            {
+                if(!item.IsEquippable && item.IsIdentified)
+                    allAffixes.AddRange(item.Affixes.Select(a => a.Id));
+            }
+
+            var affixId = parameters[1].ToLower();
+
+            return allAffixes.Contains(affixId, StringComparer.InvariantCultureIgnoreCase).ToString();
+        }
+
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch

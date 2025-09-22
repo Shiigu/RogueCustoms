@@ -160,7 +160,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             });
         }
 
-        public bool CanBeUsedOn(ITargetable target, Character? source = null)
+        public bool CanBeUsedOn(ITargetable target, Character? source = null, bool considerRange = true)
         {
             if (target == null && !TargetTypes.Contains(TargetType.Tile)) return false;
 
@@ -199,24 +199,23 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (!MayBeUsed) return false;
 
             if (target is Character tc && !TargetTypes.Contains(TargetType.Tile))
-                return CanBeUsedOnCharacter(tc, sourceAsCharacter);
+                return CanBeUsedOnCharacter(tc, sourceAsCharacter, considerRange);
 
             if (target is Tile tt && TargetTypes.Contains(TargetType.Tile))
-                return CanBeUsedOnTile(tt, sourceAsCharacter);
+                return CanBeUsedOnTile(tt, sourceAsCharacter, considerRange);
 
             return true;
         }
 
-        public bool CanBeUsedOnCharacter(Character target, Character source)
+        public bool CanBeUsedOnCharacter(Character target, Character source, bool considerRange = true)
         {
-
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
             if (User != target || source == target)
             {
                 if (target.ExistenceStatus != EntityExistenceStatus.Alive) return false;
                 if (TargetTypes.Any() && !TargetTypes.Contains(source.CalculateTargetTypeFor(target))) return false;
 
-                if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+                if (considerRange && !distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
 
                 if (MPCost > 0)
                 {
@@ -247,7 +246,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return true;
         }
 
-        public bool CanBeUsedOnTile(Tile target, Character source)
+        public bool CanBeUsedOnTile(Tile target, Character source, bool considerRange = true)
         {
             if (!((int)GamePoint.Distance(target.Position, source.Position)).Between(MinimumRange, MaximumRange)) return false;
 
@@ -261,7 +260,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
             var distanceFromSourceToTarget = (int)GamePoint.Distance(target.Position, source.Position);
 
-            if (!distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
+            if (considerRange && !distanceFromSourceToTarget.Between(MinimumRange, MaximumRange)) return false;
 
             if (!string.IsNullOrWhiteSpace(UseCondition))
             {
