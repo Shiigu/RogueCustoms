@@ -102,6 +102,15 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                     if (fromPocketsParsed)
                         return "From Pockets";
                     return "Out of Thin Air";
+                case "whichtile":
+                    var targetTileParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("TargetTile", StringComparison.InvariantCultureIgnoreCase));
+                    if (targetTileParam == null) return "[UNDEFINED]";
+                    var targetTileValue = targetTileParam.Value;
+                    if (targetTileValue.Equals("AnyTile", StringComparison.InvariantCultureIgnoreCase))
+                        return "A Random Tile";
+                    else if (targetTileValue.Equals("NearStairs", StringComparison.InvariantCultureIgnoreCase))
+                        return "Near the Stairs";
+                    return "[UNDEFINED]";
                 case "actionsfromschool":
                     var actionSchoolParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("ActionSchool", StringComparison.InvariantCultureIgnoreCase));
                     if (actionSchoolParam == null) return "[UNDEFINED]";

@@ -642,15 +642,28 @@ namespace RogueCustomsGameEngine.Utils.Effects
             {
                 var olderFOV = c == Map.Player ? c.FOVTiles : null;
                 var initialTile = c.ContainingTile;
-                var islands = Map.Tiles.GetIslands(t => t.IsWalkable);
-                var playerIsland = islands.Find(i => i.Contains(Map.Player.ContainingTile));
-                var stairsIsland = islands.Find(i => i.Any(t => t.Position.Equals(Map.StairsPosition)));
-                GamePoint targetPosition;
-                do
+                GamePoint targetPosition = null;
+                if (paramsObject.TargetTile == "NearStairs" && Map.StairsTile != null)
                 {
-                    targetPosition = Map.PickEmptyPosition(true, false);
+                    var closeTilesToStairs = Map.GetTilesWithinCenteredSquare(Map.StairsPosition, 4, true);
+                    closeTilesToStairs.Remove(Map.StairsTile); // Won't warp directly on top of the Stairs
+                    closeTilesToStairs = closeTilesToStairs.Where(t => t.IsWalkable && !t.IsOccupied).ToList();
+                    var minDistance = closeTilesToStairs.Min(t => GamePoint.Distance(t.Position, Map.StairsPosition));
+                    closeTilesToStairs = closeTilesToStairs.Where(t => GamePoint.Distance(t.Position, Map.StairsPosition) == minDistance).ToList();
+                    if (closeTilesToStairs.Count > 0)
+                        targetPosition = closeTilesToStairs.TakeRandomElement(Rng).Position;
                 }
-                while (targetPosition == null || (playerIsland?.Any(t => t.Position.Equals(targetPosition)) != true && stairsIsland?.Any(t => t.Position.Equals(targetPosition)) != true));
+                if (paramsObject.TargetTile == "AnyTile" || (targetPosition == null && paramsObject.TargetTile == "NearStairs"))
+                {
+                    var islands = Map.Tiles.GetIslands(t => t.IsWalkable);
+                    var playerIsland = islands.Find(i => i.Contains(Map.Player.ContainingTile));
+                    var stairsIsland = islands.Find(i => i.Any(t => t.Position.Equals(Map.StairsPosition)));
+                    do
+                    {
+                        targetPosition = Map.PickEmptyPosition(true, false);
+                    }
+                    while (targetPosition == null || (playerIsland?.Any(t => t.Position.Equals(targetPosition)) != true && stairsIsland?.Any(t => t.Position.Equals(targetPosition)) != true));
+                }
                 c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
 
