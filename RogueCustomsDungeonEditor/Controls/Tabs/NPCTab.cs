@@ -100,6 +100,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             sisNPCStartingInventory.InventoryContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
             SetSingleActionEditorParams(saeNPCDefaultOnAttack, npc.Id, npc.DefaultOnAttack);
             SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
+            SetSingleActionEditorParams(saeNPCBeforeProcessAI, npc.Id, npc.BeforeProcessAI);
             SetSingleActionEditorParams(saeNPCOnSpawn, npc.Id, npc.OnSpawn);
             SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
             SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
@@ -252,6 +253,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.OnTurnStart = saeNPCOnTurnStart.Action;
                 if (LoadedNPC.OnTurnStart != null)
                     LoadedNPC.OnTurnStart.IsScript = false;
+                LoadedNPC.BeforeProcessAI = saeNPCBeforeProcessAI.Action;
+                if (LoadedNPC.BeforeProcessAI != null)
+                    LoadedNPC.BeforeProcessAI.IsScript = false;
                 LoadedNPC.OnAttack = maeNPCOnAttack.Actions;
                 foreach (var action in LoadedNPC.OnAttack)
                 {
