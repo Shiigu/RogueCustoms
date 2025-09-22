@@ -1500,7 +1500,7 @@
   },
   {
     "InternalName": "Teleport",
-    "TreeViewDisplayText": "Teleport ({Target}) to another Tile",
+    "TreeViewDisplayText": "Teleport ({Target}) to ({WhichTile})",
     "ComboBoxDisplayName": "Teleport the Target",
     "Description": "User will teleport the Target to a random unoccupied Floor tile.\nFails if Target is in a Hallway tile.",
     "CanBeUsedOnEntity": true,
@@ -1523,6 +1523,26 @@
           {
             "Key": "target",
             "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "TargetTile",
+        "DisplayName": "Target Tile",
+        "Description": "The type of Tile the Target will be teleported to.\n\nNOTE: If set to \"Near the Stairs\" but no valid Tile is unoccupied, or if the Stairs aren't present yet, it will Teleport to A Random Tile instead.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "AnyTile",
+            "Value": "A Random Tile"
+          },
+          {
+            "Key": "NearStairs",
+            "Value": "Near the Stairs"
           }
         ],
         "Required": "true",

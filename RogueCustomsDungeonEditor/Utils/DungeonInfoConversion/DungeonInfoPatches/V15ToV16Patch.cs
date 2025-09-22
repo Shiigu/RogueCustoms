@@ -656,6 +656,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateCleanseStatAlterationStepsToV16(effect);
                 UpdateCleanseStatAlterationsStepsToV16(effect);
                 UpdateGiveItemStepsToV16(effect);
+                UpdateTeleportStepsToV16(effect);
             }
         }
 
@@ -898,6 +899,33 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateGiveItemParametersToV16(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateGiveItemParametersToV16(onFailureObj);
+        }
+
+        private static void UpdateTeleportStepsToV16(JsonObject effect)
+        {
+            UpdateTeleportParametersToV16(effect);
+        }
+
+        private static void UpdateTeleportParametersToV16(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "Teleport")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("TargetTile", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "TargetTile", ["Value"] = "AnyTile" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateTeleportParametersToV16(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateTeleportParametersToV16(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateTeleportParametersToV16(onFailureObj);
         }
     }
 }
