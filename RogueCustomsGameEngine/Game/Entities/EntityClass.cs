@@ -44,13 +44,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         #region Player Character-only data
 
         public readonly bool RequiresNamePrompt;
-        public readonly float SaleValuePercentage; 
+        public readonly float SaleValuePercentage;
         public readonly bool NeedsToIdentifyItems;
 
         #endregion
 
         #region NPC-only data
 
+        public ActionWithEffects BeforeProcessAI { get; set; }
         public ActionWithEffects OnSpawn { get; set; }
         public List<ActionWithEffects> OnInteracted { get; set; }
 
@@ -335,6 +336,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 InitialEquipmentIds = new List<string>(npcInfo.InitialEquipment);
                 DefaultOnAttack = ActionWithEffects.Create(npcInfo.DefaultOnAttack, dungeon.ActionSchools);
                 AvailableSlots = dungeon.ItemSlots.FindAll(islot => npcInfo.AvailableSlots.Contains(islot.Id));
+                BeforeProcessAI = ActionWithEffects.Create(npcInfo.BeforeProcessAI, dungeon.ActionSchools);
             }
             else if (classInfo is TrapInfo trapInfo)
             {

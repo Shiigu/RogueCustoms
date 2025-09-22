@@ -60,6 +60,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         private (GamePoint Destination, List<Tile> Route) PathToUse;
 
+        public ActionWithEffects BeforeProcessAI { get; set; }
         public ActionWithEffects OwnOnSpawn { get; set; }
         public List<ActionWithEffects> OnSpawn
         {
@@ -281,6 +282,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             AIType = entityClass.AIType;
             Modifiers = new();
 
+            BeforeProcessAI = MapClassAction(entityClass.BeforeProcessAI);
             OwnOnSpawn = MapClassAction(entityClass.OnSpawn);
             OwnOnInteracted = new List<ActionWithEffects>();
             MapClassActions(entityClass.OnInteracted, OwnOnInteracted);
@@ -396,6 +398,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                             // Also, disable movement if the player is dead because there's nothing else to do here.
                             // Also, disable AI if type is Null
             }
+            if(BeforeProcessAI != null)
+                await BeforeProcessAI.Do(this, this, false);
             UpdateKnownCharacterList();
             ConsiderSwappingTargets();
             if (!ConsiderWalking())

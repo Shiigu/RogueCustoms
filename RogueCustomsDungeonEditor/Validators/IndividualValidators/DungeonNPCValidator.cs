@@ -50,6 +50,21 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 messages.AddError("This NPC has no modified Loot Table data, not even an empty one.");
             }
 
+            if (npcJson.BeforeProcessAI != null)
+            {
+                if (npcJson.OnTurnStart != null)
+                {
+                    var movementStat = npcJson.Stats.Find(ci => ci.StatId.Equals("Movement"));
+                    if (movementStat != null && movementStat.Base == 1)
+                    {
+                        messages.AddWarning("This NPC has both a BeforeProcessAI and a OnTurnStart Action, but Base Movement is 1. Consider merging both into OnTurnStart since they'll only be called once per turn.");
+                    }
+                }
+                messages.AddRange(await ActionValidator.Validate(npcJson.BeforeProcessAI, dungeonJson));
+                if (npcAsInstance != null)
+                    messages.AddRange(await ActionValidator.Validate(npcAsInstance.BeforeProcessAI, dungeonJson, sampleDungeon));
+            }
+
             if (npcJson.OnSpawn != null)
             {
                 messages.AddRange(await ActionValidator.Validate(npcJson.OnSpawn, dungeonJson));
