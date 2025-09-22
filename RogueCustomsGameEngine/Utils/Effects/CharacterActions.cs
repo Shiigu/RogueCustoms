@@ -89,6 +89,83 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
+        public static async Task<bool> GiveItem(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (paramsObject.Target is not Character t)
+                // Attempted to give Target an Item when it's not a Character.
+                return false;
+
+            t = paramsObject.Target as Character;
+
+            if (t.ItemCount == t.InventorySize)
+                // Attempted to give Target an Item when their inventory is full.
+                return false;
+
+            if (paramsObject.FromInventory && paramsObject.Source is not Character s)
+                // Attempted to give Target an Item from Source's inventory, when Source's not a Character.
+                return false;
+
+            s = paramsObject.Source as Character;
+
+            string itemId = paramsObject.Id;
+            string idToLookUp = itemId;
+
+            if (itemId == "<<CUSTOM>>")
+                idToLookUp = paramsObject.CustomId;
+
+            var itemClass = Map.PossibleItemClasses.Find(c => c.Id.Equals(idToLookUp));
+
+            if (itemClass == null)
+                // Must have a valid Item class to spawn
+                return false;
+
+            if (paramsObject.FromInventory && !s.Inventory.Exists(i => i.ClassId.Equals(idToLookUp)))
+                // Attempted to give Target an Item from Source's inventory, when Source does not have such an item.
+                return false;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, t, paramsObject);
+            if (Rng.RollProbability() <= accuracyCheck)
+            {
+                var itemToGive = paramsObject.FromInventory
+                    ? s.Inventory.Find(i => i.ClassId.Equals(idToLookUp))
+                    : await Map.AddEntity(idToLookUp, 1, new GamePoint(0, 0)) as Item;
+                if (paramsObject.FromInventory)
+                    s.Inventory.Remove(itemToGive);
+                t.Inventory.Add(itemToGive);
+                itemToGive.Position = null;
+                if (t == Map.Player || Map.Player.CanSee(t))
+                {
+                    if (t == Map.Player)
+                    {
+                        itemToGive.GotSpecificallyIdentified = true;
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.UpdatePlayerData,
+                            Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                        });
+                    }
+                    if (t == Map.Player || paramsObject.InformThePlayer)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.ItemGet }
+                        });
+                        var message = paramsObject.InformOfSource
+                            ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = itemToGive.Name })
+                            : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = itemToGive.Name });
+                        Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                    }
+                }
+                Map.DisplayEvents.Add(($"{t.Name} received an item", events));
+                return true;
+            }
+            return false;
+        }
+
         public static bool StealItem(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
@@ -118,11 +195,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     {
                         if (s == Map.Player || t == Map.Player)
                         {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.UpdateInventory, Map.Player.Inventory.Cast<Entity>().Union(Map.Player.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                            });
+                            Map.Player.InformRefreshedPlayerData(events);
                             events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -403,6 +476,110 @@ namespace RogueCustomsGameEngine.Utils.Effects
             npc.UnsetWaypoint();
 
             return true;
+        }
+
+        public static async Task<bool> GiveCurrency(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (paramsObject.Target is not Character t)
+                // Attempted to give Target Currency when it's not a Character.
+                return false;
+
+            t = paramsObject.Target as Character;
+
+            if (paramsObject.Amount <= 0)
+                // Attempted to give Target no Currency whatsoever.
+                return false;
+
+            if (paramsObject.FromPockets && paramsObject.Source is not Character s)
+                // Attempted to give Target Currency from Source's pockets, when Source's not a Character.
+                return false;
+
+            s = paramsObject.Source as Character;
+
+            var amount = (int)paramsObject.Amount;
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, t, paramsObject);
+            if (Rng.RollProbability() <= accuracyCheck)
+            {
+                if (paramsObject.FromPockets)
+                {
+                    amount = Math.Min(amount, s.CurrencyCarried);
+                    s.CurrencyCarried -= amount;
+                }
+                if (s.CurrencyCarried < 0)
+                    s.CurrencyCarried = 0;
+                t.CurrencyCarried += amount;
+                if (t == Map.Player || Map.Player.CanSee(t))
+                {
+                    if (t == Map.Player)
+                    {
+                        Map.Player.InformRefreshedPlayerData(events);
+                    }
+                    if (t == Map.Player || paramsObject.InformThePlayer)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.Currency }
+                        });
+                        var currencyDisplayText = Map.Locale["CurrencyDisplayName"].Format(new { Amount = amount, CurrencyName = Map.CurrencyClass.Name });
+                        var message = paramsObject.InformOfSource
+                            ? Map.Locale["CharacterGotAnItem"].Format(new { CharacterName = t.Name, SourceName = s.Name, ItemName = currencyDisplayText })
+                            : Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = t.Name, ItemName = currencyDisplayText });
+                        Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                    }
+                }
+                Map.DisplayEvents.Add(($"{t.Name} received currency", events));
+                return true;
+            }
+            return false;
+        }
+
+        public static bool StealCurrency(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.Source is not Character s) throw new ArgumentException($"Attempted to have {Args.Source.Name} steal Currency when it's not a Character.");
+            if (paramsObject.Target is not Character t)
+                // Attempted to steal Currency from Target when it's not a Character.
+                return false;
+
+            var amount = (int)paramsObject.Amount;
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+
+            if (t.CurrencyCarried > 0 && Rng.RollProbability() <= accuracyCheck)
+            {
+                amount = Math.Min(amount, t.CurrencyCarried);
+                t.CurrencyCarried -= amount;
+                if (t.CurrencyCarried < 0)
+                    t.CurrencyCarried = 0;
+                s.CurrencyCarried += amount;
+                if ((s == Map.Player || Map.Player.CanSee(s))
+                    || (t == Map.Player || Map.Player.CanSee(t)))
+                {
+                    if (s == Map.Player || t == Map.Player)
+                    {
+                        Map.Player.InformRefreshedPlayerData(events);
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.ItemGet }
+                        });
+                    }
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { s == Map.Player ? SpecialEffect.ItemGet : SpecialEffect.NPCItemGet }
+                    });
+                    var currencyDisplayText = Map.Locale["CurrencyDisplayName"].Format(new { Amount = amount, CurrencyName = Map.CurrencyClass.Name });
+                    Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = currencyDisplayText }), Color.DeepSkyBlue, events);
+                }
+                Map.DisplayEvents.Add(($"{t.Name} got Currency stolen", events));
+                return true;
+            }
+            return false;
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous

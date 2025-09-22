@@ -1610,9 +1610,9 @@
   },
   {
     "InternalName": "GiveItem",
-    "TreeViewDisplayText": "Give ({Target}) a ({Id}) ({WhereFrom})",
+    "TreeViewDisplayText": "Give ({Target}) a ({Id}) ({FromWhichInventory})",
     "ComboBoxDisplayName": "Give Item to Target",
-    "Description": "User will give an item Target (if possible).\nItem may come from Source's inventory, or come out of thin air",
+    "Description": "User will give an item to Target (if possible).\nItem may come from Source's inventory, or come out of thin air.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
@@ -1728,7 +1728,7 @@
       {
         "InternalName": "InformThePlayer",
         "DisplayName": "Inform the Player?",
-        "Description": "If true, the Player will be informed of this Item being obtained. Only applies if the Item is obtained by another Character.",
+        "Description": "If true, the Player will be informed of this Item being obtained. Only applies if the Item is obtained from another Character.",
         "ParameterType": "Boolean",
         "Default": "true",
         "ValidValues": [],
@@ -3533,5 +3533,187 @@
     "CanHaveOnSuccessOnFailureChild": false,
     "IsControlBlock": false,
     "Parameters": []
+  },
+  {
+    "InternalName": "GiveCurrency",
+    "TreeViewDisplayText": "Give ({Target}) ({Amount}) Currency ({FromWhichPockets})",
+    "ComboBoxDisplayName": "Give Currency to Target",
+    "Description": "User will give Currency to Target (if possible).\nThe Currency may come from Source's own pockets, or come out of thin air.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Source",
+        "DisplayName": "Source",
+        "Description": "Who will give the Currency. Generally Source, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "source",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will receive the Currency. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Amount",
+        "Description": "How much of the Currency will be given.",
+        "ParameterType": "Number",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "FromPockets",
+        "DisplayName": "Must be in Pockets",
+        "Description": "If true, Source gives away the Currency specified.\n\nIf they do not have enough Currency, they'll give all they have.\n\nIf false, the Currency materializes out of nowhere.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to get an Item given. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformOfSource",
+        "DisplayName": "Mention the giver?",
+        "Description": "If false, whoever gave the Currency won't be mentioned.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "{FromPockets} == \"True\"",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of the Currency being obtained. Only applies if the Currency is obtained from another Character.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+
+  {
+    "InternalName": "StealCurrency",
+    "TreeViewDisplayText": "Steal ({Amount}) Currency from Target",
+    "ComboBoxDisplayName": "Steal Currency from Target",
+    "Description": "Used by the User take Currency from Target's inventory and put it into their own pockets.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will have Currency stolen. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Amount",
+        "Description": "How much of the Currency will be stolen.",
+        "ParameterType": "Number",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for an Item to be stolen. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]
