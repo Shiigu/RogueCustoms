@@ -138,8 +138,12 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         {
             return "false";
         }
-
         public static string ISONWAYPOINT(EffectCallerParams args, string[] parameters)
+        {
+            return "false";
+        }
+
+        public static string HASACTIVEAFFIX(EffectCallerParams args, string[] parameters)
         {
             return "false";
         }

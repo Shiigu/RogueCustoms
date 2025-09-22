@@ -668,8 +668,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             var actionsAndWeights = new List<(ActionWithEffects Action, int Weight)>();
             foreach (var action in possibleActionsOnTarget)
             {
-                if (!action.ChecksCondition(this, CurrentTarget) || !action.ChecksAICondition(this, CurrentTarget) || !action.CanBeUsedOn(CurrentTarget)) continue;
+                if (!action.ChecksCondition(this, CurrentTarget) || !action.ChecksAICondition(this, CurrentTarget) || !action.CanBeUsedOn(CurrentTarget, null, false)) continue;
                 var weight = action.GetActionWeightFor(CurrentTarget, this);
+                var distanceFromSourceToTarget = (int)GamePoint.Distance(CurrentTarget.Position, Position);
+                if (!distanceFromSourceToTarget.Between(action.MinimumRange, action.MaximumRange))
+                    weight /= 2;
                 if (weight > 0)
                     actionsAndWeights.Add((action, weight));
             }
@@ -683,7 +686,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return false;
 
             if (distanceToTarget > pickedAction.Action.MaximumRange)
+            {
                 return false;   // I must get closer
+            }
             else if (distanceToTarget < pickedAction.Action.MinimumRange)
             {
                 // I must move further
@@ -694,7 +699,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var tilesAndWeights = new List<(Tile Tile, int Weight)>();
                 foreach (var tile in visibleTilesAtMinimumRangeFromTarget)
                 {
-                    tilesAndWeights.Add((tile, (int) (1 / ((int) GamePoint.Distance(Position, tile.Position) / 10F)) * 100));
+                    tilesAndWeights.Add((tile, (int)(1 / ((int)GamePoint.Distance(Position, tile.Position) / 10F)) * 100));
                 }
                 var pickedTile = tilesAndWeights.TakeRandomElementWithWeights(taw => taw.Weight, Rng);
                 CurrentTarget = pickedTile.Tile;
