@@ -127,3 +127,4 @@ CannotBuyItems
 CannotSellItems
 ItemWasIdentified
 CharacterItemsWereIdentified
+CharacterLostAllItems

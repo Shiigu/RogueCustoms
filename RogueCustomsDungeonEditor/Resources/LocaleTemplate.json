@@ -512,6 +512,10 @@
     {
       "Key": "CharacterItemsWereIdentified",
       "Value": "{CharacterName} now knows the true nature of their items!"
+    },
+    {
+      "Key": "CharacterLostAllItems",
+      "Value": "{CharacterName} lost all of their items!"
     }
   ]
 }

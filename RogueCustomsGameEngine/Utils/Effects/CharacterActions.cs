@@ -141,11 +141,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     if (t == Map.Player)
                     {
                         itemToGive.GotSpecificallyIdentified = true;
-                        events.Add(new()
-                        {
-                            DisplayEventType = DisplayEventType.UpdatePlayerData,
-                            Params = new() { UpdatePlayerDataType.UpdateInventory, t.Inventory.Cast<Entity>().Union(t.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
-                        });
+                        Map.Player.InformRefreshedPlayerData(events);
                     }
                     if (t == Map.Player || paramsObject.InformThePlayer)
                     {
@@ -577,6 +573,49 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.AppendMessage(Map.Locale["CharacterStealsItem"].Format(new { SourceName = s.Name, TargetName = t.Name, ItemName = currencyDisplayText }), Color.DeepSkyBlue, events);
                 }
                 Map.DisplayEvents.Add(($"{t.Name} got Currency stolen", events));
+                return true;
+            }
+            return false;
+        }
+
+        public static async Task<bool> ClearInventory(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            if (paramsObject.Target is not Character t)
+                // Attempted to clear Target's Inventory when it's not a Character.
+                return false;
+
+            t = paramsObject.Target as Character;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, t, paramsObject);
+            if (Rng.RollProbability() <= accuracyCheck)
+            {
+                foreach (var item in t.Inventory)
+                {
+                    item.Position = null;
+                    item.ExistenceStatus = EntityExistenceStatus.Gone;
+                }
+                t.Inventory.Clear();
+                if (t == Map.Player || Map.Player.CanSee(t))
+                {
+                    if (t == Map.Player)
+                    {
+                        Map.Player.InformRefreshedPlayerData(events);
+                    }
+                    if (t == Map.Player || paramsObject.DisplayOnLog)
+                    {
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { SpecialEffect.ItemDrop }
+                        });
+                        var message = Map.Locale["CharacterLostAllItems"].Format(new { CharacterName = t.Name });
+                        Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                    }
+                }
+                Map.DisplayEvents.Add(($"{t.Name} lost all items", events));
                 return true;
             }
             return false;
