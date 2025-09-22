@@ -84,7 +84,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                     var statValue = statParam.Value;
                     var statValidValueForParam = statIds.Find(vv => vv.Equals(statValue, StringComparison.InvariantCultureIgnoreCase));
                     return statValidValueForParam ?? "[UNDEFINED]";
-                case "wherefrom":
+                case "fromwhichinventory":
                     var fromInventoryParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("FromInventory", StringComparison.InvariantCultureIgnoreCase));
                     if (fromInventoryParam == null) return "[UNDEFINED]";
                     var fromInventoryValue = fromInventoryParam.Value;
@@ -92,6 +92,15 @@ namespace RogueCustomsDungeonEditor.EffectInfos
                         return "[UNDEFINED]";
                     if (fromInventoryParsed)
                         return "From Inventory";
+                    return "Out of Thin Air";
+                case "fromwhichpockets":
+                    var fromPocketsParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("FromPockets", StringComparison.InvariantCultureIgnoreCase));
+                    if (fromPocketsParam == null) return "[UNDEFINED]";
+                    var fromPocketsValue = fromPocketsParam.Value;
+                    if (!bool.TryParse(fromPocketsValue, out bool fromPocketsParsed))
+                        return "[UNDEFINED]";
+                    if (fromPocketsParsed)
+                        return "From Pockets";
                     return "Out of Thin Air";
                 case "actionsfromschool":
                     var actionSchoolParam = effectParameters.FirstOrDefault(p => p.ParamName.Equals("ActionSchool", StringComparison.InvariantCultureIgnoreCase));
