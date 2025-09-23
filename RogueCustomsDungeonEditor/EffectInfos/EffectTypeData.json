@@ -3076,8 +3076,8 @@
   },
   {
     "InternalName": "ChangeSightRange",
-    "TreeViewDisplayText": "Modify ({Target})'s SightRange to ({SightRangeAmount})",
-    "ComboBoxDisplayName": "Alter Target's SightRange",
+    "TreeViewDisplayText": "Modify ({Target})'s Sight Range to ({SightRangeAmount})",
+    "ComboBoxDisplayName": "Alter Target's Sight Range",
     "Description": "Used by the User to increase or decrease Target's Sight Range.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,

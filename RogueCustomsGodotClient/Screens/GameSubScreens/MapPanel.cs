@@ -36,12 +36,14 @@ public partial class MapPanel : GamePanel
     }
 
     private Vector2I TopLeftCornerCoords = new();
+    private Vector2I BottomRightCornerCoords => new(TopLeftCornerCoords.X + widthToDisplay, TopLeftCornerCoords.Y + heightToDisplay);
     private Vector2I TopLeftCornerPosition = new();
 
     private AimingSquare _aimingSquare;
     private int widthToDisplay, heightToDisplay;
     private string[,] _tileBuffer;
     public bool BlockRefreshes { get; set; }
+    private bool CalculatedBoundsAtLeastOnce;
 
     public Vector2 MapPosition => _tileMap.Position;
 
@@ -81,6 +83,7 @@ public partial class MapPanel : GamePanel
 
     public void CalculateDisplayBounds(DungeonDto dungeonStatus)
     {
+        if (dungeonStatus.TurnCount > 1 && dungeonStatus.Width <= _mapWidthInTiles && dungeonStatus.Height <= _mapHeightInTiles && CalculatedBoundsAtLeastOnce) return;
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity != null)
         {
@@ -133,6 +136,7 @@ public partial class MapPanel : GamePanel
                 TopLeftCornerPosition.Y = ((_mapHeightInTiles - dungeonStatus.Height) / 2);
                 heightToDisplay = dungeonStatus.Height;
             }
+            CalculatedBoundsAtLeastOnce = true;
         }
     }
 
@@ -188,16 +192,16 @@ public partial class MapPanel : GamePanel
     {
         if (_globalState.DungeonInfo == null) return;
 
-        var truePosition = GetPositionForCoordinates(position);
-
-        if (truePosition.X < 0 || truePosition.X >= _mapWidthInTiles || truePosition.Y < 0 || truePosition.Y >= _mapHeightInTiles) return;
+        if (position.X < 0 || position.X < TopLeftCornerCoords.X || position.X >= BottomRightCornerCoords.X || position.Y < 0 || position.Y < TopLeftCornerCoords.Y || position.Y >= BottomRightCornerCoords.Y) return;
 
         var newRep = consoleRepresentation.ToBbCodeRepresentation();
 
-        if (_tileBuffer[(int) truePosition.X, (int) truePosition.Y] == newRep)
+        var displayPosition = new Vector2I(position.X - TopLeftCornerCoords.X, position.Y - TopLeftCornerCoords.Y);
+
+        if (_tileBuffer[displayPosition.X, displayPosition.Y] == newRep)
             return;
 
-        _tileBuffer[(int) truePosition.X, (int) truePosition.Y] = newRep;
+        _tileBuffer[displayPosition.X, displayPosition.Y] = newRep;
     }
 
     public void StartTargeting()

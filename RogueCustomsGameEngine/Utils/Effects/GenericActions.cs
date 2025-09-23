@@ -1129,7 +1129,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (t.ExistenceStatus == EntityExistenceStatus.Alive && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 var turnLength = (int)paramsObject.TurnLength;
-                var newSightRange = (int)paramsObject.Amount;
+                var value = paramsObject.Value;
+                var newSightRange = value switch
+                {
+                    "FullMap" => EngineConstants.FullMapSightRange,
+                    "Room" => EngineConstants.FullRoomSightRange,
+                    "SpecificValue" => (int)paramsObject.Amount,
+                    _ => (int)paramsObject.Amount
+                };
                 var informOfExpiration = (bool)paramsObject.DisplayOnLog;
 
                 if (newSightRange == t.BaseSightRange)
@@ -1150,11 +1157,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (t.EntityType == EntityType.Player)
                 {
                     Map.Player.UpdateVisibility();
-                    events.Add(new()
+                    if (Map.Snapshot != null)
                     {
-                        DisplayEventType = DisplayEventType.RedrawMap,
-                        Params = new() { Map.Snapshot.GetTiles() }
-                    });
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.RedrawMap,
+                            Params = new() { Map.Snapshot.GetTiles() }
+                        });
+                    }
                 }
                 else
                 {
