@@ -61,7 +61,7 @@ function Get-GodotPath {
         }
     }
     
-    $godotPath = Read-Host "Please provide the path to the Godot executable"
+    $godotPath = Read-Host "Please provide the path to the Godot console executable (ends with _console.exe)"
     $godotPath = $godotPath.Trim() # Remove any extra newline or whitespace
 
     if (Test-Path $godotPath) {
