@@ -502,6 +502,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (paramsObject.FromPockets)
                 {
                     amount = Math.Min(amount, s.CurrencyCarried);
+                    if (amount <= 0)
+                        return false;
                     s.CurrencyCarried -= amount;
                 }
                 if (s.CurrencyCarried < 0)
@@ -548,6 +550,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (t.CurrencyCarried > 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 amount = Math.Min(amount, t.CurrencyCarried);
+                if (amount <= 0)
+                    return false;
                 t.CurrencyCarried -= amount;
                 if (t.CurrencyCarried < 0)
                     t.CurrencyCarried = 0;

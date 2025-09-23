@@ -270,15 +270,15 @@ namespace RogueCustomsGameEngine.Utils.Effects
             if (paramsObject.Target is not Character t)
                 throw new ArgumentException($"Attempted to choose one of {paramsObject.Target.Name}'s Interactions when it's not a Character.");
 
-            var actionsNotFromConsumables = t.OnAttack.Where(oa => oa.User is not Item i || !i.IsConsumable).ToList();
+            var actionsNotFromNotEquippables = t.OnAttack.Where(oa => oa.User is not Item i || i.IsEquippable).ToList();
 
             // Can't choose Interactions not from Consumables if there aren't any
-            if (actionsNotFromConsumables.Count == 0)
+            if (actionsNotFromNotEquippables.Count == 0)
                 return false;
 
             var optionDtos = new ActionListDto(t.Name);
 
-            foreach (var interaction in actionsNotFromConsumables)
+            foreach (var interaction in actionsNotFromNotEquippables)
             {
                 optionDtos.AddAction(interaction, Map);
             }
@@ -314,7 +314,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             if (chosenOption != null)
             {
-                chosenOptionSchool = actionsNotFromConsumables.Find(a => a.SelectionId == chosenOption).School.Id;
+                chosenOptionSchool = actionsNotFromNotEquippables.Find(a => a.SelectionId == chosenOption).School.Id;
 
                 if (!Map.HasFlag(optionFlag))
                 {
