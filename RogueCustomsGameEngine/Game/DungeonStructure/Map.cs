@@ -916,6 +916,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 foreach (var initialEquipmentId in entityClass.InitialEquipmentIds)
                 {
+                    if (string.IsNullOrWhiteSpace(initialEquipmentId)) continue;
                     var itemClass = Dungeon.ItemClasses.Find(ic => ic.Id.Equals(initialEquipmentId))
                         ?? throw new InvalidDataException($"Class {c.ClassId} has invalid Initial Equipment {initialEquipmentId}!");
                     var equippedItem = new Item(itemClass, 1, this)

@@ -43,6 +43,7 @@ namespace RogueCustomsDungeonEditor.Controls
                     dgvEquipment.Rows.Add(slot.Id, "");
                     var dropdown = (DataGridViewComboBoxCell)dgvEquipment.Rows[dgvEquipment.Rows.Count - 1].Cells[1];
                     dropdown.Items.Clear();
+                    dropdown.Items.Add("");
                     dropdown.Items.AddRange(validItemsForSlots[slot.Id].ToArray());
                 }
                 dungeon = value;

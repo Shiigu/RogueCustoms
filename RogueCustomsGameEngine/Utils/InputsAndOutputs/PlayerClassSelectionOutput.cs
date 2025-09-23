@@ -83,6 +83,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 
             foreach (var itemId in characterClass.InitialEquipmentIds)
             {
+                if (string.IsNullOrWhiteSpace(itemId)) continue;
                 var equipmentItemClass = dungeon.ItemClasses.Find(c => c.ItemType.Usability == Enums.ItemUsability.Equip && c.Id.Equals(itemId));
                 if(equipmentItemClass != null)
                     StartingEquipment.Add(new ItemDetailDto(equipmentItemClass, dungeon));
