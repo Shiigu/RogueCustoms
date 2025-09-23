@@ -224,7 +224,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                             ["PickId"] = "No Drop",
                             ["Weight"] = 100
                         }
-                    }
+                    },
                     ["OverridesQualityLevelOddsOfItems"] = false,
                     ["QualityLevelOdds"] = new JsonArray()
                     {
