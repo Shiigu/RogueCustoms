@@ -114,7 +114,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             foreach (var equipmentId in characterJson.InitialEquipment)
             {
                 var itemData = dungeonJson.Items.Find(c => c.Id.Equals(equipmentId));
-                if (string.IsNullOrWhiteSpace(equipmentId) || itemData == null)
+                if (itemData == null)
                 {
                     messages.AddError($"One of the Starting Equipment, {equipmentId}, is not valid.");
                 }
