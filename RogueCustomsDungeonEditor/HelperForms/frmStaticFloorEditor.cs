@@ -173,6 +173,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 tlpEditor.Height += (pnlGridSection.Height - regularGridHeight);
             else
                 tlpEditor.Height -= (regularGridHeight - pnlGridSection.Height);
+            tcEntitySpawns.Height = pnlGridSection.Height;
+            dgvWaypoints.Height = tcEntitySpawns.Height - (int) (fklblWaypoints.Height * 1.5);
             this.Height = tlpEditor.Height;
         }
 
