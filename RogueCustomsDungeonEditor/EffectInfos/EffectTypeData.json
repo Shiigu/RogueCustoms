@@ -2461,7 +2461,7 @@
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": true,
-    "CanHaveOnSuccessOnFailureChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
     "IsControlBlock": false,
     "Parameters": [
       {

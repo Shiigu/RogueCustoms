@@ -23,6 +23,7 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsDungeonEditor.Clipboard;
 using RogueCustomsDungeonEditor.Controls.Tabs;
+using System.Diagnostics;
 
 namespace RogueCustomsDungeonEditor
 {
@@ -192,6 +193,15 @@ namespace RogueCustomsDungeonEditor
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void getHelpHereToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/Shiigu/RogueCustoms/wiki",
+                UseShellExecute = true
+            });
         }
 
         #endregion
@@ -1341,7 +1351,7 @@ namespace RogueCustomsDungeonEditor
             if (localeClone.AddMissingMandatoryLocalesIfNeeded(LocaleTemplate, MandatoryLocaleKeys))
             {
                 DirtyTab = true;
-                if(!IsNewObject)
+                if (!IsNewObject)
                     MessageBox.Show(
                         "This Locale is missing some mandatory keys.\n\nThey have been added at the end of the table. Please check them.",
                         "Locale",
@@ -1601,7 +1611,7 @@ namespace RogueCustomsDungeonEditor
             {
                 if (ActiveDungeon.TileTypeInfos.Exists(tti => tti.Id.Equals(inputBoxResult)))
                 {
-                    if(FormConstants.DefaultTileTypes.Any(dtt => dtt.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                    if (FormConstants.DefaultTileTypes.Any(dtt => dtt.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         MessageBox.Show(
                             $"{inputBoxResult} is a default Tile Type.\n\nPlease pick another.",
@@ -1947,7 +1957,7 @@ namespace RogueCustomsDungeonEditor
         #endregion
 
         #region Faction
-        
+
         public void LoadFactionInfoFor(FactionInfo faction)
         {
             FactionTab.LoadData(ActiveDungeon, faction);
@@ -2113,7 +2123,7 @@ namespace RogueCustomsDungeonEditor
             var inputBoxResult = InputBox.Show("Indicate the Stat Identifier", "Save Stat As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(CharacterStatInfo)));
             if (inputBoxResult != null)
             {
-                if(FormConstants.DefaultStats.Exists(s => s.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                if (FormConstants.DefaultStats.Exists(s => s.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     MessageBox.Show(
                         $"{inputBoxResult} is a default Stat.\n\nPlease pick another.",
@@ -2205,7 +2215,7 @@ namespace RogueCustomsDungeonEditor
                     ActiveDungeon.CharacterStats.RemoveAll(s => s.Id.Equals(activeStat.Id));
                     foreach (var stat in ActiveDungeon.CharacterStats)
                     {
-                        if(stat.RegeneratesStatId != null && stat.RegeneratesStatId.Equals(removedId))
+                        if (stat.RegeneratesStatId != null && stat.RegeneratesStatId.Equals(removedId))
                         {
                             stat.StatType = "Decimal";
                             stat.RegeneratesStatId = string.Empty;
@@ -2642,7 +2652,7 @@ namespace RogueCustomsDungeonEditor
                 tvDungeonInfo.Focus();
             }
         }
-        
+
         private void PlayerClassTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
@@ -2662,7 +2672,7 @@ namespace RogueCustomsDungeonEditor
                 return SaveNPCAs();
             return SaveNPCToDungeon(NPCTab.LoadedNPC.Id);
         }
-        
+
         private bool SaveNPCAs()
         {
             var inputBoxResult = InputBox.Show("Indicate the NPC Identifier", "Save NPC As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(NPCInfo)));

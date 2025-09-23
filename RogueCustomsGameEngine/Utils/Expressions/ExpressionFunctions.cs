@@ -331,9 +331,9 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             if (entityToCheck is not Character c)
                 throw new ArgumentException("Invalid entity in RollAnAction.");
 
-            var actionsNotFromConsumables = c.OnAttack.Where(oa => oa.User is not Item i || !i.IsConsumable).ToList();
+            var actionsNotFromNotEquippables = c.OnAttack.Where(oa => oa.User is not Item i || i.IsEquippable).ToList();
 
-            return actionsNotFromConsumables.Count > 0 ? actionsNotFromConsumables.TakeRandomElement(Rng).SelectionId : "<<NULL>>";
+            return actionsNotFromNotEquippables.Count > 0 ? actionsNotFromNotEquippables.TakeRandomElement(Rng).SelectionId : "<<NULL>>";
         }
 
         public static string HASAWAYPOINT(EffectCallerParams args, string[] parameters)

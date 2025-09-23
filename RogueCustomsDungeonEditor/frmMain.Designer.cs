@@ -96,6 +96,7 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
+            getHelpHereToolStripMenuItem = new ToolStripMenuItem();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -126,7 +127,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // msMenu
             // 
-            msMenu.Items.AddRange(new ToolStripItem[] { editorToolStripMenuItem });
+            msMenu.Items.AddRange(new ToolStripItem[] { editorToolStripMenuItem, getHelpHereToolStripMenuItem });
             msMenu.Location = new System.Drawing.Point(0, 0);
             msMenu.Name = "msMenu";
             msMenu.Size = new System.Drawing.Size(967, 24);
@@ -667,7 +668,7 @@ namespace RogueCustomsDungeonEditor
             NPCTab.Dock = DockStyle.Top;
             NPCTab.Location = new System.Drawing.Point(0, 0);
             NPCTab.Name = "NPCTab";
-            NPCTab.Size = new System.Drawing.Size(725, 1337);
+            NPCTab.Size = new System.Drawing.Size(725, 1385);
             NPCTab.TabIndex = 0;
             // 
             // tpItem
@@ -777,6 +778,13 @@ namespace RogueCustomsDungeonEditor
             // 
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
+            // 
+            // getHelpHereToolStripMenuItem
+            // 
+            getHelpHereToolStripMenuItem.Name = "getHelpHereToolStripMenuItem";
+            getHelpHereToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            getHelpHereToolStripMenuItem.Text = "Get help here!";
+            getHelpHereToolStripMenuItem.Click += getHelpHereToolStripMenuItem_Click;
             // 
             // frmMain
             // 
@@ -906,5 +914,6 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ItemTypesTab ItemTypesTab;
         private TabPage tpNPCModifiers;
         private Controls.Tabs.NPCModifierTab NPCModifiersTab;
+        private ToolStripMenuItem getHelpHereToolStripMenuItem;
     }
 }
