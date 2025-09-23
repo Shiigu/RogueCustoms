@@ -28,18 +28,18 @@
   <ItemGroup>
     <ProjectReference Include="..\RogueCustomsGameEngine\RogueCustomsGameEngine.csproj" />
   </ItemGroup>
-   <PropertyGroup>
+  <PropertyGroup>
     <StartAction>Program</StartAction>
     <StartProgram>D:\Descargas\Godot_v4.4-stable_mono_win64\Godot_v4.4-stable_mono_win64.exe</StartProgram>
     <StartArguments>--path "D:\Programación\Rogue Customs\RogueCustomsGodotClient"</StartArguments>
   </PropertyGroup>
-   <ItemGroup>
-     <PackageReference Update="Godot.SourceGenerators" Version="4.4.1" />
-   </ItemGroup>
-   <ItemGroup>
-     <PackageReference Update="GodotSharp" Version="4.4.1" />
-   </ItemGroup>
-   <ItemGroup>
-     <PackageReference Update="GodotSharpEditor" Version="4.4.1" />
-   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Godot.SourceGenerators" Version="4.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="GodotSharp" Version="4.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="GodotSharpEditor" Version="4.4.1" />
+  </ItemGroup>
 </Project>
