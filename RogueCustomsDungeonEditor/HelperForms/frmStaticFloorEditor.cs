@@ -184,6 +184,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             dgvCharacters.Rows.Clear();
             dgvItems.Rows.Clear();
 
+            var emptyToolBoxItem = ToolBoxList.Find(ti => ti.TileTypeId == "Empty");
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -193,13 +195,13 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         X = x + 1,
                         Y = y + 1,
                         TileType = RoomTileType.NormalTileType,
-                        ConsoleRepresentation = new ConsoleRepresentation
+                        ConsoleRepresentation = (emptyToolBoxItem != default) ? emptyToolBoxItem.Icon : new ConsoleRepresentation
                         {
                             Character = ' ',
                             BackgroundColor = new GameColor(Color.Black),
                             ForegroundColor = new GameColor(Color.White)
                         },
-                        TileTypeId = "Empty"
+                        TileTypeId = (emptyToolBoxItem != default) ? emptyToolBoxItem.TileTypeId : "Empty"
                     };
                     _tiles[x, y].BaseConsoleRepresentation = _tiles[x, y].ConsoleRepresentation.Clone();
                 }
@@ -444,21 +446,26 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private List<(ConsoleRepresentation Icon, string Description, RoomTileType Type, string TileTypeId)> GetListForToolbox()
         {
             var toolboxList = new List<(ConsoleRepresentation Icon, string Description, RoomTileType Type, string TileTypeId)>();
-            var firstTileSet = ActiveDungeon.TileSetInfos[0];
+            var floorTileSet = CurrentFloor.TileSetId;
+            var tileSetToUse = ActiveDungeon.TileSetInfos[0];
+            if (!string.IsNullOrWhiteSpace(floorTileSet))
+            {
+                tileSetToUse = ActiveDungeon.TileSetInfos.Find(ts => ts.Id.Equals(floorTileSet)) ?? ActiveDungeon.TileSetInfos[0];
+            }
 
-            var emptyTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Empty");
+            var emptyTileTypeSet = tileSetToUse.TileTypes.Find(tt => tt.TileTypeId == "Empty");
             toolboxList.Add((emptyTileTypeSet.Central, "Empty Tile", RoomTileType.NormalTileType, "Empty"));
 
-            var floorTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Floor");
+            var floorTileTypeSet = tileSetToUse.TileTypes.Find(tt => tt.TileTypeId == "Floor");
             toolboxList.Add((floorTileTypeSet.Central, "Floor", RoomTileType.NormalTileType, "Floor"));
 
-            var wallTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Wall");
+            var wallTileTypeSet = tileSetToUse.TileTypes.Find(tt => tt.TileTypeId == "Wall");
             toolboxList.Add((wallTileTypeSet.Horizontal, "Wall", RoomTileType.NormalTileType, "Wall"));
 
-            var hallwayTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Hallway");
+            var hallwayTileTypeSet = tileSetToUse.TileTypes.Find(tt => tt.TileTypeId == "Hallway");
             toolboxList.Add((hallwayTileTypeSet.Connector, "Hallway", RoomTileType.NormalTileType, "Hallway"));
 
-            var stairsTileTypeSet = firstTileSet.TileTypes.Find(tt => tt.TileTypeId == "Stairs");
+            var stairsTileTypeSet = tileSetToUse.TileTypes.Find(tt => tt.TileTypeId == "Stairs");
             toolboxList.Add((stairsTileTypeSet.Central, "Stairs", RoomTileType.Stairs, "Stairs"));
 
             var waypointIcon = new ConsoleRepresentation
@@ -469,7 +476,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             };
             toolboxList.Add((waypointIcon, "Waypoint", RoomTileType.Waypoint, "Floor"));
 
-            foreach (var tileTypeSet in firstTileSet.TileTypes.Where(tt => tt.TileTypeId != "Empty" && tt.TileTypeId != "Floor" && tt.TileTypeId != "Wall" && tt.TileTypeId != "Hallway" && tt.TileTypeId != "Stairs"))
+            foreach (var tileTypeSet in tileSetToUse.TileTypes.Where(tt => tt.TileTypeId != "Empty" && tt.TileTypeId != "Floor" && tt.TileTypeId != "Wall" && tt.TileTypeId != "Hallway" && tt.TileTypeId != "Stairs"))
             {
                 toolboxList.Add((tileTypeSet.Central, tileTypeSet.TileTypeId, RoomTileType.SpecialTileType, "Floor"));
             }
