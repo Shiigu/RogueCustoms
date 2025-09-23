@@ -58,6 +58,7 @@ public partial class MapPanel : GamePanel
 
     private void SetUp()
     {
+        _aimingSquare.Disabled = true;
         _tileMap.Text = "";
         _tileMap.BbcodeEnabled = true;
         CursorMapLocation = null;
@@ -73,6 +74,13 @@ public partial class MapPanel : GamePanel
         var dungeonStatus = _globalState.DungeonInfo;
         _floorTitleLabel.Text = dungeonStatus.FloorName;
 
+        CalculateDisplayBounds(dungeonStatus);
+
+        UpdateBuffer(dungeonStatus.Tiles);
+    }
+
+    public void CalculateDisplayBounds(DungeonDto dungeonStatus)
+    {
         var playerEntity = dungeonStatus.PlayerEntity;
         if (playerEntity != null)
         {
@@ -125,9 +133,6 @@ public partial class MapPanel : GamePanel
                 TopLeftCornerPosition.Y = ((_mapHeightInTiles - dungeonStatus.Height) / 2);
                 heightToDisplay = dungeonStatus.Height;
             }
-
-            //if (dungeonStatus.TurnCount <= 1 || dungeonStatus.JustLoaded)
-                UpdateBuffer(dungeonStatus.Tiles);
         }
     }
 
@@ -149,8 +154,8 @@ public partial class MapPanel : GamePanel
             for (var x = 0; x < widthToDisplay; x++)
             {
                 var rep = newTiles == null
-                    ? dungeonStatus.GetTileConsoleRepresentationFromCoordinates(x, y)
-                    : newTiles.GetTileConsoleRepresentationFromCoordinates(x, y);
+                    ? dungeonStatus.GetTileConsoleRepresentationFromCoordinates(TopLeftCornerCoords.X + x, TopLeftCornerCoords.Y + y)
+                    : newTiles.GetTileConsoleRepresentationFromCoordinates(TopLeftCornerCoords.X + x, TopLeftCornerCoords.Y + y);
                 _tileBuffer[x, y] = rep.ToBbCodeRepresentation();
             }
         }
@@ -182,12 +187,17 @@ public partial class MapPanel : GamePanel
     public void UpdateTileRepresentation(Vector2I position, ConsoleRepresentation consoleRepresentation)
     {
         if (_globalState.DungeonInfo == null) return;
+
+        var truePosition = GetPositionForCoordinates(position);
+
+        if (truePosition.X < 0 || truePosition.X >= _mapWidthInTiles || truePosition.Y < 0 || truePosition.Y >= _mapHeightInTiles) return;
+
         var newRep = consoleRepresentation.ToBbCodeRepresentation();
 
-        if (_tileBuffer[position.X, position.Y] == newRep)
+        if (_tileBuffer[(int) truePosition.X, (int) truePosition.Y] == newRep)
             return;
 
-        _tileBuffer[position.X, position.Y] = newRep;
+        _tileBuffer[(int) truePosition.X, (int) truePosition.Y] = newRep;
     }
 
     public void StartTargeting()
@@ -210,7 +220,8 @@ public partial class MapPanel : GamePanel
         var tile = dungeonStatus.GetTileFromCoordinates((int) newCoordinates.X, (int) newCoordinates.Y);
         if (!tile.Targetable) return;
         CursorMapLocation = newCoordinates;
-        Render();
+        CalculateDisplayBounds(dungeonStatus);
+        UpdateBuffer(dungeonStatus.GetTiles());
         _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
     }
 
@@ -219,7 +230,8 @@ public partial class MapPanel : GamePanel
         if (_aimingSquare.Disabled || _tileBuffer == null) return;
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
-        Render();
+        CalculateDisplayBounds(_globalState.DungeonInfo);
+        UpdateBuffer(_globalState.DungeonInfo.GetTiles());
     }
 
     public bool IsTargeting()

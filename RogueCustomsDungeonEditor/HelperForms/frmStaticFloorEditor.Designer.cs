@@ -342,7 +342,6 @@
             // 
             dgvWaypoints.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvWaypoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { WaypointX, WaypointY, WaypointId });
-            dgvWaypoints.Dock = System.Windows.Forms.DockStyle.Top;
             dgvWaypoints.Location = new System.Drawing.Point(3, 3);
             dgvWaypoints.Name = "dgvWaypoints";
             dgvWaypoints.Size = new System.Drawing.Size(395, 270);

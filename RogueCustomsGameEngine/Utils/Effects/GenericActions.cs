@@ -667,21 +667,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 c.Position = targetPosition;
                 var targetTile = c.ContainingTile;
 
-                if (Map.Player.CanSee(initialTile) || Map.Player.CanSee(targetTile))
-                {
-                    if (!Map.IsDebugMode)
-                    {
-                        if (c.EntityType == EntityType.Player)
-                        {
-                            events.Add(new()
-                            {
-                                DisplayEventType = DisplayEventType.RedrawMap,
-                                Params = new() { Map.Snapshot.GetTiles() }
-                            });
-                        }
-                    }
-                }
-
                 if (c == Map.Player)
                 {
                     events.Add(new()
@@ -699,6 +684,21 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Params = new() { c.ContainingTile.Type == TileType.Stairs }
                     }
                     );
+                }
+
+                if (Map.Player.CanSee(initialTile) || Map.Player.CanSee(targetTile))
+                {
+                    if (!Map.IsDebugMode)
+                    {
+                        if (c.EntityType == EntityType.Player)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.RedrawMap,
+                                Params = new() { Map.Snapshot.GetTiles() }
+                            });
+                        }
+                    }
                 }
 
                 if (c == Map.Player || Map.Player.CanSee(c))

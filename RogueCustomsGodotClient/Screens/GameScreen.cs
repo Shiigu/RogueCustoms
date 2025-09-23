@@ -197,6 +197,8 @@ public partial class GameScreen : Control
                     await UpdateUIViaEvents();
 
                 _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
+                _mapPanel.CalculateDisplayBounds(dungeonStatus);
+                _mapPanel.UpdateBuffer(dungeonStatus.GetTiles());
 
                 _lastTurn = dungeonStatus.TurnCount;
 
@@ -395,6 +397,8 @@ public partial class GameScreen : Control
                         position = displayEvent.Params[0] as GamePoint;
                         _globalState.DungeonInfo.PlayerEntity.X = position.X;
                         _globalState.DungeonInfo.PlayerEntity.Y = position.Y;
+                        _mapPanel.CalculateDisplayBounds(_globalState.DungeonInfo);
+                        _mapPanel.UpdateBuffer(_globalState.DungeonInfo.Tiles);
                         break;
                     case DisplayEventType.UpdateExperienceBar:
                         var experience = (int) displayEvent.Params[0];
@@ -406,6 +410,7 @@ public partial class GameScreen : Control
                         displayEvent.Params[0] = true;
                         break;
                     case DisplayEventType.RedrawMap:
+                        _mapPanel.CalculateDisplayBounds(_globalState.DungeonInfo);
                         if (displayEvent.Params.Count > 0)
                         {
                             var tiles = displayEvent.Params[0] as List<TileDto>;
