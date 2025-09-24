@@ -100,7 +100,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     }
                 }
                 if(t.OnStood != null && t.LivingCharacter != null)
-                    await t.OnStood.Do(t.LivingCharacter, t.LivingCharacter, false, false);
+                    await t.OnStood.Do(t.LivingCharacter, t.LivingCharacter, false);
             }
 
             Map.DisplayEvents.Add(($"A {Map.Locale[$"TileType{t.Type}"]} got created", events));

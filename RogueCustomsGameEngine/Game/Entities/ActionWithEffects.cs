@@ -104,20 +104,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             return info != null && !string.IsNullOrWhiteSpace(info.Id) ? new ActionWithEffects(info, actionSchools) : null;
         }
 
-        public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone, bool clearIterationFlags = true)
+        public async Task<List<string>> Do(Entity source, ITargetable target, bool turnSourceVisibleWhenDone)
         {
-            if (clearIterationFlags)
-            {
-                foreach (var character in Map.GetCharacters().Where(c => c.PickedForSwap))
-                {
-                    character.PickedForSwap = false;
-                }
-                foreach (var tile in Map.Tiles.Where(t => t.PickedForSwap))
-                {
-                    tile.PickedForSwap = false;
-                }
-            }
-
             if (source != null && source.Position != null && !source.Visible && turnSourceVisibleWhenDone)
             {
                 source.Visible = true;
