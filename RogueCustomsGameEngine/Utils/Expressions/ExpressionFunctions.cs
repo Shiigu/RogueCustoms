@@ -366,7 +366,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
 
             var waypointId = parameters[1].ToLower();
 
-            return (c.ContainingTile.WaypointId != null && c.ContainingTile.WaypointId.Equals(waypointId)).ToString();
+            return (c.ContainingTile.WaypointId != null && c.ContainingTile.WaypointId.Equals(waypointId, StringComparison.InvariantCultureIgnoreCase)).ToString();
         }
 
         public static string HASACTIVEAFFIX(EffectCallerParams args, string[] parameters)

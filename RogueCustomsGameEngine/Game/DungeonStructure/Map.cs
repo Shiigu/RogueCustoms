@@ -1341,6 +1341,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { SpecialEffect.DoorClosed }
                             });
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.SetOnStairs,
+                                Params = new() { currentTile.Type == TileType.Stairs }
+                            });
                             AppendMessage(Locale["CharacterBumpedDoor"].Format(new { CharacterName = Player.Name, DoorName = Locale[$"DoorType{targetTile.DoorId}"] }), Color.White, events);
                             DisplayEvents.Add(("Bump door", events));
                         }
@@ -1351,6 +1356,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                     new() {
                                         DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                         Params = new() { SpecialEffect.Bumped }
+                                    },
+                                    new()
+                                    {
+                                        DisplayEventType = DisplayEventType.SetOnStairs,
+                                        Params = new() { currentTile.Type == TileType.Stairs }
                                     }
                                 }
                             ));
