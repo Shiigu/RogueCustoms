@@ -807,7 +807,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
             Name = "frmActionEdit";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Action Editor";
-            FormClosing += frmActionEdit_FormClosing;
             tcActionInfo.ResumeLayout(false);
             tpActionBasicInfo.ResumeLayout(false);
             tpActionBasicInfo.PerformLayout();

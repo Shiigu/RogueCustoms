@@ -182,6 +182,7 @@ namespace RogueCustomsDungeonEditor.Controls
         {
             InitializeComponent();
             ActionDescription = Name;
+            btnPaste.Enabled = ClipboardManager.ContainsData(FormConstants.ActionClipboardKey);
             ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
         }
 
@@ -226,22 +227,19 @@ namespace RogueCustomsDungeonEditor.Controls
         private void btnPaste_Click(object sender, EventArgs e)
         {
             if (!ClipboardManager.ContainsData(FormConstants.ActionClipboardKey)) return;
-            var messageBoxResult = DialogResult.Yes;
             if (!action.IsNullOrEmpty())
             {
-                messageBoxResult = MessageBox.Show(
+                var messageBoxResult = MessageBox.Show(
                     $"Do you want to overwrite the currently-set Action?\n\nNOTE: This operation is NOT reversible!",
                     "Paste Action",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                     );
+                if (messageBoxResult != DialogResult.Yes) return;
             }
-            if (messageBoxResult == DialogResult.Yes)
-            {
-                Action = ClipboardManager.Paste<ActionWithEffectsInfo>(FormConstants.ActionClipboardKey);
-                btnCopy.Enabled = true;
-                ActionContentsChanged?.Invoke(this, EventArgs.Empty);
-            }
+            Action = ClipboardManager.Paste<ActionWithEffectsInfo>(FormConstants.ActionClipboardKey);
+            btnCopy.Enabled = true;
+            ActionContentsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

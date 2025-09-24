@@ -221,6 +221,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 lblNoCooldown.Visible = nudCooldown.Value < 2;
                 lblInfiniteUse.Visible = nudMaximumUses.Value == 0;
             }
+            btnPasteStep.Enabled = ClipboardManager.ContainsData(FormConstants.StepClipboardKey);
             ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
         }
 
@@ -975,11 +976,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
         private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
         {
             btnPasteStep.Enabled = SelectedNode != null && ClipboardManager.ContainsData(FormConstants.StepClipboardKey);
-        }
-
-        private void frmActionEdit_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            ClipboardManager.RemoveData(FormConstants.StepClipboardKey);
         }
 
         private void tvEffectSequence_DrawNode(object sender, DrawTreeNodeEventArgs e)
