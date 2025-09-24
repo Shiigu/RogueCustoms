@@ -102,7 +102,6 @@ AttackCriticalHitText
 AttackMissedText
 AttackDealtNoDamageText
 ItemSteppedText
-TileIsOccupied
 MonsterHouseWarningLogMessage
 MonsterHouseWarningMessage
 MonsterHouseWarningHeader
@@ -113,10 +112,10 @@ CharacterActionCooldownDecreased
 CharacterActionUsesMaximized
 CharacterActionUsesIncreased
 CharacterActionUsesDecreased
-CharacterSightRangeGotModified
 CharacterRevealsFloor
 CharacterRevealsTraps
 CurrencyDisplayName
+CurrencyName
 CharacterPicksCurrency
 SellItemWindowText
 BuyItemWindowText
