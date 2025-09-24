@@ -109,7 +109,7 @@ namespace RogueCustomsGameEngine.Management
         public DungeonSaveGameDto SaveDungeon()
         {
             using var memoryStream = new MemoryStream();
-            using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
+            using var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress, true);
             var formatter = new BinaryFormatter()
             {
                 Binder = new CustomSerializationBinder()
