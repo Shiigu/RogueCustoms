@@ -367,12 +367,17 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 defenseTestModification.Amount = target.Defense.Base * -1; // Defense is turned into 0
                             }
 
-                            target.AlteredStatuses.Add(new AlteredStatus(sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.AlteredStatus), sampleDungeon.CurrentFloor)
+                            var sampleAlteredStatusClass = sampleDungeon.Classes.Find(ec => ec.EntityType == EntityType.AlteredStatus);
+
+                            if (sampleAlteredStatusClass != null)
                             {
-                                RemainingTurns = -1,
-                                CleansedByCleanseActions = true,
-                                ClassId = "test"    // So that it doesn't interfere with regular statuses
-                            });
+                                target.AlteredStatuses.Add(new AlteredStatus(sampleAlteredStatusClass, sampleDungeon.CurrentFloor)
+                                {
+                                    RemainingTurns = -1,
+                                    CleansedByCleanseActions = true,
+                                    ClassId = "test"    // So that it doesn't interfere with regular statuses
+                                });
+                            }
                             for (int i = 0; i < 100; i++)
                             {
                                 if (await nextEffect.TestFunction(owner, source, target))
