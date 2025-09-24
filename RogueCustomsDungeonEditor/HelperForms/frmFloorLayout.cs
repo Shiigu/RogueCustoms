@@ -66,8 +66,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
             tlpRoomDisposition.Controls.Clear();
             var rows = MaxRows + MaxRows - 1;
             var columns = MaxColumns + MaxColumns - 1;
-            var generatorRows = GeneratorInfo.Rows + GeneratorInfo.Rows - 1;
-            var generatorColumns = GeneratorInfo.Columns + GeneratorInfo.Columns - 1;
+            var generatorRows = GeneratorInfo != null ? GeneratorInfo.Rows + GeneratorInfo.Rows - 1 : rows;
+            var generatorColumns = GeneratorInfo != null ? GeneratorInfo.Columns + GeneratorInfo.Columns - 1 : columns;
             tlpRoomDisposition.Width = 24 * columns;
             tlpRoomDisposition.Height = 24 * rows;
             tlpRoomDisposition.ColumnCount = columns;
@@ -83,10 +83,26 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 rowStyle.Height = 24;
             }
             var tileIndexToDraw = 0;
+            var roomDispositionToUse = GeneratorInfo?.RoomDisposition;
+            if (roomDispositionToUse == null)
+            {
+                var defaultRoomDispositionStringBuilder = new StringBuilder();
+                for (int x = 0; x < rows; x++)
+                {
+                    for (int y = 0; y < columns; y++)
+                    {
+                        if (x % 2 != 0 && y % 2 != 0)
+                            defaultRoomDispositionStringBuilder.Append(' ');
+                        else
+                            defaultRoomDispositionStringBuilder.Append('?');
+                    }
+                }
+                roomDispositionToUse = defaultRoomDispositionStringBuilder.ToString();
+            }
             for (int i = 0; i < rows * columns; i++)
             {
                 var isUnusedTile = false;
-                var tile = GeneratorInfo.RoomDisposition.ElementAtOrDefault(tileIndexToDraw);
+                var tile = roomDispositionToUse.ElementAtOrDefault(tileIndexToDraw);
                 (int tableX, int tableY) = (i / columns, i % columns);
                 (int generatorX, int generatorY) = (tileIndexToDraw / generatorColumns, tileIndexToDraw % generatorColumns);
                 if (tableX > generatorX || tableY > generatorY)
