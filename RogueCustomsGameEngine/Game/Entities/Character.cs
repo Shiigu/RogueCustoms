@@ -578,18 +578,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var ownerAsItem = action.User as Item;
 
-                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
-
                 foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
                 {
                     await als.BeforeAttack.Do(this, target, true);
                 }
 
-                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified && ownerAsItem.IsConsumable)
                 {
                     var previousName = ownerAsItem.Name;
-                    if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
+                    if (ownerAsItem.OnUse == action)
                         actionToPerform = ownerAsItem.OnUse;
+                    else if (!ownerAsItem.OwnOnAttack.Contains(action))
+                        return;
                     ownerAsItem.GotSpecificallyIdentified = true;
                     ownerAsItem.UpdateNameIfNeeded();
                     if(!Map.Player.IdentifiedItemClasses.Contains(ownerAsItem.ClassId))
@@ -637,17 +637,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (this == Map.Player)
             {
                 var ownerAsItem = action.User as Item;
-
-                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
-
                 foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
                 {
                     await als.BeforeAttack.Do(this, target, true);
                 }
 
-                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified && ownerAsItem.IsConsumable)
                 {
                     var previousName = ownerAsItem.Name;
+                    if (ownerAsItem.OnUse == action)
+                        actionToPerform = ownerAsItem.OnUse;
+                    else if (!ownerAsItem.OwnOnAttack.Contains(action))
+                        return;
                     if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
                         actionToPerform = ownerAsItem.OnUse;
                     ownerAsItem.GotSpecificallyIdentified = true;
@@ -696,16 +697,18 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var ownerAsItem = action.User as Item;
 
-                if (ownerAsItem != null && ownerAsItem.ItemType.Usability == ItemUsability.Use && (!ownerAsItem.IsIdentified && ownerAsItem.OnUse == null)) return;
-
                 foreach (var als in AlteredStatuses.Where(als => als.RemainingTurns > 0 && als.BeforeAttack != null))
                 {
                     await als.BeforeAttack.Do(this, target, true);
                 }
 
-                if (ownerAsItem != null && !ownerAsItem.IsIdentified)
+                if (ownerAsItem != null && !ownerAsItem.IsIdentified && ownerAsItem.IsConsumable)
                 {
                     var previousName = ownerAsItem.Name;
+                    if (ownerAsItem.OnUse == action)
+                        actionToPerform = ownerAsItem.OnUse;
+                    else if (!ownerAsItem.OwnOnAttack.Contains(action))
+                        return;
                     if (ownerAsItem.OnUse != null && ownerAsItem.OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) == 0)
                         actionToPerform = ownerAsItem.OnUse;
                     ownerAsItem.GotSpecificallyIdentified = true;

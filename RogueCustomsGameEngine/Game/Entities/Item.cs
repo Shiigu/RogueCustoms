@@ -289,17 +289,22 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task Used(Entity user)
         {
-            if (ItemType.Usability == ItemUsability.Use && (IsIdentified && OnUse == null) || (!IsIdentified && OnUse == null && OnAttack.Count == 0)) return;
-
             var isOnAttack = false;
             var actionToPerform = OnUse;
 
             if (!IsIdentified)
             {
-                if (OnUse == null && OnAttack.Count(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)) > 0)
+                if (OnUse == null)
                 {
-                    isOnAttack = true;
-                    actionToPerform = OnAttack.Where(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)).TakeRandomElement(Rng);
+                    if(OnAttack.Any(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)))
+                    {
+                        isOnAttack = true;
+                        actionToPerform = OnAttack.Where(oa => oa != null && !oa.TargetTypes.Contains(TargetType.Tile)).TakeRandomElement(Rng);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 GotSpecificallyIdentified = true;
                 UpdateNameIfNeeded();
