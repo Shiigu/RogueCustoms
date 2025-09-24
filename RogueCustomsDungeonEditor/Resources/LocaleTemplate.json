@@ -275,7 +275,7 @@
     },
     {
       "Key": "CharacterTakesDamage",
-      "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage."
+      "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of {ElementName} damage."
     },
     {
       "Key": "CharacterHealsSomeHP",
@@ -391,7 +391,7 @@
     },
     {
       "Key": "AttackDealtNoDamageText",
-      "Value": "The attack dealt no damage..."
+      "Value": "But it dealt no damage..."
     },
     {
       "Key": "KeyDescription",
@@ -456,10 +456,6 @@
     {
       "Key": "CharacterActionUsesDecreased",
       "Value": "{CharacterName}'s {ActionName} has lost {Amount} use(s)!"
-    },
-    {
-      "Key": "CharacterSightRangeGotModified",
-      "Value": "{CharacterName}'s {StatName} is now {Amount}."
     },
     {
       "Key": "CharacterRevealsFloor",
