@@ -37,10 +37,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 if (sampleDungeon != null)
                 {
                     var samplePlayerClass = dungeonJson.PlayerClasses.FirstOrDefault();
+                    var samplePlayerEntityClass = samplePlayerClass != null ? sampleDungeon.PlayerClasses.Find(pc => pc.Id.Equals(samplePlayerClass.Id)) : null;
 
-                    if (samplePlayerClass != null)
+                    if (samplePlayerEntityClass != null)
                     {
-                        var playerClassAsInstance = new PlayerCharacter(new EntityClass(samplePlayerClass, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
+                        var playerClassAsInstance = new PlayerCharacter(samplePlayerEntityClass, 1, sampleDungeon.CurrentFloor);
                         var clonedScript = scriptInstance.Clone();
                         clonedScript.User = playerClassAsInstance;
                         playerClassAsInstance.OwnOnAttack.Add(clonedScript);
@@ -54,10 +55,11 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     }
 
                     var sampleNPC = dungeonJson.NPCs.FirstOrDefault();
+                    var sampleNPCEntityClass = sampleNPC != null ? sampleDungeon.CharacterClasses.Find(pc => pc.Id.Equals(sampleNPC.Id)) : null;
 
-                    if (sampleNPC != null)
+                    if (sampleNPCEntityClass != null)
                     {
-                        var NPCAsInstance = new NonPlayableCharacter(new EntityClass(sampleNPC, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor);
+                        var NPCAsInstance = new NonPlayableCharacter(sampleNPCEntityClass, 1, sampleDungeon.CurrentFloor);
                         var clonedScript = scriptInstance.Clone();
                         clonedScript.User = NPCAsInstance;
                         NPCAsInstance.OwnOnAttack.Add(clonedScript);
