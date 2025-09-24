@@ -1094,6 +1094,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 #endregion
             }
+
+            ClearIterationFlags();
+
             Player.TookAction = false;
             foreach (var tile in Tiles.Where(t => t.Type != t.BaseType && t.RemainingTransformationTurns > 0))
             {
@@ -1116,7 +1119,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 character.RemainingMovement = (int)character.Movement.Current;
                 character.TookAction = false;
                 await character.PerformOnTurnStart();
-                if (character.ContainingTile.OnStood != null)
+                if (character.ContainingTile?.OnStood != null)
                 {
                     await character.ContainingTile.OnStood.Do(character, character, true);
                 }
@@ -1290,6 +1293,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 foreach (var aictca in aiCharactersThatCanActAlongsidePlayer)
                 {
+                    ClearIterationFlags();
                     await aictca.ProcessAI();
                 }
                 aiCharactersThatCanActAlongsidePlayer = AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && ((c.RemainingMovement > 0 || c.Movement.Current == 0) && c.CanTakeAction && !c.TookAction && c.RemainingMovement >= minRequiredMovementToAct)).OrderByDescending(c => c.RemainingMovement).ToList();
@@ -1510,6 +1514,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private async Task PlayerUseItem(Item item)
         {
+            ClearIterationFlags();
             DisplayEvents = new();
             Snapshot = new(Dungeon, this);
             if (!item.IsEquippable)
@@ -1620,6 +1625,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public async Task PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)
         {
+            ClearIterationFlags();
+
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
 
@@ -2039,6 +2046,18 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             DisplayEvents = new();
             if (refreshWholeMap)
                 Snapshot = new(Dungeon, this);
+        }
+
+        public void ClearIterationFlags()
+        {
+            foreach (var character in GetCharacters().Where(c => c.PickedForSwap))
+            {
+                character.PickedForSwap = false;
+            }
+            foreach (var tile in Tiles.Where(t => t.PickedForSwap))
+            {
+                tile.PickedForSwap = false;
+            }
         }
 
         #endregion

@@ -985,7 +985,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var clonedScript = script.Clone();
             clonedScript.User = Args.This;
-            await clonedScript.Do(Args.Source, Args.Target, false, false);
+            await clonedScript.Do(Args.Source, Args.Target, false);
 
             return true;
         }
