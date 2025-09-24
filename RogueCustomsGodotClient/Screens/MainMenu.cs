@@ -119,16 +119,23 @@ public partial class MainMenu : Control
         string fileName;
         while ((fileName = dir.GetNext()) != "")
         {
-            if (fileName.EndsWith(_globalState.SaveGameExtension))
+            try
             {
-                string filePath = $"{_globalState.SaveGameFolder}/{fileName}";
+                if (fileName.EndsWith(_globalState.SaveGameExtension))
+                {
+                    string filePath = $"{_globalState.SaveGameFolder}/{fileName}";
 
-                var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
-                var fileContent = file.GetAsText();
-                var saveGame = JsonSerializer.Deserialize<SaveGame>(fileContent);
+                    var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
+                    var fileContent = file.GetAsText();
+                    var saveGame = JsonSerializer.Deserialize<SaveGame>(fileContent);
 
-                if (saveGame.DungeonVersion.Equals(GlobalConstants.CurrentDungeonJsonVersion))
-                    _globalState.SavedGames.Add((filePath, saveGame));
+                    if (saveGame.DungeonVersion.Equals(GlobalConstants.CurrentDungeonJsonVersion))
+                        _globalState.SavedGames.Add((filePath, saveGame));
+                }
+            }
+            catch (Exception)
+            {
+                // Do nothing, if we can't load, we pretend it's not there
             }
         }
 
