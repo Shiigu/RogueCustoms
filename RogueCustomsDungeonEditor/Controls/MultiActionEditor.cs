@@ -200,6 +200,7 @@ namespace RogueCustomsDungeonEditor.Controls
         {
             InitializeComponent();
             ActionDescription = Name;
+            btnPaste.Enabled = ClipboardManager.ContainsData(FormConstants.ActionClipboardKey);
             ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
         }
         private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
@@ -283,7 +284,7 @@ namespace RogueCustomsDungeonEditor.Controls
             var action = ClipboardManager.Paste<ActionWithEffectsInfo>(FormConstants.ActionClipboardKey);
             lbActions.Items.Add(new ListBoxItem
             {
-                Text = action.Name,
+                Text = action.Id,
                 Tag = action
             });
             ActionContentsChanged?.Invoke(this, EventArgs.Empty);
