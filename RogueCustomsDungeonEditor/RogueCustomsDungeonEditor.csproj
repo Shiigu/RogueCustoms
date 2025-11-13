@@ -9,6 +9,8 @@
     <ApplicationIcon>Icons\border_outer_FILL0_wght400_GRAD0_opsz24.ico</ApplicationIcon>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 	<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+	<AssemblyVersion>1.0.1.0</AssemblyVersion>
+	<FileVersion>1.0.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
