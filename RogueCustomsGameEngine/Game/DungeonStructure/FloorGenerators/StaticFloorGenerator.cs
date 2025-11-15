@@ -86,7 +86,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             if (possibleTrapClasses.Count == 0)
                 possibleTrapClasses = _map.PossibleTrapClasses;
             var playerClasses = _map.Player != null ? _map.PossiblePlayerClasses.Where(pc => pc.Id.Equals(_map.Player.ClassId)) : _map.PossiblePlayerClasses;
-            foreach (var playerClass in _map.PossiblePlayerClasses)
+            foreach (var playerClass in playerClasses)
             {
                 if (playerClass?.Faction != null && !factionsAlliedToPlayers.Contains(playerClass.Faction))
                     factionsAlliedToPlayers.Add(playerClass.Faction);
@@ -214,7 +214,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators
             await _map.PlacePlayer(PlayerPosition);
             foreach (var npcToKeep in _map.AICharacters)
             {
-                var npcSpawns = _generatorToUse.SpecialSpawns.Where(ss => ss.ObjectToSpawn is string sid && (sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER || sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER));
+                var npcSpawns = _generatorToUse.SpecialSpawns.Where(ss => ss.ObjectToSpawn is string sid && (sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER_INCLUDING_PLAYER || sid == EngineConstants.SPAWN_ANY_ALLIED_CHARACTER));
                 npcSpawns = npcSpawns.Where(ns => !_map.GetTileFromCoordinates(ns.X, ns.Y).IsOccupied).ToList();
                 npcToKeep.Position = null;
                 if (npcSpawns.Any())
