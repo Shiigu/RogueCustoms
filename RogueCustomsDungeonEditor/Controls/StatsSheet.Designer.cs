@@ -40,25 +40,25 @@
             label81 = new System.Windows.Forms.Label();
             label96 = new System.Windows.Forms.Label();
             lblSightRangeText = new System.Windows.Forms.Label();
-            hsbStats = new System.Windows.Forms.HScrollBar();
-            chkIsUsed = new System.Windows.Forms.CheckBox();
-            label1 = new System.Windows.Forms.Label();
-            nudBase = new System.Windows.Forms.NumericUpDown();
-            lblPercentage = new System.Windows.Forms.Label();
-            nudIncreasePerLevel = new System.Windows.Forms.NumericUpDown();
-            label3 = new System.Windows.Forms.Label();
-            lblStatId = new System.Windows.Forms.Label();
             lblSightRangeId = new System.Windows.Forms.Label();
+            dgvStats = new System.Windows.Forms.DataGridView();
+            btnCopyStats = new System.Windows.Forms.Button();
+            btnPasteStats = new System.Windows.Forms.Button();
+            Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Used = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            Base = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            IncreasePerLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Minimum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Maximum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)nudMaxLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudFlatSightRange).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudBase).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudIncreasePerLevel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvStats).BeginInit();
             SuspendLayout();
             // 
             // label68
             // 
             label68.AutoSize = true;
-            label68.Location = new System.Drawing.Point(9, 246);
+            label68.Location = new System.Drawing.Point(55, 332);
             label68.Name = "label68";
             label68.Size = new System.Drawing.Size(293, 30);
             label68.TabIndex = 245;
@@ -68,7 +68,7 @@
             // chkCanGainExperience
             // 
             chkCanGainExperience.AutoSize = true;
-            chkCanGainExperience.Location = new System.Drawing.Point(9, 330);
+            chkCanGainExperience.Location = new System.Drawing.Point(55, 416);
             chkCanGainExperience.Name = "chkCanGainExperience";
             chkCanGainExperience.Size = new System.Drawing.Size(168, 19);
             chkCanGainExperience.TabIndex = 241;
@@ -77,7 +77,7 @@
             // 
             // nudMaxLevel
             // 
-            nudMaxLevel.Location = new System.Drawing.Point(115, 382);
+            nudMaxLevel.Location = new System.Drawing.Point(161, 468);
             nudMaxLevel.Name = "nudMaxLevel";
             nudMaxLevel.Size = new System.Drawing.Size(44, 23);
             nudMaxLevel.TabIndex = 240;
@@ -86,7 +86,7 @@
             // label78
             // 
             label78.AutoSize = true;
-            label78.Location = new System.Drawing.Point(6, 385);
+            label78.Location = new System.Drawing.Point(52, 471);
             label78.Name = "label78";
             label78.Size = new System.Drawing.Size(102, 15);
             label78.TabIndex = 239;
@@ -94,7 +94,7 @@
             // 
             // txtLevelUpFormula
             // 
-            txtLevelUpFormula.Location = new System.Drawing.Point(136, 354);
+            txtLevelUpFormula.Location = new System.Drawing.Point(182, 440);
             txtLevelUpFormula.Name = "txtLevelUpFormula";
             txtLevelUpFormula.Size = new System.Drawing.Size(163, 23);
             txtLevelUpFormula.TabIndex = 238;
@@ -104,7 +104,7 @@
             // label79
             // 
             label79.AutoSize = true;
-            label79.Location = new System.Drawing.Point(6, 357);
+            label79.Location = new System.Drawing.Point(52, 443);
             label79.Name = "label79";
             label79.Size = new System.Drawing.Size(125, 15);
             label79.TabIndex = 237;
@@ -114,7 +114,7 @@
             // 
             label80.AutoSize = true;
             label80.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            label80.Location = new System.Drawing.Point(81, 295);
+            label80.Location = new System.Drawing.Point(127, 381);
             label80.Name = "label80";
             label80.Size = new System.Drawing.Size(148, 32);
             label80.TabIndex = 236;
@@ -122,7 +122,7 @@
             // 
             // nudFlatSightRange
             // 
-            nudFlatSightRange.Location = new System.Drawing.Point(195, 212);
+            nudFlatSightRange.Location = new System.Drawing.Point(241, 298);
             nudFlatSightRange.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             nudFlatSightRange.Name = "nudFlatSightRange";
             nudFlatSightRange.Size = new System.Drawing.Size(54, 23);
@@ -133,7 +133,7 @@
             // 
             cmbSightRange.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbSightRange.FormattingEnabled = true;
-            cmbSightRange.Location = new System.Drawing.Point(59, 212);
+            cmbSightRange.Location = new System.Drawing.Point(105, 298);
             cmbSightRange.Name = "cmbSightRange";
             cmbSightRange.Size = new System.Drawing.Size(121, 23);
             cmbSightRange.TabIndex = 233;
@@ -142,7 +142,7 @@
             // label81
             // 
             label81.AutoSize = true;
-            label81.Location = new System.Drawing.Point(9, 215);
+            label81.Location = new System.Drawing.Point(55, 301);
             label81.Name = "label81";
             label81.Size = new System.Drawing.Size(48, 15);
             label81.TabIndex = 232;
@@ -152,7 +152,7 @@
             // 
             label96.AutoSize = true;
             label96.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            label96.Location = new System.Drawing.Point(113, 0);
+            label96.Location = new System.Drawing.Point(174, 0);
             label96.Name = "label96";
             label96.Size = new System.Drawing.Size(68, 32);
             label96.TabIndex = 207;
@@ -161,114 +161,104 @@
             // lblSightRangeText
             // 
             lblSightRangeText.AutoSize = true;
-            lblSightRangeText.Location = new System.Drawing.Point(255, 215);
+            lblSightRangeText.Location = new System.Drawing.Point(301, 301);
             lblSightRangeText.Name = "lblSightRangeText";
             lblSightRangeText.Size = new System.Drawing.Size(28, 15);
             lblSightRangeText.TabIndex = 235;
             lblSightRangeText.Text = "tiles";
             lblSightRangeText.Visible = false;
             // 
-            // hsbStats
-            // 
-            hsbStats.LargeChange = 1;
-            hsbStats.Location = new System.Drawing.Point(8, 32);
-            hsbStats.Name = "hsbStats";
-            hsbStats.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            hsbStats.Size = new System.Drawing.Size(290, 17);
-            hsbStats.TabIndex = 246;
-            hsbStats.ValueChanged += hsbStats_ValueChanged;
-            hsbStats.MouseEnter += hsbStats_MouseEnter;
-            // 
-            // chkIsUsed
-            // 
-            chkIsUsed.AutoSize = true;
-            chkIsUsed.Location = new System.Drawing.Point(8, 89);
-            chkIsUsed.Name = "chkIsUsed";
-            chkIsUsed.Size = new System.Drawing.Size(63, 19);
-            chkIsUsed.TabIndex = 247;
-            chkIsUsed.Text = "Is Used";
-            chkIsUsed.UseVisualStyleBackColor = true;
-            chkIsUsed.CheckedChanged += chkIsUsed_CheckedChanged;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(8, 120);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(115, 15);
-            label1.TabIndex = 248;
-            label1.Text = "At Level 1, it starts at";
-            // 
-            // nudBase
-            // 
-            nudBase.Location = new System.Drawing.Point(159, 118);
-            nudBase.Name = "nudBase";
-            nudBase.Size = new System.Drawing.Size(80, 23);
-            nudBase.TabIndex = 249;
-            nudBase.Leave += nudBase_Leave;
-            // 
-            // lblPercentage
-            // 
-            lblPercentage.AutoSize = true;
-            lblPercentage.Location = new System.Drawing.Point(245, 120);
-            lblPercentage.Name = "lblPercentage";
-            lblPercentage.Size = new System.Drawing.Size(17, 45);
-            lblPercentage.TabIndex = 250;
-            lblPercentage.Text = "%\r\n\r\n%";
-            // 
-            // nudIncreasePerLevel
-            // 
-            nudIncreasePerLevel.DecimalPlaces = 5;
-            nudIncreasePerLevel.Location = new System.Drawing.Point(159, 148);
-            nudIncreasePerLevel.Name = "nudIncreasePerLevel";
-            nudIncreasePerLevel.Size = new System.Drawing.Size(80, 23);
-            nudIncreasePerLevel.TabIndex = 252;
-            nudIncreasePerLevel.Leave += nudIncreasePerLevel_Leave;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(8, 150);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(145, 15);
-            label3.TabIndex = 251;
-            label3.Text = "Leveling up increases it by";
-            // 
-            // lblStatId
-            // 
-            lblStatId.AutoSize = true;
-            lblStatId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblStatId.Location = new System.Drawing.Point(104, 61);
-            lblStatId.Name = "lblStatId";
-            lblStatId.Size = new System.Drawing.Size(86, 21);
-            lblStatId.TabIndex = 253;
-            lblStatId.Text = "StatName";
-            // 
             // lblSightRangeId
             // 
             lblSightRangeId.AutoSize = true;
             lblSightRangeId.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblSightRangeId.Location = new System.Drawing.Point(97, 180);
+            lblSightRangeId.Location = new System.Drawing.Point(143, 266);
             lblSightRangeId.Name = "lblSightRangeId";
             lblSightRangeId.Size = new System.Drawing.Size(102, 21);
             lblSightRangeId.TabIndex = 254;
             lblSightRangeId.Text = "Sight Range";
             // 
+            // dgvStats
+            // 
+            dgvStats.AllowUserToAddRows = false;
+            dgvStats.AllowUserToDeleteRows = false;
+            dgvStats.AllowUserToResizeColumns = false;
+            dgvStats.AllowUserToResizeRows = false;
+            dgvStats.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvStats.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Id, Used, Base, IncreasePerLevel, Minimum, Maximum });
+            dgvStats.Location = new System.Drawing.Point(3, 35);
+            dgvStats.Name = "dgvStats";
+            dgvStats.Size = new System.Drawing.Size(399, 192);
+            dgvStats.TabIndex = 255;
+            dgvStats.CellBeginEdit += dgvStats_CellBeginEdit;
+            dgvStats.CellValueChanged += dgvStats_CellValueChanged;
+            dgvStats.CurrentCellDirtyStateChanged += dgvStats_CurrentCellDirtyStateChanged;
+            // 
+            // btnCopyStats
+            // 
+            btnCopyStats.Location = new System.Drawing.Point(127, 233);
+            btnCopyStats.Name = "btnCopyStats";
+            btnCopyStats.Size = new System.Drawing.Size(75, 23);
+            btnCopyStats.TabIndex = 256;
+            btnCopyStats.Text = "Copy";
+            btnCopyStats.UseVisualStyleBackColor = true;
+            btnCopyStats.Click += btnCopyStats_Click;
+            // 
+            // btnPasteStats
+            // 
+            btnPasteStats.Location = new System.Drawing.Point(208, 233);
+            btnPasteStats.Name = "btnPasteStats";
+            btnPasteStats.Size = new System.Drawing.Size(75, 23);
+            btnPasteStats.TabIndex = 257;
+            btnPasteStats.Text = "Paste";
+            btnPasteStats.UseVisualStyleBackColor = true;
+            btnPasteStats.Click += btnPasteStats_Click;
+            // 
+            // Id
+            // 
+            Id.Frozen = true;
+            Id.HeaderText = "Stat Id";
+            Id.Name = "Id";
+            Id.ReadOnly = true;
+            // 
+            // Used
+            // 
+            Used.HeaderText = "Used?";
+            Used.Name = "Used";
+            Used.Width = 45;
+            // 
+            // Base
+            // 
+            Base.HeaderText = "Base";
+            Base.Name = "Base";
+            Base.Width = 50;
+            // 
+            // IncreasePerLevel
+            // 
+            IncreasePerLevel.HeaderText = "Per Level...";
+            IncreasePerLevel.Name = "IncreasePerLevel";
+            IncreasePerLevel.Width = 86;
+            // 
+            // Minimum
+            // 
+            Minimum.HeaderText = "Minimum";
+            Minimum.Name = "Minimum";
+            Minimum.Width = 70;
+            // 
+            // Maximum
+            // 
+            Maximum.HeaderText = "Maximum";
+            Maximum.Name = "Maximum";
+            Maximum.Width = 70;
+            // 
             // StatsSheet
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            AutoSize = true;
-            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(btnPasteStats);
+            Controls.Add(btnCopyStats);
+            Controls.Add(dgvStats);
             Controls.Add(lblSightRangeId);
-            Controls.Add(lblStatId);
-            Controls.Add(nudIncreasePerLevel);
-            Controls.Add(label3);
-            Controls.Add(lblPercentage);
-            Controls.Add(nudBase);
-            Controls.Add(label1);
-            Controls.Add(chkIsUsed);
-            Controls.Add(hsbStats);
             Controls.Add(label68);
             Controls.Add(chkCanGainExperience);
             Controls.Add(nudMaxLevel);
@@ -282,11 +272,10 @@
             Controls.Add(label96);
             Controls.Add(lblSightRangeText);
             Name = "StatsSheet";
-            Size = new System.Drawing.Size(305, 408);
+            Size = new System.Drawing.Size(405, 508);
             ((System.ComponentModel.ISupportInitialize)nudMaxLevel).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudFlatSightRange).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudBase).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudIncreasePerLevel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvStats).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -304,14 +293,15 @@
         private System.Windows.Forms.Label label81;
         private System.Windows.Forms.Label label96;
         private System.Windows.Forms.Label lblSightRangeText;
-        private System.Windows.Forms.HScrollBar hsbStats;
-        private System.Windows.Forms.CheckBox chkIsUsed;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown nudBase;
-        private System.Windows.Forms.Label lblPercentage;
-        private System.Windows.Forms.NumericUpDown nudIncreasePerLevel;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblStatId;
         private System.Windows.Forms.Label lblSightRangeId;
+        private System.Windows.Forms.DataGridView dgvStats;
+        private System.Windows.Forms.Button btnCopyStats;
+        private System.Windows.Forms.Button btnPasteStats;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Used;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Base;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IncreasePerLevel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Minimum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Maximum;
     }
 }

@@ -15,8 +15,6 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string StatType { get; set; }
         public bool HasMax { get; set; }
         public string RegeneratesStatId { get; set; }
-        public decimal MinCap { get; set; }
-        public decimal MaxCap { get; set; }
     }
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
 }

@@ -636,8 +636,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterCustomStat",
                 HasMax = false,
-                MinCap = 0,
-                MaxCap = EngineConstants.NORMAL_STAT_CAP,
                 RegeneratesStatId = ""
             };
         }
@@ -650,8 +648,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "HP",
                 Name = "CharacterHPStat",
                 HasMax = true,
-                MinCap = 0,
-                MaxCap = EngineConstants.RESOURCE_STAT_CAP
             };
             var hpRegeneration = new StatInfo()
             {
@@ -660,8 +656,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 Name = "CharacterHPRegenerationStat",
                 RegeneratesStatId = "HP",
                 HasMax = false,
-                MinCap = 0,
-                MaxCap = EngineConstants.REGEN_STAT_CAP
             };
 
             var mp = new StatInfo()
@@ -670,8 +664,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "MP",
                 Name = "CharacterMPStat",
                 HasMax = true,
-                MinCap = 0,
-                MaxCap = EngineConstants.RESOURCE_STAT_CAP
             };
             var mpRegeneration = new StatInfo()
             {
@@ -680,8 +672,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 Name = "CharacterMPRegenerationStat",
                 RegeneratesStatId = "MP",
                 HasMax = false,
-                MinCap = 0,
-                MaxCap = EngineConstants.REGEN_STAT_CAP
             };
 
             var hunger = new StatInfo()
@@ -690,8 +680,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Hunger",
                 Name = "CharacterHungerStat",
                 HasMax = true,
-                MinCap = 0,
-                MaxCap = EngineConstants.RESOURCE_STAT_CAP
             };
 
             var attack = new StatInfo()
@@ -700,8 +688,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterAttackStat",
                 HasMax = false,
-                MinCap = -100,
-                MaxCap = EngineConstants.NORMAL_STAT_CAP
             };
 
             var defense = new StatInfo()
@@ -710,8 +696,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterDefenseStat",
                 HasMax = false,
-                MinCap = -100,
-                MaxCap = EngineConstants.NORMAL_STAT_CAP
             };
 
             var movement = new StatInfo()
@@ -720,8 +704,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Integer",
                 Name = "CharacterMovementStat",
                 HasMax = false,
-                MinCap = 0,
-                MaxCap = EngineConstants.MOVEMENT_STAT_CAP
             };
 
             var accuracy = new StatInfo()
@@ -730,8 +712,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Percentage",
                 Name = "CharacterAccuracyStat",
                 HasMax = false,
-                MinCap = EngineConstants.MIN_ACCURACY_CAP,
-                MaxCap = EngineConstants.MAX_ACCURACY_CAP
             };
 
             var evasion = new StatInfo()
@@ -740,8 +720,6 @@ namespace RogueCustomsDungeonEditor.Utils
                 StatType = "Percentage",
                 Name = "CharacterEvasionStat",
                 HasMax = false,
-                MinCap = EngineConstants.MIN_EVASION_CAP,
-                MaxCap = EngineConstants.MAX_EVASION_CAP
             };
 
             return new() { hp, hpRegeneration, mp, mpRegeneration, hunger, attack, defense, movement, accuracy, evasion };
@@ -927,7 +905,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 playerClassTemplate.Stats.Add(new CharacterStatInfo()
                 {
                     StatId = stat.Id,
-                    Base = stat.MinCap,
+                    Base = 1,
+                    Minimum = 0,
+                    Maximum = 100,
                     IncreasePerLevel = 0
                 });
             }
@@ -987,7 +967,9 @@ namespace RogueCustomsDungeonEditor.Utils
                 npcTemplate.Stats.Add(new CharacterStatInfo()
                 {
                     StatId = stat.Id,
-                    Base = stat.MinCap,
+                    Base = 1,
+                    Minimum = 0,
+                    Maximum = 100,
                     IncreasePerLevel = 0
                 });
             }

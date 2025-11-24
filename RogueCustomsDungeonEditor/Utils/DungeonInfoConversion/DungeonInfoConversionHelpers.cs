@@ -22,7 +22,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion
             { "1.2", V12ToV13Patch.Apply },
             { "1.3", V13ToV14Patch.Apply },
             { "1.4", V14ToV15Patch.Apply },
-            { "1.5", V15ToV16Patch.Apply }
+            { "1.5", V15ToV16Patch.Apply },
+            { "1.6", V16ToV17Patch.Apply }
         };
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new()

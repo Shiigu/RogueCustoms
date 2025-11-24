@@ -67,10 +67,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                     var correspondingRegenerationTargetStatInfo = dungeonJson.CharacterStats.Find(cs => cs.Id.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
                     if (correspondingRegenerationTargetStatInfo != null && !characterJson.Stats.Any(s => s.StatId.Equals(correspondingRegenerationTargetStatInfo.Id, StringComparison.InvariantCultureIgnoreCase)))
                         messages.AddError($"The Character has access to {stat.StatId} but not of {correspondingRegenerationTargetStatInfo.Id}, which it regenerates/degenerates.");
-                    if (stat.Base < correspondingStatInfo.MinCap)
-                        messages.AddError($"The Base value for {stat.StatId} is lower than its accepted Minimum.");
-                    if (stat.Base > correspondingStatInfo.MaxCap)
-                        messages.AddError($"The Base value for {stat.StatId} is higher than its accepted Maximum.");
+                    if (stat.Minimum > stat.Maximum)
+                        messages.AddError($"The Maximum for {stat.StatId} is lower than its Minimum.");
                 }
                 if(stat.IncreasePerLevel < 0)
                     messages.AddError($"{stat.StatId} is set to decrease by level-up. This is not allowed.");

@@ -169,7 +169,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                         Current = stat.Base,
                         IncreasePerLevel = stat.IncreasePerLevel,
                         ActiveModifications = new(),
-                        CarriedRegeneration = 0
+                        CarriedRegeneration = 0,
+                        MinCap = stat.Minimum,
+                        MaxCap = stat.Maximum
                     });
                 }
                 foreach (var stat in Stats)
@@ -180,8 +182,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     stat.Name = dungeon.LocaleToUse[correspondingStat.Name];
                     stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
                     stat.HasMax = correspondingStat.HasMax;
-                    stat.MinCap = correspondingStat.MinCap;
-                    stat.MaxCap = correspondingStat.MaxCap;
                     stat.RegenerationTargetId = correspondingStat.RegeneratesStatId;
                 }
                 BaseSightRange = 0;
@@ -239,7 +239,9 @@ namespace RogueCustomsGameEngine.Game.Entities
                         Current = stat.Base,
                         IncreasePerLevel = stat.IncreasePerLevel,
                         ActiveModifications = new(),
-                        CarriedRegeneration = 0
+                        CarriedRegeneration = 0,
+                        MinCap = stat.Minimum,
+                        MaxCap = stat.Maximum
                     });
                 }
                 foreach (var stat in Stats)
@@ -250,8 +252,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     stat.Name = dungeon.LocaleToUse[correspondingStat.Name];
                     stat.StatType = Enum.Parse<StatType>(correspondingStat.StatType);
                     stat.HasMax = correspondingStat.HasMax;
-                    stat.MinCap = correspondingStat.MinCap;
-                    stat.MaxCap = correspondingStat.MaxCap;
                     stat.RegenerationTargetId = correspondingStat.RegeneratesStatId;
                 }
                 CanGainExperience = npcInfo.CanGainExperience;

@@ -1,10 +1,13 @@
-﻿using RogueCustomsDungeonEditor.Utils;
+﻿using RogueCustomsDungeonEditor.Clipboard;
+using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -15,64 +18,110 @@ namespace RogueCustomsDungeonEditor.Controls
     public partial class StatsSheet : UserControl
     {
         private string PreviousTextBoxValue = string.Empty;
-        private bool SwitchingStats;
+        private string PreviousCellValue = string.Empty;
+
+        private List<(string Id, bool IsDecimal, bool IsPercentage)> StatTableData = new();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<StatInfo> StatInfos { get; set; }
-        private List<CharacterStatInfoControlParams> CharacterStats;
+        public List<StatInfo> StatData
+        {
+            set
+            {
+                StatTableData.Clear();
+                foreach (var stat in value)
+                {
+                    var isDecimal = stat.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || stat.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase);
+                    var isPercentage = stat.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase);
+                    StatTableData.Add((stat.Id, isDecimal, isPercentage));
+                }
+            }
+        }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<CharacterStatInfo> Stats
         {
             get
             {
+                dgvStats.EndEdit();
+
                 var statsList = new List<CharacterStatInfo>();
 
-                foreach (var stat in CharacterStats)
+                foreach (DataGridViewRow row in dgvStats.Rows)
                 {
-                    if (!stat.Used) continue;
-                    statsList.Add(new()
+                    if (row.IsNewRow) continue;
+                    var isUsed = Convert.ToBoolean(row.Cells["Used"].Value);
+                    if (isUsed)
                     {
-                        StatId = stat.StatId,
-                        Base = stat.Base,
-                        IncreasePerLevel = stat.IncreasePerLevel
-                    });
+                        var statInfo = StatTableData.First(s => s.Id.Equals(row.Cells["Id"].Value.ToString()));
+                        var characterStat = new CharacterStatInfo()
+                        {
+                            StatId = statInfo.Id,
+                            Base = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Base"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
+                            IncreasePerLevel = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["IncreasePerLevel"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
+                            Minimum = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Minimum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
+                            Maximum = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Maximum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0
+                        };
+                        statsList.Add(characterStat);
+                    }
                 }
 
                 return statsList;
             }
             set
             {
-                CharacterStats = new();
+                dgvStats.Rows.Clear();
 
-                foreach (var stat in StatInfos)
+                foreach (var stat in StatTableData)
                 {
-                    var characterStat = value.Find(v => v.StatId.Equals(stat.Id, StringComparison.InvariantCultureIgnoreCase));
-                    if (characterStat != null)
+                    var characterStat = value.FirstOrDefault(s => s.StatId.Equals(stat.Id));
+                    var isUsed = characterStat != null;
+                    characterStat ??= new CharacterStatInfo()
                     {
-                        CharacterStats.Add(new()
+                        StatId = stat.Id,
+                        Base = 1,
+                        IncreasePerLevel = 0,
+                        Minimum = 0,
+                        Maximum = 9999
+                    };
+
+                    var baseDisplayStat = characterStat.Base.ToString();
+                    var increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString();
+                    var minimumDisplayStat = characterStat.Minimum.ToString();
+                    var maximumDisplayStat = characterStat.Maximum.ToString();
+
+                    if (!stat.IsPercentage)
+                    {
+                        if (!stat.IsDecimal)
                         {
-                            Used = true,
-                            StatId = characterStat.StatId,
-                            Base = characterStat.Base,
-                            IncreasePerLevel = characterStat.IncreasePerLevel
-                        });
+                            increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString("+0;-0", CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            baseDisplayStat = characterStat.Base.ToString("0.00###", CultureInfo.InvariantCulture);
+                            increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                            minimumDisplayStat = characterStat.Minimum.ToString("0.00###", CultureInfo.InvariantCulture);
+                            maximumDisplayStat = characterStat.Maximum.ToString("0.00###", CultureInfo.InvariantCulture);
+                        }
                     }
                     else
                     {
-                        CharacterStats.Add(new()
-                        {
-                            Used = false,
-                            StatId = stat.Id,
-                            Base = 0,
-                            IncreasePerLevel = 0
-                        });
+                        baseDisplayStat = characterStat.Base.ToString("0.#####", CultureInfo.InvariantCulture) + "%";
+                        increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString("+0.#####;-0.#####", CultureInfo.InvariantCulture) + "%";
+                        minimumDisplayStat = characterStat.Minimum.ToString("0.#####", CultureInfo.InvariantCulture) + "%";
+                        maximumDisplayStat = characterStat.Maximum.ToString("0.#####", CultureInfo.InvariantCulture) + "%";
                     }
+
+                    dgvStats.Rows.Add(
+                        stat.Id,
+                        isUsed,
+                        baseDisplayStat,
+                        increasePerLevelDisplayStat,
+                        minimumDisplayStat,
+                        maximumDisplayStat
+                    );
                 }
 
-                hsbStats.Value = 0;
-                hsbStats.Maximum = CharacterStats.Count - 1;
-                UpdateStatControls();
+                ApplyReadOnlyRules();
             }
         }
 
@@ -176,11 +225,17 @@ namespace RogueCustomsDungeonEditor.Controls
             InitializeComponent();
             nudFlatSightRange.ValueChanged += (_, _) =>
             {
-                if (!SwitchingStats)
-                    StatsChanged.Invoke(this, EventArgs.Empty);
+                StatsChanged.Invoke(this, EventArgs.Empty);
             };
             chkCanGainExperience.CheckedChanged += (_, _) => ToggleLevelUpControls();
             nudMaxLevel.ValueChanged += (_, _) => ToggleLevelUpControls();
+            btnPasteStats.Enabled = ClipboardManager.ContainsData(FormConstants.StatsClipboardKey);
+            ClipboardManager.ClipboardContentsChanged += ClipboardManager_ClipboardContentsChanged;
+        }
+
+        private void ClipboardManager_ClipboardContentsChanged(object? sender, EventArgs e)
+        {
+            btnPasteStats.Enabled = ClipboardManager.ContainsData(FormConstants.StatsClipboardKey);
         }
 
         private void cmbSightRange_SelectedIndexChanged(object sender, EventArgs e)
@@ -197,53 +252,14 @@ namespace RogueCustomsDungeonEditor.Controls
                 nudFlatSightRange.Visible = false;
                 nudFlatSightRange.Enabled = false;
             }
-            if (!SwitchingStats)
-                StatsChanged.Invoke(this, EventArgs.Empty);
+            StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private void UpdateStatControls()
-        {
-            SwitchingStats = true;
-            var statToUse = CharacterStats[hsbStats.Value];
-            var correspondingStatInfo = StatInfos[hsbStats.Value];
-            var regenerationTargetStat = CharacterStats.Find(cs => cs.StatId.Equals(correspondingStatInfo.RegeneratesStatId, StringComparison.InvariantCultureIgnoreCase));
-            var isMandatoryStat = FormConstants.MandatoryStats.Contains(statToUse.StatId);
-
-            lblStatId.Text = statToUse.StatId;
-            nudBase.Minimum = correspondingStatInfo.MinCap;
-            nudBase.Maximum = correspondingStatInfo.MaxCap;
-            nudIncreasePerLevel.Minimum = 0;
-            nudIncreasePerLevel.Maximum = correspondingStatInfo.MaxCap;
-
-            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
-                nudBase.DecimalPlaces = 5;
-            else
-                nudBase.DecimalPlaces = 0;
-
-            nudBase.Value = statToUse.Base;
-            nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
-            lblPercentage.Visible = correspondingStatInfo.StatType.Equals("Percentage", StringComparison.InvariantCultureIgnoreCase);
-
-            chkIsUsed.Enabled = !isMandatoryStat;
-
-            if (statToUse == null || !statToUse.Used || (regenerationTargetStat != null && !regenerationTargetStat.Used))
-            {
-                chkIsUsed.Checked = false;
-            }
-            else
-            {
-                chkIsUsed.Checked = true;
-            }
-
-            ToggleByCheckedStatus();
-            SwitchingStats = false;
-        }
 
         private void ToggleLevelUpControls()
         {
             txtLevelUpFormula.Enabled = chkCanGainExperience.Checked || nudMaxLevel.Value > 1;
-            if (!SwitchingStats)
-                StatsChanged.Invoke(this, EventArgs.Empty);
+            StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void txtLevelUpFormula_Enter(object sender, EventArgs e)
@@ -253,7 +269,6 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void txtLevelUpFormula_Leave(object sender, EventArgs e)
         {
-            if (SwitchingStats) return;
             if (!PreviousTextBoxValue.Equals(txtLevelUpFormula.Text))
             {
                 var parsedLevelUpFormula = Regex.Replace(txtLevelUpFormula.Text, @"\blevel\b", "1", RegexOptions.IgnoreCase);
@@ -277,78 +292,135 @@ namespace RogueCustomsDungeonEditor.Controls
             PreviousTextBoxValue = string.Empty;
         }
 
-        private void hsbStats_ValueChanged(object sender, EventArgs e)
+        private void ApplyReadOnlyRules()
         {
-            UpdateStatControls();
-        }
-
-        private void chkIsUsed_CheckedChanged(object sender, EventArgs e)
-        {
-            ToggleByCheckedStatus();
-            if (!SwitchingStats)
-                StatsChanged.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ToggleByCheckedStatus()
-        {
-            var statToUse = CharacterStats[hsbStats.Value];
-            CharacterStats[hsbStats.Value].Used = chkIsUsed.Checked;
-            var correspondingStatInfo = StatInfos[hsbStats.Value];
-            if (!chkIsUsed.Checked)
+            foreach (DataGridViewRow row in dgvStats.Rows)
             {
-                nudBase.Enabled = false;
-                nudBase.Minimum = 0;
-                nudBase.Maximum = 0;
-                nudBase.Value = 0;
-                nudIncreasePerLevel.Enabled = false;
-                nudIncreasePerLevel.Minimum = 0;
-                nudIncreasePerLevel.Maximum = 0;
-                nudIncreasePerLevel.Value = 0;
-            }
-            else
-            {
-                nudBase.Enabled = true;
-                nudBase.Minimum = correspondingStatInfo.MinCap;
-                nudBase.Maximum = correspondingStatInfo.MaxCap;
-                nudBase.Value = statToUse.Base;
-                nudIncreasePerLevel.Enabled = true;
-                nudIncreasePerLevel.Minimum = 0;
-                nudIncreasePerLevel.Maximum = correspondingStatInfo.MaxCap;
-                nudIncreasePerLevel.Value = statToUse.IncreasePerLevel;
+                ApplyReadOnlyToRow(row.Index);
             }
         }
 
-        private void nudBase_Leave(object sender, EventArgs e)
+        private void dgvStats_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (SwitchingStats) return;
-            var correspondingStatInfo = StatInfos[hsbStats.Value];
-            if (correspondingStatInfo.StatType.Equals("Decimal", StringComparison.InvariantCultureIgnoreCase) || correspondingStatInfo.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
-                CharacterStats[hsbStats.Value].Base = nudBase.Value;
+            PreviousCellValue = dgvStats[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
+        }
+
+        private void dgvStats_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            // This triggers the update immediately
+            if (dgvStats.IsCurrentCellDirty && dgvStats.CurrentCell is DataGridViewCheckBoxCell)
+            {
+                dgvStats.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dgvStats_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            if (e.ColumnIndex == dgvStats.Columns["Used"].Index)
+            {
+                ApplyReadOnlyToRow(e.RowIndex);
+            }
+            else if (e.ColumnIndex > dgvStats.Columns["Used"].Index)
+            {
+                var cellValue = dgvStats[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
+
+                if (decimal.TryParse(cellValue, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal result))
+                {
+                    var firstColumnValue = dgvStats[0, e.RowIndex].Value?.ToString() ?? string.Empty;
+                    var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(firstColumnValue));
+                    if (!statData.IsPercentage)
+                    {
+                        if (!statData.IsDecimal)
+                        {
+                            result = (int)result;
+                            if (e.ColumnIndex == dgvStats.Columns["IncreasePerLevel"].Index)
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0;-0", CultureInfo.InvariantCulture);
+                            else
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("0", CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            if (e.ColumnIndex == dgvStats.Columns["IncreasePerLevel"].Index)
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.00###;-0.00###", CultureInfo.InvariantCulture);
+                            else
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("0.00###", CultureInfo.InvariantCulture);
+                        }
+                    }
+                    else
+                    {
+                        result = (int)result;
+                        if (e.ColumnIndex == dgvStats.Columns["IncreasePerLevel"].Index)
+                            dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
+                        else
+                            dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("0.###", CultureInfo.InvariantCulture) + "%";
+                    }
+                }
+            }
             else
-                CharacterStats[hsbStats.Value].Base = (int)nudBase.Value;
+            {
+                dgvStats[e.ColumnIndex, e.RowIndex].Value = PreviousCellValue;
+            }
+
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private void nudIncreasePerLevel_Leave(object sender, EventArgs e)
+        private void ApplyReadOnlyToRow(int rowIndex)
         {
-            if (SwitchingStats) return;
-            var correspondingStatInfo = StatInfos[hsbStats.Value];
-            CharacterStats[hsbStats.Value].IncreasePerLevel = nudIncreasePerLevel.Value;
+            if (rowIndex < 0) return;
+
+            var row = dgvStats.Rows[rowIndex];
+
+            if (row.IsNewRow) return;
+
+            var statId = row.Cells["Id"].Value?.ToString() ?? string.Empty;
+
+            if(FormConstants.MandatoryStats.Contains(statId))
+            {
+                row.Cells["Used"].Value = true;
+                row.Cells["Used"].ReadOnly = true;
+
+                for (int i = 0; i < row.Cells.Count; i++)
+                {
+                    if (i == dgvStats.Columns["Used"].Index)
+                        continue;
+                    row.Cells[i].ReadOnly = false;
+                }
+
+                row.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+                row.Cells["Used"].Style.BackColor = System.Drawing.Color.LightGray;
+
+                return;
+            }
+
+            if (row.Cells["Used"] is not DataGridViewCheckBoxCell chkUsed) return;
+
+            var isChecked = Convert.ToBoolean(chkUsed.Value);
+
+            for (int i = 0; i < row.Cells.Count; i++)
+            {
+                if (i == dgvStats.Columns["Used"].Index)
+                    continue;
+                row.Cells[i].ReadOnly = !isChecked;
+            }
+
+            // Grey out read-only rows
+            row.DefaultCellStyle.BackColor = isChecked
+                ? System.Drawing.Color.White
+                : System.Drawing.Color.LightGray;
+        }
+
+        private void btnCopyStats_Click(object sender, EventArgs e)
+        {
+            ClipboardManager.Copy(FormConstants.StatsClipboardKey, Stats);
+        }
+
+        private void btnPasteStats_Click(object sender, EventArgs e)
+        {
+            Stats = ClipboardManager.Paste<List<CharacterStatInfo>>(FormConstants.StatsClipboardKey);
             StatsChanged.Invoke(this, EventArgs.Empty);
         }
-
-        private void hsbStats_MouseEnter(object sender, EventArgs e)
-        {
-            hsbStats.Focus();
-        }
-    }
-
-    public class CharacterStatInfoControlParams
-    {
-        public bool Used { get; set; }
-        public string StatId { get; set; }
-        public decimal Base { get; set; }
-        public decimal IncreasePerLevel { get; set; }
     }
 }
 #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.

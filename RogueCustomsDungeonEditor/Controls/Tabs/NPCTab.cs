@@ -71,7 +71,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             txtNPCExperiencePayout.Text = npc.ExperiencePayoutFormula;
 
             ssNPC.StatsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            ssNPC.StatInfos = ActiveDungeon.CharacterStats;
+            ssNPC.StatData = ActiveDungeon.CharacterStats;
             ssNPC.Stats = npc.Stats;
             ssNPC.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
             ssNPC.BaseSightRange = npc.BaseSightRange;

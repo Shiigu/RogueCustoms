@@ -19,9 +19,6 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             if (string.IsNullOrWhiteSpace(stat.StatType))
                 messages.AddError("The Stat lacks a Type");
 
-            if (stat.MinCap > stat.MaxCap)
-                messages.AddError("The Stat's Minimum Cap is higher than its Maximum Cap");
-
             if (stat.StatType.Equals("Regeneration", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (string.IsNullOrWhiteSpace(stat.RegeneratesStatId))
