@@ -195,7 +195,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
             }
-            if (!isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
+            if (Args.This != null && !isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
             {
                 if(Args.Source is Character s && s.ExtraDamage.Count > 0)
                 {
