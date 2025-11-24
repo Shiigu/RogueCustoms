@@ -60,7 +60,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkPlayerNeedsToIdentifyItems.Checked = playerClass.NeedsToIdentifyItems;
             ssPlayer.StatsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
             ssPlayer.BaseSightRangeDisplayNames = BaseSightRangeDisplayNames;
-            ssPlayer.StatInfos = ActiveDungeon.CharacterStats;
+            ssPlayer.StatData = ActiveDungeon.CharacterStats;
             ssPlayer.Stats = playerClass.Stats;
             ssPlayer.BaseSightRange = playerClass.BaseSightRange;
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;

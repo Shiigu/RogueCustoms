@@ -163,12 +163,12 @@
             ssNPC.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             ssNPC.Location = new System.Drawing.Point(380, 92);
             ssNPC.Name = "ssNPC";
-            ssNPC.Size = new System.Drawing.Size(305, 408);
+            ssNPC.Size = new System.Drawing.Size(405, 494);
             ssNPC.TabIndex = 247;
             // 
             // sisNPCStartingInventory
             // 
-            sisNPCStartingInventory.Location = new System.Drawing.Point(387, 587);
+            sisNPCStartingInventory.Location = new System.Drawing.Point(409, 621);
             sisNPCStartingInventory.Name = "sisNPCStartingInventory";
             sisNPCStartingInventory.Size = new System.Drawing.Size(293, 79);
             sisNPCStartingInventory.TabIndex = 228;
@@ -309,7 +309,7 @@
             // label98
             // 
             label98.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
-            label98.Location = new System.Drawing.Point(365, 17);
+            label98.Location = new System.Drawing.Point(411, 18);
             label98.Name = "label98";
             label98.Size = new System.Drawing.Size(131, 52);
             label98.TabIndex = 227;
@@ -416,7 +416,7 @@
             // 
             // crsNPC
             // 
-            crsNPC.Location = new System.Drawing.Point(500, 5);
+            crsNPC.Location = new System.Drawing.Point(546, 6);
             crsNPC.Name = "crsNPC";
             crsNPC.Size = new System.Drawing.Size(211, 83);
             crsNPC.TabIndex = 242;
@@ -426,7 +426,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label1.Location = new System.Drawing.Point(485, 510);
+            label1.Location = new System.Drawing.Point(503, 597);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(85, 21);
             label1.TabIndex = 252;
@@ -571,7 +571,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            label7.Location = new System.Drawing.Point(438, 849);
+            label7.Location = new System.Drawing.Point(459, 881);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(212, 15);
             label7.TabIndex = 266;
@@ -579,7 +579,7 @@
             // 
             // esNPC
             // 
-            esNPC.Location = new System.Drawing.Point(446, 867);
+            esNPC.Location = new System.Drawing.Point(467, 899);
             esNPC.Name = "esNPC";
             esNPC.Size = new System.Drawing.Size(204, 142);
             esNPC.TabIndex = 265;
@@ -587,7 +587,7 @@
             // clbNPCAvailableSlots
             // 
             clbNPCAvailableSlots.FormattingEnabled = true;
-            clbNPCAvailableSlots.Location = new System.Drawing.Point(450, 706);
+            clbNPCAvailableSlots.Location = new System.Drawing.Point(471, 738);
             clbNPCAvailableSlots.Name = "clbNPCAvailableSlots";
             clbNPCAvailableSlots.Size = new System.Drawing.Size(175, 130);
             clbNPCAvailableSlots.TabIndex = 268;
@@ -596,7 +596,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            label8.Location = new System.Drawing.Point(438, 680);
+            label8.Location = new System.Drawing.Point(459, 712);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(206, 15);
             label8.TabIndex = 267;
@@ -853,7 +853,7 @@
             Controls.Add(label101);
             Controls.Add(crsNPC);
             Name = "NPCTab";
-            Size = new System.Drawing.Size(714, 1387);
+            Size = new System.Drawing.Size(798, 1387);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvNPCModifiers).EndInit();

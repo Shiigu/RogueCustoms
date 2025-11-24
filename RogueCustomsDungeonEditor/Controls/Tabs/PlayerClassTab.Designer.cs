@@ -71,12 +71,12 @@
             ssPlayer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             ssPlayer.Location = new System.Drawing.Point(380, 91);
             ssPlayer.Name = "ssPlayer";
-            ssPlayer.Size = new System.Drawing.Size(305, 408);
+            ssPlayer.Size = new System.Drawing.Size(405, 494);
             ssPlayer.TabIndex = 154;
             // 
             // sisPlayerStartingInventory
             // 
-            sisPlayerStartingInventory.Location = new System.Drawing.Point(387, 589);
+            sisPlayerStartingInventory.Location = new System.Drawing.Point(434, 629);
             sisPlayerStartingInventory.Name = "sisPlayerStartingInventory";
             sisPlayerStartingInventory.Size = new System.Drawing.Size(293, 79);
             sisPlayerStartingInventory.TabIndex = 153;
@@ -179,7 +179,7 @@
             // label30
             // 
             label30.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
-            label30.Location = new System.Drawing.Point(365, 16);
+            label30.Location = new System.Drawing.Point(411, 16);
             label30.Name = "label30";
             label30.Size = new System.Drawing.Size(131, 52);
             label30.TabIndex = 140;
@@ -297,7 +297,7 @@
             // 
             // crsPlayer
             // 
-            crsPlayer.Location = new System.Drawing.Point(500, 5);
+            crsPlayer.Location = new System.Drawing.Point(546, 5);
             crsPlayer.Name = "crsPlayer";
             crsPlayer.Size = new System.Drawing.Size(211, 83);
             crsPlayer.TabIndex = 155;
@@ -317,7 +317,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label1.Location = new System.Drawing.Point(482, 516);
+            label1.Location = new System.Drawing.Point(523, 605);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(85, 21);
             label1.TabIndex = 238;
@@ -381,7 +381,7 @@
             // 
             // esPlayer
             // 
-            esPlayer.Location = new System.Drawing.Point(441, 700);
+            esPlayer.Location = new System.Drawing.Point(488, 740);
             esPlayer.Name = "esPlayer";
             esPlayer.Size = new System.Drawing.Size(204, 142);
             esPlayer.TabIndex = 247;
@@ -390,7 +390,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            label2.Location = new System.Drawing.Point(433, 682);
+            label2.Location = new System.Drawing.Point(485, 722);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(212, 15);
             label2.TabIndex = 248;
@@ -463,7 +463,7 @@
             Controls.Add(txtPlayerClassName);
             Controls.Add(label27);
             Name = "PlayerClassTab";
-            Size = new System.Drawing.Size(714, 845);
+            Size = new System.Drawing.Size(793, 886);
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPlayerSaleValuePercentage).EndInit();
             ResumeLayout(false);
