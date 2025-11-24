@@ -61,6 +61,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public bool IsWalkable => Type.IsWalkable;
         public bool IsSolid => Type.IsSolid;
+        public bool IsBlocked => !IsWalkable || (LivingCharacter != null && LivingCharacter.ExistenceStatus == EntityExistenceStatus.Alive);
         public bool IsOccupied {
             get
             {
@@ -78,7 +79,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public bool AllowsDrops => IsWalkable && !GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (Trap == null || Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (Key == null || Key.ExistenceStatus != EntityExistenceStatus.Alive);
+        public bool AllowsDrops => IsWalkable && !IsOccupied && Type != TileType.Stairs && !GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (Trap == null || Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (Key == null || Key.ExistenceStatus != EntityExistenceStatus.Alive);
         public ActionWithEffects OnStood => Type.OnStood;
 
         private ConsoleRepresentation _consoleRepresentation;

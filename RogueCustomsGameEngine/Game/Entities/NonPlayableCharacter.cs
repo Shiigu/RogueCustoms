@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Numerics;
 using System.Threading.Tasks;
 using RogueCustomsGameEngine.Utils;
+using static System.Net.WebRequestMethods;
 
 namespace RogueCustomsGameEngine.Game.Entities
 {
@@ -724,7 +725,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 return;
             }
             var nextTile = PathToUse.Route[0];
-            if (!nextTile.IsWalkable || nextTile.IsOccupied)
+            if (nextTile.IsBlocked)
             {
                 // If I can't move to the next Tile, even after recalculating, don't move
                 RemainingMovement = 0;
@@ -750,13 +751,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var nextTile = PathToUse.Route[0];
                 // If my next Tile is impossible to step on, find another viable path from adjacent Tiles
-                if (!nextTile.IsWalkable || nextTile.IsOccupied)
+                if (nextTile.IsBlocked)
                 {
                     var adjacentTiles = Map.GetAdjacentWalkableTiles(Position, true);
                     var pathsFromAdjacentTiles = new List<List<Tile>>();
                     foreach (var tile in adjacentTiles)
                     {
-                        if (tile.IsOccupied) continue;
+                        if (tile.IsBlocked) continue;
                         pathsFromAdjacentTiles.Add(Map.GetPathBetweenTiles(tile.Position, PathToUse.Route.Last().Position));
                     }
                     if (pathsFromAdjacentTiles.Any())
