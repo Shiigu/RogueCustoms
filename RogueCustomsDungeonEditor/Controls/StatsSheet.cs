@@ -19,6 +19,7 @@ namespace RogueCustomsDungeonEditor.Controls
     {
         private string PreviousTextBoxValue = string.Empty;
         private string PreviousCellValue = string.Empty;
+        private bool Editing = false;
 
         private List<(string Id, bool IsDecimal, bool IsPercentage)> StatTableData = new();
 
@@ -57,9 +58,9 @@ namespace RogueCustomsDungeonEditor.Controls
                         {
                             StatId = statInfo.Id,
                             Base = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Base"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
-                            IncreasePerLevel = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["IncreasePerLevel"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
-                            Minimum = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Minimum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
-                            Maximum = row.Cells["Base"].Value?.ToString() != null ? decimal.Parse(row.Cells["Maximum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0
+                            IncreasePerLevel = row.Cells["IncreasePerLevel"].Value?.ToString() != null ? decimal.Parse(row.Cells["IncreasePerLevel"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
+                            Minimum = row.Cells["Minimum"].Value?.ToString() != null ? decimal.Parse(row.Cells["Minimum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0,
+                            Maximum = row.Cells["Maximum"].Value?.ToString() != null ? decimal.Parse(row.Cells["Maximum"].Value.ToString().Replace("%", "").Replace("+", ""), NumberStyles.Float, CultureInfo.InvariantCulture) : 0
                         };
                         statsList.Add(characterStat);
                     }
@@ -93,7 +94,7 @@ namespace RogueCustomsDungeonEditor.Controls
                     {
                         if (!stat.IsDecimal)
                         {
-                            increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString("+0;-0", CultureInfo.InvariantCulture);
+                            increasePerLevelDisplayStat = characterStat.IncreasePerLevel.ToString("+0.#####;-0.#####", CultureInfo.InvariantCulture);
                         }
                         else
                         {
@@ -302,6 +303,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void dgvStats_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
+            Editing = true;
             PreviousCellValue = dgvStats[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
         }
 
@@ -310,13 +312,16 @@ namespace RogueCustomsDungeonEditor.Controls
             // This triggers the update immediately
             if (dgvStats.IsCurrentCellDirty && dgvStats.CurrentCell is DataGridViewCheckBoxCell)
             {
+                Editing = true;
                 dgvStats.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
 
         private void dgvStats_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0 || !Editing) return;
+
+            Editing = false;
 
             if (e.ColumnIndex == dgvStats.Columns["Used"].Index)
             {
@@ -326,7 +331,8 @@ namespace RogueCustomsDungeonEditor.Controls
             {
                 var cellValue = dgvStats[e.ColumnIndex, e.RowIndex].Value?.ToString() ?? string.Empty;
 
-                if (decimal.TryParse(cellValue, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal result))
+                if (decimal.TryParse(cellValue, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal result)
+                    || decimal.TryParse(cellValue, NumberStyles.Float, CultureInfo.CurrentCulture, out result))
                 {
                     var firstColumnValue = dgvStats[0, e.RowIndex].Value?.ToString() ?? string.Empty;
                     var statData = StatTableData.FirstOrDefault(s => s.Id.Equals(firstColumnValue));
@@ -334,11 +340,10 @@ namespace RogueCustomsDungeonEditor.Controls
                     {
                         if (!statData.IsDecimal)
                         {
-                            result = (int)result;
                             if (e.ColumnIndex == dgvStats.Columns["IncreasePerLevel"].Index)
-                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0;-0", CultureInfo.InvariantCulture);
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.#####;-0.#####", CultureInfo.InvariantCulture);
                             else
-                                dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("0", CultureInfo.InvariantCulture);
+                                dgvStats[e.ColumnIndex, e.RowIndex].Value = ((int) result).ToString("0", CultureInfo.InvariantCulture);
                         }
                         else
                         {
@@ -350,11 +355,10 @@ namespace RogueCustomsDungeonEditor.Controls
                     }
                     else
                     {
-                        result = (int)result;
                         if (e.ColumnIndex == dgvStats.Columns["IncreasePerLevel"].Index)
-                            dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.###;-0.###", CultureInfo.InvariantCulture) + "%";
+                            dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("+0.#####;-0.#####", CultureInfo.InvariantCulture) + "%";
                         else
-                            dgvStats[e.ColumnIndex, e.RowIndex].Value = result.ToString("0.###", CultureInfo.InvariantCulture) + "%";
+                            dgvStats[e.ColumnIndex, e.RowIndex].Value = ((int)result).ToString("0.#####", CultureInfo.InvariantCulture) + "%";
                     }
                 }
             }

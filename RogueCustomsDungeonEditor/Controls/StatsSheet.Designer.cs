@@ -42,14 +42,14 @@
             lblSightRangeText = new System.Windows.Forms.Label();
             lblSightRangeId = new System.Windows.Forms.Label();
             dgvStats = new System.Windows.Forms.DataGridView();
-            btnCopyStats = new System.Windows.Forms.Button();
-            btnPasteStats = new System.Windows.Forms.Button();
             Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Used = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             Base = new System.Windows.Forms.DataGridViewTextBoxColumn();
             IncreasePerLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Minimum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Maximum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            btnCopyStats = new System.Windows.Forms.Button();
+            btnPasteStats = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)nudMaxLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudFlatSightRange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvStats).BeginInit();
@@ -194,26 +194,6 @@
             dgvStats.CellValueChanged += dgvStats_CellValueChanged;
             dgvStats.CurrentCellDirtyStateChanged += dgvStats_CurrentCellDirtyStateChanged;
             // 
-            // btnCopyStats
-            // 
-            btnCopyStats.Location = new System.Drawing.Point(127, 233);
-            btnCopyStats.Name = "btnCopyStats";
-            btnCopyStats.Size = new System.Drawing.Size(75, 23);
-            btnCopyStats.TabIndex = 256;
-            btnCopyStats.Text = "Copy";
-            btnCopyStats.UseVisualStyleBackColor = true;
-            btnCopyStats.Click += btnCopyStats_Click;
-            // 
-            // btnPasteStats
-            // 
-            btnPasteStats.Location = new System.Drawing.Point(208, 233);
-            btnPasteStats.Name = "btnPasteStats";
-            btnPasteStats.Size = new System.Drawing.Size(75, 23);
-            btnPasteStats.TabIndex = 257;
-            btnPasteStats.Text = "Paste";
-            btnPasteStats.UseVisualStyleBackColor = true;
-            btnPasteStats.Click += btnPasteStats_Click;
-            // 
             // Id
             // 
             Id.Frozen = true;
@@ -250,6 +230,26 @@
             Maximum.HeaderText = "Maximum";
             Maximum.Name = "Maximum";
             Maximum.Width = 70;
+            // 
+            // btnCopyStats
+            // 
+            btnCopyStats.Location = new System.Drawing.Point(127, 233);
+            btnCopyStats.Name = "btnCopyStats";
+            btnCopyStats.Size = new System.Drawing.Size(75, 23);
+            btnCopyStats.TabIndex = 256;
+            btnCopyStats.Text = "Copy";
+            btnCopyStats.UseVisualStyleBackColor = true;
+            btnCopyStats.Click += btnCopyStats_Click;
+            // 
+            // btnPasteStats
+            // 
+            btnPasteStats.Location = new System.Drawing.Point(208, 233);
+            btnPasteStats.Name = "btnPasteStats";
+            btnPasteStats.Size = new System.Drawing.Size(75, 23);
+            btnPasteStats.TabIndex = 257;
+            btnPasteStats.Text = "Paste";
+            btnPasteStats.UseVisualStyleBackColor = true;
+            btnPasteStats.Click += btnPasteStats_Click;
             // 
             // StatsSheet
             // 

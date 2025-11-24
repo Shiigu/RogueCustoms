@@ -316,18 +316,18 @@ namespace RogueCustomsDungeonEditor
                         tsbDeleteElement.Visible = false;
                         break;
                     case "Affixes":
-                        tssDungeonElement.Visible = false;
-                        tsbAddElement.Visible = false;
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = true;
-                        tsbSaveElementAs.Visible = false;
-                        tsbDeleteElement.Visible = false;
+                        tsbSaveElementAs.Visible = true;
+                        tsbDeleteElement.Visible = true;
                         break;
                     case "NPC Modifiers":
-                        tssDungeonElement.Visible = false;
-                        tsbAddElement.Visible = false;
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = true;
-                        tsbSaveElementAs.Visible = false;
-                        tsbDeleteElement.Visible = false;
+                        tsbSaveElementAs.Visible = true;
+                        tsbDeleteElement.Visible = true;
                         break;
                     case "Quality Levels":
                         tssDungeonElement.Visible = false;
@@ -509,29 +509,7 @@ namespace RogueCustomsDungeonEditor
             };
             tvDungeonInfo.Nodes.Add(currencyInfoNode);
 
-            var npcModifierInfosRootNode = new TreeNode("NPC Modifiers")
-            {
-                Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = null },
-                Name = "NPC Modifiers"
-            };
-
-            foreach (var npcModifierInfo in ActiveDungeon.NPCModifierInfos)
-            {
-                var npcModifierInfoNode = new TreeNode(npcModifierInfo.Id)
-                {
-                    Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = npcModifierInfo },
-                    Name = npcModifierInfo.Id
-                };
-                npcModifierInfosRootNode.Nodes.Add(npcModifierInfoNode);
-            }
-
-            tvDungeonInfo.Nodes.Add(npcModifierInfosRootNode);
-
-            var affixInfosRootNode = new TreeNode("Affixes")
-            {
-                Tag = new NodeTag { TabToOpen = RogueTabTypes.AffixInfo, DungeonElement = null },
-                Name = "Affixes"
-            };
+            var affixInfosRootNode = new TreeNode("Affixes");
 
             foreach (var affixInfo in ActiveDungeon.AffixInfos)
             {
@@ -544,6 +522,20 @@ namespace RogueCustomsDungeonEditor
             }
 
             tvDungeonInfo.Nodes.Add(affixInfosRootNode);
+
+            var npcModifierInfosRootNode = new TreeNode("NPC Modifiers");
+
+            foreach (var npcModifierInfo in ActiveDungeon.NPCModifierInfos)
+            {
+                var npcModifierInfoNode = new TreeNode(npcModifierInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = npcModifierInfo },
+                    Name = npcModifierInfo.Id
+                };
+                npcModifierInfosRootNode.Nodes.Add(npcModifierInfoNode);
+            }
+
+            tvDungeonInfo.Nodes.Add(npcModifierInfosRootNode);
 
             var qualityLevelInfoNode = new TreeNode("Quality Levels")
             {
@@ -844,6 +836,12 @@ namespace RogueCustomsDungeonEditor
                     case "Factions":
                         tabToOpen = RogueTabTypes.FactionInfo;
                         break;
+                    case "Affixes":
+                        tabToOpen = RogueTabTypes.AffixInfo;
+                        break;
+                    case "NPC Modifiers":
+                        tabToOpen = RogueTabTypes.NPCModifierInfo;
+                        break;
                     case "Custom Stats":
                         tabToOpen = RogueTabTypes.StatInfo;
                         break;
@@ -889,6 +887,12 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.FactionInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateFactionTemplate();
+                    break;
+                case RogueTabTypes.AffixInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateAffixTemplate();
+                    break;
+                case RogueTabTypes.NPCModifierInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateNPCModifierTemplate();
                     break;
                 case RogueTabTypes.StatInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateStatTemplate();
@@ -1014,6 +1018,12 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.FloorInfo:
                     DeleteFloorGroup();
+                    break;
+                case RogueTabTypes.AffixInfo:
+                    DeleteAffix();
+                    break;
+                case RogueTabTypes.NPCModifierInfo:
+                    DeleteNPCModifier();
                     break;
                 case RogueTabTypes.FactionInfo:
                     DeleteFaction();
