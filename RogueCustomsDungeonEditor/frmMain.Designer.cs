@@ -34,6 +34,7 @@ namespace RogueCustomsDungeonEditor
             msMenu = new MenuStrip();
             editorToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
+            getHelpHereToolStripMenuItem = new ToolStripMenuItem();
             tsButtons = new ToolStrip();
             tsbNewDungeon = new ToolStripButton();
             tsbOpenDungeon = new ToolStripButton();
@@ -75,7 +76,7 @@ namespace RogueCustomsDungeonEditor
             tbStatInfos = new TabPage();
             StatTab = new Controls.Tabs.StatTab();
             tpNPCModifiers = new TabPage();
-            NPCModifiersTab = new Controls.Tabs.NPCModifierTab();
+            NPCModifierTab = new Controls.Tabs.NPCModifierTab();
             tpAffixes = new TabPage();
             AffixTab = new Controls.Tabs.AffixTab();
             tpQualityLevels = new TabPage();
@@ -96,7 +97,6 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
-            getHelpHereToolStripMenuItem = new ToolStripMenuItem();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -130,7 +130,7 @@ namespace RogueCustomsDungeonEditor
             msMenu.Items.AddRange(new ToolStripItem[] { editorToolStripMenuItem, getHelpHereToolStripMenuItem });
             msMenu.Location = new System.Drawing.Point(0, 0);
             msMenu.Name = "msMenu";
-            msMenu.Size = new System.Drawing.Size(967, 24);
+            msMenu.Size = new System.Drawing.Size(1084, 24);
             msMenu.TabIndex = 0;
             msMenu.Text = "menuStrip1";
             // 
@@ -148,12 +148,19 @@ namespace RogueCustomsDungeonEditor
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
+            // getHelpHereToolStripMenuItem
+            // 
+            getHelpHereToolStripMenuItem.Name = "getHelpHereToolStripMenuItem";
+            getHelpHereToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            getHelpHereToolStripMenuItem.Text = "Get help here!";
+            getHelpHereToolStripMenuItem.Click += getHelpHereToolStripMenuItem_Click;
+            // 
             // tsButtons
             // 
             tsButtons.Items.AddRange(new ToolStripItem[] { tsbNewDungeon, tsbOpenDungeon, tsbSaveDungeon, tsbSaveDungeonAs, tssDungeonElement, tsbAddElement, tsbSaveElement, tsbSaveElementAs, tsbDeleteElement, tssElementValidate, tsbValidateDungeon });
             tsButtons.Location = new System.Drawing.Point(0, 24);
             tsButtons.Name = "tsButtons";
-            tsButtons.Size = new System.Drawing.Size(967, 38);
+            tsButtons.Size = new System.Drawing.Size(1084, 38);
             tsButtons.TabIndex = 1;
             tsButtons.Text = "toolStrip1";
             // 
@@ -282,7 +289,7 @@ namespace RogueCustomsDungeonEditor
             tvDungeonInfo.HideSelection = false;
             tvDungeonInfo.Location = new System.Drawing.Point(0, 62);
             tvDungeonInfo.Name = "tvDungeonInfo";
-            tvDungeonInfo.Size = new System.Drawing.Size(217, 416);
+            tvDungeonInfo.Size = new System.Drawing.Size(217, 549);
             tvDungeonInfo.TabIndex = 2;
             tvDungeonInfo.AfterSelect += tvDungeonInfo_AfterSelect;
             // 
@@ -315,7 +322,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Location = new System.Drawing.Point(217, 62);
             tbTabs.Name = "tbTabs";
             tbTabs.SelectedIndex = 0;
-            tbTabs.Size = new System.Drawing.Size(750, 416);
+            tbTabs.Size = new System.Drawing.Size(867, 549);
             tbTabs.TabIndex = 3;
             tbTabs.SelectedIndexChanged += tbTabs_SelectedIndexChanged;
             // 
@@ -325,7 +332,7 @@ namespace RogueCustomsDungeonEditor
             tpBasicInfo.Location = new System.Drawing.Point(4, 24);
             tpBasicInfo.Name = "tpBasicInfo";
             tpBasicInfo.Padding = new Padding(3);
-            tpBasicInfo.Size = new System.Drawing.Size(742, 388);
+            tpBasicInfo.Size = new System.Drawing.Size(859, 521);
             tpBasicInfo.TabIndex = 0;
             tpBasicInfo.Text = "Basic Information";
             tpBasicInfo.UseVisualStyleBackColor = true;
@@ -337,7 +344,7 @@ namespace RogueCustomsDungeonEditor
             BasicInformationTab.Dock = DockStyle.Fill;
             BasicInformationTab.Location = new System.Drawing.Point(3, 3);
             BasicInformationTab.Name = "BasicInformationTab";
-            BasicInformationTab.Size = new System.Drawing.Size(736, 382);
+            BasicInformationTab.Size = new System.Drawing.Size(853, 515);
             BasicInformationTab.TabIndex = 0;
             // 
             // tpLocales
@@ -576,7 +583,7 @@ namespace RogueCustomsDungeonEditor
             // 
             // tpNPCModifiers
             // 
-            tpNPCModifiers.Controls.Add(NPCModifiersTab);
+            tpNPCModifiers.Controls.Add(NPCModifierTab);
             tpNPCModifiers.Location = new System.Drawing.Point(4, 24);
             tpNPCModifiers.Name = "tpNPCModifiers";
             tpNPCModifiers.Padding = new Padding(3);
@@ -587,11 +594,11 @@ namespace RogueCustomsDungeonEditor
             // 
             // NPCModifiersTab
             // 
-            NPCModifiersTab.Dock = DockStyle.Fill;
-            NPCModifiersTab.Location = new System.Drawing.Point(3, 3);
-            NPCModifiersTab.Name = "NPCModifiersTab";
-            NPCModifiersTab.Size = new System.Drawing.Size(736, 382);
-            NPCModifiersTab.TabIndex = 0;
+            NPCModifierTab.Dock = DockStyle.Fill;
+            NPCModifierTab.Location = new System.Drawing.Point(3, 3);
+            NPCModifierTab.Name = "NPCModifiersTab";
+            NPCModifierTab.Size = new System.Drawing.Size(736, 382);
+            NPCModifierTab.TabIndex = 0;
             // 
             // tpAffixes
             // 
@@ -779,18 +786,11 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
-            // getHelpHereToolStripMenuItem
-            // 
-            getHelpHereToolStripMenuItem.Name = "getHelpHereToolStripMenuItem";
-            getHelpHereToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
-            getHelpHereToolStripMenuItem.Text = "Get help here!";
-            getHelpHereToolStripMenuItem.Click += getHelpHereToolStripMenuItem_Click;
-            // 
             // frmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(967, 478);
+            ClientSize = new System.Drawing.Size(1084, 611);
             Controls.Add(tbTabs);
             Controls.Add(tvDungeonInfo);
             Controls.Add(tsButtons);
@@ -798,7 +798,6 @@ namespace RogueCustomsDungeonEditor
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = msMenu;
-            MaximizeBox = false;
             Name = "frmMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Rogue Customs Dungeon Editor";
@@ -913,7 +912,7 @@ namespace RogueCustomsDungeonEditor
         private Controls.Tabs.ItemSlotsTab ItemSlotsTab;
         private Controls.Tabs.ItemTypesTab ItemTypesTab;
         private TabPage tpNPCModifiers;
-        private Controls.Tabs.NPCModifierTab NPCModifiersTab;
+        private Controls.Tabs.NPCModifierTab NPCModifierTab;
         private ToolStripMenuItem getHelpHereToolStripMenuItem;
     }
 }

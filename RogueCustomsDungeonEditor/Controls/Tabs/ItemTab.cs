@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.EffectInfos;
@@ -393,6 +391,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void cmbItemMaximumQualityLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void ItemStatsSheet_StatsChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }

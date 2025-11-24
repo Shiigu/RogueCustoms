@@ -1,17 +1,12 @@
 ﻿using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Utils.Representation;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Controls

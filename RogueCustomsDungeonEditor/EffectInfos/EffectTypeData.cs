@@ -1,17 +1,13 @@
-﻿using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsGameEngine.Utils.JsonImports;
+﻿using RogueCustomsGameEngine.Utils.JsonImports;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RogueCustomsDungeonEditor.EffectInfos
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class EffectTypeData
     {
         public string InternalName { get; set; }

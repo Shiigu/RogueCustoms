@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 #pragma warning disable CS8601 // Posible asignación de referencia nula
@@ -117,6 +112,7 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        public event EventHandler StatsChanged;
         public ItemStatsSheet()
         {
             InitializeComponent();
@@ -218,6 +214,7 @@ namespace RogueCustomsDungeonEditor.Controls
                         }
                     }
                 }
+                StatsChanged?.Invoke(null, EventArgs.Empty);
             }
             else
             {

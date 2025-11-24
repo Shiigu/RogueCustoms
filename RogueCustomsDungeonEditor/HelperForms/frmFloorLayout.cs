@@ -1,22 +1,16 @@
-﻿using org.matheval.Node;
-
-using RogueCustomsDungeonEditor.Controls;
+﻿using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.Utils;
 
-using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Common;
-using System.Drawing;
 using System.Linq;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms

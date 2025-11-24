@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics;
-
-using org.matheval;
+﻿using org.matheval;
 
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
@@ -18,7 +16,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 

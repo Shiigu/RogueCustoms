@@ -1,19 +1,15 @@
-﻿using MathNet.Numerics.Statistics;
-using RogueCustomsDungeonEditor.Utils;
+﻿using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Exceptions;
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Xml.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {

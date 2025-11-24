@@ -1,12 +1,8 @@
 ﻿using RogueCustomsDungeonEditor.Utils;
-using RogueCustomsDungeonEditor.Validators;
+
 using RogueCustomsGameEngine.Utils.JsonImports;
-using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {

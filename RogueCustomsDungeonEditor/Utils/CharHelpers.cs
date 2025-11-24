@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 namespace RogueCustomsDungeonEditor.Utils

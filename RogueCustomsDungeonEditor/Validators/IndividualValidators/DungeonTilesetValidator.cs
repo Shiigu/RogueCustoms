@@ -1,14 +1,9 @@
 ﻿using RogueCustomsDungeonEditor.Utils;
-using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsGameEngine.Game.Entities;
-using RogueCustomsGameEngine.Utils.JsonImports;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using RogueCustomsGameEngine.Utils.JsonImports;
+
+using System;
+using System.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {

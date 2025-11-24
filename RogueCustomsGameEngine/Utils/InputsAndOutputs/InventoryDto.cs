@@ -100,7 +100,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     StatModifications.Add(new StatModificationDto(m, correspondingStat, map));
             });
             OnAttackActions = new();
-            if(pickableAsItem.IsIdentified)
+            if(pickableAsItem?.IsIdentified == true)
                 pickableAsItem?.OwnOnAttack.ForEach(ooa => OnAttackActions.Add(ooa.Name));
             ExtraDamages = [];
             if(pickableAsItem?.ExtraDamage != null)
