@@ -764,6 +764,39 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
+        public static AffixInfo CreateAffixTemplate()
+        {
+            return new AffixInfo()
+            {
+                Name = "AffixName",
+                AffixType = "Prefix",
+                AffectedItemTypes = new(),
+                OnAttack = null,
+                OnAttacked = null,
+                OnTurnStart = null,
+                ExtraDamage = null,
+                StatModifiers = new(),
+                ItemValueModifierPercentage = 0,
+                MinimumItemLevel = 1
+            };
+        }
+
+        public static NPCModifierInfo CreateNPCModifierTemplate()
+        {
+            return new NPCModifierInfo()
+            {
+                Name = "NPCModifierName",
+                OnSpawn = null,
+                OnAttack = null,
+                OnAttacked = null,
+                OnTurnStart = null,
+                OnDeath = null,
+                ExtraDamage = null,
+                StatModifiers = new(),
+                NameColor = new GameColor(Color.White)
+            };
+        }
+
         public static CurrencyInfo CreateCurrencyTemplate()
         {
             return new CurrencyInfo()

@@ -122,6 +122,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("Enter a Player Class Description first.");
             if (crsPlayer.ConsoleRepresentation.Character == '\0')
                 validationErrors.Add("This Player Class does not have a Console Representation character.");
+            foreach (var stat in ssPlayer.Stats)
+            {
+                if(stat.Base < stat.Minimum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Base value less than its Minimum value.");
+                if(stat.Base > stat.Maximum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Base value greater than its Maximum value.");
+                if (stat.Minimum > stat.Maximum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Minimum value greater than its Maximum value.");
+            }
             if (string.IsNullOrWhiteSpace(ssPlayer.BaseSightRange))
                 validationErrors.Add("This Player Class does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbPlayerFaction.Text))

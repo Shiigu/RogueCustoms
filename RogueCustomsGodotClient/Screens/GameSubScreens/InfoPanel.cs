@@ -4,6 +4,7 @@ using MathNet.Numerics.Statistics.Mcmc;
 
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
+using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
 using RogueCustomsGodotClient;
@@ -410,7 +411,7 @@ public partial class InfoPanel : GamePanel
         if (stat.IsPercentileStat)
         {
             // Percentile stats will never have a Max
-            innerText.Append($"{stat.Name}: {(int)stat.Current}%");
+            innerText.Append($"{stat.Name}: [color={GetStatCapColor(stat)}]{(int)stat.Current}%[/color]");
         }
         else
         {
@@ -418,24 +419,24 @@ public partial class InfoPanel : GamePanel
             {
                 if (stat.IsHP)
                 {
-                    AppendStatWithColor(innerText, stat.Name, stat.Current, stat.Max.Value);
+                    AppendHPStatWithColor(innerText, stat);
                 }
                 else
                 {
-                    innerText.Append($"{stat.Name}: {stat.Current:0.#####}/{stat.Max:0.#####}");
+                    innerText.Append($"{stat.Name}: {stat.Current:0.#####}/[color={GetStatCapColor(stat)}]{stat.Max:0.#####}[/color]");
                 }
             }
             else if (stat.HasMaxStat && stat.Max != null && stat.IsDecimalStat)
             {
-                innerText.Append($"{stat.Name}: {(int)stat.Current}/{(int)stat.Max}");
+                innerText.Append($"{stat.Name}: {(int)stat.Current}/[color={GetStatCapColor(stat)}]{(int)stat.Max}[/color]");
             }
             else if (!stat.HasMaxStat && stat.IsDecimalStat)
             {
-                innerText.Append($"{stat.Name}: {stat.Current:0.#####}");
+                innerText.Append($"{stat.Name}: [color={GetStatCapColor(stat)}]{stat.Current:0.#####}[/color]");
             }
             else if (!stat.HasMaxStat && !stat.IsDecimalStat)
             {
-                innerText.Append($"{stat.Name}: {(int)stat.Current}");
+                innerText.Append($"{stat.Name}: [color={GetStatCapColor(stat)}]{(int)stat.Current}[/color]");
             }
         }
         innerText.Append("[p]");
@@ -469,20 +470,32 @@ public partial class InfoPanel : GamePanel
         });
     }
 
-    private static void AppendStatWithColor(StringBuilder innerText, string statName, decimal current, decimal max)
+    private static void AppendHPStatWithColor(StringBuilder innerText, StatDto stat)
     {
-        string color;
+        string currentColor;
 
-        if (current > max * 0.5M)
-            color = "#00FF00FF";
-        else if (current > max * 0.25M)
-            color = "#FFA500FF";
-        else if (current > 0)
-            color = "#FF5C00FF";
+        if (stat.Current > stat.Max * 0.5M)
+            currentColor = "#00FF00FF";
+        else if (stat.Current > stat.Max * 0.25M)
+            currentColor = "#FFA500FF";
+        else if (stat.Current > 0)
+            currentColor = "#FF5C00FF";
         else
-            color = "#FF0000FF";
+            currentColor = "#FF0000FF";
 
-        innerText.Append($"{statName}: [color={color}]{(int)current}[/color]/{(int)max}");
+        innerText.Append($"{stat.Name}: [color={currentColor}]{(int)stat.Current}[/color]/[color={GetStatCapColor(stat)}]{(int)stat.Max}[/color]");
+    }
+
+    private static string GetStatCapColor(StatDto stat)
+    {
+        string colorToUse = "#FFFFFFFF";
+
+        if (stat.IsMaxedOut)
+            colorToUse = "#C0A000FF";
+        else if (stat.IsMinimized)
+            colorToUse = "#FF0000FF";
+
+        return colorToUse;
     }
 
     private static void AddStatDetails(StringBuilder innerText, StatDto stat)

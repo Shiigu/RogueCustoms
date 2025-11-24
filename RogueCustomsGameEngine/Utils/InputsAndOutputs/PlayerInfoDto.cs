@@ -57,11 +57,13 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     MaxName = maxStatName,
                     Current = stat.Current,
                     Max = stat.BaseAfterModifications,
-                    Base = stat.Base + (int)(stat.IncreasePerLevel * (character.Level - 1)),
+                    Base = stat.BaseAfterLevelUp,
                     IsDecimalStat = stat.StatType == StatType.Regeneration || stat.StatType == StatType.Decimal,
                     IsPercentileStat = stat.StatType == StatType.Percentage,
                     HasMaxStat = stat.HasMax,
                     IsHP = stat.StatType == StatType.HP,
+                    IsMinimized = stat.HasMax ? stat.Base <= stat.MinCap : stat.Current <= stat.MinCap,
+                    IsMaxedOut = stat.HasMax ? stat.Base >= stat.MaxCap : stat.Current >= stat.MaxCap,
                     Modifications = new List<StatModificationDto>()
                 };
                 stat.ActiveModifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
@@ -90,6 +92,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool IsPercentileStat { get; set; }
         public bool HasMaxStat { get; set; }
         public bool IsHP { get; set; }
+        public bool IsMinimized { get; set; }
+        public bool IsMaxedOut { get; set; }
         public List<StatModificationDto> Modifications { get; set; }
     }
 

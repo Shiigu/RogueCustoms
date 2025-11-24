@@ -184,6 +184,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("Enter an NPC Description first.");
             if (crsNPC.Character == '\0')
                 validationErrors.Add("This NPC does not have a Console Representation character.");
+            foreach (var stat in ssNPC.Stats)
+            {
+                if (stat.Base < stat.Minimum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Base value less than its Minimum value.");
+                if (stat.Base > stat.Maximum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Base value greater than its Maximum value.");
+                if (stat.Minimum > stat.Maximum)
+                    validationErrors.Add($"The Stat '{stat.StatId}' has a Minimum value greater than its Maximum value.");
+            }
             if (string.IsNullOrWhiteSpace(ssNPC.BaseSightRange))
                 validationErrors.Add("This NPC does not have a Sight Range set.");
             if (string.IsNullOrWhiteSpace(cmbNPCFaction.Text))

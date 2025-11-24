@@ -33,7 +33,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 var increaseAfterLevel = IncreasePerLevel * (Character.Level - 1);
                 if (StatType != StatType.Decimal && StatType != StatType.Regeneration)
                     increaseAfterLevel = (int)increaseAfterLevel;
-                return Base + increaseAfterLevel;
+                return (Base + increaseAfterLevel).Clamp(MinCap, MaxCap);
             }
         }
         private decimal _current { get; set; } // If !HasMax, Current = Value. If HasMax, Current is current (e.g. if HP is 14 out of 16, Value is 14).
