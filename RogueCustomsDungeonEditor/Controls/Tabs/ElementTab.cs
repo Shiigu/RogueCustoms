@@ -4,14 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
-using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 

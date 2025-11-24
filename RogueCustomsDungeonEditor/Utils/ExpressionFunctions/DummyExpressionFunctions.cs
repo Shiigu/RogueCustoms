@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsGameEngine.Game.Entities.Interfaces;
-using RogueCustomsGameEngine.Game.Entities;
-using RogueCustomsGameEngine.Utils.Representation;
-using RogueCustomsGameEngine.Utils.Effects.Utils;
-using RogueCustomsGameEngine.Utils.Helpers;
+﻿using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 {

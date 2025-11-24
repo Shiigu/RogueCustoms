@@ -288,6 +288,7 @@
             ItemStatsSheet.Name = "ItemStatsSheet";
             ItemStatsSheet.Size = new System.Drawing.Size(234, 137);
             ItemStatsSheet.TabIndex = 248;
+            ItemStatsSheet.StatsChanged += ItemStatsSheet_StatsChanged;
             // 
             // label98
             // 

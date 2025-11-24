@@ -117,4 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="fklblNPCModifierNameLocale.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAO5JREFUSEvd
+        lc0JwkAQRh+KN21Ey7ACD3bhwTa0DS3Jg2gXevKkPNiBkJ9NDOxBHyyEfPPNJDPJLvw7M2ALnIAb8EzL
+        a++pGTOKDXAH3j3LGGMHMwEOlQQXYA8sgXlaXntPLeL06O3lmAwvYAdM6wEV1IwxVo/eLL5qJF/XxQzG
+        RpHOdjms6LlP1Ua0ow09MZPWwftFRM+72pIroCdmYq4G5yQ6vLHoNYe5GlyTuKoLX6DXHOZq8Ejioi5U
+        yLVI9Kqbq0HxAkNa1Fcg26IhQ+4rkB1y8c+0+I8mRbeKoOhmJ8W366DYgVOl6JH5G3wAwnV/3Z6PKaUA
+        AAAASUVORK5CYII=
+</value>
+  </data>
 </root>

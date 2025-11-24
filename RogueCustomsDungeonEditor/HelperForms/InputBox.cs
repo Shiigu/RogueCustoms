@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.Utils;
 
-using RogueCustomsGameEngine.Utils;
-
 namespace RogueCustomsDungeonEditor.HelperForms
 {
-    #pragma warning disable IDE1006 // Estilos de nombres
+#pragma warning disable IDE1006 // Estilos de nombres
     public partial class InputBox : Form
     {
         private bool _rejectReservedWords;

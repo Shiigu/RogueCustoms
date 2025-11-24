@@ -2,159 +2,183 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.EffectInfos;
+using RogueCustomsDungeonEditor.Utils;
 
-using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
+
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 namespace RogueCustomsDungeonEditor.Controls.Tabs
 {
     public partial class AffixTab : UserControl
     {
-        private DungeonInfo ActiveDungeon;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<AffixInfo> LoadedAffixes { get; private set; }
+        private DungeonInfo _activeDungeon;
         private List<EffectTypeData> EffectParamData;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DungeonInfo ActiveDungeon
+        {
+            set
+            {
+                _activeDungeon = value;
+                AffixStatsSheet.StatData = value.CharacterStats;
+                clbAffixAffects.Items.Clear();
+                clbAffixAffects.Items.AddRange(value.ItemTypeInfos.Select(it => it.Id).ToArray());
+                cmbAffixElementDamage.Items.Clear();
+                cmbAffixElementDamage.Items.AddRange(value.ElementInfos.Select(et => et.Id).ToArray());
+            }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AffixInfo LoadedAffix { get; private set; }
         public event EventHandler TabInfoChanged;
-        private int _selectedIndex;
 
         public AffixTab()
         {
             InitializeComponent();
         }
 
-        public void LoadData(DungeonInfo activeDungeon, List<EffectTypeData> effectParamData)
+        public void LoadData(DungeonInfo dungeon, AffixInfo affix, List<EffectTypeData> effectParamData)
         {
-            ActiveDungeon = activeDungeon;
-            LoadedAffixes = activeDungeon.AffixInfos ?? new();
+            ActiveDungeon = dungeon;
+            LoadedAffix = affix ?? new();
             EffectParamData = effectParamData;
-            tlpAffixes.SuspendLayout();
-            tlpAffixes.Controls.Clear();
-            tlpAffixes.RowCount = 0;
-            foreach (var affix in LoadedAffixes)
+            txtAffixName.Text = affix?.Name;
+            cmbAffixType.Text = affix?.AffixType;
+            nudAffixMinimumItemLevel.Value = affix.MinimumItemLevel;
+            nudAffixItemValuePercentageModifier.Value = affix.ItemValueModifierPercentage;
+            AffixStatsSheet.Stats = affix.StatModifiers ?? new List<PassiveStatModifierInfo>();
+            nudAffixMinDamage.Value = affix.ExtraDamage?.MinDamage ?? 0;
+            nudAffixMaxDamage.Value = affix.ExtraDamage?.MaxDamage ?? 0;
+            cmbAffixElementDamage.Text = affix.ExtraDamage?.Element ?? string.Empty;
+            SetSingleActionEditorParams(saeAffixOnTurnStart, affix.Name, affix.OnTurnStart);
+            SetSingleActionEditorParams(saeAffixOnAttacked, affix.Name, affix.OnAttacked);
+            SetSingleActionEditorParams(saeAffixOnAttack, affix.Name, affix.OnAttack);
+            for (int i = 0; i < clbAffixAffects.Items.Count; i++)
             {
-                var affixEditor = new AffixEditor()
-                {
-                    ActiveDungeon = ActiveDungeon,
-                    EffectParamData = EffectParamData,
-                    Affix = affix,
-                    Dock = DockStyle.Fill,
-                };
-                affixEditor.Click += AffixEditor_Click;
-                affixEditor.EditorInfoChanged += (sender, args) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-                tlpAffixes.RowCount++;
-                tlpAffixes.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                tlpAffixes.Controls.Add(affixEditor, 0, tlpAffixes.RowCount - 1);
+                clbAffixAffects.SetItemChecked(i, affix.AffectedItemTypes != null && affix.AffectedItemTypes.Contains(clbAffixAffects.Items[i].ToString()));
             }
-            tlpAffixes.ResumeLayout(true);
-            _selectedIndex = -1;
         }
 
-        public List<string> SaveData()
+        public List<string> SaveData(string id)
         {
-            var validationErrors = new List<string>();
-            var affixesToSave = new List<AffixInfo>();
-            var affixIds = new List<string>();
+            AffixStatsSheet.EndEdit();
 
-            foreach (AffixEditor editor in tlpAffixes.Controls)
-            {
-                validationErrors.AddRange(editor.GetValidationErrors());
-                if (!affixIds.Contains(editor.Affix.Id))
-                {
-                    affixIds.Add(editor.Affix.Id);
-                    affixesToSave.Add(editor.Affix);
-                }
-                else
-                {
-                    validationErrors.Add($"Duplicate affix id '{editor.Affix.Id}' found.");
-                }
-            }
+            var validationErrors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(txtAffixName.Text))
+                validationErrors.Add("The Affix must have a Name.");
+            if (string.IsNullOrWhiteSpace(cmbAffixType.Text))
+                validationErrors.Add("The Affix must have a Type.");
+            if (clbAffixAffects.CheckedItems.Count == 0)
+                validationErrors.Add("The Affix must be able to spawn on at least one Item Type.");
+            if (nudAffixMinDamage.Value > nudAffixMaxDamage.Value)
+                validationErrors.Add("The Affix has a Minimum Damage higher than its Maximum Damage.");
+            if ((nudAffixMinDamage.Value > 0 || nudAffixMaxDamage.Value > 0) && string.IsNullOrWhiteSpace(cmbAffixElementDamage.Text))
+                validationErrors.Add("The Affix has been set to deal damage but the Element wasn't specified.");
+            if (nudAffixMinDamage.Value == 0 && nudAffixMaxDamage.Value == 0 && !string.IsNullOrWhiteSpace(cmbAffixElementDamage.Text))
+                validationErrors.Add("The Affix has been set an Element but wasn't set to deal damage.");
 
             if (validationErrors.Count == 0)
             {
-                LoadedAffixes = affixesToSave;
+                var selectedAffectedItemTypes = new List<string>();
+
+                foreach (var item in clbAffixAffects.CheckedItems)
+                {
+                    selectedAffectedItemTypes.Add(item.ToString());
+                }
+
+                LoadedAffix = new()
+                {
+                    Id = id,
+                    Name = txtAffixName.Text,
+                    AffixType = cmbAffixType.Text,
+                    AffectedItemTypes = selectedAffectedItemTypes,
+                    MinimumItemLevel = (int)nudAffixMinimumItemLevel.Value,
+                    StatModifiers = AffixStatsSheet.Stats,
+                    ItemValueModifierPercentage = (int)nudAffixItemValuePercentageModifier.Value,
+                    ExtraDamage = new()
+                    {
+                        MinDamage = (int)nudAffixMinDamage.Value,
+                        MaxDamage = (int)nudAffixMaxDamage.Value,
+                        Element = cmbAffixElementDamage.Text
+                    },
+                    OnTurnStart = saeAffixOnTurnStart.Action,
+                    OnAttacked = saeAffixOnAttacked.Action,
+                    OnAttack = saeAffixOnAttack.Action
+                };
             }
 
             return validationErrors;
         }
 
-        private void AffixEditor_Click(object? sender, EventArgs e)
+        private void txtAffixName_TextChanged(object sender, EventArgs e)
         {
-            if (sender is AffixEditor clickedEditor)
-            {
-                foreach (AffixEditor editor in tlpAffixes.Controls)
-                {
-                    editor.BackColor = SystemColors.Control;
-                    if (editor == clickedEditor)
-                    {
-                        _selectedIndex = tlpAffixes.Controls.IndexOf(editor);
-                    }
-                }
-                clickedEditor.BackColor = Color.LightBlue;
-            }
-        }
-
-        private void btnAddAffix_Click(object sender, EventArgs e)
-        {
-            tlpAffixes.SuspendLayout();
-            var affixEditor = new AffixEditor()
-            {
-                Dock = DockStyle.Fill,
-                EffectParamData = EffectParamData,
-                ActiveDungeon = ActiveDungeon,
-                Affix = new()
-                {
-                    MinimumItemLevel = 1
-                }
-            };
-            foreach (AffixEditor editor in tlpAffixes.Controls)
-            {
-                editor.BackColor = SystemColors.Control;
-            }
-            _selectedIndex = -1;
-            affixEditor.Click += AffixEditor_Click;
-            affixEditor.EditorInfoChanged += (sender, args) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            tlpAffixes.RowCount++;
-            tlpAffixes.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            tlpAffixes.Controls.Add(affixEditor, 0, tlpAffixes.RowCount - 1);
-            tlpAffixes.ResumeLayout(true);
+            txtAffixName.ToggleEntryInLocaleWarning(_activeDungeon, fklblAffixNameLocale);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
-        private void btnRemoveAffix_Click(object sender, EventArgs e)
+        private void cmbAffixType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_selectedIndex < 0 || _selectedIndex >= tlpAffixes.RowCount) return;
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
 
-            var control = tlpAffixes.GetControlFromPosition(0, _selectedIndex);
-            if (control != null)
-            {
-                tlpAffixes.Controls.Remove(control);
-                control.Dispose();
+        private void cmbAffixType_TextChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
 
-                for (int i = _selectedIndex + 1; i < tlpAffixes.RowCount; i++)
-                {
-                    var c = tlpAffixes.GetControlFromPosition(0, i);
-                    if (c != null)
-                    {
-                        tlpAffixes.SetRow(c, i - 1);
-                    }
-                }
+        private void nudAffixMinimumItemLevel_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
 
-                tlpAffixes.RowCount--;
-                if (tlpAffixes.RowStyles.Count > _selectedIndex)
-                {
-                    tlpAffixes.RowStyles.RemoveAt(_selectedIndex);
-                }
+        private void nudAffixItemValuePercentageModifier_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
 
-                _selectedIndex = -1;
-                TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            }
+        private void nudAffixMinDamage_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudAffixMaxDamage_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void cmbAffixElementDamage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void cmbAffixElementDamage_TextChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+        private void clbAffixAffects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
+        {
+            sae.Action = action;
+            sae.ClassId = classId;
+            sae.Dungeon = _activeDungeon;
+            sae.EffectParamData = EffectParamData;
+            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void AffixStatsSheet_StatsChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

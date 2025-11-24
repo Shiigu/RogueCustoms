@@ -3,20 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
-
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 namespace RogueCustomsDungeonEditor.Controls.Tabs

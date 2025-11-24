@@ -1,15 +1,11 @@
-﻿using org.matheval;
-using RogueCustomsDungeonEditor.Utils;
+﻿using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
-using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {

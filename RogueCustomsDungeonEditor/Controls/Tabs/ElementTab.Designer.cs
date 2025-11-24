@@ -79,7 +79,7 @@
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(3, 143);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(212, 15);
+            label2.Size = new System.Drawing.Size(213, 15);
             label2.TabIndex = 230;
             label2.Text = "The following Stat serves as Resistance:";
             // 
@@ -98,7 +98,7 @@
             chkExcessResistanceCausesHealDamage.AutoSize = true;
             chkExcessResistanceCausesHealDamage.Location = new System.Drawing.Point(3, 176);
             chkExcessResistanceCausesHealDamage.Name = "chkExcessResistanceCausesHealDamage";
-            chkExcessResistanceCausesHealDamage.Size = new System.Drawing.Size(383, 19);
+            chkExcessResistanceCausesHealDamage.Size = new System.Drawing.Size(382, 19);
             chkExcessResistanceCausesHealDamage.TabIndex = 232;
             chkExcessResistanceCausesHealDamage.Text = "If Resistance exceeds Damage, call HealDamage with the difference.";
             chkExcessResistanceCausesHealDamage.UseVisualStyleBackColor = true;
@@ -106,25 +106,20 @@
             // 
             // saeElementOnAfterAttack
             // 
-            saeElementOnAfterAttack.Action = null;
-            saeElementOnAfterAttack.ActionDescription = "After trying to DealDamage\r\nwith this Element...";
+            saeElementOnAfterAttack.ActionDescription = "After trying to DealDamage with this Element...";
             saeElementOnAfterAttack.ActionTypeText = "After Attack";
             saeElementOnAfterAttack.AutoSize = true;
             saeElementOnAfterAttack.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             saeElementOnAfterAttack.ClassId = null;
-            saeElementOnAfterAttack.Dungeon = null;
-            saeElementOnAfterAttack.EffectParamData = null;
-            saeElementOnAfterAttack.Location = new System.Drawing.Point(369, 131);
+            saeElementOnAfterAttack.Location = new System.Drawing.Point(3, 201);
             saeElementOnAfterAttack.Name = "saeElementOnAfterAttack";
             saeElementOnAfterAttack.PlaceholderActionId = "ElementAfterAttack";
             saeElementOnAfterAttack.RequiresCondition = true;
-            saeElementOnAfterAttack.Size = new System.Drawing.Size(285, 32);
+            saeElementOnAfterAttack.Size = new System.Drawing.Size(388, 32);
             saeElementOnAfterAttack.SourceDescription = "The attacker";
             saeElementOnAfterAttack.TabIndex = 233;
             saeElementOnAfterAttack.TargetDescription = "The attacked";
             saeElementOnAfterAttack.ThisDescription = "The Element";
-            saeElementOnAfterAttack.TurnEndCriteria = HelperForms.TurnEndCriteria.CannotEndTurn;
-            saeElementOnAfterAttack.UsageCriteria = HelperForms.UsageCriteria.AnyTargetAnyTime;
             // 
             // label1
             // 
@@ -150,7 +145,6 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
-            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             Controls.Add(btnElementColor);
             Controls.Add(label1);
             Controls.Add(saeElementOnAfterAttack);
@@ -161,7 +155,7 @@
             Controls.Add(txtElementName);
             Controls.Add(label101);
             Name = "ElementTab";
-            Size = new System.Drawing.Size(657, 198);
+            Size = new System.Drawing.Size(394, 241);
             ResumeLayout(false);
             PerformLayout();
         }

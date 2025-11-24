@@ -2,23 +2,21 @@
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.HelperForms
 {
-    #pragma warning disable IDE1006 // Estilos de nombres
-    #pragma warning disable S2589 // Boolean expressions should not be gratuitous
-    #pragma warning disable CS8601 // Posible asignación de referencia nula
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable IDE1006 // Estilos de nombres
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class frmSpecialTileGeneration : Form
     {
         private readonly FloorInfo ActiveFloorGroup;

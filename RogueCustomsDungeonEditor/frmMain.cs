@@ -3,16 +3,12 @@ using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
 using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion;
-using RogueCustomsDungeonEditor.Validators;
 using RogueCustomsGameEngine.Utils;
 using RogueCustomsGameEngine.Utils.Helpers;
 using RogueCustomsGameEngine.Utils.JsonImports;
-using RogueCustomsGameEngine.Utils.Representation;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using System;
 using System.Windows.Forms;
 using System.Linq;
@@ -20,8 +16,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsGameEngine.Utils.Enums;
-using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsDungeonEditor.Clipboard;
 using RogueCustomsDungeonEditor.Controls.Tabs;
 using System.Diagnostics;
 
@@ -151,7 +145,7 @@ namespace RogueCustomsDungeonEditor
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;
             AffixTab.TabInfoChanged += AffixTab_TabInfoChanged;
-            NPCModifiersTab.TabInfoChanged += NPCModifiersTab_TabInfoChanged;
+            NPCModifierTab.TabInfoChanged += NPCModifiersTab_TabInfoChanged;
             QualityLevelsTab.TabInfoChanged += QualityLevelsTab_TabInfoChanged;
             LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
             ItemTypesTab.TabInfoChanged += ItemTypesTab_TabInfoChanged;
@@ -265,8 +259,6 @@ namespace RogueCustomsDungeonEditor
                 IsNewObject = false;
                 LoadTabDataForTag(tag);
                 tsbSaveElementAs.Visible = ActiveNodeTag.TabToOpen != RogueTabTypes.BasicInfo
-                    && ActiveNodeTag.TabToOpen != RogueTabTypes.AffixInfo
-                    && ActiveNodeTag.TabToOpen != RogueTabTypes.NPCModifierInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.QualityLevelInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.ActionSchoolsInfo
                     && ActiveNodeTag.TabToOpen != RogueTabTypes.CurrencyInfo
@@ -517,19 +509,41 @@ namespace RogueCustomsDungeonEditor
             };
             tvDungeonInfo.Nodes.Add(currencyInfoNode);
 
-            var npcModifierInfoNode = new TreeNode("NPC Modifiers")
+            var npcModifierInfosRootNode = new TreeNode("NPC Modifiers")
             {
                 Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = null },
                 Name = "NPC Modifiers"
             };
-            tvDungeonInfo.Nodes.Add(npcModifierInfoNode);
 
-            var affixInfoNode = new TreeNode("Affixes")
+            foreach (var npcModifierInfo in ActiveDungeon.NPCModifierInfos)
+            {
+                var npcModifierInfoNode = new TreeNode(npcModifierInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.NPCModifierInfo, DungeonElement = npcModifierInfo },
+                    Name = npcModifierInfo.Id
+                };
+                npcModifierInfosRootNode.Nodes.Add(npcModifierInfoNode);
+            }
+
+            tvDungeonInfo.Nodes.Add(npcModifierInfosRootNode);
+
+            var affixInfosRootNode = new TreeNode("Affixes")
             {
                 Tag = new NodeTag { TabToOpen = RogueTabTypes.AffixInfo, DungeonElement = null },
                 Name = "Affixes"
             };
-            tvDungeonInfo.Nodes.Add(affixInfoNode);
+
+            foreach (var affixInfo in ActiveDungeon.AffixInfos)
+            {
+                var affixInfoNode = new TreeNode(affixInfo.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.AffixInfo, DungeonElement = affixInfo },
+                    Name = affixInfo.Id
+                };
+                affixInfosRootNode.Nodes.Add(affixInfoNode);
+            }
+
+            tvDungeonInfo.Nodes.Add(affixInfosRootNode);
 
             var qualityLevelInfoNode = new TreeNode("Quality Levels")
             {
@@ -934,8 +948,8 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.ActionSchoolsInfo => SaveActionSchools(),
                     RogueTabTypes.LootTableInfo => SaveLootTable(),
                     RogueTabTypes.CurrencyInfo => SaveCurrency(),
-                    RogueTabTypes.NPCModifierInfo => SaveNPCModifiers(),
-                    RogueTabTypes.AffixInfo => SaveAffixes(),
+                    RogueTabTypes.NPCModifierInfo => SaveNPCModifier(),
+                    RogueTabTypes.AffixInfo => SaveAffix(),
                     RogueTabTypes.QualityLevelInfo => SaveQualityLevels(),
                     RogueTabTypes.ItemSlotInfo => SaveItemSlots(),
                     RogueTabTypes.ItemTypeInfo => SaveItemTypes(),
@@ -964,37 +978,25 @@ namespace RogueCustomsDungeonEditor
 
         private bool SaveObjectAs()
         {
-            switch (ActiveNodeTag.TabToOpen)
+            return ActiveNodeTag.TabToOpen switch
             {
-                case RogueTabTypes.Locales:
-                    return SaveLocaleAs();
-                case RogueTabTypes.TileTypeInfo:
-                    return SaveTileTypeAs();
-                case RogueTabTypes.TileSetInfo:
-                    return SaveTileSetAs();
-                case RogueTabTypes.FloorInfo:
-                    return SaveFloorGroup(true);
-                case RogueTabTypes.FactionInfo:
-                    return SaveFactionAs();
-                case RogueTabTypes.StatInfo:
-                    return SaveStatAs();
-                case RogueTabTypes.ElementInfo:
-                    return SaveElementAs();
-                case RogueTabTypes.LootTableInfo:
-                    return SaveLootTableAs();
-                case RogueTabTypes.PlayerClass:
-                    return SavePlayerClassAs();
-                case RogueTabTypes.NPC:
-                    return SaveNPCAs();
-                case RogueTabTypes.Item:
-                    return SaveItemAs();
-                case RogueTabTypes.Trap:
-                    return SaveTrapAs();
-                case RogueTabTypes.AlteredStatus:
-                    return SaveAlteredStatusAs();
-                default:
-                    return true;
-            }
+                RogueTabTypes.Locales => SaveLocaleAs(),
+                RogueTabTypes.TileTypeInfo => SaveTileTypeAs(),
+                RogueTabTypes.TileSetInfo => SaveTileSetAs(),
+                RogueTabTypes.FloorInfo => SaveFloorGroup(true),
+                RogueTabTypes.FactionInfo => SaveFactionAs(),
+                RogueTabTypes.StatInfo => SaveStatAs(),
+                RogueTabTypes.ElementInfo => SaveElementAs(),
+                RogueTabTypes.LootTableInfo => SaveLootTableAs(),
+                RogueTabTypes.AffixInfo => SaveAffixAs(),
+                RogueTabTypes.NPCModifierInfo => SaveNPCModifierAs(),
+                RogueTabTypes.PlayerClass => SavePlayerClassAs(),
+                RogueTabTypes.NPC => SaveNPCAs(),
+                RogueTabTypes.Item => SaveItemAs(),
+                RogueTabTypes.Trap => SaveTrapAs(),
+                RogueTabTypes.AlteredStatus => SaveAlteredStatusAs(),
+                _ => true,
+            };
         }
 
         private void tsbDeleteElement_Click(object sender, EventArgs e)
@@ -1142,10 +1144,20 @@ namespace RogueCustomsDungeonEditor
                     LoadCurrencyInfo();
                     break;
                 case RogueTabTypes.AffixInfo:
-                    LoadAffixes();
+                    var tagAffix = (AffixInfo)tag.DungeonElement;
+                    LoadAffixInfoFor(tagAffix);
+                    if (!IsNewObject)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Affix - {tagAffix.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Affix";
                     break;
                 case RogueTabTypes.NPCModifierInfo:
-                    LoadNPCModifiers();
+                    var tagNPCModifier = (NPCModifierInfo)tag.DungeonElement;
+                    LoadNPCModifierInfoFor(tagNPCModifier);
+                    if (!IsNewObject)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"NPC Modifier - {tagNPCModifier.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"NPC Modifier";
                     break;
                 case RogueTabTypes.QualityLevelInfo:
                     LoadQualityLevels();
@@ -2930,7 +2942,7 @@ namespace RogueCustomsDungeonEditor
                 if (ActiveDungeon.Traps.Exists(i => i.Id.Equals(inputBoxResult)))
                 {
                     var messageBoxResult = MessageBox.Show(
-                        $"An Trap with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        $"A Trap with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
                         "Save Trap As",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -3247,40 +3259,120 @@ namespace RogueCustomsDungeonEditor
 
         #region Affixes
 
-        private void LoadAffixes()
+        private void LoadAffixInfoFor(AffixInfo affix)
         {
-            tsbAddElement.Visible = false;
-            tsbSaveElement.Visible = true;
-            tsbSaveElementAs.Visible = false;
-            tsbDeleteElement.Visible = false;
-            tssElementValidate.Visible = true;
-            AffixTab.LoadData(ActiveDungeon, EffectParamData);
+            AffixTab.LoadData(ActiveDungeon, affix, EffectParamData);
         }
 
-        private bool SaveAffixes()
+        private bool SaveAffix()
         {
-            var validationErrors = AffixTab.SaveData();
+            if (string.IsNullOrWhiteSpace(AffixTab.LoadedAffix.Id))
+                return SaveAffixAs();
+            return SaveAffixToDungeon(AffixTab.LoadedAffix.Id);
+        }
+
+        private bool SaveAffixAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Affix Identifier", "Save Affix As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(AffixInfo)));
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.AffixInfos.Exists(i => i.Id.Equals(inputBoxResult)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"An Affix with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Affix As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveAffixToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveAffixToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveAffixToDungeon(string id)
+        {
+            var validationErrors = AffixTab.SaveData(id);
             if (validationErrors.Any())
             {
                 MessageBox.Show(
-                    $"The Dungeon's Affixes cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
-                    "Save Affixes",
+                    $"Cannot save Affix. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Affix",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
                 return false;
             }
+            var AffixToSave = AffixTab.LoadedAffix;
+            var preExistingAffix = ActiveDungeon.AffixInfos.FirstOrDefault(t => t.Id.Equals(id));
+            var isNewAffix = preExistingAffix == null;
+            if (isNewAffix)
+            {
+                ActiveDungeon.AffixInfos.Add(AffixToSave);
+            }
+            else
+            {
+                ActiveDungeon.AffixInfos[ActiveDungeon.AffixInfos.IndexOf(preExistingAffix)] = AffixToSave;
+            }
+            var verb = isNewAffix ? "Save" : "Update";
             MessageBox.Show(
-                "Dungeon's Affixes have been successfully saved!",
-                "Save Affixes",
+                $"Affix {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Affix",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            ActiveDungeon.AffixInfos = AffixTab.LoadedAffixes;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = AffixToSave.Id;
+            SelectNodeIfExists(nodeText, "Affixes");
             PassedValidation = false;
             return true;
+        }
+
+        public void DeleteAffix()
+        {
+            var activeAffix = (AffixInfo)ActiveNodeTag.DungeonElement;
+            var deleteAffixPrompt = IsNewObject
+                ? "Do you want to remove this unsaved Affix?"
+                : $"Do you want to PERMANENTLY delete Affix {activeAffix.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteAffixPrompt,
+                "Affix",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewObject)
+                {
+                    var removedId = new string(activeAffix.Id);
+                    ActiveDungeon.AffixInfos.RemoveAll(t => t.Id.Equals(activeAffix.Id));
+                    MessageBox.Show(
+                        $"Affix {removedId} has been successfully deleted.",
+                        "Delete Affix",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewObject = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
         }
 
         private void AffixTab_TabInfoChanged(object? sender, EventArgs e)
@@ -3290,40 +3382,120 @@ namespace RogueCustomsDungeonEditor
         #endregion
 
         #region NPC Modifiers
-        private void LoadNPCModifiers()
+        private void LoadNPCModifierInfoFor(NPCModifierInfo npcModifier)
         {
-            tsbAddElement.Visible = false;
-            tsbSaveElement.Visible = true;
-            tsbSaveElementAs.Visible = false;
-            tsbDeleteElement.Visible = false;
-            tssElementValidate.Visible = true;
-            NPCModifiersTab.LoadData(ActiveDungeon, EffectParamData);
+            NPCModifierTab.LoadData(npcModifier, ActiveDungeon, EffectParamData);
         }
 
-        private bool SaveNPCModifiers()
+        private bool SaveNPCModifier()
         {
-            var validationErrors = NPCModifiersTab.SaveData();
+            if (string.IsNullOrWhiteSpace(NPCModifierTab.LoadedNPCModifier.Id))
+                return SaveNPCModifierAs();
+            return SaveNPCModifierToDungeon(NPCModifierTab.LoadedNPCModifier.Id);
+        }
+
+        private bool SaveNPCModifierAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the NPC Modifier Identifier", "Save NPC Modifier As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(NPCModifierInfo)));
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.NPCModifierInfos.Exists(i => i.Id.Equals(inputBoxResult)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"An NPC Modifier with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save NPC Modifier As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveNPCModifierToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveNPCModifierToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveNPCModifierToDungeon(string id)
+        {
+            var validationErrors = NPCModifierTab.SaveData(id);
             if (validationErrors.Any())
             {
                 MessageBox.Show(
-                    $"The Dungeon's NPC Modifiers cannot be saved.\n\nPlease check the following errors:\n- {string.Join("\n - ", validationErrors)}",
-                    "Save Affixes",
+                    $"Cannot save NPC Modifier. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save NPC Modifier",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
                 return false;
             }
+            var NPCModifierToSave = NPCModifierTab.LoadedNPCModifier;
+            var preExistingNPCModifier = ActiveDungeon.NPCModifierInfos.FirstOrDefault(t => t.Id.Equals(id));
+            var isNewNPCModifier = preExistingNPCModifier == null;
+            if (isNewNPCModifier)
+            {
+                ActiveDungeon.NPCModifierInfos.Add(NPCModifierToSave);
+            }
+            else
+            {
+                ActiveDungeon.NPCModifierInfos[ActiveDungeon.NPCModifierInfos.IndexOf(preExistingNPCModifier)] = NPCModifierToSave;
+            }
+            var verb = isNewNPCModifier ? "Save" : "Update";
             MessageBox.Show(
-                "Dungeon's NPC Modifiers have been successfully saved!",
-                "Save NPC Modifiers",
+                $"NPC Modifier {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} NPC Modifier",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-            ActiveDungeon.NPCModifierInfos = NPCModifiersTab.LoadedNPCModifiers;
+            IsNewObject = false;
             DirtyDungeon = true;
             DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = NPCModifierToSave.Id;
+            SelectNodeIfExists(nodeText, "NPC Modifiers");
             PassedValidation = false;
             return true;
+        }
+
+        public void DeleteNPCModifier()
+        {
+            var activeNPCModifier = (NPCModifierInfo)ActiveNodeTag.DungeonElement;
+            var deleteNPCModifierPrompt = IsNewObject
+                ? "Do you want to remove this unsaved NPC Modifier?"
+                : $"Do you want to PERMANENTLY delete NPC Modifier {activeNPCModifier.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteNPCModifierPrompt,
+                "NPCModifier",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewObject)
+                {
+                    var removedId = new string(activeNPCModifier.Id);
+                    ActiveDungeon.NPCModifierInfos.RemoveAll(t => t.Id.Equals(activeNPCModifier.Id));
+                    MessageBox.Show(
+                        $"NPC Modifier {removedId} has been successfully deleted.",
+                        "Delete NPC Modifier",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewObject = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
         }
 
         private void NPCModifiersTab_TabInfoChanged(object? sender, EventArgs e)

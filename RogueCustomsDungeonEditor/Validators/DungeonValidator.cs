@@ -1,20 +1,18 @@
 ﻿using RogueCustomsDungeonEditor.Validators.IndividualValidators;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Validators
 {
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public class DungeonValidator
     {
         private ToolStripStatusLabel ProgressLabel;
@@ -37,8 +35,8 @@ namespace RogueCustomsDungeonEditor.Validators
         public DungeonValidationMessages CurrencyValidationMessages { get; private set; }
         public DungeonValidationMessages ItemSlotValidationMessages { get; private set; }
         public DungeonValidationMessages ItemTypeValidationMessages { get; private set; }
-        public DungeonValidationMessages AffixValidationMessages { get; private set; }
-        public DungeonValidationMessages NPCModifierValidationMessages { get; private set; }
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> AffixValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCModifierValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages QualityLevelValidationMessages { get; private set; }
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -61,6 +59,7 @@ namespace RogueCustomsDungeonEditor.Validators
             ProgressBar = progressBar;
 
             UpdateProgressLabel("Preparing Dungeon for Validation...", false);
+            ProgressBar.Width = ProgressLabel.GetCurrentParent().Width - ProgressLabel.Width - 10;
 
             var dungeonSpecificLocaleStringsToExpect = new List<string>();
 
@@ -217,13 +216,19 @@ namespace RogueCustomsDungeonEditor.Validators
             ItemTypeValidationMessages = DungeonItemTypeValidator.Validate(DungeonJson);
             UpdateProgressLabel($"Item Type Validation complete!", true, DungeonJson.ItemTypeInfos.Count);
 
-            UpdateProgressLabel($"Running Affix Validation...", false);
-            AffixValidationMessages = await DungeonAffixValidator.Validate(DungeonJson, sampleDungeon);
-            UpdateProgressLabel($"Affix Validation complete!", true, DungeonJson.AffixInfos.Count);
+            foreach (var affixInfo in DungeonJson.AffixInfos)
+            {
+                UpdateProgressLabel($"Running Affix {affixInfo.Id} Validation...", false);
+                AffixValidationMessages.Add((affixInfo.Id, await DungeonAffixValidator.Validate(affixInfo, DungeonJson, sampleDungeon)));
+                UpdateProgressLabel($"Affix {affixInfo.Id} Validation complete!", true);
+            }
 
-            UpdateProgressLabel($"Running NPC Modifier Validation...", false);
-            NPCModifierValidationMessages = await DungeonNPCModifierValidator.Validate(DungeonJson, sampleDungeon);
-            UpdateProgressLabel($"NPC Modifier Validation complete!", true, DungeonJson.NPCModifierInfos.Count);
+            foreach (var npcModifierInfo in DungeonJson.NPCModifierInfos)
+            {
+                UpdateProgressLabel($"Running NPC Modifier {npcModifierInfo.Id} Validation...", false);
+                NPCModifierValidationMessages.Add((npcModifierInfo.Id, await DungeonNPCModifierValidator.Validate(npcModifierInfo, DungeonJson, sampleDungeon)));
+                UpdateProgressLabel($"NPC Modifier {npcModifierInfo.Id} Validation complete!", true);
+            }
 
             UpdateProgressLabel($"Running Quality Level Validation...", false);
             QualityLevelValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
@@ -242,6 +247,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 NPCValidationMessages.Add((npcInfo.Id, await DungeonNPCValidator.Validate(npcInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"NPC {npcInfo.Id} Validation complete!", true);
             }
+
             foreach (var itemInfo in DungeonJson.Items)
             {
                 UpdateProgressLabel($"Running Item {itemInfo.Id} Validation...", false);
@@ -278,14 +284,14 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !FloorGroupValidationMessages.Exists(ftvm => ftvm.ValidationMessages.HasErrors)
                 && !FactionValidationMessages.Exists(fvm => fvm.ValidationMessages.HasErrors)
                 && !NPCValidationMessages.Exists(cvm => cvm.ValidationMessages.HasErrors)
-                && !ElementValidationMessages.Exists(em => em.ValidationMessages.HasErrors)
+                && !ElementValidationMessages.Exists(evm => evm.ValidationMessages.HasErrors)
                 && !ActionSchoolValidationMessages.HasErrors
                 && !CurrencyValidationMessages.HasErrors
                 && !QualityLevelValidationMessages.HasErrors
                 && !ItemSlotValidationMessages.HasErrors
                 && !ItemTypeValidationMessages.HasErrors
-                && !AffixValidationMessages.HasErrors
-                && !NPCModifierValidationMessages.HasErrors
+                && !AffixValidationMessages.Exists(avm => avm.ValidationMessages.HasErrors)
+                && !NPCModifierValidationMessages.Exists(npcmvm => npcmvm.ValidationMessages.HasErrors)
                 && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
                 && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
                 && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)

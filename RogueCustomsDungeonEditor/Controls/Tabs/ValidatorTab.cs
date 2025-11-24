@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -101,9 +98,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddValidationResultNode("Item Types", dungeonValidator.ItemTypeValidationMessages);
 
-                AddValidationResultNode("Affixes", dungeonValidator.AffixValidationMessages);
+                foreach (var (Id, ValidationMessages) in dungeonValidator.AffixValidationMessages)
+                {
+                    AddValidationResultNode($"Affix {Id}", ValidationMessages);
+                }
 
-                AddValidationResultNode("NPC Modifiers", dungeonValidator.NPCModifierValidationMessages);
+                foreach (var (Id, ValidationMessages) in dungeonValidator.NPCModifierValidationMessages)
+                {
+                    AddValidationResultNode($"NPC Modifier {Id}", ValidationMessages);
+                }
 
                 foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)
                 {
@@ -193,6 +196,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             tvValidationResults.Nodes.Add(nameNode);
+        }
+
+        private void ValidatorTab_Resize(object sender, EventArgs e)
+        {
+            tspbValidationProgress.Width = ssValidatorStatus.Width - tsslValidationProgress.Width - 10;
         }
     }
 }

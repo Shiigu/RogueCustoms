@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(LocaleEntriesTab));
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             btnDeleteLocale = new System.Windows.Forms.Button();
             btnAddLocale = new System.Windows.Forms.Button();
             btnUpdateLocale = new System.Windows.Forms.Button();
@@ -47,9 +47,9 @@
             // btnDeleteLocale
             // 
             btnDeleteLocale.Enabled = false;
-            btnDeleteLocale.Location = new System.Drawing.Point(398, 324);
+            btnDeleteLocale.Location = new System.Drawing.Point(398, 374);
             btnDeleteLocale.Name = "btnDeleteLocale";
-            btnDeleteLocale.Size = new System.Drawing.Size(331, 23);
+            btnDeleteLocale.Size = new System.Drawing.Size(391, 23);
             btnDeleteLocale.TabIndex = 25;
             btnDeleteLocale.Text = "Delete Locale Entry";
             btnDeleteLocale.UseVisualStyleBackColor = true;
@@ -58,9 +58,9 @@
             // btnAddLocale
             // 
             btnAddLocale.Enabled = false;
-            btnAddLocale.Location = new System.Drawing.Point(566, 295);
+            btnAddLocale.Location = new System.Drawing.Point(596, 345);
             btnAddLocale.Name = "btnAddLocale";
-            btnAddLocale.Size = new System.Drawing.Size(163, 23);
+            btnAddLocale.Size = new System.Drawing.Size(193, 23);
             btnAddLocale.TabIndex = 24;
             btnAddLocale.Text = "Add New Locale Entry";
             btnAddLocale.UseVisualStyleBackColor = true;
@@ -69,9 +69,9 @@
             // btnUpdateLocale
             // 
             btnUpdateLocale.Enabled = false;
-            btnUpdateLocale.Location = new System.Drawing.Point(398, 295);
+            btnUpdateLocale.Location = new System.Drawing.Point(398, 345);
             btnUpdateLocale.Name = "btnUpdateLocale";
-            btnUpdateLocale.Size = new System.Drawing.Size(162, 23);
+            btnUpdateLocale.Size = new System.Drawing.Size(193, 23);
             btnUpdateLocale.TabIndex = 23;
             btnUpdateLocale.Text = "Update Locale Entry";
             btnUpdateLocale.UseVisualStyleBackColor = true;
@@ -84,7 +84,7 @@
             fklblMissingLocale.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             fklblMissingLocale.Image = (System.Drawing.Image)resources.GetObject("fklblMissingLocale.Image");
             fklblMissingLocale.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            fklblMissingLocale.Location = new System.Drawing.Point(400, 226);
+            fklblMissingLocale.Location = new System.Drawing.Point(400, 276);
             fklblMissingLocale.Name = "fklblMissingLocale";
             fklblMissingLocale.Size = new System.Drawing.Size(331, 42);
             fklblMissingLocale.TabIndex = 22;
@@ -101,7 +101,7 @@
             txtLocaleEntryValue.Multiline = true;
             txtLocaleEntryValue.Name = "txtLocaleEntryValue";
             txtLocaleEntryValue.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            txtLocaleEntryValue.Size = new System.Drawing.Size(331, 143);
+            txtLocaleEntryValue.Size = new System.Drawing.Size(391, 193);
             txtLocaleEntryValue.TabIndex = 21;
             txtLocaleEntryValue.TextChanged += txtLocaleEntryValue_TextChanged;
             // 
@@ -119,7 +119,7 @@
             txtLocaleEntryKey.Enabled = false;
             txtLocaleEntryKey.Location = new System.Drawing.Point(398, 23);
             txtLocaleEntryKey.Name = "txtLocaleEntryKey";
-            txtLocaleEntryKey.Size = new System.Drawing.Size(331, 23);
+            txtLocaleEntryKey.Size = new System.Drawing.Size(391, 23);
             txtLocaleEntryKey.TabIndex = 19;
             txtLocaleEntryKey.TextChanged += txtLocaleEntryKey_TextChanged;
             // 
@@ -141,22 +141,22 @@
             dgvLocales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLocales.ColumnHeadersVisible = false;
             dgvLocales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { cmKey, cmValue });
-            dgvLocales.Location = new System.Drawing.Point(1, 1);
+            dgvLocales.Dock = System.Windows.Forms.DockStyle.Left;
+            dgvLocales.Location = new System.Drawing.Point(0, 0);
             dgvLocales.MultiSelect = false;
             dgvLocales.Name = "dgvLocales";
             dgvLocales.ReadOnly = true;
             dgvLocales.RowHeadersVisible = false;
-            dgvLocales.RowTemplate.Height = 25;
             dgvLocales.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             dgvLocales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvLocales.Size = new System.Drawing.Size(393, 348);
+            dgvLocales.Size = new System.Drawing.Size(393, 400);
             dgvLocales.TabIndex = 17;
             dgvLocales.SelectionChanged += dgvLocales_SelectionChanged;
             // 
             // cmKey
             // 
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            cmKey.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            cmKey.DefaultCellStyle = dataGridViewCellStyle2;
             cmKey.HeaderText = "Key";
             cmKey.Name = "cmKey";
             cmKey.ReadOnly = true;
@@ -183,7 +183,7 @@
             Controls.Add(label6);
             Controls.Add(dgvLocales);
             Name = "LocaleEntriesTab";
-            Size = new System.Drawing.Size(734, 350);
+            Size = new System.Drawing.Size(792, 400);
             ((System.ComponentModel.ISupportInitialize)dgvLocales).EndInit();
             ResumeLayout(false);
             PerformLayout();

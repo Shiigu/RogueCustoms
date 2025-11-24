@@ -2,25 +2,20 @@
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
-using RogueCustomsGameEngine.Utils.Enums;
+
 using RogueCustomsGameEngine.Utils.JsonImports;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Data;
-using System.Drawing;
 using System.Drawing.Design;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RogueCustomsDungeonEditor.Controls
 {
-    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-    #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
     public partial class SingleActionEditor : UserControl
     {
         // For some weird reason, I need this because it otherwise loses all values on a Designer change.

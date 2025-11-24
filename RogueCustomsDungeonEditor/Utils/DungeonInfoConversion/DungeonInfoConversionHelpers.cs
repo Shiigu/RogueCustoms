@@ -1,21 +1,12 @@
-﻿using RogueCustomsDungeonEditor.Controls;
-using RogueCustomsDungeonEditor.EffectInfos;
-using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches;
-using RogueCustomsGameEngine.Game.DungeonStructure;
-using RogueCustomsGameEngine.Game.Entities;
+﻿using RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatches;
+
 using RogueCustomsGameEngine.Utils;
-using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
-using RogueCustomsGameEngine.Utils.Representation;
+
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma

@@ -34,9 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\NPCModifierEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Controls\QualityLevelSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>

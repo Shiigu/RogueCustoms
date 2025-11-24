@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.Controls;
 using RogueCustomsDungeonEditor.Utils;
+
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Game.Entities.Interfaces;
@@ -21,8 +18,6 @@ using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
-
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
 #pragma warning disable CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required" o declararlo como un valor que acepta valores NULL.

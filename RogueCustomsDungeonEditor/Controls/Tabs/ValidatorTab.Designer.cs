@@ -40,15 +40,15 @@
             tvValidationResults.Dock = System.Windows.Forms.DockStyle.Fill;
             tvValidationResults.Location = new System.Drawing.Point(0, 0);
             tvValidationResults.Name = "tvValidationResults";
-            tvValidationResults.Size = new System.Drawing.Size(740, 338);
+            tvValidationResults.Size = new System.Drawing.Size(743, 322);
             tvValidationResults.TabIndex = 1;
             // 
             // ssValidatorStatus
             // 
             ssValidatorStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tsslValidationProgress, tspbValidationProgress });
-            ssValidatorStatus.Location = new System.Drawing.Point(0, 338);
+            ssValidatorStatus.Location = new System.Drawing.Point(0, 322);
             ssValidatorStatus.Name = "ssValidatorStatus";
-            ssValidatorStatus.Size = new System.Drawing.Size(740, 22);
+            ssValidatorStatus.Size = new System.Drawing.Size(743, 22);
             ssValidatorStatus.SizingGrip = false;
             ssValidatorStatus.TabIndex = 2;
             // 
@@ -74,7 +74,8 @@
             Controls.Add(tvValidationResults);
             Controls.Add(ssValidatorStatus);
             Name = "ValidatorTab";
-            Size = new System.Drawing.Size(740, 360);
+            Size = new System.Drawing.Size(743, 344);
+            Resize += ValidatorTab_Resize;
             ssValidatorStatus.ResumeLayout(false);
             ssValidatorStatus.PerformLayout();
             ResumeLayout(false);

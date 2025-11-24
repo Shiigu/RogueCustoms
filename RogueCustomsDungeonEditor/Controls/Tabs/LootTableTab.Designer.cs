@@ -50,11 +50,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             dgvLootTable.AllowUserToResizeRows = false;
             dgvLootTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLootTable.Columns.AddRange(new DataGridViewColumn[] { PickId, Weight });
+            dgvLootTable.Dock = DockStyle.Left;
             dgvLootTable.Location = new System.Drawing.Point(0, 0);
             dgvLootTable.MultiSelect = false;
             dgvLootTable.Name = "dgvLootTable";
             dgvLootTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLootTable.Size = new System.Drawing.Size(465, 315);
+            dgvLootTable.Size = new System.Drawing.Size(465, 352);
             dgvLootTable.TabIndex = 0;
             // 
             // PickId
@@ -73,7 +74,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             // 
             // btnTestLootTable
             // 
-            btnTestLootTable.Location = new System.Drawing.Point(172, 321);
+            btnTestLootTable.Location = new System.Drawing.Point(524, 321);
             btnTestLootTable.Name = "btnTestLootTable";
             btnTestLootTable.Size = new System.Drawing.Size(136, 28);
             btnTestLootTable.TabIndex = 1;
