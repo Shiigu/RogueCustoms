@@ -19,6 +19,7 @@ using System.Reflection;
 using RogueCustomsGameEngine.Game.Interaction;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using RogueCustomsGameEngine.Utils.Helpers;
 
 #pragma warning disable SYSLIB0011 // El tipo o el miembro están obsoletos
 namespace RogueCustomsGameEngine.Management
@@ -101,8 +102,7 @@ namespace RogueCustomsGameEngine.Management
 
             ActiveDungeon = new Dungeon(dungeonInfo, locale, isHardcoreMode)
             {
-                FileName = dungeonName,
-                LastAccessTime = DateTime.UtcNow
+                FileName = dungeonName
             };
         }
 
@@ -152,6 +152,11 @@ namespace RogueCustomsGameEngine.Management
                 else if (tileType.Id.Equals("Stairs"))
                     TileType.Stairs = tileType;
             }
+            foreach (var doorTile in restoredDungeon.CurrentFloor.Tiles.Where(t => t.Type.Id.Equals(TileType.Door.Id)))
+            {
+                doorTile.Type = TileType.Door;
+            }
+            restoredDungeon.CurrentFloor.DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
             restoredDungeon.CurrentFloor.TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
             restoredDungeon.CurrentFloor.DisplayEvents = new();
             restoredDungeon.CurrentFloor.DisplayEvents.Add(("ClearMessageLog", new()

@@ -25,7 +25,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
     [Serializable]
     public class Dungeon
     {
-        public DateTime LastAccessTime { get; set; }
         public PlayerCharacter? PlayerCharacter { get; set; }
         public EntityClass? PlayerClass { get; set; }
         public string? PlayerName { get; set; }
