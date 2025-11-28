@@ -3,10 +3,6 @@ using System.Linq;
 
 using Godot;
 
-using RogueCustomsGodotClient.Helpers;
-
-using static System.Net.Mime.MediaTypeNames;
-
 public partial class ScalableLabel : Label
 {
     public int MinFontSize { get; set; }

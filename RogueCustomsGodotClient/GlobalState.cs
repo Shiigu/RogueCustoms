@@ -18,7 +18,7 @@ public partial class GlobalState : Node
 	public DungeonManager DungeonManager { get; set; } = new();
 	public MessageScreenType MessageScreenType { get; set; }
 	public ControlMode PlayerControlMode { get; set; }
-    public static string GameLocale => TranslationServer.Translate("LanguageLocale");
+    public Options Options { get; set; }
 	public bool MustUpdateGameScreen { get; set; }
     public bool IsHardcoreMode { get; set; }
     public readonly string SettingsPath = "./Settings.cfg";

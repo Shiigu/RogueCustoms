@@ -9,6 +9,7 @@
 [ext_resource type="StyleBox" uid="uid://bqih77uva2yqb" path="res://Styles/ProgressBarText.tres" id="5_dfafo"]
 [ext_resource type="Texture2D" uid="uid://e7vtt2npe2gf" path="res://Textures/HPBarBackground.png" id="5_wun57"]
 [ext_resource type="Texture2D" uid="uid://surr0jw0d8w2" path="res://Textures/HPBarForeground.png" id="6_nq573"]
+[ext_resource type="Script" uid="uid://c6l2fhrae6i3n" path="res://Controls/ScalableRichTextLabel.cs" id="7_4ge5t"]
 [ext_resource type="Texture2D" uid="uid://c1w1jiy6y4mwh" path="res://Textures/MPBarBackground.png" id="8_n0fke"]
 [ext_resource type="Texture2D" uid="uid://bk2d2h77dy1xx" path="res://Textures/MPBarForeground.png" id="9_be81s"]
 [ext_resource type="Texture2D" uid="uid://cyrq03xn8m25f" path="res://Textures/ExperienceBarBackground.png" id="10_kb7fc"]
@@ -17,7 +18,6 @@
 [ext_resource type="Texture2D" uid="uid://c3ali4x7cuwqc" path="res://Textures/HungerBarForeground.png" id="11_mgl4y"]
 [ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="12_fxk87"]
 [ext_resource type="StyleBox" uid="uid://q4t0lbnjvlk0" path="res://Styles/TinyButton.tres" id="14_0jpcu"]
-[ext_resource type="Script" uid="uid://c6l2fhrae6i3n" path="res://Pop-ups/Controls/ScalableRichTextLabel.cs" id="14_hf6xy"]
 [ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="14_ne4um"]
 [ext_resource type="Script" uid="uid://dj206vvixvvtn" path="res://Screens/GameSubScreens/MessageLogPanel.cs" id="15_r7d70"]
 [ext_resource type="Script" uid="uid://be4f68xut1wup" path="res://Screens/GameSubScreens/ExperienceBarPanel.cs" id="16_q8vkj"]
@@ -92,8 +92,8 @@ offset_left = 16.0
 offset_top = 16.0
 offset_right = 1040.0
 offset_bottom = 528.0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 fit_content = true
@@ -118,7 +118,7 @@ text = "TURN 1"
 
 [node name="AimingSquare" type="ColorRect" parent="MapPanel"]
 visible = false
-layout_mode = 2
+layout_mode = 0
 offset_left = 16.0
 offset_top = 16.0
 offset_right = 32.0
@@ -171,20 +171,20 @@ theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Player Name[/center]
 "
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="PlayerRepresentationLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/PlayerDescriptorContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
 theme_override_font_sizes/bold_italics_font_size = 16
 theme_override_font_sizes/italics_font_size = 16
 theme_override_font_sizes/mono_font_size = 16
-theme_override_font_sizes/normal_font_size = 16
-theme_override_font_sizes/bold_font_size = 16
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][bgcolor=#000000FF][color=#7CFC00FF]☺[/color][/bgcolor][/center]"
@@ -340,8 +340,8 @@ texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 14
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
@@ -356,65 +356,65 @@ texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Damage: [color=#FF00FFFF]1d2[/color][color=#00FF00FF]+1[/color][/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="MitigationNumberLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Mitigation: [color=#FF00FFFF]2[/color][color=#00FF00FF]+0[/color][/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="MovementLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Movement: 1[/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="AccuracyLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Accuracy: 100%[/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="EvasionLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/StatsContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(224, 13)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 12
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Evasion: 0%[/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="AlteredStatusesContainer" type="VBoxContainer" parent="InfoPanel/VBoxContainerContainer"]
 layout_mode = 2
@@ -436,8 +436,8 @@ texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
@@ -463,8 +463,8 @@ texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
@@ -479,16 +479,16 @@ texture_filter = 1
 custom_minimum_size = Vector2(224, 16)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center]Currency: [color=#FFFF00FF]$[/color]0[/center]"
-script = ExtResource("14_hf6xy")
+script = ExtResource("7_4ge5t")
 
 [node name="ButtonContainer" type="VBoxContainer" parent="InfoPanel"]
-layout_mode = 2
+layout_mode = 0
 offset_left = 16.0
 offset_top = 528.0
 offset_right = 240.0
@@ -503,9 +503,9 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 1
 theme_override_font_sizes/font_size = 8
-theme_override_styles/disabled = ExtResource("14_ne4um")
-theme_override_styles/hover = ExtResource("12_fxk87")
 theme_override_styles/normal = ExtResource("14_0jpcu")
+theme_override_styles/hover = ExtResource("12_fxk87")
+theme_override_styles/disabled = ExtResource("14_ne4um")
 text = "DETAILS"
 
 [node name="MessageLogPanel" type="Panel" parent="."]
@@ -544,8 +544,8 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/text_highlight_v_padding = 0
 theme_override_constants/text_highlight_h_padding = 0
+theme_override_constants/text_highlight_v_padding = 0
 theme_override_font_sizes/normal_font_size = 10
 bbcode_enabled = true
 text = "This is a message log[p][color=#FF0000FF]Of a lot of things[/color]"
@@ -566,9 +566,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("14_ne4um")
-theme_override_styles/hover = ExtResource("12_fxk87")
 theme_override_styles/normal = SubResource("StyleBoxFlat_myws8")
+theme_override_styles/hover = ExtResource("12_fxk87")
+theme_override_styles/disabled = ExtResource("14_ne4um")
 text = "MESSAGE LOG"
 
 [node name="ButtonsBorder" type="Panel" parent="."]
@@ -580,7 +580,7 @@ offset_bottom = 672.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gsxvm")
 
 [node name="ButtonsPanel" type="VBoxContainer" parent="ButtonsBorder"]
-layout_mode = 2
+layout_mode = 0
 offset_right = 256.0
 offset_bottom = 96.0
 theme_override_constants/separation = 0
@@ -593,9 +593,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("14_ne4um")
-theme_override_styles/hover = ExtResource("12_fxk87")
 theme_override_styles/normal = ExtResource("14_0jpcu")
+theme_override_styles/hover = ExtResource("12_fxk87")
+theme_override_styles/disabled = ExtResource("14_ne4um")
 text = "SAVE GAME"
 
 [node name="ExitButton" type="Button" parent="ButtonsBorder/ButtonsPanel"]
@@ -605,9 +605,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("14_ne4um")
-theme_override_styles/hover = ExtResource("12_fxk87")
 theme_override_styles/normal = ExtResource("14_0jpcu")
+theme_override_styles/hover = ExtResource("12_fxk87")
+theme_override_styles/disabled = ExtResource("14_ne4um")
 text = "EXIT"
 
 [node name="ExperienceBarPanel" type="Panel" parent="."]

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using FileAccess = Godot.FileAccess;
 
@@ -19,10 +20,9 @@ public partial class MainMenu : Control
     private ExceptionLogger _exceptionLogger;
     private Button _startDungeonButton;
     private Button _loadSavedDungeonButton;
-    private OptionButton _languageDropdown;
+    private Button _optionsButton;
     private Button _exitButton;
     private Label _versionLabel;
-    private string[] _possibleLocales;
     private GlobalState _globalState;
     private InputManager _inputManager;
     private List<Button> _buttons;
@@ -37,7 +37,7 @@ public partial class MainMenu : Control
         _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _startDungeonButton = GetNode<Button>("StartDungeonButton");
         _loadSavedDungeonButton = GetNode<Button>("LoadSavedDungeonButton");
-        _languageDropdown = GetNode<OptionButton>("LanguageDropdown");
+        _optionsButton = GetNode<Button>("OptionsButton");
         _exitButton = GetNode<Button>("ExitButton");
         _versionLabel = GetNode<Label>("VersionLabel");
         _globalState = GetNode<GlobalState>("/root/GlobalState");
@@ -45,15 +45,12 @@ public partial class MainMenu : Control
 
         _startDungeonButton.Pressed += OnStartDungeonPressed;
         _loadSavedDungeonButton.Pressed += OnLoadSavedDungeonPressed;
-        _languageDropdown.ItemSelected += OnLanguageSelected;
+        _optionsButton.Pressed += OnOptionsPressed;
         _exitButton.Pressed += OnExitPressed;
 
-        _languageDropdown = GetNode<OptionButton>("LanguageDropdown");
-        _buttons = new List<Button> { _startDungeonButton, _loadSavedDungeonButton, _languageDropdown, _exitButton };
+        _buttons = new List<Button> { _startDungeonButton, _loadSavedDungeonButton, _optionsButton, _exitButton };
 
-        LoadSavedLocalization();
-
-        SetupLocalizationOptions();
+        LoadSavedSettings();
 
         GetSaveGames();
         _globalState.PlayerControlMode = ControlMode.NormalMove;
@@ -76,34 +73,6 @@ public partial class MainMenu : Control
         }
         _selectedIndex = index;
         _buttons[_selectedIndex].AddThemeStyleboxOverride("normal", hoverButtonStyle);
-    }
-
-    private void SetupLocalizationOptions()
-    {
-        string[] availableLocales = TranslationServer.GetLoadedLocales();
-        _possibleLocales = new string[availableLocales.Length];
-        int defaultLocaleIndex = -1;
-        GD.Print($"Found {availableLocales.Length} locale(s)");
-        var initialLocale = TranslationServer.GetLocale();
-
-        for (int i = 0; i < availableLocales.Length; i++)
-        {
-            GD.Print($"Existing locale: {availableLocales[i]}");
-            var locale = availableLocales[i];
-            TranslationServer.SetLocale(locale);
-            var localeName = TranslationServer.Translate("LanguageName");
-            _languageDropdown.AddItem(localeName);
-            _possibleLocales[i] = locale;
-
-            if (locale == initialLocale)
-            {
-                defaultLocaleIndex = i;
-            }
-        }
-
-        TranslationServer.SetLocale(initialLocale);
-        if (defaultLocaleIndex > -1)
-            _languageDropdown.Select(defaultLocaleIndex);
     }
 
     private void GetSaveGames()
@@ -143,59 +112,66 @@ public partial class MainMenu : Control
         _loadSavedDungeonButton.Disabled = _globalState.SavedGames.Count == 0;
     }
 
-    private void OnLanguageSelected(long index)
-    {
-        string selectedLocale = _possibleLocales[index];
-        TranslationServer.SetLocale(selectedLocale);
-
-        SaveLocalization(selectedLocale);
-
-        UpdateUIWithLocalization();
-    }
-
     private void UpdateUIWithLocalization()
     {
         _startDungeonButton.Text = TranslationServer.Translate("SelectDungeonText");
         _loadSavedDungeonButton.Text = TranslationServer.Translate("LoadDungeonText");
+        _optionsButton.Text = TranslationServer.Translate("OptionsButtonText");
         _exitButton.Text = TranslationServer.Translate("ExitButtonText");
         var gameVersionText = TranslationServer.Translate("GameVersionText").ToString();
         _versionLabel.Text = gameVersionText.Format(new { GameVersion = GlobalConstants.GameVersion });
     }
 
-    private void SaveLocalization(string locale)
+    private void LoadSavedSettings()
     {
         var config = new ConfigFile();
-        config.SetValue("Localization", "locale", locale);
-        config.Save(_globalState.SettingsPath);
-        GD.Print($"Saved default locale {locale}");
-    }
-
-    private void LoadSavedLocalization()
-    {
-        var config = new ConfigFile();
+        _globalState.Options = new();
         Error err = config.Load(_globalState.SettingsPath);
         GD.Print(err.ToString());
         if (err == Error.Ok)
         {
-            string savedLocale = (string)config.GetValue("Localization", "locale", "English");
+            var savedLocale = (string)config.GetValue("Localization", "locale", "English");
+            var savedSortActionMode = (string)config.GetValue("GameOptions", "sortactionmode", nameof(SortActionMode.Default));
+            var savedFlashEffectModeMode = (string)config.GetValue("GameOptions", "flasheffectmode", nameof(FlashEffectMode.FullScreen));
+            var savedHighlightPlayerOnFloorStart = (string)config.GetValue("GameOptions", "highlightplayeronfloorstart", false.ToString());
+            var savedInactiveControlShowMode = (string)config.GetValue("GameOptions", "inactivecontrolshowmode", nameof(InactiveControlShowMode.Hide));
             TranslationServer.SetLocale(savedLocale);
-            UpdateUIWithLocalization();
+            _globalState.Options.SortActionMode = Enum.Parse<SortActionMode>(savedSortActionMode);
+            _globalState.Options.FlashEffectMode = Enum.Parse<FlashEffectMode>(savedFlashEffectModeMode);
+            _globalState.Options.HighlightPlayerOnFloorStart = bool.Parse(savedHighlightPlayerOnFloorStart);
+            _globalState.Options.InactiveControlShowMode = Enum.Parse<InactiveControlShowMode>(savedInactiveControlShowMode);
         }
         else
         {
-            GD.Print("No settings file found. Using default localization.");
+            GD.Print("No settings file found. Using default settings.");
             var defaultLocale = TranslationServer.GetLoadedLocales()[0];
             TranslationServer.SetLocale(defaultLocale);
-            SaveLocalization(defaultLocale);
-            UpdateUIWithLocalization();
+            _globalState.Options.SortActionMode = SortActionMode.Default;
+            _globalState.Options.FlashEffectMode = FlashEffectMode.FullScreen;
+            _globalState.Options.HighlightPlayerOnFloorStart = false;
+            _globalState.Options.InactiveControlShowMode = InactiveControlShowMode.Hide;
         }
+        SaveSettings();
+        UpdateUIWithLocalization();
+    }
+
+    private void SaveSettings()
+    {
+        var config = new ConfigFile();
+        config.SetValue("Localization", "locale", _globalState.Options.Localization);
+        config.SetValue("GameOptions", "sortactionmode", nameof(SortActionMode.Default));
+        config.SetValue("GameOptions", "flasheffectmode", nameof(FlashEffectMode.FullScreen));
+        config.SetValue("GameOptions", "highlightplayeronfloorstart", false.ToString());
+        config.SetValue("GameOptions", "inactivecontrolshowmode", nameof(InactiveControlShowMode.Hide));
+        config.Save(_globalState.SettingsPath);
+        GD.Print($"Saved settings.");
     }
 
     private void OnStartDungeonPressed()
     {
         try
         {
-            _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
+            _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(_globalState.Options.Localization);
             GetTree().ChangeSceneToFile("res://Screens/PickDungeon.tscn");
         }
         catch (Exception ex)
@@ -207,6 +183,12 @@ public partial class MainMenu : Control
     private void OnLoadSavedDungeonPressed()
     {
         this.CreateLoadSaveGamePopup();
+    }
+
+    private async void OnOptionsPressed()
+    {
+        await this.CreateOptionsPopup();
+        UpdateUIWithLocalization();
     }
 
     private void OnExitPressed()

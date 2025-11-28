@@ -1,0 +1,221 @@
+[gd_scene load_steps=10 format=3 uid="uid://do6pwwm8xtshj"]
+
+[ext_resource type="Script" uid="uid://djfq71s4mia3u" path="res://Pop-ups/OptionsScreen.cs" id="1_y27t1"]
+[ext_resource type="StyleBox" uid="uid://dg43fi5sg1ad4" path="res://Styles/PopUpBorder.tres" id="2_kgoqa"]
+[ext_resource type="StyleBox" uid="uid://d15kvtxgg53og" path="res://Styles/PlayerInfo.tres" id="3_5q0n1"]
+[ext_resource type="Script" uid="uid://bckuj124l2fsf" path="res://Controls/ScalableLabel.cs" id="4_kgoqa"]
+[ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="4_ugie6"]
+[ext_resource type="StyleBox" uid="uid://dm87m5oohqwud" path="res://Styles/ButtonHover.tres" id="5_hbnha"]
+[ext_resource type="StyleBox" uid="uid://bflaog7qynjqk" path="res://Styles/PopUpTitle.tres" id="6_wug2o"]
+[ext_resource type="Script" uid="uid://bad0q7ovocv3b" path="res://Controls/LocalizableOptionButton.cs" id="7_5q0n1"]
+[ext_resource type="StyleBox" uid="uid://bae58cgjgvka1" path="res://Styles/ButtonDisabled.tres" id="7_lq6m8"]
+
+[node name="OptionsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y27t1")
+
+[node name="Border" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 650.0
+offset_bottom = 422.0
+theme_override_styles/panel = ExtResource("2_kgoqa")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 40.0
+offset_right = 632.0
+offset_bottom = 384.0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="LanguageContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 64)
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="ScrollContainer/VBoxContainer/LanguageContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("3_5q0n1")
+text = "Language"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_kgoqa")
+
+[node name="LanguageDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/LanguageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 1
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/focus = ExtResource("5_hbnha")
+alignment = 1
+fit_to_longest_item = false
+
+[node name="SortActionContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 64)
+layout_mode = 2
+
+[node name="SortActionLabel" type="Label" parent="ScrollContainer/VBoxContainer/SortActionContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("3_5q0n1")
+text = "Sort Actions by"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_kgoqa")
+
+[node name="SortActionDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/SortActionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 1
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/focus = ExtResource("5_hbnha")
+alignment = 1
+fit_to_longest_item = false
+script = ExtResource("7_5q0n1")
+
+[node name="HighlightPositionContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 64)
+layout_mode = 2
+
+[node name="HighlightPositionCheckButton" type="CheckButton" parent="ScrollContainer/VBoxContainer/HighlightPositionContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/h_separation = 25
+theme_override_font_sizes/font_size = 16
+text = "Highlight Player on Floor Start"
+icon_alignment = 1
+
+[node name="SetFlashContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 64)
+layout_mode = 2
+
+[node name="SetFlashLabel" type="Label" parent="ScrollContainer/VBoxContainer/SetFlashContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("3_5q0n1")
+text = "Flash effects cover..."
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_kgoqa")
+
+[node name="SetFlashDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/SetFlashContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 1
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/focus = ExtResource("5_hbnha")
+alignment = 1
+fit_to_longest_item = false
+script = ExtResource("7_5q0n1")
+
+[node name="InactiveControlsContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 64)
+layout_mode = 2
+
+[node name="InactiveControlsLabel" type="Label" parent="ScrollContainer/VBoxContainer/InactiveControlsContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("3_5q0n1")
+text = "When waiting, controls"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_kgoqa")
+
+[node name="InactiveControlsDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/InactiveControlsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 1
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/focus = ExtResource("5_hbnha")
+alignment = 1
+fit_to_longest_item = false
+script = ExtResource("7_5q0n1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 25.0
+offset_right = 625.0
+offset_bottom = 435.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("6_wug2o")
+text = "OPTIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/disabled = ExtResource("7_lq6m8")
+text = "APPLY"
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/normal = ExtResource("4_ugie6")
+theme_override_styles/hover = ExtResource("5_hbnha")
+theme_override_styles/disabled = ExtResource("7_lq6m8")
+text = "CANCEL"
