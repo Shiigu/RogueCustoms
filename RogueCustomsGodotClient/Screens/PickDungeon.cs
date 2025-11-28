@@ -169,7 +169,7 @@ public partial class PickDungeon : Control
             
             try
             {
-                _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(GlobalState.GameLocale);
+                _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(_globalState.Options.Localization);
             }
             catch (Exception ex)
             {
@@ -236,7 +236,7 @@ public partial class PickDungeon : Control
             {
                 try
                 {
-                    _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, GlobalState.GameLocale, _hardcoreCheckButton.ButtonPressed);
+                    _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, _globalState.Options.Localization, _hardcoreCheckButton.ButtonPressed);
                     _ = GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
                 }
                 catch (Exception ex)

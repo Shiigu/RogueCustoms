@@ -39,9 +39,9 @@ grow_vertical = 2
 focus_mode = 1
 theme_override_fonts/font = SubResource("SystemFont_k2sba")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/focus = ExtResource("2_0hon0")
-theme_override_styles/hover = ExtResource("2_0hon0")
 theme_override_styles/normal = ExtResource("3_36s23")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/focus = ExtResource("2_0hon0")
 text = "{startDungeon}"
 
 [node name="LoadSavedDungeonButton" type="Button" parent="."]
@@ -58,23 +58,29 @@ grow_vertical = 2
 focus_mode = 1
 theme_override_fonts/font = SubResource("SystemFont_k2sba")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/focus = ExtResource("2_0hon0")
-theme_override_styles/hover = ExtResource("2_0hon0")
 theme_override_styles/normal = ExtResource("3_36s23")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/focus = ExtResource("2_0hon0")
 text = "{loadSavegame}"
 
-[node name="LanguageDropdown" type="OptionButton" parent="."]
-layout_mode = 0
+[node name="OptionsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 337.0
 offset_top = 586.0
-offset_right = 1037.0
-offset_bottom = 626.0
+offset_right = -329.00012
+offset_bottom = -133.99994
+grow_horizontal = 2
+grow_vertical = 2
 focus_mode = 1
+theme_override_fonts/font = SubResource("SystemFont_k2sba")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/focus = ExtResource("2_0hon0")
-theme_override_styles/hover = ExtResource("2_0hon0")
 theme_override_styles/normal = ExtResource("3_36s23")
-alignment = 1
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/focus = ExtResource("2_0hon0")
+text = "{options}"
 
 [node name="ExitButton" type="Button" parent="."]
 layout_mode = 1
@@ -90,9 +96,9 @@ grow_vertical = 2
 focus_mode = 1
 theme_override_fonts/font = SubResource("SystemFont_k2sba")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/focus = ExtResource("2_0hon0")
-theme_override_styles/hover = ExtResource("2_0hon0")
 theme_override_styles/normal = ExtResource("3_36s23")
+theme_override_styles/hover = ExtResource("2_0hon0")
+theme_override_styles/focus = ExtResource("2_0hon0")
 text = "{exit}"
 
 [node name="VersionLabel" type="Label" parent="."]

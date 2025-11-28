@@ -34,4 +34,24 @@ namespace RogueCustomsGodotClient.Utils
         Buy,
         Sell
     }
+
+    public enum SortActionMode
+    {
+        Default,
+        UsableActionsFirst,
+        CursorOnFirstUsableAction
+    }
+
+    public enum FlashEffectMode
+    {
+        FullScreen,
+        MapSection,
+        Hide
+    }
+
+    public enum InactiveControlShowMode
+    {
+        Hide,
+        Dim
+    }
 }

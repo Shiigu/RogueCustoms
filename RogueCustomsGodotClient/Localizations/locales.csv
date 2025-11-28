@@ -13,6 +13,7 @@ AddDungeonSuccessHeaderText,MAZMORRA AÑADIDA,DUNGEON ADDED
 AddDungeonSuccessText,"La mazmorra seleccionada se ha añadido exitosamente, y ahora está presente en la lista de mazmorras jugables.","The chosen dungeon has been successfully added, and you can choose it in the dungeon list."
 AddDungeonFailureHeaderText,NO SE PUDO AÑADIR,COULD NOT ADD
 AddDungeonFailureText,"No se pudo añadir la mazmorra seleccionada.\n\nPor favor, comprueba si es una Mazmorra válida.",The chosen dungeon could not be added.\n\nPlease check if it's a valid Dungeon.
+ApplyButtonText,APLICAR,APPLY
 AuthorHeaderText,Autor,Author
 BriefingMessageHeader,RESUMEN,BRIEFING
 BuyButtonText,COMPRAR,BUY
@@ -69,7 +70,6 @@ InventoryWindowCannotBeSoldText,NO SE PUEDE INTERCAMBIAR POR {Symbol},CANNOT BE 
 InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE ENOUGH {Symbol}
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
-LanguageListHeaderText,IDIOMA,LANGUAGE
 LanguageLocale,es,en
 LanguageName,Español,English
 LeftButtonText,<-,<-
@@ -94,8 +94,21 @@ NoLocalDungeonsSubtext,Usa el botón Agregar or Actualizar Mazmorra primero.,Use
 NoServerDungeonsSubtext,El Servidor no tiene Mazmorras.,Server has no Dungeons installed.
 OKButtonText,OK,OK
 OccupiedTileDescriptionText,"(No se puede soltar,\nbaldosa ocupada)","(Tile is occupied,\ncan't drop)"
-OptionsHeaderText,ELEGIR OPCIONES,SELECT OPTIONS
-OptionsText,OPCIONES,OPTIONS
+OptionsWindowTitleText,OPCIONES,OPTIONS
+OptionsButtonText,OPCIONES,OPTIONS
+OptionsLanguageText,Idioma,Language
+OptionsSortActionsByText,Ordenar Acciones por,Sort Actions by
+OptionsSortActionsByDefaultText,Predeterminado,Default
+OptionsSortActionsByUsableText,Usables Primero,Usable First
+OptionsSortActionsByCursorOnUsableText,Cursor en Usable,Cursor on Usable
+OptionsHighlightPlayerOnFloorStartText,Resaltar al Jugador al Iniciar el Piso,Highlight Player on Floor Start
+OptionsFlashCoversText,El parpadeo cubre...,Flash effects cover...
+OptionsFlashCoversFullScreenText,Pantalla Completa,Full Screen
+OptionsFlashCoversMapText,El Mapa,Map
+OptionsFlashCoversNoneText,Nada,Nothing
+OptionsInactiveControlsText,"Al esperar, los controles...","While waiting, controls..."
+OptionsInactiveControlsHideText,Se Ocultan,Are Hidden
+OptionsInactiveControlsDimText,Se Atenúan,Are Dimmed
 PickButtonText,JUGAR MAZMORRA,PLAY SELECTED DUNGEON
 PickDungeonHeaderText,ELEGIR MAZMORRA,PICK A DUNGEON
 PlayerCharacterDetailAlteredStatusDescriptionText,- {StatusName}: {StatusDescription},- {StatusName}: {StatusDescription}

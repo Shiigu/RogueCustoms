@@ -25,8 +25,8 @@ public partial class SelectSaveGame : Control
     private Label _titleLabel;
 
     private int _selectedIndex;
-    
-	
+
+
 	// Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
