@@ -8,6 +8,7 @@ using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
 
 using System;
+using System.Linq;
 using System.Text;
 
 public partial class MessageLogPanel : GamePanel
@@ -36,6 +37,7 @@ public partial class MessageLogPanel : GamePanel
 
     private void MessageWindowButton_Pressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         (GetParent() as Control)?.CreateScrollablePopup(TranslationServer.Translate("MessageWindowTitleText"), _logContents.ToString(), new Color { R8 = 200, G8 = 100, B8 = 200, A8 = 255 }, true);
     }
 

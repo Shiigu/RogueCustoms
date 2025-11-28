@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -26,10 +27,7 @@ public partial class MainMenu : Control
     private GlobalState _globalState;
     private InputManager _inputManager;
     private List<Button> _buttons;
-    private int _selectedIndex = -1;
-
-    private readonly StyleBoxFlat normalButtonStyle = GD.Load<StyleBoxFlat>("res://Styles/ButtonNormal.tres");
-    private readonly StyleBoxFlat hoverButtonStyle = GD.Load<StyleBoxFlat>("res://Styles/ButtonHover.tres");
+    private int _index = -1;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -45,7 +43,7 @@ public partial class MainMenu : Control
 
         _startDungeonButton.Pressed += OnStartDungeonPressed;
         _loadSavedDungeonButton.Pressed += OnLoadSavedDungeonPressed;
-        _optionsButton.Pressed += OnOptionsPressed;
+        _optionsButton.Pressed += () => _ = OnOptionsPressed();
         _exitButton.Pressed += OnExitPressed;
 
         _buttons = new List<Button> { _startDungeonButton, _loadSavedDungeonButton, _optionsButton, _exitButton };
@@ -56,23 +54,16 @@ public partial class MainMenu : Control
         _globalState.PlayerControlMode = ControlMode.NormalMove;
     }
 
-    private void SelectButton(int index)
+    public override void _EnterTree()
     {
-        if (_buttons[index].Disabled)
-        {
-            if (index == _buttons.Count - 1)
-                index = 0;
-            if (index < _selectedIndex)
-                index--;
-            else
-                index++;
-        }
-        foreach (var button in _buttons)
-        {
-            button.AddThemeStyleboxOverride("normal", normalButtonStyle);
-        }
-        _selectedIndex = index;
-        _buttons[_selectedIndex].AddThemeStyleboxOverride("normal", hoverButtonStyle);
+        CallDeferred(nameof(PrepareFocus));
+        base._EnterTree();
+    }
+
+    private void PrepareFocus()
+    {
+        _buttons[0].GrabFocus();
+        _index = 0;
     }
 
     private void GetSaveGames()
@@ -124,34 +115,37 @@ public partial class MainMenu : Control
 
     private void LoadSavedSettings()
     {
-        var config = new ConfigFile();
-        _globalState.Options = new();
-        Error err = config.Load(_globalState.SettingsPath);
-        GD.Print(err.ToString());
-        if (err == Error.Ok)
+        if(_globalState.Options == null)
         {
-            var savedLocale = (string)config.GetValue("Localization", "locale", "English");
-            var savedSortActionMode = (string)config.GetValue("GameOptions", "sortactionmode", nameof(SortActionMode.Default));
-            var savedFlashEffectModeMode = (string)config.GetValue("GameOptions", "flasheffectmode", nameof(FlashEffectMode.FullScreen));
-            var savedHighlightPlayerOnFloorStart = (string)config.GetValue("GameOptions", "highlightplayeronfloorstart", false.ToString());
-            var savedInactiveControlShowMode = (string)config.GetValue("GameOptions", "inactivecontrolshowmode", nameof(InactiveControlShowMode.Hide));
-            TranslationServer.SetLocale(savedLocale);
-            _globalState.Options.SortActionMode = Enum.Parse<SortActionMode>(savedSortActionMode);
-            _globalState.Options.FlashEffectMode = Enum.Parse<FlashEffectMode>(savedFlashEffectModeMode);
-            _globalState.Options.HighlightPlayerOnFloorStart = bool.Parse(savedHighlightPlayerOnFloorStart);
-            _globalState.Options.InactiveControlShowMode = Enum.Parse<InactiveControlShowMode>(savedInactiveControlShowMode);
+            _globalState.Options = new();
+            var config = new ConfigFile();
+            Error err = config.Load(_globalState.SettingsPath);
+            GD.Print(err.ToString());
+            if (err == Error.Ok)
+            {
+                var savedLocale = (string)config.GetValue("Localization", "locale", "English");
+                var savedSortActionMode = (string)config.GetValue("GameOptions", "sortactionmode", nameof(SortActionMode.Default));
+                var savedFlashEffectModeMode = (string)config.GetValue("GameOptions", "flasheffectmode", nameof(FlashEffectMode.FullScreen));
+                var savedHighlightPlayerOnFloorStart = (string)config.GetValue("GameOptions", "highlightplayeronfloorstart", false.ToString());
+                var savedInactiveControlShowMode = (string)config.GetValue("GameOptions", "inactivecontrolshowmode", nameof(InactiveControlShowMode.Hide));
+                TranslationServer.SetLocale(savedLocale);
+                _globalState.Options.SortActionMode = Enum.Parse<SortActionMode>(savedSortActionMode);
+                _globalState.Options.FlashEffectMode = Enum.Parse<FlashEffectMode>(savedFlashEffectModeMode);
+                _globalState.Options.HighlightPlayerOnFloorStart = bool.Parse(savedHighlightPlayerOnFloorStart);
+                _globalState.Options.InactiveControlShowMode = Enum.Parse<InactiveControlShowMode>(savedInactiveControlShowMode);
+            }
+            else
+            {
+                GD.Print("No settings file found. Using default settings.");
+                var defaultLocale = TranslationServer.GetLoadedLocales()[0];
+                TranslationServer.SetLocale(defaultLocale);
+                _globalState.Options.SortActionMode = SortActionMode.Default;
+                _globalState.Options.FlashEffectMode = FlashEffectMode.FullScreen;
+                _globalState.Options.HighlightPlayerOnFloorStart = false;
+                _globalState.Options.InactiveControlShowMode = InactiveControlShowMode.Hide;
+            }
+            SaveSettings();
         }
-        else
-        {
-            GD.Print("No settings file found. Using default settings.");
-            var defaultLocale = TranslationServer.GetLoadedLocales()[0];
-            TranslationServer.SetLocale(defaultLocale);
-            _globalState.Options.SortActionMode = SortActionMode.Default;
-            _globalState.Options.FlashEffectMode = FlashEffectMode.FullScreen;
-            _globalState.Options.HighlightPlayerOnFloorStart = false;
-            _globalState.Options.InactiveControlShowMode = InactiveControlShowMode.Hide;
-        }
-        SaveSettings();
         UpdateUIWithLocalization();
     }
 
@@ -171,6 +165,7 @@ public partial class MainMenu : Control
     {
         try
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             _globalState.PossibleDungeonInfo = _globalState.DungeonManager.GetPickableDungeonList(_globalState.Options.Localization);
             GetTree().ChangeSceneToFile("res://Screens/PickDungeon.tscn");
         }
@@ -182,17 +177,20 @@ public partial class MainMenu : Control
 
     private void OnLoadSavedDungeonPressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         this.CreateLoadSaveGamePopup();
     }
 
-    private async void OnOptionsPressed()
+    private async Task OnOptionsPressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         await this.CreateOptionsPopup();
         UpdateUIWithLocalization();
     }
 
     private void OnExitPressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         GetTree().Quit();
     }
 
@@ -201,31 +199,21 @@ public partial class MainMenu : Control
         if (GetChildren().Any(c => c.IsPopUp())) return;
         if (@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true)))
         {
-            if (_selectedIndex == -1)
-                SelectButton(0);
-            else if (_selectedIndex == 0)
-                SelectButton(_buttons.Count - 1);
-            else
-                SelectButton(_selectedIndex - 1);
+            MoveFocus(-1);
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true)))
         {
-            if (_selectedIndex == -1)
-                SelectButton(0);
-            else if (_selectedIndex == _buttons.Count - 1)
-                SelectButton(0);
-            else
-                SelectButton(_selectedIndex + 1);
+            MoveFocus(1);
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_accept"))
         {
-            if (_selectedIndex != -1)
+            if (_index != -1)
             {
-                _buttons[_selectedIndex].GrabFocus();
-                _buttons[_selectedIndex].EmitSignal("pressed");
-                _buttons[_selectedIndex].ButtonPressed = true;
+                _buttons[_index].GrabFocus();
+                _buttons[_index].EmitSignal("pressed");
+                _buttons[_index].ButtonPressed = true;
             }
             AcceptEvent();
         }
@@ -236,5 +224,11 @@ public partial class MainMenu : Control
             _exitButton.ButtonPressed = true;
             AcceptEvent();
         }
+    }
+
+    private void MoveFocus(int step)
+    {
+        _index = (_index + step + _buttons.Count) % _buttons.Count;
+        _buttons[_index].GrabFocus();
     }
 }

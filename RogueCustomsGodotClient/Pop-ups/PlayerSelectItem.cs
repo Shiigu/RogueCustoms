@@ -112,6 +112,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
@@ -130,6 +131,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
@@ -148,6 +150,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
@@ -166,6 +169,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     onCloseCallback?.Invoke();
                     QueueFree();
                     _globalState.MustUpdateGameScreen = true;
@@ -186,6 +190,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId, _itemListInfo.InventoryItems[_selectedIndex].ClassId);
                     onCloseCallback?.Invoke();
                     QueueFree();
@@ -204,6 +209,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                     onCloseCallback?.Invoke();
                     QueueFree();
@@ -222,6 +228,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                     onCloseCallback?.Invoke();
                     QueueFree();
@@ -239,6 +246,7 @@ public partial class PlayerSelectItem : Control
 
             _cancelButton.Pressed += () =>
             {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
                 _selectedIndex = -1;
                 EmitSignal(nameof(PopupClosed), null);
                 onCloseCallback?.Invoke();
@@ -266,6 +274,19 @@ public partial class PlayerSelectItem : Control
 
         if (actionInfo != null && actionInfo.Actions.Any())
         {
+            if(_globalState.Options.SortActionMode == SortActionMode.UsableActionsFirst)
+            {
+                actionInfo.Actions.Sort((a1, a2) =>
+                {
+                    if (a1.CanBeUsed && !a2.CanBeUsed)
+                        return -1;
+                    else if (!a1.CanBeUsed && a2.CanBeUsed)
+                        return 1;
+                    else
+                        return 0;
+                });
+            }
+
             _actionListInfo = actionInfo;
 
             Title = title ?? TranslationServer.Translate("ActionWindowTitleText").ToString().Format(new { TargetName = _actionListInfo.TargetName });
@@ -301,6 +322,7 @@ public partial class PlayerSelectItem : Control
             {
                 try
                 {
+                    if (GetChildren().Any(c => c.IsPopUp())) return;
                     EmitSignal(nameof(PopupClosed), _actionListInfo.Actions[_selectedIndex].SelectionId);
                     onCloseCallback?.Invoke();
                     QueueFree();
@@ -318,6 +340,7 @@ public partial class PlayerSelectItem : Control
 
             _cancelButton.Pressed += () =>
             {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
                 _selectedIndex = -1;
                 EmitSignal(nameof(PopupClosed), null);
                 onCloseCallback?.Invoke();
@@ -336,6 +359,7 @@ public partial class PlayerSelectItem : Control
 
     private Task DoButton_Pressed(Vector2I? targetCoords, Action onCloseCallback)
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return Task.CompletedTask;
         var selectedAction = _actionListInfo.Actions.ElementAtOrDefault(_selectedIndex);
 
         var attackInput = new AttackInput
@@ -635,7 +659,14 @@ public partial class PlayerSelectItem : Control
             _selectionList.AddChild(actionLabel);
         }
 
-        SelectActionRow(0);
+        var selectionIndex = 0;
+
+        if(_globalState.Options.SortActionMode == SortActionMode.CursorOnFirstUsableAction)
+        {
+            selectionIndex = Math.Max(0, _actionListInfo.Actions.FindIndex(a => a.CanBeUsed));
+        }
+
+        SelectActionRow(selectionIndex);
     }
 
     private void SelectActionRow(int index)

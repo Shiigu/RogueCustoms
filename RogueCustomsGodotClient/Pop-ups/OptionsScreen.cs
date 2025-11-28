@@ -2,9 +2,13 @@ using Godot;
 using Godot.Collections;
 
 using RogueCustomsGodotClient;
+using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Utils;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 public partial class OptionsScreen : Control
 {
@@ -21,11 +25,13 @@ public partial class OptionsScreen : Control
     private Panel _border;
     private MarginContainer _marginContainer;
     private ScrollContainer _scrollContainer;
+    private List<Button> _buttons;
 
     private string[] _possibleLocales;
     private string _initialLocale;
 
     private float _baseMarginContainerWidth, _baseBorderWidth, _baseScrollContainerWidth;
+    private int _index;
 
     [Signal]
     public delegate void PopupClosedEventHandler();
@@ -51,6 +57,7 @@ public partial class OptionsScreen : Control
         _highlightPositionCheckButton = GetNode<CheckButton>("ScrollContainer/VBoxContainer/HighlightPositionContainer/HighlightPositionCheckButton");
         _applyButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/ApplyButton");
         _cancelButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/CancelButton");
+        _buttons = [_languageDropdown, _sortActionDropdown, _highlightPositionCheckButton, _setFlashDropdown, _inactiveControlsDropdown, _applyButton, _cancelButton];
     }
 
     public void Show(Action onCloseCallback)
@@ -79,6 +86,7 @@ public partial class OptionsScreen : Control
 
         _cancelButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             TranslationServer.SetLocale(_initialLocale);
             EmitSignal(nameof(PopupClosed));
             onCloseCallback?.Invoke();
@@ -116,6 +124,9 @@ public partial class OptionsScreen : Control
 
         var screenSize = GetViewportRect().Size;
         Position = (screenSize - _border.Size) / 2;
+
+        _buttons[0].GrabFocus();
+        _index = 0;
     }
 
     private void SetupLocalizationOptions()
@@ -213,5 +224,63 @@ public partial class OptionsScreen : Control
         config.SetValue("GameOptions", "inactivecontrolshowmode", _globalState.Options.InactiveControlShowMode.ToString());
         config.Save(_globalState.SettingsPath);
         GD.Print($"Saved settings.");
+    }
+    public override void _Input(InputEvent @event)
+    {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
+        if (@event.IsActionPressed("ui_up") || (_inputManager.IsActionAllowed("ui_up") && @event.IsActionPressed("ui_up", true)))
+        {
+            MoveFocus(-1);
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_down") || (_inputManager.IsActionAllowed("ui_down") && @event.IsActionPressed("ui_down", true)))
+        {
+            MoveFocus(1);
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_accept"))
+        {
+            if (_index != -1)
+            {
+                _buttons[_index].GrabFocus();
+
+                if (_buttons[_index] is OptionButton ob)
+                {
+                    ob.ShowPopup();
+                }
+                else if (_buttons[_index] is CheckButton cb)
+                {
+                    cb.ButtonPressed = !cb.ButtonPressed;
+                }
+                else if (_buttons[_index] is Button b)
+                {
+                    b.EmitSignal("pressed");
+                    b.ButtonPressed = true;
+                }
+            }
+            AcceptEvent();
+        }
+        else if ((@event.IsActionPressed("ui_left") || (_inputManager.IsActionAllowed("ui_left") && @event.IsActionPressed("ui_left", true)))
+            || (@event.IsActionPressed("ui_right") || (_inputManager.IsActionAllowed("ui_right") && @event.IsActionPressed("ui_right", true))))
+        {
+            if (_buttons[_index] == _applyButton)
+                MoveFocus(1);
+            else if (_buttons[_index] == _cancelButton)
+                MoveFocus(-1);
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_cancel"))
+        {
+            _cancelButton.GrabFocus();
+            _cancelButton.EmitSignal("pressed");
+            _cancelButton.ButtonPressed = true;
+            AcceptEvent();
+        }
+    }
+
+    private void MoveFocus(int step)
+    {
+        _index = (_index + step + _buttons.Count) % _buttons.Count;
+        _buttons[_index].GrabFocus();
     }
 }

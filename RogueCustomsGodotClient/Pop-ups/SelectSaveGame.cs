@@ -66,6 +66,7 @@ public partial class SelectSaveGame : Control
 
         _cancelButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             onCancelCallback?.Invoke();
             QueueFree();
         };
@@ -80,6 +81,7 @@ public partial class SelectSaveGame : Control
         try
         {
             if (_selectedIndex == int.MinValue) return;
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             var selectedSave = _globalState.SavedGames[_selectedIndex];
             _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
             {

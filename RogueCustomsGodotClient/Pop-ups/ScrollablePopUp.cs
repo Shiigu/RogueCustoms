@@ -1,8 +1,10 @@
 using Godot;
 
+using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Utils;
 
 using System;
+using System.Linq;
 
 public partial class ScrollablePopUp : Control
 {
@@ -40,6 +42,7 @@ public partial class ScrollablePopUp : Control
 
         _closeButtonText.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             okCallback?.Invoke();
             QueueFree();
         };

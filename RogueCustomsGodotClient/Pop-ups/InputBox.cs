@@ -5,6 +5,7 @@ using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Utils;
 
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public partial class InputBox : Control
@@ -75,6 +76,7 @@ public partial class InputBox : Control
         _okButton.Text = TranslationServer.Translate("InputBoxAffirmativeButtonText");
         _okButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             if (string.IsNullOrEmpty(_inputTextBox.Text))
                 _inputTextBox.Text = _inputTextBox.PlaceholderText;
             okCallback?.Invoke(_inputTextBox.Text);
@@ -83,6 +85,7 @@ public partial class InputBox : Control
         _cancelButton.Text = TranslationServer.Translate("CancelButtonText");
         _cancelButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             cancelCallback?.Invoke();
             QueueFree();
         };

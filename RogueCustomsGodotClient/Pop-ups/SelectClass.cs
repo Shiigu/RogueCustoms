@@ -66,17 +66,27 @@ public partial class SelectClass : Control
         _selectButton.Text = TranslationServer.Translate("SelectButtonText");
         _selectButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             selectCallBack?.Invoke(_possibleClasses[_selectionIndex].ClassId);
         };
         _cancelButton.Text = TranslationServer.Translate("CancelButtonText");
         _cancelButton.Pressed += () =>
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             cancelCallback?.Invoke();
         };
         _leftButton.Text = TranslationServer.Translate("LeftButtonText");
-        _leftButton.Pressed += () => ShowClassDetails(_selectionIndex - 1);
+        _leftButton.Pressed += () =>
+        {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
+            ShowClassDetails(_selectionIndex - 1);
+        };
         _rightButton.Text = TranslationServer.Translate("RightButtonText");
-        _rightButton.Pressed += () => ShowClassDetails(_selectionIndex + 1);
+        _rightButton.Pressed += () =>
+        {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
+            ShowClassDetails(_selectionIndex + 1);
+        };
 
         var screenSize = GetViewportRect().Size;
         Position = (screenSize - _border.Size) / 2;

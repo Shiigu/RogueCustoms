@@ -98,6 +98,7 @@ public partial class PickDungeon : Control
 
     private void HardcoreCheckButton_Pressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         if (_hardcoreCheckButton.ButtonPressed)
         {
             _hardcoreCheckButton.Text = TranslationServer.Translate("HardcoreModeEnabledText");
@@ -212,11 +213,13 @@ public partial class PickDungeon : Control
 
     private void AddDungeonButton_Pressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         _openFileDialog.Visible = true;
     }
 
     private async Task PickDungeonButton_Pressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         if (SelectedItem.IsAtCurrentVersion)
         {
             _globalState.MessageScreenType = MessageScreenType.Briefing;
@@ -257,8 +260,12 @@ public partial class PickDungeon : Control
                 new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
         }
     }
-    
-    private void ReturnToMainMenuButton_Pressed() => GetTree().ChangeSceneToFile("res://Screens/MainMenu.tscn");
+
+    private void ReturnToMainMenuButton_Pressed()
+    {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
+        GetTree().ChangeSceneToFile("res://Screens/MainMenu.tscn");
+    }
 
     private void AddRow(string dungeonName, string author, string version, bool isHeader, int rowIndex = -1)
     {

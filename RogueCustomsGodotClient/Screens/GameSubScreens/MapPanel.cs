@@ -46,6 +46,7 @@ public partial class MapPanel : GamePanel
     private bool CalculatedBoundsAtLeastOnce;
 
     public Vector2 MapPosition => _tileMap.Position;
+    public Vector2 MapSize => _tileMap.Size;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -148,6 +149,8 @@ public partial class MapPanel : GamePanel
     public void UpdateBuffer(List<TileDto> newTiles)
     {
         var dungeonStatus = _globalState.DungeonInfo;
+        var playerEntity = dungeonStatus.PlayerEntity;
+        var playerCoordinates = GetPositionForCoordinates(new(playerEntity.X, playerEntity.Y));
 
         _tileMap.Position = new Vector2(16 * (TopLeftCornerPosition.X + 1), 16 * (TopLeftCornerPosition.Y + 1));
 
@@ -160,6 +163,20 @@ public partial class MapPanel : GamePanel
                 var rep = newTiles == null
                     ? dungeonStatus.GetTileConsoleRepresentationFromCoordinates(TopLeftCornerCoords.X + x, TopLeftCornerCoords.Y + y)
                     : newTiles.GetTileConsoleRepresentationFromCoordinates(TopLeftCornerCoords.X + x, TopLeftCornerCoords.Y + y);
+
+                if(_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+                {
+                    if(x != playerCoordinates.X || y != playerCoordinates.Y)
+                    {
+                        rep = new ConsoleRepresentation
+                        {
+                            BackgroundColor = new(System.Drawing.Color.Black),
+                            ForegroundColor = new(System.Drawing.Color.Black),
+                            Character = 'A'
+                        };
+                    }
+                }
+
                 _tileBuffer[x, y] = rep.ToBbCodeRepresentation();
             }
         }
