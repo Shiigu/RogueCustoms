@@ -125,6 +125,7 @@ public partial class InfoPanel : GamePanel
     {
         try
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             var playerInfo = _globalState.DungeonManager.GetPlayerDetailInfo();
             if (playerInfo == null) return;
             var titleText = TranslationServer.Translate("PlayerCharacterDetailWindowTitleText").ToString().Format(new { PlayerName = playerInfo.Name });

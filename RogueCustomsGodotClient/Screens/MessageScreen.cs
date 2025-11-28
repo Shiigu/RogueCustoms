@@ -90,8 +90,9 @@ public partial class MessageScreen : Control
         _scrollContainer.GrabFocus();
     }
 
-    private void PressEnterToContinueButton_Pressed() {
-
+    private void PressEnterToContinueButton_Pressed()
+    {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         _pressEnterToContinueButton.ReleaseFocus();
         switch (_globalState.MessageScreenType)
         {

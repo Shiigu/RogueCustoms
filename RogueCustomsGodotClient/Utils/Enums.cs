@@ -22,6 +22,7 @@ namespace RogueCustomsGodotClient.Utils
         MustSkipTurn,
         Targeting,
         Waiting,
+        PreMoveHighlight,
         None
     }
 

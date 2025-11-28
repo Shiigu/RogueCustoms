@@ -101,8 +101,6 @@ public partial class GameScreen : Control
             (SpecialEffect.Identify, "res://Sounds/identify.wav"),
         };
 
-
-
         _globalState = GetNode<GlobalState>("/root/GlobalState");
         _exceptionLogger = GetNode<ExceptionLogger>("/root/ExceptionLogger");
         _saveGameButton = GetNode<Button>("ButtonsBorder/ButtonsPanel/SaveGameButton");
@@ -117,23 +115,52 @@ public partial class GameScreen : Control
         _inputManager = GetNode<InputManager>("/root/InputManager");
         _audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 
-        SetUp();
+        _saveGameButton.Pressed += SaveGameButton_Pressed;
+        _exitButton.Pressed += ExitButton_Pressed;
+        _audioStreamPlayer.Finished += OnSoundFinished;
+    }
+
+    // Called when the node enters the scene tree every time.
+    public override void _EnterTree()
+    {
+        CallDeferred(nameof(SetUp));
     }
 
     private void SetUp()
     {
         _globalState.DungeonManager.SetPromptInvoker(new PromptInvoker(this));
         _globalState.MustUpdateGameScreen = true;
+        _globalState.PlayerControlMode = ControlMode.NormalMove;
         _lastTurn = -1;
-        _saveGameButton.Pressed += SaveGameButton_Pressed;
-        _exitButton.Pressed += ExitButton_Pressed;
-        _audioStreamPlayer.Finished += OnSoundFinished;
 
         _coords = new CoordinateInput
         {
             X = 0,
             Y = 0
         };
+
+        if (_globalState.Options.FlashEffectMode == FlashEffectMode.FullScreen)
+        {
+            _screenFlash.Position = new Vector2(0, 0);
+            _screenFlash.Size = Size;
+        }
+        else if (_globalState.Options.FlashEffectMode == FlashEffectMode.MapSection)
+        {
+            _screenFlash.Position = new(_mapPanel.Position.X + _mapPanel.MapPosition.X, _mapPanel.Position.Y + _mapPanel.MapPosition.Y);
+            _screenFlash.Size = _mapPanel.MapSize;
+        }
+        else
+        {
+            _screenFlash.Size = new Vector2(0, 0);
+        }
+
+        if (_globalState.Options.HighlightPlayerOnFloorStart)
+        {
+            _globalState.PlayerControlMode = ControlMode.PreMoveHighlight;
+            _saveGameButton.Disabled = true;
+            _messageLogPanel.MessageWindowButton.Disabled = true;
+            _infoPanel.DetailsButton.Disabled = true;
+        }
 
         _processingEvents = false;
         _Process(0);
@@ -177,12 +204,18 @@ public partial class GameScreen : Control
                     _saveGameButton.Disabled = true;
                 }
 
-                if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+                if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+                {
+                    _saveGameButton.Disabled = true;
+                    _messageLogPanel.MessageWindowButton.Disabled = true;
+                    _infoPanel.DetailsButton.Disabled = true;
+                    _exitButton.Disabled = true;
+                }
+                else if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
                 {
                     _saveGameButton.Disabled = false;
                 }
-
-                if (_globalState.PlayerControlMode == ControlMode.None)
+                else if (_globalState.PlayerControlMode == ControlMode.None || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
                 {
                     _mapPanel.StopTargeting();
                     _saveGameButton.Disabled = true;
@@ -227,7 +260,7 @@ public partial class GameScreen : Control
 
     private async Task HandleMovementKeys()
     {
-        if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
+        if (_globalState.PlayerControlMode == ControlMode.Waiting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight) return;
         if (GetChildren().Any(c => c.IsPopUp())) return;
 
         if (Input.IsActionPressed("ui_up") && _inputManager.IsActionAllowed("ui_up") && _coords.Y == 0)
@@ -267,12 +300,24 @@ public partial class GameScreen : Control
             }
         }
     }
+    private bool IsAnyKeyPressed()
+    {
+        foreach (Key key in Enum.GetValues(typeof(Key)))
+        {
+            if (key != Key.None && Input.IsKeyPressed(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private async Task UpdateUIViaEvents()
     {
         _processingEvents = true;
         var controlModeToPick = ControlMode.NormalMove;
-        _globalState.PlayerControlMode = ControlMode.Waiting;
+        if (_globalState.PlayerControlMode != ControlMode.PreMoveHighlight)
+            _globalState.PlayerControlMode = ControlMode.Waiting;
         _saveGameButton.Disabled = true;
         _exitButton.Disabled = true;
         _infoPanel.DetailsButton.Disabled = true;
@@ -291,6 +336,7 @@ public partial class GameScreen : Control
                 switch (displayEvent.DisplayEventType)
                 {
                     case DisplayEventType.PlaySpecialEffect:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var specialEffect = (SpecialEffect)displayEvent.Params[0];
                         var correspondingFlash = SpecialEffectsWithFlash.Find(se => se.SpecialEffect == specialEffect);
                         var correspondingSound = SpecialEffectsWithSound.Find(se => se.SpecialEffect == specialEffect);
@@ -315,16 +361,19 @@ public partial class GameScreen : Control
                         _messageLogPanel.Clear();
                         break;
                     case DisplayEventType.AddMessageBox:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var messageBox = displayEvent.Params[0] as MessageBoxDto;
                         await ShowMessageBox(messageBox);
                         break;
                     case DisplayEventType.UpdateTileRepresentation:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var position = displayEvent.Params[0] as GamePoint;
                         var consoleRepresentation = displayEvent.Params[1] as ConsoleRepresentation;
                         _mapPanel.UpdateTileRepresentation(new Vector2I { X = position.X, Y = position.Y }, consoleRepresentation);
                         redrawMap = true;
                         break;
                     case DisplayEventType.SetDungeonStatus:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var dungeonStatus = (DungeonStatus)displayEvent.Params[0];
                         if (dungeonStatus == DungeonStatus.Completed)
                         {
@@ -352,6 +401,7 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetOnStairs:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var onStairs = (bool)displayEvent.Params[0];
                         if (onStairs)
                         {
@@ -369,6 +419,7 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetCanMove:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var canMove = (bool)displayEvent.Params[0];
                         if (canMove)
                         {
@@ -386,6 +437,7 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetCanAct:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var canAct = (bool)displayEvent.Params[0];
                         if (!canAct)
                             controlModeToPick = ControlMode.MustSkipTurn;
@@ -410,6 +462,7 @@ public partial class GameScreen : Control
                         displayEvent.Params[0] = true;
                         break;
                     case DisplayEventType.RedrawMap:
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         _mapPanel.CalculateDisplayBounds(_globalState.DungeonInfo);
                         if (displayEvent.Params.Count > 0)
                         {
@@ -432,6 +485,9 @@ public partial class GameScreen : Control
             if (!displayEventList.Events.Any(e => unimportantDisplayEventTypes.Contains(e.DisplayEventType)))
                 await ToSignal(GetTree(), "process_frame");
         }
+
+        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) return;
+
         if (_soundIsPlaying)
             await Task.Delay(50);
         _soundIsPlaying = false;
@@ -454,6 +510,7 @@ public partial class GameScreen : Control
     {
         try
         {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
             if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
             if (_globalState.PlayerControlMode == ControlMode.Targeting)
             {
@@ -510,6 +567,7 @@ public partial class GameScreen : Control
 
     private void ExitButton_Pressed()
     {
+        if (GetChildren().Any(c => c.IsPopUp())) return;
         if (_mapPanel.IsTargeting())
         {
             _mapPanel.StopTargeting();
@@ -529,10 +587,10 @@ public partial class GameScreen : Control
     {
         if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
         if (GetChildren().Any(c => c.IsPopUp())) return;
-        _infoPanel.DetailsButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
-        _messageLogPanel.MessageWindowButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
-        _saveGameButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
-        _exitButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting;
+        _infoPanel.DetailsButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
+        _messageLogPanel.MessageWindowButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
+        _saveGameButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
+        _exitButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
         switch (_globalState.PlayerControlMode)
         {
             case ControlMode.NormalMove:
@@ -554,6 +612,9 @@ public partial class GameScreen : Control
                 break;
             case ControlMode.Targeting:
                 CheckTargetingModeInput(@event);
+                break;
+            case ControlMode.PreMoveHighlight:
+                CheckPreMoveInput(@event);
                 break;
         }
     }
@@ -797,6 +858,24 @@ public partial class GameScreen : Control
             _messageLogPanel.MessageWindowButton.EmitSignal("pressed");
             _messageLogPanel.MessageWindowButton.ButtonPressed = true;
             AcceptEvent();
+        }
+    }
+
+    private void CheckPreMoveInput(InputEvent @event)
+    {
+        if (@event is InputEventKey keyEvent)
+        {
+            if (keyEvent.Pressed && !keyEvent.Echo)
+            {
+                _globalState.PlayerControlMode = ControlMode.NormalMove;
+                _globalState.DungeonInfo.Read = false;
+                _globalState.MustUpdateGameScreen = true;
+                _saveGameButton.Disabled = false;
+                _messageLogPanel.MessageWindowButton.Disabled = false;
+                _infoPanel.DetailsButton.Disabled = false;
+                _processingEvents = false;
+                AcceptEvent();
+            }
         }
     }
 

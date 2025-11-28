@@ -17,7 +17,7 @@ namespace RogueCustomsGodotClient.Helpers
     {
         public static bool IsPopUp(this Node n)
         {
-            return n is InputBox || n is PopUp || n is ScrollablePopUp || n is PlayerSelectItem || n is SelectClass || n is SelectSaveGame;
+            return n is InputBox || n is PopUp || n is ScrollablePopUp || n is PlayerSelectItem || n is SelectClass || n is SelectSaveGame || n is OptionsScreen;
         }
 
         public static async Task CreateStandardPopup(this Control control, string titleText, string innerText, PopUpButton[] buttons, Color borderColor)

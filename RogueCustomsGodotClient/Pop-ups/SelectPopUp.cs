@@ -128,6 +128,7 @@ public partial class SelectPopUp : Control
         {
             if (_selectedIndex != -1)
             {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
                 EmitSignal(nameof(PopupClosed), _choices[_selectedIndex].Id);
                 QueueFree();
             }
@@ -139,6 +140,7 @@ public partial class SelectPopUp : Control
 
             _cancelButton.Pressed += () =>
             {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
                 _selectedIndex = -1;
                 EmitSignal(nameof(PopupClosed), null);
                 QueueFree();

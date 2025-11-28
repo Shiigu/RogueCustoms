@@ -100,12 +100,12 @@ OptionsLanguageText,Idioma,Language
 OptionsSortActionsByText,Ordenar Acciones por,Sort Actions by
 OptionsSortActionsByDefaultText,Predeterminado,Default
 OptionsSortActionsByUsableText,Usables Primero,Usable First
-OptionsSortActionsByCursorOnUsableText,Cursor en Usable,Cursor on Usable
-OptionsHighlightPlayerOnFloorStartText,Resaltar al Jugador al Iniciar el Piso,Highlight Player on Floor Start
+OptionsSortActionsByCursorOnUsableText,Cursor sobre la primera Usable,Cursor on First Usable
+OptionsHighlightPlayerOnFloorStartText,Resaltar al Jugador al Cargar el Piso,Highlight Player on Floor Load
 OptionsFlashCoversText,El parpadeo cubre...,Flash effects cover...
 OptionsFlashCoversFullScreenText,Pantalla Completa,Full Screen
 OptionsFlashCoversMapText,El Mapa,Map
-OptionsFlashCoversNoneText,Nada,Nothing
+OptionsFlashCoversNoneText,Nada (Sin Parpadeo),Nothing (No Flash)
 OptionsInactiveControlsText,"Al esperar, los controles...","While waiting, controls..."
 OptionsInactiveControlsHideText,Se Ocultan,Are Hidden
 OptionsInactiveControlsDimText,Se Atenúan,Are Dimmed
@@ -147,6 +147,7 @@ PlayerInfoWeaponHeader,ARMA,WEAPON
 PlayerInfoCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName}: {Symbol}{Amount}
 PlayerLevelText,NIVEL {CurrentLevel},LEVEL {CurrentLevel}
 PressEnterText,Presiona Enter para Continuar...,Press Enter to Continue...
+PreMoveHighlightControlsText,Presione cualquier tecla para jugar...,Press any key to play...
 RadioButtonHeaderText,UBICACIÓN DEL HOST,GAME HOST LOCATION
 ReturnToMainMenuText,IR AL MENU PRINCIPAL,RETURN TO MAIN MENU
 RightButtonText,->,->

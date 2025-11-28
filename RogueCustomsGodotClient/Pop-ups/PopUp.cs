@@ -6,6 +6,7 @@ using RogueCustomsGodotClient.Utils;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public partial class PopUp : Control
@@ -79,6 +80,7 @@ public partial class PopUp : Control
             };
             button.Pressed += () =>
             {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
                 popUpButton.Callback?.Invoke();
                 modalCloseCallback?.Invoke();
                 EmitSignal(nameof(PopupClosed));
