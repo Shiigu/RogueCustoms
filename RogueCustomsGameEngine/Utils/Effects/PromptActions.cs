@@ -543,6 +543,46 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             return false;
         }
+
+        public static async Task<bool> OpenTextPrompt(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            var optionFlag = paramsObject.OptionFlag;
+
+            if (Map.IsDebugMode)
+            {
+                Map.AppendMessage($"DEBUG: PROMPT => {paramsObject.Title}: {paramsObject.Message}\n\nRESPONSE: {paramsObject.DefaultText}", paramsObject.Color);
+                return true;
+            }
+            else if (Args.Source is NonPlayableCharacter)
+            {
+                return true; // NPCs will not try to change the text response.
+            }
+
+            var events = new List<DisplayEventDto>();
+            var triggerPromptEvent = new DisplayEventDto()
+            {
+                DisplayEventType = DisplayEventType.TriggerPrompt,
+                Params = [false]
+            };
+            events.Add(triggerPromptEvent);
+            Map.DisplayEvents.Add(($"Open Text Prompt {paramsObject.Title}", events));
+
+            while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+
+            var result = await Map.OpenTextPrompt(paramsObject.Title, paramsObject.Message, paramsObject.DefaultText, paramsObject.Color);
+
+            if (!Map.HasFlag(optionFlag))
+            {
+                Map.CreateFlag(optionFlag, result, true);
+            }
+            else
+            {
+                Map.SetFlagValue(optionFlag, result);
+            }
+
+            return true;
+        }
     }
 
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL

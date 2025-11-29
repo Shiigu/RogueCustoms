@@ -103,6 +103,11 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "customid", "CustomId" },
         };
 
+        private static readonly Dictionary<string, string> StringParams = new(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "customname", "CustomName" },
+        };
+
         public static void Setup(RngHandler rng, Map map)
         {
             Rng = rng;
@@ -174,7 +179,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
                 return true;
             }
 
-            if (IdParams.TryGetValue(paramName, out var stringProperty))
+            if (IdParams.TryGetValue(paramName, out var idProperty))
+            {
+                paramsObject[idProperty] = value.TrimSurroundingQuotes();
+                return true;
+            }
+
+            if (StringParams.TryGetValue(paramName, out var stringProperty))
             {
                 paramsObject[stringProperty] = value.TrimSurroundingQuotes();
                 return true;

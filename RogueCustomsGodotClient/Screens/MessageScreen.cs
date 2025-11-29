@@ -106,7 +106,7 @@ public partial class MessageScreen : Control
         }
     }
 
-    private void AskForPlayerClass()
+    private async Task AskForPlayerClass()
     {
         var availablePlayerClasses = _globalState.DungeonManager.GetPlayerClassSelection().CharacterClasses;
         if (availablePlayerClasses != null && availablePlayerClasses.Count > 1)
@@ -118,10 +118,10 @@ public partial class MessageScreen : Control
             };
             AddChild(overlay);
             this.CreateSelectClassWindow(
-            (classId) =>
+            async (classId) =>
             {
                 _chosenClass = availablePlayerClasses.First(c => c.ClassId.Equals(classId));
-                AskForPlayerName();
+                await AskForPlayerName();
             },
             async () => await this.CreateStandardPopup(TranslationServer.Translate("PlayerClassWindowTitleText"),
                                     TranslationServer.Translate("ExitPromptText"),
@@ -137,11 +137,11 @@ public partial class MessageScreen : Control
         else
         {
             _chosenClass = availablePlayerClasses.First();
-            AskForPlayerName();
+            await AskForPlayerName();
         }
     }
 
-    private void AskForPlayerName()
+    private async Task AskForPlayerName()
     {
         if (_chosenClass != null)
         {
@@ -151,7 +151,7 @@ public partial class MessageScreen : Control
             }
             else
             {
-                this.CreateInputBox(TranslationServer.Translate("InputBoxTitleText"), TranslationServer.Translate("InputBoxPromptText").ToString().Format(new { ClassName = _chosenClass.Name }), _chosenClass.Name, new Color() { R8 = 255, G8 = 200, B8 = 0, A = 1},
+                await this.CreateInputBox(TranslationServer.Translate("InputBoxTitleText"), TranslationServer.Translate("InputBoxPromptText").ToString().Format(new { ClassName = _chosenClass.Name }), _chosenClass.Name, true, new Color() { R8 = 255, G8 = 200, B8 = 0, A = 1},
                     (chosenName) => {
                         SendClassSelection(_chosenClass.ClassId, chosenName); 
                     }, () => {});

@@ -154,7 +154,6 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onFloorStart);
                 }
-                floorGroup["MonsterHouseOdds"] = 0;
                 foreach (var npc in floorGroup["PossibleMonsters"]?.AsArray() ?? new JsonArray())
                 {
                     if (npc is JsonObject npcObj)

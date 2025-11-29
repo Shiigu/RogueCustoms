@@ -516,6 +516,10 @@
     {
       "Key": "CurrencyName",
       "Value": "Gold"
+    },
+    {
+      "Key": "CharacterHasBeenRenamed",
+      "Value": "{OldName} is now called {NewName}!"
     }
   ]
 }

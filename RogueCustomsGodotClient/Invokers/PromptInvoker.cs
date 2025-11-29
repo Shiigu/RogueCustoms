@@ -75,5 +75,16 @@ namespace RogueCustomsGodotClient.Invokers
             _globalState.DungeonManager.RefreshDisplay(true);
             return result;
         }
+
+        public async Task<string> OpenTextPrompt(string title, string message, string defaultText, GameColor borderColor)
+        {
+            var promptResponse = string.Empty;
+
+            await Parent.CreateInputBox(title, message, defaultText, false, new Color() { R8 = borderColor.R, G8 = borderColor.G, B8 = borderColor.B, A8 = borderColor.A }, (text) => promptResponse = text, null);
+            
+            _globalState.DungeonManager.RefreshDisplay(true);
+            
+            return promptResponse;
+        }
     }
 }

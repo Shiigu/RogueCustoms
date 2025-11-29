@@ -2014,6 +2014,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return PromptInvoker.OpenSellPrompt(title, choices, showCancelButton);
         }
+        public Task<string> OpenTextPrompt(string title, string message, string defaultText, GameColor borderColor)
+        {
+            return PromptInvoker.OpenTextPrompt(title, message, defaultText, borderColor);
+        }
 
         #endregion
 

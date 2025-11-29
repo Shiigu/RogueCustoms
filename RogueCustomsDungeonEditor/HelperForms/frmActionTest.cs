@@ -560,6 +560,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             public Task<string> OpenSelectAction(string title, ActionListDto choices, bool showCancelButton) => Task.FromResult(choices.Actions[new Random().Next(choices.Actions.Count)].SelectionId);
             public Task<int?> OpenBuyPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
             public Task<int?> OpenSellPrompt(string title, InventoryDto choices, bool showCancelButton) => Task.FromResult((int?)choices.InventoryItems[new Random().Next(choices.InventoryItems.Count)].ItemId);
+            public Task<string> OpenTextPrompt(string title, string message, string defaultText, GameColor borderColor) => Task.FromResult(defaultText);
         }
     }
 }
