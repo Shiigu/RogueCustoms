@@ -20,6 +20,13 @@ BuyButtonText,COMPRAR,BUY
 CancelButtonText,CANCELAR,CANCEL
 CloseButtonText,CERRAR,CLOSE
 DeadPlayerText,MUERTO,DEAD
+DeleteButtonText,ELIMINAR,DELETE
+DeleteSaveGameHeaderText,ELIMINAR PARTIDA GUARDADA,DELETE SAVED GAME
+DeleteSaveGameText,¿Estás seguro de que quieres eliminar esta partida guardada?\nEsta acción no se puede deshacer.,Are you sure you want to delete this savegame?\nThis action cannot be undone.
+DeleteSaveGameSuccessHeaderText,PARTIDA GUARDADA ELIMINADA,SAVED GAME DELETED
+DeleteSaveGameSuccessText,La partida guardada se ha eliminado exitosamente.,The savegame has been successfully deleted.
+DeleteSaveGameFailureHeaderText,NO SE PUDO ELIMINAR,COULD NOT DELETE
+DeleteSaveGameFailureText,No se pudo eliminar la partida guardada.,The savegame could not be deleted.
 DetailsButtonText,DETALLES,DETAILS
 DetailsSubconsoleTitleText,DETALLES,DETAILS
 DoButtonText,REALIZAR,DO

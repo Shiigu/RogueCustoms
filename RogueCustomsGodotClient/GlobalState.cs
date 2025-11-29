@@ -16,6 +16,7 @@ public partial class GlobalState : Node
 	public DungeonListDto PossibleDungeonInfo { get; set; }
 	public DungeonDto DungeonInfo { get; set; }
 	public DungeonManager DungeonManager { get; set; } = new();
+    public Guid CurrentDungeonId { get; set; }
 	public MessageScreenType MessageScreenType { get; set; }
 	public ControlMode PlayerControlMode { get; set; }
     public Options Options { get; set; }

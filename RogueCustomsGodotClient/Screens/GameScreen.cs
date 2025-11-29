@@ -522,28 +522,31 @@ public partial class GameScreen : Control
             var output = _globalState.DungeonManager.SaveDungeon();
             if (output != null)
             {
-                var saveData = new SaveGame()
-                {
-                    DungeonName = dungeonStatus.DungeonName,
-                    FloorName = dungeonStatus.FloorName,
-                    DungeonData = Convert.ToBase64String(output.DungeonData),
-                    DungeonVersion = output.DungeonVersion,
-                    PlayerName = dungeonStatus.PlayerEntity.Name,
-                    PlayerLevel = dungeonStatus.PlayerEntity.Level,
-                    PlayerRepresentation = dungeonStatus.PlayerEntity.ConsoleRepresentation,
-                    IsPlayerDead = dungeonStatus.PlayerEntity.HP <= 0,
-                    IsHardcoreMode = dungeonStatus.IsHardcoreMode,
-                    SaveDate = DateTime.Now
-                };
+                var saveData = _globalState.SavedGames.Find(sg => sg.SaveGame.SaveGameId != default && sg.SaveGame.SaveGameId == _globalState.CurrentDungeonId).SaveGame ?? new SaveGame();
+
+                if(saveData.SaveGameId == default || saveData.SaveGameId != _globalState.CurrentDungeonId)
+                    saveData.SaveGameId = _globalState.CurrentDungeonId != default ? _globalState.CurrentDungeonId : Guid.NewGuid();
+                saveData.DungeonName = dungeonStatus.DungeonName;
+                saveData.FloorName = dungeonStatus.FloorName;
+                saveData.DungeonData = Convert.ToBase64String(output.DungeonData);
+                saveData.DungeonVersion = output.DungeonVersion;
+                saveData.PlayerName = dungeonStatus.PlayerEntity.Name;
+                saveData.PlayerLevel = dungeonStatus.PlayerEntity.Level;
+                saveData.PlayerRepresentation = dungeonStatus.PlayerEntity.ConsoleRepresentation;
+                saveData.IsPlayerDead = dungeonStatus.PlayerEntity.HP <= 0;
+                saveData.IsHardcoreMode = dungeonStatus.IsHardcoreMode;
+                saveData.SaveDate = DateTime.Now;
 
                 var saveDataAsJSON = JsonSerializer.Serialize(saveData);
-                var saveName = dungeonStatus.IsHardcoreMode ? $"{output.FileName}_H.rcs" : $"{output.FileName}.rcs";
+                var saveName = $"{saveData.SaveGameId}.rcs";
                 var filePath = $"{_globalState.SaveGameFolder}/{saveName}";
 
                 using var file = FileAccess.Open(filePath, FileAccess.ModeFlags.Write);
                 file.StoreString(saveDataAsJSON);
 
                 _globalState.CurrentSavePath = filePath;
+
+                file.Close();
 
                 _ = this.CreateStandardPopup(_globalState.DungeonInfo.DungeonName,
                                             TranslationServer.Translate("SuccessfulSavePromptText"),

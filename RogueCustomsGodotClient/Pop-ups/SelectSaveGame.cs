@@ -5,20 +5,25 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Entities;
 using RogueCustomsGodotClient.Helpers;
+using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Utils;
 
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+
 using static Godot.Control;
+
+using Color = Godot.Color;
 
 public partial class SelectSaveGame : Control
 {
     private GlobalState _globalState;
     private InputManager _inputManager;
     private ExceptionLogger _exceptionLogger;
-    private Button _loadButton, _cancelButton;
+    private Button _loadButton, _deleteButton, _cancelButton;
     private VBoxContainer _saveGameTable;
     private Panel _border;
 
@@ -37,9 +42,11 @@ public partial class SelectSaveGame : Control
         _titleLabel = GetNode<Label>("MarginContainer/VBoxContainer/TitleLabel");
         _saveGameTable = GetNode<VBoxContainer>("ScrollContainer/SaveGameTable");
         _loadButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/LoadButton");
+        _deleteButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/DeleteButton");
         _cancelButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/CancelButton");
 
         _loadButton.Pressed += OnLoadButtonPressed;
+        _deleteButton.Pressed += () => _ = OnDeleteButtonPressed();
     }
 
     public void Show(Action onCancelCallback)
@@ -48,11 +55,31 @@ public partial class SelectSaveGame : Control
         _loadButton.Text = TranslationServer.Translate("LoadButtonText");
         _cancelButton.Text = TranslationServer.Translate("CancelButtonText");
 
-        for (int i = 0; i < (int) Math.Ceiling(_globalState.SavedGames.Count / (float) 2); i++)
+        FillTable();
+
+        _cancelButton.Pressed += () =>
+        {
+            if (GetParent().GetChildren().Any(c => c.IsPopUp() && c != this)) return;
+            onCancelCallback?.Invoke();
+            QueueFree();
+        };
+
+        var screenSize = GetViewportRect().Size;
+        Position = (screenSize - _border.Size) / 2;
+    }
+
+    private void FillTable()
+    {
+        foreach (var cell in _saveGameTable.GetChildren())
+        {
+            cell.Free();
+        }
+        _saveGameTable.GetChildren().Clear();
+
+        for (int i = 0; i < (int)Math.Ceiling(_globalState.SavedGames.Count / (float)2); i++)
         {
             var hbox = new HBoxContainer
             {
-                Name = $"Row_{i}",
                 SizeFlagsHorizontal = SizeFlags.ExpandFill,
             };
             for (int j = i * 2; j < (i * 2) + 2; j++)
@@ -62,17 +89,11 @@ public partial class SelectSaveGame : Control
             }
             hbox.AddThemeConstantOverride("separation", 0);
             _saveGameTable.AddChild(hbox);
+            hbox.Name = $"Row_{i}";
         }
 
-        _cancelButton.Pressed += () =>
-        {
-            if (GetChildren().Any(c => c.IsPopUp())) return;
-            onCancelCallback?.Invoke();
-            QueueFree();
-        };
-
-        var screenSize = GetViewportRect().Size;
-        Position = (screenSize - _border.Size) / 2;
+        _loadButton.Disabled = true;
+        _deleteButton.Disabled = true;
 
         SelectCell(int.MinValue);
     }
@@ -81,7 +102,7 @@ public partial class SelectSaveGame : Control
         try
         {
             if (_selectedIndex == int.MinValue) return;
-            if (GetChildren().Any(c => c.IsPopUp())) return;
+            if (GetParent().GetChildren().Any(c => c.IsPopUp() && c != this)) return;
             var selectedSave = _globalState.SavedGames[_selectedIndex];
             _globalState.DungeonManager.LoadSavedDungeon(new DungeonSaveGameDto
             {
@@ -89,7 +110,55 @@ public partial class SelectSaveGame : Control
             });
             _globalState.IsHardcoreMode = selectedSave.SaveGame.IsHardcoreMode;
             _globalState.CurrentSavePath = selectedSave.Path;
+            _globalState.CurrentDungeonId = selectedSave.SaveGame.SaveGameId;
             GetTree().ChangeSceneToFile("res://Screens/GameScreen.tscn");
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
+    }
+
+    private async Task OnDeleteButtonPressed()
+    {
+        try
+        {
+            if (_selectedIndex == int.MinValue) return;
+            if (GetParent().GetChildren().Any(c => c.IsPopUp() && c != this)) return;
+            var selectedSave = _globalState.SavedGames[_selectedIndex];
+            var passedDeleteCheck = false;
+            await (GetParent() as MainMenu).CreateStandardPopup(TranslationServer.Translate("DeleteSaveGameHeaderText"),
+                                            TranslationServer.Translate("DeleteSaveGameText"),
+                                            new PopUpButton[]
+                                            {
+                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () => passedDeleteCheck = true, ActionPress = "ui_accept" },
+                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = () => passedDeleteCheck = false, ActionPress = "ui_cancel" }
+                                            }, new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+
+            if(passedDeleteCheck)
+            {
+                try
+                {
+                    System.IO.File.Delete(selectedSave.Path);
+                    _globalState.SavedGames.RemoveAt(_selectedIndex);
+                    await (GetParent() as MainMenu).CreateStandardPopup(TranslationServer.Translate("DeleteSaveGameSuccessHeaderText"),
+                                                    TranslationServer.Translate("DeleteSaveGameSuccessText"),
+                                                    new PopUpButton[]
+                                                    {
+                                        new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" }
+                                                    }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
+                }
+                catch (Exception ex)
+                {
+                    await (GetParent() as MainMenu).CreateStandardPopup(TranslationServer.Translate("DeleteSaveGameFailureHeaderText"),
+                                                    TranslationServer.Translate("DeleteSaveGameFailureText"),
+                                                    new PopUpButton[]
+                                                    {
+                                        new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" }
+                                                    }, new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+                }
+                FillTable();
+            }
         }
         catch (Exception ex)
         {
@@ -162,13 +231,15 @@ public partial class SelectSaveGame : Control
         {
             var hbox = _saveGameTable.GetNode<HBoxContainer>($"Row_{i}");
 
+            if (hbox == null) return;
+
             foreach (RichTextLabel label in hbox.GetChildren())
             {
                 if (label.Name.Equals($"Cell_{indexToPick}"))
                 {
                     label.AddThemeStyleboxOverride("normal", GlobalConstants.SelectedSaveGameCellStyleBox); var scrollContainer = _saveGameTable.GetParent() as ScrollContainer;
 
-                    // This code automatically adjust the scroll bar to the currently-selected cell
+                    // This code automatically adjusts the scroll bar to the currently-selected cell
                     var cellPosition = label.GlobalPosition - _saveGameTable.GlobalPosition;
                     var cellTop = cellPosition.Y;
                     var cellBottom = cellTop + label.Size.Y;
@@ -185,6 +256,7 @@ public partial class SelectSaveGame : Control
                         scrollContainer.ScrollVertical = (int)(cellBottom - scrollContainer.Size.Y);
                     }
                     _loadButton.Disabled = false;
+                    _deleteButton.Disabled = false;
                 }
                 else
                 {
@@ -193,11 +265,6 @@ public partial class SelectSaveGame : Control
             }
         }
         _selectedIndex = indexToPick;
-    }
-
-    public void ToggleCellSelection()
-    {
-
     }
 
     public override void _Input(InputEvent @event)
@@ -246,6 +313,13 @@ public partial class SelectSaveGame : Control
             _loadButton.GrabFocus();
             _loadButton.EmitSignal("pressed");
             _loadButton.ButtonPressed = true;
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_delete"))
+        {
+            _deleteButton.GrabFocus();
+            _deleteButton.EmitSignal("pressed");
+            _deleteButton.ButtonPressed = true;
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_cancel"))

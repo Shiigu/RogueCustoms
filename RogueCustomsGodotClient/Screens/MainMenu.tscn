@@ -6,6 +6,7 @@
 [ext_resource type="StyleBox" uid="uid://jes0mkewxn77" path="res://Styles/ButtonNormal.tres" id="3_36s23"]
 
 [sub_resource type="SystemFont" id="SystemFont_k2sba"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_ps8ca"]
 
@@ -31,9 +32,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 337.0
-offset_top = 427.0
+offset_top = 436.0
 offset_right = -329.0
-offset_bottom = -293.0
+offset_bottom = -283.99994
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 1
@@ -50,9 +51,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 337.0
-offset_top = 502.0
+offset_top = 511.0
 offset_right = -329.0
-offset_bottom = -218.0
+offset_bottom = -208.99994
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 1
