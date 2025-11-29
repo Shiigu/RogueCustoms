@@ -10,6 +10,7 @@ namespace RogueCustomsGodotClient.Entities
 {
     public class SaveGame
     {
+        public Guid SaveGameId { get; set; }
         public string DungeonVersion { get; set; }
         public string DungeonName { get; set; }
         public string FloorName { get; set; }

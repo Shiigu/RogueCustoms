@@ -74,16 +74,25 @@ alignment = 1
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_wm5lp")
-theme_override_styles/hover = ExtResource("5_o3xpy")
 theme_override_styles/normal = ExtResource("6_ouo0k")
+theme_override_styles/hover = ExtResource("5_o3xpy")
+theme_override_styles/disabled = ExtResource("4_wm5lp")
 text = "LOAD"
+
+[node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/normal = ExtResource("6_ouo0k")
+theme_override_styles/hover = ExtResource("5_o3xpy")
+theme_override_styles/disabled = ExtResource("4_wm5lp")
+text = "DELETE"
 
 [node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_wm5lp")
-theme_override_styles/hover = ExtResource("5_o3xpy")
 theme_override_styles/normal = ExtResource("6_ouo0k")
+theme_override_styles/hover = ExtResource("5_o3xpy")
+theme_override_styles/disabled = ExtResource("4_wm5lp")
 text = "CANCEL"

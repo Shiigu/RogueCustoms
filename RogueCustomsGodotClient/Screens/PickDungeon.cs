@@ -239,7 +239,7 @@ public partial class PickDungeon : Control
             {
                 try
                 {
-                    _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, _globalState.Options.Localization, _hardcoreCheckButton.ButtonPressed);
+                    _globalState.CurrentDungeonId = _globalState.DungeonManager.CreateDungeon(SelectedItem.InternalName, _globalState.Options.Localization, _hardcoreCheckButton.ButtonPressed);
                     _ = GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
                 }
                 catch (Exception ex)

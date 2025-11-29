@@ -96,7 +96,7 @@ namespace RogueCustomsGameEngine.Management
             return DungeonListForDisplay;
         }
 
-        public void CreateDungeon(string dungeonName, string locale, bool isHardcoreMode)
+        public Guid CreateDungeon(string dungeonName, string locale, bool isHardcoreMode)
         {
             var dungeonInfo = AvailableDungeonInfos[dungeonName];
 
@@ -104,6 +104,8 @@ namespace RogueCustomsGameEngine.Management
             {
                 FileName = dungeonName
             };
+
+            return Guid.NewGuid();
         }
 
         public DungeonSaveGameDto SaveDungeon()
