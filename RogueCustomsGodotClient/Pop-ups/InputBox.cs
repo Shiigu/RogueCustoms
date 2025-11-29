@@ -21,6 +21,9 @@ public partial class InputBox : Control
     private VBoxContainer _vBoxContainer;
     private string _innerTextWithoutBbCode;
 
+    [Signal]
+    public delegate void PopupClosedEventHandler();
+
     public override void _Ready()
     {
         _globalState = GetNode<GlobalState>("/root/GlobalState");
@@ -49,7 +52,7 @@ public partial class InputBox : Control
         CustomMinimumSize = _marginContainer.CustomMinimumSize;
     }
 
-    public void Show(string titleText, string promptText, string placeholderText, Color borderColor, Action<string> okCallback, Action cancelCallback)
+    public void Show(string titleText, string promptText, string placeholderText, Color borderColor, bool showCancelButton, Action<string> okCallback, Action cancelCallback)
     {
         _innerTextWithoutBbCode = Regex.Replace(promptText, @"\[(.*?)\]", string.Empty);
         _titleLabel.Text = titleText;
@@ -80,15 +83,28 @@ public partial class InputBox : Control
             if (string.IsNullOrEmpty(_inputTextBox.Text))
                 _inputTextBox.Text = _inputTextBox.PlaceholderText;
             okCallback?.Invoke(_inputTextBox.Text);
+            EmitSignal(nameof(PopupClosed));
             QueueFree();
         };
-        _cancelButton.Text = TranslationServer.Translate("CancelButtonText");
-        _cancelButton.Pressed += () =>
+
+        if (showCancelButton)
         {
-            if (GetChildren().Any(c => c.IsPopUp())) return;
-            cancelCallback?.Invoke();
-            QueueFree();
-        };
+            _cancelButton.Visible = true;
+            _cancelButton.Disabled = false;
+            _cancelButton.Text = TranslationServer.Translate("CancelButtonText");
+            _cancelButton.Pressed += () =>
+            {
+                if (GetChildren().Any(c => c.IsPopUp())) return;
+                cancelCallback?.Invoke();
+                EmitSignal(nameof(PopupClosed));
+                QueueFree();
+            };
+        }
+        else
+        {
+            _cancelButton.Visible = false;
+            _cancelButton.Disabled = true;
+        }
 
         var normalButtonStyleBox = (StyleBoxFlat)GlobalConstants.ButtonNormalStyle.Duplicate();
         normalButtonStyleBox.BorderColor = borderColor;
@@ -121,7 +137,7 @@ public partial class InputBox : Control
             _okButton.ButtonPressed = true;
             AcceptEvent();
         }
-        else if (@event.IsActionPressed("ui_cancel"))
+        else if (@event.IsActionPressed("ui_cancel") && _cancelButton.Visible)
         {
             _cancelButton.GrabFocus();
             _cancelButton.EmitSignal("pressed");

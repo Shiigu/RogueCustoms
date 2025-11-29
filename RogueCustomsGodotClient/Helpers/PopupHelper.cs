@@ -80,7 +80,7 @@ namespace RogueCustomsGodotClient.Helpers
             actionSelectPopup.Show(actionInfo, SelectionMode.Interact, true, targetCoords, overlay.QueueFree);
         }
 
-        public static void CreateInputBox(this Control control, string titleText, string promptText, string placeholderText, Color borderColor, Action<string> okCallback, Action cancelCallback)
+        public static async Task CreateInputBox(this Control control, string titleText, string promptText, string placeholderText, bool showCancelButton, Color borderColor, Action<string> okCallback, Action cancelCallback)
         {
             var overlay = new ColorRect
             {
@@ -91,7 +91,11 @@ namespace RogueCustomsGodotClient.Helpers
 
             var inputBox = (InputBox)GD.Load<PackedScene>("res://Pop-ups/InputBox.tscn").Instantiate();
             control.AddChild(inputBox);
-            inputBox.Show(titleText, promptText, placeholderText, borderColor, (inputText) => { overlay.QueueFree(); okCallback?.Invoke(inputText); }, () => { overlay.QueueFree(); cancelCallback?.Invoke(); });
+
+            var popupClosedSignal = inputBox.ToSignal(inputBox, "PopupClosed");
+            inputBox.Show(titleText, promptText, placeholderText, borderColor, showCancelButton, (inputText) => { overlay.QueueFree(); okCallback?.Invoke(inputText); }, () => { overlay.QueueFree(); cancelCallback?.Invoke(); });
+
+            await popupClosedSignal;
         }
 
         public static void CreateSelectClassWindow(this Control control, Action<string> selectCallback, Action cancelCallback)

@@ -209,7 +209,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     // Failed to spawn NPC
                     return false;
 
-                if(paramsObject.InheritsSpawnerColour)
+                if(!string.IsNullOrWhiteSpace(paramsObject.CustomName))
+                {
+                    npc.Name = paramsObject.CustomName;
+                }
+
+                if (paramsObject.InheritsSpawnerColour)
                 {
                     npc.ConsoleRepresentation.ForegroundColor = c.ConsoleRepresentation.ForegroundColor;
                     npc.ConsoleRepresentation.BackgroundColor = c.ConsoleRepresentation.BackgroundColor;

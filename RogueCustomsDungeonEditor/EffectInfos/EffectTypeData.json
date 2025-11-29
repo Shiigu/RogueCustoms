@@ -1926,6 +1926,17 @@
         "Required": "true",
         "ReadOnly": "false",
         "Columns": []
+      },
+      {
+        "InternalName": "CustomName",
+        "DisplayName": "Custom Name",
+        "Description": "The name the Spawned NPC will be given upon creation.\n\nKeep this empty to use the class's default name.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "false",
+        "ReadOnly": "false",
+        "Columns": []
       }
     ]
   },
@@ -3673,7 +3684,6 @@
       }
     ]
   },
-
   {
     "InternalName": "StealCurrency",
     "TreeViewDisplayText": "Steal ({Amount}) Currency from Target",
@@ -3795,6 +3805,114 @@
         "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
         "ParameterType": "Boolean",
         "Default": "false",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "OpenTextPrompt",
+    "TreeViewDisplayText": "Ask to write a text for ({Message})",
+    "ComboBoxDisplayName": "Show Text Prompt",
+    "Description": "Creates a prompt window to the user where they have to write some text.\n\nThe result will be set in a flag.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Title",
+        "DisplayName": "Title",
+        "Description": "The prompt window title. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "DungeonName",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Message",
+        "DisplayName": "Message",
+        "Description": "The prompt text. Can be a Locale.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "DefaultText",
+        "DisplayName": "Placeholder",
+        "Description": "The default text for the prompt. Can be a Locale.\n\nIf the user inputs an empty string, the Placeholder will be used as result instead.",
+        "ParameterType": "Text",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "OptionFlag",
+        "DisplayName": "Result Flag",
+        "Description": "The Key of the Flag upon which the written will be stored in. If the flag does not exist, it will be created.",
+        "ParameterType": "Key",
+        "Default": "SelectedOption",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Color",
+        "DisplayName": "Window Border Color",
+        "Description": "The color of the prompt's border.",
+        "ParameterType": "Color",
+        "Default": "255,255,0,255",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "Rename",
+    "TreeViewDisplayText": "Rename ({Target}) to ({NewName})",
+    "ComboBoxDisplayName": "Rename Target",
+    "Description": "Changes Target's name to a new one.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will be renamed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "NewName",
+        "DisplayName": "New Name",
+        "Description": "The new name for Target. Can be a locale.",
+        "ParameterType": "Text",
+        "Default": "",
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",

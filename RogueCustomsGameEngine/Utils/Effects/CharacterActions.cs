@@ -624,6 +624,28 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             return false;
         }
+
+        public static bool Rename(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character t)
+                // Attempted to rename Target when it's not a Character.
+                return false;
+
+            var oldName = new string(t.Name);
+            t.Name = paramsObject.NewName;
+
+            if(!oldName.Equals(t.Name))
+            {
+                // Only inform if the name actually changed
+                var message = Map.Locale["CharacterHasBeenRenamed"].Format(new { OldName = oldName, NewName = t.Name });
+                Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                Map.DisplayEvents.Add(($"{oldName} is now {t.Name}", events));
+            }
+
+            return true;
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
