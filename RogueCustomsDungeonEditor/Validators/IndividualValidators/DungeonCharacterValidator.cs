@@ -23,6 +23,8 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                         : new NonPlayableCharacter(new EntityClass(characterJson, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor))
                                         : null;
 
+            characterAsInstance.Faction = sampleDungeon != null ? sampleDungeon.Factions.Find(f => f.Id.Equals(characterJson.Faction)) : null;
+            
             var messages = new DungeonValidationMessages();
 
             messages.AddRange(dungeonJson.ValidateString(characterJson.Name, "Character", "Name", true));

@@ -217,7 +217,7 @@ public partial class GameScreen : Control
                 }
                 else if (_globalState.PlayerControlMode == ControlMode.None || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
                 {
-                    _mapPanel.StopTargeting();
+                    _mapPanel.StopTargeting(false);
                     _saveGameButton.Disabled = true;
                 }
 
@@ -324,7 +324,7 @@ public partial class GameScreen : Control
         _messageLogPanel.MessageWindowButton.Disabled = true;
         _controlsPanel.Update();
         var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.ClearLogMessages, DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
-        _mapPanel.StopTargeting();
+        _mapPanel.StopTargeting(false);
 
         foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
         {
@@ -516,7 +516,7 @@ public partial class GameScreen : Control
             if (_globalState.PlayerControlMode == ControlMode.Waiting) return;
             if (_globalState.PlayerControlMode == ControlMode.Targeting)
             {
-                _mapPanel.StopTargeting();
+                _mapPanel.StopTargeting(true);
                 _globalState.PlayerControlMode = _previousControlMode;
             }
             _controlsPanel.Update();
@@ -575,7 +575,7 @@ public partial class GameScreen : Control
         if (GetChildren().Any(c => c.IsPopUp())) return;
         if (_mapPanel.IsTargeting())
         {
-            _mapPanel.StopTargeting();
+            _mapPanel.StopTargeting(true);
             _globalState.PlayerControlMode = _previousControlMode;
             _controlsPanel.Update();
         }
@@ -774,7 +774,7 @@ public partial class GameScreen : Control
 
         if (@event.IsActionPressed("ui_cancel"))
         {
-            _mapPanel.StopTargeting();
+            _mapPanel.StopTargeting(true);
             _globalState.PlayerControlMode = _previousControlMode;
             _controlsPanel.Update();
         }
