@@ -246,13 +246,14 @@ public partial class MapPanel : GamePanel
         _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
     }
 
-    public void StopTargeting()
+    public void StopTargeting(bool updateBufferToo)
     {
         if (_aimingSquare.Disabled || _tileBuffer == null) return;
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
         CalculateDisplayBounds(_globalState.DungeonInfo);
-        UpdateBuffer(_globalState.DungeonInfo.GetTiles());
+        if(updateBufferToo)
+            UpdateBuffer(_globalState.DungeonInfo.GetTiles());
     }
 
     public bool IsTargeting()

@@ -22,6 +22,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
             messages.AddRange(await DungeonCharacterValidator.Validate(npcJson, false, dungeonJson, sampleDungeon));
 
             var npcAsInstance = sampleDungeon != null ? new NonPlayableCharacter(new EntityClass(npcJson, sampleDungeon, dungeonJson.CharacterStats), 1, sampleDungeon.CurrentFloor) : null;
+            npcAsInstance.Faction = sampleDungeon != null ? sampleDungeon.Factions.Find(f => f.Id.Equals(npcJson.Faction)) : null;
 
             if(npcJson.RegularLootTable != null)
             {
