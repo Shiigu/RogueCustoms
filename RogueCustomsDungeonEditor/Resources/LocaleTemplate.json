@@ -520,6 +520,26 @@
     {
       "Key": "CharacterHasBeenRenamed",
       "Value": "{OldName} is now called {NewName}!"
+    },
+    {
+      "Key": "CharacterHasDroppedLevels",
+      "Value": "{CharacterName}'s Level has dropped to {Level}!"
+    },
+    {
+      "Key": "CharacterHasLostItems",
+      "Value": "{CharacterName} has lost some items!"
+    },
+    {
+      "Key": "CharacterHasLostEquipment",
+      "Value": "{CharacterName} has lost some equipment!"
+    },
+    {
+      "Key": "CharacterHasLostScripts",
+      "Value": "{CharacterName} has forgotten some abilities!"
+    },
+    {
+      "Key": "CharacterHasLostAllies",
+      "Value": "{CharacterName} has lost some allies!"
     }
   ]
 }

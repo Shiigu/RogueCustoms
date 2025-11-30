@@ -362,8 +362,10 @@ public partial class GameScreen : Control
                         break;
                     case DisplayEventType.AddMessageBox:
                         if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
+                        _globalState.DungeonInfo.AwaitingInput = true;
                         var messageBox = displayEvent.Params[0] as MessageBoxDto;
                         await ShowMessageBox(messageBox);
+                        _globalState.DungeonInfo.AwaitingInput = false;
                         break;
                     case DisplayEventType.UpdateTileRepresentation:
                         if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
@@ -937,20 +939,14 @@ public partial class GameScreen : Control
                                     }, new Color() { R8 = 0, G8 = 255, B8 = 0, A = 1 });
     }
 
-    private async Task ShowMessageBox(MessageBoxDto messageBox)
+    private Task ShowMessageBox(MessageBoxDto messageBox)
     {
-        while (_popUpIsOpen)
-            await Task.Delay(10);
-
-        _popUpIsOpen = true;
-        await this.CreateStandardPopup(messageBox.Title, messageBox.Message,
+        return this.CreateStandardPopup(messageBox.Title, messageBox.Message,
             new PopUpButton[]
             {
                 new() { Text = messageBox.ButtonCaption, ActionPress = "ui_accept" }
             },
             new Color { R8 = messageBox.WindowColor.R, G8 = messageBox.WindowColor.G, B8 = messageBox.WindowColor.B, A8 = messageBox.WindowColor.A });
-
-        _popUpIsOpen = false;
     }
     private void OnSoundFinished()
     {

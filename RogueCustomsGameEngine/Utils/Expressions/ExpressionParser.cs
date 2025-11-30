@@ -48,7 +48,12 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             { "turnlength", "TurnLength" },
             { "level", "Level" },
             { "criticalhitchance", "CriticalHitChance" },
-            { "itemid", "ItemId" }
+            { "itemid", "ItemId" },
+            { "experiencepercentagetokeep", "ExperiencePercentageToKeep" },
+            { "equipmentpercentagetokeep", "EquipmentPercentageToKeep" },
+            { "inventorypercentagetokeep", "InventoryPercentageToKeep" },
+            { "learnedscriptspercentagetokeep", "LearnedScriptsPercentageToKeep" },
+            { "tagalongnpcspercentagetokeep", "TagalongNPCsPercentageToKeep" }
         };
 
         private static readonly Dictionary<string, string> BooleanParams = new(StringComparer.InvariantCultureIgnoreCase)

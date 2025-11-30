@@ -27,6 +27,14 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int TurnCount { get; set; }
         private Map _map;
 
+        public bool AwaitingInput
+        {
+            set
+            {
+                _map.AwaitingInput = value;
+            }
+        }
+
         [JsonIgnore]
         public bool Read { get; set; }
 

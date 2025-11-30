@@ -57,13 +57,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool MessageBox(EffectCallerParams Args)
-        {
-            dynamic paramsObject = ExpressionParser.ParseParams(Args);
-            Map.AddMessageBox(paramsObject.Title, paramsObject.Text, "OK", paramsObject.Color);
-            return true;
-        }
-
         public static bool HealDamage(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
@@ -131,7 +124,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var statusTarget = paramsObject.Target as Character;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
-            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && Rng.RollProbability() <= accuracyCheck)
+            if (statusTarget.ExistenceStatus == EntityExistenceStatus.Alive && statusTarget.HP.Current > 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 var targetAlreadyHadStatus = statusTarget.AlteredStatuses.Exists(als => als.RemainingTurns != 0 && als.ClassId.Equals(paramsObject.Id));
                 var statusPower = (decimal) paramsObject.Power;
@@ -213,7 +206,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
-            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && statAlterationTarget.HP.Current > 0 && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
             {
                 var turnLength = (int)paramsObject.TurnLength;
                 var isDecimal = targetStat.StatType == StatType.Decimal || targetStat.StatType == StatType.Regeneration;
@@ -1139,7 +1132,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 };
                 var informOfExpiration = (bool)paramsObject.DisplayOnLog;
 
-                if (newSightRange == t.BaseSightRange)
+                if (newSightRange == t.SightRange)
                     // There's nothing to change
                     return false;
 
@@ -1147,12 +1140,20 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         || (t.SightRange == EngineConstants.FullRoomSightRange && newSightRange != EngineConstants.FullMapSightRange && newSightRange != EngineConstants.FullRoomSightRange)
                         || t.SightRange > newSightRange;
 
-                t.SightRangeModification = new()
+
+                if (newSightRange == t.BaseSightRange)
                 {
-                    InformOfExpiration = informOfExpiration,
-                    RemainingTurns = turnLength,
-                    Amount = newSightRange,
-                };
+                    t.SightRangeModification = null;
+                }
+                else
+                {
+                    t.SightRangeModification = new()
+                    {
+                        InformOfExpiration = informOfExpiration,
+                        RemainingTurns = turnLength,
+                        Amount = newSightRange,
+                    };
+                }
 
                 if (t.EntityType == EntityType.Player)
                 {

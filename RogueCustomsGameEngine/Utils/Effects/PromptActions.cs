@@ -32,6 +32,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
             Map = map;
         }
 
+        public static bool MessageBox(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            Map.AwaitingInput = true;
+            Map.AddMessageBox(paramsObject.Title, paramsObject.Text, "OK", paramsObject.Color);
+            return true;
+        }
+
         public static async Task<bool> SelectYesNo(EffectCallerParams Args)
         {
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -59,7 +67,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             while (!(bool) triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+            Map.AwaitingInput = true;
+
             var result = await Map.OpenYesNoPrompt(paramsObject.Title, paramsObject.Message, paramsObject.YesButtonText, paramsObject.NoButtonText, paramsObject.Color);
+
+            Map.AwaitingInput = false;
 
             return result;
         }
@@ -91,10 +103,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenSelectOption(paramsObject.Title, paramsObject.Message, options, paramsObject.Cancellable, paramsObject.Color);
+
+                Map.AwaitingInput = false;
             }
 
-            if(!Map.HasFlag(optionFlag))
+            if (!Map.HasFlag(optionFlag))
             {
                 Map.CreateFlag(optionFlag, chosenOption, true);
             }
@@ -153,7 +169,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+
+                Map.AwaitingInput = false;
             }
 
             if (chosenOption != null)
@@ -241,7 +261,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenSelectItem(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+
+                Map.AwaitingInput = false;
             }
 
             if (chosenOption != null)
@@ -309,7 +333,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenSelectAction(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+
+                Map.AwaitingInput = false;
             }
 
             if (chosenOption != null)
@@ -394,7 +422,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenSellPrompt(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+
+                Map.AwaitingInput = false;
             }
 
             if (chosenOption != null)
@@ -501,7 +533,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+                Map.AwaitingInput = true;
+
                 chosenOption = await Map.OpenBuyPrompt(paramsObject.Title, optionDtos, paramsObject.Cancellable);
+
+                Map.AwaitingInput = false;
             }
 
             if (chosenOption != null)
@@ -570,7 +606,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
 
+            Map.AwaitingInput = true;
+
             var result = await Map.OpenTextPrompt(paramsObject.Title, paramsObject.Message, paramsObject.DefaultText, paramsObject.Color);
+
+            Map.AwaitingInput = false;
 
             if (!Map.HasFlag(optionFlag))
             {

@@ -50,7 +50,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             get
             {
-                var basePayout = ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+                var basePayout = ParseArgForExperienceFormulaAndCalculate(ExperiencePayoutFormula, false);
                 if (Modifiers.Count > 0)
                     return (int)(basePayout * ExperienceYieldMultiplierIfWithModifiers);
                 return basePayout;

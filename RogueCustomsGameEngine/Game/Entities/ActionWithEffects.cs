@@ -724,7 +724,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             finally
             {
-                ExecutionContext.Current = priorContext;
+                if(priorContext != null)
+                    ExecutionContext.Current = priorContext;
             }
         }
 

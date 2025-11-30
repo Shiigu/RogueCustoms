@@ -424,7 +424,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                             for (int i = 0; i < debugGenerationAttempts; i++)
                             {
-                                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true);
+                                var (MapGenerationSuccess, KeyGenerationSuccess) = await generationAttempt.Generate(true, []);
                                 if (MapGenerationSuccess)
                                 {
                                     mapSuccesses++;

@@ -106,7 +106,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 sampleDungeon = new Dungeon(DungeonJson, DungeonJson.DefaultLocale, false);
                 sampleDungeon.IsDebugMode = true;
                 sampleDungeon.PlayerClass = sampleDungeon.Classes.Find(p => p.EntityType == EntityType.Player);
-                await sampleDungeon.NewMap();
+                await sampleDungeon.NewMap(1);
             }
             catch (Exception ex)
             {

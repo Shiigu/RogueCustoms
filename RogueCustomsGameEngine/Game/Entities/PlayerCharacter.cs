@@ -21,7 +21,9 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class PlayerCharacter : Character
     {
         public readonly float SaleValuePercentage;
-        public override int ExperiencePayout => ParseArgForFormulaAndCalculate(ExperiencePayoutFormula, false);
+        public int LostLives { get; set; }
+        public int HighestFloorReached { get; set; }
+        public override int ExperiencePayout => ParseArgForExperienceFormulaAndCalculate(ExperiencePayoutFormula, false);
         public readonly bool NeedsToIdentifyItems;
         public readonly List<string> IdentifiedItemClasses = [];
 
@@ -177,6 +179,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             SaleValuePercentage = entityClass.SaleValuePercentage;
             NeedsToIdentifyItems = entityClass.NeedsToIdentifyItems;
             IdentifiedItemClasses = [];
+            LostLives = 0;
+            HighestFloorReached = 0;
         }
 
         public int CalculateExperienceBarPercentage()

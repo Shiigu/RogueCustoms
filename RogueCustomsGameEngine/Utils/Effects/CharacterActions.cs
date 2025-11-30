@@ -646,6 +646,24 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             return true;
         }
+
+        public static async Task<bool> ReturnToFloor1(EffectCallerParams Args)
+        {
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (Args.This is not PlayerCharacter)
+                // If the one calling this function is not the player, it will do nothing.
+                return false;
+
+            var experiencePercentageToKeep = (int)paramsObject.ExperiencePercentageToKeep;
+            var equipmentPercentageToKeep = (int)paramsObject.EquipmentPercentageToKeep;
+            var inventoryPercentageToKeep = (int)paramsObject.InventoryPercentageToKeep;
+            var learnedScriptsPercentageToKeep = (int)paramsObject.LearnedScriptsPercentageToKeep;
+            var tagalongNPCsPercentageToKeep = (int)paramsObject.TagalongNPCsPercentageToKeep;
+
+            await Map.ReturnToFloor1(experiencePercentageToKeep, equipmentPercentageToKeep, inventoryPercentageToKeep, learnedScriptsPercentageToKeep, tagalongNPCsPercentageToKeep);
+
+            return true;
+        }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
     #pragma warning restore CS8618 // Un campo que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declararlo como que admite un valor NULL.
