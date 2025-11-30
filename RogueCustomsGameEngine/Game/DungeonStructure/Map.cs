@@ -80,6 +80,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int FloorLevel;
 
         public readonly FloorType FloorConfigurationToUse;
+        public bool AwaitingInput { get; set; }
 
         public Generator GeneratorToUse { get; set; }
 
@@ -198,6 +199,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PossibleStatuses = new List<AlteredStatus>();
             Dungeon.AlteredStatusClasses.ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
             SetActionParams();
+            TurnCount = 0;
         }
 
         public void SetActionParams()
@@ -275,7 +277,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             DisplayEvents = new() { };
         }
 
-        public async Task<(bool MapGenerationSuccess, bool KeyGenerationSuccess)> Generate(bool isGeneratingForDebug)
+        public async Task<(bool MapGenerationSuccess, bool KeyGenerationSuccess)> Generate(bool isGeneratingForDebug, List<(string Name, List<DisplayEventDto> Events)> eventsToAppend)
         {
             var usingDefaultGenerator = false;
             var mapGenerationSuccess = false;
@@ -325,6 +327,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                             }
                                         }
                                         ));
+                                        DisplayEvents.AddRange(eventsToAppend);
                                         AppendMessage(Locale["FloorEnter"].Format(new { FloorLevel = FloorLevel.ToString() }), Color.Yellow);
                                     }
                                 }
@@ -838,7 +841,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     entity = new PlayerCharacter(entityClass, level, this)
                     {
                         Id = CurrentEntityId,
-                        Position = PositionToUse
+                        Position = PositionToUse,
+                        HighestFloorReached = 1
                     };
                     if (Dungeon.PlayerClass.RequiresNamePrompt && !string.IsNullOrWhiteSpace(Dungeon.PlayerName))
                         entity.Name = Dungeon.PlayerName;
@@ -1300,7 +1304,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             LatestPlayerRemainingMovement = Player.RemainingMovement;
             if (GetCharacters().TrueForAll(c => c.ExistenceStatus != EntityExistenceStatus.Alive || (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
+            {
+                while (AwaitingInput) await Task.Delay(10);
+                if (TurnCount == 0) return;
                 await NewTurn();
+            }
         }
 
         public PlayerInfoDto GetPlayerDetailInfo()
@@ -2044,6 +2052,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             var flag = Flags.Find(f => f.Key.Equals(key)) ?? throw new ArgumentException($"There's no flag with key {key} in {FloorName}");
             flag.Value = value;
+        }
+
+        #endregion
+
+        #region Macrogame
+
+        public Task ReturnToFloor1(int experiencePercentageToKeep, int equipmentPercentageToKeep, int inventoryPercentageToKeep, int learnedScriptsPercentageToKeep, int tagalongNPCsPercentageToKeep)
+        {
+            return Dungeon.ReturnToFloor1(experiencePercentageToKeep, equipmentPercentageToKeep, inventoryPercentageToKeep, learnedScriptsPercentageToKeep, tagalongNPCsPercentageToKeep);
         }
 
         #endregion

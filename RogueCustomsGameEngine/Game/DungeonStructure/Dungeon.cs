@@ -33,9 +33,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public DungeonStatus DungeonStatus { get; set; }
         public Map CurrentFloor { get; private set; }
 
-        // The CS0592 error occurs because the [NonSerialized] attribute is only valid for fields, not properties.  
-        // To fix this, change the declaration of `PromptInvoker` from a property to a field.  
-
         [NonSerialized]
         private IPromptInvoker _promptInvoker;
 
@@ -185,8 +182,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public async Task NewMap()
+        public async Task NewMap(int floorLevel)
         {
+            if (CurrentFloorLevel > 0 && PlayerCharacter != null && PlayerCharacter.HighestFloorReached < CurrentFloorLevel)
+                PlayerCharacter.HighestFloorReached = CurrentFloorLevel;
+            CurrentFloorLevel = floorLevel;
             var flagList = new List<Flag>();
             var npcsToKeep = new List<NonPlayableCharacter>();
             if (CurrentFloorLevel > 1)
@@ -209,7 +209,108 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList, npcsToKeep);
-            await CurrentFloor.Generate(false);
+            await CurrentFloor.Generate(false, []);
+        }
+
+        public Task ReturnToFloor1(int experiencePercentageToKeep, int equipmentPercentageToKeep, int inventoryPercentageToKeep, int learnedScriptsPercentageToKeep, int tagalongNPCsPercentageToKeep)
+        {
+            CurrentFloorLevel = 1;
+
+            CurrentFloor.DisplayEvents = new();
+
+            var tagalongNPCs = CurrentFloor.AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && c.ReappearsOnTheNextFloorIfAlliedToThePlayer && (c.Faction.IsAlliedWith(PlayerCharacter.Faction) || c.KnownCharacters.Any(kc => kc.TargetType == TargetType.Ally && kc.Character == PlayerCharacter))).ToList();
+            var tagalongNPCCount = tagalongNPCs.Count;
+
+            tagalongNPCs = tagalongNPCs.Shuffle(CurrentFloor.Rng).Take((int)(tagalongNPCs.Count * (tagalongNPCsPercentageToKeep / 100.0))).ToList();
+
+            var playerLostLevels = false;
+            var minimumExperienceForCurrentLevel = PlayerCharacter.Level == 1 ? 0 : PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level - 1, true);
+
+            PlayerCharacter.Experience = (int)(PlayerCharacter.Experience * (experiencePercentageToKeep / 100.0));
+
+            while(PlayerCharacter.Experience < minimumExperienceForCurrentLevel && PlayerCharacter.Level > 1)
+            {
+                playerLostLevels = true;
+                PlayerCharacter.Level--;
+                minimumExperienceForCurrentLevel = PlayerCharacter.Level == 1 ? 0 : PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level - 1, true);
+                PlayerCharacter.LastLevelUpExperience = minimumExperienceForCurrentLevel;
+            }
+
+            PlayerCharacter.AlteredStatuses.Clear();
+
+            foreach (var stat in PlayerCharacter.UsedStats)
+            {
+                stat.ActiveModifications.Clear();
+            }
+
+            PlayerCharacter.SightRangeModification = null;
+
+            PlayerCharacter.ExistenceStatus = EntityExistenceStatus.Alive;
+
+            PlayerCharacter.HP.Current = PlayerCharacter.HP.BaseAfterLevelUp;
+            if (PlayerCharacter.HPRegeneration != null)
+                PlayerCharacter.HPRegeneration.CarriedRegeneration = 0;
+
+            if(PlayerCharacter.MP != null)
+                PlayerCharacter.MP.Current = PlayerCharacter.MP.BaseAfterLevelUp;
+            if (PlayerCharacter.MPRegeneration != null)
+                PlayerCharacter.MPRegeneration.CarriedRegeneration = 0;
+
+            if (PlayerCharacter.Hunger != null)
+                PlayerCharacter.Hunger.Current = PlayerCharacter.Hunger.BaseAfterLevelUp;
+            if (PlayerCharacter.HungerDegeneration != null)
+                PlayerCharacter.HungerDegeneration.CarriedRegeneration = 0;
+            var scriptsCount = PlayerCharacter.OwnOnAttack.Count(ooa => ooa.IsScript);
+            var playerLostScripts = false;
+
+            for (int i = 0; i < (int)(scriptsCount * (learnedScriptsPercentageToKeep / 100.0)); i++)
+            {
+                var aRandomScript = PlayerCharacter.OwnOnAttack.Where(ooa => ooa.IsScript).ToList().Shuffle(CurrentFloor.Rng).Take(1);
+
+                if (!aRandomScript.Any()) break;
+
+                playerLostScripts = true;
+                PlayerCharacter.OwnOnAttack.Remove(aRandomScript.First());
+            }
+            PlayerCharacter.KeySet.Clear();
+            PlayerCharacter.Visible = true;
+            PlayerCharacter.LostLives++;
+
+            var flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
+            CurrentFloor.TurnCount = 0;
+
+            CurrentFloor = new Map(this, CurrentFloorLevel, flagList, tagalongNPCs);
+
+            var events = new List<DisplayEventDto>();
+
+            if (playerLostLevels)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasDroppedLevels"].Format(new { CharacterName = PlayerCharacter.Name, Level = PlayerCharacter.Level.ToString() }), Color.OrangeRed, events);
+
+            var playerEquipmentCount = PlayerCharacter.Equipment.Count;
+            PlayerCharacter.Equipment = PlayerCharacter.Equipment.Shuffle(CurrentFloor.Rng).Take((int)(PlayerCharacter.Equipment.Count * (equipmentPercentageToKeep / 100.0))).ToList();
+
+            if (playerEquipmentCount > PlayerCharacter.Equipment.Count)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasLostEquipment"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
+
+            var playerInventoryCount = PlayerCharacter.Inventory.Count;
+            PlayerCharacter.Inventory = PlayerCharacter.Inventory.Shuffle(CurrentFloor.Rng).Take((int)(PlayerCharacter.Inventory.Count * (inventoryPercentageToKeep / 100.0))).ToList();
+
+            if (playerInventoryCount > PlayerCharacter.Inventory.Count)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasLostItems"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
+
+            if (playerLostScripts)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasLostScripts"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
+
+            if (tagalongNPCCount > tagalongNPCs.Count)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasLostAllies"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
+
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.UpdateExperienceBar,
+                Params = new() { PlayerCharacter.Experience, PlayerCharacter.ExperienceToLevelUp, PlayerCharacter.CalculateExperienceBarPercentage() }
+            });
+
+            return CurrentFloor.Generate(false, [("Inform of Return to Floor 1", events)]);
         }
 
         public Task GenerateDebugMap()
@@ -235,7 +336,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public async Task<DungeonDto> GetStatus()
         {
             if (CurrentFloor == null)
-                await NewMap();
+                await NewMap(1);
             CurrentFloor.Snapshot.DisplayEvents = CurrentFloor.DisplayEvents;
             CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Any()).Select(t => t.Position).ToList();
             return CurrentFloor.Snapshot;
@@ -243,8 +344,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public async Task TakeStairs()
         {
-            CurrentFloorLevel++;
-            if (CurrentFloorLevel > AmountOfFloors)
+            if (CurrentFloorLevel == AmountOfFloors)
             {
                 CurrentFloor.TurnCount++;
                 CurrentFloor.DisplayEvents.Add(("Finished", new()
@@ -258,7 +358,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 DungeonStatus = DungeonStatus.Completed;
                 return;
             }
-            await NewMap();
+            await NewMap(CurrentFloorLevel + 1);
         }
 
         public Task MovePlayer(int x, int y)

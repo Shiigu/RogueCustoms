@@ -3919,5 +3919,73 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "ReturnToFloor1",
+    "TreeViewDisplayText": "Return This to Floor 1",
+    "ComboBoxDisplayName": "Return This to Floor 1",
+    "Description": "Returns This to Floor 1 of the Dungeon, restoring all HP, MP and Hunger in the process.\n\nEffectively turns the Dungeon into a Roguelite.\n\nCan be set to lose some experience, items, scripts or tagalong NPCs.\n\nAll altered statuses and temporary stat modifications will be lost in the process.\n\nDoes nothing if This is not the Player. Tagalong NPCs won't be affected in the process.\n\nNOTE: Floor 1 may be different from the previous visit.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": false,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "ExperiencePercentageToKeep",
+        "DisplayName": "Experience To Keep (%)",
+        "Description": "The percentage of Experience to be kept upon returning to Floor 1.\n\nThe Player may level down in the process.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "EquipmentPercentageToKeep",
+        "DisplayName": "Equipment To Keep (%)",
+        "Description": "The percentage of Equipped Items to be kept upon returning to Floor 1.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InventoryPercentageToKeep",
+        "DisplayName": "Inventory To Keep (%)",
+        "Description": "The percentage of Items in the Inventory to be kept upon returning to Floor 1.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "LearnedScriptsPercentageToKeep",
+        "DisplayName": "Learned Scripts To Keep (%)",
+        "Description": "The percentage of Learned Scripts to be kept upon returning to Floor 1.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "TagalongNPCsPercentageToKeep",
+        "DisplayName": "Tagalong NPCs To Keep (%)",
+        "Description": "The percentage of Tagalong NPCs to follow upon returning to Floor 1.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]

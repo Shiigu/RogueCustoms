@@ -128,3 +128,8 @@ ItemWasIdentified
 CharacterItemsWereIdentified
 CharacterLostAllItems
 CharacterHasBeenRenamed
+CharacterHasDroppedLevels
+CharacterHasLostItems
+CharacterHasLostEquipment
+CharacterHasLostScripts
+CharacterHasLostAllies

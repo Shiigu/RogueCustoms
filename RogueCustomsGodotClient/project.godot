@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Rogue Customs"
 config/description="A roguelike game where it's the players who make and share the dungeons! Open the Rogue Customs Dungeon Editor if you want to make yours."
-config/version="1.0.1"
+config/version="1.1.0"
 run/main_scene="res://Screens/MainMenu.tscn"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 run/frame_delay_msec=42

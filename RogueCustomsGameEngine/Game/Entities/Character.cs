@@ -42,13 +42,14 @@ namespace RogueCustomsGameEngine.Game.Entities
         public virtual int ExperiencePayout { get; }
         public int Experience { get; set; }
         public readonly string ExperienceToLevelUpFormula;
-        public int ExperienceToLevelUp => LastLevelUpExperience + ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
+        public int ExperienceToLevelUp => LastLevelUpExperience + ParseArgForExperienceFormulaAndCalculate(ExperienceToLevelUpFormula, false);
         public int LastLevelUpExperience { get; set; }
         public int ExperienceToLevelUpDifference => ExperienceToLevelUp - Experience;
         public int Level { get; set; }
         public int MaxLevel { get; set; }
         public bool CanGainExperience { get; set; }
         public bool CanTakeAction { get; set; }
+
         private List<Stat> Stats = new();
         public List<Stat> UsedStats => Stats.Where(s => s != null).ToList();
         public Stat HP => Stats.Find(s => s.Id.Equals("HP", StringComparison.InvariantCultureIgnoreCase));
@@ -223,7 +224,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (Level > 1 && CanGainExperience)
             {
                 Level = level - 1;
-                Experience = ParseArgForFormulaAndCalculate(ExperienceToLevelUpFormula, false);
+                Experience = ParseArgForExperienceFormulaAndCalculate(ExperienceToLevelUpFormula, false);
                 Level++;
             }
             else
@@ -517,7 +518,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        protected int ParseArgForFormulaAndCalculate(string arg, bool capIfLevelIsMax)
+        protected int ParseArgForExperienceFormulaAndCalculate(string arg, bool capIfLevelIsMax)
         {
             if (string.IsNullOrWhiteSpace(arg)) return 0;
             if (Level == MaxLevel && capIfLevelIsMax) return Experience;
@@ -532,6 +533,24 @@ namespace RogueCustomsGameEngine.Game.Entities
             catch (Exception ex)
             {
                 throw new ArgumentException($"Attempting to parse formula \"{arg}\" for {Name} failed: {ex.Message}");
+            }
+        }
+
+        public int GetMinimumExperienceForLevel(int level, bool capIfLevelIsMax)
+        {
+            if (string.IsNullOrWhiteSpace(ExperienceToLevelUpFormula)) return 0;
+            if (level == MaxLevel && capIfLevelIsMax) return Experience;
+            var parsedArg = ExperienceToLevelUpFormula.ToLowerInvariant();
+
+            parsedArg = parsedArg.Replace("level", level.ToString());
+
+            try
+            {
+                return new Expression(parsedArg).Eval<int>();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Attempting to parse formula \"{ExperienceToLevelUpFormula}\" for {Name} failed: {ex.Message}");
             }
         }
 
