@@ -44,7 +44,7 @@ public partial class ExperienceBarPanel : GamePanel
 
         _experienceAmountLabel.Text = displayText;
 
-        _experienceBar.MaxValue = experienceToLevelUp;
-        _experienceBar.Value = experience;
+        _experienceBar.MaxValue = 100;
+        _experienceBar.Value = currentExperiencePercentage;
     }
 }
