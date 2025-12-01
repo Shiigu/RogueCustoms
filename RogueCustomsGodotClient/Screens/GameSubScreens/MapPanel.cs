@@ -252,8 +252,10 @@ public partial class MapPanel : GamePanel
         _aimingSquare.StopTargeting();
         CursorMapLocation = null;
         CalculateDisplayBounds(_globalState.DungeonInfo);
-        if(updateBufferToo)
+        if (updateBufferToo)
             UpdateBuffer(_globalState.DungeonInfo.GetTiles());
+        else
+            UpdateBuffer(_globalState.DungeonInfo.Tiles);
     }
 
     public bool IsTargeting()
