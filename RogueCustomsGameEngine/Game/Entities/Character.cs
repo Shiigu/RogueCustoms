@@ -539,6 +539,22 @@ namespace RogueCustomsGameEngine.Game.Entities
         public int GetMinimumExperienceForLevel(int level, bool capIfLevelIsMax)
         {
             if (string.IsNullOrWhiteSpace(ExperienceToLevelUpFormula)) return 0;
+            if (level == 1) return 0;
+            if (level == MaxLevel && capIfLevelIsMax) return Experience;
+            var totalExperience = 0;
+
+            for (int i = 1; i <= level; i++)
+            {
+                totalExperience += GetExperienceForLevel(i, capIfLevelIsMax);
+            }
+
+            return totalExperience;
+        }
+
+        private int GetExperienceForLevel(int level, bool capIfLevelIsMax)
+        {
+            if (string.IsNullOrWhiteSpace(ExperienceToLevelUpFormula)) return 0;
+            if (level == 1) return 0;
             if (level == MaxLevel && capIfLevelIsMax) return Experience;
             var parsedArg = ExperienceToLevelUpFormula.ToLowerInvariant();
 
