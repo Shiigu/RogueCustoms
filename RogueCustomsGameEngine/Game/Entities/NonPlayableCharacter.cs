@@ -954,7 +954,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             var centralPosition = Position ?? LastPositionBeforeRemove;
             var centralTile = Map.GetTileFromCoordinates(centralPosition);
             Tile pickedEmptyTile = null;
-            if (!centralTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (centralTile.Trap == null || centralTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
+            if (centralTile.AllowsDrops && !centralTile.GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (centralTile.Trap == null || centralTile.Trap.ExistenceStatus != EntityExistenceStatus.Alive))
                 pickedEmptyTile = centralTile;
             if(pickedEmptyTile == null)
             {

@@ -79,7 +79,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public bool AllowsDrops => IsWalkable && !IsOccupied && Type != TileType.Stairs && !GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (Trap == null || Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (Key == null || Key.ExistenceStatus != EntityExistenceStatus.Alive);
+        public bool AllowsDrops => IsWalkable && !IsOccupied && !Map.StairsPosition.Equals(Position) && Type != TileType.Stairs && !GetPickableObjects().Exists(i => i.ExistenceStatus == EntityExistenceStatus.Alive) && (Trap == null || Trap.ExistenceStatus != EntityExistenceStatus.Alive) && (Key == null || Key.ExistenceStatus != EntityExistenceStatus.Alive);
         public ActionWithEffects OnStood => Type.OnStood;
 
         private ConsoleRepresentation _consoleRepresentation;
