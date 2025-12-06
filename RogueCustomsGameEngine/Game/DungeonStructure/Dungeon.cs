@@ -287,6 +287,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasDroppedLevels"].Format(new { CharacterName = PlayerCharacter.Name, Level = PlayerCharacter.Level.ToString() }), Color.OrangeRed, events);
 
             var playerEquipmentCount = PlayerCharacter.Equipment.Count;
+            
+            PlayerCharacter.Equipment = PlayerCharacter.Equipment.Where(i => i.RequiredPlayerLevel <= PlayerCharacter.Level).ToList();
             PlayerCharacter.Equipment = PlayerCharacter.Equipment.Shuffle(CurrentFloor.Rng).Take((int)(PlayerCharacter.Equipment.Count * (equipmentPercentageToKeep / 100.0))).ToList();
 
             if (playerEquipmentCount > PlayerCharacter.Equipment.Count)
@@ -337,7 +339,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (CurrentFloor == null)
                 await NewMap(1);
-            CurrentFloor.Snapshot.DisplayEvents = CurrentFloor.DisplayEvents;
+            CurrentFloor.Snapshot.DisplayEvents = new(CurrentFloor.DisplayEvents);
             CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Any()).Select(t => t.Position).ToList();
             return CurrentFloor.Snapshot;
         }

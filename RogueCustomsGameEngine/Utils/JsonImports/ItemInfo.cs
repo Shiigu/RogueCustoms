@@ -18,6 +18,8 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public ActionWithEffectsInfo OnDeath { get; set; }
         public ActionWithEffectsInfo OnUse { get; set; }
         public bool CanDrop { get; set; }
+        public bool CanBeUnequipped { get; set; }
+        public int RequiredPlayerLevel { get; set; }
         public string MinimumQualityLevel { get; set; }
         public string MaximumQualityLevel { get; set; }
         public List<QualityLevelOddsInfo> QualityLevelOdds { get; set; }

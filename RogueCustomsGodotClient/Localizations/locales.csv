@@ -75,6 +75,7 @@ InventoryWindowSaleValueText,Valor de venta: {Symbol}{Amount},Sale Value: {Symbo
 InventoryWindowCannotEquipText,NO PUEDES EQUIPAR ESTE OBJETO,YOU CANNOT EQUIP THIS ITEM
 InventoryWindowCannotBeSoldText,NO SE PUEDE INTERCAMBIAR POR {Symbol},CANNOT BE TRADED FOR {Symbol}
 InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE ENOUGH {Symbol}
+InventoryWindowRequiredPlayerLevelText,Requiere Nivel de Jugador {Level},Requires Player Level {Level}
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
 LanguageLocale,es,en

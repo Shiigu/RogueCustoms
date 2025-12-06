@@ -344,16 +344,21 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             try
             {
+                btnTestAction.Enabled = false;
+                btnClearLog.Enabled = false;
+                btnClose.Enabled = false;
+
+                txtMessageLog.Clear();
+
                 TestDungeon.CurrentFloor.Snapshot = new(TestDungeon, TestDungeon.CurrentFloor);
                 TestAction.Map = TestDungeon.CurrentFloor;
                 await TestAction.Do(Source, Target, false);
 
-                txtMessageLog.Clear();
-
                 var dungeonStatus = await TestDungeon.GetStatus();
-
-                foreach (var displayEventList in dungeonStatus.DisplayEvents)
+                
+                while(dungeonStatus.DisplayEvents.Count > 0)
                 {
+                    var displayEventList = dungeonStatus.DisplayEvents.Dequeue();
                     foreach (var displayEvent in displayEventList.Events)
                     {
                         switch (displayEvent.DisplayEventType)
@@ -369,8 +374,6 @@ namespace RogueCustomsDungeonEditor.HelperForms
                         }
                     }
                 }
-
-                dungeonStatus.DisplayEvents.Clear();
             }
             catch (Exception ex)
             {
@@ -378,6 +381,12 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 txtMessageLog.AppendText(ex.Message, Color.White);
                 txtMessageLog.AppendText("\n---------------------\n", Color.Red);
                 txtMessageLog.AppendText(ex.StackTrace, Color.Yellow);
+            }
+            finally
+            {
+                btnTestAction.Enabled = true;
+                btnClearLog.Enabled = true;
+                btnClose.Enabled = true;
             }
         }
 
@@ -416,7 +425,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 {
                     StatId = stat.Id,
                     Base = stat.Amount,
-                    IncreasePerLevel = 0
+                    IncreasePerLevel = 0,
+                    Maximum = stat.Amount * 2,
+                    Minimum = stat.Amount / 2,
                 });
             }
             var npcClass = new EntityClass(npcClassInfo, TestDungeon, ActiveDungeon.CharacterStats);

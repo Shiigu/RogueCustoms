@@ -80,14 +80,30 @@ namespace RogueCustomsGameEngine.Game.Entities
         public Character Owner => Map.GetCharacters().Find(c => c.ExistenceStatus == EntityExistenceStatus.Alive && (c.Equipment.Contains(this) || c.Inventory.Contains(this)));
         public ActionWithEffects OnUse { get; set; }
         public string BaseName { get; set; }
+        public bool CanBeUnequipped { get; set; }
         public bool CanDrop { get; set; }
-        public int BaseValue { get; set; }
+
+        private int BaseRequiredPlayerLevel;
+        public int RequiredPlayerLevel
+        {
+            get
+            {
+                var maxRequiredPlayerLevel = BaseRequiredPlayerLevel;
+                foreach (var affix in Affixes)
+                {
+                    maxRequiredPlayerLevel = Math.Max(affix.RequiredPlayerLevel, maxRequiredPlayerLevel);
+                }
+                return maxRequiredPlayerLevel;
+            }
+        }
+
+        private int BaseValue;
         public int Value
         {
             get
             {
                 if (!IsIdentified) return Math.Max(1, BaseValue / 2);
-                float totalValue = BaseValue;
+                var totalValue = BaseValue;
                 foreach (var affix in Affixes)
                 {
                     var valueToAdd = (int) Math.Ceiling(BaseValue * (100 + affix.ItemValueModifierPercentage) / 100f);
@@ -207,6 +223,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             Affixes = [];
             ItemType = entityClass.ItemType;
             CanDrop = entityClass.CanDrop;
+            CanBeUnequipped = entityClass.CanBeUnequipped;
+            BaseRequiredPlayerLevel = entityClass.RequiredPlayerLevel;
         }
 
         public void SetQualityLevel(QualityLevel qualityLevel = null)

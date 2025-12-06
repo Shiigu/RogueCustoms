@@ -480,20 +480,26 @@ public partial class PlayerSelectItem : Control
         {
             _itemDescriptionLabel.AppendText($"{selectedItem.Name.ToColoredString(selectedItem.QualityColor)}[p] [p]{selectedItem.ConsoleRepresentation.ToBbCodeRepresentation()}[p] [p]");
 
-            if (selectedItem.ItemLevel > 0)
-                _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("InventoryWindowItemLevelText").ToString().Format(new { Level = selectedItem.ItemLevel.ToString() })}");
-
             if (!string.IsNullOrWhiteSpace(selectedItem.QualityLevel))
             {
                 var qualityDescription = selectedItem.QualityLevel.Replace("{basename}", selectedItem.ItemType, StringComparison.InvariantCultureIgnoreCase);
 
                 _itemDescriptionLabel.AppendText($"[p]{qualityDescription.ToColoredString(selectedItem.QualityColor)}[p] [p]");
-                _itemDescriptionLabel.AppendText(selectedItem.Description.ToBbCodeAppropriateString());
             }
-            else
+
+            if (selectedItem.ItemLevel > 0)
+                _itemDescriptionLabel.AppendText($"[p]{TranslationServer.Translate("InventoryWindowItemLevelText").ToString().Format(new { Level = selectedItem.ItemLevel.ToString() })}");
+
+            var requiredLevelColor = selectedItem.RequiredPlayerLevel > _globalState.DungeonInfo.PlayerEntity.Level
+                ? "#FF0000"
+                : "#FFFFFF";
+
+            if (selectedItem.RequiredPlayerLevel > 0)
             {
-                _itemDescriptionLabel.AppendText($"[p]{selectedItem.Description.ToBbCodeAppropriateString()}");
+                _itemDescriptionLabel.AppendText($"[p][color={requiredLevelColor}]{TranslationServer.Translate("InventoryWindowRequiredPlayerLevelText").ToString().Format(new { Level = selectedItem.RequiredPlayerLevel.ToString() })}[/color][p] ");
             }
+
+            _itemDescriptionLabel.AppendText($"[p]{selectedItem.Description.ToBbCodeAppropriateString()}");
 
             if (!string.IsNullOrWhiteSpace(selectedItem.Power) && !selectedItem.Power.Trim().Equals("0") && !string.IsNullOrWhiteSpace(selectedItem.PowerName))
             {

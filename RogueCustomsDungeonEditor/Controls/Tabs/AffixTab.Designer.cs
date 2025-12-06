@@ -51,10 +51,13 @@
             txtAffixName = new System.Windows.Forms.TextBox();
             label27 = new System.Windows.Forms.Label();
             saeAffixOnTurnStart = new SingleActionEditor();
+            nudAffixRequiredPlayerLevel = new System.Windows.Forms.NumericUpDown();
+            label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudAffixMaxDamage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixMinDamage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixItemValuePercentageModifier).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixMinimumItemLevel).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudAffixRequiredPlayerLevel).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -177,7 +180,7 @@
             // 
             // nudAffixItemValuePercentageModifier
             // 
-            nudAffixItemValuePercentageModifier.Location = new System.Drawing.Point(116, 335);
+            nudAffixItemValuePercentageModifier.Location = new System.Drawing.Point(117, 362);
             nudAffixItemValuePercentageModifier.Name = "nudAffixItemValuePercentageModifier";
             nudAffixItemValuePercentageModifier.Size = new System.Drawing.Size(52, 23);
             nudAffixItemValuePercentageModifier.TabIndex = 277;
@@ -186,7 +189,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(4, 338);
+            label4.Location = new System.Drawing.Point(5, 365);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(180, 15);
             label4.TabIndex = 276;
@@ -216,7 +219,7 @@
             nudAffixMinimumItemLevel.Location = new System.Drawing.Point(130, 301);
             nudAffixMinimumItemLevel.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudAffixMinimumItemLevel.Name = "nudAffixMinimumItemLevel";
-            nudAffixMinimumItemLevel.Size = new System.Drawing.Size(60, 23);
+            nudAffixMinimumItemLevel.Size = new System.Drawing.Size(55, 23);
             nudAffixMinimumItemLevel.TabIndex = 273;
             nudAffixMinimumItemLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nudAffixMinimumItemLevel.ValueChanged += nudAffixMinimumItemLevel_ValueChanged;
@@ -303,10 +306,31 @@
             saeAffixOnTurnStart.TargetDescription = "Whoever is equipping This";
             saeAffixOnTurnStart.ThisDescription = "The Item with this Affix";
             // 
+            // nudAffixRequiredPlayerLevel
+            // 
+            nudAffixRequiredPlayerLevel.Location = new System.Drawing.Point(127, 331);
+            nudAffixRequiredPlayerLevel.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudAffixRequiredPlayerLevel.Name = "nudAffixRequiredPlayerLevel";
+            nudAffixRequiredPlayerLevel.Size = new System.Drawing.Size(55, 23);
+            nudAffixRequiredPlayerLevel.TabIndex = 290;
+            nudAffixRequiredPlayerLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudAffixRequiredPlayerLevel.ValueChanged += nudAffixRequiredPlayerLevel_ValueChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(4, 333);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(117, 15);
+            label1.TabIndex = 289;
+            label1.Text = "Requires Player Level";
+            // 
             // AffixTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(nudAffixRequiredPlayerLevel);
+            Controls.Add(label1);
             Controls.Add(button1);
             Controls.Add(label7);
             Controls.Add(label6);
@@ -330,11 +354,12 @@
             Controls.Add(label27);
             Controls.Add(saeAffixOnTurnStart);
             Name = "AffixTab";
-            Size = new System.Drawing.Size(829, 373);
+            Size = new System.Drawing.Size(829, 398);
             ((System.ComponentModel.ISupportInitialize)nudAffixMaxDamage).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixMinDamage).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixItemValuePercentageModifier).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudAffixMinimumItemLevel).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudAffixRequiredPlayerLevel).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -363,5 +388,7 @@
         private System.Windows.Forms.TextBox txtAffixName;
         private System.Windows.Forms.Label label27;
         private SingleActionEditor saeAffixOnTurnStart;
+        private System.Windows.Forms.NumericUpDown nudAffixRequiredPlayerLevel;
+        private System.Windows.Forms.Label label1;
     }
 }
