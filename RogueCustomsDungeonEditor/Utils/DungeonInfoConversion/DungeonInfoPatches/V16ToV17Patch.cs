@@ -18,6 +18,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateFloorInfos(root);
             UpdateElementInfos(root);
             UpdateItems(root);
+            UpdateAffixInfos(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateTraps(root);
@@ -141,6 +142,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 }
             }
         }
+
         private static void UpdateNPCs(JsonObject root)
         {
             if (root["NPCs"] is not JsonArray npcs) return;
@@ -187,9 +189,10 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["Items"] is not JsonArray items) return;
             foreach (var item in items.OfType<JsonObject>())
             {
-                if (item["ItemType"] is null)
-                    item["ItemType"] = item["EntityType"]?.GetValue<string>();
-                item.Remove("EntityType");
+                if (item["RequiredPlayerLevel"] is null)
+                    item["RequiredPlayerLevel"] = 1;
+                if (item["CanBeUnequipped"] is null)
+                    item["CanBeUnequipped"] = true;
                 foreach (var action in item["OnAttack"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
@@ -213,6 +216,16 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 {
                     UpdateAction(onUse);
                 }
+            }
+        }
+
+        private static void UpdateAffixInfos(JsonObject root)
+        {
+            if (root["AffixInfos"] is not JsonArray affixes) return;
+            foreach (var affix in affixes.OfType<JsonObject>())
+            {
+                if (affix["RequiredPlayerLevel"] is null)
+                    affix["RequiredPlayerLevel"] = 1;
             }
         }
 

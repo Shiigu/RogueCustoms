@@ -78,12 +78,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ToggleItemTypeControlsVisibility();
             txtItemPower.Text = item.Power;
             chkItemStartsVisible.Checked = item.StartsVisible;
+            chkItemCanBeUnequipped.Checked = item.CanBeUnequipped;
             SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
             SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
             SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
             SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
             SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
             nudItemBaseValue.Value = item.BaseValue;
+            nudItemRequiredPlayerLevel.Value = item.RequiredPlayerLevel;
             fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
             chkCanDrop.Checked = item.CanDrop;
 
@@ -116,6 +118,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This Item does not have an Item Type.");
             if (string.IsNullOrWhiteSpace(txtItemPower.Text))
                 validationErrors.Add("This Item does not have a Power.");
+
+            var maximumPlayerLevel = ActiveDungeon.PlayerClasses.Max(pl => pl.MaxLevel);
+
+            if (nudItemRequiredPlayerLevel.Value > maximumPlayerLevel)
+                validationErrors.Add($"This Item has a Required Player Level higher than the Dungeon's Maximum, {maximumPlayerLevel}.");
 
             var minimumQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMinimumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
             var maximumQualityLevel = ActiveDungeon.QualityLevelInfos.Find(ql => ql.Id.Equals(cmbItemMaximumQualityLevel.Text, StringComparison.InvariantCultureIgnoreCase));
@@ -164,6 +171,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedItem.OnAttacked = null;
                 LoadedItem.OnUse = null;
                 LoadedItem.CanDrop = chkCanDrop.Checked;
+                LoadedItem.CanBeUnequipped = chkItemCanBeUnequipped.Checked;
+                LoadedItem.RequiredPlayerLevel = (int)nudItemRequiredPlayerLevel.Value;
 
                 var correspondingItemType = ActiveDungeon.ItemTypeInfos.Find(it => it.Id.Equals(LoadedItem.ItemType, StringComparison.InvariantCultureIgnoreCase));
 
@@ -396,6 +405,16 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void ItemStatsSheet_StatsChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudItemRequiredPlayerLevel_ValueChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void chkItemCanBeUnequipped_CheckedChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }

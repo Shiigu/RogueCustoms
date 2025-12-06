@@ -16,6 +16,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string Id { get; set; }
         public string Name { get; set; }
         public AffixType Type { get; set; }
+        public int RequiredPlayerLevel { get; set; }
         public int MinimumItemLevel { get; set; }
         public int ItemValueModifierPercentage { get; set; }
         public List<ItemType> AffectedItemTypes { get; set; }
@@ -30,6 +31,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             Id = info.Id;
             Name = locale[info.Name];
             Type = Enum.Parse<AffixType>(info.AffixType);
+            RequiredPlayerLevel = info.RequiredPlayerLevel;
             MinimumItemLevel = info.MinimumItemLevel;
             ItemValueModifierPercentage = info.ItemValueModifierPercentage;
             AffectedItemTypes = itemTypes.Where(it => info.AffectedItemTypes.Contains(it.Id, StringComparer.InvariantCultureIgnoreCase)).ToList();
@@ -72,6 +74,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Name = Name,
                 Type = Type,
                 MinimumItemLevel = MinimumItemLevel,
+                RequiredPlayerLevel = RequiredPlayerLevel,
                 ItemValueModifierPercentage = ItemValueModifierPercentage,
                 AffectedItemTypes = AffectedItemTypes,
                 StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Amount = sm.Amount }),

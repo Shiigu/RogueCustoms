@@ -59,7 +59,11 @@
             cmbItemMinimumQualityLevel = new System.Windows.Forms.ComboBox();
             label4 = new System.Windows.Forms.Label();
             chkCanDrop = new System.Windows.Forms.CheckBox();
+            label5 = new System.Windows.Forms.Label();
+            nudItemRequiredPlayerLevel = new System.Windows.Forms.NumericUpDown();
+            chkItemCanBeUnequipped = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudItemRequiredPlayerLevel).BeginInit();
             SuspendLayout();
             // 
             // saeItemOnDeath
@@ -150,7 +154,7 @@
             // 
             // txtItemPower
             // 
-            txtItemPower.Location = new System.Drawing.Point(99, 243);
+            txtItemPower.Location = new System.Drawing.Point(103, 263);
             txtItemPower.Name = "txtItemPower";
             txtItemPower.Size = new System.Drawing.Size(95, 23);
             txtItemPower.TabIndex = 239;
@@ -160,7 +164,7 @@
             // lblPower
             // 
             lblPower.AutoSize = true;
-            lblPower.Location = new System.Drawing.Point(4, 246);
+            lblPower.Location = new System.Drawing.Point(8, 266);
             lblPower.Name = "lblPower";
             lblPower.Size = new System.Drawing.Size(67, 15);
             lblPower.TabIndex = 238;
@@ -169,7 +173,7 @@
             // chkItemStartsVisible
             // 
             chkItemStartsVisible.AutoSize = true;
-            chkItemStartsVisible.Location = new System.Drawing.Point(233, 208);
+            chkItemStartsVisible.Location = new System.Drawing.Point(8, 198);
             chkItemStartsVisible.Name = "chkItemStartsVisible";
             chkItemStartsVisible.Size = new System.Drawing.Size(102, 19);
             chkItemStartsVisible.TabIndex = 236;
@@ -180,7 +184,7 @@
             // 
             cmbItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbItemType.FormattingEnabled = true;
-            cmbItemType.Location = new System.Drawing.Point(68, 206);
+            cmbItemType.Location = new System.Drawing.Point(72, 226);
             cmbItemType.Name = "cmbItemType";
             cmbItemType.Size = new System.Drawing.Size(159, 23);
             cmbItemType.TabIndex = 235;
@@ -189,7 +193,7 @@
             // label107
             // 
             label107.AutoSize = true;
-            label107.Location = new System.Drawing.Point(4, 209);
+            label107.Location = new System.Drawing.Point(8, 229);
             label107.Name = "label107";
             label107.Size = new System.Drawing.Size(59, 15);
             label107.TabIndex = 234;
@@ -303,7 +307,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(4, 280);
+            label1.Location = new System.Drawing.Point(8, 334);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(89, 15);
             label1.TabIndex = 250;
@@ -311,7 +315,7 @@
             // 
             // nudItemBaseValue
             // 
-            nudItemBaseValue.Location = new System.Drawing.Point(99, 278);
+            nudItemBaseValue.Location = new System.Drawing.Point(103, 332);
             nudItemBaseValue.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
             nudItemBaseValue.Name = "nudItemBaseValue";
             nudItemBaseValue.Size = new System.Drawing.Size(73, 23);
@@ -325,7 +329,7 @@
             fklblWarningItemBaseValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             fklblWarningItemBaseValue.Image = (System.Drawing.Image)resources.GetObject("fklblWarningItemBaseValue.Image");
             fklblWarningItemBaseValue.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            fklblWarningItemBaseValue.Location = new System.Drawing.Point(175, 265);
+            fklblWarningItemBaseValue.Location = new System.Drawing.Point(179, 319);
             fklblWarningItemBaseValue.Name = "fklblWarningItemBaseValue";
             fklblWarningItemBaseValue.Size = new System.Drawing.Size(158, 53);
             fklblWarningItemBaseValue.TabIndex = 252;
@@ -338,7 +342,7 @@
             // label2
             // 
             label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label2.Location = new System.Drawing.Point(0, 304);
+            label2.Location = new System.Drawing.Point(4, 360);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(361, 52);
             label2.TabIndex = 253;
@@ -347,7 +351,7 @@
             // 
             // qlsItem
             // 
-            qlsItem.Location = new System.Drawing.Point(68, 350);
+            qlsItem.Location = new System.Drawing.Point(72, 406);
             qlsItem.Name = "qlsItem";
             qlsItem.Size = new System.Drawing.Size(203, 175);
             qlsItem.TabIndex = 254;
@@ -355,7 +359,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(4, 564);
+            label3.Location = new System.Drawing.Point(8, 620);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(170, 15);
             label3.TabIndex = 255;
@@ -365,7 +369,7 @@
             // 
             cmbItemMaximumQualityLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbItemMaximumQualityLevel.FormattingEnabled = true;
-            cmbItemMaximumQualityLevel.Location = new System.Drawing.Point(175, 560);
+            cmbItemMaximumQualityLevel.Location = new System.Drawing.Point(179, 616);
             cmbItemMaximumQualityLevel.Name = "cmbItemMaximumQualityLevel";
             cmbItemMaximumQualityLevel.Size = new System.Drawing.Size(121, 23);
             cmbItemMaximumQualityLevel.TabIndex = 256;
@@ -375,7 +379,7 @@
             // 
             cmbItemMinimumQualityLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbItemMinimumQualityLevel.FormattingEnabled = true;
-            cmbItemMinimumQualityLevel.Location = new System.Drawing.Point(175, 531);
+            cmbItemMinimumQualityLevel.Location = new System.Drawing.Point(179, 587);
             cmbItemMinimumQualityLevel.Name = "cmbItemMinimumQualityLevel";
             cmbItemMinimumQualityLevel.Size = new System.Drawing.Size(121, 23);
             cmbItemMinimumQualityLevel.TabIndex = 258;
@@ -384,7 +388,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(4, 535);
+            label4.Location = new System.Drawing.Point(8, 591);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(169, 15);
             label4.TabIndex = 257;
@@ -393,7 +397,7 @@
             // chkCanDrop
             // 
             chkCanDrop.AutoSize = true;
-            chkCanDrop.Location = new System.Drawing.Point(233, 240);
+            chkCanDrop.Location = new System.Drawing.Point(116, 198);
             chkCanDrop.Name = "chkCanDrop";
             chkCanDrop.Size = new System.Drawing.Size(75, 19);
             chkCanDrop.TabIndex = 259;
@@ -401,11 +405,44 @@
             chkCanDrop.UseVisualStyleBackColor = true;
             chkCanDrop.CheckedChanged += chkCanDrop_CheckedChanged;
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(9, 300);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(117, 15);
+            label5.TabIndex = 260;
+            label5.Text = "Requires Player Level";
+            // 
+            // nudItemRequiredPlayerLevel
+            // 
+            nudItemRequiredPlayerLevel.Location = new System.Drawing.Point(132, 298);
+            nudItemRequiredPlayerLevel.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudItemRequiredPlayerLevel.Name = "nudItemRequiredPlayerLevel";
+            nudItemRequiredPlayerLevel.Size = new System.Drawing.Size(46, 23);
+            nudItemRequiredPlayerLevel.TabIndex = 261;
+            nudItemRequiredPlayerLevel.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudItemRequiredPlayerLevel.ValueChanged += nudItemRequiredPlayerLevel_ValueChanged;
+            // 
+            // chkItemCanBeUnequipped
+            // 
+            chkItemCanBeUnequipped.AutoSize = true;
+            chkItemCanBeUnequipped.Location = new System.Drawing.Point(197, 198);
+            chkItemCanBeUnequipped.Name = "chkItemCanBeUnequipped";
+            chkItemCanBeUnequipped.Size = new System.Drawing.Size(130, 19);
+            chkItemCanBeUnequipped.TabIndex = 262;
+            chkItemCanBeUnequipped.Text = "Can be unequipped";
+            chkItemCanBeUnequipped.UseVisualStyleBackColor = true;
+            chkItemCanBeUnequipped.CheckedChanged += chkItemCanBeUnequipped_CheckedChanged;
+            // 
             // ItemTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(chkItemCanBeUnequipped);
+            Controls.Add(nudItemRequiredPlayerLevel);
+            Controls.Add(label5);
             Controls.Add(chkCanDrop);
             Controls.Add(cmbItemMinimumQualityLevel);
             Controls.Add(label4);
@@ -437,8 +474,9 @@
             Controls.Add(fklblWarningItemBaseValue);
             Controls.Add(label2);
             Name = "ItemTab";
-            Size = new System.Drawing.Size(711, 593);
+            Size = new System.Drawing.Size(711, 647);
             ((System.ComponentModel.ISupportInitialize)nudItemBaseValue).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudItemRequiredPlayerLevel).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -475,5 +513,8 @@
         private System.Windows.Forms.ComboBox cmbItemMinimumQualityLevel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkCanDrop;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown nudItemRequiredPlayerLevel;
+        private System.Windows.Forms.CheckBox chkItemCanBeUnequipped;
     }
 }

@@ -48,6 +48,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public bool CanBeDropped { get; set; }
         public bool IsInFloor { get; set; }
         public int ItemId { get; set; }
+        public int RequiredPlayerLevel { get; set; }
         public int Value { get; set; }
         public List<ExtraDamageDto> ExtraDamages { get; set; }
 
@@ -73,8 +74,15 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             QualityLevel = pickableAsItem != null ? pickableAsItem.QualityLevel.Name : string.Empty;
             QualityColor = pickableAsItem != null ? pickableAsItem.QualityLevel.ItemNameColor : new GameColor(Color.White);
             ConsoleRepresentation = pickableAsEntity.ConsoleRepresentation;
-            CanBeDropped = p is not Key && character.ContainingTile.Type != TileType.Stairs && character.ContainingTile.Type.AcceptsItems;
+            CanBeDropped = p is not Key && pickableAsItem?.CanBeUnequipped == true && character.ContainingTile.Type != TileType.Stairs && character.ContainingTile.Type.AcceptsItems;
             CanBeEquipped = pickableAsItem?.SlotsItOccupies.All(character.AvailableSlots.Contains) == true;
+            var currentlyEquippedItems = new List<Item>();
+            foreach (var item in character.Equipment)
+            {
+                if(item.SlotsItOccupies.Intersect(pickableAsItem != null ? pickableAsItem.SlotsItOccupies : []).Any())
+                    currentlyEquippedItems.Add(item);
+            }
+            CanBeEquipped = CanBeEquipped && currentlyEquippedItems.All(i => i.CanBeUnequipped) && pickableAsItem?.RequiredPlayerLevel != null && character.Level >= pickableAsItem.RequiredPlayerLevel;
             if (pickableAsItem?.IsIdentified == true)
                 CanBeUsed = (pickableAsItem?.IsEquippable == true && CanBeEquipped) || ((pickableAsItem?.ItemType.Usability == ItemUsability.Use) && pickableAsItem?.OnUse?.CanBeUsedOn(character) == true);
             else if (pickableAsItem?.ItemType.Usability == ItemUsability.Use)
@@ -83,6 +91,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 CanBeUsed = pickableAsItem?.IsEquippable == true && CanBeEquipped;
             else
                 CanBeUsed = false;
+            CanBeUsed = CanBeUsed && pickableAsItem?.RequiredPlayerLevel != null && character.Level >= pickableAsItem.RequiredPlayerLevel;
+            RequiredPlayerLevel = pickableAsItem?.RequiredPlayerLevel ?? 1;
             IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;

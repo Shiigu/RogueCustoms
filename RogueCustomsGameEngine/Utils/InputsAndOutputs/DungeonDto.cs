@@ -45,7 +45,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public ConsoleRepresentation EmptyTile { get; private set; }
 
         public EntityDto PlayerEntity { get; private set; }
-        public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; }
+        public Queue<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; }
         public List<GamePoint> PickableItemPositions { get; set; }
 
         public bool IsHardcoreMode { get; set; }

@@ -54,6 +54,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             AffixStatsSheet.Stats = affix.StatModifiers ?? new List<PassiveStatModifierInfo>();
             nudAffixMinDamage.Value = affix.ExtraDamage?.MinDamage ?? 0;
             nudAffixMaxDamage.Value = affix.ExtraDamage?.MaxDamage ?? 0;
+            nudAffixRequiredPlayerLevel.Value = affix.RequiredPlayerLevel;
             cmbAffixElementDamage.Text = affix.ExtraDamage?.Element ?? string.Empty;
             SetSingleActionEditorParams(saeAffixOnTurnStart, affix.Name, affix.OnTurnStart);
             SetSingleActionEditorParams(saeAffixOnAttacked, affix.Name, affix.OnAttacked);
@@ -83,6 +84,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (nudAffixMinDamage.Value == 0 && nudAffixMaxDamage.Value == 0 && !string.IsNullOrWhiteSpace(cmbAffixElementDamage.Text))
                 validationErrors.Add("The Affix has been set an Element but wasn't set to deal damage.");
 
+            var maximumPlayerLevel = _activeDungeon.PlayerClasses.Max(pl => pl.MaxLevel);
+
+            if (nudAffixRequiredPlayerLevel.Value > maximumPlayerLevel)
+                validationErrors.Add($"This Affix has a Required Player Level higher than the Dungeon's Maximum, {maximumPlayerLevel}.");
+
             if (validationErrors.Count == 0)
             {
                 var selectedAffectedItemTypes = new List<string>();
@@ -107,6 +113,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                         MaxDamage = (int)nudAffixMaxDamage.Value,
                         Element = cmbAffixElementDamage.Text
                     },
+                    RequiredPlayerLevel = (int)nudAffixRequiredPlayerLevel.Value,
                     OnTurnStart = saeAffixOnTurnStart.Action,
                     OnAttacked = saeAffixOnAttacked.Action,
                     OnAttack = saeAffixOnAttack.Action
@@ -176,6 +183,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         }
 
         private void AffixStatsSheet_StatsChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void nudAffixRequiredPlayerLevel_ValueChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }

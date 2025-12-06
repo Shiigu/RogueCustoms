@@ -171,85 +171,88 @@ public partial class GameScreen : Control
     {
         try
         {
-            _globalState.DungeonInfo = await _globalState.DungeonManager.GetDungeonStatus();
-            var dungeonStatus = _globalState.DungeonInfo;
-            if ((_globalState.MustUpdateGameScreen || !dungeonStatus.Read) && !_processingEvents)
+            if (!_processingEvents)
             {
-                if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
+                _globalState.DungeonInfo = await _globalState.DungeonManager.GetDungeonStatus();
+                var dungeonStatus = _globalState.DungeonInfo;
+                if (_globalState.MustUpdateGameScreen || !dungeonStatus.Read)
                 {
-                    _globalState.MessageScreenType = MessageScreenType.Ending;
-                    GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                    if (dungeonStatus.DungeonStatus == DungeonStatus.Completed)
+                    {
+                        _globalState.MessageScreenType = MessageScreenType.Ending;
+                        GetTree().ChangeSceneToFile("res://Screens/MessageScreen.tscn");
+                        return;
+                    }
+                    else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
+                    {
+                        if (_globalState.IsHardcoreMode)
+                        {
+                            _ = this.CreateStandardPopup(
+                                TranslationServer.Translate("HardcoreModeDeathHeaderText"),
+                                TranslationServer.Translate("HardcoreModeDeathText"),
+                                new PopUpButton[]
+                                {
+                    new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
+                                },
+                                new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
+
+                            if (FileAccess.FileExists(_globalState.CurrentSavePath))
+                            {
+                                var dir = DirAccess.Open(_globalState.SaveGameFolder);
+                                dir.Remove(_globalState.CurrentSavePath);
+                            }
+                        }
+                        _globalState.PlayerControlMode = ControlMode.None;
+                        _saveGameButton.Disabled = true;
+                    }
+
+                    if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+                    {
+                        _saveGameButton.Disabled = true;
+                        _messageLogPanel.MessageWindowButton.Disabled = true;
+                        _infoPanel.DetailsButton.Disabled = true;
+                        _exitButton.Disabled = true;
+                    }
+                    else if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+                    {
+                        _saveGameButton.Disabled = false;
+                    }
+                    else if (_globalState.PlayerControlMode == ControlMode.None || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+                    {
+                        _mapPanel.StopTargeting(false);
+                        _saveGameButton.Disabled = true;
+                    }
+
+                    foreach (var child in _children)
+                    {
+                        child.Update();
+                    }
+
+                    if (!dungeonStatus.Read)
+                        await UpdateUIViaEvents();
+
+                    _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
+                    _mapPanel.CalculateDisplayBounds(dungeonStatus);
+                    _mapPanel.UpdateBuffer(dungeonStatus.GetTiles());
+
+                    _lastTurn = dungeonStatus.TurnCount;
+
+                    dungeonStatus.JustLoaded = false;
+                }
+
+                if (_globalState.PlayerControlMode == ControlMode.Waiting)
+                {
+                    _coords = new CoordinateInput
+                    {
+                        X = 0,
+                        Y = 0
+                    };
                     return;
                 }
-                else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
+                if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
                 {
-                    if (_globalState.IsHardcoreMode)
-                    {
-                        _ = this.CreateStandardPopup(
-                            TranslationServer.Translate("HardcoreModeDeathHeaderText"),
-                            TranslationServer.Translate("HardcoreModeDeathText"),
-                            new PopUpButton[]
-                            {
-                    new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" },
-                            },
-                            new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
-
-                        if (FileAccess.FileExists(_globalState.CurrentSavePath))
-                        {
-                            var dir = DirAccess.Open(_globalState.SaveGameFolder);
-                            dir.Remove(_globalState.CurrentSavePath);
-                        }
-                    }
-                    _globalState.PlayerControlMode = ControlMode.None;
-                    _saveGameButton.Disabled = true;
+                    await HandleMovementKeys();
                 }
-
-                if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
-                {
-                    _saveGameButton.Disabled = true;
-                    _messageLogPanel.MessageWindowButton.Disabled = true;
-                    _infoPanel.DetailsButton.Disabled = true;
-                    _exitButton.Disabled = true;
-                }
-                else if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
-                {
-                    _saveGameButton.Disabled = false;
-                }
-                else if (_globalState.PlayerControlMode == ControlMode.None || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
-                {
-                    _mapPanel.StopTargeting(false);
-                    _saveGameButton.Disabled = true;
-                }
-
-                foreach (var child in _children)
-                {
-                    child.Update();
-                }
-
-                if (!dungeonStatus.Read)
-                    await UpdateUIViaEvents();
-
-                _mapPanel.UpdateTurnCount(dungeonStatus.TurnCount);
-                _mapPanel.CalculateDisplayBounds(dungeonStatus);
-                _mapPanel.UpdateBuffer(dungeonStatus.GetTiles());
-
-                _lastTurn = dungeonStatus.TurnCount;
-
-                dungeonStatus.JustLoaded = false;
-            }
-
-            if (_globalState.PlayerControlMode == ControlMode.Waiting)
-            {
-                _coords = new CoordinateInput
-                {
-                    X = 0,
-                    Y = 0
-                };
-                return;
-            }
-            if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
-            {
-                await HandleMovementKeys();
             }
         }
         catch (Exception ex)
@@ -326,8 +329,9 @@ public partial class GameScreen : Control
         var unimportantDisplayEventTypes = new List<DisplayEventType> { DisplayEventType.ClearLogMessages, DisplayEventType.AddMessageBox, DisplayEventType.AddLogMessage };
         _mapPanel.StopTargeting(false);
 
-        foreach (var displayEventList in _globalState.DungeonInfo.DisplayEvents)
+        while(_globalState.DungeonInfo.DisplayEvents.Count > 0)
         {
+            var displayEventList = _globalState.DungeonInfo.DisplayEvents.Dequeue();
             var redrawMap = false;
             if (_soundIsPlaying && displayEventList.Events.Any(e => e.DisplayEventType == DisplayEventType.PlaySpecialEffect))
                 await _soundFinished.Task;
@@ -455,9 +459,9 @@ public partial class GameScreen : Control
                         _mapPanel.UpdateBuffer(_globalState.DungeonInfo.Tiles);
                         break;
                     case DisplayEventType.UpdateExperienceBar:
-                        var experience = (int) displayEvent.Params[0];
-                        var experienceToLevelUp = (int) displayEvent.Params[1];
-                        var currentExperiencePercentage = (int) displayEvent.Params[2];
+                        var experience = (int)displayEvent.Params[0];
+                        var experienceToLevelUp = (int)displayEvent.Params[1];
+                        var currentExperiencePercentage = (int)displayEvent.Params[2];
                         _experienceBarPanel.UpdateExperienceBar(experience, experienceToLevelUp, currentExperiencePercentage);
                         break;
                     case DisplayEventType.TriggerPrompt:

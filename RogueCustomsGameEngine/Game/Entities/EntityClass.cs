@@ -81,10 +81,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public ActionWithEffects OnUse { get; set; }
         public List<PassiveStatModifier> StatModifiers { get; set; }
         public int BaseValue { get; set; }
+        public int RequiredPlayerLevel { get; set; }
         public QualityLevel MinimumQualityLevel { get; set; }
         public QualityLevel MaximumQualityLevel { get; set; }
         public List<QualityLevelOdds> QualityLevelOdds { get; set; }
         public bool CanDrop { get; set; }
+        public bool CanBeUnequipped { get; set; }
        
         #endregion
 
@@ -142,6 +144,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 OnAttacked = ActionWithEffects.Create(itemInfo.OnAttacked, dungeon.ActionSchools);
                 OnDeath = ActionWithEffects.Create(itemInfo.OnDeath, dungeon.ActionSchools);
                 OnUse = ActionWithEffects.Create(itemInfo.OnUse, dungeon.ActionSchools);
+                RequiredPlayerLevel = itemInfo.RequiredPlayerLevel;
                 BaseValue = itemInfo.BaseValue;
                 MinimumQualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(itemInfo.MinimumQualityLevel, StringComparison.InvariantCultureIgnoreCase));
                 MaximumQualityLevel = dungeon.QualityLevels.Find(ql => ql.Id.Equals(itemInfo.MaximumQualityLevel, StringComparison.InvariantCultureIgnoreCase));
@@ -151,6 +154,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     QualityLevelOdds.Add(new(odds, dungeon));
                 }
                 CanDrop = itemInfo.CanDrop;
+                CanBeUnequipped = itemInfo.CanBeUnequipped;
             }
             else if (classInfo is PlayerClassInfo playerClassInfo)
             {

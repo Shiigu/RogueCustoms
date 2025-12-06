@@ -119,6 +119,12 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     messages.AddWarning("An offensive Item does not have OnAttack Actions. It cannot do anything in this current state.");
                 }
+
+                var maximumPlayerLevel = dungeonJson.PlayerClasses.Max(pl => pl.MaxLevel);
+
+                if (itemJson.RequiredPlayerLevel > maximumPlayerLevel)
+                    messages.AddError($"This Item has a Required Player Level higher than the Dungeon's Maximum, {maximumPlayerLevel}.");
+
                 var minimumQualityLevel = dungeonJson.QualityLevelInfos.Find(qli => qli.Id.Equals(itemJson.MinimumQualityLevel));
                 var maximumQualityLevel = dungeonJson.QualityLevelInfos.Find(qli => qli.Id.Equals(itemJson.MaximumQualityLevel));
                 if (minimumQualityLevel == null)

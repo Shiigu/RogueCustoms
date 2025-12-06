@@ -12,6 +12,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public string Id { get; set; }
         public string Name { get; set; }
         public string AffixType { get; set; }
+        public int RequiredPlayerLevel { get; set; }
         public int MinimumItemLevel { get; set; }
         public int ItemValueModifierPercentage { get; set; }
         public List<string> AffectedItemTypes { get; set; }
