@@ -20,6 +20,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public bool CanGainExperience { get; set; }
         public string ExperiencePayoutFormula { get; set; }
         public string ExperienceToLevelUpFormula { get; set; }
+        public string Learnset { get; set; }
         public ActionWithEffectsInfo DefaultOnAttack { get; set; }
         public ActionWithEffectsInfo OnTurnStart { get; set; }
         public List<ActionWithEffectsInfo> OnAttack { get; set; }

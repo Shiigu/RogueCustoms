@@ -78,6 +78,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ssNPC.CanGainExperience = npc.CanGainExperience;
             ssNPC.ExperienceToLevelUpFormula = npc.ExperienceToLevelUpFormula;
             ssNPC.MaxLevel = npc.MaxLevel;
+            cmbNPCLearnset.Items.Clear();
+            cmbNPCLearnset.Text = "";
+            foreach (var learnsetId in ActiveDungeon.LearnsetInfos.Select(l => l.Id))
+            {
+                cmbNPCLearnset.Items.Add(learnsetId);
+                if (learnsetId.Equals(npc.Learnset))
+                    cmbNPCLearnset.Text = learnsetId;
+            }
 
             clbNPCAvailableSlots.Items.Clear();
             foreach (var slot in ActiveDungeon.ItemSlotInfos)
@@ -213,6 +221,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This NPC does not have any Available Equipment Slots.");
             if (esNPC.EquipmentList.Count == 0 && chkNPCDropsEquipmentOnDeath.Checked)
                 validationErrors.Add("This NPC is set to drop Equipment on death, but is not set to have any Equipment.");
+            if (string.IsNullOrWhiteSpace(cmbNPCLearnset.Text))
+                validationErrors.Add("This NPC does not have a Learnset.");
 
             if (string.IsNullOrWhiteSpace(cmbNPCAIType.Text))
                 validationErrors.Add("This NPC does not have a set AI strategy.");
@@ -235,6 +245,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedNPC.CanGainExperience = ssNPC.CanGainExperience;
                 LoadedNPC.ExperienceToLevelUpFormula = ssNPC.ExperienceToLevelUpFormula;
                 LoadedNPC.MaxLevel = ssNPC.MaxLevel;
+                LoadedNPC.Learnset = cmbNPCLearnset.Text;
 
                 LoadedNPC.DropsEquipmentOnDeath = chkNPCDropsEquipmentOnDeath.Checked;
 

@@ -19,6 +19,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateElementInfos(root);
             UpdateItems(root);
             UpdateAffixInfos(root);
+            UpdateLearnsets(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
             UpdateTraps(root);
@@ -112,11 +113,26 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             }
         }
 
+        private static void UpdateLearnsets(JsonObject root)
+        {
+            if (root["LearnsetInfos"] is JsonArray) return;
+            root["LearnsetInfos"] = new JsonArray()
+                {
+                    new JsonObject
+                    {
+                        ["Id"] = "Default",
+                        ["Entries"] = new JsonArray()
+                    }
+                };
+        }
+
         private static void UpdatePlayerClasses(JsonObject root)
         {
             if (root["PlayerClasses"] is not JsonArray playerClasses) return;
             foreach (var playerClass in playerClasses.OfType<JsonObject>())
             {
+                if (playerClass["Learnset"] is null)
+                    playerClass["Learnset"] = "Default";
                 foreach (var action in playerClass["OnAttack"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
@@ -148,6 +164,8 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (root["NPCs"] is not JsonArray npcs) return;
             foreach (var npc in npcs.OfType<JsonObject>())
             {
+                if (npc["Learnset"] is null)
+                    npc["Learnset"] = "Default";
                 if (npc["OnSpawn"] is JsonObject onSpawn)
                 {
                     UpdateAction(onSpawn);

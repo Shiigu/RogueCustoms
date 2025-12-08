@@ -16,7 +16,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
 
         public static bool ContainsAll<T>(this IEnumerable<T> possibleContainer, IEnumerable<T> values)
         {
-            foreach(var value in values)
+            foreach (var value in values)
             {
                 if (!possibleContainer.Contains(value))
                     return false;
@@ -98,7 +98,7 @@ namespace RogueCustomsGameEngine.Utils.Helpers
                 }
             }
 
-            if (amount >= arrayAsList.Count) return arrayAsList; 
+            if (amount >= arrayAsList.Count) return arrayAsList;
 
             var shuffledList = arrayAsList.OrderBy(x => rng.NextInclusive(int.MaxValue)).ToList();
 
@@ -177,6 +177,15 @@ namespace RogueCustomsGameEngine.Utils.Helpers
             }
 
             list.Add(newItem); // Add the new element
+        }
+
+        public static bool IsIdenticalTo<T>(this List<T> listA, List<T> listB)
+        {
+            if (listA.Count != listB.Count)
+                return false;
+            if (listA.Except(listB).Any()) return false;
+            if (listB.Except(listA).Any()) return false;
+            return true;
         }
     }
 }

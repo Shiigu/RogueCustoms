@@ -79,6 +79,8 @@ namespace RogueCustomsDungeonEditor.Utils
 
             templateDungeon.ItemTypeInfos = new(CreateItemTypeTemplates());
 
+            templateDungeon.LearnsetInfos = new() { CreateLearnsetTemplate() };
+
             templateDungeon.CurrencyInfo = CreateCurrencyTemplate();
 
             templateDungeon.PlayerClasses.Add(CreatePlayerClassTemplate(templateDungeon.CharacterStats));
@@ -903,6 +905,15 @@ namespace RogueCustomsDungeonEditor.Utils
                 ];
         }
 
+        public static LearnsetInfo CreateLearnsetTemplate()
+        {
+            return new LearnsetInfo()
+            {
+                Id = "Normal",
+                Entries = new()
+            };
+        }
+
         public static PlayerClassInfo CreatePlayerClassTemplate(List<StatInfo> stats)
         {
             var playerClassTemplate = new PlayerClassInfo
@@ -1485,6 +1496,12 @@ namespace RogueCustomsDungeonEditor.Utils
                 ids.AddRange(dungeonInfo.Traps.Select(t => t.Id));
             if (typeToExclude != typeof(AlteredStatusInfo))
                 ids.AddRange(dungeonInfo.AlteredStatuses.Select(a => a.Id));
+            if (typeToExclude != typeof(LearnsetInfo))
+                ids.AddRange(dungeonInfo.LearnsetInfos.Select(a => a.Id));
+            if (typeToExclude != typeof(NPCModifierInfo))
+                ids.AddRange(dungeonInfo.NPCModifierInfos.Select(a => a.Id));
+            if (typeToExclude != typeof(AffixInfo))
+                ids.AddRange(dungeonInfo.AffixInfos.Select(a => a.Id));
             return ids;
         }
 

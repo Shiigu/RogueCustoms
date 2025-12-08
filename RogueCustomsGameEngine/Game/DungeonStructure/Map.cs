@@ -68,6 +68,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly Dungeon Dungeon;
 
         public List<ActionWithEffects> Scripts => Dungeon.Scripts;
+        public List<Learnset> Learnsets => Dungeon.Learnsets;
         public Locale Locale => Dungeon.LocaleToUse;
 
         private IPromptInvoker PromptInvoker => Dungeon.PromptInvoker;

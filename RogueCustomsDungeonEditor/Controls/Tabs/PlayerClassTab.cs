@@ -66,6 +66,14 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ssPlayer.CanGainExperience = playerClass.CanGainExperience;
             ssPlayer.ExperienceToLevelUpFormula = playerClass.ExperienceToLevelUpFormula;
             ssPlayer.MaxLevel = playerClass.MaxLevel;
+            cmbPlayerLearnset.Items.Clear();
+            cmbPlayerLearnset.Text = "";
+            foreach (var learnsetId in ActiveDungeon.LearnsetInfos.Select(l => l.Id))
+            {
+                cmbPlayerLearnset.Items.Add(learnsetId);
+                if (learnsetId.Equals(playerClass.Learnset))
+                    cmbPlayerLearnset.Text = learnsetId;
+            }
             clbPlayerAvailableSlots.Items.Clear();
             foreach (var slot in ActiveDungeon.ItemSlotInfos)
             {
@@ -141,6 +149,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 validationErrors.Add("This Player Class can gain experience, but cannot level up.");
             if (clbPlayerAvailableSlots.CheckedItems.Count == 0)
                 validationErrors.Add("This Player Class does not have any Available Equipment Slots.");
+            if (string.IsNullOrWhiteSpace(cmbPlayerLearnset.Text))
+                validationErrors.Add("This Player Class does not have a Learnset.");
 
             if (!validationErrors.Any())
             {
@@ -158,6 +168,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 LoadedPlayerClass.CanGainExperience = ssPlayer.CanGainExperience;
                 LoadedPlayerClass.ExperienceToLevelUpFormula = ssPlayer.ExperienceToLevelUpFormula;
                 LoadedPlayerClass.MaxLevel = ssPlayer.MaxLevel;
+                LoadedPlayerClass.Learnset = cmbPlayerLearnset.Text;
 
                 LoadedPlayerClass.AvailableSlots = clbPlayerAvailableSlots.CheckedItems.Cast<string>().ToList();
 

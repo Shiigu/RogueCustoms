@@ -86,6 +86,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.QualityLevelInfo] = tpQualityLevels;
             TabsForNodeTypes[RogueTabTypes.ItemSlotInfo] = tpItemSlotInfos;
             TabsForNodeTypes[RogueTabTypes.ItemTypeInfo] = tpItemTypeInfos;
+            TabsForNodeTypes[RogueTabTypes.LearnsetInfo] = tpLearnsets;
             TabsForNodeTypes[RogueTabTypes.PlayerClass] = tpPlayerClass;
             TabsForNodeTypes[RogueTabTypes.NPC] = tpNPC;
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
@@ -150,6 +151,7 @@ namespace RogueCustomsDungeonEditor
             LootTableTab.TabInfoChanged += LootTableTab_TabInfoChanged;
             ItemTypesTab.TabInfoChanged += ItemTypesTab_TabInfoChanged;
             ItemSlotsTab.TabInfoChanged += ItemSlotsTab_TabInfoChanged;
+            LearnsetTab.TabInfoChanged += LearnsetTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -340,6 +342,11 @@ namespace RogueCustomsDungeonEditor
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.ElementInfo;
+                        break;
+                    case "Learnsets":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
                         break;
                     case "Loot Tables":
                         tssDungeonElement.Visible = true;
@@ -557,6 +564,18 @@ namespace RogueCustomsDungeonEditor
                 Name = "Item Types"
             };
             tvDungeonInfo.Nodes.Add(itemTypeInfoNode);
+
+            var learnsetRootNode = new TreeNode("Learnsets");
+            foreach (var learnset in ActiveDungeon.LearnsetInfos)
+            {
+                var learnsetNode = new TreeNode(learnset.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.LearnsetInfo, DungeonElement = learnset }
+                };
+                learnsetNode.Name = learnsetNode.Text;
+                learnsetRootNode.Nodes.Add(learnsetNode);
+            }
+            tvDungeonInfo.Nodes.Add(learnsetRootNode);
 
             var playerClassRootNode = new TreeNode("Player Classes");
             foreach (var playerClass in ActiveDungeon.PlayerClasses)
@@ -851,6 +870,9 @@ namespace RogueCustomsDungeonEditor
                     case "Loot Tables":
                         tabToOpen = RogueTabTypes.LootTableInfo;
                         break;
+                    case "Learnsets":
+                        tabToOpen = RogueTabTypes.LearnsetInfo;
+                        break;
                     case "Player Classes":
                         tabToOpen = RogueTabTypes.PlayerClass;
                         break;
@@ -902,6 +924,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.LootTableInfo:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateLootTableTemplate();
+                    break;
+                case RogueTabTypes.LearnsetInfo:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateLearnsetTemplate();
                     break;
                 case RogueTabTypes.PlayerClass:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreatePlayerClassTemplate(ActiveDungeon.CharacterStats);
@@ -957,6 +982,7 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.QualityLevelInfo => SaveQualityLevels(),
                     RogueTabTypes.ItemSlotInfo => SaveItemSlots(),
                     RogueTabTypes.ItemTypeInfo => SaveItemTypes(),
+                    RogueTabTypes.LearnsetInfo => SaveLearnset(),
                     RogueTabTypes.PlayerClass => SavePlayerClass(),
                     RogueTabTypes.NPC => SaveNPC(),
                     RogueTabTypes.Item => SaveItem(),
@@ -994,6 +1020,7 @@ namespace RogueCustomsDungeonEditor
                 RogueTabTypes.LootTableInfo => SaveLootTableAs(),
                 RogueTabTypes.AffixInfo => SaveAffixAs(),
                 RogueTabTypes.NPCModifierInfo => SaveNPCModifierAs(),
+                RogueTabTypes.LearnsetInfo => SaveLearnsetAs(),
                 RogueTabTypes.PlayerClass => SavePlayerClassAs(),
                 RogueTabTypes.NPC => SaveNPCAs(),
                 RogueTabTypes.Item => SaveItemAs(),
@@ -1036,6 +1063,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.LootTableInfo:
                     DeleteLootTable();
+                    break;
+                case RogueTabTypes.LearnsetInfo:
+                    DeleteLearnset();
                     break;
                 case RogueTabTypes.PlayerClass:
                     DeletePlayerClass();
@@ -1185,6 +1215,14 @@ namespace RogueCustomsDungeonEditor
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Loot Table - {tagLootTable.Id}";
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Loot Table";
+                    break;
+                case RogueTabTypes.LearnsetInfo:
+                    var tagLearnset = (LearnsetInfo)tag.DungeonElement;
+                    LoadLearnsetInfoFor(tagLearnset);
+                    if (!IsNewObject)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Learnset - {tagLearnset.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Learnset";
                     break;
                 case RogueTabTypes.PlayerClass:
                     var tagPlayerClass = (PlayerClassInfo)tag.DungeonElement;
@@ -2557,6 +2595,130 @@ namespace RogueCustomsDungeonEditor
 
         #endregion
 
+        #region Learnset
+
+        public void LoadLearnsetInfoFor(LearnsetInfo learnset)
+        {
+            LearnsetTab.LoadData(ActiveDungeon, learnset);
+        }
+
+        private bool SaveLearnset()
+        {
+            if (string.IsNullOrWhiteSpace(LearnsetTab.LoadedLearnset.Id))
+                return SaveLearnsetAs();
+            return SaveLearnsetToDungeon(LearnsetTab.LoadedLearnset.Id);
+        }
+
+        private bool SaveLearnsetAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Learnset Identifier", "Save Learnset As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(LearnsetInfo)));
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.LearnsetInfos.Exists(s => s.Id.Equals(inputBoxResult, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Learnset with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Learnset As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveLearnsetToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveLearnsetToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveLearnsetToDungeon(string id)
+        {
+            var validationErrors = LearnsetTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Learnset. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Learnset",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var learnsetToSave = LearnsetTab.LoadedLearnset;
+            var preExistingLearnset = ActiveDungeon.LearnsetInfos.FirstOrDefault(s => s.Id.Equals(id));
+            var isNewLearnset = preExistingLearnset == null;
+            if (isNewLearnset)
+            {
+                ActiveDungeon.LearnsetInfos.Add(learnsetToSave);
+            }
+            else
+            {
+                ActiveDungeon.LearnsetInfos[ActiveDungeon.LearnsetInfos.IndexOf(preExistingLearnset)] = learnsetToSave;
+            }
+            var verb = isNewLearnset ? "Save" : "Update";
+            MessageBox.Show(
+                $"Learnset {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Learnset",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            DirtyTab = false;
+            DirtyDungeon = true;
+            IsNewObject = false;
+            PassedValidation = false;
+            RefreshTreeNodes();
+            SelectNodeIfExists(learnsetToSave.Id, "Learnsets");
+            return true;
+        }
+
+        public void DeleteLearnset()
+        {
+            var activeAttackElement = ElementTab.LoadedElement;
+            var deleteAttackElementPrompt = IsNewObject
+                ? "Do you want to remove this unsaved Attack Element?"
+                : $"Do you want to PERMANENTLY delete Attack Element {activeAttackElement.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteAttackElementPrompt,
+                "Attack Element",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewObject)
+                {
+                    var removedId = new string(activeAttackElement.Id);
+                    ActiveDungeon.ElementInfos.RemoveAll(s => s.Id.Equals(activeAttackElement.Id));
+                    MessageBox.Show(
+                        $"Attack Element {removedId} has been successfully deleted.",
+                        "Delete Attack Element",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewObject = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void LearnsetTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
         #region Player Class
 
         private void LoadPlayerClassInfoFor(PlayerClassInfo playerClass)
@@ -3687,6 +3849,7 @@ namespace RogueCustomsDungeonEditor
         QualityLevelInfo,
         ItemSlotInfo,
         ItemTypeInfo,
+        LearnsetInfo,
         PlayerClass,
         NPC,
         Item,

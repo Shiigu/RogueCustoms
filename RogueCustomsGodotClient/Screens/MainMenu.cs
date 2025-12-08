@@ -218,7 +218,7 @@ public partial class MainMenu : Control
         }
         else if (@event.IsActionPressed("ui_accept"))
         {
-            if (_index != -1)
+            if (_index != -1 && !_buttons[_index].Disabled)
             {
                 _buttons[_index].GrabFocus();
                 _buttons[_index].EmitSignal("pressed");
@@ -237,7 +237,11 @@ public partial class MainMenu : Control
 
     private void MoveFocus(int step)
     {
-        _index = (_index + step + _buttons.Count) % _buttons.Count;
-        _buttons[_index].GrabFocus();
+        do
+        {
+            _index = (_index + step + _buttons.Count) % _buttons.Count;
+            _buttons[_index].GrabFocus();
+        }
+        while (_buttons[_index].Disabled);
     }
 }

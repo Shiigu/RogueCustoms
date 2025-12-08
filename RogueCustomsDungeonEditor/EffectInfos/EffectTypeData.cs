@@ -187,6 +187,7 @@ namespace RogueCustomsDungeonEditor.EffectInfos
         Key,
         Stat,
         Element,
+        Learnset,
         Script,
         Table,
         LootTable

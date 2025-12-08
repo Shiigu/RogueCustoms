@@ -12,6 +12,7 @@ using RogueCustomsGameEngine.Utils.Representation;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Effects.Utils;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RogueCustomsGameEngine.Utils.Effects
 {
@@ -224,11 +225,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
-            if (!c.OwnOnAttack.Any(oaa => oaa.IsScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
+            if (!c.OwnOnAttack.Any(oaa => oaa.IsFromLearnScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
             {
                 var clonedScript = script.Clone();
                 clonedScript.User = c;
                 clonedScript.Map = Map;
+                clonedScript.IsFromLearnScript = true;
                 c.OwnOnAttack.Add(clonedScript);
                 c.SetActionIds();
                 if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
@@ -258,9 +260,9 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
-            if (c.OwnOnAttack.Any(oaa => oaa.IsScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
+            if (c.OwnOnAttack.Any(oaa => oaa.IsFromLearnScript && oaa.Id.Equals(script.Id)) && Rng.RollProbability() <= accuracyCheck)
             {
-                c.OwnOnAttack.RemoveAll(oaa => oaa.IsScript && oaa.Id.Equals(script.Id));
+                c.OwnOnAttack.RemoveAll(oaa => oaa.IsFromLearnScript && oaa.Id.Equals(script.Id));
                 c.SetActionIds();
                 if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
                 {
@@ -663,6 +665,65 @@ namespace RogueCustomsGameEngine.Utils.Effects
             await Map.ReturnToFloor1(experiencePercentageToKeep, equipmentPercentageToKeep, inventoryPercentageToKeep, learnedScriptsPercentageToKeep, tagalongNPCsPercentageToKeep);
 
             return true;
+        }
+
+        public static bool ChangeLearnset(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character c)
+                throw new ArgumentException($"Attempted to have {paramsObject.Target.Name} change their Learnset when it's not a Character.");
+
+            var learnset = Map.Learnsets.Find(s => s.Id.Equals(paramsObject.LearnsetId, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Attempted to change Learnset to {paramsObject.LearnsetId} when it's not a Learnset.");
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+
+            if (!c.Learnset.Id.Equals(learnset.Id) && Rng.RollProbability() <= accuracyCheck)
+            {
+                var oldLearnset = c.OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => ooa.Name).ToList();
+
+                c.Learnset = learnset;
+
+                c.OwnOnAttack.RemoveAll(ooa => ooa.IsFromLearnset);
+
+                for (int i = 1; i <= c.Level; i++)
+                {
+                    c.UpdateScriptsFromLearnset(i, true);
+                }
+
+                var newLearnset = c.OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => ooa.Name).ToList();
+
+                var gainedScripts = newLearnset.Except(oldLearnset).ToList();
+                var lostScripts = oldLearnset.Except(newLearnset).ToList();
+
+                if ((c == Map.Player || Map.Player.CanSee(c)) && paramsObject.InformThePlayer)
+                {
+                    events.Add(new()
+                    {
+                        DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                        Params = new() { SpecialEffect.StatBuff }
+                    });
+                    Map.AppendMessage(Map.Locale["CharacterHasChangedLearnset"].Format(new { CharacterName = c.Name }), Color.DeepSkyBlue, events);
+
+                    foreach (var name in lostScripts)
+                    {
+                        if (!gainedScripts.Contains(name)) // So that it does not say it forgot and learned a script with the same name at the same time
+                            Map.AppendMessage(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = c.Name, ScriptName = name }), Color.DeepSkyBlue, events);
+                    }
+
+                    foreach (var name in gainedScripts)
+                    {
+                        if (!lostScripts.Contains(name)) // So that it does not say it forgot and learned a script with the same name at the same time
+                            Map.AppendMessage(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = c.Name, ScriptName = name }), Color.DeepSkyBlue, events);
+                    }
+
+                    Map.DisplayEvents.Add(($"{c.Name} changed their Learnset", events));
+                }
+
+                return true;
+            }
+            return false;
         }
     }
     #pragma warning restore S2589 // Boolean expressions should not be gratuitous
