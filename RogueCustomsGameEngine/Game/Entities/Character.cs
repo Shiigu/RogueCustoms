@@ -36,6 +36,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<IPickable> FullInventory => Inventory.Cast<IPickable>().Union(KeySet.Cast<IPickable>()).ToList();
 
         public int ItemCount => Inventory.Where(i => i.EntityType != EntityType.Key).Count();
+        public readonly Learnset BaseLearnset;
+
+        public Learnset Learnset { get; set; }
 
         public readonly string BaseExperiencePayoutFormula;
         public string ExperiencePayoutFormula { get; set; }
@@ -221,16 +224,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             CanGainExperience = entityClass.CanGainExperience;
             Level = level;
             MaxLevel = entityClass.MaxLevel;
-            if (Level > 1 && CanGainExperience)
-            {
-                Level = level - 1;
-                Experience = ParseArgForExperienceFormulaAndCalculate(ExperienceToLevelUpFormula, false);
-                Level++;
-            }
-            else
-            {
-                Experience = 0;
-            }
+            Experience = GetMinimumExperienceForLevel(Level, false);
 
             BaseSightRange = entityClass.BaseSightRange;
             InventorySize = entityClass.InventorySize;
@@ -252,6 +246,41 @@ namespace RogueCustomsGameEngine.Game.Entities
             InitialEquipmentIds = new(entityClass.InitialEquipmentIds);
             Equipment = [];
             CurrencyCarried = 0;
+            BaseLearnset = entityClass.BaseLearnset;
+            Learnset = BaseLearnset;
+
+            for (int i = 1; i <= Level; i++)
+            {
+                UpdateScriptsFromLearnset(i, false);
+            }
+        }
+
+        public void UpdateLearnset()
+        {
+            UpdateScriptsFromLearnset(Level, true);
+        }
+
+        public void UpdateScriptsFromLearnset(int level, bool alsoSetIds)
+        {
+            foreach (var entry in Learnset.Entries.Where(le => le.Level == level).ToList())
+            {
+                if (entry.ScriptToLearn == null || string.IsNullOrWhiteSpace(entry.ScriptToLearnId)) continue;
+
+                if(!string.IsNullOrWhiteSpace(entry.ScriptToForget))
+                {
+                    var scriptToForget = OwnOnAttack.Find(a => a.Id.Equals(entry.ScriptToForget, StringComparison.InvariantCultureIgnoreCase));
+                    if (scriptToForget == null) continue;
+                    OwnOnAttack.Remove(scriptToForget);
+                }
+
+                var newScript = entry.ScriptToLearn.Clone();
+                newScript.IsFromLearnset = true;
+                newScript.User = this;
+                newScript.Map = Map;
+                OwnOnAttack.Add(newScript);
+                if(alsoSetIds)
+                    SetActionIds();
+            }
         }
 
         public HashSet<Tile> ComputeFOVTiles()
@@ -502,6 +531,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 LastLevelUpExperience = ExperienceToLevelUp;
                 Level++;
+                UpdateLearnset();
                 Color forecolorToUse;
                 if (this == Map.Player || Faction.IsAlliedWith(Map.Player.Faction))
                     forecolorToUse = Color.Lime;
@@ -542,7 +572,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (level == MaxLevel && capIfLevelIsMax) return Experience;
             var totalExperience = 0;
 
-            for (int i = 1; i <= level; i++)
+            for (int i = 0; i < level; i++)
             {
                 totalExperience += GetExperienceForLevel(i, capIfLevelIsMax);
             }
@@ -553,6 +583,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         private int GetExperienceForLevel(int level, bool capIfLevelIsMax)
         {
             if (string.IsNullOrWhiteSpace(ExperienceToLevelUpFormula)) return 0;
+            if (level == 0) return 0;
             if (level == MaxLevel && capIfLevelIsMax) return Experience;
             var parsedArg = ExperienceToLevelUpFormula.ToLowerInvariant();
 
@@ -834,13 +865,13 @@ namespace RogueCustomsGameEngine.Game.Entities
             if(DefaultOnAttack != null)
             {
                 DefaultOnAttack.SelectionId = $"{Id}_{ClassId}_DA_{DefaultOnAttack.Id}";
-                if (DefaultOnAttack.IsScript)
+                if (DefaultOnAttack.IsFromLearnScript)
                     DefaultOnAttack.SelectionId += "_S";
             }
             for (int i = 0; i < OwnOnAttack.Count; i++)
             {
                 OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
-                if (OwnOnAttack[i].IsScript)
+                if (OwnOnAttack[i].IsFromLearnScript)
                     OwnOnAttack[i].SelectionId += "_S";
             }
         }

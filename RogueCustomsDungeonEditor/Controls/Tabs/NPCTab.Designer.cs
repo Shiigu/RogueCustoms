@@ -93,6 +93,8 @@
             nudNPCBaseHPMultiplierIfWithModifiers = new System.Windows.Forms.NumericUpDown();
             label16 = new System.Windows.Forms.Label();
             saeNPCBeforeProcessAI = new SingleActionEditor();
+            cmbNPCLearnset = new System.Windows.Forms.ComboBox();
+            label17 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvNPCModifiers).BeginInit();
@@ -484,7 +486,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label3.Location = new System.Drawing.Point(141, 945);
+            label3.Location = new System.Drawing.Point(141, 976);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(44, 21);
             label3.TabIndex = 257;
@@ -494,7 +496,7 @@
             // 
             cmbNPCLootTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCLootTable.FormattingEnabled = true;
-            cmbNPCLootTable.Location = new System.Drawing.Point(191, 976);
+            cmbNPCLootTable.Location = new System.Drawing.Point(191, 1007);
             cmbNPCLootTable.Name = "cmbNPCLootTable";
             cmbNPCLootTable.Size = new System.Drawing.Size(128, 23);
             cmbNPCLootTable.TabIndex = 259;
@@ -503,7 +505,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(28, 979);
+            label4.Location = new System.Drawing.Point(28, 1010);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(157, 15);
             label4.TabIndex = 258;
@@ -512,7 +514,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(154, 1010);
+            label5.Location = new System.Drawing.Point(154, 1041);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(36, 15);
             label5.TabIndex = 262;
@@ -520,7 +522,7 @@
             // 
             // nudNPCDropPicks
             // 
-            nudNPCDropPicks.Location = new System.Drawing.Point(103, 1008);
+            nudNPCDropPicks.Location = new System.Drawing.Point(103, 1039);
             nudNPCDropPicks.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
             nudNPCDropPicks.Name = "nudNPCDropPicks";
             nudNPCDropPicks.Size = new System.Drawing.Size(45, 23);
@@ -530,7 +532,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(28, 1010);
+            label6.Location = new System.Drawing.Point(28, 1041);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(69, 15);
             label6.TabIndex = 260;
@@ -560,7 +562,7 @@
             // chkNPCDropsEquipmentOnDeath
             // 
             chkNPCDropsEquipmentOnDeath.AutoSize = true;
-            chkNPCDropsEquipmentOnDeath.Location = new System.Drawing.Point(28, 1040);
+            chkNPCDropsEquipmentOnDeath.Location = new System.Drawing.Point(28, 1071);
             chkNPCDropsEquipmentOnDeath.Name = "chkNPCDropsEquipmentOnDeath";
             chkNPCDropsEquipmentOnDeath.Size = new System.Drawing.Size(169, 19);
             chkNPCDropsEquipmentOnDeath.TabIndex = 264;
@@ -617,7 +619,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            label9.Location = new System.Drawing.Point(140, 1063);
+            label9.Location = new System.Drawing.Point(140, 1094);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(83, 21);
             label9.TabIndex = 270;
@@ -627,7 +629,7 @@
             // 
             dgvNPCModifiers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvNPCModifiers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Level, ModifierAmount });
-            dgvNPCModifiers.Location = new System.Drawing.Point(12, 1087);
+            dgvNPCModifiers.Location = new System.Drawing.Point(12, 1118);
             dgvNPCModifiers.Name = "dgvNPCModifiers";
             dgvNPCModifiers.Size = new System.Drawing.Size(367, 119);
             dgvNPCModifiers.TabIndex = 271;
@@ -648,7 +650,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(127, 1277);
+            label10.Location = new System.Drawing.Point(127, 1308);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(36, 15);
             label10.TabIndex = 276;
@@ -656,7 +658,7 @@
             // 
             // nudNPCDropPicksModifier
             // 
-            nudNPCDropPicksModifier.Location = new System.Drawing.Point(80, 1274);
+            nudNPCDropPicksModifier.Location = new System.Drawing.Point(80, 1305);
             nudNPCDropPicksModifier.Maximum = new decimal(new int[] { 9, 0, 0, 0 });
             nudNPCDropPicksModifier.Name = "nudNPCDropPicksModifier";
             nudNPCDropPicksModifier.Size = new System.Drawing.Size(45, 23);
@@ -666,7 +668,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(11, 1276);
+            label11.Location = new System.Drawing.Point(11, 1307);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(69, 15);
             label11.TabIndex = 274;
@@ -676,7 +678,7 @@
             // 
             cmbNPCLootTableModifier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbNPCLootTableModifier.FormattingEnabled = true;
-            cmbNPCLootTableModifier.Location = new System.Drawing.Point(251, 1247);
+            cmbNPCLootTableModifier.Location = new System.Drawing.Point(251, 1278);
             cmbNPCLootTableModifier.Name = "cmbNPCLootTableModifier";
             cmbNPCLootTableModifier.Size = new System.Drawing.Size(128, 23);
             cmbNPCLootTableModifier.TabIndex = 273;
@@ -685,7 +687,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(11, 1250);
+            label12.Location = new System.Drawing.Point(11, 1281);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(238, 15);
             label12.TabIndex = 272;
@@ -694,7 +696,7 @@
             // chkNPCRandomizesForecolorIfWithModifiers
             // 
             chkNPCRandomizesForecolorIfWithModifiers.AutoSize = true;
-            chkNPCRandomizesForecolorIfWithModifiers.Location = new System.Drawing.Point(12, 1303);
+            chkNPCRandomizesForecolorIfWithModifiers.Location = new System.Drawing.Point(12, 1334);
             chkNPCRandomizesForecolorIfWithModifiers.Name = "chkNPCRandomizesForecolorIfWithModifiers";
             chkNPCRandomizesForecolorIfWithModifiers.Size = new System.Drawing.Size(244, 19);
             chkNPCRandomizesForecolorIfWithModifiers.TabIndex = 277;
@@ -705,7 +707,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(98, 1223);
+            label13.Location = new System.Drawing.Point(98, 1254);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(153, 15);
             label13.TabIndex = 280;
@@ -713,7 +715,7 @@
             // 
             // nudNPCOddsForModifier
             // 
-            nudNPCOddsForModifier.Location = new System.Drawing.Point(51, 1219);
+            nudNPCOddsForModifier.Location = new System.Drawing.Point(51, 1250);
             nudNPCOddsForModifier.Name = "nudNPCOddsForModifier";
             nudNPCOddsForModifier.Size = new System.Drawing.Size(45, 23);
             nudNPCOddsForModifier.TabIndex = 279;
@@ -722,7 +724,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new System.Drawing.Point(11, 1221);
+            label14.Location = new System.Drawing.Point(11, 1252);
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(36, 15);
             label14.TabIndex = 278;
@@ -731,7 +733,7 @@
             // nudNPCExperienceYieldMultiplierIfWithModifiers
             // 
             nudNPCExperienceYieldMultiplierIfWithModifiers.DecimalPlaces = 1;
-            nudNPCExperienceYieldMultiplierIfWithModifiers.Location = new System.Drawing.Point(172, 1359);
+            nudNPCExperienceYieldMultiplierIfWithModifiers.Location = new System.Drawing.Point(172, 1390);
             nudNPCExperienceYieldMultiplierIfWithModifiers.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudNPCExperienceYieldMultiplierIfWithModifiers.Name = "nudNPCExperienceYieldMultiplierIfWithModifiers";
             nudNPCExperienceYieldMultiplierIfWithModifiers.Size = new System.Drawing.Size(48, 23);
@@ -742,7 +744,7 @@
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new System.Drawing.Point(11, 1361);
+            label15.Location = new System.Drawing.Point(11, 1392);
             label15.Name = "label15";
             label15.Size = new System.Drawing.Size(333, 15);
             label15.TabIndex = 281;
@@ -751,7 +753,7 @@
             // nudNPCBaseHPMultiplierIfWithModifiers
             // 
             nudNPCBaseHPMultiplierIfWithModifiers.DecimalPlaces = 1;
-            nudNPCBaseHPMultiplierIfWithModifiers.Location = new System.Drawing.Point(130, 1328);
+            nudNPCBaseHPMultiplierIfWithModifiers.Location = new System.Drawing.Point(130, 1359);
             nudNPCBaseHPMultiplierIfWithModifiers.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudNPCBaseHPMultiplierIfWithModifiers.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudNPCBaseHPMultiplierIfWithModifiers.Name = "nudNPCBaseHPMultiplierIfWithModifiers";
@@ -763,7 +765,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new System.Drawing.Point(11, 1330);
+            label16.Location = new System.Drawing.Point(11, 1361);
             label16.Name = "label16";
             label16.Size = new System.Drawing.Size(288, 15);
             label16.TabIndex = 283;
@@ -785,11 +787,31 @@
             saeNPCBeforeProcessAI.TargetDescription = "The NPC";
             saeNPCBeforeProcessAI.ThisDescription = "The NPC";
             // 
+            // cmbNPCLearnset
+            // 
+            cmbNPCLearnset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbNPCLearnset.FormattingEnabled = true;
+            cmbNPCLearnset.Location = new System.Drawing.Point(74, 948);
+            cmbNPCLearnset.Name = "cmbNPCLearnset";
+            cmbNPCLearnset.Size = new System.Drawing.Size(146, 23);
+            cmbNPCLearnset.TabIndex = 287;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new System.Drawing.Point(17, 951);
+            label17.Name = "label17";
+            label17.Size = new System.Drawing.Size(51, 15);
+            label17.TabIndex = 286;
+            label17.Text = "Learnset";
+            // 
             // NPCTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(cmbNPCLearnset);
+            Controls.Add(label17);
             Controls.Add(saeNPCBeforeProcessAI);
             Controls.Add(nudNPCBaseHPMultiplierIfWithModifiers);
             Controls.Add(label16);
@@ -853,7 +875,7 @@
             Controls.Add(label101);
             Controls.Add(crsNPC);
             Name = "NPCTab";
-            Size = new System.Drawing.Size(798, 1387);
+            Size = new System.Drawing.Size(798, 1422);
             ((System.ComponentModel.ISupportInitialize)nudNPCInventorySize).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudNPCDropPicks).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvNPCModifiers).EndInit();
@@ -930,5 +952,7 @@
         private System.Windows.Forms.NumericUpDown nudNPCBaseHPMultiplierIfWithModifiers;
         private System.Windows.Forms.Label label16;
         private SingleActionEditor saeNPCBeforeProcessAI;
+        private System.Windows.Forms.ComboBox cmbNPCLearnset;
+        private System.Windows.Forms.Label label17;
     }
 }

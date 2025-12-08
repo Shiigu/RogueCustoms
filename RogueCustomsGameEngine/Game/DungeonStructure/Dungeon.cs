@@ -66,6 +66,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<NPCModifier> NPCModifiers { get; set; }
         public List<ItemSlot> ItemSlots { get; set; }
         public List<ItemType> ItemTypes { get; set; }
+        public List<Learnset> Learnsets { get; set; }
         public float SaleValuePercentage { get; set; }
         public List<EntityClass> Classes { get; set; }
         [JsonIgnore]
@@ -108,6 +109,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             QualityLevels = new List<QualityLevel>();
             ItemSlots = new List<ItemSlot>();
             ItemTypes = new List<ItemType>();
+            Learnsets = new List<Learnset>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
                 ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
@@ -116,6 +118,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             WelcomeMessage = LocaleToUse[dungeonInfo.WelcomeMessage];
             EndingMessage = LocaleToUse[dungeonInfo.EndingMessage];
             Classes.Add(dungeonInfo.CurrencyInfo.Parse(this));
+            dungeonInfo.LearnsetInfos.ForEach(li => Learnsets.Add(new Learnset(li)));
             dungeonInfo.QualityLevelInfos.ForEach(ql => QualityLevels.Add(new QualityLevel(ql, LocaleToUse)));
             dungeonInfo.ItemSlotInfos.ForEach(isi => ItemSlots.Add(new ItemSlot(isi, this)));
             dungeonInfo.ItemTypeInfos.ForEach(iti => ItemTypes.Add(new ItemType(iti, this)));
@@ -145,6 +148,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             dungeonInfo.FactionInfos.ForEach(fi => Factions.Add(new Faction(fi, LocaleToUse)));
             Scripts = new();
             dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s, ActionSchools)));
+            Learnsets.ForEach(ls => ls.MapScriptsToLearn(Scripts));
+
             IsHardcoreMode = isHardcoreMode;
             MapFactions();
             CurrentFloorLevel = 1;
@@ -224,7 +229,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             tagalongNPCs = tagalongNPCs.Shuffle(CurrentFloor.Rng).Take((int)(tagalongNPCs.Count * (tagalongNPCsPercentageToKeep / 100.0))).ToList();
 
             var playerLostLevels = false;
-            var minimumExperienceForCurrentLevel = PlayerCharacter.Level == 1 ? 0 : PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level - 1, true);
+            var minimumExperienceForCurrentLevel = PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
 
             PlayerCharacter.Experience = (int)(PlayerCharacter.Experience * (experiencePercentageToKeep / 100.0));
 
@@ -232,8 +237,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 playerLostLevels = true;
                 PlayerCharacter.Level--;
-                minimumExperienceForCurrentLevel = PlayerCharacter.Level == 1 ? 0 : PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level - 1, true);
+                minimumExperienceForCurrentLevel = PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
                 PlayerCharacter.LastLevelUpExperience = minimumExperienceForCurrentLevel;
+            }
+
+            var playerLearnsetChanged = false;
+
+            if (playerLostLevels || !PlayerCharacter.Learnset.Id.Equals(PlayerCharacter.BaseLearnset.Id))
+            {
+                PlayerCharacter.Learnset = PlayerCharacter.BaseLearnset;
+
+                var oldLearnset = PlayerCharacter.OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => ooa.Name).ToList();
+
+                PlayerCharacter.OwnOnAttack.RemoveAll(ooa => ooa.IsFromLearnset);
+
+                for (int i = 1; i <= PlayerCharacter.Level; i++)
+                {
+                    PlayerCharacter.UpdateScriptsFromLearnset(i, true);
+                }
+                var newLearnset = PlayerCharacter.OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => ooa.Name).ToList();
+
+                playerLearnsetChanged = !newLearnset.IsIdenticalTo(oldLearnset);
             }
 
             PlayerCharacter.AlteredStatuses.Clear();
@@ -260,12 +284,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PlayerCharacter.Hunger.Current = PlayerCharacter.Hunger.BaseAfterLevelUp;
             if (PlayerCharacter.HungerDegeneration != null)
                 PlayerCharacter.HungerDegeneration.CarriedRegeneration = 0;
-            var scriptsCount = PlayerCharacter.OwnOnAttack.Count(ooa => ooa.IsScript);
+            var scriptsCount = PlayerCharacter.OwnOnAttack.Count(ooa => ooa.IsFromLearnScript);
             var playerLostScripts = false;
 
             for (int i = 0; i < (int)(scriptsCount * (learnedScriptsPercentageToKeep / 100.0)); i++)
             {
-                var aRandomScript = PlayerCharacter.OwnOnAttack.Where(ooa => ooa.IsScript).ToList().Shuffle(CurrentFloor.Rng).Take(1);
+                var aRandomScript = PlayerCharacter.OwnOnAttack.Where(ooa => ooa.IsFromLearnScript).ToList().Shuffle(CurrentFloor.Rng).Take(1);
 
                 if (!aRandomScript.Any()) break;
 
@@ -285,6 +309,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (playerLostLevels)
                 CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasDroppedLevels"].Format(new { CharacterName = PlayerCharacter.Name, Level = PlayerCharacter.Level.ToString() }), Color.OrangeRed, events);
+
+            if (playerLearnsetChanged)
+                CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasRegressedOnLearnset"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
 
             var playerEquipmentCount = PlayerCharacter.Equipment.Count;
             

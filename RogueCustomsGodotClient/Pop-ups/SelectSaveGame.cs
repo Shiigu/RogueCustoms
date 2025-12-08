@@ -157,7 +157,10 @@ public partial class SelectSaveGame : Control
                                         new() { Text = TranslationServer.Translate("OKButtonText"), Callback = null, ActionPress = "ui_accept" }
                                                     }, new Color() { R8 = 255, G8 = 0, B8 = 0, A = 1 });
                 }
-                FillTable();
+                if(_globalState.SavedGames.Count > 0)
+                    FillTable();
+                else
+                    _cancelButton.EmitSignal("pressed");
             }
         }
         catch (Exception ex)

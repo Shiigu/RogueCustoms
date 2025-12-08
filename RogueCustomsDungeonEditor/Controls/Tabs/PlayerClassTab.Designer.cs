@@ -61,6 +61,8 @@
             label3 = new System.Windows.Forms.Label();
             clbPlayerAvailableSlots = new System.Windows.Forms.CheckedListBox();
             chkPlayerNeedsToIdentifyItems = new System.Windows.Forms.CheckBox();
+            cmbPlayerLearnset = new System.Windows.Forms.ComboBox();
+            label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)nudPlayerInventorySize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPlayerSaleValuePercentage).BeginInit();
             SuspendLayout();
@@ -400,7 +402,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            label3.Location = new System.Drawing.Point(48, 682);
+            label3.Location = new System.Drawing.Point(61, 726);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(206, 15);
             label3.TabIndex = 249;
@@ -409,7 +411,7 @@
             // clbPlayerAvailableSlots
             // 
             clbPlayerAvailableSlots.FormattingEnabled = true;
-            clbPlayerAvailableSlots.Location = new System.Drawing.Point(60, 708);
+            clbPlayerAvailableSlots.Location = new System.Drawing.Point(73, 752);
             clbPlayerAvailableSlots.Name = "clbPlayerAvailableSlots";
             clbPlayerAvailableSlots.Size = new System.Drawing.Size(175, 130);
             clbPlayerAvailableSlots.TabIndex = 250;
@@ -425,11 +427,31 @@
             chkPlayerNeedsToIdentifyItems.UseVisualStyleBackColor = true;
             chkPlayerNeedsToIdentifyItems.CheckedChanged += chkPlayerNeedsToIdentifyItems_CheckedChanged;
             // 
+            // cmbPlayerLearnset
+            // 
+            cmbPlayerLearnset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbPlayerLearnset.FormattingEnabled = true;
+            cmbPlayerLearnset.Location = new System.Drawing.Point(65, 690);
+            cmbPlayerLearnset.Name = "cmbPlayerLearnset";
+            cmbPlayerLearnset.Size = new System.Drawing.Size(146, 23);
+            cmbPlayerLearnset.TabIndex = 253;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(8, 693);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(51, 15);
+            label5.TabIndex = 252;
+            label5.Text = "Learnset";
+            // 
             // PlayerClassTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(cmbPlayerLearnset);
+            Controls.Add(label5);
             Controls.Add(chkPlayerNeedsToIdentifyItems);
             Controls.Add(clbPlayerAvailableSlots);
             Controls.Add(label3);
@@ -504,5 +526,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox clbPlayerAvailableSlots;
         private System.Windows.Forms.CheckBox chkPlayerNeedsToIdentifyItems;
+        private System.Windows.Forms.ComboBox cmbPlayerLearnset;
+        private System.Windows.Forms.Label label5;
     }
 }

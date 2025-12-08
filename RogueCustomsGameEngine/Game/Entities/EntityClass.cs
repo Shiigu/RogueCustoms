@@ -39,6 +39,8 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly string ExperienceToLevelUpFormula;
         public ActionWithEffects DefaultOnAttack { get; set; }
 
+        public readonly Learnset BaseLearnset;
+
         #endregion
 
         #region Player Character-only data
@@ -229,6 +231,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 DefaultOnAttack = ActionWithEffects.Create(playerClassInfo.DefaultOnAttack, dungeon.ActionSchools);
                 AvailableSlots = dungeon.ItemSlots.FindAll(islot => playerClassInfo.AvailableSlots.Contains(islot.Id));
                 NeedsToIdentifyItems = playerClassInfo.NeedsToIdentifyItems;
+                BaseLearnset = dungeon.Learnsets.Find(ls => ls.Id.Equals(playerClassInfo.Learnset, StringComparison.InvariantCultureIgnoreCase));
             }
             else if (classInfo is NPCInfo npcInfo)
             {
@@ -341,6 +344,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 DefaultOnAttack = ActionWithEffects.Create(npcInfo.DefaultOnAttack, dungeon.ActionSchools);
                 AvailableSlots = dungeon.ItemSlots.FindAll(islot => npcInfo.AvailableSlots.Contains(islot.Id));
                 BeforeProcessAI = ActionWithEffects.Create(npcInfo.BeforeProcessAI, dungeon.ActionSchools);
+                BaseLearnset = dungeon.Learnsets.Find(ls => ls.Id.Equals(npcInfo.Learnset, StringComparison.InvariantCultureIgnoreCase));
             }
             else if (classInfo is TrapInfo trapInfo)
             {

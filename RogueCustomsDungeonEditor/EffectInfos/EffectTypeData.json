@@ -3987,5 +3987,82 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "ChangeLearnset",
+    "TreeViewDisplayText": "Change ({Target})'s Learnset to ({LearnsetId})",
+    "ComboBoxDisplayName": "Change Learnset",
+    "Description": "Target will change their Learnset to the one specified.\n\nThey will forget all Scripts from the current Learnset and obtain the Script set for their new Learnset and level.\n\nDoes nothing if the Learnset to change is the one they already have.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": true,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": false,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get their Learnset changed. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "LearnsetId",
+        "DisplayName": "Learnset Id",
+        "Description": "The Id of the Learnset to be set.",
+        "ParameterType": "Learnset",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for the Target to change their Learnset. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "InformThePlayer",
+        "DisplayName": "Inform the Player?",
+        "Description": "If true, the Player will be informed of this Learnset being set.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]

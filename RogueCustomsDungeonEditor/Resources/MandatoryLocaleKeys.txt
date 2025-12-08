@@ -133,3 +133,5 @@ CharacterHasLostItems
 CharacterHasLostEquipment
 CharacterHasLostScripts
 CharacterHasLostAllies
+CharacterHasRegressedOnLearnset
+CharacterHasChangedLearnset

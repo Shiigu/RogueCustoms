@@ -280,7 +280,11 @@ public partial class OptionsScreen : Control
 
     private void MoveFocus(int step)
     {
-        _index = (_index + step + _buttons.Count) % _buttons.Count;
-        _buttons[_index].GrabFocus();
+        do
+        {
+            _index = (_index + step + _buttons.Count) % _buttons.Count;
+            _buttons[_index].GrabFocus();
+        }
+        while (_buttons[_index].Disabled);
     }
 }

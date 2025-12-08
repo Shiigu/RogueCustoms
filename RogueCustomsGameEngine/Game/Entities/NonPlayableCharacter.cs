@@ -1010,7 +1010,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             for (int i = 0; i < OnInteracted.Count; i++)
             {
                 OnInteracted[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OnInteracted[i].Id}";
-                if (OnInteracted[i].IsScript)
+                if (OnInteracted[i].IsFromLearnScript)
                     OnInteracted[i].SelectionId += "_S";
             }
         }

@@ -98,6 +98,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddValidationResultNode("Item Types", dungeonValidator.ItemTypeValidationMessages);
 
+                AddValidationResultNode("Quality Levels", dungeonValidator.QualityLevelValidationMessages);
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.AffixValidationMessages)
                 {
                     AddValidationResultNode($"Affix {Id}", ValidationMessages);
@@ -106,6 +108,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 foreach (var (Id, ValidationMessages) in dungeonValidator.NPCModifierValidationMessages)
                 {
                     AddValidationResultNode($"NPC Modifier {Id}", ValidationMessages);
+                }
+
+                foreach (var (Id, ValidationMessages) in dungeonValidator.LearnsetValidationMessages)
+                {
+                    AddValidationResultNode($"Learnset {Id}", ValidationMessages);
                 }
 
                 foreach (var (Id, ValidationMessages) in dungeonValidator.PlayerClassValidationMessages)

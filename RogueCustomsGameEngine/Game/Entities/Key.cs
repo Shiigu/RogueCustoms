@@ -190,7 +190,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             for (int i = 0; i < OwnOnAttack.Count; i++)
             {
                 OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
-                if (OwnOnAttack[i].IsScript)
+                if (OwnOnAttack[i].IsFromLearnScript)
                     OwnOnAttack[i].SelectionId += "_S";
             }
         }

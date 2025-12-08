@@ -64,7 +64,7 @@
             tlpScriptsTab.RowCount = 2;
             tlpScriptsTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             tlpScriptsTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
-            tlpScriptsTab.Size = new System.Drawing.Size(728, 316);
+            tlpScriptsTab.Size = new System.Drawing.Size(728, 429);
             tlpScriptsTab.TabIndex = 1;
             // 
             // tlpHeader
@@ -80,7 +80,7 @@
             tlpHeader.Name = "tlpHeader";
             tlpHeader.RowCount = 1;
             tlpHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tlpHeader.Size = new System.Drawing.Size(700, 31);
+            tlpHeader.Size = new System.Drawing.Size(700, 42);
             tlpHeader.TabIndex = 0;
             // 
             // label3
@@ -90,7 +90,7 @@
             label3.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label3.Location = new System.Drawing.Point(345, 1);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(351, 29);
+            label3.Size = new System.Drawing.Size(351, 40);
             label3.TabIndex = 2;
             label3.Text = "When called...";
             label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -102,7 +102,7 @@
             label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
             label1.Location = new System.Drawing.Point(4, 1);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(334, 29);
+            label1.Size = new System.Drawing.Size(334, 40);
             label1.TabIndex = 0;
             label1.Text = "Script Id";
             label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -111,10 +111,10 @@
             // 
             pnlTable.AutoScroll = true;
             pnlTable.Controls.Add(tlpScripts);
-            pnlTable.Location = new System.Drawing.Point(0, 31);
+            pnlTable.Location = new System.Drawing.Point(0, 42);
             pnlTable.Margin = new System.Windows.Forms.Padding(0);
             pnlTable.Name = "pnlTable";
-            pnlTable.Size = new System.Drawing.Size(718, 285);
+            pnlTable.Size = new System.Drawing.Size(718, 337);
             pnlTable.TabIndex = 1;
             // 
             // tlpScripts
@@ -134,7 +134,7 @@
             // 
             // btnAddScript
             // 
-            btnAddScript.Location = new System.Drawing.Point(224, 319);
+            btnAddScript.Location = new System.Drawing.Point(224, 445);
             btnAddScript.Name = "btnAddScript";
             btnAddScript.Size = new System.Drawing.Size(115, 23);
             btnAddScript.TabIndex = 2;
@@ -144,7 +144,7 @@
             // 
             // btnRemoveScript
             // 
-            btnRemoveScript.Location = new System.Drawing.Point(345, 319);
+            btnRemoveScript.Location = new System.Drawing.Point(345, 445);
             btnRemoveScript.Name = "btnRemoveScript";
             btnRemoveScript.Size = new System.Drawing.Size(115, 23);
             btnRemoveScript.TabIndex = 3;
@@ -161,7 +161,7 @@
             Controls.Add(tlpScriptsTab);
             Controls.Add(lblNoScripts);
             Name = "ScriptsTab";
-            Size = new System.Drawing.Size(728, 347);
+            Size = new System.Drawing.Size(728, 471);
             tlpScriptsTab.ResumeLayout(false);
             tlpHeader.ResumeLayout(false);
             tlpHeader.PerformLayout();

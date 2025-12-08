@@ -38,6 +38,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> AffixValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCModifierValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public DungeonValidationMessages QualityLevelValidationMessages { get; private set; }
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> LearnsetValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> PlayerClassValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> NPCValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
@@ -88,6 +89,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.NPCModifierInfos.Count
                 + DungeonJson.QualityLevelInfos.Count
                 + DungeonJson.LootTableInfos.Count
+                + DungeonJson.LearnsetInfos.Count
                 + DungeonJson.PlayerClasses.Count
                 + DungeonJson.NPCs.Count
                 + DungeonJson.Items.Count
@@ -234,6 +236,13 @@ namespace RogueCustomsDungeonEditor.Validators
             QualityLevelValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
             UpdateProgressLabel($"Quality Level Validation complete!", true, DungeonJson.QualityLevelInfos.Count);
 
+            foreach (var learnsetInfo in DungeonJson.LearnsetInfos)
+            {
+                UpdateProgressLabel($"Running Learnset {learnsetInfo.Id} Validation...", false);
+                LearnsetValidationMessages.Add((learnsetInfo.Id, await DungeonLearnsetValidator.Validate(learnsetInfo, DungeonJson, sampleDungeon)));
+                UpdateProgressLabel($"Learnset {learnsetInfo.Id} Validation complete!", true);
+            }
+
             foreach (var playerInfo in DungeonJson.PlayerClasses)
             {
                 UpdateProgressLabel($"Running Player Class {playerInfo.Id} Validation...", false);
@@ -283,6 +292,12 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !FloorPlanValidationMessages.HasErrors
                 && !FloorGroupValidationMessages.Exists(ftvm => ftvm.ValidationMessages.HasErrors)
                 && !FactionValidationMessages.Exists(fvm => fvm.ValidationMessages.HasErrors)
+                && !StatValidationMessages.Exists(svm => svm.ValidationMessages.HasErrors)
+                && !LearnsetValidationMessages.Exists(lvm => lvm.ValidationMessages.HasErrors)
+                && !TileTypeValidationMessages.Exists(ttvm => ttvm.ValidationMessages.HasErrors)
+                && !TileSetValidationMessages.Exists(tsvm => tsvm.ValidationMessages.HasErrors)
+                && !LootTableValidationMessages.Exists(ltvm => ltvm.ValidationMessages.HasErrors)
+                && !PlayerClassValidationMessages.Exists(pcvm => pcvm.ValidationMessages.HasErrors)
                 && !NPCValidationMessages.Exists(cvm => cvm.ValidationMessages.HasErrors)
                 && !ElementValidationMessages.Exists(evm => evm.ValidationMessages.HasErrors)
                 && !ActionSchoolValidationMessages.HasErrors

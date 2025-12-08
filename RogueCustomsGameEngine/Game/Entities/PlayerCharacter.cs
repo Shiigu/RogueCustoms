@@ -193,6 +193,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public override async Task GainExperience(int GamePointsToAdd)
         {
             var events = new List<DisplayEventDto>();
+            var oldLearnset = OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => Map.Locale[ooa.Name]).ToList();
             var oldLevel = Level;
             var statsPreExpGain = new List<(string Name, decimal Amount)>();
             var statsAfterExpGain = new List<(string Name, decimal Amount)>();
@@ -206,6 +207,11 @@ namespace RogueCustomsGameEngine.Game.Entities
             });
             if (Level > oldLevel)
             {
+                var newLearnset = OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => Map.Locale[ooa.Name]).ToList();
+
+                var gainedScripts = newLearnset.Except(oldLearnset).ToList();
+                var lostScripts = oldLearnset.Except(newLearnset).ToList();
+
                 foreach (var stat in UsedStats)
                 {
                     statsAfterExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
@@ -236,8 +242,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 );
                 var levelUpMessage = new StringBuilder(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }));
-                levelUpMessage.AppendLine();
-                levelUpMessage.AppendLine();
+
+                var firstStatPrint = true;
 
                 foreach (var statAfterExpGain in statsAfterExpGain)
                 {
@@ -249,12 +255,37 @@ namespace RogueCustomsGameEngine.Game.Entities
                         continue;
                     if (statAfterExpGain.Amount > correspondingStatPreExpGain.Amount)
                     {
-                        if(correspondingStat.StatType == StatType.Decimal || correspondingStat.StatType == StatType.Regeneration)
+                        if (firstStatPrint)
+                        {
+                            levelUpMessage.AppendLine();
+                            levelUpMessage.AppendLine();
+                            firstStatPrint = false;
+                        }
+
+                        if (correspondingStat.StatType == StatType.Decimal || correspondingStat.StatType == StatType.Regeneration)
                             levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = statAfterExpGain.Name, Amount = (statAfterExpGain.Amount - correspondingStatPreExpGain.Amount).ToString("0.#####") }));
                         else
                             levelUpMessage.AppendLine(Map.Locale["CharacterStatGotBuffed"].Format(new { CharacterName = Name, StatName = statAfterExpGain.Name, Amount = (statAfterExpGain.Amount - correspondingStatPreExpGain.Amount).ToString() }));
                     }
                 }
+
+                if (lostScripts.Any() || gainedScripts.Any())
+                {
+                    levelUpMessage.AppendLine();
+
+                    foreach (var name in lostScripts)
+                    {
+                        if (!gainedScripts.Contains(name)) // So that it does not say it forgot and learned a script with the same name at the same time
+                            levelUpMessage.AppendLine(Map.Locale["CharacterForgotScript"].Format(new { CharacterName = Name, ScriptName = name }));
+                    }
+
+                    foreach (var name in gainedScripts)
+                    {
+                        if (!lostScripts.Contains(name)) // So that it does not say it forgot and learned a script with the same name at the same time
+                            levelUpMessage.AppendLine(Map.Locale["CharacterLearnedScript"].Format(new { CharacterName = Name, ScriptName = name }));
+                    }
+                }
+
                 events.Add(
                     new()
                     {

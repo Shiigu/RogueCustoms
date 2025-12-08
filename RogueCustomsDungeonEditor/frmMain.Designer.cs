@@ -81,6 +81,8 @@ namespace RogueCustomsDungeonEditor
             AffixTab = new Controls.Tabs.AffixTab();
             tpQualityLevels = new TabPage();
             QualityLevelsTab = new Controls.Tabs.QualityLevelsTab();
+            tpLearnsets = new TabPage();
+            LearnsetTab = new Controls.Tabs.LearnsetTab();
             tpPlayerClass = new TabPage();
             PlayerClassTab = new Controls.Tabs.PlayerClassTab();
             tpNPC = new TabPage();
@@ -116,6 +118,7 @@ namespace RogueCustomsDungeonEditor
             tpNPCModifiers.SuspendLayout();
             tpAffixes.SuspendLayout();
             tpQualityLevels.SuspendLayout();
+            tpLearnsets.SuspendLayout();
             tpPlayerClass.SuspendLayout();
             tpNPC.SuspendLayout();
             tpItem.SuspendLayout();
@@ -311,6 +314,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpNPCModifiers);
             tbTabs.Controls.Add(tpAffixes);
             tbTabs.Controls.Add(tpQualityLevels);
+            tbTabs.Controls.Add(tpLearnsets);
             tbTabs.Controls.Add(tpPlayerClass);
             tbTabs.Controls.Add(tpNPC);
             tbTabs.Controls.Add(tpItem);
@@ -353,7 +357,7 @@ namespace RogueCustomsDungeonEditor
             tpLocales.Location = new System.Drawing.Point(4, 24);
             tpLocales.Name = "tpLocales";
             tpLocales.Padding = new Padding(3);
-            tpLocales.Size = new System.Drawing.Size(742, 388);
+            tpLocales.Size = new System.Drawing.Size(859, 521);
             tpLocales.TabIndex = 1;
             tpLocales.Text = "Locale Entries";
             tpLocales.UseVisualStyleBackColor = true;
@@ -365,7 +369,7 @@ namespace RogueCustomsDungeonEditor
             LocaleEntriesTab.Dock = DockStyle.Fill;
             LocaleEntriesTab.Location = new System.Drawing.Point(3, 3);
             LocaleEntriesTab.Name = "LocaleEntriesTab";
-            LocaleEntriesTab.Size = new System.Drawing.Size(736, 382);
+            LocaleEntriesTab.Size = new System.Drawing.Size(853, 515);
             LocaleEntriesTab.TabIndex = 0;
             // 
             // tpTileTypeInfo
@@ -373,7 +377,7 @@ namespace RogueCustomsDungeonEditor
             tpTileTypeInfo.Controls.Add(TileTypeTab);
             tpTileTypeInfo.Location = new System.Drawing.Point(4, 24);
             tpTileTypeInfo.Name = "tpTileTypeInfo";
-            tpTileTypeInfo.Size = new System.Drawing.Size(742, 388);
+            tpTileTypeInfo.Size = new System.Drawing.Size(859, 521);
             tpTileTypeInfo.TabIndex = 11;
             tpTileTypeInfo.Text = "Tile Type";
             tpTileTypeInfo.UseVisualStyleBackColor = true;
@@ -383,7 +387,7 @@ namespace RogueCustomsDungeonEditor
             TileTypeTab.Dock = DockStyle.Fill;
             TileTypeTab.Location = new System.Drawing.Point(0, 0);
             TileTypeTab.Name = "TileTypeTab";
-            TileTypeTab.Size = new System.Drawing.Size(742, 388);
+            TileTypeTab.Size = new System.Drawing.Size(859, 521);
             TileTypeTab.TabIndex = 0;
             // 
             // tpTileSetInfos
@@ -392,7 +396,7 @@ namespace RogueCustomsDungeonEditor
             tpTileSetInfos.Controls.Add(TilesetTab);
             tpTileSetInfos.Location = new System.Drawing.Point(4, 24);
             tpTileSetInfos.Name = "tpTileSetInfos";
-            tpTileSetInfos.Size = new System.Drawing.Size(742, 388);
+            tpTileSetInfos.Size = new System.Drawing.Size(859, 521);
             tpTileSetInfos.TabIndex = 10;
             tpTileSetInfos.Text = "Tileset";
             tpTileSetInfos.UseVisualStyleBackColor = true;
@@ -412,7 +416,7 @@ namespace RogueCustomsDungeonEditor
             tpFloorInfos.Controls.Add(FloorGroupTab);
             tpFloorInfos.Location = new System.Drawing.Point(4, 24);
             tpFloorInfos.Name = "tpFloorInfos";
-            tpFloorInfos.Size = new System.Drawing.Size(742, 388);
+            tpFloorInfos.Size = new System.Drawing.Size(859, 521);
             tpFloorInfos.TabIndex = 2;
             tpFloorInfos.Text = "Floor Group";
             tpFloorInfos.UseVisualStyleBackColor = true;
@@ -423,7 +427,7 @@ namespace RogueCustomsDungeonEditor
             FloorGroupTab.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             FloorGroupTab.Location = new System.Drawing.Point(0, 0);
             FloorGroupTab.Name = "FloorGroupTab";
-            FloorGroupTab.Size = new System.Drawing.Size(708, 400);
+            FloorGroupTab.Size = new System.Drawing.Size(783, 494);
             FloorGroupTab.TabIndex = 0;
             // 
             // tbActionSchoolInfos
@@ -432,7 +436,7 @@ namespace RogueCustomsDungeonEditor
             tbActionSchoolInfos.Location = new System.Drawing.Point(4, 24);
             tbActionSchoolInfos.Name = "tbActionSchoolInfos";
             tbActionSchoolInfos.Padding = new Padding(3);
-            tbActionSchoolInfos.Size = new System.Drawing.Size(742, 388);
+            tbActionSchoolInfos.Size = new System.Drawing.Size(859, 521);
             tbActionSchoolInfos.TabIndex = 15;
             tbActionSchoolInfos.Text = "Action Schools";
             tbActionSchoolInfos.UseVisualStyleBackColor = true;
@@ -443,7 +447,7 @@ namespace RogueCustomsDungeonEditor
             ActionSchoolsTab.Dock = DockStyle.Fill;
             ActionSchoolsTab.Location = new System.Drawing.Point(3, 3);
             ActionSchoolsTab.Name = "ActionSchoolsTab";
-            ActionSchoolsTab.Size = new System.Drawing.Size(736, 382);
+            ActionSchoolsTab.Size = new System.Drawing.Size(853, 515);
             ActionSchoolsTab.TabIndex = 0;
             // 
             // tbElementInfos
@@ -451,7 +455,7 @@ namespace RogueCustomsDungeonEditor
             tbElementInfos.Controls.Add(ElementTab);
             tbElementInfos.Location = new System.Drawing.Point(4, 24);
             tbElementInfos.Name = "tbElementInfos";
-            tbElementInfos.Size = new System.Drawing.Size(742, 388);
+            tbElementInfos.Size = new System.Drawing.Size(859, 521);
             tbElementInfos.TabIndex = 13;
             tbElementInfos.Text = "Attack Element";
             tbElementInfos.UseVisualStyleBackColor = true;
@@ -463,7 +467,7 @@ namespace RogueCustomsDungeonEditor
             ElementTab.Dock = DockStyle.Fill;
             ElementTab.Location = new System.Drawing.Point(0, 0);
             ElementTab.Name = "ElementTab";
-            ElementTab.Size = new System.Drawing.Size(742, 388);
+            ElementTab.Size = new System.Drawing.Size(859, 521);
             ElementTab.TabIndex = 0;
             // 
             // tpFactionInfos
@@ -471,7 +475,7 @@ namespace RogueCustomsDungeonEditor
             tpFactionInfos.Controls.Add(FactionTab);
             tpFactionInfos.Location = new System.Drawing.Point(4, 24);
             tpFactionInfos.Name = "tpFactionInfos";
-            tpFactionInfos.Size = new System.Drawing.Size(742, 388);
+            tpFactionInfos.Size = new System.Drawing.Size(859, 521);
             tpFactionInfos.TabIndex = 3;
             tpFactionInfos.Text = "Faction";
             tpFactionInfos.UseVisualStyleBackColor = true;
@@ -483,7 +487,7 @@ namespace RogueCustomsDungeonEditor
             FactionTab.Dock = DockStyle.Fill;
             FactionTab.Location = new System.Drawing.Point(0, 0);
             FactionTab.Name = "FactionTab";
-            FactionTab.Size = new System.Drawing.Size(742, 388);
+            FactionTab.Size = new System.Drawing.Size(859, 521);
             FactionTab.TabIndex = 0;
             // 
             // tpLootTableInfos
@@ -491,7 +495,7 @@ namespace RogueCustomsDungeonEditor
             tpLootTableInfos.Controls.Add(LootTableTab);
             tpLootTableInfos.Location = new System.Drawing.Point(4, 24);
             tpLootTableInfos.Name = "tpLootTableInfos";
-            tpLootTableInfos.Size = new System.Drawing.Size(742, 388);
+            tpLootTableInfos.Size = new System.Drawing.Size(859, 521);
             tpLootTableInfos.TabIndex = 16;
             tpLootTableInfos.Text = "Loot Tables";
             tpLootTableInfos.UseVisualStyleBackColor = true;
@@ -501,7 +505,7 @@ namespace RogueCustomsDungeonEditor
             LootTableTab.Dock = DockStyle.Fill;
             LootTableTab.Location = new System.Drawing.Point(0, 0);
             LootTableTab.Name = "LootTableTab";
-            LootTableTab.Size = new System.Drawing.Size(742, 388);
+            LootTableTab.Size = new System.Drawing.Size(859, 521);
             LootTableTab.TabIndex = 0;
             // 
             // tpCurrencyInfo
@@ -509,7 +513,7 @@ namespace RogueCustomsDungeonEditor
             tpCurrencyInfo.Controls.Add(CurrencyTab);
             tpCurrencyInfo.Location = new System.Drawing.Point(4, 24);
             tpCurrencyInfo.Name = "tpCurrencyInfo";
-            tpCurrencyInfo.Size = new System.Drawing.Size(742, 388);
+            tpCurrencyInfo.Size = new System.Drawing.Size(859, 521);
             tpCurrencyInfo.TabIndex = 17;
             tpCurrencyInfo.Text = "Currency";
             tpCurrencyInfo.UseVisualStyleBackColor = true;
@@ -519,7 +523,7 @@ namespace RogueCustomsDungeonEditor
             CurrencyTab.Dock = DockStyle.Fill;
             CurrencyTab.Location = new System.Drawing.Point(0, 0);
             CurrencyTab.Name = "CurrencyTab";
-            CurrencyTab.Size = new System.Drawing.Size(742, 388);
+            CurrencyTab.Size = new System.Drawing.Size(859, 521);
             CurrencyTab.TabIndex = 0;
             // 
             // tpItemSlotInfos
@@ -528,7 +532,7 @@ namespace RogueCustomsDungeonEditor
             tpItemSlotInfos.Location = new System.Drawing.Point(4, 24);
             tpItemSlotInfos.Name = "tpItemSlotInfos";
             tpItemSlotInfos.Padding = new Padding(3);
-            tpItemSlotInfos.Size = new System.Drawing.Size(742, 388);
+            tpItemSlotInfos.Size = new System.Drawing.Size(859, 521);
             tpItemSlotInfos.TabIndex = 20;
             tpItemSlotInfos.Text = "Item Slots";
             tpItemSlotInfos.UseVisualStyleBackColor = true;
@@ -538,7 +542,7 @@ namespace RogueCustomsDungeonEditor
             ItemSlotsTab.Dock = DockStyle.Fill;
             ItemSlotsTab.Location = new System.Drawing.Point(3, 3);
             ItemSlotsTab.Name = "ItemSlotsTab";
-            ItemSlotsTab.Size = new System.Drawing.Size(736, 382);
+            ItemSlotsTab.Size = new System.Drawing.Size(853, 515);
             ItemSlotsTab.TabIndex = 0;
             // 
             // tpItemTypeInfos
@@ -547,7 +551,7 @@ namespace RogueCustomsDungeonEditor
             tpItemTypeInfos.Location = new System.Drawing.Point(4, 24);
             tpItemTypeInfos.Name = "tpItemTypeInfos";
             tpItemTypeInfos.Padding = new Padding(3);
-            tpItemTypeInfos.Size = new System.Drawing.Size(742, 388);
+            tpItemTypeInfos.Size = new System.Drawing.Size(859, 521);
             tpItemTypeInfos.TabIndex = 21;
             tpItemTypeInfos.Text = "Item Types";
             tpItemTypeInfos.UseVisualStyleBackColor = true;
@@ -557,7 +561,7 @@ namespace RogueCustomsDungeonEditor
             ItemTypesTab.Dock = DockStyle.Fill;
             ItemTypesTab.Location = new System.Drawing.Point(3, 3);
             ItemTypesTab.Name = "ItemTypesTab";
-            ItemTypesTab.Size = new System.Drawing.Size(736, 382);
+            ItemTypesTab.Size = new System.Drawing.Size(853, 515);
             ItemTypesTab.TabIndex = 0;
             // 
             // tbStatInfos
@@ -566,7 +570,7 @@ namespace RogueCustomsDungeonEditor
             tbStatInfos.Location = new System.Drawing.Point(4, 24);
             tbStatInfos.Name = "tbStatInfos";
             tbStatInfos.Padding = new Padding(3);
-            tbStatInfos.Size = new System.Drawing.Size(742, 388);
+            tbStatInfos.Size = new System.Drawing.Size(859, 521);
             tbStatInfos.TabIndex = 12;
             tbStatInfos.Text = "Stat";
             tbStatInfos.UseVisualStyleBackColor = true;
@@ -578,7 +582,7 @@ namespace RogueCustomsDungeonEditor
             StatTab.Dock = DockStyle.Fill;
             StatTab.Location = new System.Drawing.Point(3, 3);
             StatTab.Name = "StatTab";
-            StatTab.Size = new System.Drawing.Size(736, 382);
+            StatTab.Size = new System.Drawing.Size(853, 515);
             StatTab.TabIndex = 0;
             // 
             // tpNPCModifiers
@@ -587,17 +591,17 @@ namespace RogueCustomsDungeonEditor
             tpNPCModifiers.Location = new System.Drawing.Point(4, 24);
             tpNPCModifiers.Name = "tpNPCModifiers";
             tpNPCModifiers.Padding = new Padding(3);
-            tpNPCModifiers.Size = new System.Drawing.Size(742, 388);
+            tpNPCModifiers.Size = new System.Drawing.Size(859, 521);
             tpNPCModifiers.TabIndex = 22;
             tpNPCModifiers.Text = "NPC Modifiers";
             tpNPCModifiers.UseVisualStyleBackColor = true;
             // 
-            // NPCModifiersTab
+            // NPCModifierTab
             // 
             NPCModifierTab.Dock = DockStyle.Fill;
             NPCModifierTab.Location = new System.Drawing.Point(3, 3);
-            NPCModifierTab.Name = "NPCModifiersTab";
-            NPCModifierTab.Size = new System.Drawing.Size(736, 382);
+            NPCModifierTab.Name = "NPCModifierTab";
+            NPCModifierTab.Size = new System.Drawing.Size(853, 515);
             NPCModifierTab.TabIndex = 0;
             // 
             // tpAffixes
@@ -605,7 +609,7 @@ namespace RogueCustomsDungeonEditor
             tpAffixes.Controls.Add(AffixTab);
             tpAffixes.Location = new System.Drawing.Point(4, 24);
             tpAffixes.Name = "tpAffixes";
-            tpAffixes.Size = new System.Drawing.Size(742, 388);
+            tpAffixes.Size = new System.Drawing.Size(859, 521);
             tpAffixes.TabIndex = 18;
             tpAffixes.Text = "Affixes";
             tpAffixes.UseVisualStyleBackColor = true;
@@ -615,7 +619,7 @@ namespace RogueCustomsDungeonEditor
             AffixTab.Dock = DockStyle.Fill;
             AffixTab.Location = new System.Drawing.Point(0, 0);
             AffixTab.Name = "AffixTab";
-            AffixTab.Size = new System.Drawing.Size(742, 388);
+            AffixTab.Size = new System.Drawing.Size(859, 521);
             AffixTab.TabIndex = 0;
             // 
             // tpQualityLevels
@@ -623,7 +627,7 @@ namespace RogueCustomsDungeonEditor
             tpQualityLevels.Controls.Add(QualityLevelsTab);
             tpQualityLevels.Location = new System.Drawing.Point(4, 24);
             tpQualityLevels.Name = "tpQualityLevels";
-            tpQualityLevels.Size = new System.Drawing.Size(742, 388);
+            tpQualityLevels.Size = new System.Drawing.Size(859, 521);
             tpQualityLevels.TabIndex = 19;
             tpQualityLevels.Text = "Quality Levels";
             tpQualityLevels.UseVisualStyleBackColor = true;
@@ -633,8 +637,26 @@ namespace RogueCustomsDungeonEditor
             QualityLevelsTab.Dock = DockStyle.Fill;
             QualityLevelsTab.Location = new System.Drawing.Point(0, 0);
             QualityLevelsTab.Name = "QualityLevelsTab";
-            QualityLevelsTab.Size = new System.Drawing.Size(742, 388);
+            QualityLevelsTab.Size = new System.Drawing.Size(859, 521);
             QualityLevelsTab.TabIndex = 0;
+            // 
+            // tpLearnsets
+            // 
+            tpLearnsets.Controls.Add(LearnsetTab);
+            tpLearnsets.Location = new System.Drawing.Point(4, 24);
+            tpLearnsets.Name = "tpLearnsets";
+            tpLearnsets.Size = new System.Drawing.Size(859, 521);
+            tpLearnsets.TabIndex = 23;
+            tpLearnsets.Text = "Learnset";
+            tpLearnsets.UseVisualStyleBackColor = true;
+            // 
+            // LearnsetTab
+            // 
+            LearnsetTab.Dock = DockStyle.Fill;
+            LearnsetTab.Location = new System.Drawing.Point(0, 0);
+            LearnsetTab.Name = "LearnsetTab";
+            LearnsetTab.Size = new System.Drawing.Size(859, 521);
+            LearnsetTab.TabIndex = 0;
             // 
             // tpPlayerClass
             // 
@@ -642,7 +664,7 @@ namespace RogueCustomsDungeonEditor
             tpPlayerClass.Controls.Add(PlayerClassTab);
             tpPlayerClass.Location = new System.Drawing.Point(4, 24);
             tpPlayerClass.Name = "tpPlayerClass";
-            tpPlayerClass.Size = new System.Drawing.Size(742, 388);
+            tpPlayerClass.Size = new System.Drawing.Size(859, 521);
             tpPlayerClass.TabIndex = 4;
             tpPlayerClass.Text = "Player Class";
             tpPlayerClass.UseVisualStyleBackColor = true;
@@ -654,7 +676,7 @@ namespace RogueCustomsDungeonEditor
             PlayerClassTab.Dock = DockStyle.Top;
             PlayerClassTab.Location = new System.Drawing.Point(0, 0);
             PlayerClassTab.Name = "PlayerClassTab";
-            PlayerClassTab.Size = new System.Drawing.Size(725, 845);
+            PlayerClassTab.Size = new System.Drawing.Size(842, 885);
             PlayerClassTab.TabIndex = 0;
             // 
             // tpNPC
@@ -663,7 +685,7 @@ namespace RogueCustomsDungeonEditor
             tpNPC.Controls.Add(NPCTab);
             tpNPC.Location = new System.Drawing.Point(4, 24);
             tpNPC.Name = "tpNPC";
-            tpNPC.Size = new System.Drawing.Size(742, 388);
+            tpNPC.Size = new System.Drawing.Size(859, 521);
             tpNPC.TabIndex = 5;
             tpNPC.Text = "NPC";
             tpNPC.UseVisualStyleBackColor = true;
@@ -675,7 +697,7 @@ namespace RogueCustomsDungeonEditor
             NPCTab.Dock = DockStyle.Top;
             NPCTab.Location = new System.Drawing.Point(0, 0);
             NPCTab.Name = "NPCTab";
-            NPCTab.Size = new System.Drawing.Size(725, 1385);
+            NPCTab.Size = new System.Drawing.Size(842, 1416);
             NPCTab.TabIndex = 0;
             // 
             // tpItem
@@ -684,7 +706,7 @@ namespace RogueCustomsDungeonEditor
             tpItem.Controls.Add(ItemTab);
             tpItem.Location = new System.Drawing.Point(4, 24);
             tpItem.Name = "tpItem";
-            tpItem.Size = new System.Drawing.Size(742, 388);
+            tpItem.Size = new System.Drawing.Size(859, 521);
             tpItem.TabIndex = 6;
             tpItem.Text = "Item";
             tpItem.UseVisualStyleBackColor = true;
@@ -696,7 +718,7 @@ namespace RogueCustomsDungeonEditor
             ItemTab.Dock = DockStyle.Top;
             ItemTab.Location = new System.Drawing.Point(0, 0);
             ItemTab.Name = "ItemTab";
-            ItemTab.Size = new System.Drawing.Size(725, 586);
+            ItemTab.Size = new System.Drawing.Size(842, 642);
             ItemTab.TabIndex = 0;
             // 
             // tpTrap
@@ -704,7 +726,7 @@ namespace RogueCustomsDungeonEditor
             tpTrap.Controls.Add(TrapTab);
             tpTrap.Location = new System.Drawing.Point(4, 24);
             tpTrap.Name = "tpTrap";
-            tpTrap.Size = new System.Drawing.Size(742, 388);
+            tpTrap.Size = new System.Drawing.Size(859, 521);
             tpTrap.TabIndex = 7;
             tpTrap.Text = "Trap";
             tpTrap.UseVisualStyleBackColor = true;
@@ -716,7 +738,7 @@ namespace RogueCustomsDungeonEditor
             TrapTab.Dock = DockStyle.Top;
             TrapTab.Location = new System.Drawing.Point(0, 0);
             TrapTab.Name = "TrapTab";
-            TrapTab.Size = new System.Drawing.Size(742, 304);
+            TrapTab.Size = new System.Drawing.Size(859, 304);
             TrapTab.TabIndex = 0;
             // 
             // tpAlteredStatus
@@ -724,7 +746,7 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.Controls.Add(AlteredStatusTab);
             tpAlteredStatus.Location = new System.Drawing.Point(4, 24);
             tpAlteredStatus.Name = "tpAlteredStatus";
-            tpAlteredStatus.Size = new System.Drawing.Size(742, 388);
+            tpAlteredStatus.Size = new System.Drawing.Size(859, 521);
             tpAlteredStatus.TabIndex = 8;
             tpAlteredStatus.Text = "Altered Status";
             tpAlteredStatus.UseVisualStyleBackColor = true;
@@ -736,7 +758,7 @@ namespace RogueCustomsDungeonEditor
             AlteredStatusTab.Dock = DockStyle.Top;
             AlteredStatusTab.Location = new System.Drawing.Point(0, 0);
             AlteredStatusTab.Name = "AlteredStatusTab";
-            AlteredStatusTab.Size = new System.Drawing.Size(742, 310);
+            AlteredStatusTab.Size = new System.Drawing.Size(859, 310);
             AlteredStatusTab.TabIndex = 0;
             // 
             // tpScripts
@@ -745,16 +767,17 @@ namespace RogueCustomsDungeonEditor
             tpScripts.Controls.Add(ScriptsTab);
             tpScripts.Location = new System.Drawing.Point(4, 24);
             tpScripts.Name = "tpScripts";
-            tpScripts.Size = new System.Drawing.Size(742, 388);
+            tpScripts.Size = new System.Drawing.Size(859, 521);
             tpScripts.TabIndex = 14;
             tpScripts.Text = "Scripts";
             tpScripts.UseVisualStyleBackColor = true;
             // 
             // ScriptsTab
             // 
-            ScriptsTab.Location = new System.Drawing.Point(13, 4);
+            ScriptsTab.Dock = DockStyle.Fill;
+            ScriptsTab.Location = new System.Drawing.Point(0, 0);
             ScriptsTab.Name = "ScriptsTab";
-            ScriptsTab.Size = new System.Drawing.Size(714, 347);
+            ScriptsTab.Size = new System.Drawing.Size(859, 521);
             ScriptsTab.TabIndex = 0;
             // 
             // tpValidation
@@ -762,7 +785,7 @@ namespace RogueCustomsDungeonEditor
             tpValidation.Controls.Add(ValidatorTab);
             tpValidation.Location = new System.Drawing.Point(4, 24);
             tpValidation.Name = "tpValidation";
-            tpValidation.Size = new System.Drawing.Size(742, 388);
+            tpValidation.Size = new System.Drawing.Size(859, 521);
             tpValidation.TabIndex = 9;
             tpValidation.Text = "Validation Results";
             tpValidation.UseVisualStyleBackColor = true;
@@ -773,7 +796,7 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab.Dock = DockStyle.Fill;
             ValidatorTab.Location = new System.Drawing.Point(0, 0);
             ValidatorTab.Name = "ValidatorTab";
-            ValidatorTab.Size = new System.Drawing.Size(742, 388);
+            ValidatorTab.Size = new System.Drawing.Size(859, 521);
             ValidatorTab.TabIndex = 0;
             // 
             // ofdDungeon
@@ -830,6 +853,7 @@ namespace RogueCustomsDungeonEditor
             tpNPCModifiers.ResumeLayout(false);
             tpAffixes.ResumeLayout(false);
             tpQualityLevels.ResumeLayout(false);
+            tpLearnsets.ResumeLayout(false);
             tpPlayerClass.ResumeLayout(false);
             tpPlayerClass.PerformLayout();
             tpNPC.ResumeLayout(false);
@@ -914,5 +938,7 @@ namespace RogueCustomsDungeonEditor
         private TabPage tpNPCModifiers;
         private Controls.Tabs.NPCModifierTab NPCModifierTab;
         private ToolStripMenuItem getHelpHereToolStripMenuItem;
+        private TabPage tpLearnsets;
+        private Controls.Tabs.LearnsetTab LearnsetTab;
     }
 }

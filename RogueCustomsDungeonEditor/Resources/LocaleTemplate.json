@@ -540,6 +540,14 @@
     {
       "Key": "CharacterHasLostAllies",
       "Value": "{CharacterName} has lost some allies!"
+    },
+    {
+      "Key": "CharacterHasRegressedOnLearnset",
+      "Value": "{CharacterName} has regressed their skills!"
+    },
+    {
+      "Key": "CharacterHasChangedLearnset",
+      "Value": "{CharacterName} has changed their learning path!"
     }
   ]
 }
