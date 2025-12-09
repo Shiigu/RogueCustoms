@@ -33,6 +33,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             ActiveDungeon = activeDungeon;
             LoadedScripts = scripts ?? new();
             EffectParamData = effectParamData;
+
+            tlpScripts.SuspendLayout();
+
             tlpScripts.Controls.Clear();
             tlpScripts.RowCount = 0;
 
@@ -57,6 +60,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 AddRow(script.Id, script, i);
             }
+
+            tlpScripts.ResumeLayout(true);
         }
         public List<string> SaveData()
         {
@@ -100,6 +105,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void AddRow(string scriptId, ActionWithEffectsInfo script, int rowIndex)
         {
+            tlpScripts.SuspendLayout();
+
             lblNoScripts.Visible = false;
             tlpHeader.Visible = true;
             tlpScripts.Visible = true;
@@ -176,6 +183,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
             tlpScripts.HorizontalScroll.Enabled = false;
             tlpScripts.HorizontalScroll.Visible = false;
+
+            tlpScripts.ResumeLayout(true);
         }
 
         private void SetSingleActionEditorParams(SingleActionEditor sae, ActionWithEffectsInfo? action)
@@ -221,15 +230,21 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void btnAddScript_Click(object sender, EventArgs e)
         {
+            tlpScripts.SuspendLayout();
+
             SelectRow(selectedRowIndex);
             selectedRowIndex = -1;
             btnRemoveScript.Enabled = false;
             AddRow("<UNDEFINED>", null, tlpScripts.RowCount);
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
+
+            tlpScripts.ResumeLayout(true);
         }
 
         private void btnRemoveScript_Click(object sender, EventArgs e)
         {
+            tlpScripts.SuspendLayout();
+
             btnRemoveScript.Enabled = false;
             tlpScripts.RemoveRow(selectedRowIndex);
             SelectRow(selectedRowIndex);
@@ -242,6 +257,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 tlpScriptsTab.Visible = false;
             }
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
+
+            tlpScripts.ResumeLayout(true);
         }
 
         private void SelectRow(int rowIndex)
