@@ -104,6 +104,23 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(characterJson.Learnset))
+            {
+                var learnsetInfo = dungeonJson.LearnsetInfos.Find(ls => ls.Id.Equals(characterJson.Learnset, StringComparison.InvariantCultureIgnoreCase));
+                if (learnsetInfo == null)
+                {
+                    messages.AddError($"Learnset {characterJson.Learnset} could not be found.");
+                }
+                if(learnsetInfo.Entries.Any(le => le.Level > characterJson.MaxLevel))
+                {
+                    messages.AddWarning($"Learnset {characterJson.Learnset} has at least one entry for a Level higher than the Character's Max Level. Check if this is intended.");
+                }
+            }
+            else
+            {
+                messages.AddWarning("Character does not have a Learnset.");
+            }
+
             if (characterJson.InventorySize < 0)
                 messages.AddError("Inventory Size must be 0 or higher.");
             else if (characterJson.InventorySize == 0)

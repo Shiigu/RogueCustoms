@@ -1086,6 +1086,26 @@ namespace RogueCustomsDungeonEditor.Utils
             };
         }
 
+        public static QuestInfo CreateQuestTemplate()
+        {
+            return new QuestInfo
+            {
+                Id = "DummyQuest",
+                Name = "Quest",
+                Description = "Description",
+                IsRepeatable = false,
+                AbandonedOnFloorChange = false,
+                Conditions = new(),
+                CompletionType = QuestCompletionType.AllConditions,
+                GuaranteedMonetaryReward = 0,
+                GuaranteedExperienceReward = 0,
+                GuaranteedItemRewards = new(),
+                SelectableItemRewards = new(),
+                CompensatoryMonetaryReward = 0,
+                CompensatoryExperienceReward = 0
+            };
+        }
+
         public static bool HasOverlappingFloorInfosForLevels(this DungeonInfo dungeon, int minFloorLevel, int maxFloorLevel, FloorInfo floorBeingEdited)
         {
             for (int i = minFloorLevel; i <= maxFloorLevel; i++)

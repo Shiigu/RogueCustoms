@@ -36,7 +36,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvEquipment).BeginInit();
             SuspendLayout();
             // 
-            // dgvItemSlots
+            // dgvEquipment
             // 
             dgvEquipment.AllowUserToAddRows = false;
             dgvEquipment.AllowUserToDeleteRows = false;
@@ -48,12 +48,13 @@
             dgvEquipment.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             dgvEquipment.EnableHeadersVisualStyles = false;
             dgvEquipment.Location = new System.Drawing.Point(0, 0);
-            dgvEquipment.Name = "dgvItemSlots";
+            dgvEquipment.Name = "dgvEquipment";
             dgvEquipment.RowHeadersVisible = false;
             dgvEquipment.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             dgvEquipment.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             dgvEquipment.Size = new System.Drawing.Size(204, 141);
             dgvEquipment.TabIndex = 1;
+            dgvEquipment.CellValueChanged += dgvEquipment_CellValueChanged;
             // 
             // Slot
             // 

@@ -56,9 +56,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             nudAffixMaxDamage.Value = affix.ExtraDamage?.MaxDamage ?? 0;
             nudAffixRequiredPlayerLevel.Value = affix.RequiredPlayerLevel;
             cmbAffixElementDamage.Text = affix.ExtraDamage?.Element ?? string.Empty;
-            SetSingleActionEditorParams(saeAffixOnTurnStart, affix.Name, affix.OnTurnStart);
-            SetSingleActionEditorParams(saeAffixOnAttacked, affix.Name, affix.OnAttacked);
-            SetSingleActionEditorParams(saeAffixOnAttack, affix.Name, affix.OnAttack);
+            saeAffixOnTurnStart.SetActionEditorParams(affix.Name, affix.OnTurnStart, EffectParamData, dungeon, (_ , _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAffixOnAttacked.SetActionEditorParams(affix.Name, affix.OnAttacked, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAffixOnAttack.SetActionEditorParams(affix.Name, affix.OnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
             for (int i = 0; i < clbAffixAffects.Items.Count; i++)
             {
                 clbAffixAffects.SetItemChecked(i, affix.AffectedItemTypes != null && affix.AffectedItemTypes.Contains(clbAffixAffects.Items[i].ToString()));
@@ -171,15 +171,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void clbAffixAffects_SelectedIndexChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = _activeDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void AffixStatsSheet_StatsChanged(object sender, EventArgs e)

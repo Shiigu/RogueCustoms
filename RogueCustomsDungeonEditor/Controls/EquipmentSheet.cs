@@ -94,6 +94,9 @@ namespace RogueCustomsDungeonEditor.Controls
                 return equipment;
             }
         }
+
+        public event EventHandler EquipmentChanged;
+
         public EquipmentSheet()
         {
             InitializeComponent();
@@ -102,6 +105,11 @@ namespace RogueCustomsDungeonEditor.Controls
         public void EndEdit()
         {
             dgvEquipment.EndEdit();
+        }
+
+        private void dgvEquipment_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            EquipmentChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

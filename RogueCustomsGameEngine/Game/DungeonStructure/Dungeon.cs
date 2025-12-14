@@ -41,14 +41,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             get => _promptInvoker;
             set => _promptInvoker = value;
         }
-
-        public int CurrentEntityId { get; set; }
+        public int CurrentEntityId;
         private int CurrentFloorLevel;
         public readonly string WelcomeMessage;
         public readonly string EndingMessage;
         public bool IsDebugMode { get; set; }
         public bool IsHardcoreMode { get; set; }
-        public List<ActionWithEffects> Scripts { get; private set; }
 
         #region From JSON
         public string Name { get; set; }
@@ -67,6 +65,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public List<ItemSlot> ItemSlots { get; set; }
         public List<ItemType> ItemTypes { get; set; }
         public List<Learnset> Learnsets { get; set; }
+        public List<Quest> Quests { get; set; }
+        public List<ActionWithEffects> Scripts { get; private set; }
         public float SaleValuePercentage { get; set; }
         public List<EntityClass> Classes { get; set; }
         [JsonIgnore]
@@ -110,6 +110,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             ItemSlots = new List<ItemSlot>();
             ItemTypes = new List<ItemType>();
             Learnsets = new List<Learnset>();
+            Quests = new List<Quest>();
             var localeInfoToUse = dungeonInfo.Locales.Find(l => l.Language.Equals(localeLanguage))
                 ?? dungeonInfo.Locales.Find(l => l.Language.Equals(dungeonInfo.DefaultLocale))
                 ?? throw new FormatException($"No locale data has been found for {localeLanguage}, and no default locale was defined.");
@@ -149,9 +150,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Scripts = new();
             dungeonInfo.Scripts.ForEach(s => Scripts.Add(ActionWithEffects.Create(s, ActionSchools)));
             Learnsets.ForEach(ls => ls.MapScriptsToLearn(Scripts));
+            MapFactions();
+            dungeonInfo.QuestInfos.ForEach(q => Quests.Add(new Quest(q, this)));
 
             IsHardcoreMode = isHardcoreMode;
-            MapFactions();
             CurrentFloorLevel = 1;
             PlayerCharacter = null;
             DungeonStatus = DungeonStatus.Running;
@@ -215,6 +217,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList, npcsToKeep);
             await CurrentFloor.Generate(false, []);
+            if (CurrentFloorLevel > 1)
+            {
+                foreach (var questToAbandon in PlayerCharacter.Quests.Where(q => q.AbandonedOnFloorChange && q.Status == QuestStatus.InProgress))
+                {
+                    PlayerCharacter.AbandonQuest(questToAbandon);
+                }
+                await PlayerCharacter.UpdateQuests(QuestConditionType.ReachFloor, string.Empty, CurrentFloorLevel);
+            }
         }
 
         public Task ReturnToFloor1(int experiencePercentageToKeep, int equipmentPercentageToKeep, int inventoryPercentageToKeep, int learnedScriptsPercentageToKeep, int tagalongNPCsPercentageToKeep)
@@ -333,11 +343,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (tagalongNPCCount > tagalongNPCs.Count)
                 CurrentFloor.AppendMessage(CurrentFloor.Locale["CharacterHasLostAllies"].Format(new { CharacterName = PlayerCharacter.Name }), Color.OrangeRed, events);
 
-            events.Add(new()
-            {
-                DisplayEventType = DisplayEventType.UpdateExperienceBar,
-                Params = new() { PlayerCharacter.Experience, PlayerCharacter.ExperienceToLevelUp, PlayerCharacter.CalculateExperienceBarPercentage() }
-            });
+            PlayerCharacter.InformRefreshedPlayerData(events);
 
             return CurrentFloor.Generate(false, [("Inform of Return to Floor 1", events)]);
         }
@@ -415,6 +421,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             return CurrentFloor.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
+        public void PlayerAbandonQuest(int questId)
+        {
+            CurrentFloor.PlayerAbandonQuest(questId);
+        }
 
         public PlayerInfoDto GetPlayerDetailInfo()
         {
@@ -434,6 +444,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public InventoryDto GetPlayerInventory()
         {
             return CurrentFloor.GetPlayerInventory();
+        }
+        public List<QuestDto> GetPlayerQuests()
+        {
+            return CurrentFloor.GetPlayerQuests();
         }
 
         public Task PlayerAttackTargetWith(string selectionId, int x, int y, ActionSourceType sourceType)

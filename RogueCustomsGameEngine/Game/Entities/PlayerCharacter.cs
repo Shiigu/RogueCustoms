@@ -27,6 +27,9 @@ namespace RogueCustomsGameEngine.Game.Entities
         public readonly bool NeedsToIdentifyItems;
         public readonly List<string> IdentifiedItemClasses = [];
 
+        public List<Quest> Quests = [];
+        public List<Quest> ActiveQuests => Quests.Where(q => q.Status == QuestStatus.InProgress).ToList();
+
         public override List<ActionWithEffects> OnTurnStart
         {
             get
@@ -181,6 +184,49 @@ namespace RogueCustomsGameEngine.Game.Entities
             IdentifiedItemClasses = [];
             LostLives = 0;
             HighestFloorReached = 0;
+            Quests = [];
+        }
+
+        public async Task AcceptQuest(Quest baseQuest, List<DisplayEventDto> events)
+        {
+            var questInstance = await baseQuest.Instantiate(Map);
+            Quests.Add(questInstance);
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                Params = new() { SpecialEffect.QuestAccepted }
+            });
+            Map.AppendMessage(Map.Locale["QuestAcceptedText"].Format(new { CharacterName = Name, QuestName = questInstance.Name }), Color.DeepSkyBlue, events);
+            Map.AddMessageBox(Map.Locale["QuestAcceptedHeaderText"], Map.Locale["QuestAcceptedMessageText"].Format(new { QuestName = questInstance.Name, QuestDescription = questInstance.Description }), "OK", new GameColor(Color.DeepSkyBlue), events);
+        }
+
+        public void AbandonQuest(int id)
+        {
+            var existingQuest = Quests.Find(q => q.Id == id && q.Status == QuestStatus.InProgress);
+            if (existingQuest == null)
+                return;
+            AbandonQuest(existingQuest);
+        }
+
+        public void AbandonQuest(Quest quest)
+        {
+            var events = new List<DisplayEventDto>();
+            quest.Status = QuestStatus.Abandoned;
+            events.Add(new()
+            {
+                DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                Params = new() { SpecialEffect.QuestAbandoned }
+            });
+            Map.AppendMessage(Map.Locale["QuestAbandonedText"].Format(new { CharacterName = Name, QuestName = quest.Name }), Color.DarkOrange, events);
+            Map.DisplayEvents.Add(($"{Name} abandoned a Quest", events));
+        }
+
+        public async Task UpdateQuests(QuestConditionType conditionType, string targetId, int @value)
+        {
+            foreach (var quest in Quests.Where(q => q.Status == QuestStatus.InProgress))
+            {
+                await quest.UpdateConditions(conditionType, targetId, @value);
+            }
         }
 
         public int CalculateExperienceBarPercentage()
@@ -303,6 +349,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 );
             }
             Map.DisplayEvents.Add(($"Player {Name} gained experience", events));
+            await UpdateQuests(QuestConditionType.ReachLevel, null, Level);
         }
 
         public void UpdateVisibility()
@@ -348,7 +395,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public override void EquipItem(Item itemToEquip)
+        public override async Task EquipItem(Item itemToEquip)
         {
             if (!itemToEquip.IsEquippable)
                 throw new InvalidOperationException("Attempted to equip an unequippable item!");
@@ -374,6 +421,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else
             {
+                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip.ClassId, 1);
+                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip.ItemType.Id, 1);
                 itemToEquip.Position = null;
                 itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
             }
@@ -409,9 +458,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             Map.DisplayEvents.Add(($"{Name} equips {itemToEquip.Name}", events));
         }
 
-        public override void DropItem(IPickable pickable)
+        public override async Task DropItem(IPickable pickable)
         {
             var pickableAsEntity = pickable as Entity;
+            var pickableAsItem = pickable as Item;
             var events = new List<DisplayEventDto>();
             var centralTile = Map.GetTileFromCoordinates(Position);
             Tile pickedEmptyTile = null;
@@ -448,6 +498,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.ItemDrop }
                 });
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem.ItemType.Id, -1);
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsEntity.ClassId, -1);
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
@@ -469,7 +521,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             Map.DisplayEvents.Add(($"Player {Name} put item on floor", events));
         }
 
-        public override void PickItem(IPickable pickable, bool informToPlayer)
+        public override async Task PickItem(IPickable pickable, bool informToPlayer)
         {
             var events = new List<DisplayEventDto>();
             var pickableAsEntity = pickable as Entity;
@@ -477,11 +529,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (pickable is Item i)
             {
                 Inventory.Add(i);
+                await UpdateQuests(QuestConditionType.CollectItems, i.ItemType.Id, 1);
+                await UpdateQuests(QuestConditionType.CollectItems, i.ClassId, 1);
             }
             else if (pickable is Currency c)
             {
                 isCurrency = true;
                 CurrencyCarried += c.Amount;
+                await UpdateQuests(QuestConditionType.ObtainCurrency, null, CurrencyCarried);
             }
             pickableAsEntity.Position = null;
             pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;

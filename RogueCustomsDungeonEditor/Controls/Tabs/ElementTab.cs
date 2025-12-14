@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -43,9 +45,8 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 cmbElementResistanceStat.Text = elementToLoad.ResistanceStatId.ToString();
             btnElementColor.BackColor = elementToLoad.Color.ToColor();
             chkExcessResistanceCausesHealDamage.Checked = elementToLoad.ExcessResistanceCausesHealDamage;
-            SetSingleActionEditorParams(saeElementOnAfterAttack, elementToLoad.Id, elementToLoad.OnAfterAttack);
+            saeElementOnAfterAttack.SetActionEditorParams(elementToLoad.Id, elementToLoad.OnAfterAttack, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
         }
-
         public List<string> SaveData(string id)
         {
             var validationErrors = new List<string>();
@@ -79,14 +80,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtElementName_TextChanged(object sender, EventArgs e)

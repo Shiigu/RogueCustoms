@@ -27,11 +27,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int TurnCount { get; set; }
         private Map _map;
 
-        public bool AwaitingInput
+        public bool AwaitingPromptInput
         {
             set
             {
-                _map.AwaitingInput = value;
+                _map.AwaitingPromptInput = value;
             }
         }
 
@@ -92,6 +92,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             {
                 return new List<TileDto>();
             }
+        }
+
+        public void RefreshTiles()
+        {
+            Tiles = GetTiles();
         }
     }
 

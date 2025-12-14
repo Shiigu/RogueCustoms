@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
@@ -79,11 +80,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             txtItemPower.Text = item.Power;
             chkItemStartsVisible.Checked = item.StartsVisible;
             chkItemCanBeUnequipped.Checked = item.CanBeUnequipped;
-            SetSingleActionEditorParams(saeItemOnTurnStart, item.Id, item.OnTurnStart);
-            SetMultiActionEditorParams(maeItemOnAttack, item.Id, item.OnAttack);
-            SetSingleActionEditorParams(saeItemOnAttacked, item.Id, item.OnAttacked);
-            SetSingleActionEditorParams(saeItemOnDeath, item.Id, item.OnDeath);
-            SetSingleActionEditorParams(saeItemOnUse, item.Id, item.OnUse);
+            saeItemOnTurnStart.SetActionEditorParams(item.Id, item.OnTurnStart, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            maeItemOnAttack.SetActionEditorParams(item.Id, item.OnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeItemOnAttacked.SetActionEditorParams(item.Id, item.OnAttacked, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeItemOnDeath.SetActionEditorParams(item.Id, item.OnDeath, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeItemOnUse.SetActionEditorParams(item.Id, item.OnUse, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
             nudItemBaseValue.Value = item.BaseValue;
             nudItemRequiredPlayerLevel.Value = item.RequiredPlayerLevel;
             fklblWarningItemBaseValue.Visible = nudItemBaseValue.Value == 0;
@@ -208,23 +209,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
-        private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
-        {
-            mae.Actions = actions;
-            mae.ClassId = classId;
-            mae.Dungeon = ActiveDungeon;
-            mae.EffectParamData = EffectParamData;
-            mae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtItemName_TextChanged(object sender, EventArgs e)

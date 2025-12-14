@@ -49,6 +49,8 @@ namespace RogueCustomsDungeonEditor.Controls
             }
         }
 
+        public event EventHandler QualityLevelChanged;
+
         public QualityLevelSheet()
         {
             InitializeComponent();
@@ -75,6 +77,8 @@ namespace RogueCustomsDungeonEditor.Controls
             {
                 dgvQualityLevels[e.ColumnIndex, e.RowIndex].Value = PreviousCellValue;
             }
+
+            QualityLevelChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void dgvQualityLevels_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)

@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -49,11 +51,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             nudNPCModifierMinDamage.Value = LoadedNPCModifier.ExtraDamage?.MinDamage ?? 0;
             nudNPCModifierMaxDamage.Value = LoadedNPCModifier.ExtraDamage?.MaxDamage ?? 0;
             cmbNPCModifierElementDamage.Text = LoadedNPCModifier.ExtraDamage?.Element ?? string.Empty;
-            SetSingleActionEditorParams(saeNPCModifierOnSpawn, LoadedNPCModifier.Name, LoadedNPCModifier.OnSpawn);
-            SetSingleActionEditorParams(saeNPCModifierOnTurnStart, LoadedNPCModifier.Name, LoadedNPCModifier.OnTurnStart);
-            SetSingleActionEditorParams(saeNPCModifierOnAttacked, LoadedNPCModifier.Name, LoadedNPCModifier.OnAttacked);
-            SetSingleActionEditorParams(saeNPCModifierOnAttack, LoadedNPCModifier.Name, LoadedNPCModifier.OnAttack);
-            SetSingleActionEditorParams(saeNPCModifierOnDeath, LoadedNPCModifier.Name, LoadedNPCModifier.OnDeath);
+            saeNPCModifierOnSpawn.SetActionEditorParams(LoadedNPCModifier.Name, LoadedNPCModifier.OnSpawn, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCModifierOnTurnStart.SetActionEditorParams(LoadedNPCModifier.Name, LoadedNPCModifier.OnTurnStart, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCModifierOnAttacked.SetActionEditorParams(LoadedNPCModifier.Name, LoadedNPCModifier.OnAttacked, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCModifierOnAttack.SetActionEditorParams(LoadedNPCModifier.Name, LoadedNPCModifier.OnAttack, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCModifierOnDeath.SetActionEditorParams(LoadedNPCModifier.Name, LoadedNPCModifier.OnDeath, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
             btnNPCModifierColor.BackColor = LoadedNPCModifier.NameColor != null ? LoadedNPCModifier.NameColor.ToColor() : Color.White;
         }
 
@@ -126,15 +128,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         private void NPCModifierStatsSheet_StatsChanged(object sender, EventArgs e)
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = _activeDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

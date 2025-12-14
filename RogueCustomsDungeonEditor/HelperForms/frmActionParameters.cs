@@ -239,6 +239,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     ParameterType.Stat => CreateComboBox(parameter, originalValue),
                     ParameterType.Element => CreateComboBox(parameter, originalValue),
                     ParameterType.Learnset => CreateComboBox(parameter, originalValue),
+                    ParameterType.Quest => CreateComboBox(parameter, originalValue),
                     ParameterType.Script => CreateComboBox(parameter, originalValue),
                     ParameterType.Table => CreateTableControl(tableValues, parameter, tlpParameters),
                     _ => new TextBox { Text = originalValue ?? parameter.Default }
@@ -384,6 +385,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 ParameterType.Stat => ActiveDungeon.CharacterStats.Select(s => s.Id),
                 ParameterType.Element => ActiveDungeon.ElementInfos.Select(e => e.Id),
                 ParameterType.Learnset => ActiveDungeon.LearnsetInfos.Select(l => l.Id),
+                ParameterType.Quest => ActiveDungeon.QuestInfos.Select(q => q.Id),
                 ParameterType.Script => ActiveDungeon.Scripts.Select(s => s.Id),
                 _ => throw new ArgumentException($"{parameter.Type} is not valid for ComboBox parameter")
             };
@@ -832,6 +834,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                     case ParameterType.Stat:
                     case ParameterType.Element:
                     case ParameterType.Learnset:
+                    case ParameterType.Quest:
                     case ParameterType.Script:
                     case ParameterType.LootTable:
                         valueToValidate = (controlToValidate as ComboBox)?.Text;

@@ -57,7 +57,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return true;
         }
 
-        public static bool HealDamage(EffectCallerParams Args)
+        public static async Task<bool> HealDamage(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -80,6 +80,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Params = new() { SpecialEffect.HPUp }
                 }
                 );
+                if (Args.Source == Map.Player)
+                {
+                    await Map.Player.UpdateQuests(QuestConditionType.HealDamage, string.Empty, healAmount);
+                }
                 if (t == Map.Player)
                 {
                     events.Add(new()
@@ -145,6 +149,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         {
                             if (!targetAlreadyHadStatus || statusToApply.CanStack || (statusToApply.CanOverwrite && paramsObject.AnnounceStatusRefresh))
                             {
+                                if (Args.Source != paramsObject.Target && Args.Source == Map.Player)
+                                {
+                                    await Map.Player.UpdateQuests(QuestConditionType.StatusNPCs, statusToApply.ClassId, 1);
+                                }
                                 events.Add(new()
                                 {
                                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
@@ -153,6 +161,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 );
                                 if (statusTarget == Map.Player)
                                 {
+                                    await Map.Player.UpdateQuests(QuestConditionType.StatusSelf, statusToApply.ClassId, 1);
                                     events.Add(new()
                                     {
                                         DisplayEventType = DisplayEventType.UpdatePlayerData,

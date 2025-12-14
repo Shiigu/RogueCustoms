@@ -30,6 +30,7 @@ using System.Text.RegularExpressions;
 using RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators;
 using D20Tek.Common.Models;
 using RogueCustomsGameEngine.Game.DungeonStructure.FloorGenerators.Interfaces;
+using System.Threading;
 
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
@@ -45,18 +46,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public int GenerationTries { get; private set; }
 
-        public int CurrentEntityId
-        {
-            get
-            {
-                return Dungeon.CurrentEntityId;
-            }
-            set
-            {
-                Dungeon.CurrentEntityId = value;
-            }
-        }
-
         private bool _displayedTurnMessage;
 
         public PlayerCharacter Player => Dungeon.PlayerCharacter;
@@ -69,6 +58,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public List<ActionWithEffects> Scripts => Dungeon.Scripts;
         public List<Learnset> Learnsets => Dungeon.Learnsets;
+        public List<Quest> Quests => Dungeon.Quests;
+
         public Locale Locale => Dungeon.LocaleToUse;
 
         private IPromptInvoker PromptInvoker => Dungeon.PromptInvoker;
@@ -81,7 +72,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public readonly int FloorLevel;
 
         public readonly FloorType FloorConfigurationToUse;
-        public bool AwaitingInput { get; set; }
+        public bool AwaitingPromptInput { get; set; }
+        public bool AwaitingQuestInput { get; set; }
 
         public Generator GeneratorToUse { get; set; }
 
@@ -679,13 +671,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 }
                 ));
             }
+            AwaitingPromptInput = true;
         }
 
         #region Floor room setup
 
         public void ResetAndCreateTilesIfNeeded()
         {
-            CurrentEntityId = 1;
+            ResetEntityId();
             TurnCount = 0;
 
             if (Tiles == null || Tiles.GetLength(0) != Height || Tiles.GetLength(1) != Width)
@@ -726,14 +719,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         public void RegisterItemFromInventory(Item item)
         {
-            item.Id = CurrentEntityId;
+            item.Id = GenerateEntityId();
             item.Map = this;
             Items.Add(item);
-            do
-            {
-                CurrentEntityId++;
-            }
-            while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
         }
 
         public Currency CreateCurrency(CurrencyPile pileType, GamePoint predeterminatePosition = null, bool mustPickPosition = false)
@@ -750,7 +738,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             var currencyPile = new Currency(CurrencyClass, this)
             {
-                Id = CurrentEntityId,
+                Id = GenerateEntityId(),
                 Position = PositionToUse,
                 Amount = Rng.NextInclusive(pileType.Minimum, pileType.Maximum)
             };
@@ -759,12 +747,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             currencyPile.Name = Locale["CurrencyDisplayName"].Format(new { Amount = currencyPile.Amount.ToString(), CurrencyName = baseName });
 
             CurrencyPiles.Add(currencyPile);
-
-            do
-            {
-                CurrentEntityId++;
-            }
-            while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
 
             return currencyPile;
         }
@@ -783,7 +765,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             var currencyPile = new Currency(CurrencyClass, this)
             {
-                Id = CurrentEntityId,
+                Id = GenerateEntityId(),
                 Position = PositionToUse,
                 Amount = amount
             };
@@ -792,12 +774,6 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             currencyPile.Name = Locale["CurrencyDisplayName"].Format(new { Amount = currencyPile.Amount.ToString(), CurrencyName = baseName });
 
             CurrencyPiles.Add(currencyPile);
-
-            do
-            {
-                CurrentEntityId++;
-            }
-            while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
 
             return currencyPile;
         }
@@ -841,7 +817,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.Player:
                     entity = new PlayerCharacter(entityClass, level, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         Position = PositionToUse,
                         HighestFloorReached = 1
                     };
@@ -851,14 +827,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.NPC:
                     entity = new NonPlayableCharacter(entityClass, level, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         Position = PositionToUse
                     };
                     break;
                 case EntityType.Item:
                     entity = new Item(entityClass, level, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         Position = PositionToUse
                     };
                     (entity as Item).SpawnedInTheFloor = PositionToUse != null;
@@ -867,25 +843,21 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 case EntityType.Trap:
                     entity = new Trap(entityClass, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         Position = PositionToUse
                     };
                     break;
                 case EntityType.Key:
                     entity = new Key(entityClass, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         Position = PositionToUse
                     };
                     break;
                 default:
                     throw new InvalidDataException("Entity lacks a valid type!");
             }
-            do
-            {
-                CurrentEntityId++;
-            }
-            while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
+
             if (entity is Item i)
             {
                 Items.Add(i);
@@ -907,17 +879,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         ?? throw new InvalidDataException("Class {c.ClassId} has an invalid starting inventory item!");
                     var inventoryItem = new Item(itemEntityClass, 1, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         GotSpecificallyIdentified = true
                     };
                     inventoryItem.SetQualityLevel(mostBasicQualityLevel);
                     Items.Add(inventoryItem);
                     c.Inventory.Add(inventoryItem);
-                    do
-                    {
-                        CurrentEntityId++;
-                    }
-                    while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
                 }
                 foreach (var initialEquipmentId in entityClass.InitialEquipmentIds)
                 {
@@ -926,15 +893,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         ?? throw new InvalidDataException($"Class {c.ClassId} has invalid Initial Equipment {initialEquipmentId}!");
                     var equippedItem = new Item(itemClass, 1, this)
                     {
-                        Id = CurrentEntityId,
+                        Id = GenerateEntityId(),
                         GotSpecificallyIdentified = true
                     };
                     equippedItem.SetQualityLevel(mostBasicQualityLevel);
-                    do
-                    {
-                        CurrentEntityId++;
-                    }
-                    while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
                     c.Equipment.Add(equippedItem);
                     Items.Add(equippedItem);
                 }
@@ -974,12 +936,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void RegisterPreexistingCharacter(Character character)
         {
             character.Map = this;
-            character.Id = CurrentEntityId;
-            do
-            {
-                CurrentEntityId++;
-            }
-            while (Entities.Any(e => e != null && e.Id == CurrentEntityId));
+            character.Id = GenerateEntityId();
             foreach (var item in character.Equipment)
             {
                 RegisterItemFromInventory(item);
@@ -1085,8 +1042,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 TurnCount++;
                 SetFlagValue("TurnCount", TurnCount);
-                if (Snapshot != null && !Snapshot.Read)
-                    Snapshot.TurnCount = TurnCount;
+                Snapshot.TurnCount = TurnCount;
 
                 #region Generate A monster
                 if (TurnCount - LastMonsterGenerationTurn >= FloorConfigurationToUse.TurnsPerMonsterGeneration)
@@ -1306,7 +1262,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             LatestPlayerRemainingMovement = Player.RemainingMovement;
             if (GetCharacters().TrueForAll(c => c.ExistenceStatus != EntityExistenceStatus.Alive || (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
             {
-                while (AwaitingInput) await Task.Delay(10);
+                while (AwaitingPromptInput || AwaitingQuestInput) await Task.Delay(10);
                 if (TurnCount == 0) return;
                 await NewTurn();
             }
@@ -1539,6 +1495,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (!item.IsEquippable)
             {
                 await item.Used(Player);
+                await Player.UpdateQuests(QuestConditionType.UseItems, item.ItemType.Id, 1);
+                await Player.UpdateQuests(QuestConditionType.UseItems, item.ClassId, 1);
                 if (item.OnUse?.FinishesTurnWhenUsed == true)
                     Player.TookAction = true;
             }
@@ -1617,6 +1575,22 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 throw new InvalidOperationException("Player attempted to pick an item from a tile without item!");
             }
         }
+
+        public void PlayerAbandonQuest(int questId)
+        {
+            Player.AbandonQuest(questId);
+        }
+
+        public List<QuestDto> GetPlayerQuests()
+        {
+            var questDtos = new List<QuestDto>();
+            foreach (var quest in Player.ActiveQuests)
+            {
+                questDtos.Add(new QuestDto(quest));
+            }
+            return questDtos;
+        }
+
         public InventoryDto GetPlayerInventory()
         {
             var inventory = new InventoryDto();
@@ -2090,6 +2064,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 tile.PickedForSwap = false;
             }
+        }
+
+        public void ResetEntityId()
+        {
+            Dungeon.CurrentEntityId = 1;
+        }
+
+        public int GenerateEntityId()
+        {
+            return Interlocked.Increment(ref Dungeon.CurrentEntityId);
         }
 
         #endregion

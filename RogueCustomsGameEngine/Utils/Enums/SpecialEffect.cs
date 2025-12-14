@@ -43,6 +43,9 @@ namespace RogueCustomsGameEngine.Utils.Enums
         KeyGet,
         MonsterHouseAlarm,
         Reveal,
-        Identify
+        Identify,
+        QuestAccepted,
+        QuestComplete,
+        QuestAbandoned
     }
 }

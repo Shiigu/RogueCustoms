@@ -24,6 +24,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateNPCs(root);
             UpdateTraps(root);
             UpdateAlteredStatuses(root);
+            UpdateQuests(root);
             UpdateScripts(root);
 
             root["Version"] = "1.7";
@@ -289,6 +290,12 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                     UpdateAction(onRemove);
                 }
             }
+        }
+
+        private static void UpdateQuests(JsonObject root)
+        {
+            if (root["QuestInfos"] is JsonArray) return;
+            root["QuestInfos"] = new JsonArray();
         }
 
         private static void UpdateScripts(JsonObject root)

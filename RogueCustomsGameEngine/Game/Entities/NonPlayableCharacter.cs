@@ -835,7 +835,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 ExistenceStatus = EntityExistenceStatus.Dead;
                 Passable = true;
-                if(DropsEquipmentOnDeath)
+                if (DropsEquipmentOnDeath)
                 {
                     Equipment?.ForEach(i => DropItem(i));
                     Equipment?.Clear();
@@ -894,12 +894,17 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 Map.DisplayEvents.Add(($"NPC {Name} dies", events));
+                if (attacker == Map.Player)
+                {
+                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, ClassId, 1);
+                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, Faction.Id, 1);
+                }
                 if (attacker is Character c && ExperiencePayout > 0)
                     await GiveExperienceTo(c);
             }
         }
 
-        public override void PickItem(IPickable pickable, bool informToPlayer)
+        public override async Task PickItem(IPickable pickable, bool informToPlayer)
         {
             var pickableAsEntity = pickable as Entity;
             var isCurrency = false;
@@ -942,12 +947,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                 }
             }
         }
-        public override void EquipItem(Item item)
+        public override async Task EquipItem(Item item)
         {
             // Do nothing. NPCs are not meant to equip items.
         }
 
-        public override void DropItem(IPickable pickable)
+        public override async Task DropItem(IPickable pickable)
         {
             var pickableAsEntity = pickable as Entity;
             var events = new List<DisplayEventDto>();

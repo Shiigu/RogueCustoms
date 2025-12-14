@@ -202,8 +202,16 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             {
                 if (sae.Action != null)
                 {
-                    var lblScriptId = (Label)(tlpScripts.GetControlFromPosition(0, (int)sae.Tag).Controls[0]);
-                    lblScriptId.Text = sae.Action.Id;
+                    if (sae.IsNewAction)
+                    {
+                        AddRow(sae.Action.Id, sae.Action, tlpScripts.RowCount);
+                        sae.Action = sae.ActionBeforeSave;
+                    }
+                    else
+                    {
+                        var lblScriptId = (Label)(tlpScripts.GetControlFromPosition(0, (int)sae.Tag).Controls[0]);
+                        lblScriptId.Text = sae.Action.Id;
+                    }
                 }
                 else
                 {

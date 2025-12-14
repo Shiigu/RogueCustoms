@@ -143,6 +143,13 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     {
                         itemToGive.GotSpecificallyIdentified = true;
                         Map.Player.InformRefreshedPlayerData(events);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ClassId, 1);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ItemType.Id, 1);
+                    }
+                    if (s == Map.Player)
+                    {
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ClassId, -1);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ItemType.Id, -1);
                     }
                     if (t == Map.Player || paramsObject.InformThePlayer)
                     {
@@ -163,7 +170,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             return false;
         }
 
-        public static bool StealItem(EffectCallerParams Args)
+        public static async Task<bool> StealItem(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -198,6 +205,16 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { SpecialEffect.ItemGet }
                             });
+                            if (t == Map.Player)
+                            {
+                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ClassId, -1);
+                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ItemType.Id, -1);
+                            }
+                            if (s == Map.Player)
+                            {
+                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ClassId, 1);
+                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ItemType.Id, 1);
+                            }
                         }
                         events.Add(new()
                         {
@@ -531,13 +548,17 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         Map.AppendMessage(message, Color.DeepSkyBlue, events);
                     }
                 }
+                if (t == Map.Player || s == Map.Player)
+                {
+                    await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency, string.Empty, Map.Player.CurrencyCarried);
+                }
                 Map.DisplayEvents.Add(($"{t.Name} received currency", events));
                 return true;
             }
             return false;
         }
 
-        public static bool StealCurrency(EffectCallerParams Args)
+        public static async Task<bool> StealCurrency(EffectCallerParams Args)
         {
             var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
@@ -569,6 +590,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             DisplayEventType = DisplayEventType.PlaySpecialEffect,
                             Params = new() { SpecialEffect.ItemGet }
                         });
+                        if (t == Map.Player || s == Map.Player)
+                        {
+                            await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency, string.Empty, Map.Player.CurrencyCarried);
+                        }
                     }
                     events.Add(new()
                     {
@@ -602,6 +627,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 {
                     item.Position = null;
                     item.ExistenceStatus = EntityExistenceStatus.Gone;
+                    if(t == Map.Player)
+                    {
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item.ClassId, -1);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item.ItemType.Id, -1);
+                    }
                 }
                 t.Inventory.Clear();
                 if (t == Map.Player || Map.Player.CanSee(t))
@@ -723,6 +753,24 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 return true;
             }
+            return false;
+        }
+
+        public static async Task<bool> GiveQuest(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+
+            var quest = Map.Quests.Find(s => s.QuestId.Equals(paramsObject.QuestId, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new ArgumentException($"Attempted to give {paramsObject.QuestId} when it's not a Script.");
+
+            if(quest.IsRepeatable || !Map.Player.Quests.Any(q => q.QuestId.Equals(quest.QuestId)))
+            {
+                await Map.Player.AcceptQuest(quest, events);
+                Map.DisplayEvents.Add(($"{Map.Player.Name} accepted a Quest", events));
+                return true;
+            }
+
             return false;
         }
     }

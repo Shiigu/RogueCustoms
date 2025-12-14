@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
 namespace RogueCustomsDungeonEditor.Controls.Tabs
@@ -39,7 +40,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkTileTypeCanVisiblyConnectWithOtherTiles.Checked = LoadedTileType.CanVisiblyConnectWithOtherTiles;
             chkTileTypeCanHaveMultilineConnections.Checked = LoadedTileType.CanHaveMultilineConnections;
             chkTileTypeCausesPartialInvisibility.Checked = LoadedTileType.CausesPartialInvisibility;
-            SetSingleActionEditorParams(saeOnStood, tileTypeInfoToLoad.Id, tileTypeInfoToLoad.OnStood);
+            saeOnStood.SetActionEditorParams(tileTypeInfoToLoad.Id, tileTypeInfoToLoad.OnStood, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
             ToggleCheckboxes();
         }
 
@@ -148,14 +149,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             TabInfoChanged?.Invoke(this, EventArgs.Empty);
             ToggleCheckboxes();
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
         }
 
         private void saeOnStood_ActionContentsChanged(object sender, EventArgs e)
