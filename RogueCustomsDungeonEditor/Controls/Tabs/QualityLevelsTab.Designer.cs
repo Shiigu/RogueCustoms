@@ -30,13 +30,13 @@
         {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(QualityLevelsTab));
             dgvQualityLevels = new System.Windows.Forms.DataGridView();
-            button1 = new System.Windows.Forms.Button();
             Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             QualityLevelName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             MinimumAffixes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             MaximumAffixes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             AttachesWhatToItemName = new System.Windows.Forms.DataGridViewComboBoxColumn();
             QualityColor = new System.Windows.Forms.DataGridViewButtonColumn();
+            button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dgvQualityLevels).BeginInit();
             SuspendLayout();
             // 
@@ -47,28 +47,11 @@
             dgvQualityLevels.Dock = System.Windows.Forms.DockStyle.Top;
             dgvQualityLevels.Location = new System.Drawing.Point(0, 0);
             dgvQualityLevels.Name = "dgvQualityLevels";
-            dgvQualityLevels.Size = new System.Drawing.Size(740, 317);
+            dgvQualityLevels.Size = new System.Drawing.Size(740, 465);
             dgvQualityLevels.TabIndex = 0;
             dgvQualityLevels.CellClick += dgvQualityLevels_CellClick;
             dgvQualityLevels.CellPainting += dgvQualityLevels_CellPainting;
             dgvQualityLevels.CellValueChanged += dgvQualityLevels_CellValueChanged;
-            // 
-            // button1
-            // 
-            button1.BackColor = System.Drawing.Color.Transparent;
-            button1.Enabled = false;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            button1.Image = (System.Drawing.Image)resources.GetObject("button1.Image");
-            button1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            button1.Location = new System.Drawing.Point(0, 323);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(737, 31);
-            button1.TabIndex = 265;
-            button1.Text = "To include the Item's base name alongside the Quality Level, make sure the Quality Level Name includes {baseName}.";
-            button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            button1.UseVisualStyleBackColor = false;
             // 
             // Id
             // 
@@ -102,6 +85,23 @@
             QualityColor.HeaderText = "Quality Color";
             QualityColor.Name = "QualityColor";
             // 
+            // button1
+            // 
+            button1.BackColor = System.Drawing.Color.Transparent;
+            button1.Enabled = false;
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            button1.Image = (System.Drawing.Image)resources.GetObject("button1.Image");
+            button1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            button1.Location = new System.Drawing.Point(0, 471);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(737, 31);
+            button1.TabIndex = 265;
+            button1.Text = "To include the Item's base name alongside the Quality Level, make sure the Quality Level Name includes {baseName}.";
+            button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            button1.UseVisualStyleBackColor = false;
+            // 
             // QualityLevelsTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -109,7 +109,7 @@
             Controls.Add(button1);
             Controls.Add(dgvQualityLevels);
             Name = "QualityLevelsTab";
-            Size = new System.Drawing.Size(740, 357);
+            Size = new System.Drawing.Size(740, 515);
             ((System.ComponentModel.ISupportInitialize)dgvQualityLevels).EndInit();
             ResumeLayout(false);
         }

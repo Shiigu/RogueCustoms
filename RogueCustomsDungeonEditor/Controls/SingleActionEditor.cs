@@ -145,6 +145,10 @@ namespace RogueCustomsDungeonEditor.Controls
             set => targetDescription = value;
         }
 
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ActionWithEffectsInfo? ActionBeforeSave { get; private set; }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ActionWithEffectsInfo? Action
         {
@@ -171,6 +175,9 @@ namespace RogueCustomsDungeonEditor.Controls
             set => effectParamData = value;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsNewAction { get; set; }
+
         public event EventHandler ActionContentsChanged;
 
         public SingleActionEditor()
@@ -188,6 +195,7 @@ namespace RogueCustomsDungeonEditor.Controls
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
+            ActionBeforeSave = Action;
             var frmActionEdit = new frmActionEdit(
                 action,
                 Dungeon,
@@ -208,6 +216,7 @@ namespace RogueCustomsDungeonEditor.Controls
             if (frmActionEdit.Saved)
             {
                 Action = frmActionEdit.ActionToSave;
+                IsNewAction = frmActionEdit.IsNewAction;
                 btnCopy.Enabled = true;
                 ActionContentsChanged?.Invoke(this, EventArgs.Empty);
             }

@@ -53,7 +53,7 @@ offset_bottom = 583.0
 theme_override_styles/panel = ExtResource("2_0p0v7")
 
 [node name="ItemDescriptionLabel" type="RichTextLabel" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_left = 562.0
 offset_top = 35.0
 offset_right = 1087.0
@@ -99,9 +99,9 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "EQUIP"
 
 [node name="SwapButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -109,9 +109,9 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "EQUIP"
 
 [node name="UseButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -119,9 +119,9 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "USE"
 
 [node name="DropButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -129,9 +129,9 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "DROP"
 
 [node name="SelectButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -139,18 +139,18 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "SELECT"
 
 [node name="DoButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "DO"
 
 [node name="BuyButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -158,9 +158,9 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "BUY"
 
 [node name="SellButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
@@ -168,16 +168,26 @@ visible = false
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "SELL"
+
+[node name="AbandonButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
+visible = false
+custom_minimum_size = Vector2(125, 26)
+layout_mode = 2
+focus_mode = 1
+theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
+text = "ABANDON"
 
 [node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer2/ButtonContainer"]
 custom_minimum_size = Vector2(125, 26)
 layout_mode = 2
 focus_mode = 1
-theme_override_styles/disabled = ExtResource("4_3wtt2")
-theme_override_styles/hover = ExtResource("4_cff7q")
 theme_override_styles/normal = ExtResource("5_evv5s")
+theme_override_styles/hover = ExtResource("4_cff7q")
+theme_override_styles/disabled = ExtResource("4_3wtt2")
 text = "CANCEL"

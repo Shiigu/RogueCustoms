@@ -140,6 +140,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     AddValidationResultNode($"Altered Status {Id}", ValidationMessages);
                 }
 
+                foreach (var (Id, ValidationMessages) in dungeonValidator.QuestValidationMessages)
+                {
+                    AddValidationResultNode($"Quest {Id}", ValidationMessages);
+                }
+
                 foreach (var (Id, ValidationMessages) in dungeonValidator.ScriptValidationMessages)
                 {
                     AddValidationResultNode($"Script {Id}", ValidationMessages);

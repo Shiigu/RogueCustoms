@@ -80,6 +80,20 @@ namespace RogueCustomsGodotClient.Helpers
             actionSelectPopup.Show(actionInfo, SelectionMode.Interact, true, targetCoords, overlay.QueueFree);
         }
 
+        public static void CreateJournalWindow(this Control control, List<QuestDto> quests)
+        {
+            var overlay = new ColorRect
+            {
+                Color = new Color() { R8 = 0, G8 = 0, B8 = 0, A = 0.75f },
+                Size = control.GetViewportRect().Size
+            };
+            control.AddChild(overlay);
+
+            var journalPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
+            control.AddChild(journalPopup);
+            journalPopup.Show(quests, overlay.QueueFree);
+        }
+
         public static async Task CreateInputBox(this Control control, string titleText, string promptText, string placeholderText, bool showCancelButton, Color borderColor, Action<string> okCallback, Action cancelCallback)
         {
             var overlay = new ColorRect
@@ -198,7 +212,7 @@ namespace RogueCustomsGodotClient.Helpers
 
             var popupClosedSignal = actionSelectPopup.ToSignal(actionSelectPopup, "PopupClosed");
             
-            actionSelectPopup.Show(actionInfo, SelectionMode.Interact, showCancelButton, null, overlay.QueueFree, title);
+            actionSelectPopup.Show(actionInfo, SelectionMode.SelectAction, showCancelButton, null, overlay.QueueFree, title);
 
             var result = await popupClosedSignal;
 

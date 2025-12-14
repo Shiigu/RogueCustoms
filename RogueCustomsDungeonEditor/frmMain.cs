@@ -92,6 +92,7 @@ namespace RogueCustomsDungeonEditor
             TabsForNodeTypes[RogueTabTypes.Item] = tpItem;
             TabsForNodeTypes[RogueTabTypes.Trap] = tpTrap;
             TabsForNodeTypes[RogueTabTypes.AlteredStatus] = tpAlteredStatus;
+            TabsForNodeTypes[RogueTabTypes.Quest] = tpQuests;
             TabsForNodeTypes[RogueTabTypes.Scripts] = tpScripts;
             TabsForNodeTypes[RogueTabTypes.Validator] = tpValidation;
             tbTabs.TabPages.Clear();
@@ -152,6 +153,7 @@ namespace RogueCustomsDungeonEditor
             ItemTypesTab.TabInfoChanged += ItemTypesTab_TabInfoChanged;
             ItemSlotsTab.TabInfoChanged += ItemSlotsTab_TabInfoChanged;
             LearnsetTab.TabInfoChanged += LearnsetTab_TabInfoChanged;
+            QuestTab.TabInfoChanged += QuestTab_TabInfoChanged;
             ValidatorTab.OnValidationComplete += ValidatorTab_OnValidationComplete;
             ValidatorTab.OnError += ValidatorTab_OnError;
         }
@@ -322,14 +324,14 @@ namespace RogueCustomsDungeonEditor
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = true;
                         tsbSaveElementAs.Visible = true;
-                        tsbDeleteElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.AffixInfo;
                         break;
                     case "NPC Modifiers":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = true;
                         tsbSaveElementAs.Visible = true;
-                        tsbDeleteElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.NPCModifierInfo;
                         break;
                     case "Quality Levels":
                         tssDungeonElement.Visible = false;
@@ -346,7 +348,7 @@ namespace RogueCustomsDungeonEditor
                     case "Learnsets":
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
-                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.StatInfo;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.LearnsetInfo;
                         break;
                     case "Loot Tables":
                         tssDungeonElement.Visible = true;
@@ -377,6 +379,11 @@ namespace RogueCustomsDungeonEditor
                         tssDungeonElement.Visible = true;
                         tsbAddElement.Visible = true;
                         tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.AlteredStatus;
+                        break;
+                    case "Quests":
+                        tssDungeonElement.Visible = true;
+                        tsbAddElement.Visible = true;
+                        tsbSaveElement.Visible = tsbSaveElementAs.Visible = tsbDeleteElement.Visible = e.Node.Nodes.Count > 0 && ActiveNodeTag.TabToOpen == RogueTabTypes.Quest;
                         break;
                     case "Scripts":
                         tssDungeonElement.Visible = false;
@@ -637,6 +644,18 @@ namespace RogueCustomsDungeonEditor
             }
             tvDungeonInfo.Nodes.Add(alteredStatusRootNode);
 
+            var questRootNode = new TreeNode("Quests");
+            foreach (var quest in ActiveDungeon.QuestInfos)
+            {
+                var questNode = new TreeNode(quest.Id)
+                {
+                    Tag = new NodeTag { TabToOpen = RogueTabTypes.Quest, DungeonElement = quest }
+                };
+                questNode.Name = questNode.Text;
+                questRootNode.Nodes.Add(questNode);
+            }
+            tvDungeonInfo.Nodes.Add(questRootNode);
+
             var scriptsInfoNode = new TreeNode("Scripts")
             {
                 Tag = new NodeTag { TabToOpen = RogueTabTypes.Scripts, DungeonElement = null },
@@ -888,6 +907,9 @@ namespace RogueCustomsDungeonEditor
                     case "Altered Statuses":
                         tabToOpen = RogueTabTypes.AlteredStatus;
                         break;
+                    case "Quests":
+                        tabToOpen = RogueTabTypes.Quest;
+                        break;
                 }
                 tbTabs.TabPages.Clear();
                 tbTabs.TabPages.Add(TabsForNodeTypes[tabToOpen]);
@@ -943,6 +965,9 @@ namespace RogueCustomsDungeonEditor
                 case RogueTabTypes.AlteredStatus:
                     ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateAlteredStatusTemplate();
                     break;
+                case RogueTabTypes.Quest:
+                    ActiveNodeTag.DungeonElement = DungeonInfoHelpers.CreateQuestTemplate();
+                    break;
                 default:
                     break;
             }
@@ -988,6 +1013,7 @@ namespace RogueCustomsDungeonEditor
                     RogueTabTypes.Item => SaveItem(),
                     RogueTabTypes.Trap => SaveTrap(),
                     RogueTabTypes.AlteredStatus => SaveAlteredStatus(),
+                    RogueTabTypes.Quest => SaveQuest(),
                     RogueTabTypes.Scripts => SaveScripts(),
                     _ => true,
                 };
@@ -1026,6 +1052,7 @@ namespace RogueCustomsDungeonEditor
                 RogueTabTypes.Item => SaveItemAs(),
                 RogueTabTypes.Trap => SaveTrapAs(),
                 RogueTabTypes.AlteredStatus => SaveAlteredStatusAs(),
+                RogueTabTypes.Quest => SaveQuestAs(),
                 _ => true,
             };
         }
@@ -1081,6 +1108,9 @@ namespace RogueCustomsDungeonEditor
                     break;
                 case RogueTabTypes.AlteredStatus:
                     DeleteAlteredStatus();
+                    break;
+                case RogueTabTypes.Quest:
+                    DeleteQuest();
                     break;
                 default:
                     break;
@@ -1264,6 +1294,14 @@ namespace RogueCustomsDungeonEditor
                     else
                         TabsForNodeTypes[tag.TabToOpen].Text = $"Altered Status";
                     break;
+                case RogueTabTypes.Quest:
+                    var tagQuest = (QuestInfo)tag.DungeonElement;
+                    LoadQuestInfoFor(tagQuest);
+                    if (!IsNewObject)
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Quest - {tagQuest.Id}";
+                    else
+                        TabsForNodeTypes[tag.TabToOpen].Text = $"Quest";
+                    break;
                 case RogueTabTypes.Scripts:
                     LoadScripts();
                     break;
@@ -1335,27 +1373,6 @@ namespace RogueCustomsDungeonEditor
                 tssElementValidate.Visible = true;
                 tsbValidateDungeon.Visible = true;
             }
-        }
-
-        #endregion
-
-        #region Shared Between Tabs
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => DirtyTab = true;
-        }
-        private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
-        {
-            mae.Actions = actions;
-            mae.ClassId = classId;
-            mae.Dungeon = ActiveDungeon;
-            mae.EffectParamData = EffectParamData;
-            mae.ActionContentsChanged += (_, _) => DirtyTab = true;
         }
 
         #endregion
@@ -3263,8 +3280,8 @@ namespace RogueCustomsDungeonEditor
             if (validationErrors.Any())
             {
                 MessageBox.Show(
-                    $"Cannot save AlteredStatus. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
-                    "Save AlteredStatus",
+                    $"Cannot save Altered Status. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Altered Status",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
@@ -3336,6 +3353,131 @@ namespace RogueCustomsDungeonEditor
         }
 
         private void AlteredStatusTab_TabInfoChanged(object? sender, EventArgs e)
+        {
+            if (!AutomatedChange) DirtyTab = true;
+        }
+
+        #endregion
+
+        #region Quest
+
+        private void LoadQuestInfoFor(QuestInfo quest)
+        {
+            QuestTab.LoadData(ActiveDungeon, quest, EffectParamData);
+        }
+
+        private bool SaveQuest()
+        {
+            if (string.IsNullOrWhiteSpace(QuestTab.LoadedQuest.Id))
+                return SaveQuestAs();
+            return SaveQuestToDungeon(QuestTab.LoadedQuest.Id);
+        }
+
+        private bool SaveQuestAs()
+        {
+            var inputBoxResult = InputBox.Show("Indicate the Quest Identifier", "Save Quest As", string.Empty, true, ActiveDungeon.GetAllIds(typeof(QuestInfo)));
+            if (inputBoxResult != null)
+            {
+                if (ActiveDungeon.QuestInfos.Exists(i => i.Id.Equals(inputBoxResult)))
+                {
+                    var messageBoxResult = MessageBox.Show(
+                        $"A Quest with Id {inputBoxResult} already exists.\n\nDo you wish to overwrite it?",
+                        "Save Quest As",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                    if (messageBoxResult == DialogResult.Yes)
+                    {
+                        return SaveQuestToDungeon(inputBoxResult);
+                    }
+                }
+                else
+                {
+                    return SaveQuestToDungeon(inputBoxResult);
+                }
+            }
+            return false;
+        }
+
+        private bool SaveQuestToDungeon(string id)
+        {
+            var validationErrors = QuestTab.SaveData(id);
+            if (validationErrors.Any())
+            {
+                MessageBox.Show(
+                    $"Cannot save Quest. Please correct the following errors:\n- {string.Join("\n- ", validationErrors)}",
+                    "Save Quest",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+            var QuestToSave = QuestTab.LoadedQuest;
+            var preExistingQuest = ActiveDungeon.QuestInfos.FirstOrDefault(t => t.Id.Equals(id));
+            var isNewQuest = preExistingQuest == null;
+            if (isNewQuest)
+            {
+                ActiveDungeon.QuestInfos.Add(QuestToSave);
+            }
+            else
+            {
+                ActiveDungeon.QuestInfos[ActiveDungeon.QuestInfos.IndexOf(preExistingQuest)] = QuestToSave;
+            }
+            var verb = isNewQuest ? "Save" : "Update";
+            MessageBox.Show(
+                $"Quest {id} has been successfully {verb.ToLowerInvariant()}d!",
+                $"{verb} Quest",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            IsNewObject = false;
+            DirtyDungeon = true;
+            DirtyTab = false;
+            RefreshTreeNodes();
+            var nodeText = QuestToSave.Id;
+            SelectNodeIfExists(nodeText, "Quests");
+            PassedValidation = false;
+            return true;
+        }
+
+        public void DeleteQuest()
+        {
+            var activeQuest = (QuestInfo)ActiveNodeTag.DungeonElement;
+            var deleteQuestPrompt = IsNewObject
+                ? "Do you want to remove this unsaved Quest?"
+                : $"Do you want to PERMANENTLY delete Quest {activeQuest.Id}?";
+            var messageBoxResult = MessageBox.Show(
+                deleteQuestPrompt,
+                "Quest",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (messageBoxResult == DialogResult.Yes)
+            {
+                if (!IsNewObject)
+                {
+                    var removedId = new string(activeQuest.Id);
+                    ActiveDungeon.QuestInfos.RemoveAll(als => als.Id.Equals(activeQuest.Id));
+                    MessageBox.Show(
+                        $"Quest {removedId} has been successfully deleted.",
+                        "Delete Quest",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                IsNewObject = false;
+                DirtyDungeon = true;
+                DirtyTab = false;
+                ActiveNodeTag.DungeonElement = null;
+                ActiveNodeTag.TabToOpen = RogueTabTypes.BasicInfo;
+                RefreshTreeNodes();
+                tvDungeonInfo.SelectedNode = tvDungeonInfo.TopNode;
+                tvDungeonInfo.Focus();
+            }
+        }
+
+        private void QuestTab_TabInfoChanged(object? sender, EventArgs e)
         {
             if (!AutomatedChange) DirtyTab = true;
         }
@@ -3856,6 +3998,7 @@ namespace RogueCustomsDungeonEditor
         Trap,
         AlteredStatus,
         Scripts,
+        Quest,
         Validator
     }
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

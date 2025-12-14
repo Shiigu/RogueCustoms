@@ -50,7 +50,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkTrapStartsVisible.Checked = trap.StartsVisible;
             var toolTip = new ToolTip();
             toolTip.SetToolTip(chkTrapStartsVisible, "The 'spirit' of a Trap is that it spawns invisible.\n\nHowever, it can be enabled for debugging purposes.");
-            SetSingleActionEditorParams(saeTrapOnStepped, trap.Id, trap.OnStepped);
+            saeTrapOnStepped.SetActionEditorParams(trap.Id, trap.OnStepped, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
         }
 
         public List<string> SaveData(string id)
@@ -82,15 +82,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtTrapName_TextChanged(object sender, EventArgs e)

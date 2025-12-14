@@ -50,6 +50,7 @@
             dgvLearnset.Size = new System.Drawing.Size(465, 350);
             dgvLearnset.TabIndex = 18;
             dgvLearnset.CellValidating += dgvLearnset_CellValidating;
+            dgvLearnset.CellValueChanged += dgvLearnset_CellValueChanged;
             // 
             // cmLevel
             // 

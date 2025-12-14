@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using RogueCustomsDungeonEditor.Controls;
+using RogueCustomsDungeonEditor.EffectInfos;
+
+using RogueCustomsGameEngine.Utils.JsonImports;
 
 namespace RogueCustomsDungeonEditor.Utils
 {
@@ -44,6 +49,23 @@ namespace RogueCustomsDungeonEditor.Utils
             box.SelectionColor = color;
             box.AppendText(text);
             box.SelectionColor = box.ForeColor;
+        }
+
+        public static void SetActionEditorParams(this SingleActionEditor sae, string classId, ActionWithEffectsInfo? action, List<EffectTypeData> effectParamData, DungeonInfo dungeon, EventHandler changeEvent)
+        {
+            sae.Action = action;
+            sae.ClassId = classId;
+            sae.Dungeon = dungeon;
+            sae.EffectParamData = effectParamData;
+            sae.ActionContentsChanged += changeEvent;
+        }
+        public static void SetActionEditorParams(this MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions, List<EffectTypeData> effectParamData, DungeonInfo dungeon, EventHandler changeEvent)
+        {
+            mae.Actions = actions;
+            mae.ClassId = classId;
+            mae.Dungeon = dungeon;
+            mae.EffectParamData = effectParamData;
+            mae.ActionContentsChanged += changeEvent;
         }
     }
 }

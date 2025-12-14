@@ -44,6 +44,7 @@ namespace RogueCustomsDungeonEditor.Validators
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ItemValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> TrapValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> AlteredStatusValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
+        public List<(string Id, DungeonValidationMessages ValidationMessages)> QuestValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
         public List<(string Id, DungeonValidationMessages ValidationMessages)> ScriptValidationMessages { get; private set; } = new List<(string Id, DungeonValidationMessages ValidationMessages)>();
 
         public DungeonValidationMessages DefaultLocaleValidationMessages { get; private set; }
@@ -95,6 +96,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 + DungeonJson.Items.Count
                 + DungeonJson.Traps.Count
                 + DungeonJson.AlteredStatuses.Count
+                + DungeonJson.QuestInfos.Count
                 + DungeonJson.Scripts.Count;
 
             ProgressBar.Visible = true;
@@ -263,18 +265,28 @@ namespace RogueCustomsDungeonEditor.Validators
                 ItemValidationMessages.Add((itemInfo.Id, await DungeonItemValidator.Validate(itemInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Item {itemInfo.Id} Validation complete!", true);
             }
+
             foreach (var trapInfo in DungeonJson.Traps)
             {
                 UpdateProgressLabel($"Running Trap {trapInfo.Id} Validation...", false);
                 TrapValidationMessages.Add((trapInfo.Id, await DungeonTrapValidator.Validate(trapInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Trap {trapInfo.Id} Validation complete!", true);
             }
+
             foreach (var alteredStatusInfo in DungeonJson.AlteredStatuses)
             {
                 UpdateProgressLabel($"Running Altered Status {alteredStatusInfo.Id} Validation...", false);
                 AlteredStatusValidationMessages.Add((alteredStatusInfo.Id, await DungeonAlteredStatusValidator.Validate(alteredStatusInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Altered Status {alteredStatusInfo.Id} Validation complete!", true);
             }
+
+            foreach (var questInfo in DungeonJson.QuestInfos)
+            {
+                UpdateProgressLabel($"Running Quest {questInfo.Id} Validation...", false);
+                AlteredStatusValidationMessages.Add((questInfo.Id, await DungeonQuestValidator.Validate(questInfo, DungeonJson, sampleDungeon)));
+                UpdateProgressLabel($"Quest {questInfo.Id} Validation complete!", true);
+            }
+
             foreach (var scriptInfo in DungeonJson.Scripts)
             {
                 UpdateProgressLabel($"Running Script {scriptInfo.Id} Validation...", false);
@@ -310,6 +322,7 @@ namespace RogueCustomsDungeonEditor.Validators
                 && !ItemValidationMessages.Exists(ivm => ivm.ValidationMessages.HasErrors)
                 && !TrapValidationMessages.Exists(tvm => tvm.ValidationMessages.HasErrors)
                 && !AlteredStatusValidationMessages.Exists(asvm => asvm.ValidationMessages.HasErrors)
+                && !QuestValidationMessages.Exists(qvm => qvm.ValidationMessages.HasErrors)
                 && !ScriptValidationMessages.Exists(svm => svm.ValidationMessages.HasErrors)
                 && !DefaultLocaleValidationMessages.HasErrors
                 && !LocaleStringValidationMessages.Exists(lsvm => lsvm.ValidationMessages.HasErrors);

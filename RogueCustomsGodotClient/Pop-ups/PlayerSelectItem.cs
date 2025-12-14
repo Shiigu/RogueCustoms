@@ -6,10 +6,12 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 using RogueCustomsGodotClient;
 using RogueCustomsGodotClient.Helpers;
+using RogueCustomsGodotClient.Popups;
 using RogueCustomsGodotClient.Utils;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +26,7 @@ public partial class PlayerSelectItem : Control
     private Label _titleLabel;
     private VBoxContainer _selectionList;
     private RichTextLabel _itemDescriptionLabel;
-    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton, _selectButton, _buyButton, _sellButton;
+    private Button _dropButton, _equipButton, _swapButton, _useButton, _doButton, _cancelButton, _selectButton, _buyButton, _sellButton, _abandonButton;
 
     private Panel _outerBorder, _verticalBorder, _overlappingVerticalBorder;
 
@@ -33,6 +35,7 @@ public partial class PlayerSelectItem : Control
 
     private InventoryDto _itemListInfo;
     private ActionListDto _actionListInfo;
+    private List<QuestDto> _questListInfo;
     private SelectionMode _selectionMode;
     private string Title;
 
@@ -48,6 +51,7 @@ public partial class PlayerSelectItem : Control
     private readonly string SelectButtonText = TranslationServer.Translate("SelectButtonText");
     private readonly string BuyButtonText = TranslationServer.Translate("BuyButtonText");
     private readonly string SellButtonText = TranslationServer.Translate("SellButtonText");
+    private readonly string AbandonButtonText = TranslationServer.Translate("AbandonButtonText");
 
     private readonly StyleBoxFlat normalItemStyleBox = (StyleBoxFlat)GlobalConstants.NormalItemStyleBox.Duplicate();
     private readonly StyleBoxFlat selectItemStyleBox = (StyleBoxFlat)GlobalConstants.SelectedItemStyleBox.Duplicate();
@@ -73,6 +77,7 @@ public partial class PlayerSelectItem : Control
         _cancelButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/CancelButton");
         _buyButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/BuyButton");
         _sellButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/SellButton");
+        _abandonButton = GetNode<Button>("MarginContainer/VBoxContainer2/ButtonContainer/AbandonButton");
         _outerBorder = GetNode<Panel>("OuterBorder");
         _verticalBorder = GetNode<Panel>("VerticalBorder");
         _overlappingVerticalBorder = GetNode<Panel>("OverlappingVerticalBorder");
@@ -191,9 +196,11 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
-                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId, _itemListInfo.InventoryItems[_selectedIndex].ClassId);
                     onCloseCallback?.Invoke();
                     QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId, _itemListInfo.InventoryItems[_selectedIndex].ClassId);
                 }
                 catch (Exception ex)
                 {
@@ -210,9 +217,11 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
-                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                     onCloseCallback?.Invoke();
                     QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
                 {
@@ -229,9 +238,11 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
-                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                     onCloseCallback?.Invoke();
                     QueueFree();
+                    _globalState.MustUpdateGameScreen = true;
+                    _globalState.DungeonManager.RefreshDisplay(true);
+                    EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
                 {
@@ -357,6 +368,73 @@ public partial class PlayerSelectItem : Control
         Position = (screenSize - _outerBorder.Size) / 2;
     }
 
+    public void Show(List<QuestDto> questList, Action onCloseCallback = null)
+    {
+        if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null || questList.Count == 0)
+        {
+            onCloseCallback?.Invoke();
+            QueueFree();
+            return;
+        }
+
+        _selectionMode = SelectionMode.Quest;
+
+        _abandonButton.Text = AbandonButtonText;
+
+        _abandonButton.Pressed += () => _ = AbandonButton_Pressed(onCloseCallback);
+
+        _cancelButton.Text = CancelButtonText;
+
+        _cancelButton.Pressed += () =>
+        {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
+            _selectedIndex = -1;
+            EmitSignal(nameof(PopupClosed), null);
+            onCloseCallback?.Invoke();
+            QueueFree();
+        };
+
+        _questListInfo = questList;
+
+        Title = TranslationServer.Translate("JournalWindowTitleText");
+        ShowJournalScreen();
+
+        var screenSize = GetViewportRect().Size;
+        Position = (screenSize - _outerBorder.Size) / 2;
+    }
+
+    private async Task AbandonButton_Pressed(Action onCloseCallback = null)
+    {
+        try
+        {
+            if (GetChildren().Any(c => c.IsPopUp())) return;
+            if (_selectedIndex == -1) return;
+
+            await this.CreateStandardPopup(TranslationServer.Translate("AbandonQuestHeaderText"),
+                                        TranslationServer.Translate("AbandonQuestPromptText"),
+                                        new PopUpButton[]
+                                        {
+                                        new() { Text = TranslationServer.Translate("YesButtonText"), Callback = () => CallAbandonQuest(onCloseCallback), ActionPress = "ui_accept" },
+                                        new() { Text = TranslationServer.Translate("NoButtonText"), Callback = null, ActionPress = "ui_cancel" }
+                                        }, new Color() { R8 = 255, G8 = 255, B8 = 0, A = 1 });
+        }
+        catch (Exception ex)
+        {
+            _exceptionLogger.LogMessage(ex);
+        }
+    }
+
+    private void CallAbandonQuest(Action onCloseCallback = null)
+    {
+        var selectedQuest = _questListInfo[_selectedIndex];
+
+        onCloseCallback?.Invoke();
+        QueueFree();
+        _globalState.MustUpdateGameScreen = true;
+        _globalState.DungeonManager.RefreshDisplay(true);
+        _globalState.DungeonManager.PlayerAbandonQuest(selectedQuest.Id);
+    }
+
     private Task DoButton_Pressed(Vector2I? targetCoords, Action onCloseCallback)
     {
         if (GetChildren().Any(c => c.IsPopUp())) return Task.CompletedTask;
@@ -388,6 +466,7 @@ public partial class PlayerSelectItem : Control
             _selectButton.Visible = false;
             _sellButton.Visible = false;
             _buyButton.Visible = false;
+            _abandonButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.SelectItem)
         {
@@ -399,6 +478,7 @@ public partial class PlayerSelectItem : Control
             _selectButton.Visible = true;
             _sellButton.Visible = false;
             _buyButton.Visible = false;
+            _abandonButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.Sell || _selectionMode == SelectionMode.Buy)
         {
@@ -408,6 +488,7 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = false;
             _doButton.Visible = false;
             _selectButton.Visible = false;
+            _abandonButton.Visible = false;
             _sellButton.Visible = _selectionMode == SelectionMode.Sell;
             _buyButton.Visible = _selectionMode == SelectionMode.Buy;
         }
@@ -589,11 +670,13 @@ public partial class PlayerSelectItem : Control
             _equipButton.Disabled = _isReadOnly || selectedItem.IsEquipped || !selectedItem.CanBeEquipped;
             _selectButton.Visible = false;
             _selectButton.Disabled = true;
+            _abandonButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.SelectItem)
         {
             _selectButton.Visible = true;
             _selectButton.Disabled = false;
+            _abandonButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.Sell || _selectionMode == SelectionMode.Buy)
         {
@@ -603,6 +686,7 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = false;
             _doButton.Visible = false;
             _selectButton.Visible = false;
+            _abandonButton.Visible = false;
             _sellButton.Visible = _selectionMode == SelectionMode.Sell;
             _sellButton.Disabled = !selectedItem.CanBeUsed;
             _buyButton.Visible = _selectionMode == SelectionMode.Buy;
@@ -622,6 +706,7 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = false;
             _doButton.Visible = true;
             _selectButton.Visible = false;
+            _abandonButton.Visible = false;
         }
         else if (_selectionMode == SelectionMode.SelectAction)
         {
@@ -631,6 +716,7 @@ public partial class PlayerSelectItem : Control
             _useButton.Visible = false;
             _doButton.Visible = false;
             _selectButton.Visible = true;
+            _abandonButton.Visible = false;
         }
 
         var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
@@ -713,6 +799,86 @@ public partial class PlayerSelectItem : Control
         }
     }
 
+    private void ShowJournalScreen()
+    {
+        _dropButton.Visible = false;
+        _equipButton.Visible = false;
+        _swapButton.Visible = false;
+        _useButton.Visible = false;
+        _doButton.Visible = false;
+        _selectButton.Visible = false;
+        _abandonButton.Visible = true;
+
+        var borderStyleBox = (StyleBoxFlat)GlobalConstants.PopUpBorderStyle.Duplicate();
+        borderStyleBox.BorderColor = new Color { R8 = 0, G8 = 191, B8 = 255, A = 1 };
+        _outerBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+        _verticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+        _overlappingVerticalBorder.AddThemeStyleboxOverride("panel", borderStyleBox);
+
+        var titleStyleBox = (StyleBoxFlat)GlobalConstants.PopUpTitleStyle.Duplicate();
+        titleStyleBox.BgColor = new Color { R8 = 0, G8 = 191, B8 = 255, A = 1 };
+        _titleLabel.AddThemeStyleboxOverride("normal", titleStyleBox);
+        _titleLabel.Text = TranslationServer.Translate("JournalWindowTitleText");
+
+        foreach (var quest in _questListInfo)
+        {
+            var questLabel = new ScalableLabel
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                SizeFlagsHorizontal = SizeFlags.ExpandFill,
+                SizeFlagsVertical = SizeFlags.ShrinkCenter,
+                MinFontSize = 8,
+                DefaultFontSize = 16,
+                Size = new() { X = _selectionList.Size.X, Y = 16 }
+            };
+            questLabel.SetText(quest.Name);
+            questLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
+            questLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+            _selectionList.AddChild(questLabel);
+        }
+
+        SelectQuestRow(0);
+    }
+
+    private void SelectQuestRow(int index)
+    {
+        var selectedQuest = _selectedIndex != -1
+            ? _questListInfo[_selectedIndex]
+            : null;
+        if (_selectedIndex != -1)
+        {
+            var selectedLabel = (ScalableLabel)_selectionList.GetChildren()[_selectedIndex];
+            selectedLabel.AddThemeStyleboxOverride("normal", normalItemStyleBox);
+            selectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 255, G8 = 255, B8 = 255, A = 1 });
+        }
+        _selectedIndex = index;
+        var newSelectedLabel = (ScalableLabel)_selectionList.GetChildren()[_selectedIndex];
+        selectedQuest = _questListInfo[_selectedIndex];
+        newSelectedLabel.AddThemeStyleboxOverride("normal", selectItemStyleBox);
+        newSelectedLabel.AddThemeColorOverride("font_color", new Color() { R8 = 0, G8 = 0, B8 = 0, A = 1 });
+
+        _itemDescriptionLabel.Text = "";
+
+        if (selectedQuest != null)
+        {
+            _itemDescriptionLabel.AppendText($"{selectedQuest.Description}[p] [p]");
+
+            _itemDescriptionLabel.AppendText($"{selectedQuest.CompletionTypeMessage.ToColoredString(new(System.Drawing.Color.DeepSkyBlue))}[p] [p]");
+
+            foreach (var condition in selectedQuest.Conditions)
+            {
+                var conditionColor = condition.IsFulfilled
+                    ? "#00FF00"
+                    : "#00BFFF";
+
+                var conditionText = $"- {condition.Description} ({condition.CurrentValue}/{condition.TargetValue})";
+
+                _itemDescriptionLabel.AppendText($"[p][color={conditionColor}]{conditionText}[/color]");
+            }
+        }
+    }
+
     private void SelectRow(int index)
     {
         if (_selectionMode == SelectionMode.Inventory || _selectionMode == SelectionMode.SelectItem || _selectionMode == SelectionMode.Buy || _selectionMode == SelectionMode.Sell)
@@ -726,6 +892,12 @@ public partial class PlayerSelectItem : Control
             if (index < 0 || index >= _actionListInfo.Actions.Count)
                 return;
             SelectActionRow(index);
+        }
+        else if (_selectionMode == SelectionMode.Quest)
+        {
+            if (index < 0 || index >= _questListInfo.Count)
+                return;
+            SelectQuestRow(index);
         }
     }
 
@@ -795,6 +967,18 @@ public partial class PlayerSelectItem : Control
             _dropButton.GrabFocus();
             _dropButton.EmitSignal("pressed");
             _dropButton.ButtonPressed = true;
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_abandon"))
+        {
+            if (!_abandonButton.Visible || _abandonButton.Disabled)
+            {
+                AcceptEvent();
+                return;
+            }
+            _abandonButton.GrabFocus();
+            _abandonButton.EmitSignal("pressed");
+            _abandonButton.ButtonPressed = true;
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_cancel"))

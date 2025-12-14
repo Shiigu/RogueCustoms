@@ -99,6 +99,8 @@ namespace RogueCustomsDungeonEditor
             ValidatorTab = new Controls.Tabs.ValidatorTab();
             ofdDungeon = new OpenFileDialog();
             sfdDungeon = new SaveFileDialog();
+            tpQuests = new TabPage();
+            QuestTab = new Controls.Tabs.QuestTab();
             msMenu.SuspendLayout();
             tsButtons.SuspendLayout();
             tbTabs.SuspendLayout();
@@ -126,6 +128,7 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.SuspendLayout();
             tpScripts.SuspendLayout();
             tpValidation.SuspendLayout();
+            tpQuests.SuspendLayout();
             SuspendLayout();
             // 
             // msMenu
@@ -320,6 +323,7 @@ namespace RogueCustomsDungeonEditor
             tbTabs.Controls.Add(tpItem);
             tbTabs.Controls.Add(tpTrap);
             tbTabs.Controls.Add(tpAlteredStatus);
+            tbTabs.Controls.Add(tpQuests);
             tbTabs.Controls.Add(tpScripts);
             tbTabs.Controls.Add(tpValidation);
             tbTabs.Dock = DockStyle.Fill;
@@ -809,6 +813,25 @@ namespace RogueCustomsDungeonEditor
             sfdDungeon.Filter = "Dungeon JSON|*.json";
             sfdDungeon.Title = "Set a Dungeon JSON file name to save";
             // 
+            // tpQuests
+            // 
+            tpQuests.Controls.Add(QuestTab);
+            tpQuests.Location = new System.Drawing.Point(4, 24);
+            tpQuests.Name = "tpQuests";
+            tpQuests.Size = new System.Drawing.Size(859, 521);
+            tpQuests.TabIndex = 24;
+            tpQuests.Text = "Quest";
+            tpQuests.UseVisualStyleBackColor = true;
+            // 
+            // QuestTab
+            // 
+            QuestTab.AutoScroll = true;
+            QuestTab.Dock = DockStyle.Fill;
+            QuestTab.Location = new System.Drawing.Point(0, 0);
+            QuestTab.Name = "QuestTab";
+            QuestTab.Size = new System.Drawing.Size(859, 521);
+            QuestTab.TabIndex = 0;
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -866,6 +889,7 @@ namespace RogueCustomsDungeonEditor
             tpAlteredStatus.PerformLayout();
             tpScripts.ResumeLayout(false);
             tpValidation.ResumeLayout(false);
+            tpQuests.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -940,5 +964,7 @@ namespace RogueCustomsDungeonEditor
         private ToolStripMenuItem getHelpHereToolStripMenuItem;
         private TabPage tpLearnsets;
         private Controls.Tabs.LearnsetTab LearnsetTab;
+        private TabPage tpQuests;
+        private Controls.Tabs.QuestTab QuestTab;
     }
 }

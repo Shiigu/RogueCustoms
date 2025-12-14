@@ -37,6 +37,7 @@ namespace RogueCustomsGameEngine.Utils.JsonImports
         public List<ItemInfo> Items { get; set; }
         public List<TrapInfo> Traps { get; set; }
         public List<AlteredStatusInfo> AlteredStatuses { get; set; }
+        public List<QuestInfo> QuestInfos { get; set; }
         public List<ActionWithEffectsInfo> Scripts { get; set; }
 
         public string GetLocalizedName(string localeLanguage)

@@ -599,10 +599,10 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
         }
 
-        public abstract void DropItem(IPickable pickable);
-        public abstract void PickItem(IPickable pickable, bool informToPlayer);
+        public abstract Task DropItem(IPickable pickable);
+        public abstract Task PickItem(IPickable pickable, bool informToPlayer);
         public abstract void PickKey(Key key, bool informToPlayer);
-        public abstract void EquipItem(Item item);
+        public abstract Task EquipItem(Item item);
 
         public void TryToPickItem(IPickable p)
         {

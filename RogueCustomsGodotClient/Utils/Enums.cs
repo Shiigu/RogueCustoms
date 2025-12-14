@@ -30,6 +30,7 @@ namespace RogueCustomsGodotClient.Utils
     {
         Interact,
         Inventory,
+        Quest,
         SelectAction,
         SelectItem,
         Buy,

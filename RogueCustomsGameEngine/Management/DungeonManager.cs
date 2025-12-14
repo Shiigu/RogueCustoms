@@ -141,6 +141,18 @@ namespace RogueCustomsGameEngine.Management
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
             restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
             restoredDungeon.CurrentFloor.SetActionParams();
+            foreach (var entity in restoredDungeon.CurrentFloor.Entities)
+            {
+                entity.Map = restoredDungeon.CurrentFloor;
+            }
+            foreach (var tile in restoredDungeon.CurrentFloor.Tiles)
+            {
+                tile.Map = restoredDungeon.CurrentFloor;
+            }
+            foreach (var quest in restoredDungeon.PlayerCharacter.Quests)
+            {
+                quest.Map = restoredDungeon.CurrentFloor;
+            }
             foreach (var tileType in restoredDungeon.TileTypes)
             {
                 if (tileType.Id.Equals("Empty"))
@@ -185,20 +197,25 @@ namespace RogueCustomsGameEngine.Management
             }
             if (restoredDungeon.PlayerCharacter.ExistenceStatus == EntityExistenceStatus.Dead)
             {
-                restoredDungeon.DungeonStatus = DungeonStatus.GameOver;
-                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName} is really dead", [new()
-                    {
-                        DisplayEventType = DisplayEventType.SetDungeonStatus,
+                var events = new List<DisplayEventDto>();
+                restoredDungeon.PlayerCharacter.InformRefreshedPlayerData(events);
+                events.Add(new DisplayEventDto
+                {
+                    DisplayEventType = DisplayEventType.SetDungeonStatus,
                     Params = new() { DungeonStatus.GameOver }
-                    }]));
+                });
+                restoredDungeon.DungeonStatus = DungeonStatus.GameOver;
+                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName} is really dead", events));
             }
             else
             {
-                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName} may be on stairs", [new()
-                    {
-                        DisplayEventType = DisplayEventType.SetOnStairs,
+                var events = new List<DisplayEventDto>();
+                restoredDungeon.PlayerCharacter.InformRefreshedPlayerData(events);
+                events.Add(new DisplayEventDto {
+                    DisplayEventType = DisplayEventType.SetOnStairs,
                     Params = new() { restoredDungeon.CurrentFloor.Player.ContainingTile.Type == TileType.Stairs }
-                    }]));
+                });
+                restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName}'s current status", events));
             }
             restoredDungeon.CurrentFloor.Snapshot.Read = false;
             restoredDungeon.CurrentFloor.Snapshot.JustLoaded = true;
@@ -262,6 +279,10 @@ namespace RogueCustomsGameEngine.Management
         {
             return ActiveDungeon.PlayerSwapFloorItemWithInventoryItem(itemId);
         }
+        public void PlayerAbandonQuest(int questId)
+        {
+            ActiveDungeon.PlayerAbandonQuest(questId);
+        }
 
         public PlayerInfoDto GetPlayerDetailInfo()
         {
@@ -271,6 +292,11 @@ namespace RogueCustomsGameEngine.Management
         public InventoryDto GetPlayerInventory()
         {
             return ActiveDungeon.GetPlayerInventory();
+        }
+
+        public List<QuestDto> GetPlayerQuests()
+        {
+            return ActiveDungeon.GetPlayerQuests();
         }
 
         public ActionListDto GetPlayerAttackActions(int x, int y)

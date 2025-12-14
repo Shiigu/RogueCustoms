@@ -42,7 +42,7 @@ public partial class GameScreen : Control
     private CoordinateInput _coords;
     private AudioStreamPlayer _audioStreamPlayer;
 
-    private bool _soundIsPlaying, _popUpIsOpen, _processingEvents;
+    private bool _soundIsPlaying, _popUpIsOpen, _processingEvents, _firstLoad;
     private TaskCompletionSource<bool> _soundFinished;
 
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
@@ -99,6 +99,9 @@ public partial class GameScreen : Control
             (SpecialEffect.MonsterHouseAlarm, "res://Sounds/monsterhousealarm.wav"),
             (SpecialEffect.Reveal, "res://Sounds/reveal.wav"),
             (SpecialEffect.Identify, "res://Sounds/identify.wav"),
+            (SpecialEffect.QuestAccepted, "res://Sounds/questaccepted.wav"),
+            (SpecialEffect.QuestComplete, "res://Sounds/questcomplete.wav"),
+            (SpecialEffect.QuestAbandoned, "res://Sounds/questabandoned.wav"),
         };
 
         _globalState = GetNode<GlobalState>("/root/GlobalState");
@@ -132,6 +135,7 @@ public partial class GameScreen : Control
         _globalState.MustUpdateGameScreen = true;
         _globalState.PlayerControlMode = ControlMode.NormalMove;
         _lastTurn = -1;
+        _firstLoad = true;
 
         _coords = new CoordinateInput
         {
@@ -221,6 +225,12 @@ public partial class GameScreen : Control
                     {
                         _mapPanel.StopTargeting(false);
                         _saveGameButton.Disabled = true;
+                    }
+
+                    if (_firstLoad)
+                    {
+                        dungeonStatus.RefreshTiles();
+                        _firstLoad = false;
                     }
 
                     foreach (var child in _children)
@@ -317,6 +327,7 @@ public partial class GameScreen : Control
 
     private async Task UpdateUIViaEvents()
     {
+        _globalState.DungeonInfo.Read = true;
         _processingEvents = true;
         var controlModeToPick = ControlMode.NormalMove;
         if (_globalState.PlayerControlMode != ControlMode.PreMoveHighlight)
@@ -366,10 +377,10 @@ public partial class GameScreen : Control
                         break;
                     case DisplayEventType.AddMessageBox:
                         if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
-                        _globalState.DungeonInfo.AwaitingInput = true;
+                        _globalState.DungeonInfo.AwaitingPromptInput = true;
                         var messageBox = displayEvent.Params[0] as MessageBoxDto;
                         await ShowMessageBox(messageBox);
-                        _globalState.DungeonInfo.AwaitingInput = false;
+                        _globalState.DungeonInfo.AwaitingPromptInput = false;
                         break;
                     case DisplayEventType.UpdateTileRepresentation:
                         if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
@@ -499,7 +510,6 @@ public partial class GameScreen : Control
         _soundIsPlaying = false;
         _globalState.PlayerControlMode = controlModeToPick;
         _controlsPanel.Update();
-        _globalState.DungeonInfo.Read = true;
         _globalState.MustUpdateGameScreen = false;
 
         _infoPanel.DetailsButton.Disabled = false;
@@ -660,6 +670,19 @@ public partial class GameScreen : Control
             try
             {
                 this.CreateInventoryWindow(_globalState.DungeonManager.GetPlayerInventory());
+                AcceptEvent();
+            }
+            catch (Exception ex)
+            {
+                _exceptionLogger.LogMessage(ex);
+            }
+            return;
+        }
+        else if (@event.IsActionPressed("ui_journal"))
+        {
+            try
+            {
+                this.CreateJournalWindow(_globalState.DungeonManager.GetPlayerQuests());
                 AcceptEvent();
             }
             catch (Exception ex)

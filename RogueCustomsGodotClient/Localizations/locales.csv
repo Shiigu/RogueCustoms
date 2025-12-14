@@ -1,4 +1,7 @@
 Key,es,en
+AbandonButtonText,ABANDONAR,ABANDON
+AbandonQuestHeaderText,ABANDONAR MISIÓN,ABANDON QUEST
+AbandonQuestPromptText,¿Estás seguro de que quieres abandonar esta misión?\n\nNo recibirás ninguna recompensa.,Are you sure you want to abandon this quest?\n\nYou will not receive any rewards.
 AimModeControlsText,<ARROWS> Mover <A> Elegir Acción <V> Ver Info de Objeto <ESC> Cancelar,<ARROWS> Move <A> Open Action Window <V> View Object Info <ESC> Cancel
 ActionWindowTitleText,Acciones hacia {TargetName},Actions on {TargetName}
 AddDungeonDialogTitleText,Agregar o Actualizar Mazmorra,Add or Update Dungeon
@@ -78,6 +81,7 @@ InventoryWindowCannotAffordText,NO TIENES SUFICIENTE {Symbol},YOU DO NOT HAVE EN
 InventoryWindowRequiredPlayerLevelText,Requiere Nivel de Jugador {Level},Requires Player Level {Level}
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
+JournalWindowTitleText,Diario de Misiones,Quest Journal
 LanguageLocale,es,en
 LanguageName,Español,English
 LeftButtonText,<-,<-
@@ -89,9 +93,9 @@ MenuControlsSubText,<F5> Guardar <ESC> Salir,<F5> Save Game <ESC> Exit
 MessageHeaderText,MENSAJES,MESSAGES
 MessageLogButtonText,REGISTRO DE MENSAJES,MESSAGE LOG
 MessageWindowTitleText,REGISTRO DE MENSAJES,MESSAGE LOG
-MoveModeNoneControlsText,<M> Registro de Mensajes <D> Detalles de Jugador <ESC> Salir,<M> Open Message Log <D> View Player Details <ESC> Exit
+MoveModeNoneControlsText,<M> Registro de Mensajes <D> Detalles de Jugador <J> Diario <ESC> Salir,<M> Open Message Log <D> View Player Details <J> Journal <ESC> Exit
 MoveModeCannotActControlsText,<I> Inventario <S> Saltar Turno,<I> Inventory Menu <S> Skip Turn
-MoveModeControlsSubText,<M> Registro de Mensajes <D> Detalles de Jugador,<M> Open Message Log <D> View Player Details
+MoveModeControlsSubText,<M> Registro de Mensajes <D> Detalles de Jugador <J> Diario,<M> Open Message Log <D> View Player Details <J> Journal
 MoveModeImmobilizedControlsText,<A> Apuntar <I> Inventario <S> Saltar Turno,<A> Aim Target <I> Inventory Menu <S> Skip Turn
 MoveModeImmobilizedOnStairsControlsText,<A> Apuntar <I> Inventario <U> Usar Escaleras <S> Saltar Turno,<A> Aim Target <I> Inventory Menu <U> Take Stairs <S> Skip Turn
 MoveModeNormalControlsText,<FLECHAS> Mover <A> Apuntar <I> Inventario <S> Saltar Turno,<ARROWS> Move <A> Aim Target <I> Inventory Menu <S> Skip Turn

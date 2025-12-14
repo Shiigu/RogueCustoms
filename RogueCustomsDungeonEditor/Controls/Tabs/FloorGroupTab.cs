@@ -13,6 +13,7 @@ using RogueCustomsDungeonEditor.FloorInfos;
 using RogueCustomsDungeonEditor.HelperForms;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.JsonImports;
 
@@ -98,7 +99,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             {
                 cmbTilesets.Text = selectedTilesetId;
             }
-            SetSingleActionEditorParams(saeOnFloorStart, string.Empty, LoadedFloorGroup.OnFloorStart);
+            saeOnFloorStart.SetActionEditorParams(string.Empty, LoadedFloorGroup.OnFloorStart, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
 
             chkGenerateStairsOnStart.Checked = LoadedFloorGroup.GenerateStairsOnStart;
             fklblStairsReminder.Visible = !chkGenerateStairsOnStart.Checked;
@@ -182,14 +183,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
         }
 
         private void RefreshGenerationAlgorithmList()

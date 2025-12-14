@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -104,15 +105,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             sisNPCStartingInventory.InventorySize = npc.InventorySize;
             sisNPCStartingInventory.Inventory = npc.StartingInventory;
             sisNPCStartingInventory.InventoryContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            SetSingleActionEditorParams(saeNPCDefaultOnAttack, npc.Id, npc.DefaultOnAttack);
-            SetSingleActionEditorParams(saeNPCOnTurnStart, npc.Id, npc.OnTurnStart);
-            SetSingleActionEditorParams(saeNPCBeforeProcessAI, npc.Id, npc.BeforeProcessAI);
-            SetSingleActionEditorParams(saeNPCOnSpawn, npc.Id, npc.OnSpawn);
-            SetMultiActionEditorParams(maeNPCOnAttack, npc.Id, npc.OnAttack);
-            SetSingleActionEditorParams(saeNPCOnAttacked, npc.Id, npc.OnAttacked);
-            SetMultiActionEditorParams(maeNPCOnInteracted, npc.Id, npc.OnInteracted);
-            SetSingleActionEditorParams(saeNPCOnDeath, npc.Id, npc.OnDeath);
-            SetSingleActionEditorParams(saeNPCOnLevelUp, npc.Id, npc.OnLevelUp);
+            saeNPCDefaultOnAttack.SetActionEditorParams(npc.Id, npc.DefaultOnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCOnTurnStart.SetActionEditorParams(npc.Id, npc.OnTurnStart, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCBeforeProcessAI.SetActionEditorParams(npc.Id, npc.BeforeProcessAI, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCOnSpawn.SetActionEditorParams(npc.Id, npc.OnSpawn, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            maeNPCOnAttack.SetActionEditorParams(npc.Id, npc.OnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCOnAttacked.SetActionEditorParams(npc.Id, npc.OnAttacked, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            maeNPCOnInteracted.SetActionEditorParams(npc.Id, npc.OnInteracted, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCOnDeath.SetActionEditorParams(npc.Id, npc.OnDeath, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeNPCOnLevelUp.SetActionEditorParams(npc.Id, npc.OnLevelUp, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
 
             cmbNPCAIType.Items.Clear();
             cmbNPCAIType.Text = "";
@@ -336,23 +337,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
-        private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
-        {
-            mae.Actions = actions;
-            mae.ClassId = classId;
-            mae.Dungeon = ActiveDungeon;
-            mae.EffectParamData = EffectParamData;
-            mae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtNPCExperiencePayout_Enter(object sender, EventArgs e)

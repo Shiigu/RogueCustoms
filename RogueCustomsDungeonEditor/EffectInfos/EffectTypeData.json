@@ -4064,5 +4064,29 @@
         "Columns": []
       }
     ]
+  },
+  {
+    "InternalName": "GiveQuest",
+    "TreeViewDisplayText": "Give Player Quest ({QuestId})",
+    "ComboBoxDisplayName": "Give Player a Quest",
+    "Description": "The Player will be given the specified Quest. It will be accepted immediately.\n\nFails if it's not targeted at the Player, of if the Quest is not repeatable and the Player already accepted it.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "QuestId",
+        "DisplayName": "Quest Id",
+        "Description": "The Id of the Quest to be given.",
+        "ParameterType": "Quest",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
   }
 ]

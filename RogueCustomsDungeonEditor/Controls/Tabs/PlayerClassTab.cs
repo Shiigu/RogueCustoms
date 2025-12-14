@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using RogueCustomsDungeonEditor.EffectInfos;
 using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -89,12 +90,12 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             sisPlayerStartingInventory.InventorySize = playerClass.InventorySize;
             sisPlayerStartingInventory.Inventory = playerClass.StartingInventory;
             sisPlayerStartingInventory.InventoryContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-            SetSingleActionEditorParams(saePlayerDefaultOnAttack, playerClass.Id, playerClass.DefaultOnAttack);
-            SetSingleActionEditorParams(saePlayerOnTurnStart, playerClass.Id, playerClass.OnTurnStart);
-            SetMultiActionEditorParams(maePlayerOnAttack, playerClass.Id, playerClass.OnAttack);
-            SetSingleActionEditorParams(saePlayerOnAttacked, playerClass.Id, playerClass.OnAttacked);
-            SetSingleActionEditorParams(saePlayerOnDeath, playerClass.Id, playerClass.OnDeath);
-            SetSingleActionEditorParams(saePlayerOnLevelUp, playerClass.Id, playerClass.OnLevelUp);
+            saePlayerDefaultOnAttack.SetActionEditorParams(playerClass.Id, playerClass.DefaultOnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saePlayerOnTurnStart.SetActionEditorParams(playerClass.Id, playerClass.OnTurnStart, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            maePlayerOnAttack.SetActionEditorParams(playerClass.Id, playerClass.OnAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saePlayerOnAttacked.SetActionEditorParams(playerClass.Id, playerClass.OnAttacked, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saePlayerOnDeath.SetActionEditorParams(playerClass.Id, playerClass.OnDeath, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saePlayerOnLevelUp.SetActionEditorParams(playerClass.Id, playerClass.OnLevelUp, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
             nudPlayerSaleValuePercentage.Value = playerClass.SaleValuePercentage;
         }
 
@@ -210,22 +211,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             return validationErrors;
         }
 
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
-        private void SetMultiActionEditorParams(MultiActionEditor mae, string classId, List<ActionWithEffectsInfo> actions)
-        {
-            mae.Actions = actions;
-            mae.ClassId = classId;
-            mae.Dungeon = ActiveDungeon;
-            mae.EffectParamData = EffectParamData;
-            mae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
-        }
         private void txtPlayerClassName_TextChanged(object sender, EventArgs e)
         {
             txtPlayerClassName.ToggleEntryInLocaleWarning(ActiveDungeon, fklblPlayerClassNameLocale);

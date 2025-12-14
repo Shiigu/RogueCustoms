@@ -6,7 +6,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 using RogueCustomsDungeonEditor.EffectInfos;
+using RogueCustomsDungeonEditor.Utils;
 
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
@@ -49,11 +51,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             chkAlteredStatusCanOverwrite.Checked = alteredStatus.CanOverwrite;
             chkAlteredStatusCleanseOnFloorChange.Checked = alteredStatus.CleanseOnFloorChange;
             chkAlteredStatusCleansedOnCleanseActions.Checked = alteredStatus.CleansedByCleanseActions;
-            SetSingleActionEditorParams(saeAlteredStatusOnApply, alteredStatus.Id, alteredStatus.OnApply);
-            SetSingleActionEditorParams(saeAlteredStatusOnTurnStart, alteredStatus.Id, alteredStatus.OnTurnStart);
-            SetSingleActionEditorParams(saeAlteredStatusBeforeAttack, alteredStatus.Id, alteredStatus.BeforeAttack);
-            SetSingleActionEditorParams(saeAlteredStatusOnAttacked, alteredStatus.Id, alteredStatus.OnAttacked);
-            SetSingleActionEditorParams(saeAlteredStatusOnRemove, alteredStatus.Id, alteredStatus.OnRemove);
+            saeAlteredStatusOnApply.SetActionEditorParams(alteredStatus.Id, alteredStatus.OnApply, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAlteredStatusOnTurnStart.SetActionEditorParams(alteredStatus.Id, alteredStatus.OnTurnStart, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAlteredStatusBeforeAttack.SetActionEditorParams(alteredStatus.Id, alteredStatus.BeforeAttack, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAlteredStatusOnAttacked.SetActionEditorParams(alteredStatus.Id, alteredStatus.OnAttacked, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeAlteredStatusOnRemove.SetActionEditorParams(alteredStatus.Id, alteredStatus.OnRemove, EffectParamData, dungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
         }
 
         public List<string> SaveData(string id)
@@ -97,15 +99,6 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             }
 
             return validationErrors;
-        }
-
-        private void SetSingleActionEditorParams(SingleActionEditor sae, string classId, ActionWithEffectsInfo? action)
-        {
-            sae.Action = action;
-            sae.ClassId = classId;
-            sae.Dungeon = ActiveDungeon;
-            sae.EffectParamData = EffectParamData;
-            sae.ActionContentsChanged += (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private void txtAlteredStatusName_TextChanged(object sender, EventArgs e)

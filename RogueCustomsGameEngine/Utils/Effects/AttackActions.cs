@@ -98,7 +98,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     new() { ParamName = "Power", Value = (damageResistance - paramsObject.Damage).ToString(CultureInfo.CurrentCulture) },
                 };
 
-                var healResult = GenericActions.HealDamage(new EffectCallerParams
+                var healResult = await GenericActions.HealDamage(new EffectCallerParams
                 {
                     This = Args.This,
                     Source = Args.Source,
@@ -194,6 +194,10 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 await attackElement.OnAfterAttack.Do(Args.Source, c, false);
                 if (c.HP.Current == 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
                     c.Die(paramsObject.Attacker);
+            }
+            if (Args.Source == Map.Player)
+            {
+                await Map.Player.UpdateQuests(QuestConditionType.DealDamage, string.Empty, damageDealt);
             }
             if (Args.This != null && !isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
             {

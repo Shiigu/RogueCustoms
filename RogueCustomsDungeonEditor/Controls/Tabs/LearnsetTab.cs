@@ -63,7 +63,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
             foreach (DataGridViewRow row in dgvLearnset.Rows)
             {
-                if(row.IsNewRow) continue;
+                if (row.IsNewRow) continue;
 
                 var isValidEntry = true;
 
@@ -98,7 +98,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                     learnsetScripts.Add(learnedScriptId);
                 }
 
-                if(!string.IsNullOrWhiteSpace(forgottenScriptId) && !learnsetScripts.Contains(forgottenScriptId))
+                if (!string.IsNullOrWhiteSpace(forgottenScriptId) && !learnsetScripts.Contains(forgottenScriptId))
                 {
                     validationErrors.Add($"Learnset is set to forget {forgottenScriptId} at level {level}, which hasn't been learned yet.");
                     isValidEntry = false;
@@ -129,10 +129,15 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
         private void dgvLearnset_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (e.ColumnIndex == 0 && e.FormattedValue != string.Empty && !int.TryParse(Convert.ToString(e.FormattedValue), out _)) // 1 should be your column index
+            if (e.ColumnIndex == 0 && e.FormattedValue != string.Empty && (!int.TryParse(Convert.ToString(e.FormattedValue), out int level) || level < 1))
             {
                 e.Cancel = true;
             }
+        }
+
+        private void dgvLearnset_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            TabInfoChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

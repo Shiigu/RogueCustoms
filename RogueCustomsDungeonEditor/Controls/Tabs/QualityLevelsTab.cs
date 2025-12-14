@@ -149,8 +149,7 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             if (Result == DialogResult.OK)
             {
                 correspondingQualityLevelColor = new GameColor(pickedColor);
-                if (!QualityLevelColors.ContainsKey(id))
-                    QualityLevelColors.Add(id, correspondingQualityLevelColor);
+                QualityLevelColors[id] = correspondingQualityLevelColor;
                 TabInfoChanged(sender, e);
             }
         }

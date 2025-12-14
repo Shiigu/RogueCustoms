@@ -548,6 +548,102 @@
     {
       "Key": "CharacterHasChangedLearnset",
       "Value": "{CharacterName} has changed their learning path!"
+    },
+    {
+      "Key": "MustFulfillAllObjectivesText",
+      "Value": "Must fulfill all:"
+    },
+    {
+      "Key": "MustFulfillAnyObjectiveText",
+      "Value": "Must fulfill at least one:"
+    },
+    {
+      "Key": "AnyNPCObjectiveText",
+      "Value": "Any NPC"
+    },
+    {
+      "Key": "AnyStatusObjectiveText",
+      "Value": "Statused"
+    },
+    {
+      "Key": "AnyItemObjectiveText",
+      "Value": "Any Item"
+    },
+    {
+      "Key": "DefeatNPCsObjectiveText",
+      "Value": "Defeat {TargetId}"
+    },
+    {
+      "Key": "DealDamageObjectiveText",
+      "Value": "Deal Damage"
+    },
+    {
+      "Key": "HealDamageObjectiveText",
+      "Value": "Heal Damage"
+    },
+    {
+      "Key": "StatusNPCsObjectiveText",
+      "Value": "Get NPCs {TargetId}"
+    },
+    {
+      "Key": "StatusSelfObjectiveText",
+      "Value": "Get yourself {TargetId}"
+    },
+    {
+      "Key": "CollectItemsObjectiveText",
+      "Value": "Obtain {TargetId}"
+    },
+    {
+      "Key": "ConsumeItemsObjectiveText",
+      "Value": "Use {TargetId}"
+    },
+    {
+      "Key": "ReachFloorObjectiveText",
+      "Value": "Reach Floor"
+    },
+    {
+      "Key": "ReachLevelObjectiveText",
+      "Value": "Reach Level"
+    },
+    {
+      "Key": "ObtainMoneyObjectiveText",
+      "Value": "Collect {CurrencyChar}"
+    },
+    {
+      "Key": "QuestAcceptedHeaderText",
+      "Value": "QUEST ACCEPTED!"
+    },
+    {
+      "Key": "QuestAcceptedMessageText",
+      "Value": "You have accepted {QuestName}.\n\n{QuestDescription}\n\nOpen the Quest Journal for more information."
+    },
+    {
+      "Key": "QuestAcceptedText",
+      "Value": "{CharacterName} has accepted {QuestName}."
+    },
+    {
+      "Key": "QuestCompleteHeaderText",
+      "Value": "QUEST COMPLETE!"
+    },
+    {
+      "Key": "QuestCompleteMessageText",
+      "Value": "You have completed {QuestName}!"
+    },
+    {
+      "Key": "QuestCompleteText",
+      "Value": "{CharacterName} has completed {QuestName}!"
+    },
+    {
+      "Key": "QuestAbandonedText",
+      "Value": "{CharacterName} has abandoned {QuestName}..."
+    },
+    {
+      "Key": "SelectQuestRewardText",
+      "Value": "Select a Reward"
+    },
+    {
+      "Key": "InventoryIsFullForQuestText",
+      "Value": "{CharacterName}'s Inventory does not have enough space for Item rewards..."
     }
   ]
 }
