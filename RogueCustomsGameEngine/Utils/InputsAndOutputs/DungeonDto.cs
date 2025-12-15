@@ -176,6 +176,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public int MaxHunger { get; set; }
         public List<SimpleEntityDto> Equipment { get; set; }
         public List<SimpleEntityDto> AlteredStatuses { get; set; }
+        public int InventorySize { get; set; }
         public List<SimpleEntityDto> Inventory { get; set; }
         public CurrencyDto Currency { get; private set; }
         #endregion
@@ -232,6 +233,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Equipment = new List<SimpleEntityDto>();
                 AlteredStatuses = new List<SimpleEntityDto>();
                 Inventory = new List<SimpleEntityDto>();
+                InventorySize = pc.InventorySize;
                 Currency = new(map.CurrencyClass, pc.CurrencyCarried);
             }
         }

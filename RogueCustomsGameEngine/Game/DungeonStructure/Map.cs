@@ -1493,8 +1493,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (!item.IsEquippable)
             {
                 await item.Used(Player);
-                await Player.UpdateQuests(QuestConditionType.UseItems, item.ItemType.Id, 1);
-                await Player.UpdateQuests(QuestConditionType.UseItems, item.ClassId, 1);
+                await Player.UpdateQuests(QuestConditionType.UseItems, item.ItemType);
+                await Player.UpdateQuests(QuestConditionType.UseItems, item);
                 if (item.OnUse?.FinishesTurnWhenUsed == true)
                     Player.TookAction = true;
             }
@@ -1658,8 +1658,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             if (selectedAction != null && selectedAction.User is Item i && i.ItemType.Usability == ItemUsability.Use)
             {
-                await Player.UpdateQuests(QuestConditionType.UseItems, i.ItemType.Id, 1);
-                await Player.UpdateQuests(QuestConditionType.UseItems, i.ClassId, 1);
+                await Player.UpdateQuests(QuestConditionType.UseItems, i.ItemType);
+                await Player.UpdateQuests(QuestConditionType.UseItems, i);
             }
 
             await ProcessTurn();

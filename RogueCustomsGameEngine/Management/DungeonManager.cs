@@ -219,8 +219,7 @@ namespace RogueCustomsGameEngine.Management
                 });
                 restoredDungeon.CurrentFloor.DisplayEvents.Add(($"Player {restoredDungeon.PlayerName}'s current status", events));
             }
-            restoredDungeon.CurrentFloor.Snapshot.Read = false;
-            restoredDungeon.CurrentFloor.Snapshot.JustLoaded = true;
+            restoredDungeon.CurrentFloor.Snapshot = new(restoredDungeon, restoredDungeon.CurrentFloor) { Read = false, JustLoaded = true };
             ConsoleRepresentation.EmptyTile = restoredDungeon.CurrentFloor.TileSet.Empty;
             ActiveDungeon = restoredDungeon;
         }

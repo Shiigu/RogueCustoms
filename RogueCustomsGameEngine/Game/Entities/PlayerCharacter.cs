@@ -221,12 +221,12 @@ namespace RogueCustomsGameEngine.Game.Entities
             Map.DisplayEvents.Add(($"{Name} abandoned a Quest", events));
         }
 
-        public async Task UpdateQuests(QuestConditionType conditionType, string targetId, int @value)
+        public async Task UpdateQuests(QuestConditionType conditionType, object @value = null)
         {
             while (Map.AwaitingQuestInput) await Task.Delay(10);
             foreach (var quest in Quests.Where(q => q.Status == QuestStatus.InProgress))
             {
-                await quest.UpdateConditions(conditionType, targetId, @value);
+                await quest.UpdateConditions(conditionType, @value);
             }
         }
 
@@ -348,7 +348,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 );
             }
-            await UpdateQuests(QuestConditionType.ReachLevel, null, Level);
+            await UpdateQuests(QuestConditionType.ReachLevel);
         }
 
         public void UpdateVisibility()
@@ -420,8 +420,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             }
             else
             {
-                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip.ClassId, 1);
-                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip.ItemType.Id, 1);
+                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip);
+                await UpdateQuests(QuestConditionType.CollectItems, itemToEquip.ItemType);
                 itemToEquip.Position = null;
                 itemToEquip.ExistenceStatus = EntityExistenceStatus.Gone;
             }
@@ -497,8 +497,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                     DisplayEventType = DisplayEventType.PlaySpecialEffect,
                     Params = new() { SpecialEffect.ItemDrop }
                 });
-                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem.ItemType.Id, -1);
-                await UpdateQuests(QuestConditionType.CollectItems, pickableAsEntity.ClassId, -1);
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem.ItemType);
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem);
                 if (!Map.IsDebugMode)
                 {
                     events.Add(new()
@@ -528,14 +528,14 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (pickable is Item i)
             {
                 Inventory.Add(i);
-                await UpdateQuests(QuestConditionType.CollectItems, i.ItemType.Id, 1);
-                await UpdateQuests(QuestConditionType.CollectItems, i.ClassId, 1);
+                await UpdateQuests(QuestConditionType.CollectItems, i.ItemType);
+                await UpdateQuests(QuestConditionType.CollectItems, i);
             }
             else if (pickable is Currency c)
             {
                 isCurrency = true;
                 CurrencyCarried += c.Amount;
-                await UpdateQuests(QuestConditionType.ObtainCurrency, null, CurrencyCarried);
+                await UpdateQuests(QuestConditionType.ObtainCurrency);
             }
             pickableAsEntity.Position = null;
             pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;

@@ -278,8 +278,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
         }
 
-        public async Task UpdateConditions(QuestConditionType type, string targetId, int amount)
+        public async Task UpdateConditions(QuestConditionType type, object? @value = null)
         {
+            var valueAsNPC = (value as NonPlayableCharacter)!;
+            var valueAsFaction = (value as Faction)!;
+            var valueAsItem = (value as Item)!;
+            var valueAsItemType = (value as ItemType)!;
+            int.TryParse(value?.ToString() ?? "0", out var amount);
             foreach (var condition in Conditions)
             {
                 if (condition.Type == type)
@@ -287,11 +292,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     switch (type)
                     {
                         case QuestConditionType.KillNPCs:
-                            if (condition.TargetClass != null && condition.TargetClass.Id == targetId)
+                            if (condition.TargetClass != null && valueAsNPC != null && condition.TargetClass.Id == valueAsNPC.ClassId)
                                 condition.CurrentValue++;
-                            else if (condition.TargetFaction != null && condition.TargetFaction.Id == targetId)
+                            else if (condition.TargetFaction != null && valueAsFaction != null && condition.TargetFaction.Id == valueAsFaction.Id)
                                 condition.CurrentValue++;
-                            else if (condition.TargetClass == null && condition.TargetFaction == null && !Map.Dungeon.Factions.Any(f => f.Id.Equals(targetId))) // Ignoring calls from Faction prevents "Any" kills from being counted twice
+                            else if (condition.TargetClass == null && condition.TargetFaction == null && valueAsNPC != null) // Ignoring calls from Faction prevents "Any" kills from being counted twice
                                 condition.CurrentValue++;
                             break;
                         case QuestConditionType.DealDamage:
@@ -300,24 +305,36 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                             break;
                         case QuestConditionType.StatusNPCs:
                         case QuestConditionType.StatusSelf:
-                            if (condition.TargetClass != null && condition.TargetClass.Id == targetId)
-                                condition.CurrentValue += amount;
+                            var valueAsAlteredStatus = (value as AlteredStatus)!;
+                            if (condition.TargetClass != null && condition.TargetClass.Id == valueAsAlteredStatus.ClassId)
+                                condition.CurrentValue++;
                             else if (condition.TargetClass == null)
-                                condition.CurrentValue += amount;
+                                condition.CurrentValue++;
                             break;
                         case QuestConditionType.CollectItems:
-                        case QuestConditionType.UseItems:
-                            if (condition.TargetClass != null && condition.TargetClass.Id == targetId)
-                                condition.CurrentValue += amount;
-                            else if (condition.TargetItemType != null && condition.TargetItemType.Id == targetId)
-                                condition.CurrentValue += amount;
+                            if (condition.TargetClass != null && condition.TargetClass.Id == valueAsItem.ClassId)
+                                condition.CurrentValue = Map.Player.Items.Count(i => i.ClassId.Equals(condition.TargetClass.Id));
+                            else if (condition.TargetItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
+                                condition.CurrentValue = Map.Player.Items.Count(i => i.ItemType.Id.Equals(condition.TargetItemType.Id));
                             else if (condition.TargetClass == null && condition.TargetItemType == null)
-                                condition.CurrentValue += amount;
+                                condition.CurrentValue = Map.Player.Items.Count;
+                            break;
+                        case QuestConditionType.UseItems:
+                            if (condition.TargetClass != null && condition.TargetClass.Id == valueAsItem.ClassId)
+                                condition.CurrentValue++;
+                            else if (condition.TargetItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
+                                condition.CurrentValue++;
+                            else if (condition.TargetClass == null && condition.TargetItemType == null)
+                                condition.CurrentValue++;
                             break;
                         case QuestConditionType.ReachFloor:
+                            condition.CurrentValue = Map.FloorLevel;
+                            break;
                         case QuestConditionType.ReachLevel:
+                            condition.CurrentValue = Map.Player.Level;
+                            break;
                         case QuestConditionType.ObtainCurrency:
-                            condition.CurrentValue = amount;
+                            condition.CurrentValue = Map.Player.CurrencyCarried;
                             break;
                     }
                 }
@@ -335,7 +352,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Map.AwaitingQuestInput = true;
             Status = QuestStatus.Completed;
 
-            var idsToRegister = new List<string>();
+            var objectsToRegister = new List<object>();
             var events = new List<DisplayEventDto>();
 
             var monetaryReward = GuaranteedMonetaryReward;
@@ -401,8 +418,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     Map.Player.Inventory.Add(item);
                     item.Position = null;
 
-                    idsToRegister.Add(item.ClassId);
-                    idsToRegister.Add(item.ItemType.Id);
+                    objectsToRegister.Add(item);
+                    objectsToRegister.Add(item.ItemType);
 
                     Map.AppendMessage(Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = Map.Player.Name, ItemName = item.Name }), Color.DeepSkyBlue, events);
                     Map.Player.InformRefreshedPlayerData(events);
@@ -486,8 +503,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         Map.Player.Inventory.Add(chosenItem);
                         chosenItem.Position = null;
 
-                        idsToRegister.Add(chosenItem.ClassId);
-                        idsToRegister.Add(chosenItem.ItemType.Id);
+                        objectsToRegister.Add(chosenItem);
+                        objectsToRegister.Add(chosenItem.ItemType);
 
                         Map.AppendMessage(Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = Map.Player.Name, ItemName = chosenItem.Name }), Color.DeepSkyBlue, events);
                         Map.Player.InformRefreshedPlayerData(events);
@@ -521,9 +538,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             OnQuestComplete?.Do(Map.Player, Map.Player, false);
 
-            foreach (var id in idsToRegister)
+            foreach (var @object in objectsToRegister)
             {
-                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, id, 1);
+                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, @object);
             }
         }
     }

@@ -33,6 +33,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public List<Item> Equipment { get; set; }
         public List<Item> Inventory { get; set; }
         public List<Key> KeySet { get; set; }
+        public List<Item> Items => Equipment.Union(Inventory).ToList();
         public List<IPickable> FullInventory => Inventory.Cast<IPickable>().Union(KeySet.Cast<IPickable>()).ToList();
 
         public int ItemCount => Inventory.Where(i => i.EntityType != EntityType.Key).Count();

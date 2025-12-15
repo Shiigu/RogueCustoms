@@ -225,7 +225,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 {
                     PlayerCharacter.AbandonQuest(questToAbandon);
                 }
-                await PlayerCharacter.UpdateQuests(QuestConditionType.ReachFloor, string.Empty, CurrentFloorLevel);
+                await PlayerCharacter.UpdateQuests(QuestConditionType.ReachFloor);
             }
         }
 

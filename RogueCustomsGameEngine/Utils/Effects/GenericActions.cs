@@ -83,7 +83,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if (Args.Source == Map.Player)
                 {
                     var healToAddForQuest = (int) Math.Min(healAmount, t.MaxHP);
-                    await Map.Player.UpdateQuests(QuestConditionType.HealDamage, string.Empty, healToAddForQuest);
+                    await Map.Player.UpdateQuests(QuestConditionType.HealDamage, healToAddForQuest);
                 }
                 if (t == Map.Player)
                 {
@@ -154,7 +154,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             {
                                 if (Args.Source != paramsObject.Target && Args.Source == Map.Player)
                                 {
-                                    await Map.Player.UpdateQuests(QuestConditionType.StatusNPCs, statusToApply.ClassId, 1);
+                                    await Map.Player.UpdateQuests(QuestConditionType.StatusNPCs, statusToApply);
                                 }
                                 events.Add(new()
                                 {
@@ -164,7 +164,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 );
                                 if (statusTarget == Map.Player)
                                 {
-                                    await Map.Player.UpdateQuests(QuestConditionType.StatusSelf, statusToApply.ClassId, 1);
+                                    await Map.Player.UpdateQuests(QuestConditionType.StatusSelf, statusToApply);
                                     events.Add(new()
                                     {
                                         DisplayEventType = DisplayEventType.UpdatePlayerData,

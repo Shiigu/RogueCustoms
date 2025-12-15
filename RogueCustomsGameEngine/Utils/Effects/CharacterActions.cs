@@ -143,13 +143,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     {
                         itemToGive.GotSpecificallyIdentified = true;
                         Map.Player.InformRefreshedPlayerData(events);
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ClassId, 1);
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ItemType.Id, 1);
                     }
-                    if (s == Map.Player)
+                    if (t == Map.Player || s == Map.Player)
                     {
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ClassId, -1);
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ItemType.Id, -1);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToGive.ItemType);
                     }
                     if (t == Map.Player || paramsObject.InformThePlayer)
                     {
@@ -205,16 +203,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { SpecialEffect.ItemGet }
                             });
-                            if (t == Map.Player)
-                            {
-                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ClassId, -1);
-                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ItemType.Id, -1);
-                            }
-                            if (s == Map.Player)
-                            {
-                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ClassId, 1);
-                                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ItemType.Id, 1);
-                            }
+                            await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal);
+                            await Map.Player.UpdateQuests(QuestConditionType.CollectItems, itemToSteal.ItemType);
                         }
                         events.Add(new()
                         {
@@ -550,7 +540,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
                 if (t == Map.Player || s == Map.Player)
                 {
-                    await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency, string.Empty, Map.Player.CurrencyCarried);
+                    await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency);
                 }
                 Map.DisplayEvents.Add(($"{t.Name} received currency", events));
                 return true;
@@ -592,7 +582,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                         });
                         if (t == Map.Player || s == Map.Player)
                         {
-                            await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency, string.Empty, Map.Player.CurrencyCarried);
+                            await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency);
                         }
                     }
                     events.Add(new()
@@ -629,8 +619,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     item.ExistenceStatus = EntityExistenceStatus.Gone;
                     if(t == Map.Player)
                     {
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item.ClassId, -1);
-                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item.ItemType.Id, -1);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item);
+                        await Map.Player.UpdateQuests(QuestConditionType.CollectItems, item.ItemType);
                     }
                 }
                 t.Inventory.Clear();
