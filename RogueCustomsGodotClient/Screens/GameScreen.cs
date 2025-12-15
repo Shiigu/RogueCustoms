@@ -190,7 +190,7 @@ public partial class GameScreen : Control
                     }
                     else if (dungeonStatus.DungeonStatus == DungeonStatus.GameOver)
                     {
-                        if (_globalState.IsHardcoreMode)
+                        if (_globalState.IsHardcoreMode && _firstLoad)
                         {
                             _ = this.CreateStandardPopup(
                                 TranslationServer.Translate("HardcoreModeDeathHeaderText"),
@@ -208,7 +208,7 @@ public partial class GameScreen : Control
                             }
                         }
                         _globalState.PlayerControlMode = ControlMode.None;
-                        _saveGameButton.Disabled = true;
+                        _saveGameButton.Disabled = _globalState.IsHardcoreMode;
                     }
 
                     if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
@@ -393,6 +393,7 @@ public partial class GameScreen : Control
                     case DisplayEventType.SetDungeonStatus:
                         if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var dungeonStatus = (DungeonStatus)displayEvent.Params[0];
+                        _globalState.DungeonInfo.SetDungeonStatus(dungeonStatus);
                         if (dungeonStatus == DungeonStatus.Completed)
                         {
                             _globalState.MessageScreenType = MessageScreenType.Ending;
@@ -404,7 +405,7 @@ public partial class GameScreen : Control
                             controlModeToPick = ControlMode.None;
                             if (_globalState.IsHardcoreMode)
                             {
-                                _ = this.CreateStandardPopup(
+                                await this.CreateStandardPopup(
                                     TranslationServer.Translate("HardcoreModeDeathHeaderText"),
                                     TranslationServer.Translate("HardcoreModeDeathText"),
                                     new PopUpButton[]
@@ -415,6 +416,7 @@ public partial class GameScreen : Control
 
                                 if (!string.IsNullOrWhiteSpace(_globalState.CurrentSavePath) && FileAccess.FileExists(_globalState.CurrentSavePath))
                                     DirAccess.RemoveAbsolute(_globalState.CurrentSavePath);
+                                _saveGameButton.Disabled = true;
                             }
                         }
                         break;
@@ -516,9 +518,11 @@ public partial class GameScreen : Control
         _infoPanel.DetailsButton.Disabled = false;
         _exitButton.Disabled = false;
         _messageLogPanel.MessageWindowButton.Disabled = false;
-        if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
+        if (_globalState.DungeonInfo.DungeonStatus == DungeonStatus.GameOver)
+            _saveGameButton.Disabled = _globalState.IsHardcoreMode;
+        else if (_globalState.PlayerControlMode != ControlMode.Targeting && _globalState.PlayerControlMode != ControlMode.None)
             _saveGameButton.Disabled = false;
-        if (_globalState.PlayerControlMode == ControlMode.None)
+        else if (_globalState.PlayerControlMode == ControlMode.None)
             _saveGameButton.Disabled = true;
         _processingEvents = false;
     }
@@ -609,7 +613,10 @@ public partial class GameScreen : Control
         if (GetChildren().Any(c => c.IsPopUp())) return;
         _infoPanel.DetailsButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
         _messageLogPanel.MessageWindowButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
-        _saveGameButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
+        if (_globalState.IsHardcoreMode && _globalState.DungeonInfo.DungeonStatus == DungeonStatus.GameOver)
+            _saveGameButton.Disabled = true;
+        else
+            _saveGameButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
         _exitButton.Disabled = _globalState.PlayerControlMode == ControlMode.Targeting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight;
         switch (_globalState.PlayerControlMode)
         {

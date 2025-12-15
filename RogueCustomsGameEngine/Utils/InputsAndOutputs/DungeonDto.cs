@@ -72,9 +72,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
         }
 
-        public void GetInfoFromMap()
+        public void SetDungeonStatus(DungeonStatus status)
         {
-
+            DungeonStatus = status;
+            _map.DungeonStatus = status;
         }
 
         public List<TileDto> GetTiles()

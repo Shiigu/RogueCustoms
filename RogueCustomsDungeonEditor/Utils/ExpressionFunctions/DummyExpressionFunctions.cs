@@ -1,4 +1,7 @@
-﻿using RogueCustomsGameEngine.Utils.Effects.Utils;
+﻿using RogueCustomsGameEngine.Game.DungeonStructure;
+using System;
+
+using RogueCustomsGameEngine.Utils.Effects.Utils;
 
 namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
 {
@@ -135,6 +138,11 @@ namespace RogueCustomsDungeonEditor.Utils.ExpressionFunctions
         public static string HASACTIVEAFFIX(EffectCallerParams args, string[] parameters)
         {
             return "false";
+        }
+
+        public static string ISHARDCOREMODE(EffectCallerParams args, string[] parameters)
+        {
+            return "true";
         }
     }
 }

@@ -399,6 +399,13 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             return allAffixes.Contains(affixId, StringComparer.InvariantCultureIgnoreCase).ToString();
         }
 
+        public static string ISHARDCOREMODE(EffectCallerParams args, string[] parameters)
+        {
+            if (parameters.Length != 0) throw new ArgumentException("Invalid parameters for IsHardcoreMode.");
+
+            return Map.IsHardcoreMode.ToString();
+        }
+
         private static Entity GetEntityByName(string name, string functionName, EffectCallerParams args)
         {
             return name.ToLowerInvariant() switch
