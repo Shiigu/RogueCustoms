@@ -159,7 +159,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         [JsonIgnore]
         // It's a list of lists because elements belonging to the same sub-list should be shown almost immediately (they are the result of the same act)
         // The Name is exclusively for debug purposes
-        public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; } 
+        public List<(string Name, List<DisplayEventDto> Events)> DisplayEvents { get; set; }
         #endregion
 
         public Map(Dungeon dungeon, int floorLevel, List<Flag> flags, List<NonPlayableCharacter> npcsToKeep)
@@ -1087,12 +1087,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             LatestPlayerRemainingMovement = Player.RemainingMovement;
 
-            if (TurnCount > 1)
-            {
-                while (Snapshot != null && !Snapshot.Read)
-                    await Task.Delay(10);
-                Snapshot = new(Dungeon, this) { Read = true };
-            }
+            Snapshot.Read = false;
         }
 
         public async Task RollTurn0NPCs()
@@ -1262,7 +1257,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             LatestPlayerRemainingMovement = Player.RemainingMovement;
             if (GetCharacters().TrueForAll(c => c.ExistenceStatus != EntityExistenceStatus.Alive || (c.RemainingMovement == 0 && c.Movement.Current > 0) || !c.CanTakeAction || c.TookAction))
             {
-                while (AwaitingPromptInput || AwaitingQuestInput) await Task.Delay(10);
+                while (!IsDebugMode && (AwaitingPromptInput || AwaitingQuestInput)) await Task.Delay(10);
                 if (TurnCount == 0) return;
                 await NewTurn();
             }
@@ -1482,8 +1477,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public Task PlayerUseItemFromInventory(int itemId)
         {
-            var item = Items.Find(i => i.Id == itemId)
-                ?? throw new ArgumentException("Player attempted to use an item that does not exist!");
+            var item = Items.Find(i => i.Id == itemId);
+            if(item == null)
+                throw new ArgumentException("Player attempted to use an item that does not exist!");
             return PlayerUseItem(item);
         }
 
@@ -1656,6 +1652,12 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             else
             {
                 throw new ArgumentException("Player attempted a non-existent Action.");
+            }
+
+            if (selectedAction != null && selectedAction.User is Item i && i.ItemType.Usability == ItemUsability.Use)
+            {
+                await Player.UpdateQuests(QuestConditionType.UseItems, i.ItemType.Id, 1);
+                await Player.UpdateQuests(QuestConditionType.UseItems, i.ClassId, 1);
             }
 
             await ProcessTurn();

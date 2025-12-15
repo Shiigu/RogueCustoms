@@ -223,6 +223,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task UpdateQuests(QuestConditionType conditionType, string targetId, int @value)
         {
+            while (Map.AwaitingQuestInput) await Task.Delay(10);
             foreach (var quest in Quests.Where(q => q.Status == QuestStatus.InProgress))
             {
                 await quest.UpdateConditions(conditionType, targetId, @value);
@@ -236,16 +237,15 @@ namespace RogueCustomsGameEngine.Game.Entities
             return (int)((float)experienceInCurrentLevel / experienceBetweenLevels * 100);
         }
 
-        public override async Task GainExperience(int GamePointsToAdd)
+        public override async Task GainExperience(int GamePointsToAdd, List<DisplayEventDto> events)
         {
-            var events = new List<DisplayEventDto>();
             var oldLearnset = OwnOnAttack.Where(ooa => ooa.IsFromLearnset).Select(ooa => Map.Locale[ooa.Name]).ToList();
             var oldLevel = Level;
             var statsPreExpGain = new List<(string Name, decimal Amount)>();
             var statsAfterExpGain = new List<(string Name, decimal Amount)>();
             foreach (var stat in UsedStats)
                 statsPreExpGain.Add((stat.Name, stat.BaseAfterLevelUp));
-            await base.GainExperience(GamePointsToAdd);
+            await base.GainExperience(GamePointsToAdd, events);
             events.Add(new()
             {
                 DisplayEventType = DisplayEventType.UpdateExperienceBar,
@@ -348,7 +348,6 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 );
             }
-            Map.DisplayEvents.Add(($"Player {Name} gained experience", events));
             await UpdateQuests(QuestConditionType.ReachLevel, null, Level);
         }
 

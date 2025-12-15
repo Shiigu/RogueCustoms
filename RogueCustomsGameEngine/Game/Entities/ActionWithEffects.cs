@@ -40,7 +40,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool IsFromLearnset { get; set; }
         public bool IsFromLearnScript { get; set; }
         public string NameLocaleKey { get; set; }
-        public string Name { get; set; }
+        public string Name => Map != null ? Map.Locale[NameLocaleKey] : NameLocaleKey;
         public string DescriptionLocaleKey { get; set; }
         public string Description { get; set; }
         public Entity User { get; set; }
@@ -74,7 +74,6 @@ namespace RogueCustomsGameEngine.Game.Entities
         private ActionWithEffects(ActionWithEffectsInfo info, List<ActionSchool> actionSchools)
         {
             Id = info.Id;
-            Name = info.Name;
             NameLocaleKey = info.Name;
             Description = info.Description;
             DescriptionLocaleKey = info.Description;
@@ -526,7 +525,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             return new ActionWithEffects
             {
                 Id = Id,
-                Name = Name,
                 NameLocaleKey = NameLocaleKey,
                 Description = Description,
                 DescriptionLocaleKey = DescriptionLocaleKey,

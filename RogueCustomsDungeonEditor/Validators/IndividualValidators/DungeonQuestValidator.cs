@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -77,8 +78,14 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                                 var itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == condition.TargetId);
                                 if (item == null && itemType == null)
                                     messages.AddError($"Quest has a Condition with an Item Target of an invalid type: {condition.TargetId}.");
-                                if(condition.Type == QuestConditionType.UseItems && itemType.Usability != ItemUsability.Use)
-                                    messages.AddError($"Quest has a Condition to Use Items with an Item Target that cannot be used: {condition.TargetId}.");
+                                
+                                if ((item != null || itemType != null) && condition.Type == QuestConditionType.UseItems)
+                                {
+                                    if (item != null)
+                                        itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == item.ItemType);
+                                    if (itemType == null || itemType.Usability != ItemUsability.Use)
+                                        messages.AddError($"Quest has a Condition to Use Items with an Item Target that cannot be used: {condition.TargetId}.");
+                                }
                             }
                             break;
                         case QuestConditionType.DealDamage:
@@ -96,10 +103,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 
                 foreach (var guaranteedItem in questJson.GuaranteedItemRewards)
                 {
-                    var item = dungeonJson.Items.FirstOrDefault(i => i.Id == guaranteedItem.ItemId);
-                    var itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == guaranteedItem.ItemId);
-                    if (item == null && itemType == null)
-                        messages.AddError($"Quest has a Guaranteed Item Reward of an invalid type: {guaranteedItem.ItemId}.");
+                    if (guaranteedItem.ItemId != "Any")
+                    {
+                        var item = dungeonJson.Items.FirstOrDefault(i => i.Id == guaranteedItem.ItemId);
+                        var itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == guaranteedItem.ItemId);
+                        if (item == null && itemType == null)
+                            messages.AddError($"Quest has a Guaranteed Item Reward of an invalid type: {guaranteedItem.ItemId}.");
+                    }
                     if (guaranteedItem.ItemLevel < 1)
                         messages.AddError($"Quest has a Guaranteed Item Reward with an invalid Item Level. It must be 1 or higher.");
                     var qualityLevel = dungeonJson.QualityLevelInfos.FirstOrDefault(ql => ql.Id == guaranteedItem.QualityLevel);
@@ -115,10 +125,13 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 {
                     foreach (var selectableItem in questJson.SelectableItemRewards)
                     {
-                        var item = dungeonJson.Items.FirstOrDefault(i => i.Id == selectableItem.ItemId);
-                        var itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == selectableItem.ItemId);
-                        if (item == null && itemType == null)
-                            messages.AddError($"Quest has a Selectable Item Reward of an invalid type: {selectableItem.ItemId}.");
+                        if (selectableItem.ItemId != "Any")
+                        {
+                            var item = dungeonJson.Items.FirstOrDefault(i => i.Id == selectableItem.ItemId);
+                            var itemType = dungeonJson.ItemTypeInfos.FirstOrDefault(it => it.Id == selectableItem.ItemId);
+                            if (item == null && itemType == null)
+                                messages.AddError($"Quest has a Selectable Item Reward of an invalid type: {selectableItem.ItemId}.");
+                        }
                         if (selectableItem.ItemLevel < 1)
                             messages.AddError($"Quest has a Selectable Item Reward with an invalid Item Level. It must be 1 or higher.");
                         var qualityLevel = dungeonJson.QualityLevelInfos.FirstOrDefault(ql => ql.Id == selectableItem.QualityLevel);

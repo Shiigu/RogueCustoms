@@ -75,7 +75,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             {
                 var actionInstance = a.Clone();
                 actionInstance.Map = Map;
-                actionInstance.Name = Map.Locale[actionInstance.Name];
                 actionInstance.Description = Map.Locale[actionInstance.Description];
                 actionInstance.User = this;
                 entityActions.Add(actionInstance);
@@ -86,7 +85,6 @@ namespace RogueCustomsGameEngine.Game.Entities
             if (classAction == null) return null;
             var actionInstance = classAction.Clone();
             actionInstance.Map = Map;
-            actionInstance.Name = Map.Locale[actionInstance.Name];
             actionInstance.Description = Map.Locale[actionInstance.Description];
             actionInstance.User = this;
             return actionInstance;

@@ -11,6 +11,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
     {
         public DisplayEventType DisplayEventType { get; set; }
         public List<object> Params { get; set; }
+        public bool Read { get; set; }
     }
     
     [Serializable]

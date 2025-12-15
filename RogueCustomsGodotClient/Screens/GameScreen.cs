@@ -47,6 +47,7 @@ public partial class GameScreen : Control
 
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
     private List<(SpecialEffect SpecialEffect, string Path)> SpecialEffectsWithSound;
+    public ControlsPanel ControlsPanel => _controlsPanel as ControlsPanel;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -646,7 +647,7 @@ public partial class GameScreen : Control
             AcceptEvent();
             return;
         }
-        else if (@event.IsActionPressed("ui_skip_turn"))
+        else if (Input.IsActionPressed("ui_skip_turn") && _inputManager.IsActionAllowed("ui_skip_turn"))
         {
             try
             {
@@ -710,7 +711,7 @@ public partial class GameScreen : Control
             AcceptEvent();
             return;
         }
-        else if (@event.IsActionPressed("ui_skip_turn"))
+        else if (Input.IsActionPressed("ui_skip_turn") && _inputManager.IsActionAllowed("ui_skip_turn"))
         {
             try
             {
@@ -761,7 +762,7 @@ public partial class GameScreen : Control
             Y = 0
         };
 
-        if (@event.IsActionPressed("ui_skip_turn"))
+        if (Input.IsActionPressed("ui_skip_turn") && _inputManager.IsActionAllowed("ui_skip_turn"))
         {
             try
             {

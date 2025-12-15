@@ -63,6 +63,10 @@ namespace RogueCustomsGodotClient.Helpers
 
             var inventoryPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(inventoryPopup);
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
+
             inventoryPopup.Show(itemInfo, SelectionMode.Inventory, true, overlay.QueueFree);
         }
 
@@ -77,6 +81,9 @@ namespace RogueCustomsGodotClient.Helpers
 
             var actionSelectPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(actionSelectPopup);
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
             actionSelectPopup.Show(actionInfo, SelectionMode.Interact, true, targetCoords, overlay.QueueFree);
         }
 
@@ -91,6 +98,9 @@ namespace RogueCustomsGodotClient.Helpers
 
             var journalPopup = (PlayerSelectItem)GD.Load<PackedScene>("res://Pop-ups/PlayerSelectItem.tscn").Instantiate();
             control.AddChild(journalPopup);
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
             journalPopup.Show(quests, overlay.QueueFree);
         }
 
@@ -187,6 +197,9 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(inventoryPopup);
 
             var popupClosedSignal = inventoryPopup.ToSignal(inventoryPopup, "PopupClosed");
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
             inventoryPopup.Show(itemInfo, SelectionMode.SelectItem, showCancelButton, overlay.QueueFree, title);
 
             var result = await popupClosedSignal;
@@ -211,7 +224,9 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(actionSelectPopup);
 
             var popupClosedSignal = actionSelectPopup.ToSignal(actionSelectPopup, "PopupClosed");
-            
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
             actionSelectPopup.Show(actionInfo, SelectionMode.SelectAction, showCancelButton, null, overlay.QueueFree, title);
 
             var result = await popupClosedSignal;
@@ -232,6 +247,9 @@ namespace RogueCustomsGodotClient.Helpers
             control.AddChild(inventoryPopup);
 
             var popupClosedSignal = inventoryPopup.ToSignal(inventoryPopup, "PopupClosed");
+
+            if (control is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(true);
             inventoryPopup.Show(itemInfo, selectionMode, showCancelButton, overlay.QueueFree, title);
 
             var result = await popupClosedSignal;

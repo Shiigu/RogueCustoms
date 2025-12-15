@@ -171,6 +171,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 }
                 );
             }
+            var damageToAddForQuest = (int) Math.Min(damageDealt, c.HP.Current);
             c.HP.Current = Math.Max(0, c.HP.Current - damageDealt);
             if (c == Map.Player)
             {
@@ -197,7 +198,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (Args.Source == Map.Player)
             {
-                await Map.Player.UpdateQuests(QuestConditionType.DealDamage, string.Empty, damageDealt);
+                await Map.Player.UpdateQuests(QuestConditionType.DealDamage, string.Empty, damageToAddForQuest);
             }
             if (Args.This != null && !isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
             {

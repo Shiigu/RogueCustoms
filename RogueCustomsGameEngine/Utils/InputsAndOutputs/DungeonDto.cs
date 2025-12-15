@@ -72,6 +72,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             playerEntity.KeySet.ForEach(i => PlayerEntity.Inventory.Add(new SimpleEntityDto(i)));
         }
 
+        public void GetInfoFromMap()
+        {
+
+        }
+
         public List<TileDto> GetTiles()
         {
             _map.Player.UpdateVisibility();

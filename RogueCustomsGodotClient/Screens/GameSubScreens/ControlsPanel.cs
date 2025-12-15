@@ -1,9 +1,11 @@
 using Godot;
 
+using RogueCustomsGodotClient.Helpers;
 using RogueCustomsGodotClient.Screens.GameSubScreens;
 using RogueCustomsGodotClient.Utils;
 
 using System;
+using System.Linq;
 
 public partial class ControlsPanel : GamePanel
 {
@@ -95,6 +97,20 @@ public partial class ControlsPanel : GamePanel
                 _controlsLabel2.Text = TranslationServer.Translate("MoveModeNoneControlsText");
                 _controlsLabel3.Text = "";
                 break;
+        }
+    }
+
+    public void TogglePlayerSelectItemControls(bool setPlayerSelectItemMode)
+    {
+        if (setPlayerSelectItemMode)
+        {
+            _controlsLabel1.Text = "";
+            _controlsLabel2.Text = TranslationServer.Translate("PlayerSelectItemControls1Text");
+            _controlsLabel3.Text = TranslationServer.Translate("PlayerSelectItemControls2Text");
+        }
+        else
+        {
+            Update();
         }
     }
 }
