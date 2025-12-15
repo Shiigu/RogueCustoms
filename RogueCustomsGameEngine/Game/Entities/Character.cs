@@ -523,7 +523,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return !tilesInTheLine.Any(t => !t.IsWalkable);
         }
 
-        public virtual async Task GainExperience(int GamePointsToAdd)
+        public virtual async Task GainExperience(int GamePointsToAdd, List<DisplayEventDto> events)
         {
             if (!CanGainExperience) return;
             Experience += GamePointsToAdd;
@@ -539,7 +539,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     forecolorToUse = Color.Red;
                 else
                     forecolorToUse = Color.DeepSkyBlue;
-                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }), forecolorToUse);
+                Map.AppendMessage(Map.Locale["CharacterLevelsUpMessage"].Format(new { CharacterName = Name, Level = Level }), forecolorToUse, events);
                 HP.Current = MaxHP;
                 if(MP != null)
                     MP.Current = MaxMP;
@@ -853,11 +853,13 @@ namespace RogueCustomsGameEngine.Game.Entities
         public async Task GiveExperienceTo(Character character, int? amount = null)
         {
             if (!character.CanGainExperience || character.Level == character.MaxLevel) return;
+            var events = new List<DisplayEventDto>();
             var amountToGive = amount ?? ExperiencePayout;
             if (amountToGive == 0) return;
             if (character == Map.Player || Map.Player.CanSee(character))
-                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = character.Name, Amount = amountToGive.ToString() }), Color.DeepSkyBlue);
-            await character.GainExperience(amountToGive);
+                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = character.Name, Amount = amountToGive.ToString() }), Color.DeepSkyBlue, events);
+            await character.GainExperience(amountToGive, events);
+            Map.DisplayEvents.Add(($"{Name} gains {amountToGive} experience", events));
         }
 
         public override void SetActionIds()

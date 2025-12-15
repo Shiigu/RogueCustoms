@@ -512,7 +512,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             if (experienceReward > 0)
             {
                 Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = Map.Player.Name, Amount = experienceReward.ToString() }), Color.DeepSkyBlue, events);
-                await Map.Player.GainExperience(experienceReward);
+                await Map.Player.GainExperience(experienceReward, events);
             }
 
             Map.Player.InformRefreshedPlayerData(events);

@@ -108,12 +108,14 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
         public static async Task<bool> GiveExperience(EffectCallerParams Args)
         {
+            var events = new List<DisplayEventDto>();
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
             if (paramsObject.Target is not Character t || !t.CanGainExperience) return false;
             if (t.Level == t.MaxLevel) return false;
             if (t == Map.Player || Map.Player.CanSee(t))
-                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue);
-            await t.GainExperience((int)paramsObject.Amount);
+                Map.AppendMessage(Map.Locale["CharacterGainsExperience"].Format(new { CharacterName = paramsObject.Target.Name, Amount = ((int)paramsObject.Amount).ToString() }), Color.DeepSkyBlue, events);
+            await t.GainExperience((int)paramsObject.Amount, events);
+            Map.DisplayEvents.Add(($"{paramsObject.Target.Name} gains {((int)paramsObject.Amount)} experience", events));
             return true;
         }
 
