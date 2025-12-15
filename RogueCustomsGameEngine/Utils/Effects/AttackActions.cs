@@ -198,7 +198,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (Args.Source == Map.Player)
             {
-                await Map.Player.UpdateQuests(QuestConditionType.DealDamage, string.Empty, damageToAddForQuest);
+                await Map.Player.UpdateQuests(QuestConditionType.DealDamage, damageToAddForQuest);
             }
             if (Args.This != null && !isExtraDamage && c.HP.Current > 0 && c.ExistenceStatus == EntityExistenceStatus.Alive)
             {

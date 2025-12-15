@@ -896,8 +896,8 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Map.DisplayEvents.Add(($"NPC {Name} dies", events));
                 if (attacker == Map.Player)
                 {
-                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, ClassId, 1);
-                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, Faction.Id, 1);
+                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, this);
+                    await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, Faction);
                 }
                 if (attacker is Character c && ExperiencePayout > 0)
                     await GiveExperienceTo(c);

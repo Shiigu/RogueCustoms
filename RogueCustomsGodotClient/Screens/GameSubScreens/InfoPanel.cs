@@ -188,7 +188,7 @@ public partial class InfoPanel : GamePanel
         _alteredStatusesHeaderLabel.Text = TranslationServer.Translate("PlayerInfoStatusesHeader");
         FillIconList(_alteredStatusesIconsLabel, playerEntity.AlteredStatuses);
 
-        _inventoryHeaderLabel.Text = TranslationServer.Translate("PlayerInfoInventoryHeader");
+        _inventoryHeaderLabel.Text = $"{TranslationServer.Translate("PlayerInfoInventoryHeader")} ({playerEntity.Inventory.Count}/{playerEntity.InventorySize})";
         FillIconList(_inventoryIconsLabel, playerEntity.Inventory);
 
         _currencyName = playerEntity.Currency.Name;

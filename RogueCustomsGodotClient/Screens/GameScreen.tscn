@@ -426,7 +426,7 @@ custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
 text = "STATUSES"
 horizontal_alignment = 1
@@ -438,7 +438,7 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_h_padding = 0
 theme_override_constants/text_highlight_v_padding = 0
-theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/normal_font_size = 11
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FFFF00FF]CLICK BELOW![/color][/center]"
@@ -453,9 +453,9 @@ custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = ExtResource("4_vn8qa")
-text = "INVENTORY"
+text = "INVENTORY (10/10)"
 horizontal_alignment = 1
 
 [node name="InventoryIconsLabel" type="RichTextLabel" parent="InfoPanel/VBoxContainerContainer/InventoryContainer"]
@@ -465,7 +465,7 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/text_highlight_h_padding = 0
 theme_override_constants/text_highlight_v_padding = 0
-theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/normal_font_size = 11
 theme_override_styles/normal = ExtResource("4_vn8qa")
 bbcode_enabled = true
 text = "[center][color=#FFFF00FF]CLICK BELOW![/color][/center]"
