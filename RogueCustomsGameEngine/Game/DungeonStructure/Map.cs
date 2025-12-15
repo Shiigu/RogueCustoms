@@ -98,6 +98,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         private int TotalMonstersInFloor => AICharacters.Count(e => !e.SpawnedViaMonsterHouse && e.ExistenceStatus == EntityExistenceStatus.Alive);
         private int TotalItemsInFloor => Items.Where(i => i.SpawnedInTheFloor).Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
         private int TotalTrapsInFloor => Traps.Count(e => e.ExistenceStatus != EntityExistenceStatus.Gone);
+        public bool IsHardcoreMode => Dungeon.IsHardcoreMode;
         public bool StairsAreSet { get; set; } = false;
         public List<NonPlayableCharacter> AICharacters { get; set; }
         public List<Element> Elements => Dungeon.Elements;
@@ -1087,7 +1088,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             LatestPlayerRemainingMovement = Player.RemainingMovement;
 
-            Snapshot.Read = false;
+            if(Snapshot != null)
+                Snapshot.Read = false;
         }
 
         public async Task RollTurn0NPCs()

@@ -260,6 +260,8 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 tile.ResetType();
             }
 
+            var learnsetId = ActiveDungeon.LearnsetInfos.First().Id;
+
             var equippableClassInfo = new ItemInfo()
             {
                 Id = "Equippable",
@@ -293,7 +295,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
 
             if (SourceObjectType == ElementType.Character || SourceObjectType == ElementType.Tile || SourceObjectType == ElementType.Equippable)
             {
-                Source = CreateNPC("Source", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass);
+                Source = CreateNPC("Source", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass, learnsetId);
                 TestAction.User = Source;
             }
             else if (SourceObjectType == ElementType.Consumable)
@@ -302,7 +304,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 TestAction.User = Source;
                 if (!ActionTypeText.Equals("Item Use", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ItemOwner = CreateNPC("ItemOwner", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass);
+                    ItemOwner = CreateNPC("ItemOwner", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass, learnsetId);
                     Source = ItemOwner;
                 }
             }
@@ -321,7 +323,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             {
                 if (!TestAction.TargetTypes.Contains(TargetType.Self))
                 {
-                    Target = CreateNPC("Target", crsTarget, issTarget, clbTargetStatuses, equippableClass, heldItemClass);
+                    Target = CreateNPC("Target", crsTarget, issTarget, clbTargetStatuses, equippableClass, heldItemClass, learnsetId);
                 }
                 else
                 {
@@ -337,9 +339,9 @@ namespace RogueCustomsDungeonEditor.HelperForms
             for (int i = 0; i < new Random().Next(1, 6); i++)
             {
                 if (SourceObjectType == ElementType.Character || SourceObjectType == ElementType.Tile || SourceObjectType == ElementType.Equippable)
-                    CreateNPC($"Dummy{i}", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass);
+                    CreateNPC($"Dummy{i}", crsSource, issSource, clbSourceStatuses, equippableClass, heldItemClass, learnsetId);
                 else if (!TestAction.TargetTypes.Contains(TargetType.Self))
-                    CreateNPC($"Dummy{i}", crsTarget, issTarget, clbTargetStatuses, equippableClass, heldItemClass);
+                    CreateNPC($"Dummy{i}", crsTarget, issTarget, clbTargetStatuses, equippableClass, heldItemClass, learnsetId);
             }
 
             try
@@ -390,7 +392,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             }
         }
 
-        private NonPlayableCharacter CreateNPC(string name, ConsoleRepresentationSelector crs, ItemStatsSheet iss, CheckedListBox clb, EntityClass equippableClass, EntityClass inventoryClass)
+        private NonPlayableCharacter CreateNPC(string name, ConsoleRepresentationSelector crs, ItemStatsSheet iss, CheckedListBox clb, EntityClass equippableClass, EntityClass inventoryClass, string learnsetId)
         {
             var npcClassInfo = new NPCInfo()
             {
@@ -416,6 +418,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 RegularLootTable = new NPCLootTableDataInfo { LootTableId = "None", DropPicks = 0 },
                 InitialEquipment = new(),
                 AvailableSlots = new(),
+                Learnset = learnsetId
             };
             iss.TreatStatsAsAbsolute = true;
             iss.EndEdit();
