@@ -196,8 +196,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloorLevel = floorLevel;
             var flagList = new List<Flag>();
             var npcsToKeep = new List<NonPlayableCharacter>();
+            var questsToAbandon = new List<Quest>();
             if (CurrentFloorLevel > 1)
             {
+                questsToAbandon = PlayerCharacter.Quests.Where(q => q.AbandonedOnFloorChange && q.Status == QuestStatus.InProgress).ToList();
                 npcsToKeep = CurrentFloor.AICharacters.Where(c => c.ExistenceStatus == EntityExistenceStatus.Alive && c.ReappearsOnTheNextFloorIfAlliedToThePlayer && (c.Faction.IsAlliedWith(PlayerCharacter.Faction) || c.KnownCharacters.Any(kc => kc.TargetType == TargetType.Ally && kc.Character == PlayerCharacter))).ToList();
                 var statusNamesToRemove = new List<string>();
                 foreach (var statusToRemove in PlayerCharacter.AlteredStatuses.Where(als => als.CleanseOnFloorChange))
@@ -219,7 +221,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             await CurrentFloor.Generate(false, []);
             if (CurrentFloorLevel > 1)
             {
-                foreach (var questToAbandon in PlayerCharacter.Quests.Where(q => q.AbandonedOnFloorChange && q.Status == QuestStatus.InProgress))
+                foreach (var questToAbandon in questsToAbandon)
                 {
                     PlayerCharacter.AbandonQuest(questToAbandon);
                 }
@@ -372,8 +374,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             if (CurrentFloor == null)
                 await NewMap(1);
-            CurrentFloor.Snapshot.DisplayEvents = new(CurrentFloor.DisplayEvents);
-            CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Any()).Select(t => t.Position).ToList();
+            CurrentFloor.Snapshot.DisplayEvents = new(CurrentFloor.DisplayEvents.Where(de => !de.Events.Any(e => e.Read)));
+            CurrentFloor.DisplayEvents.ForEach(de => de.Events.ForEach(e => e.Read = true));
+            CurrentFloor.Snapshot.PickableItemPositions = CurrentFloor.Tiles.Where(t => t.GetItems().Count != 0).ConvertAll(t => t.Position);
             return CurrentFloor.Snapshot;
         }
 

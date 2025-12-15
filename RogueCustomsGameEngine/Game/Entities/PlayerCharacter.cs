@@ -223,6 +223,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public async Task UpdateQuests(QuestConditionType conditionType, string targetId, int @value)
         {
+            while (Map.AwaitingQuestInput) await Task.Delay(10);
             foreach (var quest in Quests.Where(q => q.Status == QuestStatus.InProgress))
             {
                 await quest.UpdateConditions(conditionType, targetId, @value);

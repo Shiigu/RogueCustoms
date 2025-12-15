@@ -235,7 +235,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 OnQuestComplete = OnQuestComplete?.Clone(),
                 Status = QuestStatus.InProgress,
                 Map = map,
-                ItemRewardSeed = map.Rng.Next(),
+                ItemRewardSeed = map.Rng.Next(0, int.MaxValue),
                 Id = map.GenerateEntityId()
             };
 
@@ -331,9 +331,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
         private async Task Complete()
         {
+            Map.Snapshot.Read = false;
             Map.AwaitingQuestInput = true;
             Status = QuestStatus.Completed;
 
+            var idsToRegister = new List<string>();
             var events = new List<DisplayEventDto>();
 
             var monetaryReward = GuaranteedMonetaryReward;
@@ -384,6 +386,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     item.Id = Map.GenerateEntityId();
                     item.SetQualityLevel(reward.QualityLevel, generatorRng);
+                    Map.Items.Add(item);
                     guaranteedItems.Add(item);
                 }
 
@@ -397,6 +400,9 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
                     Map.Player.Inventory.Add(item);
                     item.Position = null;
+
+                    idsToRegister.Add(item.ClassId);
+                    idsToRegister.Add(item.ItemType.Id);
 
                     Map.AppendMessage(Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = Map.Player.Name, ItemName = item.Name }), Color.DeepSkyBlue, events);
                     Map.Player.InformRefreshedPlayerData(events);
@@ -424,6 +430,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     item.Id = Map.GenerateEntityId();
                     item.SetQualityLevel(reward.QualityLevel, generatorRng);
+                    Map.Items.Add(item);
                     selectableItems.Add(item);
                 }
 
@@ -447,10 +454,24 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     };
                     events.Add(triggerPromptEvent);
                     Map.DisplayEvents.Add(($"Open Select Reward For Quest {Name} Prompt", events));
+                    events = new();
 
-                    while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+                    ItemInput chosenOption = null;
 
-                    var chosenOption = await Map.OpenSelectItem(Map.Locale["SelectQuestRewardText"], optionDtos, false);
+                    if (!Map.IsDebugMode)
+                    {
+                        while (!(bool)triggerPromptEvent.Params[0]) await Task.Delay(10);
+                        chosenOption = await Map.OpenSelectItem(Map.Locale["SelectQuestRewardText"], optionDtos, false);
+                    }
+                    else
+                    {
+                        var randomChoice = optionDtos.InventoryItems.TakeRandomElementWithWeights(i => 50, generatorRng);
+                        chosenOption = new ItemInput
+                        {
+                            Id = randomChoice.ItemId,
+                            ClassId = randomChoice.ClassId
+                        };
+                    }
 
                     var chosenItem = selectableItems.Find(i => i.Id == chosenOption.Id);
 
@@ -465,11 +486,16 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                         Map.Player.Inventory.Add(chosenItem);
                         chosenItem.Position = null;
 
+                        idsToRegister.Add(chosenItem.ClassId);
+                        idsToRegister.Add(chosenItem.ItemType.Id);
+
                         Map.AppendMessage(Map.Locale["CharacterObtainedAnItem"].Format(new { CharacterName = Map.Player.Name, ItemName = chosenItem.Name }), Color.DeepSkyBlue, events);
                         Map.Player.InformRefreshedPlayerData(events);
                     }
                 }
             }
+
+            Map.AwaitingQuestInput = false;
 
             if (monetaryReward > 0)
             {
@@ -490,12 +516,15 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
 
             Map.Player.InformRefreshedPlayerData(events);
-                        
+
             Map.DisplayEvents.Add(($"{Map.Player.Name} gets Rewards from Quest {Name}", events));
 
             OnQuestComplete?.Do(Map.Player, Map.Player, false);
 
-            Map.AwaitingQuestInput = false;
+            foreach (var id in idsToRegister)
+            {
+                await Map.Player.UpdateQuests(QuestConditionType.CollectItems, id, 1);
+            }
         }
     }
 

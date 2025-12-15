@@ -170,6 +170,8 @@ namespace RogueCustomsGameEngine.Management
             {
                 doorTile.Type = TileType.Door;
             }
+            restoredDungeon.CurrentFloor.AwaitingPromptInput = false;
+            restoredDungeon.CurrentFloor.AwaitingQuestInput = false;
             restoredDungeon.CurrentFloor.DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
             restoredDungeon.CurrentFloor.TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
             restoredDungeon.CurrentFloor.DisplayEvents = new();

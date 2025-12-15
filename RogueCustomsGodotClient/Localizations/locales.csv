@@ -158,6 +158,8 @@ PlayerInfoTooManyText,¡CLICK DEBAJO!,CLICK BELOW!
 PlayerInfoWeaponHeader,ARMA,WEAPON
 PlayerInfoCurrencyText,{CurrencyName}: {Symbol}{Amount},{CurrencyName}: {Symbol}{Amount}
 PlayerLevelText,NIVEL {CurrentLevel},LEVEL {CurrentLevel}
+PlayerSelectItemControls1Text,<↑> Objeto Anterior <↓> Objeto Siguiente,<↑> Previous Item <↓> Next Item
+PlayerSelectItemControls2Text,<AvPág> Bajar descripción <RePág> Subir descripción,<PgDn> Move description down <PgUp> Move description up
 PressEnterText,Presiona Enter para Continuar...,Press Enter to Continue...
 PreMoveHighlightControlsText,Presione cualquier tecla para jugar...,Press any key to play...
 RadioButtonHeaderText,UBICACIÓN DEL HOST,GAME HOST LOCATION

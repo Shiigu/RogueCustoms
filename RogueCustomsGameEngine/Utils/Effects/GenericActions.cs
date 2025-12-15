@@ -82,7 +82,8 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 );
                 if (Args.Source == Map.Player)
                 {
-                    await Map.Player.UpdateQuests(QuestConditionType.HealDamage, string.Empty, healAmount);
+                    var healToAddForQuest = (int) Math.Min(healAmount, t.MaxHP);
+                    await Map.Player.UpdateQuests(QuestConditionType.HealDamage, string.Empty, healToAddForQuest);
                 }
                 if (t == Map.Player)
                 {

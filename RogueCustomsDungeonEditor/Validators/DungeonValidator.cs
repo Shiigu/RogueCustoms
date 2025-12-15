@@ -283,7 +283,7 @@ namespace RogueCustomsDungeonEditor.Validators
             foreach (var questInfo in DungeonJson.QuestInfos)
             {
                 UpdateProgressLabel($"Running Quest {questInfo.Id} Validation...", false);
-                AlteredStatusValidationMessages.Add((questInfo.Id, await DungeonQuestValidator.Validate(questInfo, DungeonJson, sampleDungeon)));
+                QuestValidationMessages.Add((questInfo.Id, await DungeonQuestValidator.Validate(questInfo, DungeonJson, sampleDungeon)));
                 UpdateProgressLabel($"Quest {questInfo.Id} Validation complete!", true);
             }
 

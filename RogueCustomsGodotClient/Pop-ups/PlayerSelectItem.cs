@@ -87,6 +87,8 @@ public partial class PlayerSelectItem : Control
     {
         if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null)
         {
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
             return;
@@ -104,6 +106,8 @@ public partial class PlayerSelectItem : Control
         }
         else
         {
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
             return;
@@ -118,10 +122,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -137,10 +143,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.PlayerSwapFloorItemWithInventoryItem(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -156,10 +164,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.PlayerDropItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -175,10 +185,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.PlayerUseItemFromInventory(_itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -196,10 +208,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId, _itemListInfo.InventoryItems[_selectedIndex].ClassId);
                 }
                 catch (Exception ex)
@@ -217,10 +231,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -238,10 +254,12 @@ public partial class PlayerSelectItem : Control
                 try
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
-                    _globalState.MustUpdateGameScreen = true;
                     _globalState.DungeonManager.RefreshDisplay(true);
+                    _globalState.MustUpdateGameScreen = true;
                     EmitSignal(nameof(PopupClosed), _itemListInfo.InventoryItems[_selectedIndex].ItemId);
                 }
                 catch (Exception ex)
@@ -258,6 +276,9 @@ public partial class PlayerSelectItem : Control
             _cancelButton.Pressed += () =>
             {
                 if (GetChildren().Any(c => c.IsPopUp())) return;
+
+                if (GetParent() is GameScreen gs)
+                    gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                 _selectedIndex = -1;
                 EmitSignal(nameof(PopupClosed), null);
                 onCloseCallback?.Invoke();
@@ -278,6 +299,8 @@ public partial class PlayerSelectItem : Control
     {
         if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null)
         {
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
             return;
@@ -308,6 +331,8 @@ public partial class PlayerSelectItem : Control
         }
         else
         {
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
             return;
@@ -335,6 +360,8 @@ public partial class PlayerSelectItem : Control
                 {
                     if (GetChildren().Any(c => c.IsPopUp())) return;
                     EmitSignal(nameof(PopupClosed), _actionListInfo.Actions[_selectedIndex].SelectionId);
+                    if (GetParent() is GameScreen gs)
+                        gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                     onCloseCallback?.Invoke();
                     QueueFree();
                 }
@@ -354,6 +381,8 @@ public partial class PlayerSelectItem : Control
                 if (GetChildren().Any(c => c.IsPopUp())) return;
                 _selectedIndex = -1;
                 EmitSignal(nameof(PopupClosed), null);
+                if (GetParent() is GameScreen gs)
+                    gs.ControlsPanel.TogglePlayerSelectItemControls(false);
                 onCloseCallback?.Invoke();
                 QueueFree();
             };
@@ -372,6 +401,8 @@ public partial class PlayerSelectItem : Control
     {
         if (_globalState.DungeonInfo == null || _globalState.DungeonInfo.PlayerEntity == null || questList.Count == 0)
         {
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
             return;
@@ -390,6 +421,8 @@ public partial class PlayerSelectItem : Control
             if (GetChildren().Any(c => c.IsPopUp())) return;
             _selectedIndex = -1;
             EmitSignal(nameof(PopupClosed), null);
+            if (GetParent() is GameScreen gs)
+                gs.ControlsPanel.TogglePlayerSelectItemControls(false);
             onCloseCallback?.Invoke();
             QueueFree();
         };
@@ -410,7 +443,7 @@ public partial class PlayerSelectItem : Control
             if (GetChildren().Any(c => c.IsPopUp())) return;
             if (_selectedIndex == -1) return;
 
-            await this.CreateStandardPopup(TranslationServer.Translate("AbandonQuestHeaderText"),
+            await (GetParent() as Control).CreateStandardPopup(TranslationServer.Translate("AbandonQuestHeaderText"),
                                         TranslationServer.Translate("AbandonQuestPromptText"),
                                         new PopUpButton[]
                                         {
@@ -428,10 +461,12 @@ public partial class PlayerSelectItem : Control
     {
         var selectedQuest = _questListInfo[_selectedIndex];
 
+        if (GetParent() is GameScreen gs)
+            gs.ControlsPanel.TogglePlayerSelectItemControls(false);
         onCloseCallback?.Invoke();
         QueueFree();
-        _globalState.MustUpdateGameScreen = true;
         _globalState.DungeonManager.RefreshDisplay(true);
+        _globalState.MustUpdateGameScreen = true;
         _globalState.DungeonManager.PlayerAbandonQuest(selectedQuest.Id);
     }
 
@@ -447,10 +482,12 @@ public partial class PlayerSelectItem : Control
             Y = targetCoords.Value.Y,
             SourceType = selectedAction.SourceType
         };
+        if (GetParent() is GameScreen gs)
+            gs.ControlsPanel.TogglePlayerSelectItemControls(false);
         onCloseCallback?.Invoke();
         QueueFree();
-        _globalState.MustUpdateGameScreen = true;
         _globalState.DungeonManager.RefreshDisplay(true);
+        _globalState.MustUpdateGameScreen = true;
         return _globalState.DungeonManager.PlayerAttackTargetWith(attackInput);
     }
 
@@ -918,6 +955,16 @@ public partial class PlayerSelectItem : Control
                 SelectRow(0);
             else
                 SelectRow(_selectedIndex + 1);
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_scroll_down"))
+        {
+            _itemDescriptionLabel.GetVScrollBar().Value += 10;
+            AcceptEvent();
+        }
+        else if (@event.IsActionPressed("ui_scroll_up"))
+        {
+            _itemDescriptionLabel.GetVScrollBar().Value -= 10;
             AcceptEvent();
         }
         else if (@event.IsActionPressed("ui_accept"))
