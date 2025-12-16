@@ -288,6 +288,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 if (aSuffix == null) continue;
                 aSuffix.ApplyTo(this);
             }
+            SetActionIds();
         }
 
         public Item(EntityClass entityClass, int level, Map map, RngHandler specificRng) : base(entityClass, map)
@@ -489,11 +490,13 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override void SetActionIds()
         {
-            for (int i = 0; i < OwnOnAttack.Count; i++)
+            for (int i = 0; i < OnAttack.Count; i++)
             {
-                OwnOnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OwnOnAttack[i].Id}";
-                if (OwnOnAttack[i].IsFromLearnScript)
-                    OwnOnAttack[i].SelectionId += "_S";
+                OnAttack[i].SelectionId = $"{Id}_{ClassId}_CA{i}_{OnAttack[i].Id}";
+                if (!OwnOnAttack.Contains(OnAttack[i])) // Means it comes from an Affix
+                    OnAttack[i].SelectionId += "_A";
+                if (OnAttack[i].IsFromLearnScript)
+                    OnAttack[i].SelectionId += "_S";
             }
             if(OnUse != null)
                 OnUse.SelectionId = $"{Id}_CA_UNIDENTIFIED";

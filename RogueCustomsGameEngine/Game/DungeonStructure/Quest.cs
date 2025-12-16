@@ -312,19 +312,19 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                                 condition.CurrentValue++;
                             break;
                         case QuestConditionType.CollectItems:
-                            if (condition.TargetClass != null && condition.TargetClass.Id == valueAsItem.ClassId)
+                            if (condition.TargetClass != null && valueAsItem != null && condition.TargetClass.Id == valueAsItem.ClassId)
                                 condition.CurrentValue = Map.Player.Items.Count(i => i.ClassId.Equals(condition.TargetClass.Id));
-                            else if (condition.TargetItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
+                            else if (condition.TargetItemType != null && valueAsItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
                                 condition.CurrentValue = Map.Player.Items.Count(i => i.ItemType.Id.Equals(condition.TargetItemType.Id));
-                            else if (condition.TargetClass == null && condition.TargetItemType == null)
+                            else if (condition.TargetClass == null && condition.TargetItemType == null && valueAsItem != null)
                                 condition.CurrentValue = Map.Player.Items.Count;
                             break;
                         case QuestConditionType.UseItems:
-                            if (condition.TargetClass != null && condition.TargetClass.Id == valueAsItem.ClassId)
+                            if (condition.TargetClass != null && valueAsItem != null && condition.TargetClass.Id == valueAsItem.ClassId)
                                 condition.CurrentValue++;
-                            else if (condition.TargetItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
+                            else if (condition.TargetItemType != null && valueAsItemType != null && condition.TargetItemType.Id == valueAsItemType.Id)
                                 condition.CurrentValue++;
-                            else if (condition.TargetClass == null && condition.TargetItemType == null)
+                            else if (condition.TargetClass == null && condition.TargetItemType == null && valueAsItem != null)
                                 condition.CurrentValue++;
                             break;
                         case QuestConditionType.ReachFloor:

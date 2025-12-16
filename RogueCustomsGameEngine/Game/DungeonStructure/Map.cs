@@ -1088,8 +1088,32 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             }
             LatestPlayerRemainingMovement = Player.RemainingMovement;
 
-            if(Snapshot != null)
-                Snapshot.Read = false;
+            if (Snapshot != null)
+                while (!Snapshot.Read) await Task.Delay(10);
+
+            var currentState = new List<DisplayEventDto>();
+            currentState.Add(new()
+            {
+                DisplayEventType = DisplayEventType.SetDungeonStatus,
+                Params = new() { Dungeon.DungeonStatus }
+            });
+            currentState.Add(new()
+            {
+                DisplayEventType = DisplayEventType.SetCanMove,
+                Params = new() { Player.RemainingMovement > 0 }
+            });
+            currentState.Add(new()
+            {
+                DisplayEventType = DisplayEventType.SetCanAct,
+                Params = new() { Player.CanTakeAction }
+            });
+            currentState.Add(new()
+            {
+                DisplayEventType = DisplayEventType.SetOnStairs,
+                Params = new() { Player.ContainingTile.Type == TileType.Stairs }
+            });
+            DisplayEvents.Add(("Player Current State", currentState));
+            Snapshot = new(Dungeon, this);
         }
 
         public async Task RollTurn0NPCs()
@@ -1666,7 +1690,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
 
         public ActionListDto GetPlayerAttackActions(int x, int y)
-        {            
+        {
             var tile = GetTileFromCoordinates(x, y);
             var characterInTile = tile.LivingCharacter;
             var targetName = string.Empty;

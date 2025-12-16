@@ -368,7 +368,9 @@ public partial class InfoPanel : GamePanel
                 break;
             case UpdatePlayerDataType.UpdateInventory:
                 var inventory = data[1] as List<SimpleEntityDto>;
+                var inventorySize = (int)data[2];
                 playerEntity.Inventory = inventory;
+                _inventoryHeaderLabel.Text = $"{TranslationServer.Translate("PlayerInfoInventoryHeader")} ({inventory.Count}/{inventorySize})";
                 FillIconList(_inventoryIconsLabel, playerEntity.Inventory);
                 break;
             case UpdatePlayerDataType.UpdateConsoleRepresentation:
