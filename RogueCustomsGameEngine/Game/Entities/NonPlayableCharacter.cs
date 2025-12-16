@@ -825,11 +825,12 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override async Task Die(Entity? attacker = null)
         {
+            var killer = attacker is AlteredStatus als && als.Source != null ? als.Source : attacker;
             var playerCanSeeMe = Map.Player.CanSee(this);
             var events = new List<DisplayEventDto>();
-            foreach (var oda in OnDeath?.Where(oda => oda != null && (attacker == null || attacker is not Character || oda.ChecksCondition(this, attacker as Character) == true)))
+            foreach (var oda in OnDeath?.Where(oda => oda != null && (killer == null || killer is not Character || oda.ChecksCondition(this, killer as Character) == true)))
             {
-                await oda.Do(this, attacker, true);
+                await oda.Do(this, killer, true);
             }
             if (HP.Current <= 0)
             {
@@ -868,7 +869,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     if(currencyForDrop.Position != null)
                         droppedCurrency = true;
                 }
-                if (attacker == Map.Player || playerCanSeeMe)
+                if (killer == Map.Player || playerCanSeeMe)
                 {
                     if (!Map.IsDebugMode && Position != null)
                     {
@@ -894,12 +895,12 @@ namespace RogueCustomsGameEngine.Game.Entities
                     }
                 }
                 Map.DisplayEvents.Add(($"NPC {Name} dies", events));
-                if (attacker == Map.Player)
+                if (killer == Map.Player)
                 {
                     await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, this);
                     await Map.Player.UpdateQuests(QuestConditionType.KillNPCs, Faction);
                 }
-                if (attacker is Character c && ExperiencePayout > 0)
+                if (killer is Character c && ExperiencePayout > 0)
                     await GiveExperienceTo(c);
             }
         }

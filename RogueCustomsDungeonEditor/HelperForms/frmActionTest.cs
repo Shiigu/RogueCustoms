@@ -438,7 +438,7 @@ namespace RogueCustomsDungeonEditor.HelperForms
             foreach (var item in clb.CheckedItems)
             {
                 var status = TestDungeon.CurrentFloor.PossibleStatuses.Find(s => s.ClassId.Equals(item.ToString()));
-                status?.ApplyTo(npc, 0, 1);
+                status?.ApplyTo(npc, npc, 0, 1);
             }
             npc.Visible = true;
             var possibleTiles = TestDungeon.CurrentFloor.Tiles.Where(t => t.IsWalkable && !t.IsOccupied);

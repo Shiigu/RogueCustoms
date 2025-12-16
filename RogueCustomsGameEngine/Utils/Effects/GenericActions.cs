@@ -128,6 +128,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             var statusToApply = Map.PossibleStatuses.Find(ps => string.Equals(ps.ClassId, paramsObject.Id, StringComparison.InvariantCultureIgnoreCase))
                                    ?? throw new ArgumentException($"Altered status {paramsObject.Id} does not exist!");
+            var statusInflictor = Args.Source as Character;
             var statusTarget = paramsObject.Target as Character;
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
@@ -140,7 +141,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 if(statusToApply.CanBeAppliedTo(statusTarget))
                 {
                     var eventsAsOfNow = Map.DisplayEvents.Count;
-                    var success = await statusToApply.ApplyTo(statusTarget, statusPower, turnlength);
+                    var success = await statusToApply.ApplyTo(statusInflictor, statusTarget, statusPower, turnlength);
                     if(success)
                     {
                         var newTurnString = Map.Locale["NewTurn"].Format(new { TurnCount = Map.TurnCount.ToString() });

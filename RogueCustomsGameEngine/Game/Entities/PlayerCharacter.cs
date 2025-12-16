@@ -365,6 +365,7 @@ namespace RogueCustomsGameEngine.Game.Entities
 
         public override async Task Die(Entity? attacker = null)
         {
+            var killer = attacker is AlteredStatus als && als.Source != null ? als.Source : attacker;
             Map.DisplayEvents.Add(($"Player {Name} dies", new()
             {
                 new()
@@ -373,7 +374,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Params = new() { SpecialEffect.GameOver }
                 }
             }));
-            await base.Die(attacker);
+            await base.Die(killer);
             if (ExistenceStatus == EntityExistenceStatus.Dead)
             {
                 var events = new List<DisplayEventDto>();

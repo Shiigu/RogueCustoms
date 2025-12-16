@@ -13,6 +13,7 @@ namespace RogueCustomsGameEngine.Game.Entities
     public class AlteredStatus : Entity, IHasActions
     {
         private readonly EntityClass Class;
+        public Character Source { get; set; }
         public Character Target { get; set; }
 
         public bool CanStack { get; set; }
@@ -55,7 +56,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             return CanOverwrite || CanStack || !alreadyHasStatus;
         }
 
-        public async Task<bool> ApplyTo(Character target, decimal power, int turnLength)
+        public async Task<bool> ApplyTo(Character source, Character target, decimal power, int turnLength)
         {
             var alreadyHasStatus = target.AlteredStatuses.Exists(als => als.ClassId.Equals(ClassId));
             if (!CanBeAppliedTo(target)) return false;
@@ -64,6 +65,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 target.AlteredStatuses.RemoveAll(als => als.ClassId.Equals(ClassId));
             }
             var alteredStatusInstance = Clone();
+            alteredStatusInstance.Source = source;
             alteredStatusInstance.Power = power;
             alteredStatusInstance.Target = target;
             alteredStatusInstance.TurnLength = turnLength;
