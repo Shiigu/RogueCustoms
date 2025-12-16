@@ -392,13 +392,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     else if (reward.BaseItemType != null)
                     {
-                        var possibleItemClasses = Map.PossibleItemClasses.Where(ic => ic.CanDrop && ic.ItemType.Id.Equals(reward.BaseItemType.Id));
+                        var possibleItemClasses = Map.PossibleItemClasses.Where(ic => ic.CanDrop && reward.QualityLevel.IsBetween(ic.MinimumQualityLevel, ic.MaximumQualityLevel) && ic.ItemType.Id.Equals(reward.BaseItemType.Id));
                         var pickedClass = possibleItemClasses.TakeRandomElement(generatorRng);
                         item = new Item(pickedClass, reward.ItemLevel, Map, generatorRng);
                     }
                     else
                     {
-                        var pickedClass = Map.PossibleItemClasses.Where(ic => ic.CanDrop).TakeRandomElement(generatorRng);
+                        var pickedClass = Map.PossibleItemClasses.Where(ic => ic.CanDrop && reward.QualityLevel.IsBetween(ic.MinimumQualityLevel, ic.MaximumQualityLevel)).TakeRandomElement(generatorRng);
                         item = new Item(pickedClass, reward.ItemLevel, Map, generatorRng);
                     }
                     item.Id = Map.GenerateEntityId();
@@ -436,13 +436,13 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                     }
                     else if (reward.BaseItemType != null)
                     {
-                        var possibleItemClasses = Map.PossibleItemClasses.Where(ic => ic.CanDrop && ic.ItemType.Id.Equals(reward.BaseItemType.Id));
+                        var possibleItemClasses = Map.PossibleItemClasses.Where(ic => ic.CanDrop && reward.QualityLevel.IsBetween(ic.MinimumQualityLevel, ic.MaximumQualityLevel) && ic.ItemType.Id.Equals(reward.BaseItemType.Id));
                         var pickedClass = possibleItemClasses.TakeRandomElement(generatorRng);
                         item = new Item(pickedClass, reward.ItemLevel, Map, generatorRng);
                     }
                     else
                     {
-                        var pickedClass = Map.PossibleItemClasses.Where(ic => ic.CanDrop).TakeRandomElement(generatorRng);
+                        var pickedClass = Map.PossibleItemClasses.Where(ic => ic.CanDrop && reward.QualityLevel.IsBetween(ic.MinimumQualityLevel, ic.MaximumQualityLevel)).TakeRandomElement(generatorRng);
                         item = new Item(pickedClass, reward.ItemLevel, Map, generatorRng);
                     }
                     item.Id = Map.GenerateEntityId();
