@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
+using RogueCustomsGameEngine.Game.Entities;
 using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.Helpers;
+using RogueCustomsGameEngine.Utils.Representation;
 
 namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
 {
@@ -18,14 +20,19 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Description { get; set; }
         public string CompletionTypeMessage { get; set; }
         public List<QuestConditionDto> Conditions { get; set; }
+        public List<QuestRewardDto> Rewards { get; set; }
+        public ConsoleRepresentation CurrencyConsoleRepresentation { get; set; }
+
+        public int FreeSlotsRequiredForRewards { get; set; }
 
         public QuestDto(Quest quest)
         {
             Id = quest.Id;
             Name = quest.Name;
             Description = quest.Description;
+            CurrencyConsoleRepresentation = quest.Map.CurrencyClass.ConsoleRepresentation;
 
-            switch(quest.CompletionType)
+            switch (quest.CompletionType)
             {
                 case QuestCompletionType.AllConditions:
                     CompletionTypeMessage = quest.Map.Locale["MustFulfillAllObjectivesText"];
@@ -40,6 +47,35 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             {
                 Conditions.Add(new QuestConditionDto(condition, quest.Map));
             }
+
+            FreeSlotsRequiredForRewards = quest.GuaranteedItemRewards.Count + (quest.SelectableItemRewards.Count > 0 ? 1 : 0);
+
+            Rewards = new List<QuestRewardDto>();
+
+            if(quest.GuaranteedMonetaryReward > 0)
+                Rewards.Add(new(quest.GuaranteedMonetaryReward, QuestRewardType.GuaranteedMoney));
+
+            if(quest.GuaranteedExperienceReward > 0)
+                Rewards.Add(new(quest.GuaranteedExperienceReward, QuestRewardType.GuaranteedExperience));
+
+            foreach (var reward in quest.GuaranteedItemRewards)
+            {
+                Rewards.Add(new QuestRewardDto(reward, QuestRewardType.GuaranteedItem, quest.Map));
+            }
+
+            foreach (var reward in quest.SelectableItemRewards)
+            {
+                Rewards.Add(new QuestRewardDto(reward, QuestRewardType.SelectableItem, quest.Map));
+            }
+
+            if(quest.CompensatoryMonetaryReward > 0)
+                Rewards.Add(new(quest.CompensatoryMonetaryReward, QuestRewardType.CompensatoryMoney));
+
+            if (quest.CompensatoryExperienceReward > 0)
+                Rewards.Add(new(quest.CompensatoryExperienceReward, QuestRewardType.CompensatoryExperience));
+
+            if(quest.OnQuestComplete != null)
+                Rewards.Add(new(quest.OnQuestComplete));
         }
     }
 
@@ -122,6 +158,43 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     Description = map.Locale["ObtainMoneyObjectiveText"].Format(new { CurrencyChar = map.CurrencyClass.ConsoleRepresentation.Character });
                     break;
             }
+        }
+    }
+
+    [Serializable]
+    public class QuestRewardDto
+    {
+        public int ItemLevel { get; set; }
+        public string QualityLevel { get; set; }
+        public string Name { get; set; }
+        public QuestRewardType Type { get; set; }
+        public int Amount { get; set; }
+
+        public QuestRewardDto(QuestItemReward reward, QuestRewardType type, Map map)
+        {
+            ItemLevel = reward.ItemLevel;
+            QualityLevel = reward.QualityLevel.Name.Replace("{baseName}", string.Empty).Trim();
+            if(reward.BaseItem != null)
+            {
+                Name = reward.BaseItem.Name;
+            }
+            else if (reward.BaseItemType != null)
+            {
+                Name = reward.BaseItemType.Name;
+            }
+            Type = type;
+        }
+
+        public QuestRewardDto(ActionWithEffects action)
+        {
+            Name = action.Name;
+            Type = QuestRewardType.Action;
+        }
+
+        public QuestRewardDto(int amount, QuestRewardType type)
+        {
+            Amount = amount;
+            Type = type;
         }
     }
 }

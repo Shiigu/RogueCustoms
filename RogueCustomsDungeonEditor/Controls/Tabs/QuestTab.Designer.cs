@@ -329,6 +329,7 @@
             saeQuestComplete.Location = new System.Drawing.Point(25, 492);
             saeQuestComplete.Name = "saeQuestComplete";
             saeQuestComplete.PlaceholderActionId = "QuestComplete";
+            saeQuestComplete.RequiresName = true;
             saeQuestComplete.Size = new System.Drawing.Size(299, 32);
             saeQuestComplete.SourceDescription = "The player";
             saeQuestComplete.TabIndex = 162;

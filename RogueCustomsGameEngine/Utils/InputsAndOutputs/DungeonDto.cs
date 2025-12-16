@@ -233,7 +233,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Equipment = new List<SimpleEntityDto>();
                 AlteredStatuses = new List<SimpleEntityDto>();
                 Inventory = new List<SimpleEntityDto>();
-                InventorySize = pc.InventorySize;
+                InventorySize = pc.InventorySize + pc.KeySet.Count;
                 Currency = new(map.CurrencyClass, pc.CurrencyCarried);
             }
         }

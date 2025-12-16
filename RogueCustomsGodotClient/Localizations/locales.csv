@@ -82,6 +82,14 @@ InventoryWindowRequiredPlayerLevelText,Requiere Nivel de Jugador {Level},Require
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
 JournalWindowTitleText,Diario de Misiones,Quest Journal
+JournalWindowMonetaryRewardText,{Amount} {CurrencyChar},{Amount} {CurrencyChar}
+JournalWindowExperienceRewardText,{Amount} Puntos de Experiencia,{Amount} Experience Points
+JournalWindowItemRewardText,{Name} de calidad {QualityLevel} de nivel {ItemLevel},Item Level {ItemLevel} {QualityLevel} {Name}
+JournalWindowAnyItemRewardText,Objeto al Azar,Random Item
+JournalWindowGuaranteedRewardsHeaderText,Recompensas Garantizadas:,Guaranteed Rewards:
+JournalWindowSelectableRewardsHeaderText,Elige una entre:,Choose one of:
+JournalWindowCompensatoryRewardsText,Compensación si el inventario no tiene suficiente espacio:,Compensation if inventory has insufficient space:
+JournalWindowFreeSlotsRequiredText,Espacios Libres para obtener objetos: {FreeSlots},Free Slots to get items: {FreeSlots}
 LanguageLocale,es,en
 LanguageName,Español,English
 LeftButtonText,<-,<-

@@ -431,7 +431,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 events.Add(new()
                 {
                     DisplayEventType = DisplayEventType.UpdatePlayerData,
-                    Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                    Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList(), InventorySize + KeySet.Count }
                 });
                 if (Inventory.Count < InventorySize)
                 {
@@ -524,18 +524,17 @@ namespace RogueCustomsGameEngine.Game.Entities
         {
             var events = new List<DisplayEventDto>();
             var pickableAsEntity = pickable as Entity;
+            var pickableAsItem = pickable as Item;
+            var pickableAsCurrency = pickable as Currency;
             var isCurrency = false;
-            if (pickable is Item i)
+            if (pickableAsItem != null)
             {
-                Inventory.Add(i);
-                await UpdateQuests(QuestConditionType.CollectItems, i.ItemType);
-                await UpdateQuests(QuestConditionType.CollectItems, i);
+                Inventory.Add(pickableAsItem);
             }
-            else if (pickable is Currency c)
+            else if (pickableAsCurrency != null)
             {
                 isCurrency = true;
-                CurrencyCarried += c.Amount;
-                await UpdateQuests(QuestConditionType.ObtainCurrency);
+                CurrencyCarried += pickableAsCurrency.Amount;
             }
             pickableAsEntity.Position = null;
             pickableAsEntity.ExistenceStatus = EntityExistenceStatus.Gone;
@@ -570,6 +569,15 @@ namespace RogueCustomsGameEngine.Game.Entities
                     Map.DisplayEvents.Add(($"Player {Name} picked item on floor", events));
                 }
             }
+            if (pickableAsItem != null)
+            {
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem.ItemType);
+                await UpdateQuests(QuestConditionType.CollectItems, pickableAsItem);
+            }
+            else if (pickableAsCurrency != null)
+            {
+                await UpdateQuests(QuestConditionType.ObtainCurrency);
+            }
         }
 
         public override void PickKey(Key key, bool informToPlayer)
@@ -602,7 +610,7 @@ namespace RogueCustomsGameEngine.Game.Entities
             events.Add(new()
             {
                 DisplayEventType = DisplayEventType.UpdatePlayerData,
-                Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                Params = new() { UpdatePlayerDataType.UpdateInventory, Inventory.Cast<Entity>().Union(KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList(), InventorySize + KeySet.Count }
             });
             events.Add(new()
             {

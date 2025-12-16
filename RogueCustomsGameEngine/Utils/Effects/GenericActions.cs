@@ -923,7 +923,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                             events.Add(new()
                             {
                                 DisplayEventType = DisplayEventType.UpdatePlayerData,
-                                Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList() }
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList(), c.InventorySize + c.KeySet.Count }
                             });
                         }
                         Map.DisplayEvents.Add(($"{targetItem.Name} disappears from {c.Name}'s inventory", events));

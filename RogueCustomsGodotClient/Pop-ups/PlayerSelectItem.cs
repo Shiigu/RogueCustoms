@@ -2,6 +2,7 @@ using Godot;
 
 using RogueCustomsGameEngine.Game.DungeonStructure;
 using RogueCustomsGameEngine.Game.Entities;
+using RogueCustomsGameEngine.Utils.Enums;
 using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 
 using RogueCustomsGodotClient;
@@ -913,6 +914,66 @@ public partial class PlayerSelectItem : Control
 
                 _itemDescriptionLabel.AppendText($"[p][color={conditionColor}]{conditionText}[/color]");
             }
+
+            if(selectedQuest.FreeSlotsRequiredForRewards > 0)
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("JournalWindowFreeSlotsRequiredText").ToString().Format(new { FreeSlots = selectedQuest.FreeSlotsRequiredForRewards.ToString() }).ToColoredString(new(System.Drawing.Color.OrangeRed))}");
+            }
+
+            if (selectedQuest.Rewards.Any(r => r.Type == QuestRewardType.GuaranteedMoney || r.Type == QuestRewardType.GuaranteedExperience || r.Type == QuestRewardType.GuaranteedItem || r.Type == QuestRewardType.Action))
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("JournalWindowGuaranteedRewardsHeaderText")}[p]");
+                foreach (var reward in selectedQuest.Rewards)
+                {
+                    if (reward.Type == QuestRewardType.GuaranteedMoney)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowMonetaryRewardText").ToString().Format(new { Amount = reward.Amount.ToString(), CurrencyChar = selectedQuest.CurrencyConsoleRepresentation.Character }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                    else if (reward.Type == QuestRewardType.GuaranteedExperience)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowExperienceRewardText").ToString().Format(new { Amount = reward.Amount.ToString() }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                    else if (reward.Type == QuestRewardType.GuaranteedItem)
+                    {
+                        var name = reward.Name ?? TranslationServer.Translate("JournalWindowAnyItemRewardText");
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowItemRewardText").ToString().Format(new { Name = name, ItemLevel = reward.ItemLevel, QualityLevel = reward.QualityLevel }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                    else if (reward.Type == QuestRewardType.Action)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p]- {reward.Name.ToColoredString(new(System.Drawing.Color.DeepSkyBlue))}");
+                    }
+                }
+            }
+
+            if (selectedQuest.Rewards.Any(r => r.Type == QuestRewardType.SelectableItem))
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("JournalWindowSelectableRewardsHeaderText")}[p]");
+                foreach (var reward in selectedQuest.Rewards)
+                {
+                    if (reward.Type == QuestRewardType.SelectableItem)
+                    {
+                        var name = reward.Name ?? TranslationServer.Translate("JournalWindowAnyItemRewardText");
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowItemRewardText").ToString().Format(new { Name = name, ItemLevel = reward.ItemLevel, QualityLevel = reward.QualityLevel }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                }
+            }
+
+            if (selectedQuest.FreeSlotsRequiredForRewards > 0 && selectedQuest.Rewards.Any(r => r.Type == QuestRewardType.CompensatoryMoney || r.Type == QuestRewardType.CompensatoryExperience))
+            {
+                _itemDescriptionLabel.AppendText($"[p] [p]{TranslationServer.Translate("JournalWindowCompensatoryRewardsText")}[p]");
+                foreach (var reward in selectedQuest.Rewards)
+                {
+                    if (reward.Type == QuestRewardType.CompensatoryMoney)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowMonetaryRewardText").ToString().Format(new { Amount = reward.Amount.ToString(), CurrencyChar = selectedQuest.CurrencyConsoleRepresentation.Character }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                    else if (reward.Type == QuestRewardType.CompensatoryExperience)
+                    {
+                        _itemDescriptionLabel.AppendText($"[p]- {TranslationServer.Translate("JournalWindowExperienceRewardText").ToString().Format(new { Amount = reward.Amount.ToString() }).ToColoredString(new(System.Drawing.Color.Gold))}");
+                    }
+                }
+            }
+
         }
     }
 
