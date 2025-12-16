@@ -29,5 +29,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             AttachesWhatToItemName = Enum.Parse<QualityLevelNameAttachment>(info.AttachesWhatToItemName);
             ItemNameColor = info.ItemNameColor;
         }
+
+        public bool IsBetween(QualityLevel min, QualityLevel max)
+        {
+            return this.MaximumAffixes >= min.MaximumAffixes && this.MaximumAffixes <= max.MaximumAffixes;
+        }
     }
 }
