@@ -318,6 +318,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 UpdateSpawnNPCStepsToV17(effect);
                 UpdateDealDamageStepsToV17(effect);
+                UpdateApplyStatAlterationStepsToV17(effect);
             }
         }
         private static void UpdateSpawnNPCStepsToV17(JsonObject effect)
@@ -346,6 +347,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateSpawnNPCParametersToV17(onFailureObj);
         }
+
         private static void UpdateDealDamageStepsToV17(JsonObject effect)
         {
             UpdateDealDamageParametersToV17(effect);
@@ -371,6 +373,38 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateDealDamageParametersToV17(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateDealDamageParametersToV17(onFailureObj);
+        }
+
+        private static void UpdateApplyStatAlterationStepsToV17(JsonObject effect)
+        {
+            UpdateApplyStatAlterationParametersToV17(effect);
+        }
+
+        private static void UpdateApplyStatAlterationParametersToV17(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "ApplyStatAlteration")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+                var idParam = parameters.OfType<JsonObject>().FirstOrDefault(p => p["ParamName"]?.ToString().Equals("Id", StringComparison.OrdinalIgnoreCase) == true);
+                if (idParam != null)
+                {
+                    var id = idParam["Value"].GetValue<string>();
+
+                    if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("Name", StringComparison.OrdinalIgnoreCase) == true))
+                    {
+                        parameters.Add(new JsonObject { ["ParamName"] = "Name", ["Value"] = id });
+                    }
+
+                    effect["Params"] = parameters;
+                }
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateApplyStatAlterationParametersToV17(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateApplyStatAlterationParametersToV17(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateApplyStatAlterationParametersToV17(onFailureObj);
         }
     }
 }

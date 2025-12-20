@@ -82,7 +82,7 @@ InventoryWindowRequiredPlayerLevelText,Requiere Nivel de Jugador {Level},Require
 InventoryWindowItemLevelText,Nivel de Objeto {Level},Item Level {Level}
 InventoryWindowExtraDamageText,Añade {Damage} de daño {Element},Adds {Damage} {Element} damage
 JournalWindowTitleText,Diario de Misiones,Quest Journal
-JournalWindowMonetaryRewardText,{Amount} {CurrencyChar},{Amount} {CurrencyChar}
+JournalWindowMonetaryRewardText,{CurrencyChar} {Amount},{CurrencyChar} {Amount}
 JournalWindowExperienceRewardText,{Amount} Puntos de Experiencia,{Amount} Experience Points
 JournalWindowItemRewardText,{Name} de calidad {QualityLevel} de nivel {ItemLevel},Item Level {ItemLevel} {QualityLevel} {Name}
 JournalWindowAnyItemRewardText,Objeto al Azar,Random Item

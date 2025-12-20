@@ -24,7 +24,7 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         // For Active Modifications
         public StatModificationDto(StatModification source, StatDto stat, Map map)
         {
-            Source = map.Locale[source.Id];
+            Source = map.Locale[source.Source];
             if (stat.IsDecimalStat)
                 Amount = source.Amount;
             else

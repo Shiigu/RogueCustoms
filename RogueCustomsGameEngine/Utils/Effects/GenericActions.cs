@@ -251,6 +251,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 targetStat.ActiveModifications.Add(new StatModification
                 {
                     Id = paramsObject.Id,
+                    Source = paramsObject.Name,
                     Amount = alterationAmount,
                     RemainingTurns = turnLength,
                     InformOfExpiration = true
