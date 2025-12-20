@@ -317,6 +317,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             if (actionWithEffects["Effect"] is JsonObject effect)
             {
                 UpdateSpawnNPCStepsToV17(effect);
+                UpdateDealDamageStepsToV17(effect);
             }
         }
         private static void UpdateSpawnNPCStepsToV17(JsonObject effect)
@@ -344,6 +345,32 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
                 UpdateSpawnNPCParametersToV17(onSuccessObj);
             if (effect["OnFailure"] is JsonObject onFailureObj)
                 UpdateSpawnNPCParametersToV17(onFailureObj);
+        }
+        private static void UpdateDealDamageStepsToV17(JsonObject effect)
+        {
+            UpdateDealDamageParametersToV17(effect);
+        }
+
+        private static void UpdateDealDamageParametersToV17(JsonObject effect)
+        {
+            if (effect["EffectName"]?.ToString() == "DealDamage")
+            {
+                var parameters = effect["Params"] as JsonArray ?? new JsonArray();
+
+                if (!parameters.OfType<JsonObject>().Any(p => p["ParamName"]?.ToString().Equals("InformOfFailure", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    parameters.Add(new JsonObject { ["ParamName"] = "InformOfFailure", ["Value"] = "true" });
+                }
+
+                effect["Params"] = parameters;
+            }
+
+            if (effect["Then"] is JsonObject thenObj)
+                UpdateDealDamageParametersToV17(thenObj);
+            if (effect["OnSuccess"] is JsonObject onSuccessObj)
+                UpdateDealDamageParametersToV17(onSuccessObj);
+            if (effect["OnFailure"] is JsonObject onFailureObj)
+                UpdateDealDamageParametersToV17(onFailureObj);
         }
     }
 }

@@ -148,6 +148,17 @@
         "Required": "true",
         "ReadOnly": "false",
         "Columns": []
+      },
+      {
+        "InternalName": "InformOfFailure",
+        "DisplayName": "Inform if it fails?",
+        "Description": "If true and applicable, the Player will be informed if the Action misses or deals no damage.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
       }
     ]
   },
