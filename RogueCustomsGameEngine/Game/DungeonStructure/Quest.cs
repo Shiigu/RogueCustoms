@@ -11,6 +11,8 @@ using RogueCustomsGameEngine.Utils.InputsAndOutputs;
 using RogueCustomsGameEngine.Utils.JsonImports;
 using RogueCustomsGameEngine.Utils.Representation;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace RogueCustomsGameEngine.Game.DungeonStructure
 {
     [Serializable]
@@ -537,6 +539,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             Map.DisplayEvents.Add(($"{Map.Player.Name} gets Rewards from Quest {Name}", events));
 
             OnQuestComplete?.Do(Map.Player, Map.Player, false);
+
+            await Map.Player.UpdateQuests(QuestConditionType.ObtainCurrency);
 
             foreach (var @object in objectsToRegister)
             {

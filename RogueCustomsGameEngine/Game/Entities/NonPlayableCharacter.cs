@@ -68,7 +68,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                actionList.Add(OwnOnSpawn);
+                if(OwnOnSpawn != null)
+                    actionList.Add(OwnOnSpawn);
                 foreach (var modifier in Modifiers)
                 {
                     if(modifier?.OwnOnSpawn != null)
@@ -83,7 +84,8 @@ namespace RogueCustomsGameEngine.Game.Entities
             get
             {
                 var actionList = new List<ActionWithEffects>();
-                actionList.AddRange(OwnOnInteracted);
+                if (OwnOnInteracted != null)
+                    actionList.AddRange(OwnOnInteracted);
                 foreach (var modifier in Modifiers)
                 {
                     if (modifier?.OwnOnAttacked != null)

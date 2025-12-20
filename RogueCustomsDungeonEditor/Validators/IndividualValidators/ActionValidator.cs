@@ -250,7 +250,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
                 target.Inventory.Add(sampleItem);
             }
 
-            sampleDungeon.CurrentFloor.SetActionParams();
+            sampleDungeon.CurrentFloor.BindEverything();
 
             if (owner == null)
             {
