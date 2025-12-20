@@ -9,7 +9,7 @@ namespace RogueCustomsDungeonEditor.Validators.IndividualValidators
 {
     public static class DungeonQualityLevelValidator
     {
-        public static async Task<DungeonValidationMessages> Validate(DungeonInfo dungeonJson)
+        public static DungeonValidationMessages Validate(DungeonInfo dungeonJson)
         {
             var messages = new DungeonValidationMessages();
 
