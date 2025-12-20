@@ -140,40 +140,7 @@ namespace RogueCustomsGameEngine.Management
                 throw new InvalidDataException($"Deserialized Dungeon is at version {restoredDungeon.Version}. Required version is {EngineConstants.CurrentDungeonJsonVersion}.");
             var rngSeed = restoredDungeon.CurrentFloor.Rng.Seed;
             restoredDungeon.CurrentFloor.LoadRngState(rngSeed);
-            restoredDungeon.CurrentFloor.SetActionParams();
-            foreach (var entity in restoredDungeon.CurrentFloor.Entities)
-            {
-                entity.Map = restoredDungeon.CurrentFloor;
-            }
-            foreach (var tile in restoredDungeon.CurrentFloor.Tiles)
-            {
-                tile.Map = restoredDungeon.CurrentFloor;
-            }
-            foreach (var quest in restoredDungeon.PlayerCharacter.Quests)
-            {
-                quest.Map = restoredDungeon.CurrentFloor;
-            }
-            foreach (var tileType in restoredDungeon.TileTypes)
-            {
-                if (tileType.Id.Equals("Empty"))
-                    TileType.Empty = tileType;
-                else if (tileType.Id.Equals("Floor"))
-                    TileType.Floor = tileType;
-                else if (tileType.Id.Equals("Wall"))
-                    TileType.Wall = tileType;
-                else if (tileType.Id.Equals("Hallway"))
-                    TileType.Hallway = tileType;
-                else if (tileType.Id.Equals("Stairs"))
-                    TileType.Stairs = tileType;
-            }
-            foreach (var doorTile in restoredDungeon.CurrentFloor.Tiles.Where(t => t.Type.Id.Equals(TileType.Door.Id)))
-            {
-                doorTile.Type = TileType.Door;
-            }
-            restoredDungeon.CurrentFloor.AwaitingPromptInput = false;
-            restoredDungeon.CurrentFloor.AwaitingQuestInput = false;
-            restoredDungeon.CurrentFloor.DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
-            restoredDungeon.CurrentFloor.TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
+            restoredDungeon.CurrentFloor.BindEverything();
             restoredDungeon.CurrentFloor.DisplayEvents = new();
             restoredDungeon.CurrentFloor.DisplayEvents.Add(("ClearMessageLog", new()
                                 {

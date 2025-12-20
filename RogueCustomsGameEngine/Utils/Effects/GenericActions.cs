@@ -1013,10 +1013,6 @@ namespace RogueCustomsGameEngine.Utils.Effects
         {
             dynamic paramsObject = ExpressionParser.ParseParams(Args);
 
-            var targetItem = paramsObject.Target as Item;
-            var targetKey = paramsObject.Target as Key;
-            var targetTrap = paramsObject.Target as Trap;
-            var targetNPC = paramsObject.Target as NonPlayableCharacter;
 
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
 
@@ -1025,7 +1021,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 var e = paramsObject.Target as Entity;
                 var entityPosition = e != null && e.Position != null ? e.Position.Clone() : null;
                 var removed = false;
-                if (targetItem != null)
+                if (paramsObject.Target is Item targetItem)
                 {
                     if (targetItem.Owner is Character c)
                     {
@@ -1046,23 +1042,36 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     Map.Items.Remove(targetItem);
                     removed = true;
                 }
-                else if (targetKey != null)
+                else if (paramsObject.Target is Key targetKey)
                 {
-                    targetKey.Owner?.KeySet?.Remove(targetKey);
-                    targetKey.Owner = null;
+                    if (targetKey.Owner is Character c)
+                    {
+                        var events = new List<DisplayEventDto>();
+                        targetKey.Owner?.KeySet?.Remove(targetKey);
+                        targetKey.Owner = null;
+                        if (c == Map.Player)
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.UpdateInventory, c.Inventory.Cast<Entity>().Union(c.KeySet.Cast<Entity>()).Select(i => new SimpleEntityDto(i)).ToList(), c.InventorySize + c.KeySet.Count }
+                            });
+                        }
+                        Map.DisplayEvents.Add(($"{targetKey.Name} disappears from {c.Name}'s inventory", events));
+                    }
                     targetKey.ExistenceStatus = EntityExistenceStatus.Gone;
                     targetKey.Position = null;
                     Map.Keys.Remove(targetKey);
                     removed = true;
                 }
-                else if (targetTrap != null)
+                else if (paramsObject.Target is Trap targetTrap)
                 {
                     targetTrap.ExistenceStatus = EntityExistenceStatus.Gone;
                     targetTrap.Position = null;
                     Map.Traps.Remove(targetTrap);
                     removed = true;
                 }
-                else if (targetNPC != null)
+                else if (paramsObject.Target is NonPlayableCharacter targetNPC)
                 {
                     targetNPC.ExistenceStatus = EntityExistenceStatus.Gone;
                     targetNPC.LastPositionBeforeRemove = targetNPC.Position;

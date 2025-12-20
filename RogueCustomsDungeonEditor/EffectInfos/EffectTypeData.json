@@ -3924,7 +3924,7 @@
     "InternalName": "ReturnToFloor1",
     "TreeViewDisplayText": "Return This to Floor 1",
     "ComboBoxDisplayName": "Return This to Floor 1",
-    "Description": "Returns This to Floor 1 of the Dungeon, restoring all HP, MP and Hunger in the process.\n\nEffectively turns the Dungeon into a Roguelite.\n\nCan be set to lose some experience, items, scripts or tagalong NPCs.\n\nAll altered statuses and temporary stat modifications will be lost in the process.\n\nDoes nothing if This is not the Player. Tagalong NPCs won't be affected in the process.\n\nNOTE: Floor 1 may be different from the previous visit.",
+    "Description": "Returns This to Floor 1 of the Dungeon, restoring all HP, MP and Hunger in the process.\n\nEffectively turns the Dungeon into a Roguelite.\n\nCan be set to lose some experience, items, scripts or tagalong NPCs.\n\nAll altered statuses and temporary stat modifications will be lost in the process.\n\nDoes nothing if This is not the Player. Tagalong NPCs won't be affected in the process.\n\nNOTE: ALL Quests are abandoned, and can be accepted again even if not set to be Repeatable.\n\nNOTE: Floor 1 may be different from the previous visit.",
     "CanBeUsedOnEntity": true,
     "CanBeUsedOnTile": false,
     "CanHaveThenChild": false,

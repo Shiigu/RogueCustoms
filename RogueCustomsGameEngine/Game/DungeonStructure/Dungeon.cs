@@ -218,10 +218,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList, npcsToKeep);
-            foreach (var quest in PlayerCharacter.Quests)
-            {
-                quest.Map = CurrentFloor;
-            }
+            CurrentFloor.BindEverything();
             await CurrentFloor.Generate(false, []);
             if (CurrentFloorLevel > 1)
             {
@@ -243,6 +240,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var tagalongNPCCount = tagalongNPCs.Count;
 
             tagalongNPCs = tagalongNPCs.Shuffle(CurrentFloor.Rng).Take((int)(tagalongNPCs.Count * (tagalongNPCsPercentageToKeep / 100.0))).ToList();
+
+            PlayerCharacter.Quests.Clear();
 
             var playerLostLevels = false;
             var minimumExperienceForCurrentLevel = PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
@@ -320,6 +319,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             CurrentFloor.TurnCount = 0;
 
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList, tagalongNPCs);
+            CurrentFloor.BindEverything();
 
             var events = new List<DisplayEventDto>();
 

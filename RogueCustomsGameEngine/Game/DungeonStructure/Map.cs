@@ -193,11 +193,11 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             DisplayEvents = new();
             PossibleStatuses = new List<AlteredStatus>();
             Dungeon.AlteredStatusClasses.ForEach(alsc => PossibleStatuses.Add(new AlteredStatus(alsc, this)));
-            SetActionParams();
+            BindEverything();
             TurnCount = 0;
         }
 
-        public void SetActionParams()
+        public void BindEverything()
         {
             AttackActions.SetActionParams(Rng, this);
             CharacterActions.SetActionParams(Rng, this);
@@ -219,6 +219,160 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 if (tileType.OnStood != null)
                     tileType.OnStood.Map = this;
+            }
+            foreach (var trap in Traps)
+            {
+                if (trap.OnStepped != null)
+                    trap.OnStepped.Map = this;
+            }
+            foreach (var entity in Entities)
+            {
+                entity.Map = this;
+            }
+            foreach (var item in Items)
+            {
+                item.Map = this;
+                foreach (var action in item.OnAttack)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in item.OnAttacked)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in item.OnTurnStart)
+                {
+                    action.Map = this;
+                }
+                if(item.OnUse != null)
+                {
+                    item.OnUse.Map = this;
+                }
+            }
+            foreach (var character in AICharacters)
+            {
+                character.Map = this;
+                if (character.BeforeProcessAI != null)
+                {
+                    character.BeforeProcessAI.Map = this;
+                }
+                if (character.OnLevelUp != null)
+                {
+                    character.OnLevelUp.Map = this;
+                }
+                if (character.DefaultOnAttack != null)
+                {
+                    character.DefaultOnAttack.Map = this;
+                }
+                foreach (var action in character.OnSpawn)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in character.OnDeath)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in character.OnInteracted)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in character.OnAttack)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in character.OnAttacked)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in character.OnTurnStart)
+                {
+                    action.Map = this;
+                }
+                foreach (var alteredStatus in character.AlteredStatuses)
+                {
+                    alteredStatus.Map = this;
+                    if (alteredStatus.OnApply != null)
+                    {
+                        alteredStatus.OnApply.Map = this;
+                    }
+                    if (alteredStatus.OnRemove != null)
+                    {
+                        alteredStatus.OnRemove.Map = this;
+                    }
+                }
+            }
+            foreach (var tileType in Dungeon.TileTypes)
+            {
+                if (tileType.Id.Equals("Empty"))
+                    TileType.Empty = tileType;
+                else if (tileType.Id.Equals("Floor"))
+                    TileType.Floor = tileType;
+                else if (tileType.Id.Equals("Wall"))
+                    TileType.Wall = tileType;
+                else if (tileType.Id.Equals("Hallway"))
+                    TileType.Hallway = tileType;
+                else if (tileType.Id.Equals("Stairs"))
+                    TileType.Stairs = tileType;
+            }
+            DefaultTileTypes = new() { TileType.Empty, TileType.Floor, TileType.Hallway, TileType.Stairs, TileType.Wall, TileType.Door };
+            TileSet.TileTypeSets.ForEach(tts => tts.TileType.TileTypeSet = tts);
+            if (Tiles != null)
+            {
+                foreach (var tile in Tiles)
+                {
+                    tile.Map = this;
+                    if (tile.Type.Id.Equals(TileType.Door.Id))
+                        tile.Type = TileType.Door;
+                    else
+                        tile.Type = Dungeon.TileTypes.FirstOrDefault(tt => tt.Id.Equals(tile.Type.Id)) ?? TileType.Empty;
+                }
+            }
+            AwaitingPromptInput = false;
+            AwaitingQuestInput = false;
+            if (Player != null)
+            {
+                if (Player.OnLevelUp != null)
+                {
+                    Player.OnLevelUp.Map = this;
+                }
+                if (Player.DefaultOnAttack != null)
+                {
+                    Player.DefaultOnAttack.Map = this;
+                }
+                foreach (var action in Player.OnDeath)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in Player.OnAttack)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in Player.OnAttacked)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in Player.OnTurnStart)
+                {
+                    action.Map = this;
+                }
+                foreach (var alteredStatus in Player.AlteredStatuses)
+                {
+                    alteredStatus.Map = this;
+                    if (alteredStatus.OnApply != null)
+                    {
+                        alteredStatus.OnApply.Map = this;
+                    }
+                    if (alteredStatus.OnRemove != null)
+                    {
+                        alteredStatus.OnRemove.Map = this;
+                    }
+                }
+                foreach (var quest in Player.Quests)
+                {
+                    quest.Map = this;
+                    if(quest.OnQuestComplete != null)
+                        quest.OnQuestComplete.Map = this;
+                }
             }
         }
 
@@ -723,6 +877,22 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         {
             item.Id = GenerateEntityId();
             item.Map = this;
+            foreach (var action in item.OnAttack)
+            {
+                action.Map = this;
+            }
+            foreach (var action in item.OnAttacked)
+            {
+                action.Map = this;
+            }
+            foreach (var action in item.OnTurnStart)
+            {
+                action.Map = this;
+            }
+            if (item.OnUse != null)
+            {
+                item.OnUse.Map = this;
+            }
             Items.Add(item);
         }
 
@@ -938,14 +1108,64 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         public void RegisterPreexistingCharacter(Character character)
         {
             character.Map = this;
+            if (character is NonPlayableCharacter npc)
+            {
+                npc.ResetAIData();
+                if (npc.BeforeProcessAI != null)
+                {
+                    npc.BeforeProcessAI.Map = this;
+                }
+                foreach (var action in npc.OnSpawn)
+                {
+                    action.Map = this;
+                }
+                foreach (var action in npc.OnInteracted)
+                {
+                    action.Map = this;
+                }
+            }
+            if (character.OnLevelUp != null)
+            {
+                character.OnLevelUp.Map = this;
+            }
+            if (character.DefaultOnAttack != null)
+            {
+                character.DefaultOnAttack.Map = this;
+            }
+            foreach (var action in character.OnDeath)
+            {
+                action.Map = this;
+            }
+            foreach (var action in character.OnAttack)
+            {
+                action.Map = this;
+            }
+            foreach (var action in character.OnAttacked)
+            {
+                action.Map = this;
+            }
+            foreach (var action in character.OnTurnStart)
+            {
+                action.Map = this;
+            }
+            foreach (var alteredStatus in character.AlteredStatuses)
+            {
+                alteredStatus.Map = this;
+                if (alteredStatus.OnApply != null)
+                {
+                    alteredStatus.OnApply.Map = this;
+                }
+                if (alteredStatus.OnRemove != null)
+                {
+                    alteredStatus.OnRemove.Map = this;
+                }
+            }
             character.Id = GenerateEntityId();
             foreach (var item in character.Equipment)
             {
                 RegisterItemFromInventory(item);
             }
             character.Inventory?.ForEach(RegisterItemFromInventory);
-            if (character is NonPlayableCharacter npc)
-                npc.ResetAIData();
         }
 
         private async Task NewTurn()
