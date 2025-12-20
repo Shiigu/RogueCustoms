@@ -134,6 +134,10 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (playerClass["Learnset"] is null)
                     playerClass["Learnset"] = "Default";
+                if (playerClass["DefaultOnAttack"] is JsonObject defaultOnAttack)
+                {
+                    UpdateAction(defaultOnAttack);
+                }
                 foreach (var action in playerClass["OnAttack"]?.AsArray() ?? [])
                 {
                     if (action is JsonObject actionObj)
@@ -167,9 +171,17 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (npc["Learnset"] is null)
                     npc["Learnset"] = "Default";
+                if (npc["BeforeProcessAI"] is JsonObject beforeProcessAI)
+                {
+                    UpdateAction(beforeProcessAI);
+                }
                 if (npc["OnSpawn"] is JsonObject onSpawn)
                 {
                     UpdateAction(onSpawn);
+                }
+                if (npc["DefaultOnAttack"] is JsonObject defaultOnAttack)
+                {
+                    UpdateAction(defaultOnAttack);
                 }
                 foreach (var action in npc["OnAttack"]?.AsArray() ?? [])
                 {

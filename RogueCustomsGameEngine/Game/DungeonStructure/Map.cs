@@ -270,24 +270,27 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             var tileTypeDict = Dungeon.TileTypes.ToDictionary(tt => tt.Id);
             var doorId = TileType.Door.Id;
             var emptyType = TileType.Empty;
-            for (int y = 0; y < Height; y++)
+            if (Tiles != null)
             {
-                for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
                 {
-                    var tile = Tiles[y, x];
-                    tile.Map = this;
+                    for (int x = 0; x < Width; x++)
+                    {
+                        var tile = Tiles[y, x];
+                        tile.Map = this;
 
-                    if (tile.Type.Id == doorId)
-                    {
-                        tile.Type = TileType.Door;
-                    }
-                    else if (tileTypeDict.TryGetValue(tile.Type.Id, out var type))
-                    {
-                        tile.Type = type;
-                    }
-                    else
-                    {
-                        tile.Type = emptyType;
+                        if (tile.Type.Id == doorId)
+                        {
+                            tile.Type = TileType.Door;
+                        }
+                        else if (tileTypeDict.TryGetValue(tile.Type.Id, out var type))
+                        {
+                            tile.Type = type;
+                        }
+                        else
+                        {
+                            tile.Type = emptyType;
+                        }
                     }
                 }
             }
