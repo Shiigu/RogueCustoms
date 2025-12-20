@@ -138,7 +138,11 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
 
                 dgvQuestConditions.Rows[rowIndex].Cells[1].Value = condition.TargetId;
             }
-            saeQuestComplete.SetActionEditorParams(LoadedQuest.Id, LoadedQuest.OnQuestComplete, EffectParamData, activeDungeon, (_, _) => TabInfoChanged?.Invoke(null, EventArgs.Empty));
+            saeQuestComplete.SetActionEditorParams(LoadedQuest.Id, LoadedQuest.OnQuestComplete, EffectParamData, activeDungeon, (_, _) => {
+                fklblOnQuestComplete.Visible = saeQuestComplete.Action != null;
+                TabInfoChanged?.Invoke(null, EventArgs.Empty);
+            });
+            fklblOnQuestComplete.Visible = saeQuestComplete.Action != null;
         }
         public List<string> SaveData(string id)
         {

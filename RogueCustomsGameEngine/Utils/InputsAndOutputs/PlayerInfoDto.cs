@@ -67,7 +67,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                     Modifications = new List<StatModificationDto>()
                 };
                 stat.ActiveModifications.Where(m => m.RemainingTurns != 0).ForEach(m => statInfo.Modifications.Add(new StatModificationDto(m, statInfo, map)));
-                stat.PassiveModifications.ForEach(pm => statInfo.Modifications.Add(new StatModificationDto(pm.Source, pm.Amount, statInfo, map)));
+                stat.PermanentPassiveModifications.ForEach(pm => statInfo.Modifications.Add(new StatModificationDto(pm.Source, pm.Amount, statInfo, true, map)));
+                stat.ItemPassiveModifications.ForEach(pm => statInfo.Modifications.Add(new StatModificationDto(pm.Source, pm.Amount, statInfo, false, map)));
                 Stats.Add(statInfo);
             }
             Equipment = new List<SimpleInventoryDto>();

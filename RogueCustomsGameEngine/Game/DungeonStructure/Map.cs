@@ -146,7 +146,8 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             get
             {
                 var list = new List<Entity>();
-                list.Add(Player);
+                if(Player != null)
+                    list.Add(Player);
                 return list.Union(AICharacters).Union(Items).Union(Traps).Union(CurrencyPiles).ToList();
             }
         }
@@ -1840,7 +1841,14 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
         }
         public List<Character> GetCharacters()
         {
-            return AICharacters.Cast<Character>().Append(Player).ToList();
+            var entitiesList = new List<Character>();
+            foreach (var AIChar in AICharacters)
+            {
+                entitiesList.Add(AIChar);
+            }
+            if(Player != null)
+                entitiesList.Add(Player);
+            return entitiesList;
         }
 
         private List<Entity> GetEntitiesFromCoordinates(int x, int y)

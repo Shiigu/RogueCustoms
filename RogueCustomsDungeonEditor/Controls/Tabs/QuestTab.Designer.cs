@@ -58,7 +58,8 @@
             saeQuestComplete = new SingleActionEditor();
             qirsGuaranteed = new QuestItemRewardSheet();
             qirsSelectable = new QuestItemRewardSheet();
-            label10 = new System.Windows.Forms.Label();
+            fklblOnQuestComplete = new System.Windows.Forms.Button();
+            fklblItemRewards = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dgvQuestConditions).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudQuestMonetaryReward).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudQuestExperienceReward).BeginInit();
@@ -352,20 +353,45 @@
             qirsSelectable.TabIndex = 164;
             qirsSelectable.RewardsChanged += qirsSelectable_RewardsChanged;
             // 
-            // label10
+            // fklblOnQuestComplete
             // 
-            label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(374, 486);
-            label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(389, 30);
-            label10.TabIndex = 165;
-            label10.Text = "Please note that, if the selected Quality Level is not within the Item's\r\nMinimum/Maximum Quality Level range, it will be adjusted accordingly.";
+            fklblOnQuestComplete.Enabled = false;
+            fklblOnQuestComplete.FlatAppearance.BorderSize = 0;
+            fklblOnQuestComplete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            fklblOnQuestComplete.Image = (System.Drawing.Image)resources.GetObject("fklblOnQuestComplete.Image");
+            fklblOnQuestComplete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblOnQuestComplete.Location = new System.Drawing.Point(5, 525);
+            fklblOnQuestComplete.Name = "fklblOnQuestComplete";
+            fklblOnQuestComplete.Size = new System.Drawing.Size(350, 57);
+            fklblOnQuestComplete.TabIndex = 166;
+            fklblOnQuestComplete.Text = "The Action's name will be listed as part of the Quest's Guaranteed Rewards.\r\nPlease choose an informative name.";
+            fklblOnQuestComplete.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblOnQuestComplete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            fklblOnQuestComplete.UseVisualStyleBackColor = true;
+            fklblOnQuestComplete.Visible = false;
+            // 
+            // fklblItemRewards
+            // 
+            fklblItemRewards.Enabled = false;
+            fklblItemRewards.FlatAppearance.BorderSize = 0;
+            fklblItemRewards.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            fklblItemRewards.Image = (System.Drawing.Image)resources.GetObject("fklblItemRewards.Image");
+            fklblItemRewards.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblItemRewards.Location = new System.Drawing.Point(417, 484);
+            fklblItemRewards.Name = "fklblItemRewards";
+            fklblItemRewards.Size = new System.Drawing.Size(302, 38);
+            fklblItemRewards.TabIndex = 167;
+            fklblItemRewards.Text = "Items that cannot have the selected Quality Level\r\nwill be excluded from the list of possible rewards.";
+            fklblItemRewards.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            fklblItemRewards.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            fklblItemRewards.UseVisualStyleBackColor = true;
             // 
             // QuestTab
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(label10);
+            Controls.Add(fklblItemRewards);
+            Controls.Add(fklblOnQuestComplete);
             Controls.Add(qirsSelectable);
             Controls.Add(qirsGuaranteed);
             Controls.Add(saeQuestComplete);
@@ -393,7 +419,7 @@
             Controls.Add(txtQuestName);
             Controls.Add(label27);
             Name = "QuestTab";
-            Size = new System.Drawing.Size(772, 610);
+            Size = new System.Drawing.Size(772, 624);
             ((System.ComponentModel.ISupportInitialize)dgvQuestConditions).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudQuestMonetaryReward).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudQuestExperienceReward).EndInit();
@@ -434,6 +460,7 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn cmConditionType;
         private System.Windows.Forms.DataGridViewComboBoxColumn cmConditionObject;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmValue;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button fklblOnQuestComplete;
+        private System.Windows.Forms.Button fklblItemRewards;
     }
 }

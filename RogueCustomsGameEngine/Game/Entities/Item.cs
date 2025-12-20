@@ -28,7 +28,7 @@ namespace RogueCustomsGameEngine.Game.Entities
         public string UnidentifiedActionName => ItemType.UnidentifiedItemActionName;
         public string UnidentifiedActionDescription => ItemType.UnidentifiedItemActionDescription;
         public bool GotSpecificallyIdentified { get; set; }
-        public bool IsIdentified => GotSpecificallyIdentified || !Map.Player.NeedsToIdentifyItems || IsHeldByAnNPC || DoesNotReachMinimumUnidentifiedMaximumAffixes || HasNoAffixesAndPlayerPreviouslyIdentifiedThisClass;
+        public bool IsIdentified => Map.Player != null && (GotSpecificallyIdentified || !Map.Player.NeedsToIdentifyItems || IsHeldByAnNPC || DoesNotReachMinimumUnidentifiedMaximumAffixes || HasNoAffixesAndPlayerPreviouslyIdentifiedThisClass);
         public bool IsHeldByThePlayer => Owner != null && Owner == Map.Player;
         public bool IsHeldByAnNPC => Owner != null && Owner != Map.Player;
         public bool DoesNotReachMinimumUnidentifiedMaximumAffixes => ItemType.MinimumQualityLevelForUnidentified == null || (QualityLevel != null && ItemType.MinimumQualityLevelForUnidentified.MaximumAffixes > QualityLevel.MaximumAffixes);
@@ -52,6 +52,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     list.Add(new()
                     {
                         Id = statModifier.Id,
+                        Source = Name,
                         Amount = statModifier.Amount
                     });
                 }
@@ -66,6 +67,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                             list.Add(new()
                             {
                                 Id = statModifier.Id,
+                                Source = Name,
                                 Amount = statModifier.Amount
                             });
                         }

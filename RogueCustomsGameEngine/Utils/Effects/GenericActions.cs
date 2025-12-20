@@ -194,15 +194,11 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 return false;
             var statAlterationTarget = paramsObject.Target as Character;
 
-            var statAlterations = paramsObject.StatAlterationList as List<StatModification>;
-            if(statAlterations == null)
-                // Attempted to alter one of Target's stats when it doesn't have it.
-                return false;
             var statName = paramsObject.StatName.ToLowerInvariant();
             if (!statName.Equals("max") && statName.StartsWith("max"))
                 statName = statName.TrimStart("max");
-            var targetStat = statAlterationTarget.UsedStats.Find(s => s.Id.Equals(statName, StringComparison.InvariantCultureIgnoreCase));
-            if(targetStat == null)
+            var targetStat = paramsObject.Stat as Stat;
+            if (targetStat == null)
                 // Attempted to alter one of Target's stats when it doesn't have it.
                 return false;
 
@@ -212,7 +208,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
             var canBeStacked = paramsObject.CanBeStacked;
             var canBeOverwritten = paramsObject.CanBeOverwritten;
-            var statAlterationAlreadyExists = statAlterations.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id));
+            var statAlterationAlreadyExists = targetStat.ActiveModifications.Exists(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id));
 
             if (!canBeStacked && !canBeOverwritten && statAlterationAlreadyExists)
                 return false;
@@ -228,13 +224,12 @@ namespace RogueCustomsGameEngine.Utils.Effects
 
                 if (!canBeStacked && canBeOverwritten && statAlterationAlreadyExists)
                 {
-                    foreach (var statAlteration in statAlterations.Where(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id) && sa.Amount == alterationAmount))
+                    foreach (var statAlteration in targetStat.ActiveModifications.Where(sa => sa.RemainingTurns > 0 && sa.Id.Equals(paramsObject.Id) && sa.Amount == alterationAmount))
                     {
                         statAlteration.RemainingTurns = turnLength;
                     }
                     return true;
                 }
-
 
                 if(!isDecimal)
                 {
@@ -253,7 +248,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                     // Attempted to alter one of Target's stats when it's in its cap.
                     return false;
 
-                statAlterations.Add(new StatModification
+                targetStat.ActiveModifications.Add(new StatModification
                 {
                     Id = paramsObject.Id,
                     Amount = alterationAmount,
@@ -309,6 +304,123 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 DisplayEventType = DisplayEventType.PlaySpecialEffect,
                                 Params = new() { specialEffect }
                             }
+                        );
+                        Map.AppendMessage(message, Color.DeepSkyBlue, events);
+                    }
+
+                }
+                Map.DisplayEvents.Add(($"{statAlterationTarget.Name} got {Map.Locale[targetStat.Name]} changed", events));
+                return true;
+            }
+            return false;
+        }
+
+        public static bool ApplyPermanentStatAlteration(EffectCallerParams Args)
+        {
+            var events = new List<DisplayEventDto>();
+            dynamic paramsObject = ExpressionParser.ParseParams(Args);
+            if (paramsObject.Target is not Character)
+                // Attempted to alter one of Target's stats when it's not a Character.
+                return false;
+            var statAlterationTarget = paramsObject.Target as Character;
+
+            var statName = paramsObject.StatName.ToLowerInvariant();
+            if (!statName.Equals("max") && statName.StartsWith("max"))
+                statName = statName.TrimStart("max");
+            var targetStat = paramsObject.Stat as Stat;
+            if (targetStat == null)
+                // Attempted to alter one of Target's stats when it doesn't have it.
+                return false;
+
+            var isDecimal = targetStat.StatType == StatType.Decimal || targetStat.StatType == StatType.Regeneration;
+            var isPercentage = targetStat.StatType == StatType.Percentage;
+            var alterationAmount = isDecimal ? paramsObject.Amount : (int)paramsObject.Amount;
+            var canBeStacked = paramsObject.CanBeStacked;
+            var statAlterationAlreadyExists = targetStat.PassiveModifications.Exists(sa => sa.Id.Equals(paramsObject.Id) && sa.Amount == alterationAmount);
+
+            if (!canBeStacked && statAlterationAlreadyExists)
+                return false;
+
+            var statValue = targetStat.Current;
+            if (statValue > targetStat.MaxCap || statValue < targetStat.MinCap)
+                return false;
+
+            var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(Args.Source, paramsObject.Target, paramsObject);
+
+            if (statAlterationTarget.ExistenceStatus == EntityExistenceStatus.Alive && statAlterationTarget.HP.Current > 0 && paramsObject.Amount != 0 && Rng.RollProbability() <= accuracyCheck)
+            {
+                if (!isDecimal)
+                {
+                    if (paramsObject.Amount > 0 && paramsObject.Amount < 1)
+                        alterationAmount = 1;
+                    else if (paramsObject.Amount < 0 && paramsObject.Amount > -1)
+                        alterationAmount = -1;
+                }
+
+                if (statValue + alterationAmount > targetStat.MaxCap)
+                    alterationAmount = 0;
+                if (statValue + alterationAmount < targetStat.MinCap)
+                    alterationAmount = 0;
+
+                if (alterationAmount == 0)
+                    // Attempted to alter one of Target's stats when it's in its cap.
+                    return false;
+
+                targetStat.PermanentPassiveModifications.Add(new PassiveStatModifier
+                {
+                    Id = paramsObject.Id,
+                    Source = paramsObject.Name,
+                    Amount = alterationAmount
+                });
+
+                if (paramsObject.DisplayOnLog && (statAlterationTarget.EntityType == EntityType.Player
+                    || (statAlterationTarget.EntityType == EntityType.NPC && Map.Player.CanSee(paramsObject.Target))))
+                {
+                    var amountString = targetStat.StatType == StatType.Percentage ? $"{Math.Abs(alterationAmount)}%" : Math.Abs(alterationAmount).ToString("0.#####");
+                    var messageKey = alterationAmount > 0 ? "CharacterStatGotBuffed" : "CharacterStatGotNerfed";
+                    var specialEffect = alterationAmount > 0 ? SpecialEffect.StatBuff : SpecialEffect.StatNerf;
+
+                    if (statAlterationTarget == Map.Player && Stat.StatsInUI.Contains(statName))
+                    {
+                        if (statName.Equals("hp") || statName.Equals("mp") || statName.Equals("hunger"))
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyMaxStat, targetStat.Id, targetStat.BaseAfterModifications }
+                            });
+                        }
+                        else
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.UpdatePlayerData,
+                                Params = new() { UpdatePlayerDataType.ModifyStat, targetStat.Id, targetStat.BaseAfterModifications }
+                            });
+                        }
+                        if (statAlterationTarget == Map.Player && statName.Equals("movement"))
+                        {
+                            events.Add(new()
+                            {
+                                DisplayEventType = DisplayEventType.SetCanMove,
+                                Params = new() { targetStat.BaseAfterModifications > 0 }
+                            });
+                        }
+                    }
+
+                    if (statAlterationTarget == Map.Player || Map.Player.CanSee(statAlterationTarget))
+                    {
+                        var message = Map.Locale[messageKey].Format(new
+                        {
+                            CharacterName = statAlterationTarget.Name,
+                            StatName = Map.Locale[targetStat.Name],
+                            Amount = amountString
+                        });
+                        events.Add(new()
+                        {
+                            DisplayEventType = DisplayEventType.PlaySpecialEffect,
+                            Params = new() { specialEffect }
+                        }
                         );
                         Map.AppendMessage(message, Color.DeepSkyBlue, events);
                     }

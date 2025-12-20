@@ -218,6 +218,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 flagList = CurrentFloor.Flags.Where(f => !f.RemoveOnFloorChange).ToList();
             }
             CurrentFloor = new Map(this, CurrentFloorLevel, flagList, npcsToKeep);
+            foreach (var quest in PlayerCharacter.Quests)
+            {
+                quest.Map = CurrentFloor;
+            }
             await CurrentFloor.Generate(false, []);
             if (CurrentFloorLevel > 1)
             {
