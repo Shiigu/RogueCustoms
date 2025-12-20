@@ -45,6 +45,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             var resistanceStat = c.UsedStats.Find(s => s.Id.Equals(attackElement.ResistanceStatId, StringComparison.InvariantCultureIgnoreCase));
             var accuracyCheck = ExpressionParser.CalculateAdjustedAccuracy(paramsObject.Attacker, paramsObject.Target, paramsObject);
             var canCallElementEffect = !paramsObject.BypassesElementEffect;
+            var informOfFailure = paramsObject.InformOfFailure;
 
             var isExtraDamage = false;
             if (paramsObject.ContainsKey("IsExtraDamage"))
@@ -53,7 +54,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
             }
             if (Rng.RollProbability() > accuracyCheck)
             {
-                if (!isExtraDamage)
+                if (!isExtraDamage && informOfFailure)
                 {
                     if (c == Map.Player || Map.Player.CanSee(c))
                     {
@@ -128,7 +129,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                 Map.CreateFlag($"DamageTaken_{c.Id}", damageDealt, true);
             if (damageDealt <= 0)
             {
-                if (!isExtraDamage)
+                if (!isExtraDamage && informOfFailure)
                 {
                     if (c == Map.Player || Map.Player.CanSee(c))
                     {
