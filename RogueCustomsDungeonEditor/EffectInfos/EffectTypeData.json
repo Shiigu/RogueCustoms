@@ -961,7 +961,18 @@
       {
         "InternalName": "Id",
         "DisplayName": "Id",
-        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.\n\nAlso indicates the name the Stat Alteration will be referred to in-game.",
+        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.",
+        "ParameterType": "Text",
+        "Default": "{this}",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Name",
+        "DisplayName": "Name",
+        "Description": "Indicates the name the Stat Alteration will be referred to in-game.",
         "ParameterType": "Text",
         "Default": "{this}",
         "ValidValues": [],
