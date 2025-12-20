@@ -75,7 +75,8 @@ namespace RogueCustomsDungeonEditor.Validators
             
             }
 
-            var totalSteps = DungeonJson.Locales.Count
+            var totalSteps = 6 // The amount of general validators
+                + DungeonJson.Locales.Count
                 + DungeonJson.TileTypeInfos.Count
                 + DungeonJson.TileSetInfos.Count
                 + DungeonJson.FloorInfos.Count
@@ -235,7 +236,7 @@ namespace RogueCustomsDungeonEditor.Validators
             }
 
             UpdateProgressLabel($"Running Quality Level Validation...", false);
-            QualityLevelValidationMessages = DungeonCurrencyValidator.Validate(DungeonJson);
+            QualityLevelValidationMessages = DungeonQualityLevelValidator.Validate(DungeonJson);
             UpdateProgressLabel($"Quality Level Validation complete!", true, DungeonJson.QualityLevelInfos.Count);
 
             foreach (var learnsetInfo in DungeonJson.LearnsetInfos)

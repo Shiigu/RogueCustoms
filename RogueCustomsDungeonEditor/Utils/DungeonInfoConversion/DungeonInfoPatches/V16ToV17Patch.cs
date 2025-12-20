@@ -22,6 +22,7 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             UpdateLearnsets(root);
             UpdatePlayerClasses(root);
             UpdateNPCs(root);
+            UpdateNPCModifierInfos(root);
             UpdateTraps(root);
             UpdateAlteredStatuses(root);
             UpdateQuests(root);
@@ -257,6 +258,46 @@ namespace RogueCustomsDungeonEditor.Utils.DungeonInfoConversion.DungeonInfoPatch
             {
                 if (affix["RequiredPlayerLevel"] is null)
                     affix["RequiredPlayerLevel"] = 1;
+                if (affix["OnTurnStart"] is JsonObject onTurnStart)
+                {
+                    UpdateAction(onTurnStart);
+                }
+                if (affix["OnAttacked"] is JsonObject onAttacked)
+                {
+                    UpdateAction(onAttacked);
+                }
+                if (affix["OnAttack"] is JsonObject onAttack)
+                {
+                    UpdateAction(onAttack);
+                }
+            }
+        }
+
+        private static void UpdateNPCModifierInfos(JsonObject root)
+        {
+            if (root["NPCModifierInfo"] is not JsonArray npcModifiers) return;
+            foreach (var npcModifier in npcModifiers.OfType<JsonObject>())
+            {
+                if (npcModifier["OnSpawn"] is JsonObject onSpawn)
+                {
+                    UpdateAction(onSpawn);
+                }
+                if (npcModifier["OnTurnStart"] is JsonObject onTurnStart)
+                {
+                    UpdateAction(onTurnStart);
+                }
+                if (npcModifier["OnAttacked"] is JsonObject onAttacked)
+                {
+                    UpdateAction(onAttacked);
+                }
+                if (npcModifier["OnAttack"] is JsonObject onAttack)
+                {
+                    UpdateAction(onAttack);
+                }
+                if (npcModifier["OnDeath"] is JsonObject onDeath)
+                {
+                    UpdateAction(onDeath);
+                }
             }
         }
 
