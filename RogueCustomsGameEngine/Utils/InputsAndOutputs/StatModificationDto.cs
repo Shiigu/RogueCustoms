@@ -17,9 +17,11 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
         public string Source { get; set; }
         public decimal Amount { get; set; }
         public bool IsPercentage { get; set; }
+        public bool IsPermanent { get; set; }
 
         public StatModificationDto() { }
 
+        // For Active Modifications
         public StatModificationDto(StatModification source, StatDto stat, Map map)
         {
             Source = map.Locale[source.Id];
@@ -29,7 +31,9 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 Amount = (int)source.Amount;
             IsPercentage = stat.IsPercentileStat;
         }
-        public StatModificationDto(string source, decimal amount, StatDto stat, Map map)
+
+        // For Passive Modifications
+        public StatModificationDto(string source, decimal amount, StatDto stat, bool isPermanent, Map map)
         {
             Source = source;
             if (stat.IsDecimalStat)
@@ -37,7 +41,10 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
             else
                 Amount = (int)amount;
             IsPercentage = stat.IsPercentileStat;
+            IsPermanent = isPermanent;
         }
+
+        // For Item Details
         public StatModificationDto(PassiveStatModifier source, Stat stat, Map map)
         {
             Name = stat.Name;

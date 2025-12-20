@@ -77,7 +77,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 RequiredPlayerLevel = RequiredPlayerLevel,
                 ItemValueModifierPercentage = ItemValueModifierPercentage,
                 AffectedItemTypes = AffectedItemTypes,
-                StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Amount = sm.Amount }),
+                StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Source = sm.Source, Amount = sm.Amount }),
                 ExtraDamage = ExtraDamage == null ? null : new ExtraDamage
                 {
                     MinimumDamage = ExtraDamage.MinimumDamage,

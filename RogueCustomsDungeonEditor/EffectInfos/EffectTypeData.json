@@ -950,7 +950,7 @@
       {
         "InternalName": "Id",
         "DisplayName": "Id",
-        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.",
+        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.\n\nAlso indicates the name the Stat Alteration will be referred to in-game.",
         "ParameterType": "Text",
         "Default": "{this}",
         "ValidValues": [],
@@ -961,7 +961,7 @@
       {
         "InternalName": "Target",
         "DisplayName": "Target",
-        "Description": "Who will be healed. Generally Target, but can be any Character.",
+        "Description": "Who will get a Stat altered. Generally Target, but can be any Character.",
         "ParameterType": "ComboBox",
         "Default": "target",
         "ValidValues": [
@@ -4082,6 +4082,127 @@
         "Description": "The Id of the Quest to be given.",
         "ParameterType": "Quest",
         "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      }
+    ]
+  },
+  {
+    "InternalName": "ApplyPermanentStatAlteration",
+    "TreeViewDisplayText": "Modify ({Target})'s ({Stat}) by ({Amount}) permanently",
+    "ComboBoxDisplayName": "Permanently alter one of Target's Stats",
+    "Description": "Used by the User to increase or decrease one of Target's stats.\n\nThe effect is permanent.",
+    "CanBeUsedOnEntity": true,
+    "CanBeUsedOnTile": false,
+    "CanHaveThenChild": true,
+    "CanHaveOnSuccessOnFailureChild": true,
+    "IsControlBlock": false,
+    "Parameters": [
+      {
+        "InternalName": "Id",
+        "DisplayName": "Id",
+        "Description": "Identifier for the Stat Alteration. Used to check whether two different Alterations represent the same thing.",
+        "ParameterType": "Text",
+        "Default": "{this}",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Name",
+        "DisplayName": "Name",
+        "Description": "Indicates the name the Stat Alteration will be referred to in-game.",
+        "ParameterType": "Text",
+        "Default": "{this}",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Target",
+        "DisplayName": "Target",
+        "Description": "Who will get a Stat altered. Generally Target, but can be any Character.",
+        "ParameterType": "ComboBox",
+        "Default": "target",
+        "ValidValues": [
+          {
+            "Key": "source",
+            "Value": "Source"
+          },
+          {
+            "Key": "target",
+            "Value": "Target"
+          }
+        ],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Stat",
+        "DisplayName": "Stat",
+        "Description": "Indicates the Stat that will be Altered.\n\nRemember that the displayed options are internal names - display names depend on the Locale.",
+        "ParameterType": "Stat",
+        "Default": "",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Accuracy",
+        "DisplayName": "Accuracy",
+        "Description": "Indicates the odds for Target to receive the Stat Alteration, if applicable. Final Accuracy is calculated with Accuracy * (User's Accuracy - Target's Evasion)%.\n\nUser's Accuracy is calculated as 0 if it's not a Character. Target's Evasion is calculated as 0 if it's not a Character.",
+        "ParameterType": "Odds",
+        "Default": "100",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "BypassesAccuracyCheck",
+        "DisplayName": "Bypasses Accuracy Modifiers?",
+        "Description": "If true, the User's Accuracy (if it's a Character) and Target's Evasion will be ignored.",
+        "ParameterType": "Boolean",
+        "Default": "true",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "Amount",
+        "DisplayName": "Amount",
+        "Description": "How much the Stat will be modified. Can be a flat number, Dice Notation, or a mathematical expression. Decimal numbers will be rounded down to the nearest integer.",
+        "ParameterType": "Formula",
+        "Default": "1",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "CanBeStacked",
+        "DisplayName": "Can Stack?",
+        "Description": "If enabled, multiple Stat Alterations with the same Id can be present on the same Character at the same time.",
+        "ParameterType": "Boolean",
+        "Default": "false",
+        "ValidValues": [],
+        "Required": "true",
+        "ReadOnly": "false",
+        "Columns": []
+      },
+      {
+        "InternalName": "DisplayOnLog",
+        "DisplayName": "Display on Log?",
+        "Description": "If enabled, the stat alteration will be informed in the Message Log. Disabling it can be useful for items that alter your stats when equipped.",
+        "ParameterType": "Boolean",
+        "Default": "true",
         "ValidValues": [],
         "Required": "true",
         "ReadOnly": "false",

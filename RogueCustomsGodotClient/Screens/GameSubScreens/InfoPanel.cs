@@ -470,6 +470,11 @@ public partial class InfoPanel : GamePanel
             });
 
             innerText.Append($"[color={modificationDisplayForegroundColor}]{modificationText}[/color]");
+
+            if(mhm.IsPermanent)
+            {
+                innerText.Append($" [color=#C0A000FF]{TranslationServer.Translate("PlayerCharacterDetailPermanentStatAlterationText")}[/color]");
+            }
         });
     }
 

@@ -77,29 +77,28 @@ namespace RogueCustomsDungeonEditor.HelperForms
                 if (EffectToSave.Params.Length != paramsData.Parameters.Count)
                 {
                     var newParamsList = new List<Parameter>(paramsData.Parameters.Count);
-                    for (int i = 0; i < EffectToSave.Params.Length; i++)
+                    foreach (var parameter in EffectToSave.Params)
                     {
-                        var paramData = paramsData.Parameters.FirstOrDefault(param => param.InternalName.Equals(EffectToSave.Params[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
+                        var paramData = paramsData.Parameters.FirstOrDefault(param => param.InternalName.Equals(parameter.ParamName, StringComparison.InvariantCultureIgnoreCase));
                         if (paramData == null) continue;
+
+                        var newParam = new Parameter
+                        {
+                            ParamName = paramData.InternalName
+                        };
+
+                        var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParam.ParamName, StringComparison.InvariantCultureIgnoreCase));
+
                         if (paramData.Type != ParameterType.Table)
                         {
-                            newParamsList.Add(new Parameter
-                            {
-                                ParamName = paramData.InternalName
-                            });
-                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
-                            newParamsList[i].Value = existingParam != null ? existingParam.Value : paramsData.Parameters[i].Default;
+                            newParam.Value = existingParam.Value ?? paramData.Default;
                         }
                         else
                         {
-                            newParamsList.Add(new Parameter
-                            {
-                                ParamName = paramData.InternalName
-                            });
-                            var existingParam = EffectToSave.Params.FirstOrDefault(p => p.ParamName.Equals(newParamsList[i].ParamName, StringComparison.InvariantCultureIgnoreCase));
-                            var existingId = existingParam.Value.Split('|').FirstOrDefault();
-                            newParamsList[i].Value = existingParam != null ? existingParam.Value : null;
+                            newParam.Value = existingParam.Value.Split('|').FirstOrDefault();
                         }
+
+                        newParamsList.Add(newParam);
                     }
                 }
             }

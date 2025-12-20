@@ -268,8 +268,7 @@ namespace RogueCustomsGameEngine.Utils.Expressions
             var statNameToLookUp = value.ToLowerInvariant();
             if (statNameToLookUp.StartsWith("max") && !statNameToLookUp.Equals("max"))
                 statNameToLookUp = statNameToLookUp.TrimStart("max");
-            var correspondingStat = c?.UsedStats.Find(s => s.Id.Equals(statNameToLookUp, StringComparison.InvariantCultureIgnoreCase));
-            paramsObject.StatAlterationList = correspondingStat != null ? correspondingStat.ActiveModifications : null;
+            paramsObject.Stat = (c?.UsedStats.Find(s => s.Id.Equals(statNameToLookUp, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private static string Capitalize(string input)

@@ -142,7 +142,8 @@ PlayerCharacterDetailEquippedArmorHeader,ARMADURA ACTUAL,CURRENT ARMOR
 PlayerCharacterDetailEquippedWeaponHeader,ARMA ACTUAL,CURRENT WEAPON
 PlayerCharacterDetailExperienceToLevelUpText,Experiencia para llegar al Nivel {NextLevel}: {RequiredExperience},Experience to Level {NextLevel}: {RequiredExperience}
 PlayerCharacterDetailMaxBaseText,Máx. Base,Max Base
-PlayerCharacterDetailStatAlterationText,{Alteration} por {Source},{Alteration} from {Source}
+PlayerCharacterDetailStatAlterationText,{Alteration} de {Source},{Alteration} from {Source}
+PlayerCharacterDetailPermanentStatAlterationText,(Permanente),(Permanent)
 PlayerCharacterDetailStatsHeader,ESTADÍSTICAS,STATS
 PlayerCharacterDetailInventoryHeader,INVENTARIO,INVENTORY
 PlayerCharacterDetailWindowTitleText,DATOS DE {PlayerName},{PlayerName} INFO

@@ -57,11 +57,12 @@ namespace RogueCustomsGameEngine.Game.Entities
         public bool HasMax { get; set; }
         public decimal IncreasePerLevel { get; set; }
         public List<StatModification> ActiveModifications { get; set; } = new();
-        public List<(string Source, decimal Amount)> PassiveModifications
+        public List<PassiveStatModifier> PermanentPassiveModifications { get; set; } = new();
+        public List<PassiveStatModifier> ItemPassiveModifications
         {
             get
             {
-                var passiveModifications = new List<(string Source, decimal Amount)>();
+                var itemPassiveModifications = new List<PassiveStatModifier>();
 
                 Character.Equipment?.ForEach(i =>
                 {
@@ -69,7 +70,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     {
                         var itemModification = i.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
                         if (itemModification != null)
-                            passiveModifications.Add((i.Name, itemModification.Amount));
+                            itemPassiveModifications.Add(itemModification);
                     }
                 });
 
@@ -79,7 +80,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     {
                         var itemModification = i.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
                         if (itemModification != null)
-                            passiveModifications.Add((i.Name, itemModification.Amount));
+                            itemPassiveModifications.Add(itemModification);
                     }
                 });
 
@@ -89,13 +90,14 @@ namespace RogueCustomsGameEngine.Game.Entities
                     {
                         var modifierModification = modifier.StatModifiers.FirstOrDefault(sm => sm.Id.Equals(Id));
                         if (modifierModification != null)
-                            passiveModifications.Add((modifier.Id, modifierModification.Amount));
+                            itemPassiveModifications.Add(modifierModification);
                     }
                 }
 
-                return passiveModifications;
+                return itemPassiveModifications;
             }
         }
+        public List<PassiveStatModifier> PassiveModifications => PermanentPassiveModifications.Union(ItemPassiveModifications).ToList();
 
         public decimal TotalActiveModificationAmount => ActiveModifications.Where(a => a.RemainingTurns != 0).Sum(a => a.Amount);
         public decimal TotalPassiveModificationAmount => PassiveModifications.Sum(pm => pm.Amount);

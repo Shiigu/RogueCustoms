@@ -38,6 +38,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                     StatModifiers.Add(new PassiveStatModifier
                     {
                         Id = statModifier.Id,
+                        Source = Name,
                         Amount = statModifier.Amount
                     });
                 }
@@ -70,7 +71,7 @@ namespace RogueCustomsGameEngine.Game.Entities
                 Id = Id,
                 Name = Name,
                 NameColor = NameColor.Clone(),
-                StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Amount = sm.Amount }),
+                StatModifiers = StatModifiers.ConvertAll(sm => new PassiveStatModifier { Id = sm.Id, Source = sm.Source, Amount = sm.Amount }),
                 ExtraDamage = ExtraDamage == null ? null : new ExtraDamage
                 {
                     MinimumDamage = ExtraDamage.MinimumDamage,
