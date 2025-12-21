@@ -201,7 +201,7 @@ public partial class MapPanel : GamePanel
     private Vector2 GetPositionForCoordinates(Vector2 coords)
     {
         if (_globalState.DungeonInfo == null) return default;
-        var displayedCoords = new Vector2(coords.X - TopLeftCornerCoords.X + TopLeftCornerPosition.X, coords.Y - TopLeftCornerCoords.Y + TopLeftCornerPosition.Y);
+        var displayedCoords = new Vector2(coords.X - TopLeftCornerCoords.X, coords.Y - TopLeftCornerCoords.Y);
         return new(displayedCoords.X, displayedCoords.Y);
     }
 
