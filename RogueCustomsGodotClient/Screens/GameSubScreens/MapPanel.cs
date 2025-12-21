@@ -205,6 +205,13 @@ public partial class MapPanel : GamePanel
         return new(displayedCoords.X, displayedCoords.Y);
     }
 
+    private Vector2 GetAimingPositionForCoordinates(Vector2 coords)
+    {
+        if (_globalState.DungeonInfo == null) return default;
+        var aimingCoords = new Vector2(coords.X - TopLeftCornerCoords.X + TopLeftCornerPosition.X, coords.Y - TopLeftCornerCoords.Y + TopLeftCornerPosition.Y);
+        return new(aimingCoords.X, aimingCoords.Y);
+    }
+
     public void UpdateTileRepresentation(Vector2I position, ConsoleRepresentation consoleRepresentation)
     {
         if (_globalState.DungeonInfo == null) return;
@@ -224,7 +231,7 @@ public partial class MapPanel : GamePanel
     public void StartTargeting()
     {
         var playerEntity = _globalState.DungeonInfo.PlayerEntity;
-        _aimingSquare.Coordinates = GetPositionForCoordinates(new(playerEntity.X, playerEntity.Y));
+        _aimingSquare.Coordinates = GetAimingPositionForCoordinates(new(playerEntity.X, playerEntity.Y));
         _aimingSquare.StartTargeting();
         CursorMapLocation = new(playerEntity.X, playerEntity.Y);
     }
@@ -243,7 +250,7 @@ public partial class MapPanel : GamePanel
         CursorMapLocation = newCoordinates;
         CalculateDisplayBounds(dungeonStatus);
         UpdateBuffer(dungeonStatus.GetTiles());
-        _aimingSquare.Coordinates = GetPositionForCoordinates(newCoordinates);
+        _aimingSquare.Coordinates = GetAimingPositionForCoordinates(newCoordinates);
     }
 
     public void StopTargeting(bool updateBufferToo)
