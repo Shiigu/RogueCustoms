@@ -223,6 +223,7 @@ namespace RogueCustomsGameEngine.Utils.Effects
                                 new() { ParamName = "CriticalHitChance", Value = "0" },
                                 new() { ParamName = "CriticalHitFormula", Value = "0" },
                                 new() { ParamName = "BypassesAccuracyCheck", Value = "true" },
+                                new() { ParamName = "InformOfFailure", Value = "false" },
                                 new() { ParamName = "IsExtraDamage", Value = "true" } // Internal Flag
                                 ];
                         await DealDamage(new EffectCallerParams
