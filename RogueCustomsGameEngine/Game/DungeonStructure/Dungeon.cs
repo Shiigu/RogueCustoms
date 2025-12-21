@@ -279,6 +279,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             foreach (var stat in PlayerCharacter.UsedStats)
             {
+                stat.PermanentPassiveModifications.Clear();
                 stat.ActiveModifications.Clear();
             }
 
