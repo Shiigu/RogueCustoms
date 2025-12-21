@@ -241,6 +241,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
 
             tagalongNPCs = tagalongNPCs.Shuffle(CurrentFloor.Rng).Take((int)(tagalongNPCs.Count * (tagalongNPCsPercentageToKeep / 100.0))).ToList();
 
+            
             PlayerCharacter.Quests.Clear();
 
             var playerLostLevels = false;
@@ -254,6 +255,34 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
                 PlayerCharacter.Level--;
                 minimumExperienceForCurrentLevel = PlayerCharacter.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
                 PlayerCharacter.LastLevelUpExperience = minimumExperienceForCurrentLevel;
+            }
+
+            foreach (var npc in tagalongNPCs)
+            {
+                minimumExperienceForCurrentLevel = npc.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
+
+                npc.Experience = (int)(npc.Experience * (experiencePercentageToKeep / 100.0));
+
+                while (npc.Experience < minimumExperienceForCurrentLevel && PlayerCharacter.Level > 1)
+                {
+                    playerLostLevels = true;
+                    npc.Level--;
+                    minimumExperienceForCurrentLevel = npc.GetMinimumExperienceForLevel(PlayerCharacter.Level, true);
+                    npc.LastLevelUpExperience = minimumExperienceForCurrentLevel;
+                }
+                foreach (var stat in npc.UsedStats)
+                {
+                    stat.PermanentPassiveModifications.Clear();
+                    stat.ActiveModifications.Clear();
+                    stat.CarriedRegeneration = 0;
+                }
+                npc.SightRangeModification = null;
+                npc.Learnset = npc.BaseLearnset;
+                npc.HP.Current = npc.HP.BaseAfterLevelUp;
+                if (npc.MP != null)
+                    npc.MP.Current = npc.MP.BaseAfterLevelUp;
+                if (npc.Hunger != null)
+                    npc.Hunger.Current = npc.Hunger.BaseAfterLevelUp;
             }
 
             var playerLearnsetChanged = false;
@@ -281,6 +310,7 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             {
                 stat.PermanentPassiveModifications.Clear();
                 stat.ActiveModifications.Clear();
+                stat.CarriedRegeneration = 0;
             }
 
             PlayerCharacter.SightRangeModification = null;
@@ -288,18 +318,10 @@ namespace RogueCustomsGameEngine.Game.DungeonStructure
             PlayerCharacter.ExistenceStatus = EntityExistenceStatus.Alive;
 
             PlayerCharacter.HP.Current = PlayerCharacter.HP.BaseAfterLevelUp;
-            if (PlayerCharacter.HPRegeneration != null)
-                PlayerCharacter.HPRegeneration.CarriedRegeneration = 0;
-
             if(PlayerCharacter.MP != null)
                 PlayerCharacter.MP.Current = PlayerCharacter.MP.BaseAfterLevelUp;
-            if (PlayerCharacter.MPRegeneration != null)
-                PlayerCharacter.MPRegeneration.CarriedRegeneration = 0;
-
             if (PlayerCharacter.Hunger != null)
                 PlayerCharacter.Hunger.Current = PlayerCharacter.Hunger.BaseAfterLevelUp;
-            if (PlayerCharacter.HungerDegeneration != null)
-                PlayerCharacter.HungerDegeneration.CarriedRegeneration = 0;
             var scriptsCount = PlayerCharacter.OwnOnAttack.Count(ooa => ooa.IsFromLearnScript);
             var playerLostScripts = false;
 
