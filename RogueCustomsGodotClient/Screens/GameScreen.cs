@@ -42,8 +42,9 @@ public partial class GameScreen : Control
     private CoordinateInput _coords;
     private AudioStreamPlayer _audioStreamPlayer;
 
-    private bool _soundIsPlaying, _popUpIsOpen, _processingEvents, _firstLoad;
+    private bool _soundIsPlaying, _popUpIsOpen, _processingEvents, _firstLoad, _preventMovement;
     private TaskCompletionSource<bool> _soundFinished;
+    private List<MessageBoxDto> _postPreMoveHighlightMessageBoxesToShow;
 
     private List<(SpecialEffect SpecialEffect, Color Color)> SpecialEffectsWithFlash;
     private List<(SpecialEffect SpecialEffect, string Path)> SpecialEffectsWithSound;
@@ -167,6 +168,8 @@ public partial class GameScreen : Control
             _infoPanel.DetailsButton.Disabled = true;
         }
 
+        _postPreMoveHighlightMessageBoxesToShow = new();
+        _preventMovement = false;
         _processingEvents = false;
         _Process(0);
     }
@@ -251,7 +254,12 @@ public partial class GameScreen : Control
                     dungeonStatus.JustLoaded = false;
                 }
 
-                if (_globalState.PlayerControlMode == ControlMode.Waiting)
+                if (_preventMovement)
+                {
+                    _preventMovement = false;
+                    CallDeferred(nameof(CallExitPreMoveHighlight));
+                }
+                else if (_globalState.PlayerControlMode == ControlMode.Waiting)
                 {
                     _coords = new CoordinateInput
                     {
@@ -260,7 +268,7 @@ public partial class GameScreen : Control
                     };
                     return;
                 }
-                if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
+                else if (_globalState.PlayerControlMode == ControlMode.NormalMove || _globalState.PlayerControlMode == ControlMode.NormalOnStairs || _globalState.PlayerControlMode == ControlMode.Targeting)
                 {
                     await HandleMovementKeys();
                 }
@@ -274,7 +282,7 @@ public partial class GameScreen : Control
 
     private async Task HandleMovementKeys()
     {
-        if (_globalState.PlayerControlMode == ControlMode.Waiting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight) return;
+        if (_globalState.PlayerControlMode == ControlMode.Waiting || _globalState.PlayerControlMode == ControlMode.PreMoveHighlight || _globalState.PlayerControlMode == ControlMode.None) return;
         if (GetChildren().Any(c => c.IsPopUp())) return;
 
         if (Input.IsActionPressed("ui_up") && _inputManager.IsActionAllowed("ui_up") && _coords.Y == 0)
@@ -377,9 +385,13 @@ public partial class GameScreen : Control
                         _messageLogPanel.Clear();
                         break;
                     case DisplayEventType.AddMessageBox:
-                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
-                        _globalState.DungeonInfo.AwaitingPromptInput = true;
                         var messageBox = displayEvent.Params[0] as MessageBoxDto;
+                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+                        {
+                            _postPreMoveHighlightMessageBoxesToShow.Add(messageBox);
+                            continue;
+                        }
+                        _globalState.DungeonInfo.AwaitingPromptInput = true;
                         await ShowMessageBox(messageBox);
                         _globalState.DungeonInfo.AwaitingPromptInput = false;
                         break;
@@ -421,7 +433,6 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetOnStairs:
-                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var onStairs = (bool)displayEvent.Params[0];
                         if (onStairs)
                         {
@@ -439,7 +450,6 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetCanMove:
-                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var canMove = (bool)displayEvent.Params[0];
                         if (canMove)
                         {
@@ -457,7 +467,6 @@ public partial class GameScreen : Control
                         }
                         break;
                     case DisplayEventType.SetCanAct:
-                        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) continue;
                         var canAct = (bool)displayEvent.Params[0];
                         if (!canAct)
                             controlModeToPick = ControlMode.MustSkipTurn;
@@ -506,7 +515,11 @@ public partial class GameScreen : Control
                 await ToSignal(GetTree(), "process_frame");
         }
 
-        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight) return;
+        if (_globalState.PlayerControlMode == ControlMode.PreMoveHighlight)
+        {
+            _previousControlMode = controlModeToPick;
+            return;
+        }
 
         if (_soundIsPlaying)
             await Task.Delay(50);
@@ -903,19 +916,29 @@ public partial class GameScreen : Control
 
     private void CheckPreMoveInput(InputEvent @event)
     {
-        if (@event is InputEventKey keyEvent)
+        if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
         {
-            if (keyEvent.Pressed && !keyEvent.Echo)
-            {
-                _globalState.PlayerControlMode = ControlMode.NormalMove;
-                _globalState.DungeonInfo.Read = false;
-                _globalState.MustUpdateGameScreen = true;
-                _saveGameButton.Disabled = false;
-                _messageLogPanel.MessageWindowButton.Disabled = false;
-                _infoPanel.DetailsButton.Disabled = false;
-                _processingEvents = false;
-                AcceptEvent();
-            }
+            _preventMovement = true;
+            _processingEvents = false;
+            AcceptEvent();
+        }
+    }
+
+    private void CallExitPreMoveHighlight()
+    {
+        _ = ExitPreMoveHighlight();
+    }
+
+    private async Task ExitPreMoveHighlight()
+    {
+        _globalState.PlayerControlMode = _previousControlMode;
+        _controlsPanel.Update();
+        _mapPanel.Update();
+        foreach (var messageBox in _postPreMoveHighlightMessageBoxesToShow)
+        {
+            _globalState.DungeonInfo.AwaitingPromptInput = true;
+            await ShowMessageBox(messageBox);
+            _globalState.DungeonInfo.AwaitingPromptInput = false;
         }
     }
 
