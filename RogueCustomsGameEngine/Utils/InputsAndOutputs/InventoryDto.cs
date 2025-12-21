@@ -82,7 +82,8 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 if(item.SlotsItOccupies.Intersect(pickableAsItem != null ? pickableAsItem.SlotsItOccupies : []).Any())
                     currentlyEquippedItems.Add(item);
             }
-            CanBeEquipped = CanBeEquipped && currentlyEquippedItems.All(i => i.CanBeUnequipped) && pickableAsItem?.RequiredPlayerLevel != null && character.Level >= pickableAsItem.RequiredPlayerLevel;
+            IsEquipped = p != null && character.Equipment.Contains(p);
+            CanBeEquipped = IsEquipped || (CanBeEquipped && currentlyEquippedItems.All(i => i.CanBeUnequipped) && pickableAsItem?.RequiredPlayerLevel != null && character.Level >= pickableAsItem.RequiredPlayerLevel);
             if (pickableAsItem?.IsIdentified == true)
                 CanBeUsed = (pickableAsItem?.IsEquippable == true && CanBeEquipped) || ((pickableAsItem?.ItemType.Usability == ItemUsability.Use) && pickableAsItem?.OnUse?.CanBeUsedOn(character) == true);
             else if (pickableAsItem?.ItemType.Usability == ItemUsability.Use)
@@ -93,7 +94,6 @@ namespace RogueCustomsGameEngine.Utils.InputsAndOutputs
                 CanBeUsed = false;
             CanBeUsed = CanBeUsed && pickableAsItem?.RequiredPlayerLevel != null && character.Level >= pickableAsItem.RequiredPlayerLevel;
             RequiredPlayerLevel = pickableAsItem?.RequiredPlayerLevel ?? 1;
-            IsEquipped = character.Equipment.Contains(p);
             IsEquippable = pickableAsItem?.IsEquippable == true;
             IsInFloor = pickableAsEntity.Position != null && pickableAsItem?.Owner == null;
             ItemId = pickableAsEntity.Id;
