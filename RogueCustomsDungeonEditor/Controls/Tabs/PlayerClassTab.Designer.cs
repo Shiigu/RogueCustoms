@@ -435,6 +435,7 @@
             cmbPlayerLearnset.Name = "cmbPlayerLearnset";
             cmbPlayerLearnset.Size = new System.Drawing.Size(146, 23);
             cmbPlayerLearnset.TabIndex = 253;
+            cmbPlayerLearnset.SelectedIndexChanged += cmbPlayerLearnset_SelectedIndexChanged;
             // 
             // label5
             // 

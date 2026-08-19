@@ -143,6 +143,7 @@ namespace RogueCustomsDungeonEditor
             NPCTab.TabInfoChanged += NPCTab_TabInfoChanged;
             ItemTab.TabInfoChanged += ItemTab_TabInfoChanged;
             TrapTab.TabInfoChanged += TrapTab_TabInfoChanged;
+            CurrencyTab.TabInfoChanged += CurrencyTab_TabInfoChanged;
             AlteredStatusTab.TabInfoChanged += AlteredStatusTab_TabInfoChanged;
             ScriptsTab.TabInfoChanged += ScriptsTab_TabInfoChanged;
             ActionSchoolsTab.TabInfoChanged += ActionSchoolsTab_TabInfoChanged;

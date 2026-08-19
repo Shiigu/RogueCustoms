@@ -28,6 +28,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 NPCModifierInfos = new(),
                 LootTableInfos = new(),
                 CurrencyInfo = new(),
+                QuestInfos = new(),
                 QualityLevelInfos = new(),
                 ItemSlotInfos = new(),
                 ItemTypeInfos = new(),
@@ -40,6 +41,7 @@ namespace RogueCustomsDungeonEditor.Utils
                 Traps = new(),
                 AlteredStatuses = new(),
                 Scripts = new(),
+                LearnsetInfos = new()
             };
 
             foreach (var localeLanguage in baseLocaleLanguages)
@@ -928,8 +930,9 @@ namespace RogueCustomsDungeonEditor.Utils
                     ForegroundColor = new GameColor(Color.SpringGreen)
                 },
                 RequiresNamePrompt = false,
-                Faction = "",
+                Faction = "DummyFaction",
                 StartsVisible = true,
+                Learnset = "Normal",
                 Stats = new(),
                 BaseSightRange = "FullRoom",
                 InventorySize = 0,
@@ -971,8 +974,9 @@ namespace RogueCustomsDungeonEditor.Utils
                     BackgroundColor = new GameColor(Color.Black),
                     ForegroundColor = new GameColor(Color.Red)
                 },
-                Faction = "",
+                Faction = "DummyFaction",
                 StartsVisible = true,
+                Learnset = "Normal",
                 KnowsAllCharacterPositions = true,
                 PursuesOutOfSightCharacters = true,
                 WandersIfWithoutTarget = true,

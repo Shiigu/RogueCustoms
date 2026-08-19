@@ -795,6 +795,7 @@
             cmbNPCLearnset.Name = "cmbNPCLearnset";
             cmbNPCLearnset.Size = new System.Drawing.Size(146, 23);
             cmbNPCLearnset.TabIndex = 287;
+            cmbNPCLearnset.SelectedIndexChanged += cmbNPCLearnset_SelectedIndexChanged;
             // 
             // label17
             // 

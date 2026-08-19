@@ -121,6 +121,9 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
             dgvCurrencyPileTypes.Size = new System.Drawing.Size(355, 178);
             dgvCurrencyPileTypes.TabIndex = 256;
             dgvCurrencyPileTypes.EditingControlShowing += dgvCurrencyPileTypes_EditingControlShowing;
+            dgvCurrencyPileTypes.CellValueChanged += dgvCurrencyPileTypes_CellValueChanged;
+            dgvCurrencyPileTypes.RowsAdded += dgvCurrencyPileTypes_RowsAdded;
+            dgvCurrencyPileTypes.RowsRemoved += dgvCurrencyPileTypes_RowsRemoved;
             // 
             // Id
             // 

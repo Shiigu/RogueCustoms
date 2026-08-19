@@ -162,5 +162,20 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
                 e.Handled = true;
             }
         }
+
+        private void dgvCurrencyPileTypes_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void dgvCurrencyPileTypes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        private void dgvCurrencyPileTypes_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
     }
 }
