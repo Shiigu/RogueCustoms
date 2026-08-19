@@ -1,217 +1,2099 @@
 {
+  "Version": "1.7",
   "Name": "DungeonName",
   "Author": "Author",
   "WelcomeMessage": "WelcomeMessage",
   "EndingMessage": "EndingMessage",
-  "AmountOfFloors": 1,
   "DefaultLocale": "en",
   "Locales": [
     {
-        "Language": "en",
-        "LocaleStrings": [
-            { "Key": "DungeonName", "Value": "Den of the Betas" },
-            { "Key": "WelcomeMessage", "Value": "Text to be shown before the dungeon starts" },
-            { "Key": "EndingMessage", "Value": "Text to be shown when the dungeon ends" },
-            { "Key": "FloorName", "Value": "{DungeonName} - FLOOR {FloorLevel}" },
-            { "Key": "NewTurn", "Value": "----------TURN {TurnCount}----------" },
-            { "Key": "FloorEnter", "Value": "Entering Floor {FloorLevel}..." },
-            { "Key": "FloorLeave", "Value": "Leaving Floor {FloorLevel}..." },
-            { "Key": "CharacterSwitchedPlacesWithPlayer", "Value": "{CharacterName} let {PlayerName} pass."},
-            { "Key": "PlayerEquippedItem", "Value": "{CharacterName} equips {ItemName}." },
-            { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} put {ItemName} on the bag."},
-            { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} put {ItemName} on the floor."},
-            { "Key": "NPCPickItem", "Value": "{CharacterName} picked up {ItemName}."},
-            { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} dropped {ItemName} on the floor."},
-            { "Key": "NPCItemCannotBePutOnFloor", "Value": "{ItemName} was destroyed!"},
-            { "Key": "InventoryIsFull", "Value": "{CharacterName} cannot pick up {ItemName}. Inventory is full."},
-            { "Key": "TileIsOccupied", "Value": "{CharacterName} cannot drop {ItemName}. Tile is occupied."},
-            { "Key": "NoTarget", "Value": "But there was no target!"},
-            { "Key": "CannotBeUsed", "Value": "CANNOT BE USED" },
-            { "Key": "OnCooldown", "Value": "ON COOLDOWN:\n{CurrentCooldown} TURNS LEFT"},
-            { "Key": "MaximumUses", "Value": "REACHED MAXIMUM USES"},
-            { "Key": "RemainingUseCount", "Value": "{RemainingUses} USES LEFT"},
-            { "Key": "TargetIsTooClose", "Value": "TARGET IS TOO CLOSE"},
-            { "Key": "TargetIsTooFarAway", "Value": "TARGET IS TOO FAR AWAY"},
-            { "Key": "TargetIsOfWrongFaction", "Value": "TARGET MUST BE {FactionTargets}"},
-            { "Key": "TargetTypeSelf", "Value": "SELF"},
-            { "Key": "TargetTypeAlly", "Value": "ALLY"},
-            { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
-            { "Key": "TargetTypeEnemy", "Value": "ENEMY"},
-            { "Key": "RequiresATarget", "Value": "REQUIRES A TARGET"},
-            { "Key": "FromSource", "Value": "(From {SourceName})"},
-            { "Key": "SightRangeStatFullMap", "Value": "Full map" },
-            { "Key": "SightRangeStatFullRoom", "Value": "Full room" },
-            { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} tiles" },
-            { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} items" },
-            { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} has reached Level {Level}!"},
-            { "Key": "CharacterLevelsUpHeader", "Value": "CONGRATULATIONS!" },
-            { "Key": "CharacterHPStat", "Value": "HP" },
-            { "Key": "CharacterMaxHPStat", "Value": "Max HP" },
-            { "Key": "CharacterAttackStat", "Value": "Attack" },
-            { "Key": "CharacterDefenseStat", "Value": "Defense" },
-            { "Key": "CharacterMovementStat", "Value": "Movement" },
-            { "Key": "CharacterSightRangeStat", "Value": "Sight Range" },
-            { "Key": "CharacterHPRegenerationStat", "Value": "HP Regeneration" },
-            { "Key": "CharacterInventorySizeStat", "Value": "Inventory size" },
-            { "Key": "CharacterDamageStat", "Value": "Damage" },
-            { "Key": "CharacterMitigationStat", "Value": "Mitigation" },
-            { "Key": "CharacterTakesDamage", "Value": "{CharacterName} took {DamageDealt} damage." },
-            { "Key": "CharacterHealsSomeHP", "Value": "{CharacterName} healed {HealAmount} HP!" },
-            { "Key": "CharacterHealsAllHP", "Value": "{CharacterName} is now at maximum HP!" },
-            { "Key": "CharacterGainsExperience", "Value": "{CharacterName} gained {Amount} experience points." },
-            { "Key": "CharacterGotStatused", "Value": "{CharacterName} is now {StatusName}!" },
-            { "Key": "CharacterStatusGotRefreshed", "Value": "{CharacterName}'s {StatusName} has been reapplied!" },
-            { "Key": "CharacterIsNoLongerStatused", "Value": "{CharacterName} is no longer {StatusName}!" },
-            { "Key": "CharacterStatGotBuffed", "Value": "{CharacterName}'s {StatName} increased by {Amount}." },
-            { "Key": "CharacterStatGotNerfed", "Value": "{CharacterName}'s {StatName} decreased by {Amount}." },
-            { "Key": "CharacterStatGotNeutralized", "Value": "{CharacterName}'s {StatName} is back to normal." },
-            { "Key": "CharacterWasTeleported", "Value": "{CharacterName} has teleported somewhere else." },
-            { "Key": "CharacterStealsItem", "Value": "{SourceName} has stolen {ItemName} from {TargetName}!" },
-            { "Key": "StairsGotRevealed", "Value": "The stairs have been revealed!" },
-            { "Key": "PlayerFactionName", "Value": "Player" },
-            { "Key": "PlayerFactionDescription", "Value": "Description. Currently unused." },
-            { "Key": "AlliesFactionName", "Value": "Allies" },
-            { "Key": "AlliesFactionDescription", "Value": "Description. Currently unused." },
-            { "Key": "EnemiesFactionName", "Value": "Enemies" },
-            { "Key": "EnemiesFactionDescription", "Value": "Description. Currently unused." },
-            { "Key": "PlayerName", "Value": "Player" },
-            { "Key": "PlayerDescription", "Value": "Description. Currently unused." },
-            { "Key": "PlayerDeathText", "Value": "{this} has died!" },
-            { "Key": "PlayerDeathMessageBoxHeader", "Value": "OH NO!" },
-            { "Key": "PlayerDeathMessageBoxText", "Value": "YOU HAVE DIED!" },
-            { "Key": "EnemyName", "Value": "Enemy" },
-            { "Key": "EnemyDescription", "Value": "Description. Currently unused." },
-            { "Key": "EnemyStickTongueText", "Value": "{this} sticks his tongue at {target}." },
-            { "Key": "EnemyDeathText", "Value": "The evil {this} has died." },
-            { "Key": "UnarmedName", "Value": "Unarmed" },
-            { "Key": "UnarmedDescription", "Value": "Without a weapon." },
-            { "Key": "MeleeWeaponAttackName", "Value": "Melee Weapon Attack" },
-            { "Key": "UnarmedAttackDescription", "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 95%" },
-            { "Key": "UnarmedAttackText", "Value": "{source} tries to punch {target}." },
-            { "Key": "FailedAttackText", "Value": "But it failed!" },
-            { "Key": "ClothArmorName", "Value": "Cloth" },
-            { "Key": "ClothArmorDescription", "Value": "Very basic and lightweight armor.\n\nArmor Mitigation: 0" },
-            { "Key": "SkirtName", "Value": "Skirt" },
-            { "Key": "SkirtDescription", "Value": "How are you reading this?" },
-            { "Key": "HealingPotionName", "Value": "Healing Potion" },
-            { "Key": "HealingPotionDescription", "Value": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears." },
-            { "Key": "ObjectSteppedText", "Value": "{target} stepped over {this}." },
-            { "Key": "ObjectEquippedText", "Value": "{target} equips the {this}." },
-            { "Key": "ObjectDrunkText", "Value": "{target} drinks the {this}." },
-            { "Key": "ObjectDisappearedText", "Value": "{this} disappeared." },
-            { "Key": "ObjectNotUsedText", "Value": "Or not. It would have no effect..." },
-            { "Key": "ObjectNotActivatedText", "Value": "{this} failed to activate!" },
-            { "Key": "SwordName", "Value": "Sword" },
-            { "Key": "SwordDescription", "Value": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3"},
-            { "Key": "SwordAttackDescription", "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 90%"},
-            { "Key": "SwordAttackText", "Value": "{source} swings the {this} at {target}." },
-            { "Key": "PoisonedName", "Value": "Poisoned" },
-            { "Key": "PoisonedDescription", "Value": "Taking damage every 28 turns" },
-            { "Key": "PoisonedText", "Value": "Poison is coursing through {target}'s body." }
-        ]
+      "Language": "en",
+      "LocaleStrings": [
+        {
+          "Key": "DungeonName",
+          "Value": "Den of the Betas"
+        },
+        {
+          "Key": "WelcomeMessage",
+          "Value": "Text to be shown before the dungeon starts"
+        },
+        {
+          "Key": "EndingMessage",
+          "Value": "Text to be shown when the dungeon ends"
+        },
+        {
+          "Key": "FloorName",
+          "Value": "{DungeonName} - FLOOR {FloorLevel}"
+        },
+        {
+          "Key": "NewTurn",
+          "Value": "----------TURN {TurnCount}----------"
+        },
+        {
+          "Key": "FloorEnter",
+          "Value": "Entering Floor {FloorLevel}..."
+        },
+        {
+          "Key": "FloorLeave",
+          "Value": "Leaving Floor {FloorLevel}..."
+        },
+        {
+          "Key": "CharacterSwitchedPlacesWithPlayer",
+          "Value": "{CharacterName} let {PlayerName} pass."
+        },
+        {
+          "Key": "PlayerEquippedItem",
+          "Value": "{CharacterName} equips {ItemName}."
+        },
+        {
+          "Key": "PlayerPutItemOnBag",
+          "Value": "{CharacterName} put {ItemName} on the bag."
+        },
+        {
+          "Key": "PlayerPutItemOnFloor",
+          "Value": "{CharacterName} put {ItemName} on the floor."
+        },
+        {
+          "Key": "NPCPickItem",
+          "Value": "{CharacterName} picked up {ItemName}."
+        },
+        {
+          "Key": "NPCPutItemOnFloor",
+          "Value": "{CharacterName} dropped {ItemName} on the floor."
+        },
+        {
+          "Key": "NPCItemCannotBePutOnFloor",
+          "Value": "{ItemName} was destroyed!"
+        },
+        {
+          "Key": "InventoryIsFull",
+          "Value": "{CharacterName} cannot pick up {ItemName}. Inventory is full."
+        },
+        {
+          "Key": "TileIsOccupied",
+          "Value": "{CharacterName} cannot drop {ItemName}. Tile is occupied."
+        },
+        {
+          "Key": "NoTarget",
+          "Value": "But there was no target!"
+        },
+        {
+          "Key": "CannotBeUsed",
+          "Value": "CANNOT BE USED"
+        },
+        {
+          "Key": "OnCooldown",
+          "Value": "ON COOLDOWN:\n{CurrentCooldown} TURNS LEFT"
+        },
+        {
+          "Key": "MaximumUses",
+          "Value": "REACHED MAXIMUM USES"
+        },
+        {
+          "Key": "RemainingUseCount",
+          "Value": "{RemainingUses} USES LEFT"
+        },
+        {
+          "Key": "TargetIsTooClose",
+          "Value": "TARGET IS TOO CLOSE"
+        },
+        {
+          "Key": "TargetIsTooFarAway",
+          "Value": "TARGET IS TOO FAR AWAY"
+        },
+        {
+          "Key": "TargetIsOfWrongFaction",
+          "Value": "TARGET MUST BE {FactionTargets}"
+        },
+        {
+          "Key": "TargetTypeSelf",
+          "Value": "SELF"
+        },
+        {
+          "Key": "TargetTypeAlly",
+          "Value": "ALLY"
+        },
+        {
+          "Key": "TargetTypeNeutral",
+          "Value": "NEUTRAL"
+        },
+        {
+          "Key": "TargetTypeEnemy",
+          "Value": "ENEMY"
+        },
+        {
+          "Key": "RequiresATarget",
+          "Value": "REQUIRES A TARGET"
+        },
+        {
+          "Key": "FromSource",
+          "Value": "(From {SourceName})"
+        },
+        {
+          "Key": "SightRangeStatFullMap",
+          "Value": "Full map"
+        },
+        {
+          "Key": "SightRangeStatFullRoom",
+          "Value": "Full room"
+        },
+        {
+          "Key": "SightRangeStatFlatNumber",
+          "Value": "{SightRange} tiles"
+        },
+        {
+          "Key": "InventorySizeStatFlatNumber",
+          "Value": "{InventorySize} items"
+        },
+        {
+          "Key": "CharacterLevelsUpMessage",
+          "Value": "{CharacterName} has reached Level {Level}!"
+        },
+        {
+          "Key": "CharacterLevelsUpHeader",
+          "Value": "CONGRATULATIONS!"
+        },
+        {
+          "Key": "CharacterHPStat",
+          "Value": "HP"
+        },
+        {
+          "Key": "CharacterMaxHPStat",
+          "Value": "Max HP"
+        },
+        {
+          "Key": "CharacterAttackStat",
+          "Value": "Attack"
+        },
+        {
+          "Key": "CharacterDefenseStat",
+          "Value": "Defense"
+        },
+        {
+          "Key": "CharacterMovementStat",
+          "Value": "Movement"
+        },
+        {
+          "Key": "CharacterSightRangeStat",
+          "Value": "Sight Range"
+        },
+        {
+          "Key": "CharacterHPRegenerationStat",
+          "Value": "HP Regeneration"
+        },
+        {
+          "Key": "CharacterInventorySizeStat",
+          "Value": "Inventory size"
+        },
+        {
+          "Key": "CharacterDamageStat",
+          "Value": "Damage"
+        },
+        {
+          "Key": "CharacterMitigationStat",
+          "Value": "Mitigation"
+        },
+        {
+          "Key": "CharacterTakesDamage",
+          "Value": "{CharacterName} took {DamageDealt} damage."
+        },
+        {
+          "Key": "CharacterHealsSomeHP",
+          "Value": "{CharacterName} healed {HealAmount} HP!"
+        },
+        {
+          "Key": "CharacterHealsAllHP",
+          "Value": "{CharacterName} is now at maximum HP!"
+        },
+        {
+          "Key": "CharacterGainsExperience",
+          "Value": "{CharacterName} gained {Amount} experience points."
+        },
+        {
+          "Key": "CharacterGotStatused",
+          "Value": "{CharacterName} is now {StatusName}!"
+        },
+        {
+          "Key": "CharacterStatusGotRefreshed",
+          "Value": "{CharacterName}\u0027s {StatusName} has been reapplied!"
+        },
+        {
+          "Key": "CharacterIsNoLongerStatused",
+          "Value": "{CharacterName} is no longer {StatusName}!"
+        },
+        {
+          "Key": "CharacterStatGotBuffed",
+          "Value": "{CharacterName}\u0027s {StatName} increased by {Amount}."
+        },
+        {
+          "Key": "CharacterStatGotNerfed",
+          "Value": "{CharacterName}\u0027s {StatName} decreased by {Amount}."
+        },
+        {
+          "Key": "CharacterStatGotNeutralized",
+          "Value": "{CharacterName}\u0027s {StatName} is back to normal."
+        },
+        {
+          "Key": "CharacterWasTeleported",
+          "Value": "{CharacterName} has teleported somewhere else."
+        },
+        {
+          "Key": "CharacterStealsItem",
+          "Value": "{SourceName} has stolen {ItemName} from {TargetName}!"
+        },
+        {
+          "Key": "StairsGotRevealed",
+          "Value": "The stairs have been revealed!"
+        },
+        {
+          "Key": "PlayerFactionName",
+          "Value": "Player"
+        },
+        {
+          "Key": "PlayerFactionDescription",
+          "Value": "Description. Currently unused."
+        },
+        {
+          "Key": "AlliesFactionName",
+          "Value": "Allies"
+        },
+        {
+          "Key": "AlliesFactionDescription",
+          "Value": "Description. Currently unused."
+        },
+        {
+          "Key": "EnemiesFactionName",
+          "Value": "Enemies"
+        },
+        {
+          "Key": "EnemiesFactionDescription",
+          "Value": "Description. Currently unused."
+        },
+        {
+          "Key": "PlayerName",
+          "Value": "Player"
+        },
+        {
+          "Key": "PlayerDescription",
+          "Value": "Description. Currently unused."
+        },
+        {
+          "Key": "PlayerDeathText",
+          "Value": "{this} has died!"
+        },
+        {
+          "Key": "PlayerDeathMessageBoxHeader",
+          "Value": "OH NO!"
+        },
+        {
+          "Key": "PlayerDeathMessageBoxText",
+          "Value": "YOU HAVE DIED!"
+        },
+        {
+          "Key": "EnemyName",
+          "Value": "Enemy"
+        },
+        {
+          "Key": "EnemyDescription",
+          "Value": "Description. Currently unused."
+        },
+        {
+          "Key": "EnemyStickTongueText",
+          "Value": "{this} sticks his tongue at {target}."
+        },
+        {
+          "Key": "EnemyDeathText",
+          "Value": "The evil {this} has died."
+        },
+        {
+          "Key": "UnarmedName",
+          "Value": "Unarmed"
+        },
+        {
+          "Key": "UnarmedDescription",
+          "Value": "Without a weapon."
+        },
+        {
+          "Key": "MeleeWeaponAttackName",
+          "Value": "Melee Weapon Attack"
+        },
+        {
+          "Key": "UnarmedAttackDescription",
+          "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 95%"
+        },
+        {
+          "Key": "UnarmedAttackText",
+          "Value": "{source} tries to punch {target}."
+        },
+        {
+          "Key": "FailedAttackText",
+          "Value": "But it failed!"
+        },
+        {
+          "Key": "ClothArmorName",
+          "Value": "Cloth"
+        },
+        {
+          "Key": "ClothArmorDescription",
+          "Value": "Very basic and lightweight armor.\n\nArmor Mitigation: 0"
+        },
+        {
+          "Key": "SkirtName",
+          "Value": "Skirt"
+        },
+        {
+          "Key": "SkirtDescription",
+          "Value": "How are you reading this?"
+        },
+        {
+          "Key": "HealingPotionName",
+          "Value": "Healing Potion"
+        },
+        {
+          "Key": "HealingPotionDescription",
+          "Value": "The quintessential healing item.\n\nHeals up to 2d4 health, then it disappears."
+        },
+        {
+          "Key": "ObjectSteppedText",
+          "Value": "{target} stepped over {this}."
+        },
+        {
+          "Key": "ObjectEquippedText",
+          "Value": "{target} equips the {this}."
+        },
+        {
+          "Key": "ObjectDrunkText",
+          "Value": "{target} drinks the {this}."
+        },
+        {
+          "Key": "ObjectDisappearedText",
+          "Value": "{this} disappeared."
+        },
+        {
+          "Key": "ObjectNotUsedText",
+          "Value": "Or not. It would have no effect..."
+        },
+        {
+          "Key": "ObjectNotActivatedText",
+          "Value": "{this} failed to activate!"
+        },
+        {
+          "Key": "SwordName",
+          "Value": "Sword"
+        },
+        {
+          "Key": "SwordDescription",
+          "Value": "A reliable tool for cutting through enemies.\n\nWeapon damage: 1d3"
+        },
+        {
+          "Key": "SwordAttackDescription",
+          "Value": "Deals normal weapon damage with no secondary effect.\n\nAccuracy: 90%"
+        },
+        {
+          "Key": "SwordAttackText",
+          "Value": "{source} swings the {this} at {target}."
+        },
+        {
+          "Key": "PoisonedName",
+          "Value": "Poisoned"
+        },
+        {
+          "Key": "PoisonedDescription",
+          "Value": "Taking damage every 28 turns"
+        },
+        {
+          "Key": "PoisonedText",
+          "Value": "Poison is coursing through {target}\u0027s body."
+        },
+        {
+          "Key": "SchoolNameNormal",
+          "Value": "Normal"
+        },
+        {
+          "Key": "CurrencyName",
+          "Value": "Gold"
+        },
+        {
+          "Key": "CurrencyDescription",
+          "Value": "Sparkling coins used as trade money"
+        },
+        {
+          "Key": "ItemSlotWeaponName",
+          "Value": "Weapon"
+        },
+        {
+          "Key": "ItemSlotArmorName",
+          "Value": "Armor"
+        },
+        {
+          "Key": "ItemTypeWeaponName",
+          "Value": "Weapon"
+        },
+        {
+          "Key": "ItemTypeArmorName",
+          "Value": "Armor"
+        },
+        {
+          "Key": "ItemTypeConsumableName",
+          "Value": "Consumable"
+        },
+        {
+          "Key": "ItemTypeCharmName",
+          "Value": "Charm"
+        },
+        {
+          "Key": "DefaultAttackDescription",
+          "Value": "Deals damage with no secondary effect."
+        },
+        {
+          "Key": "DefaultMeleeAttackText",
+          "Value": "{source} tries to hit {target}."
+        },
+        {
+          "Key": "YesButtonText",
+          "Value": "YES"
+        },
+        {
+          "Key": "NoButtonText",
+          "Value": "NO"
+        },
+        {
+          "Key": "CharacterGotAnItem",
+          "Value": "{CharacterName} got {ItemName} from {SourceName}."
+        },
+        {
+          "Key": "CharacterObtainedAnItem",
+          "Value": "{CharacterName} got an item: {ItemName}!"
+        },
+        {
+          "Key": "TargetTypeTile",
+          "Value": "TILE"
+        },
+        {
+          "Key": "TargetDoesNotFulfillConditions",
+          "Value": "CONDITIONS NOT FULFILLED"
+        },
+        {
+          "Key": "NotEnoughMP",
+          "Value": "NOT ENOUGH {MPStat}"
+        },
+        {
+          "Key": "SelfRange",
+          "Value": "Range: Own tile"
+        },
+        {
+          "Key": "MeleeRange",
+          "Value": "Range: Melee"
+        },
+        {
+          "Key": "SelfOrMeleeRange",
+          "Value": "Range: Own tile or Melee"
+        },
+        {
+          "Key": "TilesRange",
+          "Value": "Range: {TilesRange} tiles"
+        },
+        {
+          "Key": "SelfOrTilesRange",
+          "Value": "Range: Own tile or {TilesRange} tiles"
+        },
+        {
+          "Key": "MPCost",
+          "Value": "{MPStat} Cost: {MPCost}"
+        },
+        {
+          "Key": "TileTypeFloor",
+          "Value": "Floor"
+        },
+        {
+          "Key": "TileTypeWall",
+          "Value": "Wall"
+        },
+        {
+          "Key": "TileTypeHallway",
+          "Value": "Hallway"
+        },
+        {
+          "Key": "TileTypeStairs",
+          "Value": "Stairs"
+        },
+        {
+          "Key": "TileTypeEmpty",
+          "Value": "Empty"
+        },
+        {
+          "Key": "CharacterMPStat",
+          "Value": "MP"
+        },
+        {
+          "Key": "CharacterMPRegenerationStat",
+          "Value": "MP Regeneration"
+        },
+        {
+          "Key": "CharacterHungerStat",
+          "Value": "Hunger"
+        },
+        {
+          "Key": "CharacterEvasionStat",
+          "Value": "Evasion"
+        },
+        {
+          "Key": "CharacterAccuracyStat",
+          "Value": "Accuracy"
+        },
+        {
+          "Key": "CharacterTakesDamageFromHunger",
+          "Value": "{CharacterName} took {DamageDealt} {CharacterHPStat} of damage from {CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterLosesMP",
+          "Value": "{CharacterName} lost {BurnedMP} {CharacterMPStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeMP",
+          "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllMP",
+          "Value": "{CharacterName} is now at maximum {CharacterMPStat}!"
+        },
+        {
+          "Key": "CharacterLosesHunger",
+          "Value": "{CharacterName} lost {LostHunger} {CharacterHungerStat}."
+        },
+        {
+          "Key": "CharacterRecoversSomeHunger",
+          "Value": "{CharacterName} recovered {ReplenishAmount} {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterRecoversAllHunger",
+          "Value": "{CharacterName} is now at maximum {CharacterHungerStat}!"
+        },
+        {
+          "Key": "CharacterConvertedTile",
+          "Value": "{CharacterName} has created a {TileType}!"
+        },
+        {
+          "Key": "CharacterCreatedATrap",
+          "Value": "{CharacterName} has deployed a {TrapName}!"
+        },
+        {
+          "Key": "CharacterCreatedAnNPC",
+          "Value": "{NPCName} has been summoned by {CharacterName}!"
+        },
+        {
+          "Key": "CharacterRevivedAnNPC",
+          "Value": "{NPCName} has been revived by {CharacterName}!"
+        },
+        {
+          "Key": "CharacterBumpedDoor",
+          "Value": "{CharacterName} has bumped into the {DoorName}."
+        },
+        {
+          "Key": "CharacterUnlockedDoor",
+          "Value": "{CharacterName} has unlocked the {DoorName}!"
+        },
+        {
+          "Key": "CharacterLearnedScript",
+          "Value": "{CharacterName} has learned {ScriptName}!"
+        },
+        {
+          "Key": "CharacterForgotScript",
+          "Value": "{CharacterName} has forgotten {ScriptName}."
+        },
+        {
+          "Key": "KeyDescription",
+          "Value": "A key.\n\nUse it on a matching door to permanently open it.\n\nThe Key is destroyed when all matching doors are open, or when you enter a new Floor.\n\n(Keys do not occupy Inventory space)"
+        },
+        {
+          "Key": "DoorDescription",
+          "Value": "A Door that seals access to something important.\n\nUse a matching Key to permanently open it."
+        },
+        {
+          "Key": "UnlockDoorName",
+          "Value": "Unlock Door"
+        },
+        {
+          "Key": "UnlockDoorDescription",
+          "Value": "Try to put the Key into the Door\u0027s Lockset to open it.\n\nWorks only if the Key and Door match."
+        },
+        {
+          "Key": "AttackCriticalHitText",
+          "Value": "CRITICAL HIT!"
+        },
+        {
+          "Key": "AttackMissedText",
+          "Value": "But it missed!"
+        },
+        {
+          "Key": "AttackDealtNoDamageText",
+          "Value": "But it dealt no damage..."
+        },
+        {
+          "Key": "ItemSteppedText",
+          "Value": "{CharacterName} stepped over {ItemName}."
+        },
+        {
+          "Key": "MonsterHouseWarningLogMessage",
+          "Value": "{CharacterName} has stumbled with a Monster House!"
+        },
+        {
+          "Key": "MonsterHouseWarningMessage",
+          "Value": "It\u0027s a Monster House!"
+        },
+        {
+          "Key": "MonsterHouseWarningHeader",
+          "Value": "OH NO!"
+        },
+        {
+          "Key": "SelectItemWindowText",
+          "Value": "Select an Item"
+        },
+        {
+          "Key": "CharacterActionCooldownRemoved",
+          "Value": "{CharacterName}\u0027s {ActionName} is no longer on Cooldown!"
+        },
+        {
+          "Key": "CharacterActionCooldownIncreased",
+          "Value": "{CharacterName}\u0027s {ActionName}\u0027s Cooldown got increased by {Amount}!"
+        },
+        {
+          "Key": "CharacterActionCooldownDecreased",
+          "Value": "{CharacterName}\u0027s {ActionName}\u0027s Cooldown got decreased by {Amount}!"
+        },
+        {
+          "Key": "CharacterActionUsesMaximized",
+          "Value": "{CharacterName}\u0027s {ActionName} now has Maximum Uses!"
+        },
+        {
+          "Key": "CharacterActionUsesIncreased",
+          "Value": "{CharacterName}\u0027s {ActionName} has gained {Amount} use(s)!"
+        },
+        {
+          "Key": "CharacterActionUsesDecreased",
+          "Value": "{CharacterName}\u0027s {ActionName} has lost {Amount} use(s)!"
+        },
+        {
+          "Key": "CharacterRevealsFloor",
+          "Value": "{CharacterName} now knows the path!"
+        },
+        {
+          "Key": "CharacterRevealsTraps",
+          "Value": "{CharacterName} can see all traps now!"
+        },
+        {
+          "Key": "CurrencyDisplayName",
+          "Value": "{Amount} {CurrencyName}"
+        },
+        {
+          "Key": "CharacterPicksCurrency",
+          "Value": "{CharacterName} picked {CurrencyName}."
+        },
+        {
+          "Key": "SellItemWindowText",
+          "Value": "What do you want to sell?"
+        },
+        {
+          "Key": "BuyItemWindowText",
+          "Value": "What do you want to buy?"
+        },
+        {
+          "Key": "CharacterSoldItem",
+          "Value": "{CharacterName} sold {ItemName} for {CurrencyDisplayName}."
+        },
+        {
+          "Key": "CharacterBoughtItem",
+          "Value": "{CharacterName} bought {ItemName} for {CurrencyDisplayName}."
+        },
+        {
+          "Key": "CharacterCannotEquipItem",
+          "Value": "{CharacterName} cannot equip {ItemName}..."
+        },
+        {
+          "Key": "CannotBuyItems",
+          "Value": "{BuyerName}\u0027s inventory is full, cannot trade with {SellerName}..."
+        },
+        {
+          "Key": "CannotSellItems",
+          "Value": "{SellerName}\u0027s inventory is empty, cannot trade with {BuyerName}..."
+        },
+        {
+          "Key": "ItemWasIdentified",
+          "Value": "{FakeName}\u0027s true nature was revealed, it\u0027s {TrueName}!"
+        },
+        {
+          "Key": "CharacterItemsWereIdentified",
+          "Value": "{CharacterName} now knows the true nature of their items!"
+        },
+        {
+          "Key": "CharacterLostAllItems",
+          "Value": "{CharacterName} lost all of their items!"
+        },
+        {
+          "Key": "CharacterHasBeenRenamed",
+          "Value": "{OldName} is now called {NewName}!"
+        },
+        {
+          "Key": "CharacterHasDroppedLevels",
+          "Value": "{CharacterName}\u0027s Level has dropped to {Level}!"
+        },
+        {
+          "Key": "CharacterHasLostItems",
+          "Value": "{CharacterName} has lost some items!"
+        },
+        {
+          "Key": "CharacterHasLostEquipment",
+          "Value": "{CharacterName} has lost some equipment!"
+        },
+        {
+          "Key": "CharacterHasLostScripts",
+          "Value": "{CharacterName} has forgotten some abilities!"
+        },
+        {
+          "Key": "CharacterHasLostAllies",
+          "Value": "{CharacterName} has lost some allies!"
+        },
+        {
+          "Key": "CharacterHasRegressedOnLearnset",
+          "Value": "{CharacterName} has regressed their skills!"
+        },
+        {
+          "Key": "CharacterHasChangedLearnset",
+          "Value": "{CharacterName} has changed their learning path!"
+        },
+        {
+          "Key": "MustFulfillAllObjectivesText",
+          "Value": "Must fulfill all:"
+        },
+        {
+          "Key": "MustFulfillAnyObjectiveText",
+          "Value": "Must fulfill at least one:"
+        },
+        {
+          "Key": "AnyNPCObjectiveText",
+          "Value": "Any NPC"
+        },
+        {
+          "Key": "AnyStatusObjectiveText",
+          "Value": "Statused"
+        },
+        {
+          "Key": "AnyItemObjectiveText",
+          "Value": "Any Item"
+        },
+        {
+          "Key": "DefeatNPCsObjectiveText",
+          "Value": "Defeat {TargetId}"
+        },
+        {
+          "Key": "DealDamageObjectiveText",
+          "Value": "Deal Damage"
+        },
+        {
+          "Key": "HealDamageObjectiveText",
+          "Value": "Heal Damage"
+        },
+        {
+          "Key": "StatusNPCsObjectiveText",
+          "Value": "Get NPCs {TargetId}"
+        },
+        {
+          "Key": "StatusSelfObjectiveText",
+          "Value": "Get yourself {TargetId}"
+        },
+        {
+          "Key": "CollectItemsObjectiveText",
+          "Value": "Obtain {TargetId}"
+        },
+        {
+          "Key": "ConsumeItemsObjectiveText",
+          "Value": "Use {TargetId}"
+        },
+        {
+          "Key": "ReachFloorObjectiveText",
+          "Value": "Reach Floor"
+        },
+        {
+          "Key": "ReachLevelObjectiveText",
+          "Value": "Reach Level"
+        },
+        {
+          "Key": "ObtainMoneyObjectiveText",
+          "Value": "Collect {CurrencyChar}"
+        },
+        {
+          "Key": "QuestAcceptedHeaderText",
+          "Value": "QUEST ACCEPTED!"
+        },
+        {
+          "Key": "QuestAcceptedMessageText",
+          "Value": "You have accepted {QuestName}.\n\n{QuestDescription}\n\nOpen the Quest Journal for more information."
+        },
+        {
+          "Key": "QuestAcceptedText",
+          "Value": "{CharacterName} has accepted {QuestName}."
+        },
+        {
+          "Key": "QuestCompleteHeaderText",
+          "Value": "QUEST COMPLETE!"
+        },
+        {
+          "Key": "QuestCompleteMessageText",
+          "Value": "You have completed {QuestName}!"
+        },
+        {
+          "Key": "QuestCompleteText",
+          "Value": "{CharacterName} has completed {QuestName}!"
+        },
+        {
+          "Key": "QuestAbandonedText",
+          "Value": "{CharacterName} has abandoned {QuestName}..."
+        },
+        {
+          "Key": "SelectQuestRewardText",
+          "Value": "Select a Reward"
+        },
+        {
+          "Key": "InventoryIsFullForQuestText",
+          "Value": "{CharacterName}\u0027s Inventory does not have enough space for Item rewards..."
+        }
+      ]
     },
     {
       "Language": "es",
       "LocaleStrings": [
-            { "Key": "DungeonName", "Value": "Cueva de los Betas" },
-            { "Key": "WelcomeMessage", "Value": "Texto a mostrar cuando inicia la mazmorra" },
-            { "Key": "EndingMessage", "Value": "Texto a mostrar cuando termina la mazmorra" },
-            { "Key": "FloorName", "Value": "{DungeonName} - PISO {FloorLevel}" },
-            { "Key": "NewTurn", "Value": "----------TURNO {TurnCount}----------" },
-            { "Key": "FloorEnter", "Value": "Ingresando al piso {FloorLevel}..." },
-            { "Key": "FloorLeave", "Value": "Abandonando el piso {FloorLevel}..." },
-            { "Key": "CharacterSwitchedPlacesWithPlayer", "Value": "{CharacterName} dejó pasar a {PlayerName}."},
-            { "Key": "PlayerPutItemOnBag", "Value": "{CharacterName} colocó {ItemName} en la bolsa."},
-            { "Key": "PlayerPutItemOnFloor", "Value": "{CharacterName} dejó {ItemName} en el piso."},
-            { "Key": "NPCPickItem", "Value": "{CharacterName} tomó {ItemName}."},
-            { "Key": "NPCPutItemOnFloor", "Value": "{CharacterName} soltó {ItemName} al piso."},
-            { "Key": "NPCItemCannotBePutOnFloor", "Value": "¡{ItemName} se ha destruido!"},
-            { "Key": "InventoryIsFull", "Value": "No se puede tomar {ItemName}. El inventario está lleno."},
-            { "Key": "TileIsOccupied", "Value": "No se puede soltar {ItemName}. La casilla está ocupada."},
-            { "Key": "NoTarget", "Value": "¡Pero no había un objetivo!"},
-            { "Key": "CannotBeUsed", "Value": "NO SE PUEDE USAR" },
-            { "Key": "OnCooldown", "Value": "EN RECUPERACIÓN:\nQUEDA(N) {CurrentCooldown} TURNO(S)"},
-            { "Key": "MaximumUses", "Value": "ALCANZADO MÁXIMO DE USOS"},
-            { "Key": "RemainingUseCount", "Value": "QUEDA(N) {RemainingUses} USO(S)"},
-            { "Key": "TargetIsTooClose", "Value": "EL OBJETIVO ESTÁ DEMASIADO CERCA"},
-            { "Key": "TargetIsTooFarAway", "Value": "EL OBJETIVO ESTÁ DEMASIADO LEJOS"},
-            { "Key": "TargetIsOfWrongFaction", "Value": "EL OBJETIVO DEBE SER {FactionTargets}"},
-            { "Key": "TargetTypeSelf", "Value": "UNO MISMO"},
-            { "Key": "TargetTypeAlly", "Value": "ALIADO"},
-            { "Key": "TargetTypeNeutral", "Value": "NEUTRAL"},
-            { "Key": "TargetTypeEnemy", "Value": "ENEMIGO"},
-            { "Key": "RequiresATarget", "Value": "REQUIERE UN OBJETIVO"},
-            { "Key": "FromSource", "Value": "(Origen: {SourceName})"},
-            { "Key": "SightRangeStatFullMap", "Value": "Mapa entero" },
-            { "Key": "SightRangeStatFullRoom", "Value": "Habitación entera" },
-            { "Key": "SightRangeStatFlatNumber", "Value": "{SightRange} casillas" },
-            { "Key": "InventorySizeStatFlatNumber", "Value": "{InventorySize} objetos" },
-            { "Key": "CharacterLevelsUpMessage", "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"},
-            { "Key": "CharacterLevelsUpHeader", "Value": "¡FELICIDADES!" },
-            { "Key": "CharacterHPStat", "Value": "PS" },
-            { "Key": "CharacterMaxHPStat", "Value": "PS Máximos" },
-            { "Key": "CharacterAttackStat", "Value": "Ataque" },
-            { "Key": "CharacterDefenseStat", "Value": "Defensa" },
-            { "Key": "CharacterMovementStat", "Value": "Movimiento" },
-            { "Key": "CharacterSightRangeStat", "Value": "Visión" },
-            { "Key": "CharacterHPRegenerationStat", "Value": "Regeneración de PS" },
-            { "Key": "CharacterInventorySizeStat", "Value": "Capacidad de inventario" },
-            { "Key": "CharacterDamageStat", "Value": "Daño" },
-            { "Key": "CharacterMitigationStat", "Value": "Mitigación" },
-            { "Key": "CharacterTakesDamage", "Value": "{CharacterName} recibió {DamageDealt} puntos de daño." },
-            { "Key": "CharacterHealsSomeHP", "Value": "¡{CharacterName} ha recuperado {HealAmount} PS!" },
-            { "Key": "CharacterHealsAllHP", "Value": "¡{CharacterName} ha recuperado todos los PS!" },
-            { "Key": "CharacterGainsExperience", "Value": "{CharacterName} ha obtenido {Amount} puntos de experiencia." },
-            { "Key": "CharacterGotStatused", "Value": "¡{CharacterName} ahora está {StatusName}!" },
-            { "Key": "CharacterStatusGotRefreshed", "Value": "¡{StatusName} de {CharacterName} se ha vuelto a aplicar!" },
-            { "Key": "CharacterIsNoLongerStatused", "Value": "¡{CharacterName} ya no está {StatusName}!" },
-            { "Key": "CharacterStatGotBuffed", "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}." },
-            { "Key": "CharacterStatGotNerfed", "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}." },
-            { "Key": "CharacterStatGotNeutralized", "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad." },
-            { "Key": "CharacterWasTeleported", "Value": "{CharacterName} se ha teletransportado a otro sitio." },
-            { "Key": "CharacterStealsItem", "Value": "¡{SourceName} le ha quitado {ItemName} a {TargetName}!" },
-            { "Key": "StairsGotRevealed", "Value": "¡Se han revelado las escaleras!" },
-            { "Key": "PlayerFactionName", "Value": "Jugador" },
-            { "Key": "PlayerFactionDescription", "Value": "Descripción. Aún no se usa." },
-            { "Key": "AlliesFactionName", "Value": "Aliados" },
-            { "Key": "AlliesFactionDescription", "Value": "Descripción. Aún no se usa." },
-            { "Key": "EnemiesFactionName", "Value": "Enemigos" },
-            { "Key": "EnemiesFactionDescription", "Value": "Descripción. Aún no se usa." },
-            { "Key": "PlayerName", "Value": "Jugador" },
-            { "Key": "PlayerDescription", "Value": "Descripción. Aún no se usa." },
-            { "Key": "PlayerDeathText", "Value": "¡{this} ha muerto!" },
-            { "Key": "PlayerDeathMessageBoxHeader", "Value": "¡OH, NO!" },
-            { "Key": "PlayerDeathMessageBoxText", "Value": "¡HAS MUERTO!" },
-            { "Key": "EnemyName", "Value": "Enemigo" },
-            { "Key": "EnemyDescription", "Value": "Descripción. Aún no se usa." },
-            { "Key": "EnemyStickTongueText", "Value": "{this} le saca la lengua {target}." },
-            { "Key": "EnemyDeathText", "Value": "El malvado {this} acaba de morir." },
-            { "Key": "UnarmedName", "Value": "Desarmado" },
-            { "Key": "UnarmedDescription", "Value": "Sin un arma.\n\nDaño de arma: 0" },
-            { "Key": "MeleeWeaponAttackName", "Value": "Ataque Melé de Arma" },
-            { "Key": "UnarmedAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 95%" },
-            { "Key": "UnarmedAttackText", "Value": "{source} intenta darle un puñetazo a {target}." },
-            { "Key": "FailedAttackText", "Value": "¡Pero falló!" },
-            { "Key": "ClothArmorName", "Value": "Tela" },
-            { "Key": "ClothArmorDescription", "Value": "Armadura básica y ligera.\n\nMitigación: 0" },
-            { "Key": "SkirtName", "Value": "Falda" },
-            { "Key": "SkirtDescription", "Value": "¿Cómo es que estás leyendo esto?" },
-            { "Key": "HealingPotionName", "Value": "Poción de curación" },
-            { "Key": "HealingPotionDescription", "Value": "El objeto de curación más elemental.\n\nCura hasta 2d4 puntos de vida antes de desaparecer." },
-            { "Key": "ObjectSteppedText", "Value": "{target} pasó por encima de {this}." },
-            { "Key": "ObjectEquippedText", "Value": "{target} equipa {this}." },
-            { "Key": "ObjectDrunkText", "Value": "{target} bebe {this}." },
-            { "Key": "ObjectDisappearedText", "Value": "{this} acaba de desaparecer." },
-            { "Key": "ObjectNotUsedText", "Value": "... o mejor no, porque no tendría efecto." },
-            { "Key": "ObjectNotActivatedText", "Value": "¡{this} no se activó!" },
-            { "Key": "SwordName", "Value": "Espada" },
-            { "Key": "SwordDescription", "Value": "Herramienta confiable para cortar enemigos.\n\nDaño de arma: 1d3"},
-            { "Key": "SwordAttackDescription", "Value": "Causa daño normal sin efecto secundario.\n\nPrecisión: 90%"},
-            { "Key": "SwordAttackText", "Value": "{source} blande la {this} hacia {target}." },
-            { "Key": "PoisonedName", "Value": "Envenenado" },
-            { "Key": "PoisonedDescription", "Value": "Recibiendo daño cada 28 turnos" },
-            { "Key": "PoisonedText", "Value": "El veneno recorre el cuerpo de {target}." }
-        ]
+        {
+          "Key": "DungeonName",
+          "Value": "Cueva de los Betas"
+        },
+        {
+          "Key": "WelcomeMessage",
+          "Value": "Texto a mostrar cuando inicia la mazmorra"
+        },
+        {
+          "Key": "EndingMessage",
+          "Value": "Texto a mostrar cuando termina la mazmorra"
+        },
+        {
+          "Key": "FloorName",
+          "Value": "{DungeonName} - PISO {FloorLevel}"
+        },
+        {
+          "Key": "NewTurn",
+          "Value": "----------TURNO {TurnCount}----------"
+        },
+        {
+          "Key": "FloorEnter",
+          "Value": "Ingresando al piso {FloorLevel}..."
+        },
+        {
+          "Key": "FloorLeave",
+          "Value": "Abandonando el piso {FloorLevel}..."
+        },
+        {
+          "Key": "CharacterSwitchedPlacesWithPlayer",
+          "Value": "{CharacterName} dej\u00F3 pasar a {PlayerName}."
+        },
+        {
+          "Key": "PlayerPutItemOnBag",
+          "Value": "{CharacterName} coloc\u00F3 {ItemName} en la bolsa."
+        },
+        {
+          "Key": "PlayerPutItemOnFloor",
+          "Value": "{CharacterName} dej\u00F3 {ItemName} en el piso."
+        },
+        {
+          "Key": "NPCPickItem",
+          "Value": "{CharacterName} tom\u00F3 {ItemName}."
+        },
+        {
+          "Key": "NPCPutItemOnFloor",
+          "Value": "{CharacterName} solt\u00F3 {ItemName} al piso."
+        },
+        {
+          "Key": "NPCItemCannotBePutOnFloor",
+          "Value": "\u00A1{ItemName} se ha destruido!"
+        },
+        {
+          "Key": "InventoryIsFull",
+          "Value": "No se puede tomar {ItemName}. El inventario est\u00E1 lleno."
+        },
+        {
+          "Key": "TileIsOccupied",
+          "Value": "No se puede soltar {ItemName}. La casilla est\u00E1 ocupada."
+        },
+        {
+          "Key": "NoTarget",
+          "Value": "\u00A1Pero no hab\u00EDa un objetivo!"
+        },
+        {
+          "Key": "CannotBeUsed",
+          "Value": "NO SE PUEDE USAR"
+        },
+        {
+          "Key": "OnCooldown",
+          "Value": "EN RECUPERACI\u00D3N:\nQUEDA(N) {CurrentCooldown} TURNO(S)"
+        },
+        {
+          "Key": "MaximumUses",
+          "Value": "ALCANZADO M\u00C1XIMO DE USOS"
+        },
+        {
+          "Key": "RemainingUseCount",
+          "Value": "QUEDA(N) {RemainingUses} USO(S)"
+        },
+        {
+          "Key": "TargetIsTooClose",
+          "Value": "EL OBJETIVO EST\u00C1 DEMASIADO CERCA"
+        },
+        {
+          "Key": "TargetIsTooFarAway",
+          "Value": "EL OBJETIVO EST\u00C1 DEMASIADO LEJOS"
+        },
+        {
+          "Key": "TargetIsOfWrongFaction",
+          "Value": "EL OBJETIVO DEBE SER {FactionTargets}"
+        },
+        {
+          "Key": "TargetTypeSelf",
+          "Value": "UNO MISMO"
+        },
+        {
+          "Key": "TargetTypeAlly",
+          "Value": "ALIADO"
+        },
+        {
+          "Key": "TargetTypeNeutral",
+          "Value": "NEUTRAL"
+        },
+        {
+          "Key": "TargetTypeEnemy",
+          "Value": "ENEMIGO"
+        },
+        {
+          "Key": "RequiresATarget",
+          "Value": "REQUIERE UN OBJETIVO"
+        },
+        {
+          "Key": "FromSource",
+          "Value": "(Origen: {SourceName})"
+        },
+        {
+          "Key": "SightRangeStatFullMap",
+          "Value": "Mapa entero"
+        },
+        {
+          "Key": "SightRangeStatFullRoom",
+          "Value": "Habitaci\u00F3n entera"
+        },
+        {
+          "Key": "SightRangeStatFlatNumber",
+          "Value": "{SightRange} casillas"
+        },
+        {
+          "Key": "InventorySizeStatFlatNumber",
+          "Value": "{InventorySize} objetos"
+        },
+        {
+          "Key": "CharacterLevelsUpMessage",
+          "Value": "{CharacterName} ha alcanzado el Nivel {Level}!"
+        },
+        {
+          "Key": "CharacterLevelsUpHeader",
+          "Value": "\u00A1FELICIDADES!"
+        },
+        {
+          "Key": "CharacterHPStat",
+          "Value": "PS"
+        },
+        {
+          "Key": "CharacterMaxHPStat",
+          "Value": "PS M\u00E1ximos"
+        },
+        {
+          "Key": "CharacterAttackStat",
+          "Value": "Ataque"
+        },
+        {
+          "Key": "CharacterDefenseStat",
+          "Value": "Defensa"
+        },
+        {
+          "Key": "CharacterMovementStat",
+          "Value": "Movimiento"
+        },
+        {
+          "Key": "CharacterSightRangeStat",
+          "Value": "Visi\u00F3n"
+        },
+        {
+          "Key": "CharacterHPRegenerationStat",
+          "Value": "Regeneraci\u00F3n de PS"
+        },
+        {
+          "Key": "CharacterInventorySizeStat",
+          "Value": "Capacidad de inventario"
+        },
+        {
+          "Key": "CharacterDamageStat",
+          "Value": "Da\u00F1o"
+        },
+        {
+          "Key": "CharacterMitigationStat",
+          "Value": "Mitigaci\u00F3n"
+        },
+        {
+          "Key": "CharacterTakesDamage",
+          "Value": "{CharacterName} recibi\u00F3 {DamageDealt} puntos de da\u00F1o."
+        },
+        {
+          "Key": "CharacterHealsSomeHP",
+          "Value": "\u00A1{CharacterName} ha recuperado {HealAmount} PS!"
+        },
+        {
+          "Key": "CharacterHealsAllHP",
+          "Value": "\u00A1{CharacterName} ha recuperado todos los PS!"
+        },
+        {
+          "Key": "CharacterGainsExperience",
+          "Value": "{CharacterName} ha obtenido {Amount} puntos de experiencia."
+        },
+        {
+          "Key": "CharacterGotStatused",
+          "Value": "\u00A1{CharacterName} ahora est\u00E1 {StatusName}!"
+        },
+        {
+          "Key": "CharacterStatusGotRefreshed",
+          "Value": "\u00A1{StatusName} de {CharacterName} se ha vuelto a aplicar!"
+        },
+        {
+          "Key": "CharacterIsNoLongerStatused",
+          "Value": "\u00A1{CharacterName} ya no est\u00E1 {StatusName}!"
+        },
+        {
+          "Key": "CharacterStatGotBuffed",
+          "Value": "{StatName} de {CharacterName} ha aumentado en {Amount}."
+        },
+        {
+          "Key": "CharacterStatGotNerfed",
+          "Value": "{StatName} de {CharacterName} ha disminuido en {Amount}."
+        },
+        {
+          "Key": "CharacterStatGotNeutralized",
+          "Value": "{StatName} de {CharacterName} ha vuelto a la normalidad."
+        },
+        {
+          "Key": "CharacterWasTeleported",
+          "Value": "{CharacterName} se ha teletransportado a otro sitio."
+        },
+        {
+          "Key": "CharacterStealsItem",
+          "Value": "\u00A1{SourceName} le ha quitado {ItemName} a {TargetName}!"
+        },
+        {
+          "Key": "StairsGotRevealed",
+          "Value": "\u00A1Se han revelado las escaleras!"
+        },
+        {
+          "Key": "PlayerFactionName",
+          "Value": "Jugador"
+        },
+        {
+          "Key": "PlayerFactionDescription",
+          "Value": "Descripci\u00F3n. A\u00FAn no se usa."
+        },
+        {
+          "Key": "AlliesFactionName",
+          "Value": "Aliados"
+        },
+        {
+          "Key": "AlliesFactionDescription",
+          "Value": "Descripci\u00F3n. A\u00FAn no se usa."
+        },
+        {
+          "Key": "EnemiesFactionName",
+          "Value": "Enemigos"
+        },
+        {
+          "Key": "EnemiesFactionDescription",
+          "Value": "Descripci\u00F3n. A\u00FAn no se usa."
+        },
+        {
+          "Key": "PlayerName",
+          "Value": "Jugador"
+        },
+        {
+          "Key": "PlayerDescription",
+          "Value": "Descripci\u00F3n. A\u00FAn no se usa."
+        },
+        {
+          "Key": "PlayerDeathText",
+          "Value": "\u00A1{this} ha muerto!"
+        },
+        {
+          "Key": "PlayerDeathMessageBoxHeader",
+          "Value": "\u00A1OH, NO!"
+        },
+        {
+          "Key": "PlayerDeathMessageBoxText",
+          "Value": "\u00A1HAS MUERTO!"
+        },
+        {
+          "Key": "EnemyName",
+          "Value": "Enemigo"
+        },
+        {
+          "Key": "EnemyDescription",
+          "Value": "Descripci\u00F3n. A\u00FAn no se usa."
+        },
+        {
+          "Key": "EnemyStickTongueText",
+          "Value": "{this} le saca la lengua {target}."
+        },
+        {
+          "Key": "EnemyDeathText",
+          "Value": "El malvado {this} acaba de morir."
+        },
+        {
+          "Key": "UnarmedName",
+          "Value": "Desarmado"
+        },
+        {
+          "Key": "UnarmedDescription",
+          "Value": "Sin un arma.\n\nDa\u00F1o de arma: 0"
+        },
+        {
+          "Key": "MeleeWeaponAttackName",
+          "Value": "Ataque Mel\u00E9 de Arma"
+        },
+        {
+          "Key": "UnarmedAttackDescription",
+          "Value": "Causa da\u00F1o normal sin efecto secundario.\n\nPrecisi\u00F3n: 95%"
+        },
+        {
+          "Key": "UnarmedAttackText",
+          "Value": "{source} intenta darle un pu\u00F1etazo a {target}."
+        },
+        {
+          "Key": "FailedAttackText",
+          "Value": "\u00A1Pero fall\u00F3!"
+        },
+        {
+          "Key": "ClothArmorName",
+          "Value": "Tela"
+        },
+        {
+          "Key": "ClothArmorDescription",
+          "Value": "Armadura b\u00E1sica y ligera.\n\nMitigaci\u00F3n: 0"
+        },
+        {
+          "Key": "SkirtName",
+          "Value": "Falda"
+        },
+        {
+          "Key": "SkirtDescription",
+          "Value": "\u00BFC\u00F3mo es que est\u00E1s leyendo esto?"
+        },
+        {
+          "Key": "HealingPotionName",
+          "Value": "Poci\u00F3n de curaci\u00F3n"
+        },
+        {
+          "Key": "HealingPotionDescription",
+          "Value": "El objeto de curaci\u00F3n m\u00E1s elemental.\n\nCura hasta 2d4 puntos de vida antes de desaparecer."
+        },
+        {
+          "Key": "ObjectSteppedText",
+          "Value": "{target} pas\u00F3 por encima de {this}."
+        },
+        {
+          "Key": "ObjectEquippedText",
+          "Value": "{target} equipa {this}."
+        },
+        {
+          "Key": "ObjectDrunkText",
+          "Value": "{target} bebe {this}."
+        },
+        {
+          "Key": "ObjectDisappearedText",
+          "Value": "{this} acaba de desaparecer."
+        },
+        {
+          "Key": "ObjectNotUsedText",
+          "Value": "... o mejor no, porque no tendr\u00EDa efecto."
+        },
+        {
+          "Key": "ObjectNotActivatedText",
+          "Value": "\u00A1{this} no se activ\u00F3!"
+        },
+        {
+          "Key": "SwordName",
+          "Value": "Espada"
+        },
+        {
+          "Key": "SwordDescription",
+          "Value": "Herramienta confiable para cortar enemigos.\n\nDa\u00F1o de arma: 1d3"
+        },
+        {
+          "Key": "SwordAttackDescription",
+          "Value": "Causa da\u00F1o normal sin efecto secundario.\n\nPrecisi\u00F3n: 90%"
+        },
+        {
+          "Key": "SwordAttackText",
+          "Value": "{source} blande la {this} hacia {target}."
+        },
+        {
+          "Key": "PoisonedName",
+          "Value": "Envenenado"
+        },
+        {
+          "Key": "PoisonedDescription",
+          "Value": "Recibiendo da\u00F1o cada 28 turnos"
+        },
+        {
+          "Key": "PoisonedText",
+          "Value": "El veneno recorre el cuerpo de {target}."
+        },
+        {
+          "Key": "SchoolNameNormal",
+          "Value": "Normal"
+        },
+        {
+          "Key": "CurrencyName",
+          "Value": "Gold"
+        },
+        {
+          "Key": "CurrencyDescription",
+          "Value": "Sparkling coins used as trade money"
+        },
+        {
+          "Key": "ItemSlotWeaponName",
+          "Value": "Weapon"
+        },
+        {
+          "Key": "ItemSlotArmorName",
+          "Value": "Armor"
+        },
+        {
+          "Key": "ItemTypeWeaponName",
+          "Value": "Weapon"
+        },
+        {
+          "Key": "ItemTypeArmorName",
+          "Value": "Armor"
+        },
+        {
+          "Key": "ItemTypeConsumableName",
+          "Value": "Consumable"
+        },
+        {
+          "Key": "ItemTypeCharmName",
+          "Value": "Charm"
+        },
+        {
+          "Key": "DefaultAttackDescription",
+          "Value": "Deals damage with no secondary effect."
+        },
+        {
+          "Key": "DefaultMeleeAttackText",
+          "Value": "{source} tries to hit {target}."
+        }
+      ]
+    }
+  ],
+  "AmountOfFloors": 1,
+  "TileTypeInfos": [
+    {
+      "Id": "Floor",
+      "Name": "TileTypeFloor",
+      "IsWalkable": true,
+      "IsSolid": false,
+      "IsVisible": true,
+      "AcceptsItems": true,
+      "CanBeTransformed": true,
+      "CanVisiblyConnectWithOtherTiles": false,
+      "CanHaveMultilineConnections": false,
+      "CausesPartialInvisibility": false
+    },
+    {
+      "Id": "Empty",
+      "Name": "TileTypeEmpty",
+      "IsWalkable": false,
+      "IsSolid": false,
+      "IsVisible": true,
+      "AcceptsItems": false,
+      "CanBeTransformed": false,
+      "CanVisiblyConnectWithOtherTiles": false,
+      "CanHaveMultilineConnections": false,
+      "CausesPartialInvisibility": false
+    },
+    {
+      "Id": "Wall",
+      "Name": "TileTypeWall",
+      "IsWalkable": false,
+      "IsSolid": true,
+      "IsVisible": false,
+      "AcceptsItems": false,
+      "CanBeTransformed": true,
+      "CanVisiblyConnectWithOtherTiles": true,
+      "CanHaveMultilineConnections": false,
+      "CausesPartialInvisibility": false
+    },
+    {
+      "Id": "Hallway",
+      "Name": "TileTypeHallway",
+      "IsWalkable": true,
+      "IsSolid": false,
+      "IsVisible": true,
+      "AcceptsItems": true,
+      "CanBeTransformed": true,
+      "CanVisiblyConnectWithOtherTiles": true,
+      "CanHaveMultilineConnections": true,
+      "CausesPartialInvisibility": false
+    },
+    {
+      "Id": "Stairs",
+      "Name": "TileTypeStairs",
+      "IsWalkable": true,
+      "IsSolid": false,
+      "IsVisible": true,
+      "AcceptsItems": false,
+      "CanBeTransformed": false,
+      "CanVisiblyConnectWithOtherTiles": false,
+      "CanHaveMultilineConnections": false,
+      "CausesPartialInvisibility": false
+    }
+  ],
+  "TileSetInfos": [
+    {
+      "Id": "Default",
+      "TileTypes": [
+        {
+          "TileTypeId": "Empty",
+          "Central": {
+            "Character": " ",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Floor",
+          "Central": {
+            "Character": ".",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 169,
+              "G": 169,
+              "B": 169,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Wall",
+          "Connector": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Central": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "TopLeft": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "TopRight": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "BottomLeft": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "BottomRight": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Horizontal": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Vertical": {
+            "Character": "\u2588",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Hallway",
+          "Connector": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Central": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "TopLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "TopRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "BottomLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "BottomRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Horizontal": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "HorizontalBottom": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "HorizontalTop": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "Vertical": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "VerticalLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          },
+          "VerticalRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Stairs",
+          "Central": {
+            "Character": "\u003E",
+            "BackgroundColor": {
+              "R": 255,
+              "G": 255,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 100,
+              "B": 0,
+              "A": 255
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Id": "Retro",
+      "TileTypes": [
+        {
+          "TileTypeId": "Empty",
+          "Central": {
+            "Character": " ",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Floor",
+          "Central": {
+            "Character": ".",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 84,
+              "G": 252,
+              "B": 84,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Wall",
+          "Connector": {
+            "Character": "\u256C",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "Central": {
+            "Character": "\u256C",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "TopLeft": {
+            "Character": "\u2554",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "TopRight": {
+            "Character": "\u2557",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "BottomLeft": {
+            "Character": "\u255A",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "BottomRight": {
+            "Character": "\u255D",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "Horizontal": {
+            "Character": "\u2550",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "Vertical": {
+            "Character": "\u2551",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Hallway",
+          "Connector": {
+            "Character": "\u256C",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 84,
+              "B": 0,
+              "A": 255
+            }
+          },
+          "Central": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "TopLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "TopRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "BottomLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "BottomRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "Horizontal": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "HorizontalBottom": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "HorizontalTop": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "Vertical": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "VerticalLeft": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          },
+          "VerticalRight": {
+            "Character": "\u2592",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 168,
+              "G": 168,
+              "B": 168,
+              "A": 255
+            }
+          }
+        },
+        {
+          "TileTypeId": "Stairs",
+          "Central": {
+            "Character": "\u256B",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "ForegroundColor": {
+              "R": 84,
+              "G": 252,
+              "B": 84,
+              "A": 255
+            }
+          }
+        }
+      ]
     }
   ],
   "FloorInfos": [
@@ -221,48 +2103,177 @@
       "Width": 64,
       "Height": 32,
       "GenerateStairsOnStart": true,
+      "TileSetId": "Default",
       "PossibleMonsters": [
-        { "ClassId": "Enemy" , "MinLevel": 1, "MaxLevel": 1, "SimultaneousMaxForKindInFloor": 1, "OverallMaxForKindInFloor": 1, "ChanceToPick": 100, "CanSpawnOnFirstTurn": true, "CanSpawnAfterFirstTurn": true  }
+        {
+          "ClassId": "Enemy",
+          "OverallMaxForKindInFloor": 1,
+          "CanSpawnOnFirstTurn": true,
+          "CanSpawnAfterFirstTurn": true,
+          "MinLevel": 1,
+          "MaxLevel": 1,
+          "MinimumInFirstTurn": 0,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 100,
+          "SpawnCondition": ""
+        }
       ],
-	    "SimultaneousMinMonstersAtStart": 1,
+      "SimultaneousMinMonstersAtStart": 1,
       "SimultaneousMaxMonstersInFloor": 1,
       "TurnsPerMonsterGeneration": 100,
       "PossibleItems": [
-        { "ClassId": "HealingPotion"           , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 50 },
-        { "ClassId": "Sword"                   , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 50 }
+        {
+          "ClassId": "HealingPotion",
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "MinLevel": 1,
+          "MaxLevel": 1,
+          "MinimumInFirstTurn": 0,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 50,
+          "SpawnCondition": ""
+        },
+        {
+          "ClassId": "Sword",
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "MinLevel": 1,
+          "MaxLevel": 1,
+          "MinimumInFirstTurn": 0,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 50,
+          "SpawnCondition": ""
+        }
       ],
       "MinItemsInFloor": 0,
       "MaxItemsInFloor": 2,
       "PossibleTraps": [
-        { "ClassId": "SpikeTrap" , "SimultaneousMaxForKindInFloor": 1, "ChanceToPick": 100 }
+        {
+          "ClassId": "SpikeTrap",
+          "OverallMaxForKindInFloor": 0,
+          "CanSpawnOnFirstTurn": false,
+          "CanSpawnAfterFirstTurn": false,
+          "MinLevel": 1,
+          "MaxLevel": 1,
+          "MinimumInFirstTurn": 0,
+          "SimultaneousMaxForKindInFloor": 1,
+          "ChanceToPick": 100,
+          "SpawnCondition": ""
+        }
       ],
-	    "MinTrapsInFloor": 1,
+      "MinTrapsInFloor": 1,
       "MaxTrapsInFloor": 5,
       "MaxConnectionsBetweenRooms": 1,
       "OddsForExtraConnections": 0,
       "RoomFusionOdds": 5,
-      "PossibleGeneratorAlgorithms": [
-        { "Name": "Standard"      , "Rows": 3, "Columns": 3 },
-        { "Name": "Standard"      , "Rows": 4, "Columns": 4 },
-        { "Name": "Standard"      , "Rows": 2, "Columns": 3 },
-        { "Name": "Standard"      , "Rows": 4, "Columns": 3 },
-        { "Name": "OuterDummyRing", "Rows": 4, "Columns": 4 },
-        { "Name": "InnerDummyRing", "Rows": 4, "Columns": 4 }
-      ],
-      "OnFloorStartActions": [{
-        "Name": "DungeonStartMessage",
-        "Effect": {
-          "EffectName": "MessageBox",
-          "Params": [
-            { "ParamName": "title", "Value": "DungeonName" },
-            { "ParamName": "text" , "Value": "WelcomeMessage" },
-            { "ParamName": "color", "Value": "255,255,0,255"    }
-          ],
-          "Then": null,
-          "OnSuccess": null,
-          "OnFailure": null
+      "MonsterHouseOdds": 0,
+      "HungerDegeneration": 0,
+      "PossibleLayouts": [
+        {
+          "Name": "Standard - 3c x 3r",
+          "ProceduralGenerator": {
+            "Rows": 3,
+            "Columns": 3,
+            "RoomDisposition": "?????? ? ??????? ? ??????",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 21,
+              "Height": 10
+            }
+          }
+        },
+        {
+          "Name": "Standard - 4c x 4r",
+          "ProceduralGenerator": {
+            "Rows": 4,
+            "Columns": 4,
+            "RoomDisposition": "???????? ? ? ????????? ? ? ????????? ? ? ????????",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 16,
+              "Height": 8
+            }
+          }
+        },
+        {
+          "Name": "Standard - 3c x 2r",
+          "ProceduralGenerator": {
+            "Rows": 2,
+            "Columns": 3,
+            "RoomDisposition": "?????? ? ??????",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 21,
+              "Height": 16
+            }
+          }
+        },
+        {
+          "Name": "Standard - 3c x 4r",
+          "ProceduralGenerator": {
+            "Rows": 4,
+            "Columns": 3,
+            "RoomDisposition": "?????? ? ??????? ? ??????? ? ??????",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 21,
+              "Height": 8
+            }
+          }
+        },
+        {
+          "Name": "OuterDummyRing - 4c x 4r",
+          "ProceduralGenerator": {
+            "Rows": 4,
+            "Columns": 4,
+            "RoomDisposition": "D?D?D?D? ? ? ?D?R?R?D? ? ? ?D?R?R?D? ? ? ?D?D?D?D",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 16,
+              "Height": 8
+            }
+          }
+        },
+        {
+          "Name": "InnerDummyRing - 4c x 4r",
+          "ProceduralGenerator": {
+            "Rows": 4,
+            "Columns": 4,
+            "RoomDisposition": "R?R?R?R? ? ? ?R?D?D?R? ? ? ?R?D?D?R? ? ? ?R?R?R?R",
+            "MinRoomSize": {
+              "Width": 5,
+              "Height": 5
+            },
+            "MaxRoomSize": {
+              "Width": 16,
+              "Height": 8
+            }
+          }
         }
-      }]
+      ],
+      "PossibleKeys": {
+        "LockedRoomOdds": 0,
+        "KeySpawnInEnemyInventoryOdds": 0,
+        "MaxPercentageOfLockedCandidateRooms": 0,
+        "KeyTypes": []
+      }
     }
   ],
   "FactionInfos": [
@@ -270,553 +2281,1230 @@
       "Id": "Player",
       "Name": "PlayerFactionName",
       "Description": "PlayerFactionDescription",
-      "AlliedWith": [ "Player", "AlliedNPCs" ],
+      "AlliedWith": [
+        "Player",
+        "AlliedNPCs"
+      ],
       "NeutralWith": [],
-      "EnemiesWith": [ "Enemies" ]
+      "EnemiesWith": [
+        "Enemies"
+      ]
     },
     {
       "Id": "AlliedNPCs",
       "Name": "AlliesFactionName",
       "Description": "AlliesFactionDescription",
-      "AlliedWith": [ "Player", "AlliedNPCs" ],
+      "AlliedWith": [
+        "Player",
+        "AlliedNPCs"
+      ],
       "NeutralWith": [],
-      "EnemiesWith": [ "Enemies" ]
+      "EnemiesWith": [
+        "Enemies"
+      ]
     },
     {
       "Id": "Enemies",
       "Name": "EnemiesFactionName",
       "Description": "EnemiesFactionDescription",
-      "AlliedWith": [ ],
-      "NeutralWith": [ ],
-      "EnemiesWith": [ "Player", "AlliedNPCs" ]
+      "AlliedWith": [],
+      "NeutralWith": [],
+      "EnemiesWith": [
+        "Player",
+        "AlliedNPCs"
+      ]
+    }
+  ],
+  "ElementInfos": [
+    {
+      "Id": "Normal",
+      "Name": "ElementNameNormal",
+      "Color": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 255
+      },
+      "ResistanceStatId": "",
+      "ExcessResistanceCausesHealDamage": false
+    }
+  ],
+  "ActionSchoolInfos": [
+    {
+      "Id": "Default",
+      "Name": "SchoolNameDefault"
+    }
+  ],
+  "CharacterStats": [
+    {
+      "Id": "HP",
+      "Name": "CharacterHPStat",
+      "StatType": "HP",
+      "HasMax": true
+    },
+    {
+      "Id": "HPRegeneration",
+      "Name": "CharacterHPRegenerationStat",
+      "StatType": "Regeneration",
+      "HasMax": false,
+      "RegeneratesStatId": "HP"
+    },
+    {
+      "Id": "MP",
+      "Name": "CharacterMPStat",
+      "StatType": "MP",
+      "HasMax": true
+    },
+    {
+      "Id": "MPRegeneration",
+      "Name": "CharacterMPRegenerationStat",
+      "StatType": "Regeneration",
+      "HasMax": false,
+      "RegeneratesStatId": "MP"
+    },
+    {
+      "Id": "Hunger",
+      "Name": "CharacterHungerStat",
+      "StatType": "Hunger",
+      "HasMax": true
+    },
+    {
+      "Id": "Attack",
+      "Name": "CharacterAttackStat",
+      "StatType": "Integer",
+      "HasMax": false
+    },
+    {
+      "Id": "Defense",
+      "Name": "CharacterDefenseStat",
+      "StatType": "Integer",
+      "HasMax": false
+    },
+    {
+      "Id": "Movement",
+      "Name": "CharacterMovementStat",
+      "StatType": "Integer",
+      "HasMax": false
+    },
+    {
+      "Id": "Accuracy",
+      "Name": "CharacterAccuracyStat",
+      "StatType": "Percentage",
+      "HasMax": false
+    },
+    {
+      "Id": "Evasion",
+      "Name": "CharacterEvasionStat",
+      "StatType": "Percentage",
+      "HasMax": false
+    }
+  ],
+  "LootTableInfos": [
+    {
+      "Id": "Default",
+      "Entries": [
+        {
+          "PickId": "No Drop",
+          "Weight": 100
+        }
+      ],
+      "OverridesQualityLevelOddsOfItems": false,
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ]
+    }
+  ],
+  "CurrencyInfo": {
+    "Name": "CurrencyName",
+    "Description": "CurrencyDescription",
+    "ConsoleRepresentation": {
+      "Character": "$",
+      "BackgroundColor": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 255
+      },
+      "ForegroundColor": {
+        "R": 255,
+        "G": 255,
+        "B": 0,
+        "A": 255
+      }
+    },
+    "CurrencyPiles": [
+      {
+        "Id": "Normal",
+        "Minimum": 1,
+        "Maximum": 1
+      }
+    ]
+  },
+  "AffixInfos": [],
+  "NPCModifierInfos": [],
+  "QualityLevelInfos": [
+    {
+      "Id": "Normal",
+      "Name": "QualityLevelNormal",
+      "MinimumAffixes": 0,
+      "MaximumAffixes": 0,
+      "AttachesWhatToItemName": "None",
+      "ItemNameColor": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 255
+      }
+    }
+  ],
+  "LearnsetInfos": [
+    {
+      "Id": "Default",
+      "Entries": []
     }
   ],
   "PlayerClasses": [
     {
-      "Id": "Player",
-      "Name": "PlayerName",
-      "Description": "PlayerDescription",
-      "ConsoleRepresentation": {
-        "Character": "☺",
-        "BackgroundColor": { "R": 0  , "G": 0  , "B": 0, "A": 255 },
-        "ForegroundColor": { "R": 124, "G": 252, "B": 0, "A": 255 }
-      },
       "RequiresNamePrompt": true,
+      "SaleValuePercentage": 50,
+      "NeedsToIdentifyItems": false,
       "Faction": "Player",
       "StartsVisible": true,
-      "BaseHP": 12,
-      "BaseAttack": 2,
-      "BaseDefense": 0,
-      "BaseMovement": 1,
-      "BaseHPRegeneration": 0.075,
+      "Stats": [
+        {
+          "StatId": "HP",
+          "Base": 12,
+          "IncreasePerLevel": 2,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "HPRegeneration",
+          "Base": 0.075,
+          "IncreasePerLevel": 0.025,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Attack",
+          "Base": 2,
+          "IncreasePerLevel": 1,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Defense",
+          "Base": 0,
+          "IncreasePerLevel": 0.34,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Movement",
+          "Base": 1,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Accuracy",
+          "Base": 0,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Evasion",
+          "Base": 0,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        }
+      ],
       "BaseSightRange": "FullRoom",
       "InventorySize": 3,
-      "StartingWeapon": "Unarmed",
-      "StartingArmor": "ClothArmor",
-      "StartingInventory": [ ],
+      "AvailableSlots": [
+        "Weapon",
+        "Armor"
+      ],
+      "InitialEquipment": [],
+      "StartingInventory": [],
+      "MaxLevel": 10,
       "CanGainExperience": true,
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "OnDeathActions": [{
+      "ExperiencePayoutFormula": "0",
+      "ExperienceToLevelUpFormula": "(1/4) * (level ^ 3) \u002B 2 * level \u002B 8",
+      "Learnset": "Default",
+      "DefaultOnAttack": {
+        "Id": "MeleeWeaponAttackName",
+        "Name": "MeleeWeaponAttackName",
+        "Description": "DefaultAttackDescription",
+        "IsScript": false,
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [
+          "Enemy"
+        ],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "School": "Default",
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "Text",
+              "Value": "DefaultMeleeAttackText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              {
+                "ParamName": "Accuracy",
+                "Value": "95"
+              },
+              {
+                "ParamName": "Attacker",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Attack",
+                "Value": "{source.Damage}"
+              },
+              {
+                "ParamName": "Defense",
+                "Value": "{target.Mitigation}"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "False"
+              },
+              {
+                "ParamName": "CriticalHitChance",
+                "Value": "10"
+              },
+              {
+                "ParamName": "CriticalHitFormula",
+                "Value": "{CalculatedDamage} * 2"
+              },
+              {
+                "ParamName": "Element",
+                "Value": "Normal"
+              },
+              {
+                "ParamName": "BypassesResistances",
+                "Value": "True"
+              },
+              {
+                "ParamName": "BypassesElementEffect",
+                "Value": "True"
+              },
+              {
+                "ParamName": "InformOfFailure",
+                "Value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "OnAttack": [],
+      "OnDeath": {
+        "Id": "PrintDeath",
         "Name": "PrintDeath",
+        "IsScript": false,
         "MinimumRange": 0,
         "MaximumRange": 0,
         "CooldownBetweenUses": 0,
         "MaximumUses": 0,
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "School": "Default",
+        "StartingCooldown": 0,
         "Effect": {
           "EffectName": "ReplaceConsoleRepresentation",
           "Params": [
-            { "ParamName": "color", "Value": "255,0,0,255" }
+            {
+              "ParamName": "ForeColor",
+              "Value": "255,0,0,255"
+            }
           ],
           "Then": {
             "EffectName": "PrintText",
             "Params": [
-              { "ParamName": "text", "Value": "PlayerDeathText" }
+              {
+                "ParamName": "text",
+                "Value": "PlayerDeathText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "false"
+              }
             ],
             "Then": {
               "EffectName": "MessageBox",
               "Params": [
-                { "ParamName": "title", "Value": "PlayerDeathMessageBoxHeader" },
-                { "ParamName": "text" , "Value": "PlayerDeathMessageBoxText" },
-                { "ParamName": "color", "Value": "255,0,0,255"    }
-              ],
-              "Then": null,
-              "OnSuccess": null,
-              "OnFailure": null
-            },
-            "OnSuccess": null,
-            "OnFailure": null
-          },
-          "OnSuccess": null,
-          "OnFailure": null
+                {
+                  "ParamName": "title",
+                  "Value": "PlayerDeathMessageBoxHeader"
+                },
+                {
+                  "ParamName": "text",
+                  "Value": "PlayerDeathMessageBoxText"
+                },
+                {
+                  "ParamName": "color",
+                  "Value": "255,0,0,255"
+                }
+              ]
+            }
+          }
         }
-      }],
-      "MaxLevel": 10,
-      "ExperiencePayoutFormula": "0",
-      "ExperienceToLevelUpFormula": "(1/4) * (level ^ 3) + 2 * level + 8",
-      "MaxHPIncreasePerLevel": 2,
-      "AttackIncreasePerLevel": 1,
-      "DefenseIncreasePerLevel": 0.34,
-      "MovementIncreasePerLevel": 0,
-      "HPRegenerationIncreasePerLevel": 0.025
+      },
+      "Id": "Player",
+      "Name": "PlayerName",
+      "Description": "PlayerDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u263A",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 124,
+          "G": 252,
+          "B": 0,
+          "A": 255
+        }
+      }
     }
   ],
   "NPCs": [
     {
+      "AIType": "Default",
+      "KnowsAllCharacterPositions": true,
+      "PursuesOutOfSightCharacters": false,
+      "WandersIfWithoutTarget": false,
+      "OnInteracted": [],
+      "DropsEquipmentOnDeath": false,
+      "ReappearsOnTheNextFloorIfAlliedToThePlayer": false,
+      "RegularLootTable": {
+        "LootTableId": "None",
+        "DropPicks": 0
+      },
+      "ModifierData": [
+        {
+          "Level": 1,
+          "ModifierAmount": 0
+        }
+      ],
+      "OddsForModifier": 0,
+      "RandomizesForecolorIfWithModifiers": false,
+      "BaseHPMultiplierIfWithModifiers": 1,
+      "ExperienceYieldMultiplierIfWithModifiers": 1,
+      "LootTableWithModifiers": {
+        "LootTableId": "None",
+        "DropPicks": 0
+      },
+      "Faction": "Enemies",
+      "StartsVisible": true,
+      "Stats": [
+        {
+          "StatId": "HP",
+          "Base": 4,
+          "IncreasePerLevel": 1,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "HPRegeneration",
+          "Base": 0,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Attack",
+          "Base": 1,
+          "IncreasePerLevel": 0.5,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Defense",
+          "Base": 0,
+          "IncreasePerLevel": 0.25,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Movement",
+          "Base": 1,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Accuracy",
+          "Base": 0,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        },
+        {
+          "StatId": "Evasion",
+          "Base": 0,
+          "IncreasePerLevel": 0,
+          "Minimum": 0,
+          "Maximum": 0
+        }
+      ],
+      "BaseSightRange": "FullRoom",
+      "InventorySize": 0,
+      "AvailableSlots": [
+        "Weapon",
+        "Armor"
+      ],
+      "InitialEquipment": [
+        "Unarmed",
+        "Skirt"
+      ],
+      "StartingInventory": [],
+      "MaxLevel": 10,
+      "CanGainExperience": false,
+      "ExperiencePayoutFormula": "1 * Level",
+      "ExperienceToLevelUpFormula": "500",
+      "Learnset": "Default",
+      "DefaultOnAttack": {
+        "Id": "MeleeWeaponAttackName",
+        "Name": "MeleeWeaponAttackName",
+        "Description": "DefaultAttackDescription",
+        "IsScript": false,
+        "MinimumRange": 1,
+        "MaximumRange": 1,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "TargetTypes": [
+          "Enemy"
+        ],
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "School": "Default",
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "Text",
+              "Value": "DefaultMeleeAttackText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "False"
+            }
+          ],
+          "Then": {
+            "EffectName": "DealDamage",
+            "Params": [
+              {
+                "ParamName": "Accuracy",
+                "Value": "95"
+              },
+              {
+                "ParamName": "Attacker",
+                "Value": "source"
+              },
+              {
+                "ParamName": "Target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "Attack",
+                "Value": "{source.Damage}"
+              },
+              {
+                "ParamName": "Defense",
+                "Value": "{target.Mitigation}"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "False"
+              },
+              {
+                "ParamName": "CriticalHitChance",
+                "Value": "10"
+              },
+              {
+                "ParamName": "CriticalHitFormula",
+                "Value": "{CalculatedDamage} * 2"
+              },
+              {
+                "ParamName": "Element",
+                "Value": "Normal"
+              },
+              {
+                "ParamName": "BypassesResistances",
+                "Value": "True"
+              },
+              {
+                "ParamName": "BypassesElementEffect",
+                "Value": "True"
+              },
+              {
+                "ParamName": "InformOfFailure",
+                "Value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "OnAttack": [
+        {
+          "Id": "StickTongue",
+          "Name": "StickTongue",
+          "IsScript": false,
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 3,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "enemy"
+          ],
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "School": "Default",
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "EnemyStickTongueText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "false"
+              }
+            ]
+          }
+        }
+      ],
+      "OnDeath": {
+        "Id": "PrintDeath",
+        "Name": "PrintDeath",
+        "IsScript": false,
+        "MinimumRange": 0,
+        "MaximumRange": 0,
+        "CooldownBetweenUses": 0,
+        "MaximumUses": 0,
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "School": "Default",
+        "StartingCooldown": 0,
+        "Effect": {
+          "EffectName": "PrintText",
+          "Params": [
+            {
+              "ParamName": "text",
+              "Value": "EnemyDeathText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "false"
+            }
+          ],
+          "Then": {
+            "EffectName": "ReplaceConsoleRepresentation",
+            "Params": [
+              {
+                "ParamName": "character",
+                "Value": "\u00B1"
+              }
+            ]
+          }
+        }
+      },
       "Id": "Enemy",
       "Name": "EnemyName",
       "Description": "EnemyDescription",
       "ConsoleRepresentation": {
         "Character": "e",
-        "BackgroundColor": { "R": 0,   "G": 0, "B": 0, "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 0, "A": 255 }
-      },
-      "EntityType": "NPC",
-      "Faction": "Enemies",
-      "StartsVisible": true,
-      "BaseHP": 4,
-      "BaseAttack": 1,
-      "BaseDefense": 0,
-      "BaseMovement": 1,
-      "BaseHPRegeneration": 0,
-      "BaseSightRange": "FullRoom",
-      "KnowsAllCharacterPositions": true,
-      "InventorySize": 0,
-      "AIOddsToUseActionsOnSelf": 0,
-      "StartingWeapon": "Unarmed",
-      "StartingArmor": "Skirt",
-      "StartingInventory": [ ],
-      "CanGainExperience": false,
-      "OnAttackActions": [{
-        "Name": "StickTongue",
-        "TargetTypes": [ "enemy" ],
-        "MinimumRange": 1,
-        "MaximumRange": 1,
-        "CooldownBetweenUses": 3,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "EnemyStickTongueText" }
-          ],
-          "Then": null,
-          "OnSuccess": null,
-          "OnFailure": null
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 0,
+          "A": 255
         }
-      }],
-      "OnAttackedActions": [],
-      "OnDeathActions": [{
-        "Name": "PrintDeath",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "EnemyDeathText" }
-          ],
-          "Then": {
-            "EffectName": "ReplaceConsoleRepresentation",
-            "Params": [
-              { "ParamName": "character", "Value": "±" }
-            ],
-            "Then": {
-              "EffectName": "GiveExperience",
-              "Params": [
-                { "ParamName": "target", "Value": "target"                  },
-                { "ParamName": "amount", "Value": "{this.experiencepayout}" }
-              ],
-              "Then": null,
-              "OnSuccess": null,
-              "OnFailure": null
-            },
-            "OnSuccess": null,
-            "OnFailure": null
-          },
-          "OnSuccess": null,
-          "OnFailure": null
-        }
-      }],
-      "MaxLevel": 10,
-      "ExperiencePayoutFormula": "1 * Level",
-      "ExperienceToLevelUpFormula": "500",
-      "MaxHPIncreasePerLevel": 1,
-      "AttackIncreasePerLevel": 0.5,
-      "DefenseIncreasePerLevel": 0.25,
-      "MovementIncreasePerLevel": 0,
-      "HpRegenerationIncreasePerLevel": 0.125
+      }
     }
   ],
-  "Items": [    
+  "ItemSlotInfos": [
     {
+      "Id": "Weapon",
+      "Name": "ItemSlotWeaponName"
+    },
+    {
+      "Id": "Armor",
+      "Name": "ItemSlotArmorName"
+    }
+  ],
+  "ItemTypeInfos": [
+    {
+      "Id": "Weapon",
+      "Name": "ItemTypeWeaponName",
+      "Usability": 0,
+      "PowerType": 0,
+      "Slot1": "Weapon",
+      "Slot2": "",
+      "MinimumQualityLevelForUnidentified": "",
+      "UnidentifiedItemName": "???",
+      "UnidentifiedItemDescription": "???",
+      "UnidentifiedItemActionName": "???",
+      "UnidentifiedItemActionDescription": "???"
+    },
+    {
+      "Id": "Armor",
+      "Name": "ItemTypeArmorName",
+      "Usability": 0,
+      "PowerType": 1,
+      "Slot1": "Armor",
+      "Slot2": "",
+      "MinimumQualityLevelForUnidentified": "",
+      "UnidentifiedItemName": "???",
+      "UnidentifiedItemDescription": "???",
+      "UnidentifiedItemActionName": "???",
+      "UnidentifiedItemActionDescription": "???"
+    },
+    {
+      "Id": "Consumable",
+      "Name": "ItemTypeConsumableName",
+      "Usability": 1,
+      "PowerType": 2,
+      "Slot1": "",
+      "Slot2": "",
+      "MinimumQualityLevelForUnidentified": "",
+      "UnidentifiedItemName": "???",
+      "UnidentifiedItemDescription": "???",
+      "UnidentifiedItemActionName": "???",
+      "UnidentifiedItemActionDescription": "???"
+    },
+    {
+      "Id": "Charm",
+      "Name": "ItemTypeCharmName",
+      "Usability": 2,
+      "PowerType": 2,
+      "Slot1": "",
+      "Slot2": "",
+      "MinimumQualityLevelForUnidentified": "",
+      "UnidentifiedItemName": "???",
+      "UnidentifiedItemDescription": "???",
+      "UnidentifiedItemActionName": "???",
+      "UnidentifiedItemActionDescription": "???"
+    }
+  ],
+  "Items": [
+    {
+      "StartsVisible": true,
+      "Power": "0",
+      "ItemType": "Weapon",
+      "StatModifiers": [],
+      "OnAttack": [
+        {
+          "Id": "MeleeWeaponAttackName",
+          "Name": "MeleeWeaponAttackName",
+          "Description": "UnarmedAttackDescription",
+          "IsScript": false,
+          "MinimumRange": 1,
+          "MaximumRange": 1,
+          "CooldownBetweenUses": 0,
+          "MaximumUses": 0,
+          "TargetTypes": [
+            "enemy"
+          ],
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "School": "Default",
+          "StartingCooldown": 0,
+          "Effect": {
+            "EffectName": "PrintText",
+            "Params": [
+              {
+                "ParamName": "text",
+                "Value": "{source} tries to punch {target}."
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "false"
+              }
+            ],
+            "Then": {
+              "EffectName": "DealDamage",
+              "Params": [
+                {
+                  "ParamName": "accuracy",
+                  "Value": "95"
+                },
+                {
+                  "ParamName": "attacker",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "attack",
+                  "Value": "{source.Damage}"
+                },
+                {
+                  "ParamName": "defense",
+                  "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "false"
+                },
+                {
+                  "ParamName": "CriticalHitChance",
+                  "Value": "0"
+                },
+                {
+                  "ParamName": "CriticalHitFormula",
+                  "Value": "{CalculatedDamage}"
+                },
+                {
+                  "ParamName": "Element",
+                  "Value": "Normal"
+                },
+                {
+                  "ParamName": "BypassesResistances",
+                  "Value": "true"
+                },
+                {
+                  "ParamName": "BypassesElementEffect",
+                  "Value": "true"
+                },
+                {
+                  "ParamName": "InformOfFailure",
+                  "Value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "CanDrop": false,
+      "CanBeUnequipped": true,
+      "RequiredPlayerLevel": 1,
+      "MinimumQualityLevel": "Normal",
+      "MaximumQualityLevel": "Normal",
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ],
+      "BaseValue": 0,
       "Id": "Unarmed",
       "Name": "UnarmedName",
       "Description": "UnarmedDescription",
       "ConsoleRepresentation": {
         "Character": "-",
-        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
-      },
-      "EntityType": "Weapon",
-      "CanBePickedUp": false,
-      "StartsVisible": true,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [{
-        "Name": "MeleeWeaponAttackName",
-        "Description": "UnarmedAttackDescription",
-        "TargetTypes": [ "enemy" ],
-        "MinimumRange": 1,
-        "MaximumRange": 1,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "{source} tries to punch {target}." }
-          ],
-          "Then": {
-            "EffectName": "DealDamage",
-            "Params": [
-              { "ParamName": "accuracy", "Value": "95"                  },
-              { "ParamName": "attacker", "Value": "source"              },
-              { "ParamName": "target"  , "Value": "target"              },
-              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
-              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
-            ],
-            "Then": null,
-            "OnSuccess": null,
-            "OnFailure": {
-              "EffectName": "PrintText",
-              "Params": [
-                { "ParamName": "text", "Value": "But it failed!" }
-              ]
-            }
-          },
-          "OnSuccess": null,
-          "OnFailure": null
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
         }
-      }],
-      "OnAttackedActions": [],
-      "Power": "0"
+      }
     },
     {
+      "StartsVisible": false,
+      "Power": "0",
+      "ItemType": "Armor",
+      "StatModifiers": [],
+      "OnAttack": [],
+      "CanDrop": false,
+      "CanBeUnequipped": true,
+      "RequiredPlayerLevel": 1,
+      "MinimumQualityLevel": "Normal",
+      "MaximumQualityLevel": "Normal",
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ],
+      "BaseValue": 0,
       "Id": "ClothArmor",
       "Name": "ClothArmorName",
       "Description": "ClothArmorDescription",
       "ConsoleRepresentation": {
-        "Character": "♠",
-        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
-      },
-      "EntityType": "Armor",
-      "CanBePickedUp": false,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-	    "OnDeathActions": [],
-      "Power": "0"
-    },    
+        "Character": "\u2660",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      }
+    },
     {
+      "StartsVisible": false,
+      "Power": "0",
+      "ItemType": "Armor",
+      "StatModifiers": [],
+      "OnAttack": [],
+      "CanDrop": false,
+      "CanBeUnequipped": true,
+      "RequiredPlayerLevel": 1,
+      "MinimumQualityLevel": "Normal",
+      "MaximumQualityLevel": "Normal",
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ],
+      "BaseValue": 0,
       "Id": "Skirt",
       "Name": "SkirtName",
       "Description": "SkirtDescription",
       "ConsoleRepresentation": {
-        "Character": "♠",
-        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
-      },
-      "EntityType": "Armor",
-      "CanBePickedUp": false,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [],
-      "OnAttackedActions": [],
-      "Power": "0"
+        "Character": "\u2660",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      }
     },
     {
+      "StartsVisible": true,
+      "Power": "2d4",
+      "ItemType": "Consumable",
+      "StatModifiers": [],
+      "OnAttack": [],
+      "CanDrop": false,
+      "CanBeUnequipped": true,
+      "RequiredPlayerLevel": 1,
+      "MinimumQualityLevel": "Normal",
+      "MaximumQualityLevel": "Normal",
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ],
+      "BaseValue": 0,
       "Id": "HealingPotion",
       "Name": "HealingPotionName",
       "Description": "HealingPotionDescription",
       "ConsoleRepresentation": {
-        "Character": "§",
-        "BackgroundColor": { "R": 0, "G": 0  , "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 0, "G": 255, "B": 255, "A": 255 }
-      },
-      "EntityType": "Consumable",
-      "CanBePickedUp": true,
-      "StartsVisible": true,
-      "Power": "2d4",
-      "OnItemSteppedActions": [{
-        "Name": "PrintStepped",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "ObjectSteppedText" }
-          ],
-          "Then": null,
-          "OnSuccess": null,
-          "OnFailure": null
+        "Character": "\u00A7",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 0,
+          "G": 255,
+          "B": 255,
+          "A": 255
         }
-      }],
-      "OnItemUseActions": [
+      }
+    },
+    {
+      "StartsVisible": true,
+      "Power": "1d3",
+      "ItemType": "Weapon",
+      "StatModifiers": [],
+      "OnAttack": [
         {
-          "Name": "Heal",
-          "MinimumRange": 0,
-          "MaximumRange": 0,
+          "Id": "MeleeWeaponAttackName",
+          "Name": "MeleeWeaponAttackName",
+          "Description": "SwordAttackDescription",
+          "IsScript": false,
+          "MinimumRange": 1,
+          "MaximumRange": 1,
           "CooldownBetweenUses": 0,
           "MaximumUses": 0,
+          "TargetTypes": [
+            "enemy"
+          ],
+          "MPCost": 0,
+          "FinishesTurnWhenUsed": true,
+          "School": "Default",
+          "StartingCooldown": 0,
           "Effect": {
             "EffectName": "PrintText",
             "Params": [
-              { "ParamName": "text", "Value": "ObjectDrunkText" }
+              {
+                "ParamName": "text",
+                "Value": "SwordAttackText"
+              },
+              {
+                "ParamName": "BypassesVisibilityCheck",
+                "Value": "false"
+              }
             ],
             "Then": {
-              "EffectName": "HealDamage",
+              "EffectName": "DealDamage",
               "Params": [
-                { "ParamName": "source", "Value": "source"       },
-                { "ParamName": "target", "Value": "target"       },
-                { "ParamName": "power" , "Value": "{this.Power}" }
-              ],
-              "Then": null,
-              "OnSuccess": {
-                "EffectName": "Remove",
-                "Params": [
-                  { "ParamName": "chance", "Value": "100"  },
-                  { "ParamName": "target", "Value": "this" }
-                ],
-                "Then": null,
-                "OnSuccess": {
-                  "EffectName": "PrintText",
-                  "Params": [
-                    { "ParamName": "text", "Value": "ObjectDisappearedText" }
-                  ],
-                  "Then": null,
-                  "OnSuccess": null,
-                  "OnFailure": null
+                {
+                  "ParamName": "accuracy",
+                  "Value": "90"
                 },
-                "OnFailure": null
-              },
-              "OnFailure": {
-                "EffectName": "PrintText",
-                "Params": [
-                  { "ParamName": "text", "Value": "ObjectNotUsedText" }
-                ],
-                "Then": null,
-                "OnSuccess": null,
-                "OnFailure": null
-              }
-            },
-            "OnSuccess": null,
-            "OnFailure": null
+                {
+                  "ParamName": "attacker",
+                  "Value": "source"
+                },
+                {
+                  "ParamName": "target",
+                  "Value": "target"
+                },
+                {
+                  "ParamName": "attack",
+                  "Value": "{source.Damage}"
+                },
+                {
+                  "ParamName": "defense",
+                  "Value": "{target.Mitigation}"
+                },
+                {
+                  "ParamName": "BypassesAccuracyCheck",
+                  "Value": "false"
+                },
+                {
+                  "ParamName": "CriticalHitChance",
+                  "Value": "0"
+                },
+                {
+                  "ParamName": "CriticalHitFormula",
+                  "Value": "{CalculatedDamage}"
+                },
+                {
+                  "ParamName": "Element",
+                  "Value": "Normal"
+                },
+                {
+                  "ParamName": "BypassesResistances",
+                  "Value": "true"
+                },
+                {
+                  "ParamName": "BypassesElementEffect",
+                  "Value": "true"
+                },
+                {
+                  "ParamName": "InformOfFailure",
+                  "Value": "true"
+                }
+              ]
+            }
           }
-        }]
-    },
-    {
+        }
+      ],
+      "CanDrop": false,
+      "CanBeUnequipped": true,
+      "RequiredPlayerLevel": 1,
+      "MinimumQualityLevel": "Normal",
+      "MaximumQualityLevel": "Normal",
+      "QualityLevelOdds": [
+        {
+          "Id": "Normal",
+          "ChanceToPick": 100
+        }
+      ],
+      "BaseValue": 0,
       "Id": "Sword",
       "Name": "SwordName",
       "Description": "SwordDescription",
       "ConsoleRepresentation": {
-        "Character": "↑",
-        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
-      },
-      "EntityType": "Weapon",
-      "CanBePickedUp": true,
-      "StartsVisible": true,
-      "OnTurnStartActions": [],
-      "OnAttackActions": [{
-        "Name": "MeleeWeaponAttackName",
-        "Description": "SwordAttackDescription",
-        "TargetTypes": [ "enemy" ],
-        "MinimumRange": 1,
-        "MaximumRange": 1,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "SwordAttackText" }
-          ],
-          "Then": {
-            "EffectName": "DealDamage",
-            "Params": [
-              { "ParamName": "accuracy", "Value": "90"                  },
-              { "ParamName": "attacker", "Value": "source"              },
-              { "ParamName": "target"  , "Value": "target"              },
-              { "ParamName": "attack"  , "Value": "{source.Damage}"     },
-              { "ParamName": "defense" , "Value": "{target.Mitigation}" }
-            ],
-            "Then": null,
-            "OnSuccess": null,
-            "OnFailure": {
-              "EffectName": "PrintText",
-              "Params": [
-                { "ParamName": "text", "Value": "FailedAttackText" }
-              ]
-            }
-          },
-          "OnSuccess": null,
-          "OnFailure": null
+        "Character": "\u2191",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
         }
       }
-    ],
-      "OnAttackedActions": [],
-	    "OnDeathActions": [],
-      "Power": "1d3",
-      "OnItemSteppedActions": [{
-        "Name": "PrintStepped",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "ObjectSteppedText" }
-          ],
-          "Then": null,
-          "OnSuccess": null,
-          "OnFailure": null
-        }
-      }],
-      "OnItemUseActions": [{
-        "Name": "Equip",
-        "MinimumRange": 0,
-        "MaximumRange": 0,
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "ObjectEquippedText" }
-          ],
-          "Then": 
-          {
-            "EffectName": "Equip",
-            "Params": [],
-            "Then": null,
-            "OnSuccess": null,
-            "OnFailure": null
-          },
-          "OnSuccess": null,
-          "OnFailure": null
-        }
-      }]
     }
   ],
   "Traps": [
     {
+      "StartsVisible": false,
+      "Power": "1",
       "Id": "SpikeTrap",
       "Name": "Spike Trap",
       "ConsoleRepresentation": {
         "Character": "^",
-        "BackgroundColor": { "R": 255, "G": 0  , "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 255, "B": 0  , "A": 255 }
-      },
-      "EntityType": "Trap",
-      "StartsVisible": false,
-      "CanBePickedUp": false,
-      "Power": "1",      
-      "OnItemSteppedActions": [{
-        "Name": "TrapActivate",
-        "CooldownBetweenUses": 0,
-        "MaximumUses": 0,
-        "Effect": {
-          "EffectName": "PrintText",
-          "Params": [
-            { "ParamName": "text", "Value": "ObjectSteppedText" }
-          ],
-          "Then": {
-            "EffectName": "DealDamage",
-            "Params": [
-              { "ParamName": "accuracy", "Value": "80"           },
-              { "ParamName": "attacker", "Value": "source"       },
-              { "ParamName": "target"  , "Value": "target"       },
-              { "ParamName": "attack"  , "Value": "{this.Power}" },
-              { "ParamName": "defense" , "Value": "0"            }
-            ],
-            "Then": null,
-            "OnSuccess": {
-              "EffectName": "Remove",
-              "Params": [
-                { "ParamName": "chance", "Value": "40"   },
-                { "ParamName": "target", "Value": "this" }
-              ],
-              "Then": null,
-              "OnSuccess": {
-                "EffectName": "PrintText",
-                "Params": [
-                  { "ParamName": "text", "Value": "ObjectDisappearedText" }
-                ],
-                "Then": null,
-                "OnSuccess": null,
-                "OnFailure": null
-              },
-              "OnFailure": null
-            },
-            "OnFailure": {
-              "EffectName": "PrintText",
-              "Params": [
-                { "ParamName": "text", "Value": "ObjectNotActivatedText" }
-              ],
-              "Then": null,
-              "OnSuccess": null,
-              "OnFailure": null
-            }
-          },
-          "OnSuccess": null,
-          "OnFailure": null
+        "BackgroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 255,
+          "B": 0,
+          "A": 255
         }
-      }],
-      "OnItemUseActions": []
+      }
     }
   ],
   "AlteredStatuses": [
     {
-      "Id": "Poisoned",
-      "Name": "PoisonedName",
-      "Description": "PoisonedDescription",
-      "ConsoleRepresentation": {
-        "Character": "‼",
-        "BackgroundColor": { "R": 0  , "G": 0, "B": 0  , "A": 255 },
-        "ForegroundColor": { "R": 255, "G": 0, "B": 255, "A": 255 }
-      },
-      "EntityType": "AlteredStatus",
-      "CanStack": false,
-      "CanOverwrite": true,
-      "CleanseOnFloorChange": true,
-      "CleansedByCleanseActions": true,
-      "OnTurnStartActions": [{
+      "OnTurnStart": {
+        "Id": "Poison",
         "Name": "Poison",
-        "StartingCooldown": 28,
+        "IsScript": false,
+        "MinimumRange": 0,
+        "MaximumRange": 0,
         "CooldownBetweenUses": 28,
+        "MaximumUses": 0,
+        "MPCost": 0,
+        "FinishesTurnWhenUsed": true,
+        "School": "Default",
+        "StartingCooldown": 28,
         "Effect": {
           "EffectName": "PrintText",
           "Params": [
-            { "ParamName": "text", "Value": "PoisonedText" }
+            {
+              "ParamName": "text",
+              "Value": "PoisonedText"
+            },
+            {
+              "ParamName": "BypassesVisibilityCheck",
+              "Value": "false"
+            }
           ],
           "Then": {
             "EffectName": "DealDamage",
             "Params": [
-              { "ParamName": "accuracy", "Value": "100"          },
-              { "ParamName": "attacker", "Value": "source"       },
-              { "ParamName": "target"  , "Value": "target"       },
-              { "ParamName": "attack"  , "Value": "{this.Power}" },
-              { "ParamName": "defense" , "Value": "0"            }
-            ],
-            "Then": null,
-            "OnSuccess": null,
-            "OnFailure": null
-          },
-          "OnSuccess": null,
-          "OnFailure": null
+              {
+                "ParamName": "accuracy",
+                "Value": "100"
+              },
+              {
+                "ParamName": "attacker",
+                "Value": "source"
+              },
+              {
+                "ParamName": "target",
+                "Value": "target"
+              },
+              {
+                "ParamName": "attack",
+                "Value": "{this.Power}"
+              },
+              {
+                "ParamName": "defense",
+                "Value": "0"
+              },
+              {
+                "ParamName": "BypassesAccuracyCheck",
+                "Value": "false"
+              },
+              {
+                "ParamName": "CriticalHitChance",
+                "Value": "0"
+              },
+              {
+                "ParamName": "CriticalHitFormula",
+                "Value": "{CalculatedDamage}"
+              },
+              {
+                "ParamName": "Element",
+                "Value": "Normal"
+              },
+              {
+                "ParamName": "BypassesResistances",
+                "Value": "true"
+              },
+              {
+                "ParamName": "BypassesElementEffect",
+                "Value": "true"
+              },
+              {
+                "ParamName": "InformOfFailure",
+                "Value": "true"
+              }
+            ]
+          }
         }
-      }],
-      "OnStatusApplyActions": []
+      },
+      "CanStack": false,
+      "CanOverwrite": true,
+      "CleanseOnFloorChange": true,
+      "CleansedByCleanseActions": true,
+      "Id": "Poisoned",
+      "Name": "PoisonedName",
+      "Description": "PoisonedDescription",
+      "ConsoleRepresentation": {
+        "Character": "\u203C",
+        "BackgroundColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0,
+          "A": 255
+        },
+        "ForegroundColor": {
+          "R": 255,
+          "G": 0,
+          "B": 255,
+          "A": 255
+        }
+      }
     }
-  ]
+  ],
+  "QuestInfos": [],
+  "Scripts": []
 }

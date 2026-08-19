@@ -505,5 +505,10 @@ namespace RogueCustomsDungeonEditor.Controls.Tabs
         {
             TabInfoChanged?.Invoke(null, EventArgs.Empty);
         }
+
+        private void cmbNPCLearnset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabInfoChanged?.Invoke(null, EventArgs.Empty);
+        }
     }
 }
